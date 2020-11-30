@@ -54,7 +54,7 @@ namespace AcManager.Tools.WorkshopPublishTools.Validators {
         private string GuessCarClass() {
             return Target.AcdData?.GetIniFile("tyres.ini")
                     .GetSections("FRONT", -1).Select(x => x.GetNonEmpty("NAME")).NonNull()
-                    .Select(x => Regex.IsMatch(x, "slick", RegexOptions.IgnoreCase) ? "race"
+                    .Select(x => Regex.IsMatch(x, @"(?<!semi[-\s]?)slick", RegexOptions.IgnoreCase) ? "race"
                             : Regex.IsMatch(x, "street", RegexOptions.IgnoreCase) ? "street" : null).NonNull().FirstOrDefault();
         }
 
@@ -106,7 +106,7 @@ namespace AcManager.Tools.WorkshopPublishTools.Validators {
             if (showRaw) {
                 return dataWeight.Round();
             }
-            return (Math.Abs(actualValue - dataWeight - 75) <= 50d ? actualValue : dataWeight - 75d).Round();
+            return (Math.Abs(actualValue - (dataWeight - 75)) <= 50d ? actualValue : dataWeight - 75d).Round();
         }
 
         private WorkshopValidatedItem TestCarSpecWeight() {
@@ -119,7 +119,7 @@ namespace AcManager.Tools.WorkshopPublishTools.Validators {
         private WorkshopValidatedItem TestCarSpecPower() {
             return TestSpec("Car power", Target.SpecsBhp, () => {
                 var actualValue = FlexibleParser.TryParseDouble(Target.SpecsBhp) ?? 0d;
-                if (Target.SpecsBhp?.IndexOf("--") >= 0 || actualValue < 1) {
+                if (Target.SpecsBhp?.IndexOf("--") >= 0 || actualValue < 0.1) {
                     return "-- bhp";
                 }
 
@@ -132,7 +132,7 @@ namespace AcManager.Tools.WorkshopPublishTools.Validators {
             return TestSpec("Car torque", Target.SpecsTorque, () => {
                 var actualValue = FlexibleParser.TryParseDouble(Target.SpecsTorque) ?? 0d;
                 var showRaw = Target.SpecsBhp?.IndexOf('*') > 0;
-                return Target.SpecsTorque?.IndexOf("--") >= 0 || actualValue < 1 ? "-- Nm"
+                return Target.SpecsTorque?.IndexOf("--") >= 0 || actualValue < 0.1 ? "-- Nm"
                         : showRaw ? $"{actualValue.Round()} Nm*" : $"{actualValue.Round()} Nm";
             }, v => Target.SpecsTorque = v);
         }
@@ -140,14 +140,14 @@ namespace AcManager.Tools.WorkshopPublishTools.Validators {
         private WorkshopValidatedItem TestCarSpecTopSpeed() {
             return TestSpec("Car top speed", Target.SpecsTopSpeed, () => {
                 var actualValue = FlexibleParser.TryParseDouble(Target.SpecsTopSpeed) ?? 0d;
-                return Target.SpecsTopSpeed?.IndexOf("--") >= 0 || actualValue < 1 ? "-- km/h" : $"{actualValue.Round()} km/h";
+                return Target.SpecsTopSpeed?.IndexOf("--") >= 0 || actualValue < 0.1 ? "-- km/h" : $"{actualValue.Round()} km/h";
             }, v => Target.SpecsTopSpeed = v);
         }
 
         private WorkshopValidatedItem TestCarSpecAcceleration() {
             return TestSpec("Car top speed", Target.SpecsAcceleration, () => {
                 var actualValue = FlexibleParser.TryParseDouble(Target.SpecsAcceleration) ?? 0d;
-                return Target.SpecsAcceleration?.IndexOf("--") >= 0 || actualValue < 1 ? "-- s 0–100" : $"{actualValue.Round()} s 0–100";
+                return Target.SpecsAcceleration?.IndexOf("--") >= 0 || actualValue < 0.1 ? "-- s 0–100" : $"{actualValue.Round(0.1)} s 0–100";
             }, v => Target.SpecsAcceleration = v);
         }
 
@@ -155,7 +155,7 @@ namespace AcManager.Tools.WorkshopPublishTools.Validators {
             return TestSpec("Car P/W ratio", Target.SpecsPwRatio, () => {
                 var carPower = FlexibleParser.TryParseDouble(Target.SpecsBhp) ?? 0d;
                 var carWeight = GetSpecsWeight(out _);
-                return carPower < 1 || carWeight == null ? "-- kg/hp" : $"{(carWeight.Value / carPower).ToString("F2", CultureInfo.InvariantCulture)} kg/hp";
+                return carPower < 0.01 || carWeight == null ? "-- kg/hp" : $"{(carWeight.Value / carPower).ToString("F2", CultureInfo.InvariantCulture)} kg/hp";
             }, v => Target.SpecsPwRatio = v);
         }
 

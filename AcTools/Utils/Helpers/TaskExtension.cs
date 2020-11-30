@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class TaskExtension {
@@ -25,6 +26,7 @@ namespace AcTools.Utils.Helpers {
             task.ContinueWith(x => { AcToolsLogging.Write(x.Exception?.Flatten()); }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
+        [Pure]
         public static IEnumerable<Task> MakeList(params Func<Task>[] functions) {
             return functions.Select(x => x());
         }

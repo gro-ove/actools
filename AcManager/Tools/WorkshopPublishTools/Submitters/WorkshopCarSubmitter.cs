@@ -22,7 +22,6 @@ namespace AcManager.Tools.WorkshopPublishTools.Submitters {
 
         public Dictionary<string, string> CarPreviews;
         public Dictionary<string, WorkshopCarSkinSubmitter> SkinSubmitters;
-        public string CarDownloadUrl;
         public string ShowroomUrl;
         public string UpgradeIconUrl;
 
@@ -32,12 +31,11 @@ namespace AcManager.Tools.WorkshopPublishTools.Submitters {
 
         private async Task PreparePreviewsAsync() {
             CarPreviews = Skins.ToDictionary(x => x.Id, x => Path.Combine(TemporaryLocation, $"preview_{x.Id}.jpg"));
-
-            await CmPreviewsTools.UpdatePreviewAsync(new[] {
-                new ToUpdatePreview(Target, Skins.Where(x => !File.Exists(CarPreviews[x.Id])).ToList())
-            }, WorkshopCarSkinSubmittable.PreviewsOptions(), @"Kunos",
-                    destinationOverrideCallback: skin => CarPreviews[skin.Id],
-                    progress: Log?.Progress(@"Updating skin"));
+            using (var op = Log?.BeginParallel("Generating previews with default look", @"Updating skin")) {
+                await CmPreviewsTools.UpdatePreviewAsync(new[] {
+                    new ToUpdatePreview(Target, Skins.Where(x => !File.Exists(CarPreviews[x.Id])).ToList())
+                }, WorkshopCarSkinSubmittable.PreviewsOptions(), @"Kunos", destinationOverrideCallback: skin => CarPreviews[skin.Id], progress: op);
+            }
         }
 
         private class CarShowroomPacker : AcCommonObject.AcCommonObjectPacker<CarObject> {
@@ -78,21 +76,11 @@ namespace AcManager.Tools.WorkshopPublishTools.Submitters {
         }
 
         private async Task<string> PackShowroomAsync() {
-            var packed = Path.Combine(TemporaryLocation, "packed.zip");
-            using (var op = Log?.BeginParallel("Packing car", @"Packing:")) {
+            var packed = Path.Combine(TemporaryLocation, "showroom.zip");
+            using (var op = Log?.BeginParallel("Packing showroom package", @"Packing:")) {
                 await Target.TryToPack(new CarObject.CarPackerParams {
                     Destination = packed,
                     ShowInExplorer = false,
-                    Override = key => {
-                        if (Path.GetFileName(key) == "preview.jpg") {
-                            var skinId = Path.GetFileName(Path.GetDirectoryName(key));
-                            var filename = Path.Combine(packed, $"preview_{Target.Id}_{skinId}.jpg");
-                            if (File.Exists(filename)) {
-                                return (w, k) => w.Write(k, filename);
-                            }
-                        }
-                        return null;
-                    },
                     Progress = op
                 }, new CarShowroomPacker(Skins.Take(2)));
             }
@@ -101,17 +89,14 @@ namespace AcManager.Tools.WorkshopPublishTools.Submitters {
 
         private async Task<string> PackMainAsync() {
             var packed = Path.Combine(TemporaryLocation, "packed.zip");
-            using (var op = Log?.BeginParallel("Packing car", @"Packing:")) {
+            using (var op = Log?.BeginParallel("Packing main package", @"Packing:")) {
                 await Target.TryToPack(new CarObject.CarPackerParams {
                     Destination = packed,
                     ShowInExplorer = false,
                     Override = key => {
                         if (Path.GetFileName(key) == "preview.jpg") {
-                            var skinId = Path.GetFileName(Path.GetDirectoryName(key));
-                            var filename = Path.Combine(packed, $"preview_{Target.Id}_{skinId}.jpg");
-                            if (File.Exists(filename)) {
-                                return (w, k) => w.Write(k, filename);
-                            }
+                            var skinId = Path.GetFileName(Path.GetDirectoryName(key)) ?? string.Empty;
+                            return (w, k) => w.Write(k, CarPreviews[skinId]);
                         }
                         return null;
                     },
@@ -122,15 +107,13 @@ namespace AcManager.Tools.WorkshopPublishTools.Submitters {
         }
 
         private async Task UploadSkinsAsync() {
-            using (Log?.Begin("Uploading skins")) {
-                SkinSubmitters = new Dictionary<string, WorkshopCarSkinSubmitter>();
-                await Skins.Select(async skin => {
-                    SkinSubmitters[skin.Id] = new WorkshopCarSkinSubmitter(skin, true, Params) {
-                        Data = { PreviewImageFilename = CarPreviews[skin.Id] }
-                    };
-                    await SkinSubmitters[skin.Id].PrepareAsync();
-                }).WhenAll(10);
-            }
+            SkinSubmitters = new Dictionary<string, WorkshopCarSkinSubmitter>();
+            await Skins.Select(async skin => {
+                SkinSubmitters[skin.Id] = new WorkshopCarSkinSubmitter(skin, true, Params) {
+                    Data = { PreviewImageFilename = CarPreviews[skin.Id] }
+                };
+                await SkinSubmitters[skin.Id].PrepareAsync();
+            }).WhenAll(8);
         }
 
         public IEnumerable<JObject> BuildSkinsPayloads() {
@@ -140,20 +123,31 @@ namespace AcManager.Tools.WorkshopPublishTools.Submitters {
             return Skins.Select(x => new WorkshopCarSkinSubmitter(x, true, Params).BuildPayload());
         }
 
-        protected override async Task PrepareOverrideAsync() {
+        private async Task UploadStuffWithPreviewsTask() {
             await PreparePreviewsAsync();
+            await TaskExtension.MakeList(async () => await PrepareMainPackageAsync(await PackMainAsync()), UploadSkinsAsync).WhenAll();
+        }
 
-            CarDownloadUrl = await UploadFileAsync("main package", $"{Target.Id}.zip", await PackMainAsync());
-            try {
-                ShowroomUrl = await UploadFileAsync("showroom package", $"{Target.Id}.zip", await PackShowroomAsync());
-            } catch (Exception e) {
-                Logging.Warning(e);
-            }
-            UpgradeIconUrl = File.Exists(Target.UpgradeIcon)
-                    ? await UploadFileAsync("upgrade icon", "upgrade.png", Target.UpgradeIcon) : null;
-            ShowroomUrl = await UploadFileAsync("showroom package", "upgrade.png", Target.UpgradeIcon);
+        private async Task UploadStuffWithoutPreviewsTask() {
+            await TaskExtension.MakeList(
+                    async () => {
+                        try {
+                            var showroomPackage = await PackShowroomAsync();
+                            ShowroomUrl = await UploadFileAsync("showroom package", "showroom.zip", showroomPackage);
+                        } catch (Exception e) {
+                            Logging.Warning(e);
+                        }
+                    },
+                    async () => {
+                        UpgradeIconUrl = File.Exists(Target.UpgradeIcon)
+                                ? await UploadFileAsync("upgrade icon", "upgrade.png", Target.UpgradeIcon)
+                                : null;
+                    })
+                    .WhenAll();
+        }
 
-            await UploadSkinsAsync();
+        protected override async Task PrepareOverrideAsync() {
+            await TaskExtension.MakeList(UploadStuffWithPreviewsTask, UploadStuffWithoutPreviewsTask).WhenAll();
         }
     }
 
@@ -195,7 +189,8 @@ namespace AcManager.Tools.WorkshopPublishTools.Submitters {
                     },
                 },
                 ["skins"] = JArray.FromObject(Data.BuildSkinsPayloads()),
-                ["upgradeIcon"] = Data.UpgradeIconUrl
+                ["upgradeIcon"] = Data.UpgradeIconUrl,
+                ["showroomURL"] = Data.ShowroomUrl,
             });
             return ret;
         }

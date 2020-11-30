@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
@@ -28,7 +26,6 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
@@ -38,34 +35,6 @@ using SharpCompress.Writers;
 using UIElement = System.Windows.UIElement;
 
 namespace AcManager.Pages.Selected {
-    public class RoundsListDataTemplateSelector : DataTemplateSelector {
-        public DataTemplate RoundDataTemplate { get; set; }
-
-        public DataTemplate NewRoundDataTemplate { get; set; }
-
-        public override DataTemplate SelectTemplate(object item, DependencyObject container) {
-            return item is UserChampionshipRoundExtended ? RoundDataTemplate : NewRoundDataTemplate;
-        }
-    }
-
-    public class NumberToColumnsConverter : IValueConverter {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            var v = value.As<int>();
-            var max = parameter.As<int>();
-            if (max < 1 || v <= max) return v;
-
-            var from = max / 2;
-            return Enumerable.Range(from, max - from + 1).Select(x => new {
-                Colums = x,
-                Rows = (int)Math.Ceiling((double)v / x)
-            }).MinEntry(x => (x.Colums * x.Rows - v) * from - x.Colums).Colums;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-            throw new NotSupportedException();
-        }
-    }
-
     public partial class SelectedUserChampionship : ILoadableContent, IParametrizedUriContent, IImmediateContent {
         public class PlacePoints : NotifyPropertyChanged {
             public int Place { get; }

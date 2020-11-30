@@ -20,6 +20,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// </summary>
     [Localizable(false), ContentProperty(nameof(Text))]
     public class BbCodeBlock : PlaceholderTextBlock {
+        public enum AllowBbCodes {
+            None,
+            Limited,
+            All
+        }
+
         public static ICommand LinkCommand { get; } = new AsyncCommand<string>(async p => {
             var uri = new Uri(p, UriKind.RelativeOrAbsolute);
             if (DefaultLinkNavigator.Commands != null) {
@@ -184,11 +190,29 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return result.ToString();
         }
 
+        private static bool IsMatching(string bbCode, int index, string compareWith) {
+            if (bbCode.Length >= index + compareWith.Length) return false;
+            for (var i = compareWith.Length - 1; i >= 0; --i) {
+                if (bbCode[index + i] != compareWith[i]) return false;
+            }
+            return true;
+        }
+
+        private static bool IsLimitedBbCode(string bbCode, int index) {
+            if (bbCode.Length >= index + 2) return false;
+            if (bbCode[index] == '/') {
+                ++index;
+            }
+            return IsMatching(bbCode, index, "size")
+                    || IsMatching(bbCode, index, "url")
+                    || IsMatching(bbCode, index, "img")
+                    || IsMatching(bbCode, index, "ico");
+        }
+
         [CanBeNull]
-        private static Inline ParseEmojiOrNull(string bbCode, bool allowBbCodes, bool highlightUrls, FrameworkElement element = null,
+        private static Inline ParseEmojiOrNull(string bbCode, AllowBbCodes allowBbCodes, bool highlightUrls, FrameworkElement element = null,
                 ILinkNavigator navigator = null) {
             try {
-
                 var converted = new StringBuilder();
                 var lastIndex = 0;
                 var complex = false;
@@ -198,7 +222,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     var c = bbCode[i];
 
                     if (c == '[') {
-                        if (!allowBbCodes) {
+                        if (allowBbCodes == AllowBbCodes.None || allowBbCodes == AllowBbCodes.Limited && IsLimitedBbCode(bbCode, i + 1)) {
                             if (lastIndex < i) {
                                 converted.Append(bbCode.Substring(lastIndex, i - lastIndex));
                             }
@@ -269,7 +293,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         [NotNull]
-        public static Inline ParseEmoji(string bbCode, bool allowBbCodes, bool highlightUrls, FrameworkElement element = null, ILinkNavigator navigator = null) {
+        public static Inline ParseEmoji(string bbCode, AllowBbCodes allowBbCodes, bool highlightUrls, FrameworkElement element = null,
+                ILinkNavigator navigator = null) {
             return ParseEmojiOrNull(bbCode, allowBbCodes, highlightUrls, element, navigator) ?? new Run { Text = bbCode };
         }
 
@@ -304,7 +329,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                 var inline = emojiSupport == EmojiSupport.Simple
                         ? ParseOrNull(bbCode, this, LinkNavigator)
-                        : ParseEmojiOrNull(bbCode, emojiSupport != EmojiSupport.WithoutBbCodes, highlightUrls, this, LinkNavigator);
+                        : ParseEmojiOrNull(bbCode,
+                                emojiSupport == EmojiSupport.SafeBbCodes ? AllowBbCodes.Limited :
+                                        emojiSupport == EmojiSupport.WithoutBbCodes ? AllowBbCodes.None : AllowBbCodes.All,
+                                highlightUrls, this, LinkNavigator);
                 if (inline == null) {
                     SetValue(TextBlock.TextProperty, bbCode);
                 } else {

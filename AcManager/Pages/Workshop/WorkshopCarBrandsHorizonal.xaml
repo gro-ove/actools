@@ -119,7 +119,8 @@
         <TranslateTransform x:Name="TransformThird" />
       </Border.RenderTransform>
       <ScrollViewer HorizontalScrollBarVisibility="Disabled" DataContext="{Binding AnySelectedObject}"
-          Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+          Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+          mui:ScrollPropagation.Fix="True">
         <ContentControl Content="{Binding}" Resources="{StaticResource WorkshopResources.ContentItem.Details}" />
       </ScrollViewer>
     </Border>

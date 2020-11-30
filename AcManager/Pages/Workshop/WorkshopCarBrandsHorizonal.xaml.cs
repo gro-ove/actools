@@ -31,7 +31,7 @@ namespace AcManager.Pages.Workshop {
         }
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
-            _categories = (await new WorkshopClient("http://192.168.1.10:3000")
+            _categories = (await WorkshopHolder.Client
                     .GetAsync<List<WorkshopContentCategory>>($"/{_categoryType}", cancellationToken)
                     .ConfigureAwait(false))
                     // .Repeat(10).Select(x => new WorkshopContentCategory {Icon = x.Icon,Name = x.Name,NewItems = x.NewItems,Uses = x.Uses}).ToList()

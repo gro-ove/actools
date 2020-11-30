@@ -5,7 +5,6 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using AcManager.CustomShowroom;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.Loaders;
 using AcManager.Workshop;
 using AcManager.Workshop.Data;
 using AcTools.Kn5File;
@@ -38,25 +37,12 @@ namespace AcManager.Pages.Workshop {
                 var carData = new VirtualDataWrapper();
 
                 using (var waiting = WaitingDialog.Create("Loading showroom…")) {
-                    if (!File.Exists(temporaryFilename)) {
-                        var temporaryFilenameProgress = $"{temporaryFilename}.tmp";
-                        using (var client = new CookieAwareWebClient()) {
-                            var totalSize = -1L;
-                            var progressTimer = new AsyncProgressBytesStopwatch();
-                            await new DirectLoader("https://files.acstuff.ru/shared/XAPv/peugeot_504.zip").DownloadAsync(client, (url, information) => {
-                                totalSize = information.TotalSize ?? -1L;
-                                return new FlexibleLoaderDestination(temporaryFilenameProgress, true);
-                            }, progress: new Progress<long>(x => { waiting.Report(AsyncProgressEntry.CreateDownloading(x, totalSize, progressTimer)); }),
-                                    cancellation: waiting.CancellationToken);
-                            waiting.CancellationToken.ThrowIfCancellationRequested();
-                        }
-                        File.Move(temporaryFilenameProgress, temporaryFilename);
-                    }
+                    await WorkshopHolder.Client.DownloadFileAsync($"/cars/{carId}/download-showroom", temporaryFilename, false,
+                            waiting, waiting.CancellationToken);
                     waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Loading…"));
 
                     await Task.Run(() => {
-                        var data = File.ReadAllBytes(@"H:\temp\peugeot_504\peugeot_504.zip");
-                        using (var stream = new MemoryStream(data))
+                        using (var stream = File.OpenRead(temporaryFilename))
                         using (var archive = new ZipArchive(stream)) {
                             foreach (var entry in archive.Entries) {
                                 if (entry.Length == 0) continue;

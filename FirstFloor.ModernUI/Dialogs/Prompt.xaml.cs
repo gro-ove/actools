@@ -10,9 +10,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
@@ -23,12 +25,23 @@ namespace FirstFloor.ModernUI.Dialogs {
         private FrameworkElement _element;
 
         private Prompt(string title, string description, string defaultValue, string placeholder, string toolTip, bool multiline, bool passwordMode,
-                bool required,
-                int maxLength, IEnumerable<string> suggestions, bool suggestionsFixed, string comment) {
-            DataContext = new ViewModel(description, defaultValue, placeholder, toolTip, required);
+                bool required, int maxLength, IEnumerable<string> suggestions, bool suggestionsFixed, string comment,
+                Func<string, Task<IEnumerable<string>>> suggestionsCallback = null, Func<string, Task<string>> verificationCallback = null,
+                bool suggestionsAsList = false) {
+            DataContext = new ViewModel(description, defaultValue, placeholder, toolTip, required) {
+                SuggestionsCallback = suggestionsCallback,
+                VerificationCallback = verificationCallback,
+            };
+
+            if (Model.SuggestionsCallback != null) {
+                Model.UpdateSuggestionsAsync().Ignore();
+            }
+
             InitializeComponent();
             Buttons = new[] { OkButton, CancelButton };
             _multiline = multiline;
+
+            var suggestionsList = new Lazy<List<string>>(suggestions.ToList);
 
             if (required) {
                 OkButton.SetBinding(IsEnabledProperty, new Binding {
@@ -56,7 +69,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                 });
 
                 element = passwordBox;
-            } else if (suggestions != null) {
+            } else if (suggestions != null || suggestionsCallback != null) {
                 var comboBox = new BetterComboBox {
                     IsEditable = !suggestionsFixed,
                     IsTextSearchEnabled = true
@@ -66,8 +79,13 @@ namespace FirstFloor.ModernUI.Dialogs {
                     comboBox.SetBinding(ItemsControl.ItemsSourceProperty, new Binding {
                         Source = suggestions
                     });
+                } else if (suggestions != null) {
+                    comboBox.ItemsSource = suggestionsList.Value;
                 } else {
-                    comboBox.ItemsSource = suggestions.ToList();
+                    Model.SuggestionsDynamic = new BetterObservableCollection<string>();
+                    comboBox.SetBinding(ItemsControl.ItemsSourceProperty, new Binding {
+                        Source = Model.SuggestionsDynamic
+                    });
                 }
 
                 comboBox.SetBinding(ComboBox.TextProperty, new Binding {
@@ -111,6 +129,34 @@ namespace FirstFloor.ModernUI.Dialogs {
             }
 
             Panel.Children.Add(element);
+
+            if (suggestionsAsList) {
+                var listBox = new ListBox {
+                    IsTextSearchEnabled = true,
+                    Height = 200
+                };
+                if (suggestions is INotifyCollectionChanged) {
+                    listBox.SetBinding(ItemsControl.ItemsSourceProperty, new Binding {
+                        Source = suggestions
+                    });
+                } else if (suggestions != null) {
+                    listBox.ItemsSource = suggestionsList.Value;
+                } else {
+                    if (Model.SuggestionsDynamic == null) {
+                        Model.SuggestionsDynamic = new BetterObservableCollection<string>();
+                    }
+                    listBox.SetBinding(ItemsControl.ItemsSourceProperty, new Binding {
+                        Source = Model.SuggestionsDynamic
+                    });
+                }
+                listBox.SetBinding(Selector.SelectedItemProperty, new Binding {
+                    Source = DataContext,
+                    Path = new PropertyPath(nameof(ViewModel.TextInList)),
+                    Mode = BindingMode.TwoWay
+                });
+                Panel.Children.Add(listBox);
+            }
+
             if (toolTip != null) element.SetValue(ToolTipProperty, toolTip);
 
             PreviewKeyDown += OnKeyDown;
@@ -160,9 +206,70 @@ namespace FirstFloor.ModernUI.Dialogs {
                     if (Equals(value, _text)) return;
                     _text = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(TextInList));
+                    OnErrorsChanged();
+
+                    if (SuggestionsCallback != null) {
+                        UpdateSuggestionsAsync().Ignore();
+                    }
+
+                    if (VerificationCallback != null) {
+                        ValidateAsync().Ignore();
+                    }
+                }
+            }
+
+            public string TextInList {
+                get => _text;
+                set {
+                    if (!string.IsNullOrWhiteSpace(value)) {
+                        Text = value;
+                    }
+                }
+            }
+
+            public async Task UpdateSuggestionsAsync() {
+                var text = Text;
+                await Task.Delay(50);
+                if (Text != text) return;
+
+                try {
+                    var suggestions = await SuggestionsCallback(text);
+                    if (Text == text) {
+                        SuggestionsDynamic.ReplaceEverythingBy_Direct(suggestions);
+                    }
+                } catch (Exception e) {
+                    Logging.Error(e);
+                }
+            }
+
+            public async Task ValidateAsync() {
+                var text = Text;
+                if (_verificationCache?.ContainsKey(text) == true) {
+                    IsAvailable = true;
+                    return;
+                }
+
+                IsAvailable = false;
+                string error;
+                try {
+                    error = await VerificationCallback(text);
+                } catch (Exception e) {
+                    error = $"Failed to validate: {e.ToString().ToSentenceMember()}";
+                }
+                if (_verificationCache == null) {
+                    _verificationCache = new Dictionary<string, string>();
+                }
+                _verificationCache[text] = error;
+                if (text == Text) {
+                    IsAvailable = true;
                     OnErrorsChanged();
                 }
             }
+
+            public Func<string, Task<IEnumerable<string>>> SuggestionsCallback;
+
+            public BetterObservableCollection<string> SuggestionsDynamic { get; set; }
 
             public string Description { get; }
 
@@ -172,6 +279,15 @@ namespace FirstFloor.ModernUI.Dialogs {
 
             public bool Required { get; }
 
+            private bool _isAvailable = true;
+
+            public bool IsAvailable {
+                get => _isAvailable;
+                set => Apply(value, ref _isAvailable, () => {
+                    OnPropertyChanged(nameof(Text));
+                });
+            }
+
             public ViewModel(string description, string defaultValue, string placeholder, string toolTip, bool required) {
                 Description = description;
                 Text = defaultValue;
@@ -180,16 +296,24 @@ namespace FirstFloor.ModernUI.Dialogs {
                 Required = required;
             }
 
+            private Dictionary<string, string> _verificationCache;
+
             public IEnumerable GetErrors(string propertyName) {
                 switch (propertyName) {
                     case nameof(Text):
-                        return Required && string.IsNullOrWhiteSpace(Text) ? new[] { "Required value" } : null;
+                        string v = null;
+                        var error = Required && string.IsNullOrWhiteSpace(Text)
+                                ? "Required value" : _verificationCache?.TryGetValue(Text, out v) == true ? v : null;
+                        return error != null ? new[] { error } : null;
                     default:
                         return null;
                 }
             }
 
-            public bool HasErrors => Required && string.IsNullOrWhiteSpace(Text);
+            public Func<string, Task<string>> VerificationCallback;
+
+            public bool HasErrors => Required && string.IsNullOrWhiteSpace(Text) || VerificationCallback?.Invoke(Text) != null;
+
             public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
             public void OnErrorsChanged([CallerMemberName] string propertyName = null) {
@@ -222,17 +346,22 @@ namespace FirstFloor.ModernUI.Dialogs {
         /// <param name="suggestions">Suggestions if needed.</param>
         /// <param name="suggestionsFixed">Only allow values from suggestions.</param>
         /// <param name="comment">Something to display in the bottom left corner.</param>
+        /// <param name="suggestionsCallback">Callback for dynamic suggestions.</param>
+        /// <param name="verificationCallback">Callback for verification returning error message or null.</param>
+        /// <param name="suggestionsAsList">Show suggestions as a list box below text input.</param>
         /// <returns>Result string or null if user cancelled input.</returns>
         [CanBeNull]
         public static string Show(string description, string title, string defaultValue = "", string placeholder = null, string toolTip = null,
                 bool multiline = false, bool passwordMode = false, bool required = false, int maxLength = -1, IEnumerable<string> suggestions = null,
-                bool suggestionsFixed = false, string comment = null) {
+                bool suggestionsFixed = false, string comment = null,
+                Func<string, Task<IEnumerable<string>>> suggestionsCallback = null, Func<string, Task<string>> verificationCallback = null,
+                bool suggestionsAsList = false) {
             if (passwordMode && suggestions != null) throw new ArgumentException(@"Can’t have suggestions with password mode");
             if (passwordMode && multiline) throw new ArgumentException(@"Can’t use multiline input area with password mode");
             if (suggestions != null && multiline) throw new ArgumentException(@"Can’t use multiline input area with suggestions");
 
             var dialog = new Prompt(title, description, defaultValue, placeholder, toolTip, multiline, passwordMode, required, maxLength, suggestions,
-                    suggestionsFixed, comment) {
+                    suggestionsFixed, comment, suggestionsCallback, verificationCallback, suggestionsAsList) {
                         DoNotAttachToWaitingDialogs = true
                     };
             dialog.ShowDialog();
@@ -285,7 +414,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return !string.IsNullOrWhiteSpace(value?.ToString());
+            return !string.IsNullOrWhiteSpace(value?.ToString()) && Model.IsAvailable;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

@@ -39,8 +39,12 @@ namespace AcManager.Workshop.Data {
             BrandBadge = Lazier.CreateAsync(() => WorkshopBrandBadgeProvider.GetAsync(Brand));
         }
 
+        protected override string GetCommentsUrl() {
+            return $"/car-comments/{Id}";
+        }
+
         [JsonProperty("parentID")]
-        public string ParentID { get; set; }
+        public string ParentId { get; set; }
 
         [JsonProperty("carBrand")]
         public string Brand { get; set; }
@@ -92,6 +96,8 @@ namespace AcManager.Workshop.Data {
             get => _selectedSkin ?? (_selectedSkin = Skins?.FirstOrDefault());
             set => Apply(value, ref _selectedSkin);
         }
+
+        public string ParentDisplayName => ParentId;
 
         [JsonIgnore, NotNull]
         public string ShortName => DisplayName.ApartFromFirst(Brand).TrimStart();

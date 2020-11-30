@@ -13,7 +13,6 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace AcManager.Workshop {
     public static class WorkshopHelperUtils {
@@ -99,6 +98,7 @@ namespace AcManager.Workshop {
 
         private UserInfo _authorizedAs;
 
+        [CanBeNull]
         public UserInfo AuthorizedAs {
             get => _authorizedAs;
             set => Apply(value, ref _authorizedAs, () => {
@@ -188,8 +188,7 @@ namespace AcManager.Workshop {
                 await Task.Delay(stepSize, cancellation);
                 if (_upgradeRun != upgradeRun || cancellation.IsCancellationRequested) break;
                 AuthorizedAs = await _client.GetAsync<UserInfo>($"/users/{_client.UserId}", cancellation);
-                Logging.Debug(JsonConvert.SerializeObject(AuthorizedAs));
-                if (!AuthorizedAs.IsVirtual) return;
+                if (AuthorizedAs == null || !AuthorizedAs.IsVirtual) return;
             }
 
             // Extra two seconds delay for server to load extra data from Steam
@@ -226,7 +225,7 @@ namespace AcManager.Workshop {
             await _client.RequestAsync<object, object>(new HttpMethod("PATCH"), $"/users/{_client.UserId}", new {
                 isVirtual = false,
                 passwordChecksum
-            }, headers => {
+            }, (statusCode, headers) => {
                 if (headers.Location != null) {
                     WindowsHelper.ViewInBrowser(headers.Location);
                 }
@@ -256,7 +255,7 @@ namespace AcManager.Workshop {
             if (_client.UserId == null) throw new Exception("Can’t reset password");
             await _client.RequestAsync<object, object>(new HttpMethod("PATCH"), $"/users/{_client.UserId}", new {
                 passwordChecksum = WorkshopClient.GetPasswordChecksum(_client.UserId, userPassword)
-            }, headers => {
+            }, (statusCode, headers) => {
                 if (headers.Location != null) {
                     WindowsHelper.ViewInBrowser(headers.Location);
                 }

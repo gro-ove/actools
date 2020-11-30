@@ -117,9 +117,25 @@ namespace AcManager.Tools.WorkshopPublishTools.Validators {
         }
 
         protected virtual WorkshopValidatedItem TestUrl() {
-            return Target.Url?.IsWebUrl() != false
-                    ? new WorkshopValidatedItem("URL is correct")
-                    : new WorkshopValidatedItem("Incorrect URL value", WorkshopValidatedState.Failed);
+            var originalUrl = Target.Url;
+            if (string.IsNullOrWhiteSpace(originalUrl)) {
+                return !string.IsNullOrEmpty(originalUrl)
+                        ? new WorkshopValidatedItem("URL shouldn’t be of spaces only",
+                                () => Target.Url = string.Empty, () => Target.Url = originalUrl)
+                        : new WorkshopValidatedItem("URL is not set, but it’s optional");
+            }
+
+            if (originalUrl.IsWebUrl()) {
+                return new WorkshopValidatedItem("URL is correct");
+            }
+
+            if (originalUrl.StartsWith(@"www.")) {
+                var newUrl = $"https://{originalUrl}";
+                return new WorkshopValidatedItem($"URL will be changed to “{newUrl}”",
+                        () => Target.Url = newUrl, () => Target.Url = originalUrl);
+            }
+
+            return new WorkshopValidatedItem("Incorrect URL value", WorkshopValidatedState.Failed);
         }
 
         [CanBeNull]
@@ -160,7 +176,11 @@ namespace AcManager.Tools.WorkshopPublishTools.Validators {
             }
 
             return originalDescription != originalDescription.ToSentence()
-                    ? new WorkshopValidatedItem("Description should be at least a single complete sentence", WorkshopValidatedState.Failed)
+                    ? originalDescription.Length < 100
+                            ? new WorkshopValidatedItem("Description should be at least a single complete sentence", WorkshopValidatedState.Failed)
+                            : new WorkshopValidatedItem("Description will be slightly altered to be a proper text",
+                                    () => Target.Description = originalDescription.ToSentence(),
+                                    () => Target.Description = originalDescription)
                     : new WorkshopValidatedItem("Description is correct");
         }
 

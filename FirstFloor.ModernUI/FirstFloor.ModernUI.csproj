@@ -153,6 +153,7 @@
     <Compile Include="Helpers\ElementPool.cs" />
     <Compile Include="Helpers\HorizontalScrollViewerBehavior.cs" />
     <Compile Include="Helpers\IStorage.cs" />
+    <Compile Include="Helpers\MixedDataTemplateSelector.cs" />
     <Compile Include="Helpers\ScreenInterrogatory.cs" />
     <Compile Include="Helpers\Stored.cs" />
     <Compile Include="Helpers\StoredValue.cs" />
@@ -191,9 +192,11 @@
     <Compile Include="Windows\AppShortcut.cs" />
     <Compile Include="Windows\Attached\CommandBindingBehavior.cs" />
     <Compile Include="Windows\Attached\DataGridFix.cs" />
+    <Compile Include="Windows\Attached\DataTemplateArgument.cs" />
     <Compile Include="Windows\Attached\DoubleClickEvent.cs" />
     <Compile Include="Windows\Attached\Draggable.cs" />
     <Compile Include="Windows\Attached\ExpanderHelper.cs" />
+    <Compile Include="Windows\Attached\FancyHint.cs" />
     <Compile Include="Windows\Attached\FancyHintAdorner.cs" />
     <Compile Include="Windows\Attached\FancyHintsService.cs" />
     <Compile Include="Windows\Attached\FancyScroll.cs" />
@@ -202,6 +205,8 @@
     <Compile Include="Windows\Attached\ListBoxHelper.cs" />
     <Compile Include="Windows\Attached\Resources.cs" />
     <Compile Include="Windows\Attached\SaveScroll.cs" />
+    <Compile Include="Windows\Attached\ScrollPropagation.cs" />
+    <Compile Include="Windows\Attached\ShowHintEventArgs.cs" />
     <Compile Include="Windows\Attached\VisibilityAnimation.cs" />
     <Compile Include="Windows\Bindings\BooleanBinding.cs" />
     <Compile Include="Windows\Bindings\MapBinding.cs" />

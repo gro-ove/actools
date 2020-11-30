@@ -44,7 +44,7 @@ namespace AcTools.Utils.Helpers {
 
         public Task<T> Get<T>(Func<Task<T>> fn, params object[] arguments) {
             lock (_running) {
-                var checksum = arguments.Aggregate<object, long>(typeof(T).Name.GetHashCode(), (current, t) => (current * 397) ^ t.GetHashCode());
+                var checksum = arguments.Aggregate<object, long>(typeof(T).Name.GetHashCode(), (current, t) => (current * 397) ^ (t?.GetHashCode() ?? 0));
                 if (_running.TryGetValue(checksum, out var running) && !running.IsCanceled && !running.IsCompleted && !running.IsFaulted) {
                     return (Task<T>)running;
                 }

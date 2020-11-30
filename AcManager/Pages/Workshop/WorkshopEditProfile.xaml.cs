@@ -149,11 +149,11 @@ namespace AcManager.Pages.Workshop {
                         };
 
                         if (_newAvatarLarge != null && _newAvatarSmall != null) {
-                            _workshopClient.MarkNewUploadGroup();
+                            var group = _workshopClient.StartNewUploadGroup();
                             c?.Item1?.Report(new AsyncProgressEntry("Small avatar…", 0.2));
-                            newInfo[@"avatarImageSmall"] = await _workshopClient.UploadAsync(_newAvatarSmall, $@"{_user.Username}_small.jpg");
+                            newInfo[@"avatarImageSmall"] = await group.UploadAsync(_newAvatarSmall, $@"{_user.Username}_small.jpg");
                             c?.Item1?.Report(new AsyncProgressEntry("Large avatar…", 0.4));
-                            newInfo[@"avatarImageLarge"] = await _workshopClient.UploadAsync(_newAvatarLarge, $@"{_user.Username}_large.jpg");
+                            newInfo[@"avatarImageLarge"] = await group.UploadAsync(_newAvatarLarge, $@"{_user.Username}_large.jpg");
                         }
 
                         c?.Item1?.Report(new AsyncProgressEntry("New information…", 0.6));

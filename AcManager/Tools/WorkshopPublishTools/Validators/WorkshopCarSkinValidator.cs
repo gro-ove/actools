@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
@@ -18,7 +19,7 @@ namespace AcManager.Tools.WorkshopPublishTools.Validators {
         protected override WorkshopValidatedItem TestName() {
             var originalName = Target.NameEditable;
             var name = originalName?.Trim();
-            if (string.IsNullOrEmpty(name)) {
+            if (string.IsNullOrEmpty(name) || string.Equals(name, "undefined", StringComparison.OrdinalIgnoreCase)) {
                 var newName = Target.NameFromId;
                 return new WorkshopValidatedItem($"Name will be “{newName}”",
                         () => Target.NameEditable = newName, () => Target.NameEditable = originalName);

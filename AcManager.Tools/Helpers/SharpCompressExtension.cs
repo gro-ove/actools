@@ -21,6 +21,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         public static void AddZipDescription(this Stream stream, string description) {
+            if (string.IsNullOrWhiteSpace(description)) return;
             stream.Seek(-2, SeekOrigin.End);
 
             var bytes = Encoding.GetEncoding(1252).GetBytes(description);

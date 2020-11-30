@@ -534,6 +534,8 @@
       <DependentUpon>DownloadsList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Selected\CarSetupValues.cs" />
+    <Compile Include="Pages\Selected\NumberToColumnsConverter.cs" />
+    <Compile Include="Pages\Selected\RoundsListDataTemplateSelector.cs" />
     <Compile Include="Pages\Selected\SelectedCarPage_New.xaml.cs">
       <DependentUpon>SelectedCarPage_New.xaml</DependentUpon>
     </Compile>

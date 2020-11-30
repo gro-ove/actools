@@ -119,7 +119,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var emojiSupport = Mode;
                 var item = new Paragraph(emojiSupport == EmojiSupport.Simple
                         ? BbCodeBlock.Parse(bbCode, this, LinkNavigator)
-                        : BbCodeBlock.ParseEmoji(bbCode, emojiSupport != EmojiSupport.WithoutBbCodes, HighlightUrls, this, LinkNavigator)) {
+                        : BbCodeBlock.ParseEmoji(bbCode,
+                                emojiSupport == EmojiSupport.SafeBbCodes ? BbCodeBlock.AllowBbCodes.Limited :
+                                        emojiSupport == EmojiSupport.WithoutBbCodes ? BbCodeBlock.AllowBbCodes.None : BbCodeBlock.AllowBbCodes.All,
+                                HighlightUrls, this, LinkNavigator)) {
                     TextAlignment = TextAlignment.Left
                 };
 

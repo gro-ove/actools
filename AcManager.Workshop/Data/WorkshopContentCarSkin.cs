@@ -15,9 +15,10 @@ namespace AcManager.Workshop.Data {
         public string Country { get; set; }
 
         [JsonProperty("isDefault")]
-        public int IsDefaultNum { get; set; }
+        public bool IsDefault  { get; set; }
 
-        [JsonIgnore] // TODO: custom serializer
-        public bool IsDefault => IsDefaultNum == 1;
+        protected override string GetCommentsUrl() {
+            return $"/car-skin-comments/{Id}";
+        }
     }
 }

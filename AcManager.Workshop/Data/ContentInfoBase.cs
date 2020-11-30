@@ -26,10 +26,24 @@ namespace AcManager.Workshop.Data {
         public string Changelog { get; set; }
     }
 
-    public class ContentInfoBase : NotifyPropertyChanged {
-        public ContentInfoBase() {
+    public class ContentCollabsInfo : NotifyPropertyChanged {
+        [JsonProperty("mainUserRole")]
+        public string MainUserRole { get; set; }
+
+        [JsonProperty("collabs")]
+        public List<WorkshopCollabReference> CollabReferences { get; set; }
+    }
+
+    public abstract class ContentInfoBase : NotifyPropertyChanged {
+        protected ContentInfoBase() {
             UserInfo = Lazier.CreateAsync(() => UserInfoProvider.GetAsync(UserId));
         }
+
+        private WorkshopCommentsModel _comments;
+
+        public WorkshopCommentsModel Comments => _comments ?? (_comments = new WorkshopCommentsModel(GetCommentsUrl()));
+
+        protected abstract string GetCommentsUrl();
 
         [JsonProperty("entryID")]
         public string Id { get; set; }
@@ -67,6 +81,9 @@ namespace AcManager.Workshop.Data {
         [JsonProperty("tags")]
         public ObservableCollection<string> Tags { get; set; }
 
+        [JsonProperty("collabsInfo")]
+        public ContentCollabsInfo Collabs { get; set; }
+
         [JsonProperty("description")]
         public string Description { get; set; }
 
@@ -76,16 +93,17 @@ namespace AcManager.Workshop.Data {
         [JsonProperty("version")]
         public string Version { get; set; }
 
-        [JsonProperty("url")]
+        [JsonProperty("informationURL")]
         public string Url { get; set; }
 
-        [JsonProperty("size")]
-        public long Size { get; set; }
+        [JsonProperty("downloadSize")]
+        public long DownloadSize { get; set; }
 
-        [JsonProperty("sizeFull")]
-        public long SizeFull { get; set; }
+        [JsonProperty("showroomSize")]
+        public long ShowroomSize { get; set; }
 
-        public long SizeToInstall => SizeFull != 0 ? SizeFull : Size;
+        [JsonProperty("installSize")]
+        public long SizeToInstall { get; set; }
 
         [JsonProperty("versions")]
         public List<VersionInfo> Versions { get; set; }

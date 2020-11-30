@@ -2,6 +2,7 @@
     public enum EmojiSupport {
         Simple,
         Extended,
+        SafeBbCodes,
         WithoutBbCodes
     }
 }

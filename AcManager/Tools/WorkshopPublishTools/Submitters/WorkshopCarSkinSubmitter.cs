@@ -18,17 +18,16 @@ namespace AcManager.Tools.WorkshopPublishTools.Submitters {
         }
 
         public string PreviewImageFilename;
-        public string DownloadUrl;
         public string IconUrl;
         public string PreviewUrl;
 
         private async Task UpdatePreviewAsync() {
             PreviewImageFilename = Path.Combine(TemporaryLocation, "preview.jpg");
-            await CmPreviewsTools.UpdatePreviewAsync(new[] {
-                new ToUpdatePreview(await CarsManager.Instance.GetByIdAsync(Target.CarId) ?? throw new Exception(), Target)
-            }, PreviewsOptions(), @"Kunos",
-                    destinationOverrideCallback: skin => PreviewImageFilename,
-                    progress: Params.Log?.Progress(@"Updating skin"));
+            using (var op = Log?.BeginParallel("Generating previews with default look", @"Updating skin")) {
+                await CmPreviewsTools.UpdatePreviewAsync(new[] {
+                    new ToUpdatePreview(await CarsManager.Instance.GetByIdAsync(Target.CarId) ?? throw new Exception(), Target)
+                }, PreviewsOptions(), @"Kunos", destinationOverrideCallback: skin => PreviewImageFilename, progress: op);
+            }
         }
 
         private async Task<string> PackMainAsync() {
@@ -54,13 +53,13 @@ namespace AcManager.Tools.WorkshopPublishTools.Submitters {
                 await UpdatePreviewAsync();
             }
 
-            await TaskExtension.MakeList(async () => {
-                IconUrl = await UploadFileAsync("skin icon", $"{Target.Id}.png", Target.LiveryImage);
-                PreviewUrl = await UploadFileAsync("skin preview", $"{Target.Id}.jpg", PreviewImageFilename);
-            }, async () => {
-                var packedFilename = await PackMainAsync();
-                DownloadUrl = await UploadFileAsync("main package", $"{Target.Id}.zip", packedFilename);
-            }).WhenAll();
+            await TaskExtension.MakeList(
+                    async () => {
+                        IconUrl = await UploadFileAsync("skin icon", "icon.png", Target.LiveryImage);
+                        PreviewUrl = await UploadFileAsync("skin preview", "preview.jpg", PreviewImageFilename);
+                    },
+                    async () => await PrepareMainPackageAsync(await PackMainAsync()))
+                    .WhenAll();
         }
     }
 
@@ -74,7 +73,6 @@ namespace AcManager.Tools.WorkshopPublishTools.Submitters {
             ret.Merge(new JObject {
                 ["skinIcon"] = Data.IconUrl,
                 ["previewImage"] = Data.PreviewUrl,
-                ["downloadURL"] = Data.DownloadUrl,
                 ["number"] = number > 0 ? (int?)number : null,
                 ["driver"] = Target.DriverName.Or(null),
                 ["team"] = Target.Team.Or(null),

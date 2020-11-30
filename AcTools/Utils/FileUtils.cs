@@ -668,7 +668,7 @@ namespace AcTools.Utils {
         public static bool TryToDeleteDirectory(string filename) {
             try {
                 if (Directory.Exists(filename)) {
-                    Directory.Delete(filename);
+                    Directory.Delete(filename, true);
                 }
                 return true;
             } catch {

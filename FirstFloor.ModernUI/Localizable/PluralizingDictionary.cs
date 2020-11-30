@@ -63,6 +63,8 @@ namespace FirstFloor.ModernUI.Localizable {
                     return "men";
                 case "entry":
                     return "entries";
+                case "reply":
+                    return "replies";
             }
 
             if (s.EndsWith("o")) {

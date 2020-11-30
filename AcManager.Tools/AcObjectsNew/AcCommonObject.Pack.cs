@@ -217,7 +217,9 @@ namespace AcManager.Tools.AcObjectsNew {
                     Drain(Pack(obj), _cancellation);
                     if (_cancellation.IsCancellationRequested) return;
 
-                    writer.WriteString("ReadMe.txt", description);
+                    if (!string.IsNullOrWhiteSpace(description)) {
+                        writer.WriteString("ReadMe.txt", description);
+                    }
                 }
 
                 outputZipStream.AddZipDescription(description);
@@ -235,7 +237,9 @@ namespace AcManager.Tools.AcObjectsNew {
                         if (_cancellation.IsCancellationRequested) return;
                     }
 
-                    writer.WriteString("ReadMe.txt", description);
+                    if (!string.IsNullOrWhiteSpace(description)) {
+                        writer.WriteString("ReadMe.txt", description);
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(description)) {

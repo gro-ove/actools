@@ -1,5 +1,7 @@
 using System;
+using System.ComponentModel;
 using System.IO;
+using System.IO.Compression;
 using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
@@ -20,7 +22,12 @@ namespace AcManager.Tools.WorkshopPublishTools.Submitters {
         private string _temporaryLocation;
 
         protected string TemporaryLocation => _temporaryLocation ?? (_temporaryLocation =
-                FilesStorage.Instance.GetTemporaryDirectory("CM Workshop Upload", Target.GetType().Name, Target.Id));
+                FilesStorage.Instance.GetTemporaryDirectory("Workshop", "Upload", Target.GetType().Name, Target.Id));
+
+        private WorkshopClient.UploadGroup _uploadGroup;
+
+        protected WorkshopClient.UploadGroup UploadGroup => _uploadGroup ?? (_uploadGroup =
+                Client.StartNewUploadGroup());
 
         protected T Target { get; private set; }
 
@@ -32,9 +39,20 @@ namespace AcManager.Tools.WorkshopPublishTools.Submitters {
         [CanBeNull]
         public IUploadLogger Log => Params.Log;
 
-        protected async Task<string> UploadFileAsync(string displayName, string fileName, string source) {
+        protected long GetDecompressedSize(string filename) {
+            long ret = 0;
+            using (var stream = File.OpenRead(filename))
+            using (var archive = new ZipArchive(stream)) {
+                foreach (var entry in archive.Entries) {
+                    ret += entry.Length;
+                }
+            }
+            return ret;
+        }
+
+        protected async Task<string> UploadFileAsync(string displayName, [Localizable(false)] string fileName, string source) {
             using (var op = Params.Log?.BeginParallel($"Uploading {displayName} for {Target.Id}")) {
-                var ret = await Params.Client.UploadAsync(File.ReadAllBytes(source), fileName, op);
+                var ret = await UploadGroup.UploadAsync(File.ReadAllBytes(source), fileName, op);
                 op?.SetResult(ret);
                 return ret;
             }
@@ -58,9 +76,16 @@ namespace AcManager.Tools.WorkshopPublishTools.Submitters {
 
         public async Task PrepareAsync() {
             EnsureInitialized();
-            Params.Client.MarkNewUploadGroup();
             await PrepareOverrideAsync();
             CleanUp();
+        }
+
+        public string DownloadUrl;
+        public long InstallSize;
+
+        public async Task PrepareMainPackageAsync(string packedFilename) {
+            InstallSize = GetDecompressedSize(packedFilename);
+            DownloadUrl = await UploadFileAsync("main package", "main.zip", packedFilename);
         }
     }
 
@@ -94,9 +119,13 @@ namespace AcManager.Tools.WorkshopPublishTools.Submitters {
             return new JObject {
                 ["name"] = Target.Name,
                 ["version"] = Target.Version,
+                ["informationURL"] = Target.Url,
                 ["description"] = Target.Description.Or(null),
                 ["tags"] = JArray.FromObject(Target.Tags),
-                ["originality"] = (int)Params.Originality
+                ["originality"] = (int)Params.Originality,
+                ["collabsInfo"] = JObject.FromObject(Params.CollabsInfo),
+                ["downloadURL"] = Data.DownloadUrl,
+                ["installSize"] = Data.InstallSize,
             };
         }
     }

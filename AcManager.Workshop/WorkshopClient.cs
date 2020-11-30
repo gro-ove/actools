@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -9,7 +10,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
+using AcManager.Tools.Helpers.Loaders;
+using AcManager.Workshop.Data;
 using AcManager.Workshop.Uploaders;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
@@ -79,7 +83,7 @@ namespace AcManager.Workshop {
         public static string GetPasswordChecksum([NotNull] string userId, [NotNull] string userPassword) {
             if (userId == null) throw new ArgumentNullException(nameof(userId));
             if (userPassword == null) throw new ArgumentNullException(nameof(userPassword));
-            Logging.Debug($"userId={userId}, userPassword=`{userPassword}`, checksum={GetChecksum(GetChecksum(Salt3 + userId) + userPassword)}");
+            // Logging.Debug($"userId={userId}, userPassword=`{userPassword}`, checksum={GetChecksum(GetChecksum(Salt3 + userId) + userPassword)}");
             return GetChecksum(GetChecksum(Salt3 + userId) + userPassword);
         }
 
@@ -110,16 +114,20 @@ namespace AcManager.Workshop {
             return response.Content.ReadAsStringAsync().WithCancellation(cancellation).ConfigureAwait(false);
         }
 
-        private static async Task TestResponse(HttpResponseMessage response, CancellationToken cancellation) {
+        private static async Task TestResponse(string url, HttpResponseMessage response, CancellationToken cancellation) {
             if (response.StatusCode >= (HttpStatusCode)400) {
-                var errorMessage = response.ReasonPhrase;
-                string remoteException = null;
-                string[] remoteStackTrace = null;
+                var phrase = response.StatusCode == HttpStatusCode.NotFound ? $"Not found: {url}" : response.ReasonPhrase;
                 try {
                     var content = await LoadContent(response, cancellation);
+                    if (string.IsNullOrEmpty(content)) {
+                        throw new WorkshopHttpException(response.StatusCode, phrase);
+                    }
+
                     var details = JObject.Parse(content);
-                    errorMessage = details["error"].ToString();
+                    var errorMessage = details["error"].ToString();
                     var exception = details["exception"];
+                    string remoteException = null;
+                    string[] remoteStackTrace = null;
                     if (exception != null) {
                         remoteException = exception["message"].ToString();
                         remoteStackTrace = exception["stack"]?.ToObject<string[]>();
@@ -127,11 +135,12 @@ namespace AcManager.Workshop {
                             remoteStackTrace = null;
                         }
                     }
-                } catch (Exception e) {
+                    Logging.Debug("Managed to process: " + response.StatusCode);
+                    throw new WorkshopException(response.StatusCode, errorMessage, remoteException, remoteStackTrace);
+                } catch (Exception e) when (!(e is WorkshopException)) {
                     Logging.Warning(e);
-                    // ignored
+                    throw new WorkshopHttpException(response.StatusCode, phrase);
                 }
-                throw new WorkshopException(response.StatusCode, errorMessage, remoteException, remoteStackTrace);
             }
         }
 
@@ -140,7 +149,7 @@ namespace AcManager.Workshop {
             var request = new HttpRequestMessage(HttpMethod.Post, GetFullUrl($"/users/{_userId}/poke/{GetChecksum(Salt1 + UserId)}"));
             try {
                 using (var response = await HttpClientHolder.Get().SendAsync(request, cancellation).ConfigureAwait(false)) {
-                    await TestResponse(response, cancellation).ConfigureAwait(false);
+                    await TestResponse("<poke path>", response, cancellation).ConfigureAwait(false);
                     return JObject.Parse(await response.Content.ReadAsStringAsync().WithCancellation(cancellation).ConfigureAwait(false))["poke"].ToString();
                 }
             } catch (Exception e) when (e.IsCancelled()) {
@@ -157,6 +166,8 @@ namespace AcManager.Workshop {
                 var randomLine = GetChecksum(Guid.NewGuid().ToString());
                 var userIdShuffled = GetChecksum(Salt2 + UserId);
                 var userPasswordShuffled = GetChecksum((method == HttpMethod.Get ? poke : poke + data) + userIdShuffled + UserPasswordChecksum + randomLine);
+
+                /*
                 Logging.Debug("Poke argument base: " + Salt1 + UserId);
                 Logging.Debug("Poke argument: " + GetChecksum(Salt1 + UserId));
                 Logging.Debug("Poke: " + poke);
@@ -164,28 +175,24 @@ namespace AcManager.Workshop {
                 Logging.Debug("UserIdShuffled: " + userIdShuffled);
                 Logging.Debug("UserPasswordChecksum: " + UserPasswordChecksum);
                 Logging.Debug("RandomLine: " + randomLine);
+                */
+
                 request.Headers.Add("X-Validation", randomLine + userIdShuffled + userPasswordShuffled);
             }
             return request;
         }
 
-        private static async Task<T> RunRequest<T>([NotNull] HttpRequestMessage request, [CanBeNull] Action<HttpResponseHeaders> headersCallback,
+        private static async Task<T> RunRequest<T>([NotNull] HttpRequestMessage request, [CanBeNull] Action<HttpStatusCode, HttpResponseHeaders> headersCallback,
                 CancellationToken cancellation) {
             using (var response = await HttpClientHolder.Get().SendAsync(request, cancellation).ConfigureAwait(false)) {
-                await TestResponse(response, cancellation).ConfigureAwait(false);
-                headersCallback?.Invoke(response.Headers);
+                await TestResponse(request.RequestUri.PathAndQuery, response, cancellation).ConfigureAwait(false);
+                headersCallback?.Invoke(response.StatusCode, response.Headers);
                 return typeof(T) == typeof(object)
                         ? (T)(object)null
                         : typeof(T) == typeof(byte[])
                                 ? (T)(object)await LoadBinaryContent(response, cancellation)
                                 : JsonConvert.DeserializeObject<T>(await LoadContent(response, cancellation));
             }
-        }
-
-        private string _currentGroup;
-
-        public void MarkNewUploadGroup(string groupId = null) {
-            _currentGroup = groupId.Or(Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16).ToLowerInvariant());
         }
 
         private static string CalculateUploadChecksum(byte[] data) {
@@ -195,7 +202,7 @@ namespace AcManager.Workshop {
         }
 
         internal async Task<TResult> RequestAsync<TData, TResult>(HttpMethod method, [Localizable(false), NotNull] string url,
-                [Localizable(false), CanBeNull] TData data, Action<HttpResponseHeaders> headersCallback = null,
+                [Localizable(false), CanBeNull] TData data, Action<HttpStatusCode, HttpResponseHeaders> headersCallback = null,
                 CancellationToken cancellation = default) {
             var serialized = data != null ? JsonConvert.SerializeObject(data) : null;
             var request = await CreateHttpRequestAsync(method, url, serialized, cancellation).ConfigureAwait(false);
@@ -209,9 +216,18 @@ namespace AcManager.Workshop {
             return RequestAsync<object, TResult>(HttpMethod.Get, url, null, null, cancellation);
         }
 
+        public Task<TResult> GetAsync<TResult>([Localizable(false), NotNull] string url, Action<HttpStatusCode, HttpResponseHeaders> headersCallback,
+                CancellationToken cancellation = default) {
+            return RequestAsync<object, TResult>(HttpMethod.Get, url, null, headersCallback, cancellation);
+        }
+
         public Task PostAsync<TData>([Localizable(false), NotNull] string url, [Localizable(false), NotNull] TData data,
                 CancellationToken cancellation = default) {
             return PostAsync<TData, object>(url, data, cancellation);
+        }
+
+        public Task PostAsync([Localizable(false), NotNull] string url, CancellationToken cancellation = default) {
+            return PostAsync<object, object>(url, null, cancellation);
         }
 
         public Task PatchAsync<TData>([Localizable(false), NotNull] string url, [Localizable(false), NotNull] TData data,
@@ -244,6 +260,16 @@ namespace AcManager.Workshop {
             return RequestAsync<TData, TResult>(HttpMethod.Put, url, data, null, cancellation);
         }
 
+        public Task DeleteAsync([Localizable(false), NotNull] string url,
+                CancellationToken cancellation = default) {
+            return RequestAsync<object, object>(HttpMethod.Delete, url, null, null, cancellation);
+        }
+
+        public Task<TResult> DeleteAsync<TResult>([Localizable(false), NotNull] string url,
+                CancellationToken cancellation = default) {
+            return RequestAsync<object, TResult>(HttpMethod.Delete, url, null, null, cancellation);
+        }
+
         public Task<TResult> DeleteAsync<TData, TResult>([Localizable(false), NotNull] string url, [Localizable(false), CanBeNull] TData data,
                 CancellationToken cancellation = default) {
             return RequestAsync<TData, TResult>(HttpMethod.Delete, url, data, null, cancellation);
@@ -251,29 +277,66 @@ namespace AcManager.Workshop {
         #endregion
 
         #region Simple file uploads
-        [ItemNotNull]
-        public async Task<string> UploadAsync([NotNull] byte[] data, [NotNull] string fileName,
-                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
-            var checksum = CalculateUploadChecksum(data);
-            var uploaderParams = await PostAsync<object, JObject>($"/manage/files/{checksum}", new {
-                size = data.Length,
-                name = fileName,
-                group = _currentGroup
-            }, cancellation).ConfigureAwait(false);
+        public class UploadGroup {
+            private readonly WorkshopClient _client;
+            private readonly string _groupId;
 
-            var uploaderId = uploaderParams["uploaderID"]?.ToString();
-            if (uploaderId == "reuse/1") {
-                return ((JObject)uploaderParams["params"])["downloadURL"].ToString();
+            public UploadGroup(WorkshopClient client, string groupId) {
+                _client = client;
+                _groupId = groupId;
             }
 
-            var uploader = WorkshopUploaderFactory.Create(uploaderId, (JObject)uploaderParams["params"]);
-            var result = await uploader.UploadAsync(data, _currentGroup, fileName, progress, cancellation).ConfigureAwait(false);
-            return (await PutAsync<object, JObject>($"/manage/files/{checksum}", new {
-                uploaderID = uploaderId,
-                size = result.Size,
-                tag = result.Tag
-            }))["downloadURL"].ToString();
+            [ItemNotNull]
+            public async Task<string> UploadAsync([NotNull] byte[] data, [NotNull] string fileName,
+                    IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
+                var checksum = CalculateUploadChecksum(data);
+                var uploaderParams = await _client.PostAsync<object, JObject>($"/manage/files/{checksum}", new {
+                    size = data.Length,
+                    name = fileName,
+                    group = _groupId
+                }, cancellation).ConfigureAwait(false);
+
+                var uploaderId = uploaderParams["uploaderID"]?.ToString();
+                if (uploaderId == "reuse/1") {
+                    return ((JObject)uploaderParams["params"])["downloadURL"].ToString();
+                }
+
+                var uploader = WorkshopUploaderFactory.Create(uploaderId, (JObject)uploaderParams["params"]);
+                var result = await uploader.UploadAsync(data, _groupId, fileName, progress, cancellation).ConfigureAwait(false);
+                return (await _client.PutAsync<object, JObject>($"/manage/files/{checksum}", new {
+                    uploaderID = uploaderId,
+                    size = result.Size,
+                    tag = result.Tag
+                }))["downloadURL"].ToString();
+            }
+        }
+
+        public UploadGroup StartNewUploadGroup(string groupId = null) {
+            return new UploadGroup(this,
+                    groupId.Or(Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16).ToLowerInvariant()));
         }
         #endregion
+
+        public async Task DownloadFileAsync(string sourceUrl, string destination, bool overwriteIfExists,
+                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
+            if (File.Exists(destination) && !overwriteIfExists) return;
+
+            progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Starting to download…"));
+            var downloadInfo = await PostAsync<JToken, WorkshopDownloadInformation>(sourceUrl, null, cancellation);
+            cancellation.ThrowIfCancellationRequested();
+
+            var temporaryFilenameProgress = $"{destination}.tmp";
+            using (var client = new CookieAwareWebClient()) {
+                var totalSize = -1L;
+                var progressTimer = new AsyncProgressBytesStopwatch();
+                await new DirectLoader(downloadInfo.DownloadUrl).DownloadAsync(client, (url, information) => {
+                    totalSize = information.TotalSize ?? downloadInfo.DownloadSize;
+                    return new FlexibleLoaderDestination(temporaryFilenameProgress, true);
+                }, progress: new Progress<long>(x => { progress?.Report(AsyncProgressEntry.CreateDownloading(x, totalSize, progressTimer)); }),
+                        cancellation: cancellation);
+                cancellation.ThrowIfCancellationRequested();
+            }
+            File.Move(temporaryFilenameProgress, destination);
+        }
     }
 }

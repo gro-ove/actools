@@ -2,7 +2,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:w="clr-namespace:AcManager.Pages.Workshop" xmlns:ws="http://acstuff.ru/app/workshop"
-    xmlns:workshop="clr-namespace:AcManager.Controls.UserControls.Workshop;assembly=AcManager.Controls" mc:Ignorable="d" MinWidth="600" Width="800" Height="720"
+    xmlns:workshop="clr-namespace:AcManager.Controls.UserControls.Workshop;assembly=AcManager.Controls"
+    xmlns:validators="clr-namespace:AcManager.Tools.WorkshopPublishTools.Validators" mc:Ignorable="d" MinWidth="600" Width="800" Height="720"
     MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" SizeToContent="Manual"
     ResizeMode="CanResizeWithGrip" LocationAndSizeKey="WorkshopUpload.LS" d:DataContext="{d:DesignInstance w:WorkshopUpload+ViewModel}"
     Title="Upload to CM Workshop">
@@ -14,7 +15,7 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/WorkshopResources.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
-      <DataTemplate x:Key="WorkshopValidationItem" DataType="wv:WorkshopValidatedItem">
+      <DataTemplate x:Key="WorkshopValidationItem" DataType="validators:WorkshopValidatedItem">
         <TextBlock Text="{Binding DisplayMessage, StringFormat='{}• {0}'}" Style="{StaticResource Small}" />
       </DataTemplate>
 
@@ -90,6 +91,12 @@
 
           <DockPanel mui:Switch.When="{x:Static w:WorkshopUpload+UploadPhase.Setup}" VerticalAlignment="Top">
             <mui:SpacingStackPanel Spacing="8" DockPanel.Dock="Bottom" Margin="0 20 0 0">
+
+              <DockPanel>
+                <TextBlock Text="Authors:" Style="{StaticResource Label}" DockPanel.Dock="Top" Margin="0 0 0 4" />
+                <ContentControl ContentTemplate="{StaticResource WorkshopCollabsEditor}" Content="{Binding CollabModel}" />
+              </DockPanel>
+
               <CheckBox IsChecked="{Binding IsOriginalWork}" Background="Transparent">
                 <CheckBox.ToolTip>
                   <TextBlock MaxWidth="400" TextWrapping="Wrap"
@@ -97,6 +104,7 @@
                 </CheckBox.ToolTip>
                 <Label Content="This is a scratch made work" />
               </CheckBox>
+
               <mui:AsyncButton Command="{Binding UploadCommand}" Content="Upload" />
               <!--<DockPanel Visibility="{Binding CurrentError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse|hidden'}">
                 <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left" />
@@ -115,7 +123,7 @@
                         <ContentControl Content="{StaticResource WorkshopValidationPanel}" DockPanel.Dock="Right" Margin="8 0 0 0" />
                         <mui:BetterImage Width="24" Height="24" Margin="8 0 4 0" Filename="{Binding IconFilename}" CollapseIfMissing="True"
                             CollapseIfNull="True" />
-                        <TextBlock Text="{Binding ObjectToUpload.DisplayName}" DockPanel.Dock="Top" />
+                        <TextBlock Text="{Binding Target.DisplayName}" DockPanel.Dock="Top" />
                         <TextBlock Text="{Binding DisplayStatus}" Style="{StaticResource Small}" DockPanel.Dock="Top" />
                       </DockPanel>
                     </DockPanel>
@@ -159,7 +167,7 @@
                                       <DockPanel>
                                         <mui:BetterImage Width="14" Height="14" Margin="4 0 4 0" Filename="{Binding IconFilename}" CollapseIfMissing="True"
                                             CollapseIfNull="True" VerticalAlignment="Center" />
-                                        <TextBlock Text="{Binding ObjectToUpload.DisplayName}" Style="{StaticResource Small}" VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding Target.DisplayName}" Style="{StaticResource Small}" VerticalAlignment="Center" />
                                       </DockPanel>
                                     </CheckBox>
                                   </DockPanel>
