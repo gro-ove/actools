@@ -108,14 +108,14 @@ namespace AcManager.CustomShowroom {
 
         private DelegateCommand _sizeFitCommand;
 
-        public DelegateCommand SizeFitCommand => _sizeFitCommand ?? (_sizeFitCommand = new DelegateCommand(() => {
-            _renderer.FitAmbientShadowSize();
-        }));
+        public DelegateCommand SizeFitCommand => _sizeFitCommand ?? (_sizeFitCommand = new DelegateCommand(() => { _renderer.FitAmbientShadowSize(); }));
 
         private DelegateCommand _sizeResetCommand;
 
-        public DelegateCommand SizeResetCommand => _sizeResetCommand ?? (_sizeResetCommand = new DelegateCommand(() => {
-            _renderer.ResetAmbientShadowSize();
-        }, () => _renderer.AmbientShadowSizeChanged));
+        public DelegateCommand SizeResetCommand
+            =>
+                    _sizeResetCommand
+                            ?? (_sizeResetCommand = new DelegateCommand(() => { _renderer.ResetAmbientShadowSize(); }, () => _renderer.AmbientShadowSizeChanged))
+            ;
     }
 }

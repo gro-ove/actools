@@ -110,7 +110,7 @@
                 mui:ContextMenuAdvancement.PropagateToChildren="True" Margin="1 0 1 0">
               <mui:SpacingStackPanel.ContextMenu>
                 <ContextMenu>
-                  <MenuItem Header="Delete entry" InputGestureText="Delete" Command="{Binding DeleteCommand}" />
+                  <MenuItem Header="Delete entry" Command="{Binding DeleteCommand}" />
                 </ContextMenu>
               </mui:SpacingStackPanel.ContextMenu>
               <mui:BetterTextBox Text="{Binding DriverName, ValidatesOnDataErrors=True}" Style="{StaticResource Borderless.White}" Placeholder="?" />
@@ -254,8 +254,9 @@
                     <MenuItem Header="Force headlights" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding CspOptions.ForceHeadlights}" />
                     <MenuItem Header="Allow to change color in pits" IsCheckable="True" StaysOpenOnClick="True"
                         IsChecked="{Binding CspOptions.AllowColorChange}" />
-                    <!--<MenuItem Header="Allow teleporting" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding CspOptions.AllowTeleporting}" />
-                    <MenuItem Header="Allow immediate repair" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding CspOptions.AllowImmediateRepair}" />
+                    <MenuItem Header="Allow teleporting" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding CspOptions.AllowTeleporting}"
+                        ToolTip="Requires to list allowed destination points in server CSP config" />
+                    <!--<MenuItem Header="Allow immediate repair" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding CspOptions.AllowImmediateRepair}" />
                     <MenuItem Header="Allow immediate refuel" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding CspOptions.AllowImmediateRefuel}" />-->
                     <Separator />
                     <MenuItem Header="Copy these tweaks to other cars" Click="CspTweaksCopyToOtherCarsClick" />

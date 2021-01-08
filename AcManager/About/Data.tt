@@ -15,17 +15,17 @@ namespace AcManager.About {<#
     var location = Path.GetDirectoryName(this.Host.TemplateFile);
     if (string.IsNullOrEmpty(location)) location = Environment.CurrentDirectory;
 
-    foreach (var sub in Directory.GetDirectories(location)){
+    foreach (var sub in Directory.GetDirectories(location)) {
         var className = Path.GetFileName(sub);
 
-        #>
+#>
 
     public static class <#= className #> {
 <#
 
-		var subDirectory = new DirectoryInfo(sub);
+        var subDirectory = new DirectoryInfo(sub);
 
-		var subDirectoryEntries = subDirectory.GetDirectories().OrderBy(f => f.Name).Select((entry, i) => {
+        var subDirectoryEntries = subDirectory.GetDirectories().OrderBy(f => f.Name).Select((entry, i) => {
             string sid = null;
             string id = null;
             string name = entry.Name;
@@ -35,20 +35,34 @@ namespace AcManager.About {<#
             bool limited = false;
             bool hidden = false;
 
-			var meta = Path.Combine(entry.FullName, name + ".txt");
-			var lines = File.ReadAllLines(meta);
-            foreach (var s in File.ReadAllLines(meta).Select(x => Regex.Match(x, @"^([a-z]+):\s*(.+)$")).TakeWhile(x => x.Success)){
+            var meta = Path.Combine(entry.FullName, name + ".txt");
+            var lines = File.ReadAllLines(meta);
+            foreach (var s in File.ReadAllLines(meta).Select(x => Regex.Match(x, @"^([a-z]+):\s*(.+)$")).TakeWhile(x => x.Success)) {
                 var v = s.Groups[2].Value.Trim();
-                switch (s.Groups[1].Value){
-                    case "sid": sid = v; break;
-                    case "id": id = v; break;
-                    case "version": version = v; break;
-                    case "content": contentFileName = v; break;
-                    case "url": url = v; break;
-                    case "limited": limited = v == "true"; break;
-                    case "hidden": hidden = v == "true"; break;
+                switch (s.Groups[1].Value) {
+                    case "sid":
+                        sid = v;
+                        break;
+                    case "id":
+                        id = v;
+                        break;
+                    case "version":
+                        version = v;
+                        break;
+                    case "content":
+                        contentFileName = v;
+                        break;
+                    case "url":
+                        url = v;
+                        break;
+                    case "limited":
+                        limited = v == "true";
+                        break;
+                    case "hidden":
+                        hidden = v == "true";
+                        break;
                     case "name": {
-                        if (version == null){
+                        if (version == null) {
                             version = name;
                         }
                         name = v;
@@ -58,61 +72,70 @@ namespace AcManager.About {<#
             }
 
             var content = contentFileName == null ? null : File.ReadAllText(Path.Combine(entry.FullName, contentFileName)).Replace("\r", "").Trim();
-			if (string.IsNullOrEmpty(content)){
-				content = null;
-			}
-
-			if (contentFileName?.EndsWith(".cs") == true && content?.StartsWith("/*") == true){
-				content = Regex.Replace(content, @"(?:^|(?<=\n))(?:/\*| *\*/| *\* *)", "").Trim();
-			}
-
-            if (sid == null){
-                sid = name.Length + "_" + name.GetHashCode() + "_" + content?.GetHashCode();
-                File.WriteAllLines(meta, lines.Union(new[]{ "sid: " + sid }));
+            if (string.IsNullOrEmpty(content)) {
+                content = null;
             }
 
-			return new {
-				fid = entry.Name.ToLowerInvariant(), uid = i.ToString(),
-				sid, id, name, version,
-				contentFileName, content, contentReferenced = new[]{ 0 }, contentParentId = new[]{ (string)null },
-				url, limited, hidden
-			};
-		}).ToList();
+            if (contentFileName?.EndsWith(".cs") == true && content?.StartsWith("/*") == true) {
+                content = Regex.Replace(content, @"(?:^|(?<=\n))(?:/\*| *\*/| *\* *)", "").Trim();
+            }
 
-		foreach (var entry in subDirectoryEntries){
-			if (entry.contentFileName?.StartsWith("..") == true){
-				entry.contentParentId[0] = entry.contentFileName.Split(new[]{ '/', '\\' })[1].ToLowerInvariant();
-				try {
-					var p = subDirectoryEntries.Single(x => x.fid == entry.contentParentId[0]);
-					p.contentReferenced[0]++;
-					entry.contentParentId[0] = p.uid;
-				} catch (Exception){
-					throw new Exception($"Not found: {entry.contentParentId[0]}");
-				}
-			}
-		}
+            if (sid == null) {
+                sid = name.Length + "_" + name.GetHashCode() + "_" + content?.GetHashCode();
+                File.WriteAllLines(meta, lines.Union(new[] { "sid: " + sid }));
+            }
 
-		foreach (var entry in subDirectoryEntries.Where(x => x.contentReferenced[0] > 0)){
-		#>
+            return new {
+                fid = entry.Name.ToLowerInvariant(),
+                uid = i.ToString(),
+                sid,
+                id,
+                name,
+                version,
+                contentFileName,
+                content,
+                contentReferenced = new[] { 0 },
+                contentParentId = new[] { (string)null },
+                url,
+                limited,
+                hidden
+            };
+        }).ToList();
+
+        foreach (var entry in subDirectoryEntries) {
+            if (entry.contentFileName?.StartsWith("..") == true) {
+                entry.contentParentId[0] = entry.contentFileName.Split(new[] { '/', '\\' })[1].ToLowerInvariant();
+                try {
+                    var p = subDirectoryEntries.Single(x => x.fid == entry.contentParentId[0]);
+                    p.contentReferenced[0]++;
+                    entry.contentParentId[0] = p.uid;
+                } catch (Exception) {
+                    throw new Exception($"Not found: {entry.contentParentId[0]}");
+                }
+            }
+        }
+
+        foreach (var entry in subDirectoryEntries.Where(x => x.contentReferenced[0] > 0)) {
+#>
         private static readonly string C<#= entry.uid #> = <#= C(entry.content) #>;
 <#
-		}
+        }
 
-		#>
+#>
         public static readonly PieceOfInformation[] Entries = new []{<#
 
-        foreach (var entry in subDirectoryEntries){
-			var content = entry.contentReferenced[0] == 0 && entry.contentParentId[0] == null ?
-					C(entry.content) :
-					"C" + (entry.contentParentId[0] ?? entry.uid);
+        foreach (var entry in subDirectoryEntries) {
+            var content = entry.contentReferenced[0] == 0 && entry.contentParentId[0] == null ?
+                    C(entry.content) :
+                    "C" + (entry.contentParentId[0] ?? entry.uid);
 
-            #>
+#>
 
             new PieceOfInformation(<#= O(entry.sid) #>, <#= O(entry.id) #>, <#= O(entry.name) #>, <#= O(entry.version) #>, <#= O(entry.url) #>, <#= content #>, <#= O(entry.limited) #>, <#= O(entry.hidden) #>),<#
         }
 
         foreach (var entry in subDirectory.GetFiles("*.txt", SearchOption.TopDirectoryOnly)
-                .OrderBy(f => f.LastWriteTime.Year <= 1601 ? f.CreationTime : f.LastWriteTime)){
+                .OrderBy(f => f.LastWriteTime.Year <= 1601 ? f.CreationTime : f.LastWriteTime)) {
             var lines = File.ReadAllLines(entry.FullName);
             string sid = null;
             string id = null;
@@ -123,19 +146,31 @@ namespace AcManager.About {<#
             bool hidden = false;
 
             var skip = 0;
-            foreach (var s in lines.Select(x => Regex.Match(x, @"^([a-z]+):\s*(.+)$")).TakeWhile(x => x.Success)){
+            foreach (var s in lines.Select(x => Regex.Match(x, @"^([a-z]+):\s*(.+)$")).TakeWhile(x => x.Success)) {
                 skip++;
 
                 var v = s.Groups[2].Value.Trim();
-                switch (s.Groups[1].Value){
-                    case "sid": sid = v; break;
-                    case "id": id = v; break;
-                    case "version": version = v; break;
-                    case "url": url = v; break;
-                    case "limited": limited = v == "true"; break;
-                    case "hidden": hidden = v == "true"; break;
+                switch (s.Groups[1].Value) {
+                    case "sid":
+                        sid = v;
+                        break;
+                    case "id":
+                        id = v;
+                        break;
+                    case "version":
+                        version = v;
+                        break;
+                    case "url":
+                        url = v;
+                        break;
+                    case "limited":
+                        limited = v == "true";
+                        break;
+                    case "hidden":
+                        hidden = v == "true";
+                        break;
                     case "name": {
-                        if (version == null){
+                        if (version == null) {
                             version = name;
                         }
                         name = v;
@@ -146,38 +181,43 @@ namespace AcManager.About {<#
 
             var content = string.Join("\n", lines.Skip(skip)).Trim();
 
-            if (sid == null){
+            if (sid == null) {
                 sid = name.Length + "_" + name.GetHashCode() + "_" + content.GetHashCode();
-                File.WriteAllLines(entry.FullName, new[]{ "sid: " + sid }.Union(lines));
+                File.WriteAllLines(entry.FullName, new[] { "sid: " + sid }.Union(lines));
             }
-            #>
+#>
 
             new PieceOfInformation(<#= O(sid) #>, <#= O(id) #>, <#= O(name) #>, <#= O(version) #>, <#= O(url) #>, <#= C(content) #>, <#= O(limited) #>, <#= O(hidden) #>),<#
         }
 
-        #>
+#>
 
         }.Where(x => !x.IsHidden).ToArray();
     }
 <#
-}
+    }
 #>
 }
 <#+
-    string O(string s){ return s == null ? "null" : "@\"" + s.Replace("\"", "\"\"") + "\""; }
-    string O(bool s){ return s ? "true" : "false"; }
+    string O(string s) {
+        return s == null ? "null" : "@\"" + s.Replace("\"", "\"\"") + "\"";
+    }
 
-	string C(string s){
-		if (s == null) return "null";
+    string O(bool s) {
+        return s ? "true" : "false";
+    }
 
-		using (var output = new MemoryStream()){
-			using (var gzip = new DeflateStream(output, CompressionMode.Compress)){
-				using (var writer = new StreamWriter(gzip, System.Text.Encoding.UTF8)){
-					writer.Write(s);
-				}
-			}
+    string C(string s) {
+        if (s == null) return "null";
 
-			return "@\"" + Convert.ToBase64String(output.ToArray()) + "\"";
-		}
-	}
+        using (var output = new MemoryStream()) {
+            using (var gzip = new DeflateStream(output, CompressionMode.Compress)) {
+                using (var writer = new StreamWriter(gzip, System.Text.Encoding.UTF8)) {
+                    writer.Write(s);
+                }
+            }
+
+            return "@\"" + Convert.ToBase64String(output.ToArray()) + "\"";
+        }
+    }
 #>

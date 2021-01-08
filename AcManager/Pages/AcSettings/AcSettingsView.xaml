@@ -144,7 +144,7 @@
               ShowPostfix="{Binding Gameplay.SteeringWheelLimit, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠0'}"
               mui:BetterTextBox.Mode="IntegerOrZeroLabel" Postfix="°" ToolTip="{x:Static t:ToolsStrings.AcSettings_View_SteeringWheelLimit_Tooltip}"
               Content="{x:Static t:ToolsStrings.AcSettings_View_SteeringWheelLimit}" />
-          <Slider Minimum="0" Maximum="450" Value="{Binding Gameplay.SteeringWheelLimit}" TickFrequency="45" TickPlacement="BottomRight" />
+          <Slider Minimum="0" Maximum="540" Value="{Binding Gameplay.SteeringWheelLimit}" TickFrequency="45" TickPlacement="BottomRight" />
         </DockPanel>
 
         <!-- Messages -->

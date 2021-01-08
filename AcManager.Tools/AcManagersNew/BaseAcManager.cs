@@ -271,7 +271,7 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
-        public void Reload([NotNull]string id) {
+        public virtual void Reload([NotNull]string id) {
             if (id == null) throw new ArgumentNullException(nameof(id));
             var wrapper = GetWrapperById(id);
             if (wrapper == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));

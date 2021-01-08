@@ -40,6 +40,7 @@ namespace AcManager.CustomShowroom {
 
             [CanBeNull]
             private readonly CarSkinObject _activeSkin;
+
             private readonly IKn5 _kn5;
 
             [NotNull]
@@ -52,6 +53,7 @@ namespace AcManager.CustomShowroom {
 
             [NotNull]
             public string ObjectPath { get; }
+
             public int VerticesCount { get; }
             public int TrianglesCount { get; }
             public string Flags { get; }
@@ -94,7 +96,8 @@ namespace AcManager.CustomShowroom {
             public async void OnLoaded() {
                 _kn5.TexturesData.TryGetValue(BakedShadows.TextureName, out var data);
                 var loaded = _renderer == null
-                        ? await Kn5TextureDialog.LoadImageUsingMagickNetAsync(data) : await Task.Run(() => Kn5TextureDialog.LoadImageUsingDirectX(_renderer, data));
+                        ? await Kn5TextureDialog.LoadImageUsingMagickNetAsync(data)
+                        : await Task.Run(() => Kn5TextureDialog.LoadImageUsingDirectX(_renderer, data));
                 TextureDimensions = loaded?.Image == null ? null : $"{loaded.Image.PixelWidth}×{loaded.Image.PixelHeight}";
                 BakedShadows.OriginSize = loaded?.Image == null ? (Size?)null : new Size(loaded.Image.PixelWidth, loaded.Image.PixelHeight);
             }
@@ -164,6 +167,7 @@ namespace AcManager.CustomShowroom {
         }
 
         private bool _loaded;
+
         private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
             _loaded = true;

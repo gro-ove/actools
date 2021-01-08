@@ -1167,6 +1167,31 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         [NotNull]
         public IEnumerable<CustomButtonEntryCombined> CustomButtonEntries => CustomButtonEntrySections.SelectMany(x => x.Entries);
+
+        private List<SettingEntry> _customGasRawMouseValues;
+
+        public List<SettingEntry> CustomGasRawMouseValues => _customGasRawMouseValues ?? (_customGasRawMouseValues = new List<SettingEntry> {
+            new SettingEntry(0, "Disabled"),
+            new SettingEntry(1, "Left mouse button"),
+            new SettingEntry(2, "Right mouse button"),
+            new SettingEntry(3, "Middle mouse button"),
+            new SettingEntry(4, "Fourth mouse button"),
+            new SettingEntry(5, "Fifth mouse button"),
+        });
+
+        private SettingEntry _customGasRawMouseModifier;
+
+        public SettingEntry CustomGasRawMouseModifier {
+            get => _customGasRawMouseModifier;
+            set => Apply(value.EnsureFrom(CustomGasRawMouseValues), ref _customGasRawMouseModifier);
+        }
+
+        private SettingEntry _customGasRawMouse;
+
+        public SettingEntry CustomGasRawMouse {
+            get => _customGasRawMouse;
+            set => Apply(value.EnsureFrom(CustomGasRawMouseValues), ref _customGasRawMouse);
+        }
         #endregion
 
         #region System shortcuts (Ctrl+…)
@@ -1525,6 +1550,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             KeyboardPatchThrottleOverride = section.GetBool("OVERRIDE", false);
             KeyboardPatchThrottleLagUp = section.GetDouble("LAG_UP", 0.5);
             KeyboardPatchThrottleLagDown = section.GetDouble("LAG_DOWN", 0.2);
+            CustomGasRawMouse = CustomGasRawMouseValues.GetByIdOrDefault(section.GetInt("MOUSE", 0));
+            CustomGasRawMouseModifier = CustomGasRawMouseValues.GetByIdOrDefault(section.GetInt("MOUSE_MODIFICATOR", 0));
 
             section = Ini["X360"];
             ControllerSteeringStick = ControllerSticks.GetByIdOrDefault(section.GetNonEmpty("STEER_THUMB", ControllerSticks[0].Id));
@@ -1628,6 +1655,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("OVERRIDE", KeyboardPatchThrottleOverride);
             section.Set("LAG_UP", KeyboardPatchThrottleLagUp);
             section.Set("LAG_DOWN", KeyboardPatchThrottleLagDown);
+            section.Set("MOUSE", CustomGasRawMouse?.Id);
+            section.Set("MOUSE_MODIFICATOR", CustomGasRawMouseModifier?.Id);
 
             section = Ini["X360"];
             section.Set("STEER_THUMB", ControllerSteeringStick?.Id ?? ControllerSticks[0].Id);

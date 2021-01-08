@@ -925,7 +925,7 @@ namespace AcManager.CustomShowroom {
                 data.ShowSeatbelt = car.SeatbeltOnActive;
                 data.ShowBlurredRims = car.BlurredNodesActive;
                 data.ExtraActiveAnimations = car.Wings.OfType<Kn5RenderableCar.AnimationEntryBase>().Concat(car.Extras)
-                                                .Where(x => x.IsActive).Select(x => x.DisplayName).ToArray();
+                        .Where(x => x.IsActive).Select(x => x.DisplayName).ToArray();
             }
 
             return data;

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
@@ -12,6 +14,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools.Managers {
     public class ServerPresetsManager : AcManagerNew<ServerPresetObject>, IDisposable, ICreatingManager {
@@ -169,6 +172,37 @@ namespace AcManager.Tools.Managers {
                 UpdateList(true);
                 return obj;
             }
+        }
+
+        private void EnsureStopped(string id) {
+            var wrapper = GetWrapperById(id);
+            if (wrapper?.IsLoaded == true) {
+                var preset = (ServerPresetObject)wrapper.Value;
+                if (preset.IsRunning) {
+                    if (ModernDialog.ShowMessage("Server is currently running. Do you want to stop it first, or to cancel the operation?",
+                            "Server is already running", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                        preset.StopServer();
+                    } else {
+                        throw new Exception("Can’t do that while server is running");
+                    }
+                }
+            }
+        }
+
+        public override void Reload(string id) {
+            EnsureStopped(id);
+            base.Reload(id);
+        }
+
+        public override Task DeleteAsync(string id) {
+            GetById(id)?.StopServer();
+            return base.DeleteAsync(id);
+        }
+
+        protected override Task MoveOverrideAsync(string oldId, string newId, string oldLocation, string newLocation,
+                IEnumerable<Tuple<string, string>> attachedOldNew, bool newEnabled) {
+            GetById(oldId)?.StopServer();
+            return base.MoveOverrideAsync(oldId, newId, oldLocation, newLocation, attachedOldNew, newEnabled);
         }
 
         public ChangeableObservableCollection<ServerSavedDriver> SavedDrivers { get; }

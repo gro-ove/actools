@@ -202,7 +202,7 @@ namespace AcManager.CustomShowroom {
                         if (!PluginsManager.Instance.IsPluginEnabled(KnownPlugins.Magick)) {
                             NonfatalError.Notify("Can’t edit skins without Magick.NET plugin", "Please, go to Settings/Plugins and install it first.");
                             value = Mode.Main;
-                        /*} else {
+                            /*} else {
                             LoadSkinItems();*/
                         }
                     }

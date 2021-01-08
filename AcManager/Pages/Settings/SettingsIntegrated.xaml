@@ -167,6 +167,11 @@
           <mui:BetterTextBox Text="{Binding Integrated.DBoxLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
         </DockPanel>
 
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding Integrated.DBoxDelay}" mui:BetterTextBox.Minimum="1" Postfix=" s" Content="D-BOX delay" />
+          <Slider Minimum="0" Maximum="60" Value="{Binding Integrated.DBoxDelay}" TickFrequency="6" TickPlacement="BottomRight" />
+        </DockPanel>
+
         <c:MessageBlock Margin="0 0 0 8" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureSharedMemoryReduceGForcesWhenSlow}">
           <mui:BbCodeBlock
               Text="You can use Custom Shaders Patch to reduce G-forces for cars going slower than 6 km/h. There is an option for it in General settings." />

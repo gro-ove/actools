@@ -35,6 +35,7 @@ namespace AcManager.Pages.Drive {
 
         public class SortingCleanedName : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
+                // Logging.Debug($"x.SortingName={x.SortingName}, y.SortingName={y.SortingName}");
                 return string.Compare(x.SortingName, y.SortingName, StringComparison.CurrentCultureIgnoreCase);
             }
 

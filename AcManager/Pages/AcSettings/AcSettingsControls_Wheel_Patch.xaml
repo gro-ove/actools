@@ -42,7 +42,7 @@
               Style="{StaticResource WaitingButton}">
             <Button.ContextMenu>
               <ContextMenu>
-                <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+                <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" />
               </ContextMenu>
             </Button.ContextMenu>
             <mui:Cell HorizontalAlignment="Stretch" Margin="0 -2">
@@ -66,7 +66,7 @@
               c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoystickModifiers}">
             <Button.ContextMenu>
               <ContextMenu>
-                <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding WheelButtonModifier.ClearCommand}" InputGestureText="Delete" />
+                <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding WheelButtonModifier.ClearCommand}" />
               </ContextMenu>
             </Button.ContextMenu>
 
@@ -95,7 +95,7 @@
               Command="{Binding ToggleWaitingCommand, Source={x:Static acset:AcSettingsHolder.Controls}}" CommandParameter="{Binding WheelButton}">
             <Button.ContextMenu>
               <ContextMenu>
-                <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding WheelButton.ClearCommand}" InputGestureText="Delete" />
+                <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding WheelButton.ClearCommand}" />
               </ContextMenu>
             </Button.ContextMenu>
 

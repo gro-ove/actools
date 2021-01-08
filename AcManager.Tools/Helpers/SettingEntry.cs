@@ -6,7 +6,7 @@ using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
-    public class SettingEntry : Displayable, IWithId, IWithId<int?> {
+    public class SettingEntry : Displayable, IWithId, IWithId<int?>, IWithId<int> {
         public SettingEntry([LocalizationRequired(false)] string value, string displayName) {
             DisplayName = displayName;
             Value = value;
@@ -35,6 +35,8 @@ namespace AcManager.Tools.Helpers {
         public string Id => Value;
 
         int? IWithId<int?>.Id => IntValue;
+
+        int IWithId<int>.Id => IntValue ?? int.MaxValue;
     }
 
     public class SettingEntry<T> : Displayable, IWithId<T> where T : struct {

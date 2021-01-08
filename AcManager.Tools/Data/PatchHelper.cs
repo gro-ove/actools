@@ -18,6 +18,7 @@ using StringBasedFilter.TestEntries;
 namespace AcManager.Tools.Data {
     public class PatchHelper {
         public static int MinimumTestOnlineVersion { get; } = 1061;
+
         public static int NonExistentVersion { get; } = 999999;
 
         public static readonly string FeatureTestOnline = "CSP_TEST_ONLINE";
@@ -33,6 +34,7 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureKeyboardForcedThrottle = "KEYBOARD_FORCED_THROTTLE";
         public static readonly string FeatureSharedMemoryReduceGForcesWhenSlow = "SHARED_MEMORY_REDUCE_GFORCES_WHEN_SLOW";
         public static readonly string FeatureWindowPosition = "WINDOW_POSITION";
+        public static readonly string ListensForCurrentlyPlaying = "LISTENS_FOR_CURRENTLY_PLAYING";
 
         public static bool OptionPatchSupport = true;
 

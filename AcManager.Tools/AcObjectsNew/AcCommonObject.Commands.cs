@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 
@@ -49,10 +50,14 @@ namespace AcManager.Tools.AcObjectsNew {
         private CommandBase _reloadCommand;
 
         public virtual ICommand ReloadCommand => _reloadCommand ?? (_reloadCommand = new DelegateCommand<string>(o => {
-            if (o == @"full") {
-                Manager.Reload(Id);
-            } else {
-                Reload();
+            try {
+                if (o == @"full") {
+                    Manager.Reload(Id);
+                } else {
+                    Reload();
+                }
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t reload", e);
             }
         }));
 

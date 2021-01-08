@@ -166,8 +166,7 @@
           </ItemsControl>
         </mui:SpacingStackPanel>
 
-        <c:MessageBlock Margin="0 16 0 0"
-            Visibility="{Binding ChangeMaterialCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <c:MessageBlock Margin="0 16 0 0" Visibility="{Binding ChangeMaterialCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
           <mui:BbCodeBlock
               Text="Here, you can change only numerical values for shaders, but it should be enough to fix shaders for old cars (which are less reflective then they should). Firstly, I recommend to load some Kunos cars and same their values using presets control beneath. Then, just load saved preset for an old car you want to update and you’ll get perfect values.[br][br]By the way, those presets are compatible with [url=&quot;https://ascobash.wordpress.com/2015/07/22/kseditor/&quot;]patched KsEditor’s[/url] material library." />
         </c:MessageBlock>

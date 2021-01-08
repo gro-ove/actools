@@ -34,7 +34,7 @@
     <DockPanel Margin="0 0 0 20" Background="Transparent">
       <DockPanel.ContextMenu>
         <ContextMenu>
-          <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+          <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" />
         </ContextMenu>
       </DockPanel.ContextMenu>
 
@@ -191,7 +191,7 @@
           Style="{StaticResource WaitingButton}">
         <Button.ContextMenu>
           <ContextMenu>
-            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" />
           </ContextMenu>
         </Button.ContextMenu>
 
@@ -219,7 +219,7 @@
           Style="{StaticResource WaitingButton}">
         <Button.ContextMenu>
           <ContextMenu>
-            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" />
           </ContextMenu>
         </Button.ContextMenu>
 
@@ -264,7 +264,7 @@
           Style="{StaticResource WaitingButton}">
         <Button.ContextMenu>
           <ContextMenu>
-            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" />
           </ContextMenu>
         </Button.ContextMenu>
 
@@ -292,7 +292,7 @@
           Style="{StaticResource WaitingButton}">
         <Button.ContextMenu>
           <ContextMenu>
-            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" />
           </ContextMenu>
         </Button.ContextMenu>
 
@@ -338,7 +338,7 @@
           Style="{StaticResource WaitingButton}">
         <Button.ContextMenu>
           <ContextMenu>
-            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" />
           </ContextMenu>
         </Button.ContextMenu>
 
@@ -371,7 +371,7 @@
         </Button.IsEnabled>
         <Button.ContextMenu>
           <ContextMenu>
-            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" />
           </ContextMenu>
         </Button.ContextMenu>
 
@@ -399,7 +399,7 @@
           Style="{StaticResource WaitingButton}">
         <Button.ContextMenu>
           <ContextMenu>
-            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" />
           </ContextMenu>
         </Button.ContextMenu>
 
@@ -425,7 +425,7 @@
     <DockPanel Margin="2" Background="Transparent">
       <DockPanel.ContextMenu>
         <ContextMenu>
-          <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+          <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" />
         </ContextMenu>
       </DockPanel.ContextMenu>
 
@@ -454,7 +454,7 @@
     <DockPanel Margin="2" Background="Transparent" DataContext="{Binding KeyboardButton}">
       <DockPanel.ContextMenu>
         <ContextMenu>
-          <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+          <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" />
         </ContextMenu>
       </DockPanel.ContextMenu>
 
@@ -483,7 +483,7 @@
     <DockPanel Margin="2" Background="Transparent">
       <DockPanel.ContextMenu>
         <ContextMenu>
-          <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+          <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" />
         </ContextMenu>
       </DockPanel.ContextMenu>
 
@@ -569,7 +569,7 @@
             <DockPanel Margin="2" Background="Transparent">
               <DockPanel.ContextMenu>
                 <ContextMenu>
-                  <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+                  <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" />
                 </ContextMenu>
               </DockPanel.ContextMenu>
 

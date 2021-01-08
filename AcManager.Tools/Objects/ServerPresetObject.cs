@@ -327,9 +327,10 @@ namespace AcManager.Tools.Objects {
             }
 
             var welcomeFilename = Path.Combine(ServerPresetsManager.ServerDirectory, "cfg", $"welcome_{Id}.txt");
-            if (!string.IsNullOrWhiteSpace(WelcomeMessage)) {
+            var welcomeMessage = BuildWelcomeMessage();
+            if (welcomeMessage != null) {
                 FileUtils.EnsureFileDirectoryExists(welcomeFilename);
-                File.WriteAllText(welcomeFilename, WelcomeMessage);
+                File.WriteAllText(welcomeFilename, welcomeMessage);
                 section.Set("WELCOME_MESSAGE", string.IsNullOrWhiteSpace(WelcomeMessagePath) ? "" : $"cfg/{Path.GetFileName(welcomeFilename)}");
             } else {
                 if (File.Exists(welcomeFilename)) {

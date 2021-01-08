@@ -69,8 +69,8 @@ namespace AcManager.CustomShowroom {
 
             public static IEnumerable<SurfaceDescription> Load(string filename) {
                 return new IniFile(filename).GetSections("SURFACE")
-                                            .Where(x => x.GetNonEmpty("KEY") != null)
-                                            .Select(x => new SurfaceDescription(x));
+                        .Where(x => x.GetNonEmpty("KEY") != null)
+                        .Select(x => new SurfaceDescription(x));
             }
 
             public static IEnumerable<SurfaceDescription> LoadDefault() {
@@ -305,15 +305,13 @@ namespace AcManager.CustomShowroom {
 
             private DelegateCommand _cameraToStartCommand;
 
-            public DelegateCommand CameraToStartCommand => _cameraToStartCommand ?? (_cameraToStartCommand = new DelegateCommand(() => {
-                Renderer.MoveCameraToStart();
-            }));
+            public DelegateCommand CameraToStartCommand
+                => _cameraToStartCommand ?? (_cameraToStartCommand = new DelegateCommand(() => { Renderer.MoveCameraToStart(); }));
 
             private DelegateCommand _resetCameraCommand;
 
-            public DelegateCommand ResetCameraCommand => _resetCameraCommand ?? (_resetCameraCommand = new DelegateCommand(() => {
-                ((IKn5ObjectRenderer)Renderer).ResetCamera();
-            }));
+            public DelegateCommand ResetCameraCommand
+                => _resetCameraCommand ?? (_resetCameraCommand = new DelegateCommand(() => { ((IKn5ObjectRenderer)Renderer).ResetCamera(); }));
 
             private DelegateCommand _saveCommand;
 

@@ -77,9 +77,7 @@ namespace AcManager.CustomShowroom {
 
         private void OnCarNodePropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
             if (propertyChangedEventArgs.PropertyName == nameof(CarNode.CurrentSkin)) {
-                _busy.Do(() => {
-                    Skin = Car != null ? (Car.GetSkinById(CarNode?.CurrentSkin ?? "") ?? Car.SelectedSkin) : null;
-                });
+                _busy.Do(() => { Skin = Car != null ? (Car.GetSkinById(CarNode?.CurrentSkin ?? "") ?? Car.SelectedSkin) : null; });
             }
         }
 
@@ -116,10 +114,7 @@ namespace AcManager.CustomShowroom {
 
         private DelegateCommand _deleteCommand;
 
-        public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
-            IsDeleted = true;
-        }));
-
+        public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => { IsDeleted = true; }));
 
         public const string DraggableFormat = "Data-CarSlotWrapped";
 
@@ -149,9 +144,7 @@ namespace AcManager.CustomShowroom {
 
         [NotNull]
         protected virtual ISaveHelper CreateSaveable() {
-            return new SaveHelper<SaveableData>(DefaultKey, () => Save(CreateSaveableData()), Load, () => {
-                Reset(false);
-            });
+            return new SaveHelper<SaveableData>(DefaultKey, () => Save(CreateSaveableData()), Load, () => { Reset(false); });
         }
 
         [NotNull]
@@ -159,8 +152,7 @@ namespace AcManager.CustomShowroom {
             return obj;
         }
 
-        protected void Load(SaveableData o) {
-        }
+        protected void Load(SaveableData o) { }
 
         protected virtual void Reset(bool saveLater) {
             Load(CreateSaveableData());
@@ -194,7 +186,7 @@ namespace AcManager.CustomShowroom {
 
             Slots = new ChangeableObservableCollection<CarSlotWrapped>(Renderer.CarSlots.Select(x => new CarSlotWrapped(x)));
             Slots.ItemPropertyChanged += OnSlotPropertyChanged;
-            Slots.CollectionChanged+=OnSlotsCollectionChanged;
+            Slots.CollectionChanged += OnSlotsCollectionChanged;
             Renderer.PropertyChanged += OnRendererPropertyChanged;
 
             foreach (var slot in Slots) {
@@ -242,7 +234,7 @@ namespace AcManager.CustomShowroom {
         [NotNull]
         public DarkKn5ObjectRenderer Renderer { get; }
 
-        protected class SaveableData {}
+        protected class SaveableData { }
 
         [CanBeNull]
         private ISaveHelper _saveable;

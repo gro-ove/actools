@@ -16,7 +16,7 @@
         MiddleButton,
 
         /// <summary>
-        /// Right moust button
+        /// Right mouse button
         /// </summary>
         RightButton,
     }

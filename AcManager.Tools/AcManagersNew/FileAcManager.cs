@@ -236,7 +236,7 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
-        public Task DeleteAsync([NotNull] string id) {
+        public virtual Task DeleteAsync([NotNull] string id) {
             if (!Directories.Actual) return Task.Delay(0);
             if (id == null) throw new ArgumentNullException(nameof(id));
 

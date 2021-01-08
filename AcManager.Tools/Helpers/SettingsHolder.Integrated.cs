@@ -163,6 +163,18 @@ namespace AcManager.Tools.Helpers {
                 }) ?? DBoxLocation;
             }));
 
+            private int? _dBoxDelay;
+
+            public int DBoxDelay {
+                get => _dBoxDelay ?? (_dBoxDelay = ValuesStorage.Get("Settings.IntegratedSettings.DBoxDelay", 30)).Value;
+                set {
+                    if (Equals(value, _dBoxDelay)) return;
+                    _dBoxDelay = value;
+                    ValuesStorage.Set("Settings.IntegratedSettings.DBoxDelay", value);
+                    OnPropertyChanged();
+                }
+            }
+
             public enum DBoxMode {
                 Stock,
                 CmCompatible

@@ -26,7 +26,20 @@ namespace AcManager.Tools.Managers.Online {
                 return @"zzzz";
             }
 
+            name = name.Trim();
+
+            var shadyCount = name.TakeWhile(x => x >= 'A' && x <= 'D' || x >= '0' && x <= '4').Count();
+            if (shadyCount > 2 && (char.IsDigit(name[shadyCount - 1]) || name[0] == 'A')) {
+                name = name.Substring(shadyCount).TrimStart() + @"z";
+            }
+
             name = name.ToLowerInvariant();
+
+            var shadyBit = name.IndexOf(@"000", StringComparison.Ordinal);
+            if (shadyBit != -1) {
+                return @"zz:" + name;
+            }
+
             if (IsUnlikelyToBeCheat(name[0])) {
                 return name;
             }

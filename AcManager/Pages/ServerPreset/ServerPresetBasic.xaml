@@ -159,6 +159,8 @@
                 Placeholder="{Binding Source={x:Static t:PatchHelper.MinimumTestOnlineVersion}}" Mode="Integer"
                 Minimum="{Binding Source={x:Static t:PatchHelper.MinimumTestOnlineVersion}}" Maximum="65535" />
           </DockPanel>
+          <Button Click="CspExtendedConfigClick" Content="Extra options" Margin="0 0 0 8"
+              ToolTip="Here you can define some extra options for Custom Shaders Patch, available starting with build 1266 (v0.1.69)" />
         </StackPanel>
       </Grid>
     </StackPanel>

@@ -32,7 +32,7 @@ namespace AcManager.Tools.GameProperties {
             FilesStorage.Instance.Watcher(ContentCategory.Miscellaneous).Update += (s, a) => ReloadData(false);
         }
 
-        private class PlatformEntries {
+        public class PlatformEntries {
             [CanBeNull, JsonProperty("x86")]
             public Dictionary<string, Entry> For32BitVersion;
 
@@ -40,7 +40,7 @@ namespace AcManager.Tools.GameProperties {
             public Dictionary<string, Entry> For64BitVersion;
         }
 
-        private class Entry {
+        public class Entry {
             [JsonProperty("offset")]
             public int Offset;
 
@@ -105,7 +105,7 @@ namespace AcManager.Tools.GameProperties {
 
         private static readonly IStorage PatchedStorage = new Substorage(ValuesStorage.Storage, "AcShadowsPatcher");
 
-        private struct CommandToPatch {
+        public struct CommandToPatch {
             [JsonProperty("o")]
             public int Offset;
 

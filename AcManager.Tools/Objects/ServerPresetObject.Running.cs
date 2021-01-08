@@ -160,7 +160,7 @@ namespace AcManager.Tools.Objects {
                         if (piece == null || file == null) return;
 
                         var filename = Path.IsPathRooted(file) ? file : Path.Combine(WrapperContentDirectory, file);
-                        if (!FileUtils.ArePathsEqual(WrapperContentDirectory, Path.GetDirectoryName(filename))) {
+                        if (!FileUtils.ArePathsEqual(WrapperContentDirectory, Path.GetDirectoryName(filename) ?? "")) {
                             piece[@"file"] = Path.GetFileName(filename);
                         }
 
@@ -211,8 +211,9 @@ namespace AcManager.Tools.Objects {
             }
 
             // Welcome message
-            if (!string.IsNullOrEmpty(WelcomeMessage)) {
-                result.Add(PackedEntry.FromContent("cfg/welcome.txt", WelcomeMessage));
+            var welcomeMessage = BuildWelcomeMessage();
+            if (welcomeMessage != null) {
+                result.Add(PackedEntry.FromContent("cfg/welcome.txt", welcomeMessage));
                 serverCfg["SERVER"].Set("WELCOME_MESSAGE", "cfg/welcome.txt");
                 dataSection.Set("WELCOME_PATH", "cfg/welcome.txt");
             }

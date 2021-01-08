@@ -152,9 +152,7 @@ namespace AcManager.CustomShowroom {
 
             private DelegateCommand _resetCommand;
 
-            public DelegateCommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(() => {
-                Value = OriginalValue.ToInvariantString();
-            }));
+            public DelegateCommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(() => { Value = OriginalValue.ToInvariantString(); }));
 
             protected override void ApplyOverride() {
                 OriginalValue = Value.As<float>();
@@ -338,9 +336,8 @@ namespace AcManager.CustomShowroom {
 
             private DelegateCommand _resetAlphaModeCommand;
 
-            public DelegateCommand ResetAlphaModeCommand => _resetAlphaModeCommand ?? (_resetAlphaModeCommand = new DelegateCommand(() => {
-                AlphaMode = OriginalAlphaMode;
-            }));
+            public DelegateCommand ResetAlphaModeCommand
+                => _resetAlphaModeCommand ?? (_resetAlphaModeCommand = new DelegateCommand(() => { AlphaMode = OriginalAlphaMode; }));
 
             private MaterialAlphaMode _alphaMode;
 
@@ -377,9 +374,8 @@ namespace AcManager.CustomShowroom {
 
             private DelegateCommand _resetDepthModeCommand;
 
-            public DelegateCommand ResetDepthModeCommand => _resetDepthModeCommand ?? (_resetDepthModeCommand = new DelegateCommand(() => {
-                DepthMode = OriginalDepthMode;
-            }));
+            public DelegateCommand ResetDepthModeCommand
+                => _resetDepthModeCommand ?? (_resetDepthModeCommand = new DelegateCommand(() => { DepthMode = OriginalDepthMode; }));
 
             private MaterialDepthMode _depthMode;
 
@@ -416,9 +412,9 @@ namespace AcManager.CustomShowroom {
                 Material = kn5.GetMaterial(materialId);
 
                 var usedFor = (from node in kn5.Nodes
-                               where node.MaterialId == _materialId
-                               orderby node.Name
-                               select node.Name).ToList();
+                    where node.MaterialId == _materialId
+                    orderby node.Name
+                    select node.Name).ToList();
                 IsForkAvailable = usedFor.Count > 1;
                 IsChangeAvailable = kn5.TexturesData.Count > 1;
                 UsedFor = usedFor.JoinToString(", ");
@@ -472,7 +468,7 @@ namespace AcManager.CustomShowroom {
                 IsChanged = false;
             }
 
-            public void OnLoaded() {}
+            public void OnLoaded() { }
 
             public async Task UpdateKn5AndClose(bool updateModel) {
                 await _kn5.UpdateKn5(updateModel ? _renderer : null, _activeSkin);
@@ -567,8 +563,10 @@ namespace AcManager.CustomShowroom {
             }, () => Material != null && _kn5.IsEditable));
 
             public bool CanBeSaved => Material != null && _kn5.IsEditable;
+
             public PresetsCategory PresetableCategory { get; } = new PresetsCategory(
                     Path.Combine(AcPaths.GetDocumentsDirectory(), "Editor", "Materials library"), ".material");
+
             string IUserPresetable.PresetableKey => PresetableKey;
 
             // It’s not the best format, but it’s compatible with patched KsEditor
@@ -628,6 +626,7 @@ namespace AcManager.CustomShowroom {
         }
 
         private bool _loaded;
+
         private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
             _loaded = true;

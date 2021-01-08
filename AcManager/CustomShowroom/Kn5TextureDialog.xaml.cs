@@ -44,6 +44,7 @@ namespace AcManager.CustomShowroom {
 
             [CanBeNull]
             private readonly CarSkinObject _activeSkin;
+
             private readonly IKn5 _kn5;
             private readonly string _slotName;
 
@@ -51,6 +52,7 @@ namespace AcManager.CustomShowroom {
 
             [NotNull]
             public string TextureName { get; }
+
             public string TextureFormat { get; }
 
             private string _textureFormatDescription;
@@ -116,15 +118,15 @@ namespace AcManager.CustomShowroom {
                 BakedShadows = BakedShadowsRendererViewModel.ForTexture(renderer, _kn5, TextureName, car);
 
                 var usedFor = (from material in kn5.Materials.Values
-                               let slots = (from slot in material.TextureMappings
-                                            where string.Equals(slot.Texture, TextureName, StringComparison.OrdinalIgnoreCase)
-                                            select slot.Name).ToList()
-                               where slots.Count > 0
-                               orderby material.Name
-                               select new {
-                                   Name = $"{material.Name} ({slots.JoinToString(", ")})",
-                                   Slots = slots.Count
-                               }).ToList();
+                    let slots = (from slot in material.TextureMappings
+                        where string.Equals(slot.Texture, TextureName, StringComparison.OrdinalIgnoreCase)
+                        select slot.Name).ToList()
+                    where slots.Count > 0
+                    orderby material.Name
+                    select new {
+                        Name = $"{material.Name} ({slots.JoinToString(", ")})",
+                        Slots = slots.Count
+                    }).ToList();
 
                 IsForkAvailable = usedFor.Sum(x => x.Slots) > 1;
                 IsChangeAvailable = kn5.TexturesData.Count > 1;
@@ -270,11 +272,13 @@ namespace AcManager.CustomShowroom {
                 try {
                     var info = new FileInfo(dialog.FileName);
                     if (!string.Equals(info.Extension, ".dds", StringComparison.OrdinalIgnoreCase)) {
-                        if (ShowMessage("Texture is not in DDS format. Are you sure you want to use it?", "Wrong format", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                        if (ShowMessage("Texture is not in DDS format. Are you sure you want to use it?", "Wrong format", MessageBoxButton.YesNo)
+                                != MessageBoxResult.Yes) {
                             return;
                         }
                     } else if (info.Length > 30e6) {
-                        if (ShowMessage("Texture is way too big. Are you sure you want to use it?", "Way too big", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                        if (ShowMessage("Texture is way too big. Are you sure you want to use it?", "Way too big", MessageBoxButton.YesNo)
+                                != MessageBoxResult.Yes) {
                             return;
                         }
                     }
@@ -386,7 +390,6 @@ namespace AcManager.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t change texture", e);
                 }
-
             }, () => _kn5.IsEditable));
         }
 
@@ -459,6 +462,7 @@ namespace AcManager.CustomShowroom {
         }
 
         private bool _loaded;
+
         private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
             _loaded = true;

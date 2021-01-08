@@ -77,7 +77,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public int SteeringWheelLimit {
             get => _steeringWheelLimit;
-            set => Apply(value.Clamp(0, 450), ref _steeringWheelLimit);
+            set => Apply(value.Clamp(0, 1200), ref _steeringWheelLimit);
         }
 
         private bool _enablePythonApps;

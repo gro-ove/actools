@@ -80,8 +80,7 @@
           <DockPanel>
             <mui:ValueLabel Value="{Binding Controls.KeyboardPatchThrottleLagDown, Converter={StaticResource PercentageConverter}, StringFormat='{}{0:F1}'}"
                 Postfix="%" mui:BetterTextBox.Mode="Number" Content="Lag down" />
-            <mui:FormattedSlider Minimum="0" Maximum="1" TickFrequency="0.1"
-                TickPlacement="BottomRight" AutoToolTipPlacement="BottomRight"
+            <mui:FormattedSlider Minimum="0" Maximum="1" TickFrequency="0.1" TickPlacement="BottomRight" AutoToolTipPlacement="BottomRight"
                 AutoToolTipFormat="{Binding Controls.KeyboardPatchThrottleLagDown, Converter={StaticResource LagToTimeEstimateConverter}, StringFormat='Time (approximate): {0:F2} s'}">
               <Slider.Value>
                 <Binding Path="Controls.KeyboardPatchThrottleLagDown">
@@ -95,6 +94,32 @@
         </mui:SpacingUniformGrid>
         <ItemsControl ItemsSource="{Binding Controls.KeyboardPatchButtonEntries}" ItemTemplate="{StaticResource KeyboardButtonEntryTemplate}"
             ItemsPanel="{StaticResource TwoColumnsPanel}" IsEnabled="{Binding Controls.KeyboardPatchThrottleOverride}" />
+
+        <TextBlock Text="Mouse alternatives for mouse steering:" Style="{StaticResource Label}" Margin="2 20 0 4" />
+        <mui:SpacingUniformGrid Rows="1" IsEnabled="{Binding Controls.KeyboardPatchThrottleOverride}">
+          <DockPanel>
+            <Label Content="Forcing modifier:" Margin="2 0 0 0" VerticalAlignment="Center" Width="126" />
+            <mui:BetterComboBox Margin="2 0 10 0" IsEditable="False" ItemsSource="{Binding Controls.CustomGasRawMouseValues}"
+                SelectedItem="{Binding Controls.CustomGasRawMouseModifier}">
+              <mui:BetterComboBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding DisplayName}" />
+                </DataTemplate>
+              </mui:BetterComboBox.ItemTemplate>
+            </mui:BetterComboBox>
+          </DockPanel>
+          <DockPanel>
+            <Label Content="Forced throttle:" Margin="2 0 0 0" VerticalAlignment="Center" Width="126" />
+            <mui:BetterComboBox Margin="2 0 10 0" IsEditable="False" ItemsSource="{Binding Controls.CustomGasRawMouseValues}"
+                SelectedItem="{Binding Controls.CustomGasRawMouse}">
+              <mui:BetterComboBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding DisplayName}" />
+                </DataTemplate>
+              </mui:BetterComboBox.ItemTemplate>
+            </mui:BetterComboBox>
+          </DockPanel>
+        </mui:SpacingUniformGrid>
       </StackPanel>
 
     </StackPanel>

@@ -57,7 +57,7 @@ namespace AcManager.CustomShowroom {
                             foreach (var pair in jObj) {
                                 if (pair.Value.Type != JTokenType.Object) continue;
                                 skinItems.FirstOrDefault(x => PaintShop.PaintShop.NameToId(x.DisplayName, false) == pair.Key)?
-                                         .Deserialize((JObject)pair.Value);
+                                        .Deserialize((JObject)pair.Value);
                             }
                         }
                     });
@@ -296,8 +296,7 @@ namespace AcManager.CustomShowroom {
                         Skin = skin;
                         SaveAsNewSkin = false;
                     }
-                } catch (Exception e) when (e.IsCancelled()) {
-                } catch (Exception e) {
+                } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
                     NonfatalError.Notify("Can’t save skin", e);
                 }
             }
@@ -398,7 +397,7 @@ namespace AcManager.CustomShowroom {
             #region Skin labels
             public sealed class SkinLabelWrapper : Displayable {
                 private static string DriverNameToLabel(string name) {
-                    var p = name.Split(new[]{ ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    var p = name.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     return p.Length == 2 ? $"{p[0][0]}. {p[1]}".ToUpper() : name.ToUpper();
                 }
 
@@ -490,6 +489,7 @@ namespace AcManager.CustomShowroom {
             }
 
             private List<FilesStorage.ContentEntry> _styles;
+
             private void UpdateLicensePlatesStyles() {
                 var skinItems = SkinItems;
                 if (Renderer == null || skinItems == null) return;

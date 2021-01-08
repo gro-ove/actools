@@ -36,7 +36,7 @@ namespace AcManager.CustomShowroom {
             public void Apply(TrackOutlineRenderer renderer, TrackObjectBase track) {
                 var value = ExtraLayoutIds;
                 renderer.SetActiveMaps(value == null ? new string[0] :
-                               track.MainTrackObject.MultiLayouts?.Where(x => value.ArrayContains(x.LayoutId)).Select(x => x.MapImage).ToArray());
+                        track.MainTrackObject.MultiLayouts?.Where(x => value.ArrayContains(x.LayoutId)).Select(x => x.MapImage).ToArray());
             }
         }
 
@@ -131,9 +131,7 @@ namespace AcManager.CustomShowroom {
 
             private DelegateCommand _resetStyleCommand;
 
-            public DelegateCommand ResetStyleCommand => _resetStyleCommand ?? (_resetStyleCommand = new DelegateCommand(() => {
-                Load(new GlobalSaveable());
-            }));
+            public DelegateCommand ResetStyleCommand => _resetStyleCommand ?? (_resetStyleCommand = new DelegateCommand(() => { Load(new GlobalSaveable()); }));
 
             private string[] _extraLayoutIds;
 

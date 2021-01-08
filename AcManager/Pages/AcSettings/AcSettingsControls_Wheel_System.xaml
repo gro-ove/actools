@@ -65,7 +65,7 @@
                   Style="{StaticResource WaitingButton}">
                 <Button.ContextMenu>
                   <ContextMenu>
-                    <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+                    <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" />
                   </ContextMenu>
                 </Button.ContextMenu>
                 <mui:Cell HorizontalAlignment="Stretch" Margin="0 -2">
@@ -89,7 +89,7 @@
               IsEnabled="{Binding WheelButton.Input, Converter={StaticResource NullToBooleanConverter}, ConverterParameter='inverse'}">
             <Button.ContextMenu>
               <ContextMenu>
-                <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding WheelButtonModifier.ClearCommand}" InputGestureText="Delete" />
+                <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding WheelButtonModifier.ClearCommand}" />
               </ContextMenu>
             </Button.ContextMenu>
 
@@ -118,7 +118,7 @@
               IsEnabled="{Binding IsWheelButtonAllowed}">
             <Button.ContextMenu>
               <ContextMenu>
-                <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding WheelButton.ClearCommand}" InputGestureText="Delete" />
+                <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding WheelButton.ClearCommand}" />
               </ContextMenu>
             </Button.ContextMenu>
 

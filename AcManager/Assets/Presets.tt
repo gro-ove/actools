@@ -24,66 +24,76 @@ namespace AcManager.Assets {
 <#
     var location = Path.GetDirectoryName(this.Host.TemplateFile);
     if (string.IsNullOrEmpty(location)) location = Environment.CurrentDirectory;
-	location = Path.Combine(location, "Presets");
+    location = Path.Combine(location, "Presets");
 
     foreach (var sub in Directory.GetDirectories(location)) {
         if (sub == null) continue;
         var className = Path.GetFileName(sub);
-		foreach (var file in Directory.GetFiles(sub)){
-			var presetName = Path.GetFileNameWithoutExtension(file);
-			var index = presetName.IndexOf('@');
-			if (index != -1){
-				presetName = GetDict(presetName.Substring(0, index)) + "." + presetName.Substring(index + 1);
-			} else {
-				presetName = O(presetName);
-			}
+        foreach (var file in Directory.GetFiles(sub)) {
+            var presetName = Path.GetFileNameWithoutExtension(file);
+            var index = presetName.IndexOf('@');
+            if (index != -1) {
+                presetName = GetDict(presetName.Substring(0, index)) + "." + presetName.Substring(index + 1);
+            } else {
+                presetName = O(presetName);
+            }
 
-        #>
+#>
 			PresetsManager.Instance.RegisterBuiltInPreset(Unpack(<#= C(File.ReadAllBytes(file)) #>), <#= O(className) #>, <#= presetName #>);
 <#
-		}
-	}
+        }
+    }
 #>
 		}
 	}
 }
 <#+
-    string O(string s){ return s == null ? "null" : "@\"" + s.Replace("\"", "\"\"") + "\""; }
-    string O(bool s){ return s ? "true" : "false"; }
+    string O(string s) {
+        return s == null ? "null" : "@\"" + s.Replace("\"", "\"\"") + "\"";
+    }
 
-	string GetDict(string key){
-		switch (key){
-			case "a": return "AppStrings";
-			case "c": return "Controls.ControlsStrings";
-			case "t": return "Tools.ToolsStrings";
-			case "u": return "FirstFloor.ModernUI.UiStrings";
-			default: return key;
-		}
-	}
+    string O(bool s) {
+        return s ? "true" : "false";
+    }
 
-	string C(string s){
-		if (s == null) return "null";
+    string GetDict(string key) {
+        switch (key) {
+            case "a":
+                return "AppStrings";
+            case "c":
+                return "Controls.ControlsStrings";
+            case "t":
+                return "Tools.ToolsStrings";
+            case "u":
+                return "FirstFloor.ModernUI.UiStrings";
+            default:
+                return key;
+        }
+    }
 
-		using (var output = new MemoryStream()){
-			using (var gzip = new DeflateStream(output, CompressionMode.Compress)){
-				using (var writer = new StreamWriter(gzip, System.Text.Encoding.UTF8)){
-					writer.Write(s);
-				}
-			}
+    string C(string s) {
+        if (s == null) return "null";
 
-			return "@\"" + Convert.ToBase64String(output.ToArray()) + "\"";
-		}
-	}
+        using (var output = new MemoryStream()) {
+            using (var gzip = new DeflateStream(output, CompressionMode.Compress)) {
+                using (var writer = new StreamWriter(gzip, System.Text.Encoding.UTF8)) {
+                    writer.Write(s);
+                }
+            }
 
-	string C(byte[] s){
-		if (s == null) return "null";
+            return "@\"" + Convert.ToBase64String(output.ToArray()) + "\"";
+        }
+    }
 
-		using (var output = new MemoryStream()){
-			using (var gzip = new DeflateStream(output, CompressionMode.Compress)){
-				gzip.Write(s, 0, s.Length);
-			}
+    string C(byte[] s) {
+        if (s == null) return "null";
 
-			return "@\"" + Convert.ToBase64String(output.ToArray()) + "\"";
-		}
-	}
+        using (var output = new MemoryStream()) {
+            using (var gzip = new DeflateStream(output, CompressionMode.Compress)) {
+                gzip.Write(s, 0, s.Length);
+            }
+
+            return "@\"" + Convert.ToBase64String(output.ToArray()) + "\"";
+        }
+    }
 #>

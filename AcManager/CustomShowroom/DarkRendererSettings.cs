@@ -102,11 +102,11 @@ namespace AcManager.CustomShowroom {
 
         public static DarkLightType[] LightTypes { get; }
             = EnumExtension.GetValues<DarkLightType>()
-                           .ApartFrom(EffectDarkMaterial.EnableAdditionalAreaLights.As<bool>()
-                                   ? new DarkLightType[0] : new[] { DarkLightType.AreaSphere, DarkLightType.AreaTube, DarkLightType.LtcTube })
-                           .ApartFrom(EffectDarkMaterial.EnableAdditionalFakeLights.As<bool>()
-                                   ? new DarkLightType[0] : new[] { DarkLightType.Plane })
-                           .ToArray();
+                    .ApartFrom(EffectDarkMaterial.EnableAdditionalAreaLights.As<bool>()
+                            ? new DarkLightType[0] : new[] { DarkLightType.AreaSphere, DarkLightType.AreaTube, DarkLightType.LtcTube })
+                    .ApartFrom(EffectDarkMaterial.EnableAdditionalFakeLights.As<bool>()
+                            ? new DarkLightType[0] : new[] { DarkLightType.Plane })
+                    .ToArray();
 
         public static void ResetHeavy() {
             if (!ValuesStorage.Contains(DarkRendererSettingsValues.DefaultKey)) return;

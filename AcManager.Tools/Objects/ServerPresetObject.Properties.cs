@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using AcManager.Tools.Data;
 using AcManager.Tools.Managers;
 using AcTools;
@@ -14,6 +15,8 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
+using SharpCompress.Compressors;
+using SharpCompress.Compressors.Deflate;
 
 namespace AcManager.Tools.Objects {
     public partial class ServerPresetObject {
@@ -90,6 +93,16 @@ namespace AcManager.Tools.Objects {
                     OnPropertyChanged(nameof(CspRequiredActual));
                 }
             });
+        }
+
+        private string _cspExtraConfig;
+
+        public string CspExtraConfig {
+            get {
+                InitializeWelcomeMessage();
+                return _cspExtraConfig;
+            }
+            set => Apply(value, ref _cspExtraConfig, () => WelcomeMessageChanged = true);
         }
 
         private string[] _carIds = new string[0];
@@ -243,37 +256,89 @@ namespace AcManager.Tools.Objects {
             return new ActionAsDisposable(() => { Environment.CurrentDirectory = d; });
         }
 
-        private string _welcomeMessage;
         private bool _welcomeMessageLoaded;
+        private static readonly string CspConfigSeparator = "\t".RepeatString(32) + "$CSP0:";
+
+        private static byte[] DecompressZlib(byte[] data) {
+            using (var m = new MemoryStream(data))
+            using (var d = new ZlibStream(m, CompressionMode.Decompress, CompressionLevel.Level6)) {
+                return d.ReadAsBytes();
+            }
+        }
+
+        private static byte[] CompressZlib(byte[] data) {
+            using (var m = new MemoryStream()) {
+                using (var d = new ZlibStream(m, CompressionMode.Compress, CompressionLevel.Level6)) {
+                    d.WriteBytes(data);
+                }
+                return m.ToArray();
+            }
+        }
+
+        [CanBeNull]
+        private string BuildWelcomeMessage() {
+            if (string.IsNullOrEmpty(WelcomeMessage) && string.IsNullOrWhiteSpace(CspExtraConfig)) {
+                return null;
+            }
+            try {
+                return string.IsNullOrWhiteSpace(CspExtraConfig) ? WelcomeMessage
+                        : WelcomeMessage + CspConfigSeparator + CompressZlib(Encoding.UTF8.GetBytes(CspExtraConfig)).ToCutBase64();
+            } catch (Exception e) {
+                Logging.Warning(e);
+                return WelcomeMessage;
+            }
+        }
+
+        private void InitializeWelcomeMessage() {
+            if (_welcomeMessageLoaded) return;
+            _welcomeMessageLoaded = true;
+
+            try {
+                var welcomeMessagePath = WelcomeMessagePath;
+                if (!string.IsNullOrWhiteSpace(welcomeMessagePath)) {
+                    using (FromServersDirectory()) {
+                        if (File.Exists(welcomeMessagePath)) {
+                            var welcomeMessage = File.ReadAllText(welcomeMessagePath);
+                            var separator = welcomeMessage.IndexOf(CspConfigSeparator, StringComparison.Ordinal);
+                            if (separator == -1) {
+                                _welcomeMessage = welcomeMessage;
+                                _cspExtraConfig = null;
+                            } else {
+                                _welcomeMessage = welcomeMessage.Substring(0, separator);
+                                try {
+                                    _cspExtraConfig = Encoding.UTF8.GetString(DecompressZlib(
+                                            welcomeMessage.Substring(separator + CspConfigSeparator.Length).FromCutBase64()
+                                                    ?? throw new NullReferenceException()));
+                                } catch (Exception e) {
+                                    _cspExtraConfig = null;
+                                    Logging.Warning(e);
+                                }
+                            }
+                            WelcomeMessageMissing = false;
+                        } else {
+                            _welcomeMessage = null;
+                            _cspExtraConfig = null;
+                            WelcomeMessageMissing = true;
+                        }
+                    }
+                } else {
+                    _welcomeMessage = null;
+                    _cspExtraConfig = null;
+                    WelcomeMessageMissing = false;
+                }
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t open welcome message file", e);
+                _welcomeMessage = null;
+                _cspExtraConfig = null;
+                WelcomeMessageMissing = false;
+            }
+        }
+
+        private string _welcomeMessage;
 
         public string WelcomeMessage {
             get {
-                if (!_welcomeMessageLoaded) {
-                    _welcomeMessageLoaded = true;
-
-                    try {
-                        var welcomeMessagePath = WelcomeMessagePath;
-                        if (!string.IsNullOrWhiteSpace(welcomeMessagePath)) {
-                            using (FromServersDirectory()) {
-                                if (File.Exists(welcomeMessagePath)) {
-                                    _welcomeMessage = File.ReadAllText(welcomeMessagePath);
-                                    WelcomeMessageMissing = false;
-                                } else {
-                                    _welcomeMessage = null;
-                                    WelcomeMessageMissing = true;
-                                }
-                            }
-                        } else {
-                            _welcomeMessage = null;
-                            WelcomeMessageMissing = false;
-                        }
-                    } catch (Exception e) {
-                        NonfatalError.Notify("Can’t open welcome message file", e);
-                        _welcomeMessage = null;
-                        WelcomeMessageMissing = false;
-                    }
-                }
-
+                InitializeWelcomeMessage();
                 return _welcomeMessage;
             }
             set {
@@ -306,7 +371,7 @@ namespace AcManager.Tools.Objects {
                 }
 
                 try {
-                    File.WriteAllText(_welcomeMessagePath, WelcomeMessage);
+                    File.WriteAllText(_welcomeMessagePath, BuildWelcomeMessage() ?? "");
                     WelcomeMessageChanged = false;
                     WelcomeMessageMissing = false;
                 } catch (Exception e) {
@@ -332,6 +397,7 @@ namespace AcManager.Tools.Objects {
 
                 _welcomeMessageLoaded = false;
                 OnPropertyChanged(nameof(WelcomeMessage));
+                OnPropertyChanged(nameof(CspExtraConfig));
 
                 WelcomeMessageChanged = false;
                 Changed = true;

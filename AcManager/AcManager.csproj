@@ -2019,6 +2019,10 @@
       <Project>{FB504C5F-0420-41E2-8E17-ABC25A9C5491}</Project>
       <Name>AcTools.WheelAngles</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AcTools.Windows10Extension\AcTools.Windows10Extension.csproj">
+      <Project>{568ee001-4faf-4273-b0cc-dc84b1ea73ee}</Project>
+      <Name>AcTools.Windows10Extension</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AcTools\AcTools.csproj">
       <Project>{55b65fb4-92cb-42ef-b4bf-f287810986e1}</Project>
       <Name>AcTools</Name>
