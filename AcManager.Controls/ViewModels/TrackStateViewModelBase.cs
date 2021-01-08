@@ -144,7 +144,7 @@ namespace AcManager.Controls.ViewModels {
         public byte[] ToBytes() {
             try {
                 return Encoding.UTF8.GetBytes(Saveable.ToSerializedString() ?? @"{}");
-            } catch (Exception e) {
+            } catch {
                 return Encoding.UTF8.GetBytes(@"{}");
             }
         }

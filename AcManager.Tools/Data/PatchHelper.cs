@@ -34,7 +34,6 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureKeyboardForcedThrottle = "KEYBOARD_FORCED_THROTTLE";
         public static readonly string FeatureSharedMemoryReduceGForcesWhenSlow = "SHARED_MEMORY_REDUCE_GFORCES_WHEN_SLOW";
         public static readonly string FeatureWindowPosition = "WINDOW_POSITION";
-        public static readonly string ListensForCurrentlyPlaying = "LISTENS_FOR_CURRENTLY_PLAYING";
 
         public static bool OptionPatchSupport = true;
 
