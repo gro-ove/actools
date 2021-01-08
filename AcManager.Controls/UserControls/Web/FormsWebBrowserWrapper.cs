@@ -154,7 +154,7 @@ namespace AcManager.Controls.UserControls.Web {
 
             try {
                 if (_inner != null) {
-                    _inner.ObjectForScripting = _jsBridge;
+                    _inner.ObjectForScripting = _jsBridge?.Proxy;
                 }
             } catch (ArgumentException) {
                 Logging.Warning("Failed to set: " + (_jsBridge?.GetType().FullName ?? @"NULL"));

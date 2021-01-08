@@ -48,17 +48,29 @@ namespace AcManager.Pages.Drive {
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class JsBridge : JsBridgeCSharp {
-            [CanBeNull]
-            internal ViewModel Model;
+        public class JsProxy : JsProxyCSharp {
+            private JsBridge _bridge;
+
+            public JsProxy(JsBridge bridge) : base(bridge) {
+                _bridge = bridge;
+            }
 
             [UsedImplicitly]
             public void SetEventId(string value) {
                 Sync(() => {
-                    if (Model != null) {
-                        Model.EventId = value;
+                    if (_bridge.Model != null) {
+                        _bridge.Model.EventId = value;
                     }
                 });
+            }
+        }
+
+        public class JsBridge : JsBridgeBase {
+            [CanBeNull]
+            internal ViewModel Model;
+
+            protected override JsProxyBase MakeProxy() {
+                return new JsProxy(this);
             }
         }
 

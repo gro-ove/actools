@@ -905,14 +905,30 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
         private static readonly string PauseKey = @"p" + StringExtension.RandomString(20);
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class JsBridge : JsBridgeCSharp {
-            internal Action<string> DownloadFromCallback;
+        public class JsProxy : JsProxyCSharp {
+            private JsBridge _bridge;
+
+            public JsProxy(JsBridge bridge) : base(bridge) {
+                _bridge = bridge;
+            }
 
             [UsedImplicitly]
             public void DownloadFrom(string url) {
                 if (string.IsNullOrWhiteSpace(url)) return;
-                Sync(() => { DownloadFromCallback?.Invoke(url); });
+                Sync(() => { _bridge.DownloadFromCallback?.Invoke(url); });
             }
+
+            [UsedImplicitly]
+            public void SetCssQuery(string value) {
+                Sync(() => {
+                    if (_bridge.Finder == null) return;
+                    _bridge.Finder.Model.Value = value;
+                });
+            }
+        }
+
+        public class JsBridge : JsBridgeBase {
+            internal Action<string> DownloadFromCallback;
 
             [CanBeNull]
             private ModsWebFinder _finder;
@@ -931,17 +947,13 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                 }
             }
 
-            [UsedImplicitly]
-            public void SetCssQuery(string value) {
-                Sync(() => {
-                    if (Finder == null) return;
-                    Finder.Model.Value = value;
-                });
-            }
-
-            internal override void PageLoaded(string url) {
+            public override void PageLoaded(string url) {
                 if (Finder == null) return;
                 RunCssSelector();
+            }
+
+            protected override JsProxyBase MakeProxy() {
+                return new JsProxy(this);
             }
 
             private void StopCssSelector() {
@@ -1538,12 +1550,24 @@ window.$KEY = outline.stop.bind(outline);
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class CheckingJsBridge : JsBridgeCSharp {
-            internal Action<bool> CallbackFn;
+        public class CheckingJsProxy : JsProxyCSharp {
+            private CheckingJsBridge _bridge;
+
+            public CheckingJsProxy(CheckingJsBridge bridge) : base(bridge) {
+                _bridge = bridge;
+            }
 
             [UsedImplicitly]
             public void Callback(bool elementFound) {
-                CallbackFn?.Invoke(elementFound);
+                _bridge.CallbackFn?.Invoke(elementFound);
+            }
+        }
+
+        public class CheckingJsBridge : JsBridgeBase {
+            internal Action<bool> CallbackFn;
+
+            protected override JsProxyBase MakeProxy() {
+                return new CheckingJsProxy(this);
             }
         }
 

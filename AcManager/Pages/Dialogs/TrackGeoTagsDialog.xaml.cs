@@ -49,20 +49,32 @@ namespace AcManager.Pages.Dialogs {
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class JsBridge : JsBridgeCSharp {
-            [CanBeNull]
-            internal ViewModel Model;
+        public class JsProxy : JsProxyCSharp {
+            private JsBridge _bridge;
+
+            public JsProxy(JsBridge bridge) : base(bridge) {
+                _bridge = bridge;
+            }
 
             [UsedImplicitly]
             public void Update(double lat, double lng) {
                 Sync(() => {
                     _skipNext = true;
-                    if (Model != null) {
-                        Model.Latitude = GeoTagsEntry.ToLat(lat);
-                        Model.Longitude = GeoTagsEntry.ToLng(lng);
+                    if (_bridge.Model != null) {
+                        _bridge.Model.Latitude = GeoTagsEntry.ToLat(lat);
+                        _bridge.Model.Longitude = GeoTagsEntry.ToLng(lng);
                     }
                     _skipNext = false;
                 });
+            }
+        }
+
+        public class JsBridge : JsBridgeBase {
+            [CanBeNull]
+            internal ViewModel Model;
+
+            protected override JsProxyBase MakeProxy() {
+                return new JsProxy(this);
             }
         }
 

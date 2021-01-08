@@ -249,6 +249,8 @@
     <Compile Include="UserControls\Web\IWebDownloader.cs" />
     <Compile Include="UserControls\Web\IWebDownloadListener.cs" />
     <Compile Include="UserControls\Web\IWebSomething.cs" />
+    <Compile Include="UserControls\Web\JsProxyBase.cs" />
+    <Compile Include="UserControls\Web\JsProxyCSharp.cs" />
     <Compile Include="UserControls\Web\NewWindowEventArgs.cs" />
     <Compile Include="UserControls\Web\NewWindowsBehavior.cs" />
     <Compile Include="UserControls\Web\PageLoadedEventArgs.cs" />

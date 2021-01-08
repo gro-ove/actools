@@ -37,15 +37,15 @@ namespace AcManager.Controls {
 
         public static IValueConverter LinesArrayToTextConverter = new LinesArrayToTextConverterInner();
 
-        internal static bool GetInitialized(DependencyObject obj) {
+        public static bool GetInitialized(DependencyObject obj) {
             return obj.GetValue(InitializedProperty) as bool? == true;
         }
 
-        internal static void SetInitialized(DependencyObject obj, bool value) {
+        public static void SetInitialized(DependencyObject obj, bool value) {
             obj.SetValue(InitializedProperty, value);
         }
 
-        internal static readonly DependencyProperty InitializedProperty = DependencyProperty.RegisterAttached("Initialized", typeof(bool),
+        public static readonly DependencyProperty InitializedProperty = DependencyProperty.RegisterAttached("Initialized", typeof(bool),
                 typeof(AvalonExtension), new UIPropertyMetadata(OnInitializedChanged));
 
         private static bool _isBusy;

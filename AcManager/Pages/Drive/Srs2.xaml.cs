@@ -269,7 +269,7 @@ namespace AcManager.Pages.Drive {
 
             public EventHandler<DriverNamesEventArgs> DriverNames { get; set; }
 
-            internal override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
+            public override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
                 ActionExtension.InvokeInMainThreadAsync(() => PageStart?.Invoke(this, EventArgs.Empty));
                 if (IsThemeBright
                         // GetStyle() is called before PageInject(), so it’s a good way to know if browser supports

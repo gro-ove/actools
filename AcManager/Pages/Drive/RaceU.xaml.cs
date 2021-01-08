@@ -215,28 +215,8 @@ namespace AcManager.Pages.Drive {
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class RaceUApiBridge : JsBridgeBase {
-            public RaceUApiBridge() {
-                AcApiHosts.Add(@"raceu.net");
-                AcApiHosts.Add(@"localhost:3000");
-            }
-
-            internal override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
-                base.PageInject(url, toInject, replacements);
-                if (IsHostAllowed(url)) {
-                    toInject.Add(@"<script>
-window.AC = window.external;
-window.AC.setLinks = function (links){ return window.AC._setLinks(JSON.stringify(links)); };
-</script>");
-                }
-            }
-
-            internal override void PageHeaders(string url, IDictionary<string, string> headers) {
-                base.PageHeaders(url, headers);
-                if (IsHostAllowed(url)) {
-                    headers[@"X-Checksum"] = InternalUtils.GetRaceUChecksum(SteamIdHelper.Instance.Value);
-                }
-            }
+        public class RaceUApiProxy : JsProxyBase {
+            public RaceUApiProxy(JsBridgeBase bridge) : base(bridge) { }
 
             [CanBeNull]
             private CarObject _car;
@@ -397,6 +377,34 @@ window.AC.setLinks = function (links){ return window.AC._setLinks(JSON.stringify
             }
 
             // ReSharper restore InconsistentNaming
+        }
+
+        public class RaceUApiBridge : JsBridgeBase {
+            public RaceUApiBridge() {
+                AcApiHosts.Add(@"raceu.net");
+                AcApiHosts.Add(@"localhost:3000");
+            }
+
+            public override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
+                base.PageInject(url, toInject, replacements);
+                if (IsHostAllowed(url)) {
+                    toInject.Add(@"<script>
+window.AC = window.external;
+window.AC.setLinks = function (links){ return window.AC._setLinks(JSON.stringify(links)); };
+</script>");
+                }
+            }
+
+            public override void PageHeaders(string url, IDictionary<string, string> headers) {
+                base.PageHeaders(url, headers);
+                if (IsHostAllowed(url)) {
+                    headers[@"X-Checksum"] = InternalUtils.GetRaceUChecksum(SteamIdHelper.Instance.Value);
+                }
+            }
+
+            protected override JsProxyBase MakeProxy() {
+                throw new NotImplementedException();
+            }
         }
 
         private void OnWebBlockLoaded(object sender, RoutedEventArgs e) {

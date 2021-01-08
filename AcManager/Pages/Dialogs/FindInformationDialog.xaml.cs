@@ -30,17 +30,29 @@ namespace AcManager.Pages.Dialogs {
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class JsBridge : JsBridgeCSharp {
-            [CanBeNull]
-            internal ViewModel Model;
+        public class JsProxy : JsProxyCSharp {
+            private JsBridge _bridge;
+
+            public JsProxy(JsBridge bridge) : base(bridge) {
+                _bridge = bridge;
+            }
 
             [UsedImplicitly]
             public void Update(string selected) {
                 Sync(() => {
-                    if (Model != null) {
-                        Model.SelectedText = Regex.Replace(selected ?? "", @"\[(?:\d+|citation needed)\]", "").Trim();
+                    if (_bridge.Model != null) {
+                        _bridge.Model.SelectedText = Regex.Replace(selected ?? "", @"\[(?:\d+|citation needed)\]", "").Trim();
                     }
                 });
+            }
+        }
+
+        public class JsBridge : JsBridgeBase {
+            [CanBeNull]
+            internal ViewModel Model;
+
+            protected override JsProxyBase MakeProxy() {
+                return new JsProxy(this);
             }
         }
 

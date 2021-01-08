@@ -19,105 +19,25 @@ using Newtonsoft.Json;
 
 namespace AcManager.Controls.UserControls.Web {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-    public class AcCompatibleApiBridge : JsBridgeCSharp {
-        private readonly IniFile _raceConfig = Game.DefaultRaceConfig;
+    public class AcCompableApiProxy : JsProxyCSharp {
+        private readonly AcCompatibleApiBridge _parent;
 
-        internal override string AcApiRequest(string url) {
-            url = url.SubstringExt(AcApiHandlerFactory.AcSchemeName.Length + 3);
-            Logging.Debug(url);
-
-            var index = url.IndexOf('?');
-            var pieces = (index == -1 ? url : url.Substring(0, index)).Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-            switch (pieces[0]) {
-                case "getguid":
-                    return SteamIdHelper.Instance.Value;
-                case "setsetting":
-                    switch (pieces.ArrayElementAtOrDefault(1)) {
-                        case "race":
-                            foreach (var parameter in GetParameters()) {
-                                var p = parameter.Key.Split('/');
-                                if (p.Length != 2) {
-                                    Logging.Warning($"Invalid key: {parameter.Key}");
-                                } else {
-                                    Logging.Debug($"Parameter: {parameter.Key}={parameter.Value}");
-                                    _raceConfig[p[0]].Set(p[1], parameter.Value);
-                                }
-                            }
-                            break;
-                        default:
-                            Logging.Warning($"Unknown setting: {pieces.ArrayElementAtOrDefault(1)}");
-                            break;
-                    }
-                    return string.Empty;
-                case "start":
-                    ActionExtension.InvokeInMainThread(() => {
-                        GameWrapper.StartAsync(new Game.StartProperties {
-                            PreparedConfig = _raceConfig
-                        });
-                    });
-                    return string.Empty;
-                default:
-                    Logging.Warning($"Unknown request: {pieces[0]} (“{url}”)");
-                    return null;
-            }
-
-            Dictionary<string, string> GetParameters() {
-                return (index == -1 ? "" : url.Substring(index + 1))
-                        .Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(x => x.Split(new[] { '=' }, 2)).ToDictionary(
-                                x => Uri.UnescapeDataString(x[0]),
-                                x => Uri.UnescapeDataString(x.ArrayElementAtOrDefault(1) ?? ""));
-            }
+        public AcCompableApiProxy(AcCompatibleApiBridge bridge) : base(bridge) {
+            _parent = bridge;
         }
-
-        internal override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
-            Logging.Debug(url.GetDomainNameFromUrl());
-            if (AcApiHosts.Contains(url.GetDomainNameFromUrl(), StringComparer.OrdinalIgnoreCase)) {
-                toInject.Add(@"<script>!function(){
-window.__ACClasses = {};
-window.__AC = {};
-window.__AC.CarsArray = JSON.parse(window.external.GetCars());
-window.__AC.TracksArray = JSON.parse(window.external.GetTracks());
-window.__AC.Cars = {};
-window.__AC.Tracks = window.__AC.TracksArray.reduce(function (a, b){ a[b.id] = b; return a; }, {});
-for (var i = 0; i < window.__AC.CarsArray.length; i++){
-    var car = window.__AC.CarsArray[i];
-    window.__AC.Cars[car.id] = car;
-    car.__defineGetter__('skins', getSkins.bind(null, car));
-    car.__defineGetter__('skinmeta', getSkinMeta.bind(null, car));
-}
-function getSkins(car){ return car._skins || (car._skins = JSON.parse(window.external.GetSkins(car.id))); }
-function getSkinMeta(car){ return car._skinmeta || (car._skinmeta = JSON.parse(window.external.GetSkinMeta(car.id))); }
-function find(a, f, p1, p2) {
-    if (p1 === 'id') window.external.SetLastAccessed(f, a === __AC.CarsArray);
-    return p1 && a.filter(function (n){ return (p2 ? n[p1][p2] : n[p1]).indexOf(f) > -1; });
-}
-window.__AC.findCar = find.bind(null, __AC.CarsArray);
-window.__AC.findTrack = find.bind(null, __AC.TracksArray);
-window.__AC.getDbValue = window.external.GetDbValue;
-}()</script>");
-            }
-        }
-
-        public class AcItemAccessedEventArgs : EventArgs {
-            public string Id { get; set; }
-        }
-
-        public EventHandler<AcItemAccessedEventArgs> TrackAccessed;
-        public EventHandler<AcItemAccessedEventArgs> CarAccessed;
 
         [UsedImplicitly]
         public void SetLastAccessed(string id, bool car) {
             if (car) {
-                _raceConfig["RACE"]["MODEL"] = id;
-                _raceConfig["CAR_0"]["MODEL"] = id;
-                ActionExtension.InvokeInMainThreadAsync(() => CarAccessed?.Invoke(this, new AcItemAccessedEventArgs { Id = id }));
+                _parent.RaceConfig["RACE"]["MODEL"] = id;
+                _parent.RaceConfig["CAR_0"]["MODEL"] = id;
+                Sync(() => _parent.CarAccessed?.Invoke(this, new AcCompatibleApiBridge.AcItemAccessedEventArgs { Id = id }));
             } else {
                 var track = TracksManager.Instance.GetLayoutByKunosId(id);
                 if (track != null) {
-                    _raceConfig["RACE"]["TRACK"] = track.Id;
-                    _raceConfig["RACE"]["CONFIG_TRACK"] = track.LayoutId;
-                    ActionExtension.InvokeInMainThreadAsync(() => TrackAccessed?.Invoke(this, new AcItemAccessedEventArgs { Id = track.IdWithLayout }));
+                    _parent.RaceConfig["RACE"]["TRACK"] = track.Id;
+                    _parent.RaceConfig["RACE"]["CONFIG_TRACK"] = track.LayoutId;
+                    Sync(() => _parent.TrackAccessed?.Invoke(this, new AcCompatibleApiBridge.AcItemAccessedEventArgs { Id = track.IdWithLayout }));
                 }
             }
         }
@@ -159,8 +79,8 @@ window.__AC.getDbValue = window.external.GetDbValue;
                 id = x.Id,
                 name = x.Name,
                 brand = x.Brand,
-                path = Tab.ConvertFilename(x.Location),
-                badge = Tab.ConvertFilename(x.BrandBadge),
+                path = Tab()?.ConvertFilename(x.Location),
+                badge = Tab()?.ConvertFilename(x.BrandBadge),
 
                 // Is it needed or is it just a waste of time?
                 // description = x.Description,
@@ -187,9 +107,101 @@ window.__AC.getDbValue = window.external.GetDbValue;
                         id = x.KunosIdWithLayout,
                         name = x.Name,
                         dlc = false,
-                        preview = Tab.ConvertFilename(x.PreviewImage),
-                        outline = Tab.ConvertFilename(x.OutlineImage),
+                        preview = Tab()?.ConvertFilename(x.PreviewImage),
+                        outline = Tab()?.ConvertFilename(x.OutlineImage),
                     })));
         }
+    }
+
+    public class AcCompatibleApiBridge : JsBridgeBase {
+        public readonly IniFile RaceConfig = Game.DefaultRaceConfig;
+
+        public override string AcApiRequest(string url) {
+            url = url.SubstringExt(AcApiHandlerFactory.AcSchemeName.Length + 3);
+            Logging.Debug(url);
+
+            var index = url.IndexOf('?');
+            var pieces = (index == -1 ? url : url.Substring(0, index)).Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            switch (pieces[0]) {
+                case "getguid":
+                    return SteamIdHelper.Instance.Value;
+                case "setsetting":
+                    switch (pieces.ArrayElementAtOrDefault(1)) {
+                        case "race":
+                            foreach (var parameter in GetParameters()) {
+                                var p = parameter.Key.Split('/');
+                                if (p.Length != 2) {
+                                    Logging.Warning($"Invalid key: {parameter.Key}");
+                                } else {
+                                    Logging.Debug($"Parameter: {parameter.Key}={parameter.Value}");
+                                    RaceConfig[p[0]].Set(p[1], parameter.Value);
+                                }
+                            }
+                            break;
+                        default:
+                            Logging.Warning($"Unknown setting: {pieces.ArrayElementAtOrDefault(1)}");
+                            break;
+                    }
+                    return string.Empty;
+                case "start":
+                    ActionExtension.InvokeInMainThread(() => {
+                        GameWrapper.StartAsync(new Game.StartProperties {
+                            PreparedConfig = RaceConfig
+                        });
+                    });
+                    return string.Empty;
+                default:
+                    Logging.Warning($"Unknown request: {pieces[0]} (“{url}”)");
+                    return null;
+            }
+
+            Dictionary<string, string> GetParameters() {
+                return (index == -1 ? "" : url.Substring(index + 1))
+                        .Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(x => x.Split(new[] { '=' }, 2)).ToDictionary(
+                                x => Uri.UnescapeDataString(x[0]),
+                                x => Uri.UnescapeDataString(x.ArrayElementAtOrDefault(1) ?? ""));
+            }
+        }
+
+        public override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
+            Logging.Debug(url.GetDomainNameFromUrl());
+            if (AcApiHosts.Contains(url.GetDomainNameFromUrl(), StringComparer.OrdinalIgnoreCase)) {
+                toInject.Add(@"<script>!function(){
+window.__ACClasses = {};
+window.__AC = {};
+window.__AC.CarsArray = JSON.parse(window.external.GetCars());
+window.__AC.TracksArray = JSON.parse(window.external.GetTracks());
+window.__AC.Cars = {};
+window.__AC.Tracks = window.__AC.TracksArray.reduce(function (a, b){ a[b.id] = b; return a; }, {});
+for (var i = 0; i < window.__AC.CarsArray.length; i++){
+    var car = window.__AC.CarsArray[i];
+    window.__AC.Cars[car.id] = car;
+    car.__defineGetter__('skins', getSkins.bind(null, car));
+    car.__defineGetter__('skinmeta', getSkinMeta.bind(null, car));
+}
+function getSkins(car){ return car._skins || (car._skins = JSON.parse(window.external.GetSkins(car.id))); }
+function getSkinMeta(car){ return car._skinmeta || (car._skinmeta = JSON.parse(window.external.GetSkinMeta(car.id))); }
+function find(a, f, p1, p2) {
+    if (p1 === 'id') window.external.SetLastAccessed(f, a === __AC.CarsArray);
+    return p1 && a.filter(function (n){ return (p2 ? n[p1][p2] : n[p1]).indexOf(f) > -1; });
+}
+window.__AC.findCar = find.bind(null, __AC.CarsArray);
+window.__AC.findTrack = find.bind(null, __AC.TracksArray);
+window.__AC.getDbValue = window.external.GetDbValue;
+}()</script>");
+            }
+        }
+
+        protected override JsProxyBase MakeProxy() {
+            return new AcCompableApiProxy(this);
+        }
+
+        public class AcItemAccessedEventArgs : EventArgs {
+            public string Id { get; set; }
+        }
+
+        public EventHandler<AcItemAccessedEventArgs> TrackAccessed;
+        public EventHandler<AcItemAccessedEventArgs> CarAccessed;
     }
 }

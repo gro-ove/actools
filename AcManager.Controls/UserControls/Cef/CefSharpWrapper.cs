@@ -190,7 +190,7 @@ namespace AcManager.Controls.UserControls.Cef {
             try {
                 if (_inner != null) {
                     CefSharpHelper.AcApiHandler.Register(_inner, _jsBridge?.AcApiHosts.ToArray(), OnAcApiRequest);
-                    _inner.JavascriptObjectRepository.Register(@"external", _jsBridge, false, new BindingOptions {
+                    _inner.JavascriptObjectRepository.Register(@"external", _jsBridge?.Proxy, false, new BindingOptions {
                         Binder = BindingOptions.DefaultBinder.Binder,
                         CamelCaseJavascriptNames = false
                     });

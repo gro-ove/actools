@@ -80,19 +80,8 @@ namespace AcManager.Pages.Drive {
         public class ViewModel : NotifyPropertyChanged { }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class WorldSimSeriesApiBridge : JsBridgeBase {
-            public WorldSimSeriesApiBridge() {
-                AcApiHosts.Add(@"worldsimseries.com");
-                AcApiHosts.Add(@"paddock.worldsimseries.com");
-                AcApiHosts.Add(@"local.wss:8000");
-            }
-
-            internal override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
-                base.PageInject(url, toInject, replacements);
-                if (IsHostAllowed(url)) {
-                    toInject.Add(@"<script>window.AC = window.external;</script>");
-                }
-            }
+        public class WorldSimSeriesApiProxy : JsProxyBase {
+            public WorldSimSeriesApiProxy(JsBridgeBase bridge) : base(bridge) { }
 
             [CanBeNull]
             private CarObject _car;
@@ -287,6 +276,25 @@ namespace AcManager.Pages.Drive {
             }
 
             // ReSharper restore InconsistentNaming
+        }
+
+        public class WorldSimSeriesApiBridge : JsBridgeBase {
+            public WorldSimSeriesApiBridge() {
+                AcApiHosts.Add(@"worldsimseries.com");
+                AcApiHosts.Add(@"paddock.worldsimseries.com");
+                AcApiHosts.Add(@"local.wss:8000");
+            }
+
+            public override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
+                base.PageInject(url, toInject, replacements);
+                if (IsHostAllowed(url)) {
+                    toInject.Add(@"<script>window.AC = window.external;</script>");
+                }
+            }
+
+            protected override JsProxyBase MakeProxy() {
+                return new WorldSimSeriesApiProxy(this);
+            }
         }
 
         private void OnWebBlockLoaded(object sender, RoutedEventArgs e) {
