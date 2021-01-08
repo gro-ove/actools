@@ -339,7 +339,7 @@ namespace AcManager.CustomShowroom {
                 public bool CameraOrbit = true;
 
                 [JsonProperty("cr")]
-                public bool CameraAutoRotate = true;
+                public bool CameraAutoRotate;
 
                 [JsonProperty("cd")]
                 public double CameraAutoRotateSpeed = 1d;
@@ -816,6 +816,12 @@ namespace AcManager.CustomShowroom {
                     CameraAutoRotate = o.CameraAutoRotate;
                     CameraAutoRotateSpeed = o.CameraAutoRotateSpeed;
                     CameraAutoAdjustTarget = o.CameraAutoAdjustTarget;
+
+                    if (o.CameraAutoRotate) {
+                        ActionExtension.InvokeInMainThreadAsync(() => {
+                            if (Renderer != null) Renderer.AutoRotate = true;
+                        });
+                    }
                 } finally {
                     _cameraBusy = false;
                     UpdateCamera();
@@ -877,7 +883,7 @@ namespace AcManager.CustomShowroom {
                         break;
 
                     case nameof(Renderer.AutoRotate):
-                        CameraAutoRotate = Renderer?.AutoRotate != false;
+                        CameraAutoRotate = Renderer?.AutoRotate == true;
                         break;
 
                     case nameof(Renderer.CameraTrajectoryActive):
