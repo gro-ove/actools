@@ -118,14 +118,14 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FatalError_Message" xml:space="preserve">
-    <value>App just ran into a problem and needs to restart. Please, use “Report an issue” button afterwards if you want to send a report.</value>
-  </data>
+    <value>Sovellus kohtasi ongelman ja se uudelleenkäynnistetään. Käytä "ilmoita ongelmasta" -nappia jälkeenpäin, jos haluat tehdä ilmoituksen.</value>
+  <alternative>App just ran into a problem and needs to restart. Please, use “Report an issue” button afterwards if you want to send a report.</alternative></data>
   <data name="HidePassword" xml:space="preserve">
-    <value>Hide Password</value>
-  </data>
+    <value>Piilota salasana</value>
+  <alternative>Hide Password</alternative></data>
   <data name="ImagesFilter" xml:space="preserve">
-    <value>Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
-  </data>
+    <value>Kuvatiedostot|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
+  <alternative>Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</alternative></data>
   <data name="KeyLaunchApplication1" xml:space="preserve">
     <value>Launch Favorite Application 2</value>
   </data>
@@ -136,8 +136,8 @@
     <value>Number Pad {0}</value>
   </data>
   <data name="NavigationFailedFrameNotFound" xml:space="preserve">
-    <value>Unable to navigate to {0}, could not find a ModernFrame target '{1}'</value>
-  </data>
+    <value>Seuraaminen epäonnistui {0}, ModernFrame kohdetta ei löytynyt “{1}”</value>
+  <alternative>Unable to navigate to {0}, could not find a ModernFrame target '{1}'</alternative></data>
   <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
     <value>Loaded {0} of {1}</value>
   </data>
@@ -188,5 +188,191 @@
   </data>
   <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
     <value>Include Password</value>
+  </data>
+  <data name="FatalCrashSuggestionsMessage" xml:space="preserve">
+    <value>[url=cmd://copy]Kopioi[/url] virhetiedot leikepöydälle. Koeta [url=cmd://restart]Käynnistä uudelleen[/url] Sovelluksen tai [url=cmd://exit]close[/url] sen.</value>
+  </data>
+  <data name="Common_Add" xml:space="preserve">
+    <value>Lisää</value>
+  </data>
+  <data name="FiltersLinkAll" xml:space="preserve">
+    <value>Kaikki</value>
+  </data>
+  <data name="KeyAltLeft" xml:space="preserve">
+    <value>Alt (Vasen)</value>
+  </data>
+  <data name="KeyAltRight" xml:space="preserve">
+    <value>Alt (Oikea)</value>
+  </data>
+  <data name="Common_Ascending" xml:space="preserve">
+    <value>Nouseva</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Takaisin</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Peruuta</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Sulje</value>
+  </data>
+  <data name="KeyControlLeft" xml:space="preserve">
+    <value>Control (Vasen)</value>
+  </data>
+  <data name="KeyControlRight" xml:space="preserve">
+    <value>Control (Oikea)</value>
+  </data>
+  <data name="Common_Descending" xml:space="preserve">
+    <value>Laskeva</value>
+  </data>
+  <data name="KeyDownArrow" xml:space="preserve">
+    <value>Nuoli alas</value>
+  </data>
+  <data name="Ordinalizing_Eighteenth" xml:space="preserve">
+    <value>Kahdeksastoista</value>
+  </data>
+  <data name="Ordinalizing_Eighth" xml:space="preserve">
+    <value>Kahdeksas</value>
+  </data>
+  <data name="Ordinalizing_Eleventh" xml:space="preserve">
+    <value>Yhdestoista</value>
+  </data>
+  <data name="Ordinalizing_Fifteenth" xml:space="preserve">
+    <value>Viidestoista</value>
+  </data>
+  <data name="Ordinalizing_Fifth" xml:space="preserve">
+    <value>Viides</value>
+  </data>
+  <data name="Ordinalizing_First" xml:space="preserve">
+    <value>Ensimmäinen</value>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>Eteenpäin</value>
+  </data>
+  <data name="Ordinalizing_Fourteenth" xml:space="preserve">
+    <value>Neljästoista</value>
+  </data>
+  <data name="Ordinalizing_Fourth" xml:space="preserve">
+    <value>Neljäs</value>
+  </data>
+  <data name="Go" xml:space="preserve">
+    <value>Anna mennä</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Koti</value>
+  </data>
+  <data name="KeyLeftArrow" xml:space="preserve">
+    <value>Nuoli vasen</value>
+  </data>
+  <data name="MarkLimited" xml:space="preserve">
+    <value>RAJOITETTU</value>
+  </data>
+  <data name="Maximize" xml:space="preserve">
+    <value>Maksimoi</value>
+  </data>
+  <data name="Minimize" xml:space="preserve">
+    <value>Minimoi</value>
+  </data>
+  <data name="Ordinalizing_Minus" xml:space="preserve">
+    <value>Miinus {0}</value>
+  </data>
+  <data name="NavigateLink" xml:space="preserve">
+    <value>Seuraa linkkiä</value>
+  </data>
+  <data name="NavigationFailed" xml:space="preserve">
+    <value>Seuraaminen epäonnistui</value>
+  </data>
+  <data name="MarkNew" xml:space="preserve">
+    <value>UUSI</value>
+  </data>
+  <data name="Ordinalizing_Nineteenth" xml:space="preserve">
+    <value>Yhdeksästoista</value>
+  </data>
+  <data name="Ordinalizing_Ninth" xml:space="preserve">
+    <value>Yhdeksäs</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Ei</value>
+  </data>
+  <data name="Common_Oops" xml:space="preserve">
+    <value>Oho!</value>
+  </data>
+  <data name="PickColor" xml:space="preserve">
+    <value>Valitse väri</value>
+  </data>
+  <data name="Common_PleaseWait" xml:space="preserve">
+    <value>Odota...</value>
+  </data>
+  <data name="KeyRightArrow" xml:space="preserve">
+    <value>Nuoli oikea</value>
+  </data>
+  <data name="Ordinalizing_Second" xml:space="preserve">
+    <value>Toinen</value>
+  </data>
+  <data name="Ordinalizing_Seventeenth" xml:space="preserve">
+    <value>Seitsemästoista</value>
+  </data>
+  <data name="Ordinalizing_Seventh" xml:space="preserve">
+    <value>Seitsemäs</value>
+  </data>
+  <data name="KeyShiftLeft" xml:space="preserve">
+    <value>Shift (Vasen)</value>
+  </data>
+  <data name="KeyShiftRight" xml:space="preserve">
+    <value>Shift (Oikea)</value>
+  </data>
+  <data name="Ordinalizing_Sixteenth" xml:space="preserve">
+    <value>Kuudestoista</value>
+  </data>
+  <data name="Ordinalizing_Sixth" xml:space="preserve">
+    <value>Kuudes</value>
+  </data>
+  <data name="Ordinalizing_Tenth" xml:space="preserve">
+    <value>Kymmenes</value>
+  </data>
+  <data name="Ordinalizing_Third" xml:space="preserve">
+    <value>Kolmas</value>
+  </data>
+  <data name="Ordinalizing_Thirteenth" xml:space="preserve">
+    <value>Kolmastoista</value>
+  </data>
+  <data name="Ordinalizing_Thirtieth" xml:space="preserve">
+    <value>Kolmaskymmenes</value>
+  </data>
+  <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
+    <value>Kahdeskymmes neljäs</value>
+  </data>
+  <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
+    <value>Kahdeskymmes yhdeksäs</value>
+  </data>
+  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
+    <value>Kahdeskymmestoinen</value>
+  </data>
+  <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
+    <value>Kahdeskymmes seitsemäs</value>
+  </data>
+  <data name="Ordinalizing_TwentySixth" xml:space="preserve">
+    <value>Kahdeskymmenes kuudes</value>
+  </data>
+  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
+    <value>Kahdeskymmes kolmas</value>
+  </data>
+  <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
+    <value>Seuraaminen epäonnistui {0}, lähde määrittämättä</value>
+  </data>
+  <data name="KeyUpArrow" xml:space="preserve">
+    <value>Nuoli ylös</value>
+  </data>
+  <data name="KeyWindowsLeft" xml:space="preserve">
+    <value>Windows (Vasen)</value>
+  </data>
+  <data name="KeyWindowsRight" xml:space="preserve">
+    <value>Windows (Oikea)</value>
+  </data>
+  <data name="Common_Browse" xml:space="preserve">
+    <value>Selaa</value>
+  </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Lataa uudelleen</value>
   </data>
 </root>

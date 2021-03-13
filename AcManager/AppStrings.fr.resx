@@ -4593,4 +4593,73 @@ de toute façon en attendant que le disque obtienne les données, et il y aura b
   <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
     <value>Afficher des informations détaillées si le contenu est manquant</value>
   </data>
+  <data name="MainWindow_FoundNModUpdates" xml:space="preserve">
+    <value>{0} {update} trouvée pour le mods:</value>
+  </data>
+  <data name="MainWindow_AddDownload_Message" xml:space="preserve">
+    <value>Entrez URL pour Télécharger:</value>
+  </data>
+  <data name="MainWindow_AddDownload_Comment" xml:space="preserve">
+    <value>Ou, copiez un lien ou un fichier et appuyez sur Ctrl+V dans Content Manager.</value>
+  </data>
+  <data name="MainWindow_AddDownload_Title" xml:space="preserve">
+    <value>Télécharger</value>
+  </data>
+  <data name="MainWindow_AddDownload_MenuItem" xml:space="preserve">
+    <value>Télécharger quelque chose...</value>
+  </data>
+  <data name="MainWindow_InstallFromAFile_MenuItem" xml:space="preserve">
+    <value>Installer depuis un fichier...</value>
+  </data>
+  <data name="DownloadList_PluginsLoadFailed" xml:space="preserve">
+    <value>Impossible de charger la liste de plugins</value>
+  </data>
+  <data name="DownloadList_ViewInExplorer" xml:space="preserve">
+    <value>Voir dans l'explorateur</value>
+  </data>
+  <data name="DownloadList_Password" xml:space="preserve">
+    <value>Mot de passe:</value>
+  </data>
+  <data name="DownloadList_ShowFile" xml:space="preserve">
+    <value>Montrer fichier</value>
+  </data>
+  <data name="DownloadList_Retry" xml:space="preserve">
+    <value>Réessayer</value>
+  </data>
+  <data name="DownloadList_ExtraOptions" xml:space="preserve">
+    <value>Options supplémentaire:</value>
+  </data>
+  <data name="DownloadList_Failed" xml:space="preserve">
+    <value>Échec</value>
+  </data>
+  <data name="DownloadList_NothingFound" xml:space="preserve">
+    <value>Rien n'a été trouvé</value>
+  </data>
+  <data name="DownloadList_Cancelled" xml:space="preserve">
+    <value>Annulé</value>
+  </data>
+  <data name="DownloadList_Cancelling" xml:space="preserve">
+    <value>Annulation...</value>
+  </data>
+  <data name="DownloadList_Installing" xml:space="preserve">
+    <value>Installation...</value>
+  </data>
+  <data name="DownloadList_Install" xml:space="preserve">
+    <value>Installer</value>
+  </data>
+  <data name="DownloadList_Resume" xml:space="preserve">
+    <value>Reprendre</value>
+  </data>
+  <data name="DownloadList_Restart" xml:space="preserve">
+    <value>Recommencer</value>
+  </data>
+  <data name="DownloadList_Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="DownloadList_From" xml:space="preserve">
+    <value>Depuis:</value>
+  </data>
+  <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
+    <value>Pas de téléchargement en cours</value>
+  </data>
 </root>

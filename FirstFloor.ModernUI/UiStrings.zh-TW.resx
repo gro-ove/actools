@@ -601,4 +601,7 @@
   <data name="Progress_Short_KnownTotal" xml:space="preserve">
     <value>{1}中的{0}</value>
   </data>
+  <data name="Reload" xml:space="preserve">
+    <value>重裝</value>
+  </data>
 </root>

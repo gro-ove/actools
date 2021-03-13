@@ -3905,8 +3905,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Zaoblené křivky</value>
   </data>
   <data name="Settings_Locale_TemperatureUnits" xml:space="preserve">
-    <value>Jednotky teploty:</value>
-  </data>
+    <value>Jednotka teploty:</value>
+  <alternative>Jednotky teploty:</alternative></data>
   <data name="Settings_Locale_UseImperialUnits" xml:space="preserve">
     <value>Imperiální jednotky</value>
   <alternative>Používat imperiální jednotky</alternative></data>
@@ -4492,8 +4492,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Režim řízení:</value>
   </data>
   <data name="AcSettings_Controls_Wheel_ForceFeedback_ABSEffect" xml:space="preserve">
-    <value>ABS efekt:</value>
-  </data>
+    <value>ABS efekt</value>
+  <alternative>ABS efekt:</alternative></data>
   <data name="Dialogs_OnlineDriverTags_NewTag" xml:space="preserve">
     <value>Nový tag</value>
   </data>

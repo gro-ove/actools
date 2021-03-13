@@ -118,396 +118,366 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Back" xml:space="preserve">
-    <value>Geri</value>
+    <value>뒤로</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>İptal</value>
+    <value>취소</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>Kapat</value>
+    <value>닫기</value>
   </data>
   <data name="Common_Add" xml:space="preserve">
-    <value>Ekle</value>
-  </data>
-  <data name="Common_PleaseWait" xml:space="preserve">
-    <value>Lütfen bekleyiniz...</value>
-  <alternative>Lütfen bekleyin...</alternative></data>
-  <data name="FatalError_Message" xml:space="preserve">
-    <value>Uygulama bir hata ile karşılaştı ve yeniden başlatılması gerek.</value>
-  <alternative>Uygulamada bir sorun oluştu ve yeniden başlatılması gerek. Eğer bize iletmek isterseniz lütfen ”Bi hata bildir” butonunu kullanın.</alternative></data>
-  <data name="FiltersLinkAll" xml:space="preserve">
-    <value>Tümü</value>
-  </data>
-  <data name="Forward" xml:space="preserve">
-    <value>İleri</value>
-  </data>
-  <data name="Go" xml:space="preserve">
-    <value>Git</value>
-  </data>
-  <data name="HidePassword" xml:space="preserve">
-    <value>Şifreyi Gizle</value>
-  </data>
-  <data name="Home" xml:space="preserve">
-    <value>Ana Sayfa</value>
-  </data>
-  <data name="KeyAltLeft" xml:space="preserve">
-    <value>Alt (Sol)</value>
-  </data>
-  <data name="KeyAltRight" xml:space="preserve">
-    <value>Alt (Sağ)</value>
-  </data>
-  <data name="KeyBackspace" xml:space="preserve">
-    <value>Geri Tuşu</value>
-  </data>
-  <data name="KeyBrowserBack" xml:space="preserve">
-    <value>Tarayıcı Geri</value>
-  </data>
-  <data name="KeyBrowserFavorites" xml:space="preserve">
-    <value>Tarayıcı Favorileri</value>
-  </data>
-  <data name="KeyBrowserForward" xml:space="preserve">
-    <value>Tarayıcı İleri</value>
-  </data>
-  <data name="KeyBrowserHome" xml:space="preserve">
-    <value>Tarayıcı Ana Sayfa</value>
-  </data>
-  <data name="KeyBrowserRefresh" xml:space="preserve">
-    <value>Tarayıcı Yenile</value>
-  </data>
-  <data name="KeyBrowserSearch" xml:space="preserve">
-    <value>Tarayıcı Ara</value>
-  </data>
-  <data name="KeyBrowserStop" xml:space="preserve">
-    <value>Tarayıcı Dur</value>
-  </data>
-  <data name="KeyControlLeft" xml:space="preserve">
-    <value>CTRL (Sol)</value>
-  <alternative>Control (Sol)</alternative></data>
-  <data name="KeyControlRight" xml:space="preserve">
-    <value>CTRL (Sağ)</value>
-  <alternative>Control (Sağ)</alternative></data>
-  <data name="KeyDownArrow" xml:space="preserve">
-    <value>Aşağı Ok Tuşu</value>
-  </data>
-  <data name="KeyEscape" xml:space="preserve">
-    <value>ESC</value>
-  </data>
-  <data name="KeyLeftArrow" xml:space="preserve">
-    <value>Sol Yön Tuşu</value>
-  </data>
-  <data name="KeyMediaNextTrack" xml:space="preserve">
-    <value>Bir Sonraki Pist</value>
-  </data>
-  <data name="KeyMediaPlayPause" xml:space="preserve">
-    <value>Oynat</value>
-  <alternative>Başlat</alternative></data>
-  <data name="KeyMediaPreviousTrack" xml:space="preserve">
-    <value>Önceki Pist</value>
-  </data>
-  <data name="KeyMediaStop" xml:space="preserve">
-    <value>DurDUR</value>
-  <alternative>Dur</alternative></data>
-  <data name="KeyPause" xml:space="preserve">
-    <value>Duraklat</value>
-  </data>
-  <data name="KeyRightArrow" xml:space="preserve">
-    <value>Sağ Yön Tuşu</value>
-  </data>
-  <data name="KeySelectMedia" xml:space="preserve">
-    <value>Medyayı Seç</value>
-  </data>
-  <data name="KeyShiftLeft" xml:space="preserve">
-    <value>Shift (Sol)</value>
-  </data>
-  <data name="KeyShiftRight" xml:space="preserve">
-    <value>Shift (Sağ)</value>
-  </data>
-  <data name="KeySpace" xml:space="preserve">
-    <value>Boşluk</value>
-  </data>
-  <data name="KeyUpArrow" xml:space="preserve">
-    <value>Yukarı Yön Tuşu</value>
-  </data>
-  <data name="KeyVolumeDown" xml:space="preserve">
-    <value>Ses Azaltma Tuşu</value>
-  </data>
-  <data name="KeyVolumeMute" xml:space="preserve">
-    <value>Sesi Susturma Tuşu</value>
-  </data>
-  <data name="KeyVolumeUp" xml:space="preserve">
-    <value>Ses Arttırma Tuşu</value>
-  </data>
-  <data name="KeyWindowsLeft" xml:space="preserve">
-    <value>Windows (Sol)</value>
-  </data>
-  <data name="KeyWindowsRight" xml:space="preserve">
-    <value>Windows (Sağ)</value>
-  </data>
-  <data name="MarkLimited" xml:space="preserve">
-    <value>KISITLI</value>
-  </data>
-  <data name="MarkNew" xml:space="preserve">
-    <value>YENİ</value>
-  </data>
-  <data name="Maximize" xml:space="preserve">
-    <value>Büyüt</value>
-  </data>
-  <data name="Minimize" xml:space="preserve">
-    <value>Küçült</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Hayır</value>
-  </data>
-  <data name="Ok" xml:space="preserve">
-    <value>Tamam</value>
-  <alternative>TAMAM</alternative></data>
-  <data name="Ordinalizing_Eighteenth" xml:space="preserve">
-    <value>On sekizinci</value>
-  </data>
-  <data name="Ordinalizing_Eighth" xml:space="preserve">
-    <value>Sekizinci</value>
-  </data>
-  <data name="Ordinalizing_Eleventh" xml:space="preserve">
-    <value>On birinci</value>
-  </data>
-  <data name="Ordinalizing_Fifteenth" xml:space="preserve">
-    <value>On beşinci</value>
-  </data>
-  <data name="Ordinalizing_Fifth" xml:space="preserve">
-    <value>Beşinci</value>
-  </data>
-  <data name="Ordinalizing_First" xml:space="preserve">
-    <value>Birinci</value>
-  <alternative>İlk</alternative></data>
-  <data name="Ordinalizing_Fourteenth" xml:space="preserve">
-    <value>On dördüncü</value>
-  <alternative>Ön dürdüncü</alternative></data>
-  <data name="Ordinalizing_Fourth" xml:space="preserve">
-    <value>Dördüncü</value>
-  </data>
-  <data name="Ordinalizing_Minus" xml:space="preserve">
-    <value>Eksi {0}</value>
-  </data>
-  <data name="Ordinalizing_Nineteenth" xml:space="preserve">
-    <value>On dokuzuncu</value>
-  </data>
-  <data name="Ordinalizing_Ninth" xml:space="preserve">
-    <value>Dokuzuncu</value>
-  </data>
-  <data name="Ordinalizing_Nth" xml:space="preserve">
-    <value>{0}uncu</value>
-  <alternative>Sıfırıncı</alternative></data>
-  <data name="Ordinalizing_Second" xml:space="preserve">
-    <value>İkinci</value>
-  </data>
-  <data name="Ordinalizing_Seventeenth" xml:space="preserve">
-    <value>On yedinci</value>
-  </data>
-  <data name="Ordinalizing_Seventh" xml:space="preserve">
-    <value>Yedinci</value>
-  </data>
-  <data name="Ordinalizing_Sixteenth" xml:space="preserve">
-    <value>On altıncı</value>
-  </data>
-  <data name="Ordinalizing_Sixth" xml:space="preserve">
-    <value>Altıncı</value>
-  </data>
-  <data name="Ordinalizing_Tenth" xml:space="preserve">
-    <value>Onuncu</value>
-  </data>
-  <data name="Ordinalizing_Third" xml:space="preserve">
-    <value>Üçüncü</value>
-  <alternative>Üçündü</alternative></data>
-  <data name="Ordinalizing_Thirteenth" xml:space="preserve">
-    <value>On üçüncü</value>
-  </data>
-  <data name="Ordinalizing_Thirtieth" xml:space="preserve">
-    <value>Otuzuncu</value>
-  </data>
-  <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
-    <value>Yirmi birinci</value>
-  </data>
-  <data name="Ordinalizing_Twelfth" xml:space="preserve">
-    <value>On ikinci</value>
-  </data>
-  <data name="Ordinalizing_Twentieth" xml:space="preserve">
-    <value>Yirminci</value>
-  </data>
-  <data name="Ordinalizing_TwentyEighth" xml:space="preserve">
-    <value>Yirmi sekizinci</value>
-  </data>
-  <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
-    <value>Yirmi beşinci</value>
-  </data>
-  <data name="Ordinalizing_TwentyFirst" xml:space="preserve">
-    <value>Yirmi birinci</value>
-  </data>
-  <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
-    <value>Yirmi dördüncü</value>
-  </data>
-  <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
-    <value>Yirmi dokuzuncu</value>
-  </data>
-  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
-    <value>Yirmi ikinci</value>
-  </data>
-  <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
-    <value>Yirmi yedinci</value>
-  </data>
-  <data name="Ordinalizing_TwentySixth" xml:space="preserve">
-    <value>Yirmi altıncı</value>
-  </data>
-  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
-    <value>Yirmi üçüncü</value>
-  </data>
-  <data name="Ordinalizing_Zeroth" xml:space="preserve">
-    <value>Sıfırıncı</value>
-  </data>
-  <data name="PickColor" xml:space="preserve">
-    <value>Bir renk seç</value>
-  </data>
-  <data name="PickColorFromScreen" xml:space="preserve">
-    <value>Ekrandan bir renk seç</value>
-  </data>
-  <data name="SelectColor" xml:space="preserve">
-    <value>Renk seç</value>
-  </data>
-  <data name="Time_Day" xml:space="preserve">
-    <value>{0} gün</value>
-  </data>
-  <data name="Time_Hour" xml:space="preserve">
-    <value>{0} saat</value>
-  </data>
-  <data name="Time_Minute" xml:space="preserve">
-    <value>{0} dakika</value>
-  </data>
-  <data name="Time_Month" xml:space="preserve">
-    <value>{0} ay</value>
-  </data>
-  <data name="Time_Second" xml:space="preserve">
-    <value>{0} saniye</value>
-  </data>
-  <data name="Time_Week" xml:space="preserve">
-    <value>{0} hafta</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Evet</value>
+    <value>추가</value>
   </data>
   <data name="Common_And" xml:space="preserve">
-    <value>ve</value>
+    <value>그리고</value>
   </data>
-  <data name="Toolbar_Favourite" xml:space="preserve">
-    <value>Favori</value>
-  </data>
-  <data name="Toolbar_Unfavourite" xml:space="preserve">
-    <value>Favoriyi Geri Al</value>
-  </data>
-  <data name="Toolbar_Hide" xml:space="preserve">
-    <value>Gizle</value>
-  </data>
-  <data name="Toolbar_Unhide" xml:space="preserve">
-    <value>Göster</value>
-  </data>
-  <data name="Toolbar_Invite" xml:space="preserve">
-    <value>Davet Et</value>
-  </data>
-  <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
-    <value>Sunucuyu favorilere ekle (Ctrl+D)</value>
-  </data>
-  <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
-    <value>Sunucuyu favorilerden kaldır (Ctrl+D)</value>
-  </data>
-  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
-    <value>Sunucuyu gizli sunucular listesinden kaldır</value>
-  <alternative>Sunucuyu gizli sunucu listesinden kaldır</alternative></data>
   <data name="Common_Ascending" xml:space="preserve">
-    <value>Artan sıralama</value>
+    <value>상승</value>
+  </data>
+  <data name="Common_Browse" xml:space="preserve">
+    <value>브라우즈</value>
   </data>
   <data name="Common_Descending" xml:space="preserve">
-    <value>Azalan sıralama</value>
+    <value>내림차순</value>
   </data>
   <data name="Common_Oops" xml:space="preserve">
-    <value>Tüh!</value>
+    <value>이런!</value>
+  </data>
+  <data name="Common_PleaseWait" xml:space="preserve">
+    <value>잠시만 기다려 주세요…</value>
   </data>
   <data name="FatalCrashSuggestionsMessage" xml:space="preserve">
-    <value>Hata detaylarını [url=cmd://copy]kopyalayın[/url]. Uygulamayı [url=cmd://restart]yeniden başlatmayı[/url] ya da [url=cmd://exit]kapatmayı[/url] deneyin.</value>
+    <value>오류 세부 정보를 클립보드에 [url=cmd://copy]복사[/url]합니다. 이 앱을  [url=cmd://restart]restart[/url] 다시 시작[/url]하거나  [url=cmd://exit]닫으십시오.[/url]</value>
   </data>
-  <data name="ImagesFilter" xml:space="preserve">
-    <value>Resim dosyaları |*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
+  <data name="FatalError_Message" xml:space="preserve">
+    <value>앱에 문제가 발생하여 다시 시작해야 합니다.</value>
   </data>
-  <data name="KeyContextMenu" xml:space="preserve">
-    <value>İçerik menüsü</value>
+  <data name="FiltersLinkAll" xml:space="preserve">
+    <value>모두</value>
   </data>
-  <data name="KeyControl" xml:space="preserve">
-    <value>CTRL</value>
+  <data name="Forward" xml:space="preserve">
+    <value>앞으로</value>
+  </data>
+  <data name="Go" xml:space="preserve">
+    <value>출발</value>
+  </data>
+  <data name="HidePassword" xml:space="preserve">
+    <value>암호 숨기기</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>홈</value>
+  </data>
+  <data name="KeyDownArrow" xml:space="preserve">
+    <value>아래쪽 화살표</value>
   </data>
   <data name="KeyLaunchApplication1" xml:space="preserve">
-    <value>Favori Uygulama 1'i Başlat</value>
+    <value>즐겨찾기 애플리케이션 1 시작</value>
   </data>
   <data name="KeyLaunchApplication2" xml:space="preserve">
-    <value>Favori Uygulama 2'yi Başlat</value>
+    <value>즐겨찾기 애플리케이션 2 시작</value>
   </data>
   <data name="KeyLaunchMail" xml:space="preserve">
-    <value>Posta Uygulamasını Başlat</value>
+    <value>메일 실행</value>
+  </data>
+  <data name="KeyLeftArrow" xml:space="preserve">
+    <value>왼쪽 화살표</value>
+  </data>
+  <data name="KeyMediaNextTrack" xml:space="preserve">
+    <value>다음 트랙</value>
+  </data>
+  <data name="KeyMediaPlayPause" xml:space="preserve">
+    <value>플레이</value>
+  </data>
+  <data name="KeyMediaPreviousTrack" xml:space="preserve">
+    <value>이전 트랙</value>
+  </data>
+  <data name="KeyMediaStop" xml:space="preserve">
+    <value>정지</value>
+  </data>
+  <data name="KeyRightArrow" xml:space="preserve">
+    <value>오른쪽 화살표</value>
+  </data>
+  <data name="KeyUpArrow" xml:space="preserve">
+    <value>위쪽 화살표</value>
+  </data>
+  <data name="KeyVolumeDown" xml:space="preserve">
+    <value>볼륨 내림</value>
+  </data>
+  <data name="KeyVolumeMute" xml:space="preserve">
+    <value>볼륨 음소거</value>
+  </data>
+  <data name="KeyVolumeUp" xml:space="preserve">
+    <value>볼륨 올림</value>
+  </data>
+  <data name="KeyWindowsLeft" xml:space="preserve">
+    <value>창문 (좌측)</value>
+  </data>
+  <data name="KeyWindowsRight" xml:space="preserve">
+    <value>창문 (우측)</value>
   </data>
   <data name="KeyZoom" xml:space="preserve">
-    <value>Ykınlaştırma</value>
+    <value>줌</value>
+  </data>
+  <data name="MarkLimited" xml:space="preserve">
+    <value>제한적</value>
+  </data>
+  <data name="MarkNew" xml:space="preserve">
+    <value>신규</value>
+  </data>
+  <data name="Maximize" xml:space="preserve">
+    <value>최대화</value>
+  </data>
+  <data name="Minimize" xml:space="preserve">
+    <value>최소화</value>
+  </data>
+  <data name="NavigateLink" xml:space="preserve">
+    <value>링크 탐색</value>
+  </data>
+  <data name="NavigationFailed" xml:space="preserve">
+    <value>탐색 실패</value>
+  </data>
+  <data name="NavigationFailedFrameNotFound" xml:space="preserve">
+    <value>{0}으로 이동할 수 없습니다. ModernFrame 대상 "{1}"을 찾을 수 없습니다</value>
+  </data>
+  <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
+    <value>{0}으로 이동할 수 없습니다. 소스가 지정되지 않았습니다.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>아니요</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>확인</value>
+  </data>
+  <data name="Ordinalizing_Eighteenth" xml:space="preserve">
+    <value>열여덟 번째</value>
+  </data>
+  <data name="Ordinalizing_Eighth" xml:space="preserve">
+    <value>여덟 번째</value>
+  </data>
+  <data name="Ordinalizing_Eleventh" xml:space="preserve">
+    <value>열한 번째</value>
+  </data>
+  <data name="Ordinalizing_Fifteenth" xml:space="preserve">
+    <value>열 다섯번째</value>
+  </data>
+  <data name="Ordinalizing_Fifth" xml:space="preserve">
+    <value>다섯 번째</value>
+  </data>
+  <data name="Ordinalizing_First" xml:space="preserve">
+    <value>첫 번째</value>
+  </data>
+  <data name="Ordinalizing_Fourteenth" xml:space="preserve">
+    <value>열네번째</value>
+  </data>
+  <data name="Ordinalizing_Fourth" xml:space="preserve">
+    <value>네번째</value>
+  </data>
+  <data name="Ordinalizing_Minus" xml:space="preserve">
+    <value>마이너스 {0}</value>
+  </data>
+  <data name="Ordinalizing_Nineteenth" xml:space="preserve">
+    <value>열 아홉 번째</value>
+  </data>
+  <data name="Ordinalizing_Ninth" xml:space="preserve">
+    <value>아홉번째</value>
+  </data>
+  <data name="Ordinalizing_Nth" xml:space="preserve">
+    <value>{0}번째</value>
+  </data>
+  <data name="Ordinalizing_Second" xml:space="preserve">
+    <value>두 번째</value>
+  </data>
+  <data name="Ordinalizing_Seventeenth" xml:space="preserve">
+    <value>열일곱 번째</value>
+  </data>
+  <data name="Ordinalizing_Seventh" xml:space="preserve">
+    <value>일곱번째</value>
+  </data>
+  <data name="Ordinalizing_Sixteenth" xml:space="preserve">
+    <value>열여섯번째</value>
+  </data>
+  <data name="Ordinalizing_Sixth" xml:space="preserve">
+    <value>여섯번째</value>
+  </data>
+  <data name="Ordinalizing_Tenth" xml:space="preserve">
+    <value>열 번째</value>
+  </data>
+  <data name="Ordinalizing_Third" xml:space="preserve">
+    <value>세 번째</value>
+  </data>
+  <data name="Ordinalizing_Thirteenth" xml:space="preserve">
+    <value>열세번째</value>
+  </data>
+  <data name="Ordinalizing_Thirtieth" xml:space="preserve">
+    <value>서른 번째</value>
+  </data>
+  <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
+    <value>서른한 번째</value>
+  </data>
+  <data name="Ordinalizing_Twelfth" xml:space="preserve">
+    <value>열두 번째</value>
+  </data>
+  <data name="Ordinalizing_Twentieth" xml:space="preserve">
+    <value>스무 번째</value>
+  </data>
+  <data name="Ordinalizing_TwentyEighth" xml:space="preserve">
+    <value>스물 여덟 번째</value>
+  </data>
+  <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
+    <value>스물 다섯 번째</value>
+  </data>
+  <data name="Ordinalizing_TwentyFirst" xml:space="preserve">
+    <value>스물 한 번 째</value>
+  </data>
+  <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
+    <value>스물 네번째</value>
+  </data>
+  <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
+    <value>스물 아홉 번째</value>
+  </data>
+  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
+    <value>스물두 번째</value>
+  </data>
+  <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
+    <value>스물 일곱 번째</value>
+  </data>
+  <data name="Ordinalizing_TwentySixth" xml:space="preserve">
+    <value>스물 여섯 번째</value>
+  </data>
+  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
+    <value>스물 세번째</value>
+  </data>
+  <data name="Ordinalizing_Zeroth" xml:space="preserve">
+    <value>제로</value>
+  </data>
+  <data name="PickColor" xml:space="preserve">
+    <value>색상 선택</value>
+  </data>
+  <data name="PickColorFromScreen" xml:space="preserve">
+    <value>화면에서 색상 선택</value>
   </data>
   <data name="Progress_Downloading" xml:space="preserve">
-    <value>{0} indirildi</value>
+    <value>{0} 로드됨</value>
   </data>
   <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
-    <value>{1} taneden {0} indirildi</value>
-  </data>
-  <data name="Progress_Uploading" xml:space="preserve">
-    <value>{0} yüklendi</value>
-  </data>
-  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
-    <value>{1} taneden {0} yüklendi</value>
-  </data>
-  <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
-    <value>Eşleşen adaylar bulunamadı</value>
-  </data>
-  <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
-    <value>Başlangıç sıralamasını önayar olarak paylaş</value>
-  </data>
-  <data name="RaceGrid_ShareHeader" xml:space="preserve">
-    <value>Başlangıç sıralamasını paylaş</value>
-  </data>
-  <data name="Restore" xml:space="preserve">
-    <value>Kurtar</value>
-  </data>
-  <data name="ShowPassword" xml:space="preserve">
-    <value>Parolayı göster</value>
-  </data>
-  <data name="Source" xml:space="preserve">
-    <value>Kaynak</value>
-  </data>
-  <data name="Suggestions" xml:space="preserve">
-    <value>Tavsiyeler</value>
-  </data>
-  <data name="UnknownOS" xml:space="preserve">
-    <value>Bilinmeyen işletim sistemi</value>
-  </data>
-  <data name="UpdateAvailable" xml:space="preserve">
-    <value>[b]{0}[/b] sürümüne güncelle</value>
-  </data>
-  <data name="Toolbar_OnlineManageLists" xml:space="preserve">
-    <value>Listeleri düzenle...</value>
-  </data>
-  <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
-    <value>Parola gerektirenleri dahil et</value>
-  </data>
-  <data name="Toolbar_Hide_Tooltip" xml:space="preserve">
-    <value>Sunucuyu gizli sunucular listesine ekle ("@hidden" arayarak açabilirsiniz)</value>
-  </data>
-  <data name="TexturesDdsFilter" xml:space="preserve">
-    <value>DDS dosyaları (*.dds)|*.dds|All files (*.*)|*.*</value>
+    <value>{1}개 중 {0}개 로드됨</value>
   </data>
   <data name="Progress_Short_KnownTotal" xml:space="preserve">
-    <value>{1} taneden {0}</value>
+    <value>{1}개 중 {0}개</value>
+  </data>
+  <data name="Progress_Uploading" xml:space="preserve">
+    <value>{0} 업로드</value>
+  </data>
+  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
+    <value>{1}개 중 {0}개 업로드됨</value>
+  </data>
+  <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
+    <value>일치하는 후보를 찾을 수 없습니다.</value>
+  </data>
+  <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
+    <value>레이스 그리드를 사전 설정으로 저장</value>
+  </data>
+  <data name="RaceGrid_ShareHeader" xml:space="preserve">
+    <value>공유 레이스 그리드</value>
   </data>
   <data name="Reload" xml:space="preserve">
-    <value>Yeniden yükle</value>
+    <value>새로 고침</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>복원</value>
+  </data>
+  <data name="SelectColor" xml:space="preserve">
+    <value>색상 선택</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>암호 표시</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>정보</value>
+  </data>
+  <data name="StackTrace" xml:space="preserve">
+    <value>스택 추적</value>
+  </data>
+  <data name="Suggestions" xml:space="preserve">
+    <value>제안들</value>
+  </data>
+  <data name="SuggestionsMessage" xml:space="preserve">
+    <value>오류 세부 정보를 클립보드에 [url=cmd://copy]복사[/url]합니다. 이 페이지를  [url=cmd://refresh]새로 고치[/url]거나  [url=cmd://browseback]뒤로[/url] 돌아가기</value>
+  </data>
+  <data name="Time_Day" xml:space="preserve">
+    <value>{0} 일</value>
+  </data>
+  <data name="Time_Hour" xml:space="preserve">
+    <value>{0} 시간</value>
+  </data>
+  <data name="Time_Minute" xml:space="preserve">
+    <value>{0} 분</value>
+  </data>
+  <data name="Time_Month" xml:space="preserve">
+    <value>{0} 월</value>
+  </data>
+  <data name="Time_Second" xml:space="preserve">
+    <value>{0} 초</value>
+  </data>
+  <data name="Time_Week" xml:space="preserve">
+    <value>{0} 주일</value>
+  </data>
+  <data name="Toolbar_Favourite" xml:space="preserve">
+    <value>즐겨찾기</value>
+  </data>
+  <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
+    <value>즐겨찾기 목록에 서버 추가(Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Hide" xml:space="preserve">
+    <value>숨김</value>
+  </data>
+  <data name="Toolbar_Hide_Tooltip" xml:space="preserve">
+    <value>숨겨진 서버 목록에 서버 추가(열기 위해 "@hidden" 검색)</value>
+  </data>
+  <data name="Toolbar_Invite" xml:space="preserve">
+    <value>요청</value>
+  </data>
+  <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
+    <value>암호 포함</value>
+  </data>
+  <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
+    <value>친구가 빠르게 참여할 수 있도록 이 서버에 대한 링크 공유(Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
+    <value>예약 취소</value>
+  </data>
+  <data name="Toolbar_OnlineManageLists" xml:space="preserve">
+    <value>목록 관리...</value>
+  </data>
+  <data name="Toolbar_Unfavourite" xml:space="preserve">
+    <value>즐겨찾기 해제</value>
+  </data>
+  <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
+    <value>즐겨찾기 목록에서 서버 제거(Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Unhide" xml:space="preserve">
+    <value>숨김 해제</value>
+  </data>
+  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
+    <value>숨겨진 서버 목록에서 서버 제거</value>
+  </data>
+  <data name="UIThreadRequired" xml:space="preserve">
+    <value>작업을 수행하려면 UI 스레드가 필요합니다.</value>
+  </data>
+  <data name="UnexpectedToken" xml:space="preserve">
+    <value>예기치 않은 토큰</value>
+  </data>
+  <data name="UnknownOS" xml:space="preserve">
+    <value>알 수 없는 운영 체제</value>
+  </data>
+  <data name="UnknownTokenType" xml:space="preserve">
+    <value>알 수 없는 토큰 유형</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>[b]{0}[/b] 버전으로 업데이트</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>예</value>
   </data>
 </root>

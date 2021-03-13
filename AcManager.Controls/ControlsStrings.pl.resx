@@ -130,8 +130,8 @@
     <value>Automatyczne sprzęgło</value>
   </data>
   <data name="Assists_AutoBlipLabel" xml:space="preserve">
-    <value>Przygazówka:</value>
-  </data>
+    <value>Automatyczne hamowanie z międzygazem:</value>
+  <alternative>Przygazówka:</alternative></data>
   <data name="Assists_StabilityControlLabel" xml:space="preserve">
     <value>Kontrola stabilności:</value>
   </data>
@@ -760,8 +760,8 @@ Tryb głębi: [b]{4}[/b]</value>
     <value>Wysyłam...</value>
   </data>
   <data name="Common_Preparing" xml:space="preserve">
-    <value>Przygotowuję...</value>
-  </data>
+    <value>Przygotowywanie...</value>
+  <alternative>Przygotowuję...</alternative></data>
   <data name="Common_Compressing" xml:space="preserve">
     <value>Kompresuję...</value>
   </data>

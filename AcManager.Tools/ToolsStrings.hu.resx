@@ -984,4 +984,7 @@
   <data name="Shared_RaceGridPreset" xml:space="preserve">
     <value>Mezőny előbeállítása</value>
   </data>
+  <data name="Units_BHP" xml:space="preserve">
+    <value>BHP</value>
+  </data>
 </root>

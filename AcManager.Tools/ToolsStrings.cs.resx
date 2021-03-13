@@ -373,8 +373,8 @@
     <value>Aktivovat DRS</value>
   </data>
   <data name="Controls_FlashHeadlights" xml:space="preserve">
-    <value>Zablikání světly</value>
-  <alternative>Zablikat světly</alternative></data>
+    <value>Zablikat světlomety</value>
+  <alternative>Zablikat světly</alternative><alternative>Zablikání světly</alternative></data>
   <data name="Controls_Gear_Fifth" xml:space="preserve">
     <value>Pátý rychlostní stupeň</value>
   </data>
@@ -412,11 +412,11 @@
     <value>Ruční brzda</value>
   </data>
   <data name="Controls_Headlights" xml:space="preserve">
-    <value>Zapnout světla</value>
-  </data>
+    <value>Světlomety</value>
+  <alternative>Zapnout světla</alternative></data>
   <data name="Controls_Horn" xml:space="preserve">
-    <value>Zatroubit</value>
-  </data>
+    <value>Klakson</value>
+  <alternative>Zatroubit</alternative></data>
   <data name="Controls_Increase" xml:space="preserve">
     <value>Zvýšit</value>
   </data>
@@ -1702,5 +1702,8 @@ Přejete si je zabalit před zahájením serveru? Nezapomeňte ale s klienty sd�
   </data>
   <data name="Online_LoadingActualInformation" xml:space="preserve">
     <value>Načítám aktuální informace o serveru...</value>
+  </data>
+  <data name="Units_BHP" xml:space="preserve">
+    <value>BHP</value>
   </data>
 </root>

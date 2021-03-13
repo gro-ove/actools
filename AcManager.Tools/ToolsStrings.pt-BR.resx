@@ -1619,4 +1619,7 @@ Gostaria de embala-los antes de iniciar o servidor? Mas não esqueça de compart
   <data name="Online_LoadingActualInformation" xml:space="preserve">
     <value>Carregando informações atuais do servidor...</value>
   </data>
+  <data name="Units_BHP" xml:space="preserve">
+    <value>BHP</value>
+  </data>
 </root>

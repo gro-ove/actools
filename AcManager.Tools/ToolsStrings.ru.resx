@@ -1749,4 +1749,17 @@
   <data name="Online_LoadingActualInformation" xml:space="preserve">
     <value>Загрузка актуальной информации о сервере...</value>
   </data>
+  <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
+    <value>Убедитесь что здесь достаточно места и оригинальные файлы могут быть удалены.</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning" xml:space="preserve">
+    <value>Данные {0} не упакованы, пользователи могут изменить их перед присоединением и получить преимущество.
+
+Хотите упаковать их перед запуском сервера? Но не забывайте делиться упакованной версией с клиентами.</value>
+  <alternative>Данные {0} не упакованы, пользователи могут изменить их перед присоединением и получить преимущество.
+
+Хотите упаковать их перед запуском сервера? Но не забывайте делиться упакованной версией с клиентами.</alternative></data>
+  <data name="Settings_Starter_Sse_Description" xml:space="preserve">
+    <value>Самый быстрый, запускает заезд напрямую без использования Steam; онлайн будет работать, но вы потеряете достижения</value>
+  </data>
 </root>

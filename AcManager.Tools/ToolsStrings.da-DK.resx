@@ -594,4 +594,7 @@
   <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
     <value>Make sure there is no runned app working with showroom’s sound files.</value>
   </data>
+  <data name="Units_BHP" xml:space="preserve">
+    <value>BHP</value>
+  </data>
 </root>

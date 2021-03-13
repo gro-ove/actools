@@ -304,8 +304,8 @@
     <value>Uživatelská přednastavení</value>
   </data>
   <data name="Controls_WaitingForInput" xml:space="preserve">
-    <value>Čekám na vstup</value>
-  </data>
+    <value>Čekám na vstup (Esc pro návrat)</value>
+  <alternative>Čekám na vstup</alternative></data>
   <data name="FindInformation_SaveAndClose" xml:space="preserve">
     <value>Uložit a zavřít</value>
   </data>
@@ -547,8 +547,8 @@
     <value>Jas</value>
   </data>
   <data name="Common_Clear" xml:space="preserve">
-    <value>Jasno</value>
-  </data>
+    <value>Vyprázdnit</value>
+  <alternative>Jasno</alternative></data>
   <data name="Share_VerifyMessageHeader" xml:space="preserve">
     <value>Je všechno v pořádku?</value>
   </data>

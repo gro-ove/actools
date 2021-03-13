@@ -2685,8 +2685,8 @@ Accepted values are from -1 to 1.</value>
     <value>Profuncidad de vision:</value>
   </data>
   <data name="AcSettings_Video_MotionBlur" xml:space="preserve">
-    <value>Desenfoque de movimiento</value>
-  <alternative>Motion Blur</alternative></data>
+    <value>Desenfoque de movim.</value>
+  <alternative>Motion Blur</alternative><alternative>Desenfoque de movimiento</alternative></data>
   <data name="AcSettings_Video_HeatShimmering" xml:space="preserve">
     <value>Espejismo por calor</value>
   </data>
@@ -4283,8 +4283,8 @@ nada que hacer mientras carga datos de disco, y habrá mucha menos información 
     <value>No se puede cargar la imagen</value>
   </data>
   <data name="Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter" xml:space="preserve">
-    <value>Lanzador original (aparece que con el lanzador de Steam)</value>
-  </data>
+    <value>Lanzador original (aparece con el iniciador de Steam)</value>
+  <alternative>Lanzador original (aparece que con el lanzador de Steam)</alternative></data>
   <data name="Windows_MainWindow_VideoSettingsFPSCounter" xml:space="preserve">
     <value>Ajustes de vídeo (contador de FPS)</value>
   </data>
@@ -4307,11 +4307,11 @@ nada que hacer mientras carga datos de disco, y habrá mucha menos información 
     <value>Modo:</value>
   </data>
   <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostRange" xml:space="preserve">
-    <value>Rango de potenciador al centro</value>
-  </data>
+    <value>Rango de centrado</value>
+  <alternative>Rango de potenciador al centro</alternative></data>
   <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain" xml:space="preserve">
-    <value>Ganancia de potenciador al centro</value>
-  </data>
+    <value>Ganancia de centrado</value>
+  <alternative>Ganancia de potenciador al centro</alternative></data>
   <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip" xml:space="preserve">
     <value>Usar para multiplicar FFB con volante centrado</value>
   </data>

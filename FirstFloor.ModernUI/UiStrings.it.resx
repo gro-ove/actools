@@ -561,4 +561,7 @@
   <data name="Common_Browse" xml:space="preserve">
     <value>Naviga</value>
   </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Ricarica</value>
+  </data>
 </root>

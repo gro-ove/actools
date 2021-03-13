@@ -603,4 +603,7 @@
   <data name="Common_Browse" xml:space="preserve">
     <value>浏览</value>
   </data>
+  <data name="Reload" xml:space="preserve">
+    <value>重新载入</value>
+  </data>
 </root>

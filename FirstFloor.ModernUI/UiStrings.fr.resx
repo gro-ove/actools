@@ -587,4 +587,7 @@
   <data name="Common_Browse" xml:space="preserve">
     <value>Naviguer</value>
   </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Recharger</value>
+  </data>
 </root>

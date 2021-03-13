@@ -1674,4 +1674,7 @@ Te gustaria empaquetarlo antes de iniciar el server? Pero no olvides compartir l
   <data name="Online_LoadingActualInformation" xml:space="preserve">
     <value>Cargando información de servidor real</value>
   </data>
+  <data name="Units_BHP" xml:space="preserve">
+    <value>BHP</value>
+  </data>
 </root>

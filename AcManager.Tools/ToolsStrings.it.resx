@@ -304,8 +304,8 @@
     <value>Non può essere disattivato</value>
   </data>
   <data name="AcObject_NotValidAnymore" xml:space="preserve">
-    <value>non più valido</value>
-  </data>
+    <value>Non più valido</value>
+  <alternative>non più valido</alternative></data>
   <data name="Common_IdIsTaken" xml:space="preserve">
     <value>ID is preso</value>
   </data>
@@ -886,8 +886,8 @@
     <value>Non è fattibile</value>
   </data>
   <data name="AcObject_DisablingNotSupported_Commentary" xml:space="preserve">
-    <value>Spiacente, Questo tipo di oggetto non può essere disabilitato.</value>
-  </data>
+    <value>Spiacente, questo tipo di oggetto non può essere disabilitato.</value>
+  <alternative>Spiacente, Questo tipo di oggetto non può essere disabilitato.</alternative></data>
   <data name="AcObject_CannotRemove" xml:space="preserve">
     <value>Impossibile rimuovere la directory esistente</value>
   </data>
@@ -941,8 +941,8 @@
     <value>Nome mancante</value>
   </data>
   <data name="AcError_BrandNameIsMissing" xml:space="preserve">
-    <value>Marchio mancante</value>
-  </data>
+    <value>Marca dell'auto mancante</value>
+  <alternative>Marchio mancante</alternative></data>
   <data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
     <value>Directory “ui” è mancante</value>
   </data>
@@ -959,8 +959,8 @@
     <value>La pista richiesta “{0}” è mancante</value>
   </data>
   <data name="AcError_RequiredCarIsMissing" xml:space="preserve">
-    <value>La lacchina richiesta “{0}” è mancante</value>
-  </data>
+    <value>L'auto richiesta “{0}” è mancante</value>
+  <alternative>La lacchina richiesta “{0}” è mancante</alternative></data>
   <data name="AcError_RequiredSkinForIsMissing" xml:space="preserve">
     <value>La skin richiesta “{1}” per {0} è Mancante</value>
   </data>
@@ -968,11 +968,11 @@
     <value>Il meteo Richiesto “{0}” è mancante</value>
   </data>
   <data name="AcError_CarParentIsMissing" xml:space="preserve">
-    <value>Auto parenti mancante</value>
-  <alternative>Car’s parent è mancante</alternative></data>
+    <value>Il genitore dell'auto è mancante</value>
+  <alternative>Car’s parent è mancante</alternative><alternative>Auto parenti mancante</alternative></data>
   <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
-    <value>Logo del marchio è mancante</value>
-  </data>
+    <value>Il logo della marca è mancante</value>
+  <alternative>Logo del marchio è mancante</alternative></data>
   <data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
     <value>Aggiornamento icone mancante</value>
   <alternative>Upgrade icon mancante</alternative></data>
@@ -1049,8 +1049,8 @@
     <value>Aggiungi nuova macchina alla lista</value>
   </data>
   <data name="Assists_TyreWear" xml:space="preserve">
-    <value>Tipo Gomme</value>
-  </data>
+    <value>Usura pneumatici</value>
+  <alternative>Tipo Gomme</alternative></data>
   <data name="Common_InvalidFormat" xml:space="preserve">
     <value>Formato non valido</value>
   </data>
@@ -1133,8 +1133,8 @@
     <value>CV</value>
   </data>
   <data name="AcError_CarIsMissing" xml:space="preserve">
-    <value>Auto “{0}” è mancante</value>
-  </data>
+    <value>L'auto “{0}” è mancante</value>
+  <alternative>Auto “{0}” è mancante</alternative></data>
   <data name="Common_Weekend" xml:space="preserve">
     <value>Fine settimana</value>
   </data>
@@ -1280,8 +1280,8 @@
     <value>Non posso scompattare</value>
   </data>
   <data name="AcObject_CannotGetId" xml:space="preserve">
-    <value>Non riessco a recuperare ID dal percorso</value>
-  </data>
+    <value>Non riesco a recuperare l'ID dal percorso</value>
+  <alternative>Non riessco a recuperare ID dal percorso</alternative></data>
   <data name="ContentInstallation_CarSkinNew" xml:space="preserve">
     <value>Nuova skin {0}</value>
   </data>
@@ -1385,11 +1385,11 @@
     <value>Aiuti</value>
   </data>
   <data name="Assists_TractionControlLabel" xml:space="preserve">
-    <value>Controllo della trazione:</value>
-  </data>
+    <value>Controllo della trazione</value>
+  <alternative>Controllo della trazione:</alternative></data>
   <data name="Assists_TyreBlankets" xml:space="preserve">
-    <value>Termo coperte</value>
-  </data>
+    <value>Termocoperte</value>
+  <alternative>Termo coperte</alternative></data>
   <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
     <value>Rimuovi le auto selezionate dalla lista</value>
   </data>
@@ -1541,11 +1541,11 @@
     <value>Tag “{0}” e mancante </value>
   </data>
   <data name="Assists_TractionControlLabel_Tooltip" xml:space="preserve">
-    <value>Ottimizzare l'aderenza in accelerazione</value>
-  </data>
+    <value>Ottimizza l'aderenza in accelerazione</value>
+  <alternative>Ottimizzare l'aderenza in accelerazione</alternative></data>
   <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
-    <value>Scaldare le gomme nei box</value>
-  </data>
+    <value>Scalda le gomme ai pit</value>
+  <alternative>Scaldare le gomme nei box</alternative></data>
   <data name="Assists_TyreWear_Tooltip" xml:space="preserve">
     <value>Moltiplicatore per usura dei pneumatici</value>
   </data>
@@ -1670,5 +1670,8 @@ Vorresti comprimerlo prima di avviare il server? Ma non dimenticare di condivide
   </data>
   <data name="Online_LoadingActualInformation" xml:space="preserve">
     <value>Caricamento informazioni server attuali...</value>
+  </data>
+  <data name="Race_RandomizationTitle" xml:space="preserve">
+    <value>Casualità:</value>
   </data>
 </root>

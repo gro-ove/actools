@@ -816,8 +816,8 @@ Material: [b]{10}[/b]</alternative></data>
     <value>Año de inicio de produccion</value>
   </data>
   <data name="Controls_MinimumForce" xml:space="preserve">
-    <value>Zona muerta/Fuerza minima</value>
-  <alternative>Zona muerta / Fuerza minima</alternative></data>
+    <value>Zona muerta/F. minima</value>
+  <alternative>Zona muerta / Fuerza minima</alternative><alternative>Zona muerta/Fuerza minima</alternative></data>
   <data name="Controls_Gain" xml:space="preserve">
     <value>Ganancia</value>
   </data>
@@ -840,8 +840,8 @@ Material: [b]{10}[/b]</alternative></data>
     <value>Mejorar efectos del contravolante</value>
   </data>
   <data name="Controls_SoftLock" xml:space="preserve">
-    <value>Bloqueo incompleto. El volante se bloqueara en el limite de los grados reales del coche</value>
-  <alternative>Bloqueo incompleto</alternative></data>
+    <value>Bloqueo por software. El volante se bloqueará en el limite de los grados reales del coche</value>
+  <alternative>Bloqueo incompleto</alternative><alternative>Bloqueo incompleto. El volante se bloqueara en el limite de los grados reales del coche</alternative></data>
   <data name="Controls_SkipFfbSteps" xml:space="preserve">
     <value>Saltar pasos del FFB</value>
   <alternative>Saktar pasos del FFB</alternative></data>

@@ -535,8 +535,8 @@
     <value>Upewnij się, że połączenie internetowe jest dostępne.</value>
   </data>
   <data name="DirectLoader_GoogleDriveChanged" xml:space="preserve">
-    <value>Google Drive zostało zmienione.</value>
-  </data>
+    <value>Dysk Google został zmieniony.</value>
+  <alternative>Google Drive zostało zmienione.</alternative></data>
   <data name="DirectLoader_RdChanged" xml:space="preserve">
     <value>RaceDepartmen zostało zmienione.</value>
   </data>
@@ -1300,8 +1300,8 @@
     <value>System anty-blokowania kół</value>
   </data>
   <data name="Assists_AutoBlip" xml:space="preserve">
-    <value>Przygazówka</value>
-  </data>
+    <value>Automatyczne hamowanie z międzygazem</value>
+  <alternative>Przygazówka</alternative></data>
   <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
     <value>Automatycznie synchronizuj obroty podczas redukcji</value>
   <alternative>Automatycznie synchronizuj RPM podczas redukcji</alternative></data>
@@ -1354,8 +1354,8 @@
     <value>Optymalizacja przyczepności podczas przyspieszania</value>
   <alternative>Optymalizacja przyczepność podczas przyspieszania</alternative></data>
   <data name="Assists_TyreBlankets" xml:space="preserve">
-    <value>Koce grzewcze</value>
-  </data>
+    <value>Rozgrzane opony</value>
+  <alternative>Koce grzewcze</alternative></data>
   <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
     <value>Grzanie opon w boxach</value>
   </data>
@@ -1390,8 +1390,8 @@
     <value>Dodaj nowe auto do listy</value>
   </data>
   <data name="Drive_GridBuilding" xml:space="preserve">
-    <value>Przygotowanie gridu...</value>
-  </data>
+    <value>Przygotowywanie gridu...</value>
+  <alternative>Przygotowanie gridu...</alternative></data>
   <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
     <value>Usuń wybrane auta z listy</value>
   </data>
@@ -1402,8 +1402,8 @@
     <value>Wyłączone</value>
   <alternative>Off</alternative></data>
   <data name="AssistState_Factory" xml:space="preserve">
-    <value>Fabryczne</value>
-  </data>
+    <value>Fabrycznie</value>
+  <alternative>Fabryczne</alternative></data>
   <data name="AssistState_On" xml:space="preserve">
     <value>Włączone</value>
   <alternative>On</alternative></data>
@@ -1674,5 +1674,26 @@ Chciałbyś spakować to przed uruchomieniem serwera? Jeśli tak, nie zapomnij u
   </data>
   <data name="Common_Unit_Hz" xml:space="preserve">
     <value>Hz</value>
+  </data>
+  <data name="Uploader_GoogleDrive" xml:space="preserve">
+    <value>Dysk Google</value>
+  </data>
+  <data name="Common_FeetPerSecondPostfix" xml:space="preserve">
+    <value>ft/s</value>
+  </data>
+  <data name="Common_MetersPerSecondPostfix" xml:space="preserve">
+    <value>m/s</value>
+  </data>
+  <data name="Online_LoadingPlayersList" xml:space="preserve">
+    <value>Wczytywanie listy graczy...</value>
+  </data>
+  <data name="Online_LoadingCars" xml:space="preserve">
+    <value>Wczytywanie {0} pojazdów</value>
+  </data>
+  <data name="Online_LoadingSkins" xml:space="preserve">
+    <value>Wczytywanie {0} malowań...</value>
+  </data>
+  <data name="Online_LoadingActualInformation" xml:space="preserve">
+    <value>Wczytywanie aktualnych informacji o serwerze...</value>
   </data>
 </root>

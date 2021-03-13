@@ -232,8 +232,8 @@
     <value>Finito</value>
   </data>
   <data name="AcObject_AuthorLabel" xml:space="preserve">
-    <value>Autore</value>
-  </data>
+    <value>Autore:</value>
+  <alternative>Autore</alternative></data>
   <data name="Controls_InvertAxis" xml:space="preserve">
     <value>Inverti</value>
   </data>
@@ -307,8 +307,8 @@
     <value>Non salvato</value>
   </data>
   <data name="Assists_TyreWearLabel" xml:space="preserve">
-    <value>Tipo Gomme:</value>
-  </data>
+    <value>Usura pneumatici:</value>
+  <alternative>Tipo Gomme:</alternative></data>
   <data name="Assists_IdealLineLabel" xml:space="preserve">
     <value>Traiettoria ideale:</value>
   </data>
@@ -328,8 +328,8 @@
     <value>Carburante:</value>
   </data>
   <data name="AcObject_CarBrandLabel" xml:space="preserve">
-    <value>Marchio:</value>
-  </data>
+    <value>Marca:</value>
+  <alternative>Marchio:</alternative></data>
   <data name="AcObject_ContryLabel" xml:space="preserve">
     <value>Paese:</value>
   </data>
@@ -819,8 +819,8 @@ Profondità: [b]{4}[/b]</value>
     <value>Devi fare almeno uno screenshot.</value>
   </data>
   <data name="AcObject_YearLabel_CarTooltip" xml:space="preserve">
-    <value>Annno di inizio produzione</value>
-  </data>
+    <value>Anno di inizio produzione</value>
+  <alternative>Annno di inizio produzione</alternative></data>
   <data name="Controls_MinimumForce" xml:space="preserve">
     <value>Forza Minima</value>
   </data>
@@ -913,5 +913,8 @@ Profondità: [b]{4}[/b]</value>
   </data>
   <data name="Common_WhatIsIt" xml:space="preserve">
     <value>Cos'è?</value>
+  </data>
+  <data name="Common_Rating" xml:space="preserve">
+    <value>Valutazione:</value>
   </data>
 </root>

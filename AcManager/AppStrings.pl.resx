@@ -1922,8 +1922,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Mnożnik czasu</value>
   </data>
   <data name="Drive_TyreBlankets" xml:space="preserve">
-    <value>Koce grzewcze</value>
-  </data>
+    <value>Rozgrzane opony</value>
+  <alternative>Koce grzewcze</alternative></data>
   <data name="Drive_Penalties" xml:space="preserve">
     <value>Kary</value>
   </data>
@@ -2150,14 +2150,14 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Maks. prędk.:</value>
   </data>
   <data name="CarSpecs_AccelerationLabel" xml:space="preserve">
-    <value>Przyspiesz.:</value>
-  </data>
+    <value>Przyspieszenie:</value>
+  <alternative>Przyspiesz.:</alternative></data>
   <data name="CarSpecs_PwRatioLabel" xml:space="preserve">
     <value>Waga/moc:</value>
   </data>
   <data name="CarSpecs_Power_FormatTooltip" xml:space="preserve">
-    <value>…bhp</value>
-  </data>
+    <value>… km</value>
+  <alternative>…bhp</alternative></data>
   <data name="CarSpecs_Torque_FormatTooltip" xml:space="preserve">
     <value>…Nm</value>
   </data>
@@ -2404,8 +2404,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Inicjowanie…</value>
   </data>
   <data name="Race_Preparing" xml:space="preserve">
-    <value>Przygotowanie ...</value>
-  </data>
+    <value>Przygotowywanie ...</value>
+  <alternative>Przygotowanie ...</alternative></data>
   <data name="Race_LaunchingGame" xml:space="preserve">
     <value>Rozpoczynanie sesji ...</value>
   </data>
@@ -4588,5 +4588,98 @@ tak czy inaczej, gdy czeka na dysk, aby pobrać dane, a danych będzie znacznie 
   </data>
   <data name="AcSettings_Video_PerformanceHit" xml:space="preserve">
     <value>Wzrost wydajności:</value>
+  </data>
+  <data name="Main_FPS_Minimum" xml:space="preserve">
+    <value>MInimalne:</value>
+  </data>
+  <data name="Settings_Drive_RealHeadMotion" xml:space="preserve">
+    <value>Symulacja ruchów głową:</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteerThumb" xml:space="preserve">
+    <value>Sterowanie kciukiem:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_CSP_Tooltip" xml:space="preserve">
+    <value>Custom Shader Patch</value>
+  </data>
+  <data name="Main_Workshop" xml:space="preserve">
+    <value>Warsztat</value>
+  </data>
+  <data name="MainWindow_FoundNModUpdates" xml:space="preserve">
+    <value>Znaleziono {0} {aktualizacji} do modów:</value>
+  </data>
+  <data name="MainWindow_AddDownload_Message" xml:space="preserve">
+    <value>Wprowadź link do pobrania</value>
+  </data>
+  <data name="MainWindow_AddDownload_Comment" xml:space="preserve">
+    <value>Lub, skopiuj link albo znajdź plik i wciśnij Ctrl+V w Content Managerze</value>
+  </data>
+  <data name="MainWindow_AddDownload_Title" xml:space="preserve">
+    <value>Pobierz</value>
+  </data>
+  <data name="MainWindow_AddDownload_MenuItem" xml:space="preserve">
+    <value>Pobierz coś...</value>
+  </data>
+  <data name="MainWindow_InstallFromAFile_MenuItem" xml:space="preserve">
+    <value>Zainstaluj z pliku...</value>
+  </data>
+  <data name="DownloadList_PluginsLoadFailed" xml:space="preserve">
+    <value>Nie można załadować listy pluginów</value>
+  </data>
+  <data name="DownloadList_ViewInExplorer" xml:space="preserve">
+    <value>Zobacz w Explorerze</value>
+  </data>
+  <data name="DownloadList_Password" xml:space="preserve">
+    <value>Hasło:</value>
+  </data>
+  <data name="DownloadList_DetectionFailed" xml:space="preserve">
+    <value>Aplikacja nie wykryła kontentu do pobrania. Chcesz spróbować ponownie?</value>
+  </data>
+  <data name="DownloadList_ShowFile" xml:space="preserve">
+    <value>Pokaż plik</value>
+  </data>
+  <data name="DownloadList_ScanAgain" xml:space="preserve">
+    <value>Skanuj ponownie</value>
+  </data>
+  <data name="DownloadList_Retry" xml:space="preserve">
+    <value>Spróbuj ponownie</value>
+  </data>
+  <data name="DownloadList_ExtraOptions" xml:space="preserve">
+    <value>Dodatkowe opcje:</value>
+  </data>
+  <data name="DownloadList_Failed" xml:space="preserve">
+    <value>Błąd</value>
+  </data>
+  <data name="DownloadList_NothingFound" xml:space="preserve">
+    <value>Nie znaleziono</value>
+  </data>
+  <data name="DownloadList_Cancelled" xml:space="preserve">
+    <value>Anulowano</value>
+  </data>
+  <data name="DownloadList_Cancelling" xml:space="preserve">
+    <value>Anulowanie...</value>
+  </data>
+  <data name="DownloadList_Installing" xml:space="preserve">
+    <value>Instalowanie...</value>
+  </data>
+  <data name="DownloadList_Install" xml:space="preserve">
+    <value>Instaluj</value>
+  </data>
+  <data name="DownloadList_Resume" xml:space="preserve">
+    <value>Wznów</value>
+  </data>
+  <data name="DownloadList_Pause" xml:space="preserve">
+    <value>Zatrzymaj</value>
+  </data>
+  <data name="DownloadList_Restart" xml:space="preserve">
+    <value>Rozpocznij ponownie</value>
+  </data>
+  <data name="DownloadList_Cancel" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="DownloadList_From" xml:space="preserve">
+    <value>Z:</value>
+  </data>
+  <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
+    <value>Brak aktywnych pobieranych plików</value>
   </data>
 </root>

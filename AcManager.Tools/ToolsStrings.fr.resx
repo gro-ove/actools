@@ -1677,8 +1677,8 @@ Voulez-vous l'emballer avant de démarrer le serveur? Mais n'oubliez pas de part
     <value>Lester</value>
   </data>
   <data name="Common_Restrictor" xml:space="preserve">
-    <value>Restrcition</value>
-  </data>
+    <value>Restriction</value>
+  <alternative>Restrcition</alternative></data>
   <data name="Race_ArrangeAIStrengthBasedOnPWRatio" xml:space="preserve">
     <value>Modifer la difficulté de l'IA en fonction du rapport P / W</value>
   </data>
@@ -1693,5 +1693,17 @@ Voulez-vous l'emballer avant de démarrer le serveur? Mais n'oubliez pas de part
   </data>
   <data name="Race_OpponentsAggression" xml:space="preserve">
     <value>Aggressivité des adversaires</value>
+  </data>
+  <data name="Online_LoadingPlayersList" xml:space="preserve">
+    <value>Chargement de la liste des joueurs...</value>
+  </data>
+  <data name="Online_LoadingCars" xml:space="preserve">
+    <value>Charment de la voiture ({0})…</value>
+  </data>
+  <data name="Online_LoadingSkins" xml:space="preserve">
+    <value>Chargement du skins {0}...</value>
+  </data>
+  <data name="Online_LoadingActualInformation" xml:space="preserve">
+    <value>Chargement des informations du server actuel...</value>
   </data>
 </root>

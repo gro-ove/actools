@@ -512,4 +512,7 @@
   <data name="Common_Browse" xml:space="preserve">
     <value>Просмотреть</value>
   </data>
+  <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
+    <value>Поделитесь ссылкой на этот сервер чтобы ваши друзья могли быстро присоединиться к вам (Ctrl + Page Up)</value>
+  </data>
 </root>

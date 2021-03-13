@@ -1735,4 +1735,16 @@
   <data name="Units_RPM" xml:space="preserve">
     <value>引擎轉速（RPM）</value>
   </data>
+  <data name="Online_LoadingPlayersList" xml:space="preserve">
+    <value>正在載入玩家名單…</value>
+  </data>
+  <data name="Online_LoadingCars" xml:space="preserve">
+    <value>正在裝載汽車（{0}）</value>
+  </data>
+  <data name="Online_LoadingSkins" xml:space="preserve">
+    <value>正在加載{0}個外觀</value>
+  </data>
+  <data name="Online_LoadingActualInformation" xml:space="preserve">
+    <value>正在加載實際的服務器信息…</value>
+  </data>
 </root>

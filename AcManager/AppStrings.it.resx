@@ -1142,8 +1142,8 @@ Dimensioni massime (raccomandate): {0} MB</alternative></data>
     <value>Pulisci e ordina Tag</value>
   </data>
   <data name="AcObject_Version_TooltipExt" xml:space="preserve">
-    <value>Potrebbe essere usato per l'aggiornamento-automatico</value>
-  </data>
+    <value>Potrebbe essere usato per l'aggiornamento automatico</value>
+  <alternative>Potrebbe essere usato per l'aggiornamento-automatico</alternative></data>
   <data name="Filter_ByAuthor" xml:space="preserve">
     <value>Filtra per Autore</value>
   </data>
@@ -1820,8 +1820,8 @@ Dimensioni massime (raccomandate): {0} MB</alternative></data>
     <value>Benvenuto in Content Manager e grazie per utilizzarlo! Hai ancora un paio di passaggi da fare prima di avviarlo:</value>
   </data>
   <data name="AcRoot_Prompt" xml:space="preserve">
-    <value>Cartella radice Assetto Corsa</value>
-  </data>
+    <value>Cartella radice di Assetto Corsa</value>
+  <alternative>Cartella radice Assetto Corsa</alternative></data>
   <data name="Common_RequiredValue" xml:space="preserve">
     <value>Valore necessario</value>
   </data>
@@ -2399,8 +2399,8 @@ Dimensioni massime (raccomandate): {0} MB</alternative></data>
     <value>Contattaci:</value>
   </data>
   <data name="About_DeveloperMode" xml:space="preserve">
-    <value>Abilita modalità sviluppatore?</value>
-  </data>
+    <value>Abilitare la modalità sviluppatore?</value>
+  <alternative>Abilita modalità sviluppatore?</alternative></data>
   <data name="About_DeveloperMode_Title" xml:space="preserve">
     <value>Modalità sviluppatore</value>
   </data>
@@ -2411,14 +2411,14 @@ Dimensioni massime (raccomandate): {0} MB</alternative></data>
     <value>Grazie per l'aiuto!</value>
   </data>
   <data name="About_ReportAnIssue_CannotSend" xml:space="preserve">
-    <value>Non posso inviare i log</value>
-  </data>
+    <value>Impossibile inviare i log</value>
+  <alternative>Non posso inviare i log</alternative></data>
   <data name="About_Copyright" xml:space="preserve">
     <value>Copyright © 2016 AcClub. Tutti i diritti riservati.</value>
   </data>
   <data name="About_MarkAllAsRead" xml:space="preserve">
-    <value>Segna come già letti</value>
-  </data>
+    <value>Segna tutti come già letto</value>
+  <alternative>Segna come già letti</alternative></data>
   <data name="About_NewTooltip" xml:space="preserve">
     <value>Nuovo!</value>
   </data>
@@ -2604,8 +2604,8 @@ Se hai bisogno di altri valori, contattaci e li aggiungeremo.
     <value>Usa auto in una rapida sessione di guida (Ctrl+G)</value>
   </data>
   <data name="AcObject_Author_TooltipExt" xml:space="preserve">
-    <value>Se crei i tuoi mod, utilizza questo campo invece che la descrizione (o, naturalmente, il nome)</value>
-  </data>
+    <value>Se crei le tue mod, utilizza questo campo invece che la descrizione (o, naturalmente, il nome)</value>
+  <alternative>Se crei i tuoi mod, utilizza questo campo invece che la descrizione (o, naturalmente, il nome)</alternative></data>
   <data name="AcObject_Url_TooltipExt" xml:space="preserve">
     <value>Anche in questo caso, per favore, utilizzare questo campo se siete modder e si dispone di una pagina web con informazioni aggiuntive e nuove versioni per questo oggetto</value>
   </data>
@@ -2996,8 +2996,8 @@ Ma se non si desidera sprecare 200 MB: immagine TIFF, 96 bit per pixel, ZIP </va
     <value>Vista &amp; UI</value>
   </data>
   <data name="AcSettings_Apps_FormsLabel" xml:space="preserve">
-    <value>moduli:</value>
-  </data>
+    <value>Moduli:</value>
+  <alternative>moduli:</alternative></data>
   <data name="AcSettings_System_Logging" xml:space="preserve">
     <value>Tracciamento (raccomandato)</value>
   </data>
@@ -3056,8 +3056,8 @@ Ma se non si desidera sprecare 200 MB: immagine TIFF, 96 bit per pixel, ZIP </va
     <value>Se hai qualche domanda, idea o suggerimenti per questa applicazione o se desideri segnalare un problema specifico, ti invitiamo a contattarci usando [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] o [url="https://trello.com/c/w5xT6ssZ/49-contacts"] qualcos'altro [/url].</value>
   </data>
   <data name="About_ReportAnIssue_Prompt" xml:space="preserve">
-    <value>Descrivere il problema. Per favore, lasciare dei contatti se desideri ricevere una risposta (potrebbe anche aiutare a risolvere il problema).</value>
-  </data>
+    <value>Descrivi il problema. Per favore, lascia dei contatti se desideri ricevere una risposta (potrebbe anche aiutare a risolvere il problema).</value>
+  <alternative>Descrivere il problema. Per favore, lasciare dei contatti se desideri ricevere una risposta (potrebbe anche aiutare a risolvere il problema).</alternative></data>
   <data name="About_ReportAnIssue_Title" xml:space="preserve">
     <value>Qual'è il problema?</value>
   </data>
@@ -4440,5 +4440,161 @@ mentre aspetta che il disco ottenga i dati e ci saranno molti meno dati da legge
   </data>
   <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip" xml:space="preserve">
     <value>Usalo per moltiplicare FFB quando lo sterzo è posizionato al centro</value>
+  </data>
+  <data name="Main_DriverModels" xml:space="preserve">
+    <value>Piloti</value>
+  </data>
+  <data name="Main_Tools" xml:space="preserve">
+    <value>Strumenti</value>
+  </data>
+  <data name="Main_DownloadsAndInstallations" xml:space="preserve">
+    <value>Downloads &amp; Installazioni</value>
+  </data>
+  <data name="Settings_Appearance_UIScale" xml:space="preserve">
+    <value>UI zoom</value>
+  </data>
+  <data name="Settings_Appearance_Blur" xml:space="preserve">
+    <value>Sfocatura</value>
+  </data>
+  <data name="Settings_Appearance_TitleLinksAndMenu" xml:space="preserve">
+    <value>Titoli link e menu:</value>
+  </data>
+  <data name="Settings_Appearance_ShowDraggableAreas_Tooltip" xml:space="preserve">
+    <value>Con questa opzione disabilitata, puoi trascinarli tramite il pulsante di chiusura</value>
+  </data>
+  <data name="Settings_Appearance_HideButtonsInImageViewers" xml:space="preserve">
+    <value>Nascondi i pulsanti nel visualizzatore di immagini a meno che non ci sia un puntatore del mouse sopra</value>
+  </data>
+  <data name="Settings_Appearance_BlurImageViewersBackground" xml:space="preserve">
+    <value>Sfoca lo sfondo del visualizzatore di immagini</value>
+  </data>
+  <data name="Settings_Appearance_BlurButtonsBackground" xml:space="preserve">
+    <value>Sfoca lo sfondo dei pulsanti (potrebbe diminuire le prestazioni)</value>
+  </data>
+  <data name="Settings_Content_SmoothCurves" xml:space="preserve">
+    <value>Ammorbidisci curve</value>
+  </data>
+  <data name="Settings_Sharing_Content" xml:space="preserve">
+    <value>Contenuti:</value>
+  </data>
+  <data name="Settings_Content_OriginIcons" xml:space="preserve">
+    <value>Icone di origine:</value>
+  </data>
+  <data name="Settings_Content_ShowOriginIconsInLists" xml:space="preserve">
+    <value>Mostra le icone di origine negli elenchi (come l'icona Kunos o RSS)</value>
+  </data>
+  <data name="Settings_Content_DisplaySteerLock" xml:space="preserve">
+    <value>Visualizza grado di sterzata</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_RumbleEffects" xml:space="preserve">
+    <value>Effetti rombo</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteerThumb" xml:space="preserve">
+    <value>Sterzo thumb:</value>
+  </data>
+  <data name="Settings_Appearance_ThemeDefined" xml:space="preserve">
+    <value>Definito dal tema</value>
+  </data>
+  <data name="Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter" xml:space="preserve">
+    <value>Launcher originale (Avvio da Steam)</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostRange" xml:space="preserve">
+    <value>Raggio di moltiplicazione centrale</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain" xml:space="preserve">
+    <value>Moltiplicatore guadagno centrale</value>
+  </data>
+  <data name="AcSettings_Video_PerformanceHit" xml:space="preserve">
+    <value>Prestazioni raggiunte:</value>
+  </data>
+  <data name="Selected_FilterByOrigin" xml:space="preserve">
+    <value>Filtra per origine</value>
+  </data>
+  <data name="Settings_Drive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+    <value>Carica gli aiuti con i preset Guida Rapida</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV_Tooltip" xml:space="preserve">
+    <value>Importa CSV da WheelCheck (basta trascinarlo e rilasciarlo se necessario)</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_HandleMode" xml:space="preserve">
+    <value>Modalità impugnatura:</value>
+  </data>
+  <data name="MainWindow_FoundNModUpdates" xml:space="preserve">
+    <value>Trovati {0} {update} per mods:</value>
+  </data>
+  <data name="MainWindow_AddDownload_Message" xml:space="preserve">
+    <value>Inserisci URL per scaricare:</value>
+  </data>
+  <data name="MainWindow_AddDownload_Comment" xml:space="preserve">
+    <value>Oppure, copia un link o un file e premi Ctrl+V in Content Manager.</value>
+  </data>
+  <data name="MainWindow_AddDownload_Title" xml:space="preserve">
+    <value>Scarica</value>
+  </data>
+  <data name="MainWindow_AddDownload_MenuItem" xml:space="preserve">
+    <value>Scarica qualcosa...</value>
+  </data>
+  <data name="MainWindow_InstallFromAFile_MenuItem" xml:space="preserve">
+    <value>Installa da un file...</value>
+  </data>
+  <data name="DownloadList_PluginsLoadFailed" xml:space="preserve">
+    <value>Impossibile caricare l'elenco dei plug-in</value>
+  </data>
+  <data name="DownloadList_7ZipComment" xml:space="preserve">
+    <value>Con il plug-in 7-Zip, puoi migliorare le prestazioni di installazione e consentire a CM di decomprimere tutti i tipi di archivi:</value>
+  </data>
+  <data name="DownloadList_ViewInExplorer" xml:space="preserve">
+    <value>Visualizza in Explorer</value>
+  </data>
+  <data name="DownloadList_DetectionFailed" xml:space="preserve">
+    <value>L'app non ha rilevato alcun contenuto da installare qui. Vuoi installarlo manualmente?</value>
+  </data>
+  <data name="DownloadList_ShowFile" xml:space="preserve">
+    <value>VIsualizza file</value>
+  </data>
+  <data name="DownloadList_ScanAgain" xml:space="preserve">
+    <value>Cerca ancora</value>
+  </data>
+  <data name="DownloadList_Retry" xml:space="preserve">
+    <value>Riprova</value>
+  </data>
+  <data name="DownloadList_ExtraOptions" xml:space="preserve">
+    <value>Opzioni extra:</value>
+  </data>
+  <data name="DownloadList_Failed" xml:space="preserve">
+    <value>Fallito</value>
+  </data>
+  <data name="DownloadList_NothingFound" xml:space="preserve">
+    <value>Nessun risultato</value>
+  </data>
+  <data name="DownloadList_Cancelled" xml:space="preserve">
+    <value>Cancellato</value>
+  </data>
+  <data name="DownloadList_Cancelling" xml:space="preserve">
+    <value>In cancellazione...</value>
+  </data>
+  <data name="DownloadList_Installing" xml:space="preserve">
+    <value>Installando...</value>
+  </data>
+  <data name="DownloadList_Install" xml:space="preserve">
+    <value>Installa</value>
+  </data>
+  <data name="DownloadList_Resume" xml:space="preserve">
+    <value>Riprendi</value>
+  </data>
+  <data name="DownloadList_Pause" xml:space="preserve">
+    <value>Pausa</value>
+  </data>
+  <data name="DownloadList_Restart" xml:space="preserve">
+    <value>Riavvia</value>
+  </data>
+  <data name="DownloadList_Cancel" xml:space="preserve">
+    <value>Cancella</value>
+  </data>
+  <data name="DownloadList_From" xml:space="preserve">
+    <value>Da:</value>
+  </data>
+  <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
+    <value>Nessun download attivo</value>
   </data>
 </root>

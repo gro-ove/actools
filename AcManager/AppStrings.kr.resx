@@ -1,0 +1,4672 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About_ContactInformation" xml:space="preserve">
+    <value>이 앱에 대한 질문, 아이디어 또는 제안 사항이 있거나 특정 문제를 보고하려면 [url="https://acstuff.ru/app/#contacts"]contact us[/url]연락처[/url]로 문의하십시오.</value>
+  </data>
+  <data name="About_ContactUsHeader" xml:space="preserve">
+    <value>연락처:</value>
+  </data>
+  <data name="About_Description" xml:space="preserve">
+    <value> [url="http://www.assettocorsa.net/"]Assetto Corsa[/url] 용 맞춤형 런처 및 콘텐츠 관리 앱</value>
+  </data>
+  <data name="About_DeveloperMode" xml:space="preserve">
+    <value>개발자 모드를 실행할까요?</value>
+  </data>
+  <data name="About_DeveloperMode_Title" xml:space="preserve">
+    <value>개발자 모드</value>
+  </data>
+  <data name="About_Footer" xml:space="preserve">
+    <value>Content Manager is made possible by some [url="/Pages/About/Credits.xaml|_top"]open source and not only softw[/urlare].
+Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
+  </data>
+  <data name="About_MarkAllAsRead" xml:space="preserve">
+    <value>모두 읽음</value>
+  </data>
+  <data name="About_MoreInformation" xml:space="preserve">
+    <value>더 알아보기</value>
+  </data>
+  <data name="About_NewTooltip" xml:space="preserve">
+    <value>신규!</value>
+  </data>
+  <data name="About_RecentChanges" xml:space="preserve">
+    <value>최근 업데이트</value>
+  </data>
+  <data name="About_ReportAnIssue" xml:space="preserve">
+    <value>오류 보고</value>
+  </data>
+  <data name="About_ReportAnIssue_CannotSend" xml:space="preserve">
+    <value>로그를 보낼 수 없습니다</value>
+  </data>
+  <data name="About_ReportAnIssue_Prompt" xml:space="preserve">
+    <value>문제를 설명하세요. 그리고 답변을 원하면 연락처를 남기세요(문제 해결에 도움을 줄 수 있습니다).</value>
+  </data>
+  <data name="About_ReportAnIssue_Sent" xml:space="preserve">
+    <value>로그 보내짐</value>
+  </data>
+  <data name="About_ReportAnIssue_Sent_Message" xml:space="preserve">
+    <value>도와주셔서 감사합니다!</value>
+  </data>
+  <data name="About_ReportAnIssue_Title" xml:space="preserve">
+    <value>문제가 무엇인가요?</value>
+  </data>
+  <data name="About_ThanksForTranslationHeader" xml:space="preserve">
+    <value>번역에 도움주신분들 : v999 Rabbit, AlexKim, Jinho Kim</value>
+  </data>
+  <data name="About_VersionFormat" xml:space="preserve">
+    <value>버전: {0}</value>
+  </data>
+  <data name="AcError_AvailableSolutions" xml:space="preserve">
+    <value>사용 가능한 {solution}:</value>
+  </data>
+  <data name="AcError_CannotSolveProblem" xml:space="preserve">
+    <value>문제를 해결할 수 없음</value>
+  </data>
+  <data name="AcError_SolutionsNotFound" xml:space="preserve">
+    <value>사용할 수 있는 솔루션이 없습니다.</value>
+  </data>
+  <data name="AcError_SolveAllSimilarErrors" xml:space="preserve">
+    <value>비슷한 문제를 모두 해결</value>
+  </data>
+  <data name="AcError_StackTrace" xml:space="preserve">
+    <value>스택 추적:
+[mono]{0}[/mono]</value>
+  </data>
+  <data name="AcObject_AppActivated" xml:space="preserve">
+    <value>활성화됨</value>
+  </data>
+  <data name="AcObject_Author_TooltipExt" xml:space="preserve">
+    <value>자신만의 모드를 만들 경우 설명(또는 물론 이름) 대신 이 필드를 사용하십시오</value>
+  </data>
+  <data name="AcObject_ChangeId_Tooltip" xml:space="preserve">
+    <value>주의, ID 변경시 온라인에서 문제를 일으킬 수 있습니다. </value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>도시:</value>
+  </data>
+  <data name="AcObject_Cloning" xml:space="preserve">
+    <value>복사중...</value>
+  </data>
+  <data name="AcObject_DateLabel" xml:space="preserve">
+    <value>일:</value>
+  </data>
+  <data name="AcObject_DriverLabel" xml:space="preserve">
+    <value>드라이버:</value>
+  </data>
+  <data name="AcObject_DriverNameLabel" xml:space="preserve">
+    <value>드라이버 이름:</value>
+  </data>
+  <data name="AcObject_EnterNewId" xml:space="preserve">
+    <value>새로운 ID 입력:</value>
+  </data>
+  <data name="AcObject_FontLastScannedFormat" xml:space="preserve">
+    <value>마지막 스캔: {0}</value>
+  </data>
+  <data name="AcObject_FontLastScannedNever" xml:space="preserve">
+    <value>마지막 스캔: 없음</value>
+  </data>
+  <data name="AcObject_FontTestLabel" xml:space="preserve">
+    <value>테스트:</value>
+  </data>
+  <data name="AcObject_FontUsedInLabel" xml:space="preserve">
+    <value>사용 위치:</value>
+  </data>
+  <data name="AcObject_GeoTagsLabel" xml:space="preserve">
+    <value>지역 태그:</value>
+  </data>
+  <data name="AcObject_NumberLabel" xml:space="preserve">
+    <value>번호:</value>
+  </data>
+  <data name="AcObject_PriorityLabel" xml:space="preserve">
+    <value>우선 순위:</value>
+  </data>
+  <data name="AcObject_SizeLabel" xml:space="preserve">
+    <value>크기:</value>
+  </data>
+  <data name="AcObject_TeamLabel" xml:space="preserve">
+    <value>팀:</value>
+  </data>
+  <data name="AcObject_TrackLabel" xml:space="preserve">
+    <value>트랙:</value>
+  </data>
+  <data name="AcObject_TrackLayoutNameLabel" xml:space="preserve">
+    <value>레이아웃 이름:</value>
+  </data>
+  <data name="AcObject_Url_TooltipExt" xml:space="preserve">
+    <value>이 개체에 대한 추가 정보와 새 버전이 포함된 웹 페이지가 있는 경우 이 필드를 다시 사용하십시오</value>
+  </data>
+  <data name="AcObject_UsingsRescan" xml:space="preserve">
+    <value>재스캔</value>
+  </data>
+  <data name="AcObject_Version_TooltipExt" xml:space="preserve">
+    <value>자동 업데이트에 사용할 수 있음</value>
+  </data>
+  <data name="AcObject_WeatherLabel" xml:space="preserve">
+    <value>날씨:</value>
+  </data>
+  <data name="AcObject_WeatherUseAsLabel" xml:space="preserve">
+    <value>다음으로 사용:</value>
+  </data>
+  <data name="AcRoot_FolderIsUnacceptable" xml:space="preserve">
+    <value>폴더를 사용할 수 없습니다.</value>
+  </data>
+  <data name="AcRoot_Prompt" xml:space="preserve">
+    <value>AC 최상위 폴더:</value>
+  </data>
+  <data name="AcRoot_SteamId_Prompt" xml:space="preserve">
+    <value>온라인 스팀 ID:</value>
+  </data>
+  <data name="AcRoot_Welcome" xml:space="preserve">
+    <value>AC 콘텐츠 관리자에 오신 것을 환영합니다. 사용해 주셔서 감사합니다! 다음 몇 가지 사항을 명시해주세요:</value>
+  </data>
+  <data name="AcSettings_Apps" xml:space="preserve">
+    <value>앱</value>
+  </data>
+  <data name="AcSettings_Apps_ActivatedLabel" xml:space="preserve">
+    <value>활성화된 앱</value>
+  </data>
+  <data name="AcSettings_Apps_FormsLabel" xml:space="preserve">
+    <value>형태:</value>
+  </data>
+  <data name="AcSettings_Audio" xml:space="preserve">
+    <value>오디오</value>
+  </data>
+  <data name="AcSettings_Audio_CantGetTheListOfAudioDevices" xml:space="preserve">
+    <value>오디오 장치 목록을 가져올 수 없음</value>
+  </data>
+  <data name="AcSettings_Audio_DeviceName" xml:space="preserve">
+    <value>장치 이름:</value>
+  </data>
+  <data name="AcSettings_Audio_Engine" xml:space="preserve">
+    <value>엔진</value>
+  </data>
+  <data name="AcSettings_Audio_LatencyLabel" xml:space="preserve">
+    <value>지연시간:</value>
+  </data>
+  <data name="AcSettings_Audio_LatencyLabel_Tooltip" xml:space="preserve">
+    <value>사운드에 문제가 있는 경우 낮음 또는 보통으로 전환</value>
+  </data>
+  <data name="AcSettings_Audio_LevelsHeader" xml:space="preserve">
+    <value>레벨:</value>
+  </data>
+  <data name="AcSettings_Audio_Master" xml:space="preserve">
+    <value>마스터</value>
+  </data>
+  <data name="AcSettings_Audio_Opponents" xml:space="preserve">
+    <value>상대</value>
+  </data>
+  <data name="AcSettings_Audio_OutputDevice" xml:space="preserve">
+    <value>출력 장치:</value>
+  </data>
+  <data name="AcSettings_Audio_Surface" xml:space="preserve">
+    <value>노면</value>
+  </data>
+  <data name="AcSettings_Audio_Tyres" xml:space="preserve">
+    <value>타이어</value>
+  </data>
+  <data name="AcSettings_Audio_TyresOffset" xml:space="preserve">
+    <value>타이어 오프셋</value>
+  </data>
+  <data name="AcSettings_Audio_Unknown" xml:space="preserve">
+    <value>알 수 없는</value>
+  </data>
+  <data name="AcSettings_Audio_Wind" xml:space="preserve">
+    <value>바람</value>
+  </data>
+  <data name="AcSettings_ChaseCamera_Params" xml:space="preserve">
+    <value>매개 변수:</value>
+  </data>
+  <data name="AcSettings_ChaseCamera_Pitch" xml:space="preserve">
+    <value>높이</value>
+  </data>
+  <data name="AcSettings_Controls" xml:space="preserve">
+    <value>컨트롤</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_RumbleEffects" xml:space="preserve">
+    <value>진동 효과</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringAndFFB" xml:space="preserve">
+    <value>스티어링 및 FFB:</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringDeadzone" xml:space="preserve">
+    <value>스티어링 데드존</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringFilter" xml:space="preserve">
+    <value>스티어링 필터</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringGamma" xml:space="preserve">
+    <value>스티어링 감마</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteerThumb" xml:space="preserve">
+    <value>조향 할 손가락:</value>
+  </data>
+  <data name="AcSettings_Controls_DeviceSettings_Tooltip" xml:space="preserve">
+    <value>장치 설정</value>
+  </data>
+  <data name="AcSettings_Controls_EditNames" xml:space="preserve">
+    <value>이름 편집</value>
+  </data>
+  <data name="AcSettings_Controls_ResetSystemBindings" xml:space="preserve">
+    <value>시스템 바인딩 재설정</value>
+  </data>
+  <data name="AcSettings_Controls_ScanDevicesAtLaunch" xml:space="preserve">
+    <value>시작할 때 장치 검색</value>
+  </data>
+  <data name="AcSettings_Controls_Scanning_Hint" xml:space="preserve">
+    <value>너무 오래 걸릴 경우 PC에 연결된 장치 중 하나에 버그가 있는 드라이버가 있을 수 있습니다. 예를 들어, Corsair K55 키보드는 DirectInput8에서 이 문제를 일으키는 것으로 알려져 있습니다. url="https://stackoverflow.com/questions/10967795/directinput8-enumdevices-sometimes-painfully-slow"]More information[/url].</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ABSEffect" xml:space="preserve">
+    <value>ABS 효과</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain" xml:space="preserve">
+    <value>중앙 부스트 수치</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip" xml:space="preserve">
+    <value>휠을 중앙에 배치할 때 FFB를 증가하기 위해 사용합니다.</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostRange" xml:space="preserve">
+    <value>중앙 부스트 범위</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_EnableFFBPostProcessing" xml:space="preserve">
+    <value>FFB 후처리 활성화</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_HandleMode" xml:space="preserve">
+    <value>핸들 모드:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_HardwareLock" xml:space="preserve">
+    <value>하드웨어 잠금(실험)</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_Import_Tooltip" xml:space="preserve">
+    <value>필요하면 끌어다 놓기만 하면 됩니다</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV" xml:space="preserve">
+    <value>CSV 가져오기</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV_Tooltip" xml:space="preserve">
+    <value>휠 체크에서 CSV 가져오기(필요한 경우 드래그 앤 드롭만 함)</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportLUT" xml:space="preserve">
+    <value>LUT 가져오기</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_LogitechHardwareLockOptions" xml:space="preserve">
+    <value>로지텍 하드웨어 잠금 옵션:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessing" xml:space="preserve">
+    <value>후 처리:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessingMode" xml:space="preserve">
+    <value>모드:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Car" xml:space="preserve">
+    <value>차량:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Discord" xml:space="preserve">
+    <value>디스코드:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Online" xml:space="preserve">
+    <value>온라인:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Options" xml:space="preserve">
+    <value>옵션:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Race" xml:space="preserve">
+    <value>레이스:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Replay" xml:space="preserve">
+    <value>재생:</value>
+  </data>
+  <data name="AcSettings_DefaultValue" xml:space="preserve">
+    <value>기본값:</value>
+  </data>
+  <data name="AcSettings_Exposure_Value" xml:space="preserve">
+    <value>값</value>
+  </data>
+  <data name="AcSettings_FieldOfView" xml:space="preserve">
+    <value>FOV</value>
+  </data>
+  <data name="AcSettings_FieldOfView_Tooltip" xml:space="preserve">
+    <value>수직 각도</value>
+  </data>
+  <data name="AcSettings_General_KeepCameraInTheCar" xml:space="preserve">
+    <value>카메라를 차 안에 유지</value>
+  </data>
+  <data name="AcSettings_General_LimitForOtherSessions" xml:space="preserve">
+    <value>다른 세션에 대한 제한</value>
+  </data>
+  <data name="AcSettings_General_LimitForQualifications" xml:space="preserve">
+    <value>자격 제한</value>
+  </data>
+  <data name="AcSettings_General_LimitForRaces" xml:space="preserve">
+    <value>레이스 제한</value>
+  </data>
+  <data name="AcSettings_General_MinimumTime" xml:space="preserve">
+    <value>최소 시간</value>
+  </data>
+  <data name="AcSettings_General_PitStops" xml:space="preserve">
+    <value>피트 스톱:</value>
+  </data>
+  <data name="AcSettings_General_PresetsCount" xml:space="preserve">
+    <value>사전 설정 수</value>
+  </data>
+  <data name="AcSettings_General_ReplaysAutosave" xml:space="preserve">
+    <value>재생 자동 저장:</value>
+  </data>
+  <data name="AcSettings_General_UseMousePitStop" xml:space="preserve">
+    <value>마우스 피트 스톱 사용</value>
+  </data>
+  <data name="AcSettings_GhostCar" xml:space="preserve">
+    <value>고스트 차량:</value>
+  </data>
+  <data name="AcSettings_GhostCar_MaxOpacityAt" xml:space="preserve">
+    <value>최대 불투명도</value>
+  </data>
+  <data name="AcSettings_GhostCar_Opacity" xml:space="preserve">
+    <value>투명도</value>
+  </data>
+  <data name="AcSettings_GhostCar_RecordingLimit" xml:space="preserve">
+    <value>녹화 제한</value>
+  </data>
+  <data name="AcSettings_GhostCar_StartShowingAt" xml:space="preserve">
+    <value>보여지는 거리</value>
+  </data>
+  <data name="AcSettings_Mirrors" xml:space="preserve">
+    <value>미러:</value>
+  </data>
+  <data name="AcSettings_Mirrors_RenderingDistance" xml:space="preserve">
+    <value>렌더링 거리</value>
+  </data>
+  <data name="AcSettings_Miscellaneous" xml:space="preserve">
+    <value>그 외 기타</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Apps" xml:space="preserve">
+    <value>앱:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Audio" xml:space="preserve">
+    <value>오디오 :</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Condition" xml:space="preserve">
+    <value>조건:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_CreateNew" xml:space="preserve">
+    <value>신규생성:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_CSP_Tooltip" xml:space="preserve">
+    <value>커스텀 쉐이더 패치</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Enabled" xml:space="preserve">
+    <value>활성화</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_RearViewMirror" xml:space="preserve">
+    <value>백미러:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_UpdatePresetsDuringTheRace" xml:space="preserve">
+    <value>레이스 중에 일부 설정이 변경된 경우 사전 설정 업데이트</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Video" xml:space="preserve">
+    <value>비디오:</value>
+  </data>
+  <data name="AcSettings_ProximityIndicator" xml:space="preserve">
+    <value>근접한 상대 표시:</value>
+  </data>
+  <data name="AcSettings_ProximityIndicator_ShowNearestOpponents" xml:space="preserve">
+    <value>가까운 상대를 보여줍니다</value>
+  </data>
+  <data name="AcSettings_Python_EnablePythonApps" xml:space="preserve">
+    <value>파이썬 앱 사용</value>
+  </data>
+  <data name="AcSettings_Python_KeepDeveloperAppsFlagWithAppsPresets" xml:space="preserve">
+    <value>앱 사전 설정을 사용하여 개발자 앱 플래그 유지</value>
+  </data>
+  <data name="AcSettings_Replays_EventPostLabel" xml:space="preserve">
+    <value>재생 후 이벤트 명령:</value>
+  </data>
+  <data name="AcSettings_Replays_EventPreLabel" xml:space="preserve">
+    <value>사전 재생 이벤트 명령:</value>
+  </data>
+  <data name="AcSettings_Replays_EventsHeader" xml:space="preserve">
+    <value>재생 관련 이벤트:</value>
+  </data>
+  <data name="AcSettings_Replays_MaximumSize" xml:space="preserve">
+    <value>최대 크기</value>
+  </data>
+  <data name="AcSettings_Replays_QualityLabel" xml:space="preserve">
+    <value>퀄리티:</value>
+  </data>
+  <data name="AcSettings_Replays_RecommendedMaximumSizeFormat" xml:space="preserve">
+    <value>추천 최대 크기 : {0} MB</value>
+  </data>
+  <data name="AcSettings_ReplaysHeader" xml:space="preserve">
+    <value>리플레이:</value>
+  </data>
+  <data name="AcSettings_SessionInformation" xml:space="preserve">
+    <value>세션 정보:</value>
+  </data>
+  <data name="AcSettings_Skidmarks" xml:space="preserve">
+    <value>스키드마크:</value>
+  </data>
+  <data name="AcSettings_Skidmarks_Height" xml:space="preserve">
+    <value>상대적 높이</value>
+  </data>
+  <data name="AcSettings_Skidmarks_Quantity" xml:space="preserve">
+    <value>양</value>
+  </data>
+  <data name="AcSettings_System" xml:space="preserve">
+    <value>시스템</value>
+  </data>
+  <data name="AcSettings_System_DeveloperApps" xml:space="preserve">
+    <value>개발자 앱</value>
+  </data>
+  <data name="AcSettings_System_FreeCamera" xml:space="preserve">
+    <value>자유 카메라 허용</value>
+  </data>
+  <data name="AcSettings_System_FreeCamera_Tooltip" xml:space="preserve">
+    <value>F7을 눌러 자유 카메라를 토글합니다</value>
+  </data>
+  <data name="AcSettings_System_Logging" xml:space="preserve">
+    <value>기록(권장)</value>
+  </data>
+  <data name="AcSettings_System_ScreenshotsFormatLabel" xml:space="preserve">
+    <value>스크린샷 형식:</value>
+  </data>
+  <data name="AcSettings_System_ScreenshotsQuality" xml:space="preserve">
+    <value>BMP로 바꾸고, Magick.NET 플러그인을 설치하세요. 그리고 설정/콘텐츠 매니저/드라이브 페이지에서 자동 변환을 활성화하세요.</value>
+  </data>
+  <data name="AcSettings_System_ScreenshotsQuality_Title" xml:space="preserve">
+    <value>최고의 스크린샷 품질을 원하시나요?</value>
+  </data>
+  <data name="AcSettings_System_SimulationValueLabel" xml:space="preserve">
+    <value>시뮬레이션 값</value>
+  </data>
+  <data name="AcSettings_System_VRCameraShake" xml:space="preserve">
+    <value>VR 카메라 셰이크</value>
+  </data>
+  <data name="AcSettings_Video" xml:space="preserve">
+    <value>비디오</value>
+  </data>
+  <data name="AcSettings_Video_AllowDirectX10" xml:space="preserve">
+    <value>지원하지 않는 다이렉트X 10을 허용 (위험은 본인이 감당하세요; 작동하지 않나요?)</value>
+  </data>
+  <data name="AcSettings_Video_AnitrosopicFilteringLabel" xml:space="preserve">
+    <value>이방성 필터링:</value>
+  </data>
+  <data name="AcSettings_Video_Benchmark" xml:space="preserve">
+    <value>벤치마크</value>
+  </data>
+  <data name="AcSettings_Video_Benchmark_Tooltip" xml:space="preserve">
+    <value>벤치마크 시작 (컨트롤+G)</value>
+  </data>
+  <data name="AcSettings_Video_CrepuscularRays" xml:space="preserve">
+    <value>태양광</value>
+  </data>
+  <data name="AcSettings_Video_CustomResolutionLabel" xml:space="preserve">
+    <value>커스텀 해상도</value>
+  </data>
+  <data name="AcSettings_Video_DepthOfFieldLabel" xml:space="preserve">
+    <value>피사계 심도</value>
+  </data>
+  <data name="AcSettings_Video_EnablePostProcessing" xml:space="preserve">
+    <value>포스트 프로세싱 효과 사용</value>
+  </data>
+  <data name="AcSettings_Video_FixResolutionAutomatically" xml:space="preserve">
+    <value>해상도를 자동으로 설정</value>
+  </data>
+  <data name="AcSettings_Video_Framerate" xml:space="preserve">
+    <value>프레임</value>
+  </data>
+  <data name="AcSettings_Video_Fullscreen" xml:space="preserve">
+    <value>전체화면</value>
+  </data>
+  <data name="AcSettings_Video_GlareQualityLabel" xml:space="preserve">
+    <value>빛 품질</value>
+  </data>
+  <data name="AcSettings_Video_HeatShimmering" xml:space="preserve">
+    <value>신기루</value>
+  </data>
+  <data name="AcSettings_Video_HighQuality" xml:space="preserve">
+    <value>고품질</value>
+  </data>
+  <data name="AcSettings_Video_LimitFramerate" xml:space="preserve">
+    <value>프레임 제한</value>
+  </data>
+  <data name="AcSettings_Video_MaximumFrameLatency" xml:space="preserve">
+    <value>최대 프레임 지연시간</value>
+  </data>
+  <data name="AcSettings_Video_MaximumFrameLatency_Tooltip" xml:space="preserve">
+    <value>최대 프레임 지연시간; 자동 - 그래픽카드 설정을 사용</value>
+  </data>
+  <data name="AcSettings_Video_MipLodBias" xml:space="preserve">
+    <value>Mip LOD 바이어스</value>
+  </data>
+  <data name="AcSettings_Video_MipLodBias_Tooltip" xml:space="preserve">
+    <value>이미지 샤프닝을 원하면 마이너스 값(-1 등)을 입력하세요.</value>
+  </data>
+  <data name="AcSettings_Video_MirrorResolutionLabel" xml:space="preserve">
+    <value>미러 해상도</value>
+  </data>
+  <data name="AcSettings_Video_MirrorsHeader" xml:space="preserve">
+    <value>미러:</value>
+  </data>
+  <data name="AcSettings_Video_MotionBlur" xml:space="preserve">
+    <value>모션 블러</value>
+  </data>
+  <data name="AcSettings_Video_OculusHeader" xml:space="preserve">
+    <value>오큘러스:</value>
+  </data>
+  <data name="AcSettings_Video_OverallQualityLabel" xml:space="preserve">
+    <value>전체 품질</value>
+  </data>
+  <data name="AcSettings_Video_PerformanceHit" xml:space="preserve">
+    <value>성능 히트:</value>
+  </data>
+  <data name="AcSettings_Video_PerformanceHit_Tooltip" xml:space="preserve">
+    <value>대충 예상된 값이므로, 실제와 다를 수 있습니다. 1920×1080 해상도에서 측정되었습니다.</value>
+  </data>
+  <data name="AcSettings_Video_PixelsPerDisplay" xml:space="preserve">
+    <value>화면 당 픽셀</value>
+  </data>
+  <data name="AcSettings_Video_PostProcessingHeader" xml:space="preserve">
+    <value>포스트 프로세싱</value>
+  </data>
+  <data name="AcSettings_Video_QualityHeader" xml:space="preserve">
+    <value>품질:</value>
+  </data>
+  <data name="AcSettings_Video_ReflectionsHeader" xml:space="preserve">
+    <value>반사:</value>
+  </data>
+  <data name="AcSettings_Video_ReflectionsResolutionLabel" xml:space="preserve">
+    <value>반사 해상도:</value>
+  </data>
+  <data name="AcSettings_Video_RenderingDistance" xml:space="preserve">
+    <value>렌더링 거리</value>
+  </data>
+  <data name="AcSettings_Video_RenderingFrequencyLabel" xml:space="preserve">
+    <value>렌더링 빈도:</value>
+  </data>
+  <data name="AcSettings_Video_RenderingModeLabel" xml:space="preserve">
+    <value>렌더링 모드:</value>
+  </data>
+  <data name="AcSettings_Video_ResolutionAndFPS" xml:space="preserve">
+    <value>해상도 및 FPS:</value>
+  </data>
+  <data name="AcSettings_Video_ResolutionLabel" xml:space="preserve">
+    <value>해상도:</value>
+  </data>
+  <data name="AcSettings_Video_Saturation" xml:space="preserve">
+    <value>색 포화</value>
+  </data>
+  <data name="AcSettings_Video_ShadowResolutionLabel" xml:space="preserve">
+    <value>그림자 해상도:</value>
+  </data>
+  <data name="AcSettings_Video_SkyboxReflection" xml:space="preserve">
+    <value>하늘 반사</value>
+  </data>
+  <data name="AcSettings_Video_SkyboxReflection_Tooltip" xml:space="preserve">
+    <value>하늘 반사 게인</value>
+  </data>
+  <data name="AcSettings_Video_SmokeGenerationLabel" xml:space="preserve">
+    <value>연기 생성:</value>
+  </data>
+  <data name="AcSettings_Video_SmokeInMirrors" xml:space="preserve">
+    <value>미러에 연기 보임</value>
+  </data>
+  <data name="AcSettings_Video_SystemHeader" xml:space="preserve">
+    <value>시스템:</value>
+  </data>
+  <data name="AcSettings_Video_TimeLimitedBenchmark" xml:space="preserve">
+    <value>시간제한 벤치마크</value>
+  </data>
+  <data name="AcSettings_Video_TimeLimitedBenchmark_Tooltip" xml:space="preserve">
+    <value>설정을 비교해야 하는 경우 유사한 결과를 얻기 위해 사용</value>
+  </data>
+  <data name="AcSettings_Video_VerticalSyncronization" xml:space="preserve">
+    <value>수직 동기화</value>
+  </data>
+  <data name="AcSettings_Video_WorldDetalLabel" xml:space="preserve">
+    <value>월드 디테일:</value>
+  </data>
+  <data name="AcSettings_ViewAndUi" xml:space="preserve">
+    <value>보기 &amp; UI</value>
+  </data>
+  <data name="AdditionalContent_CannotInstall" xml:space="preserve">
+    <value>파일에서 콘텐츠를 설치할 수 없음</value>
+  </data>
+  <data name="AdditionalContent_CannotInstallFormat" xml:space="preserve">
+    <value>설치할 수 없음 {0}</value>
+  </data>
+  <data name="AdditionalContent_CannotUnpack" xml:space="preserve">
+    <value>풀 수 없음</value>
+  </data>
+  <data name="AdditionalContent_CannotUnpack_Commentary" xml:space="preserve">
+    <value>기록이 손상되었거나 비밀번호가 틀립니다.</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_InvalidPrompt" xml:space="preserve">
+    <value>비밀번호가 틀립니다. 다시 시도해주세요.</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_Prompt" xml:space="preserve">
+    <value>기록이 암호화 되어있습니다. 비밀번호를 입력하세요.</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_Title" xml:space="preserve">
+    <value>비밀번호 필요</value>
+  </data>
+  <data name="AdditionalContent_Installing" xml:space="preserve">
+    <value>설치중 {0}...</value>
+  </data>
+  <data name="AdditionalContent_NothingFound" xml:space="preserve">
+    <value>아무것도 찾지 못했습니다</value>
+  </data>
+  <data name="AdditionalContent_PasswordIsInvalid" xml:space="preserve">
+    <value>비밀번호가 틀립니다</value>
+  </data>
+  <data name="AdditionalContent_PathFormat" xml:space="preserve">
+    <value>경로: {0}</value>
+  </data>
+  <data name="AdditionalContent_Title" xml:space="preserve">
+    <value>다운로드 &amp; 설치</value>
+  </data>
+  <data name="AdditionalContent_WhatToUpdateLabel" xml:space="preserve">
+    <value>업데이트 항목:</value>
+  </data>
+  <data name="App_AppUpdated" xml:space="preserve">
+    <value>콘텐츠 매니저가 업데이트됨</value>
+  </data>
+  <data name="App_AppUpdated_Details" xml:space="preserve">
+    <value>최근 변경점을 보려면 클릭하세요</value>
+  </data>
+  <data name="App_DataUpdated" xml:space="preserve">
+    <value>데이터 업데이트됨</value>
+  </data>
+  <data name="App_DataUpdated_Details" xml:space="preserve">
+    <value>현재 버전: {0}</value>
+  </data>
+  <data name="App_LocaleUpdated" xml:space="preserve">
+    <value>언어 업데이트됨</value>
+  </data>
+  <data name="App_LocaleUpdated_Details" xml:space="preserve">
+    <value>업데이트를 적용하려면 재시작 하세요</value>
+  </data>
+  <data name="App_NewVersion" xml:space="preserve">
+    <value>새 버전</value>
+  </data>
+  <data name="App_NewVersion_Details" xml:space="preserve">
+    <value>업데이트가 준비됨: {0}</value>
+  </data>
+  <data name="AppKey_AppWillBeRestarted" xml:space="preserve">
+    <value>콘텐츠 매니저가 재시작 됩니다</value>
+  </data>
+  <data name="AppKey_CannotCheck" xml:space="preserve">
+    <value>키를 확인할 수 없습니다</value>
+  </data>
+  <data name="AppKey_GetNewKey" xml:space="preserve">
+    <value>새 키 얻기</value>
+  </data>
+  <data name="AppKey_InvalidKey" xml:space="preserve">
+    <value>키가 무효하거나 틀렸습니다</value>
+  </data>
+  <data name="AppKey_KeyRevoked_Message" xml:space="preserve">
+    <value>키가 무효처리 되어서 삭제되었습니다</value>
+  </data>
+  <data name="AppKey_KeyRevoked_Title" xml:space="preserve">
+    <value>키 삭제됨</value>
+  </data>
+  <data name="AppKey_KeyWasRevoked" xml:space="preserve">
+    <value>키 삭제됨</value>
+  </data>
+  <data name="AppKey_PreRestart_Message" xml:space="preserve">
+    <value>콘텐츠 매니저가 재시작 되지만, 오래 걸리진 않습니다. 다시 한번 후원해주셔서 감사합니다! 
+[i]키를 공유하지 마세요. 무효처리 될 수 있습니다.[/i]</value>
+  </data>
+  <data name="AppKey_PreRestart_Title" xml:space="preserve">
+    <value>감사합니다!</value>
+  </data>
+  <data name="AppKey_Prompt" xml:space="preserve">
+    <value>키를 입력하세요 (XXXX-XXXX-...):</value>
+  </data>
+  <data name="AppKey_Title" xml:space="preserve">
+    <value>키</value>
+  </data>
+  <data name="AppKey_Tooltip" xml:space="preserve">
+    <value>키를 공유하지 마세요. 무효처리 될 수 있습니다.</value>
+  </data>
+  <data name="Arguments_CannotInstallAdditionalContent" xml:space="preserve">
+    <value>추가 콘텐츠를 설치할 수 없습니다</value>
+  </data>
+  <data name="Arguments_CannotInstallCarSetup" xml:space="preserve">
+    <value>차량 셋업을 설치할 수 없습니다</value>
+  </data>
+  <data name="Arguments_CannotInstallSetup_Commentary" xml:space="preserve">
+    <value>RSR이 변경되었습니다.</value>
+  </data>
+  <data name="Arguments_CannotInstallSetup_CommentaryFormat" xml:space="preserve">
+    <value>RSR이 지원되지 않는 형식의 파일을 반환했습니다.</value>
+  </data>
+  <data name="Arguments_CannotParseRequest" xml:space="preserve">
+    <value>요청을 분석할 수 없습니다</value>
+  </data>
+  <data name="Arguments_CannotProcessRequest" xml:space="preserve">
+    <value>요청을 진행할 수 없습니다</value>
+  </data>
+  <data name="Arguments_CannotProcessRequest_Commentary" xml:space="preserve">
+    <value>데이터가 유효한지 확인하세요.</value>
+  </data>
+  <data name="Arguments_CannotStartRace_Commentary" xml:space="preserve">
+    <value>필요 차량 및 트랙이 설지되었고 사용 가능한지 확인하세요.</value>
+  </data>
+  <data name="Arguments_MetadataIsMissing" xml:space="preserve">
+    <value>메타데이터가 없습니다.</value>
+  </data>
+  <data name="Arguments_SaveAsGeneric" xml:space="preserve">
+    <value>기본으로 저장</value>
+  </data>
+  <data name="Arguments_Shared_Apply" xml:space="preserve">
+    <value>적용</value>
+  </data>
+  <data name="Arguments_Shared_ApplyAndSave" xml:space="preserve">
+    <value>적용 및 저장</value>
+  </data>
+  <data name="Arguments_Shared_ApplyFfbOnly" xml:space="preserve">
+    <value>포스 피드백만 적용</value>
+  </data>
+  <data name="Arguments_Shared_ApplyOnly" xml:space="preserve">
+    <value>적용만</value>
+  </data>
+  <data name="Arguments_Shared_JustGo" xml:space="preserve">
+    <value>그냥 실행</value>
+  </data>
+  <data name="Arguments_Shared_SaveAndApply" xml:space="preserve">
+    <value>저장 및 적용</value>
+  </data>
+  <data name="Arguments_Shared_SaveOnly" xml:space="preserve">
+    <value>저장만</value>
+  </data>
+  <data name="Arguments_Shared_ShouldApply" xml:space="preserve">
+    <value>이 프리셋을 적용할까요?</value>
+  </data>
+  <data name="Arguments_Shared_ShouldApplyOrSave" xml:space="preserve">
+    <value>이 프리셋을 적용할까요 아님 나중을 위해 저장할까요?</value>
+  </data>
+  <data name="Arguments_SharedMessage" xml:space="preserve">
+    <value>이름: [b]{0}[/b]
+{1}: [b]{2}[/b]
+제작자: [b]{3}[/b]</value>
+  </data>
+  <data name="Arguments_SharedUnsupported" xml:space="preserve">
+    <value>지원되지 않지만 유형: “{0}”</value>
+  </data>
+  <data name="BrandBadge_AddAs" xml:space="preserve">
+    <value>다음 브랜드의 새 배지로 추가:</value>
+  </data>
+  <data name="BrandBadge_CannotChange" xml:space="preserve">
+    <value>브랜드의 배지를 바꿀 수 없습니다.</value>
+  </data>
+  <data name="BrandBadge_CannotChange_Commentary" xml:space="preserve">
+    <value>배지 파일이 쓰기가 가능한지 확인하세요.</value>
+  </data>
+  <data name="BrandBadge_SelectNew" xml:space="preserve">
+    <value>새 브랜드의 배지를 선택</value>
+  </data>
+  <data name="BrandBadge_Title" xml:space="preserve">
+    <value>브랜드 배지</value>
+  </data>
+  <data name="Car_CannotPackData" xml:space="preserve">
+    <value>데이터를 패킹할 수 없습니다</value>
+  </data>
+  <data name="Car_DeleteSkin" xml:space="preserve">
+    <value>스킨 삭제</value>
+  </data>
+  <data name="Car_DeleteSkin_Tooltip" xml:space="preserve">
+    <value>스킨이 휴지통으로 옮겨집니다</value>
+  </data>
+  <data name="Car_PackExistingDataMessage" xml:space="preserve">
+    <value>패킹된 데이터가 이미 존재합니다. 덮어씁니까?[br][br]기존 “data.acd”파일이 휴지통으로 옮겨집니다.</value>
+  </data>
+  <data name="Car_PackKunosDataMessage" xml:space="preserve">
+    <value>쿠노스 데이터를 리팩하려고 합니다. 이에 따라 온라인에서 해당 차량을 사용할 수 없습니다. 정말 진행합니까? 기존 “data.acd”파일이 휴지통으로 옮겨집니다.</value>
+  </data>
+  <data name="Car_SkinFormat" xml:space="preserve">
+    <value>스킨: {0}</value>
+  </data>
+  <data name="CarParent_Title" xml:space="preserve">
+    <value>상위 차량 선택</value>
+  </data>
+  <data name="CarPreviews_AllEffects" xml:space="preserve">
+    <value>모든 효과 활성화</value>
+  </data>
+  <data name="CarPreviews_AllEffects_Tooltip" xml:space="preserve">
+    <value>반사나 빛과 같은 모든 그래픽 효과 활성화 (추천)</value>
+  </data>
+  <data name="CarPreviews_CameraPositionLabel" xml:space="preserve">
+    <value>카메라 위치:</value>
+  </data>
+  <data name="CarPreviews_CancelledMessage" xml:space="preserve">
+    <value>취소됨</value>
+  </data>
+  <data name="CarPreviews_CannotDownloadShowroom" xml:space="preserve">
+    <value>쇼룸 "{0}"을(를) 다운로드할 수 없음</value>
+  </data>
+  <data name="CarPreviews_CannotInstallShowroom" xml:space="preserve">
+    <value>쇼룸 "{0}"을(를) 설치할 수 없음</value>
+  </data>
+  <data name="CarPreviews_CannotSave" xml:space="preserve">
+    <value>미리 보기를 저장할 수 없음</value>
+  </data>
+  <data name="CarPreviews_CannotUpdateForDisabled" xml:space="preserve">
+    <value>해제된 차량 또는 스킨의 미리 보기를 업데이트할 수 없습니다.</value>
+  </data>
+  <data name="CarPreviews_DisableSweetFx_Tooltip" xml:space="preserve">
+    <value>SweetFX는 결과에 영향을 미치지 않지만 로딩 시간을 단축할 수 있습니다.</value>
+  </data>
+  <data name="CarPreviews_ExposureLabel" xml:space="preserve">
+    <value>노출:</value>
+  </data>
+  <data name="CarPreviews_FilterIsMissingOptions" xml:space="preserve">
+    <value>필터가 없습니다. 옵션을 열까요?</value>
+  </data>
+  <data name="CarPreviews_Fxaa" xml:space="preserve">
+    <value>FXAA 사용</value>
+  </data>
+  <data name="CarPreviews_Fxaa_Tooltip" xml:space="preserve">
+    <value>미리 보기에 FXAA 사용</value>
+  </data>
+  <data name="CarPreviews_HideWatermark_Tooltip" xml:space="preserve">
+    <value>쿠노스 워터마크가 일시적으로 숨겨집니다.</value>
+  </data>
+  <data name="CarPreviews_LookAtLabel" xml:space="preserve">
+    <value>살펴 보기:</value>
+  </data>
+  <data name="CarPreviews_Manual" xml:space="preserve">
+    <value>매뉴얼</value>
+  </data>
+  <data name="CarPreviews_Manual_Tooltip" xml:space="preserve">
+    <value>수동으로 카메라 위치를 설정한 다음 F8 키를 눌러 촬영을 시작합니다.</value>
+  </data>
+  <data name="CarPreviews_Progress" xml:space="preserve">
+    <value>업데이트 중: {0} ({1}/{2})</value>
+  </data>
+  <data name="CarPreviews_ResizePreviews" xml:space="preserve">
+    <value>미리 보기 크기 조정</value>
+  </data>
+  <data name="CarPreviews_ResizePreviews_Tooltip" xml:space="preserve">
+    <value>미리 보기 크기를 쿠노스 크기 1022×575로 조정(권장)</value>
+  </data>
+  <data name="CarPreviews_ShotIn4k" xml:space="preserve">
+    <value>3840×2160 촬영</value>
+  </data>
+  <data name="CarPreviews_ShotIn4k_Tooltip" xml:space="preserve">
+    <value>최상의 품질을 위해 사용 가능</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissing" xml:space="preserve">
+    <value>[url="{0}"]{1}[/url] 이(가) 설치되지 않았습니다. 설치하시겠습니까?</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissing_Title" xml:space="preserve">
+    <value>쇼룸이 없습니다.</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissingOptions" xml:space="preserve">
+    <value>쇼룸이 없습니다. 설정을 열까요?</value>
+  </data>
+  <data name="CarPreviews_SomethingWentWrong" xml:space="preserve">
+    <value>뭔가 잘못됐습니다.</value>
+  </data>
+  <data name="CarPreviews_TakenTime" xml:space="preserve">
+    <value>{0} 사용</value>
+  </data>
+  <data name="CarPreviews_Title" xml:space="preserve">
+    <value>미리 보기 업데이트</value>
+  </data>
+  <data name="CarSpecs_Acceleration_Tooltip" xml:space="preserve">
+    <value>정지 상태에서 100km/h까지 가속하는 시간입니다. 추천 형식: “{0}”</value>
+  </data>
+  <data name="CarSpecs_AccelerationLabel" xml:space="preserve">
+    <value>가속:</value>
+  </data>
+  <data name="CarSpecs_AutomaticallyRecalculatePwRatio" xml:space="preserve">
+    <value>파워/무게 비율을 자동으로 재계산 합니다.</value>
+  </data>
+  <data name="CarSpecs_CopyNewPowerAndTorque" xml:space="preserve">
+    <value>토크와 마력을 업데이트 할까요?</value>
+  </data>
+  <data name="CarSpecs_FixFormat" xml:space="preserve">
+    <value>형식 수정</value>
+  </data>
+  <data name="CarSpecs_FixFormat_Tooltip" xml:space="preserve">
+    <value>올바른 값 형식 설정 시도</value>
+  </data>
+  <data name="CarSpecs_FixFormats" xml:space="preserve">
+    <value>형식 수정</value>
+  </data>
+  <data name="CarSpecs_MaxSpeed_Tooltip" xml:space="preserve">
+    <value>최고속도입니다. 추천 형식: “{0}”</value>
+  </data>
+  <data name="CarSpecs_MaxSpeedLabel" xml:space="preserve">
+    <value>최고속도:</value>
+  </data>
+  <data name="CarSpecs_Power_Tooltip" xml:space="preserve">
+    <value>최대 마력입니다. 추천 형식: “{0}”</value>
+  </data>
+  <data name="CarSpecs_PowerLabel" xml:space="preserve">
+    <value>마력:</value>
+  </data>
+  <data name="CarSpecs_PwRatio_Tooltip" xml:space="preserve">
+    <value>파워/무게 비율입니다. 추천 형식: “{0}”</value>
+  </data>
+  <data name="CarSpecs_PwRatioLabel" xml:space="preserve">
+    <value>P/W 비율</value>
+  </data>
+  <data name="CarSpecs_Recalculate" xml:space="preserve">
+    <value>재계산</value>
+  </data>
+  <data name="CarSpecs_Recalculate_PwRatioTooltip" xml:space="preserve">
+    <value>마력과 무게 값을 이용해 재계산</value>
+  </data>
+  <data name="CarSpecs_Recalculate_WeightTooltip" xml:space="preserve">
+    <value>데이터를 이용해 재계산</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorque_Tooltip" xml:space="preserve">
+    <value>토크 그래프는 engine.ini, power.lut 그리고 ui_car.json파일의 파워와 토크 값을 기반으로 계산됩니다.</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorqueHeader" xml:space="preserve">
+    <value>데이터와 파워/토크 값을 사용해 재계산</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataOnly_Tooltip" xml:space="preserve">
+    <value>토크 그래프는 engine.ini 파일을 기반으로 계산되지만 트랜스미션 손실값을 입력해야합니다.</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataOnlyHeader" xml:space="preserve">
+    <value>데이터만 사용해 재계산</value>
+  </data>
+  <data name="CarSpecs_ScaleCurvesToPowerTorque_Tooltip" xml:space="preserve">
+    <value>토크 그래프가 ui_car.json파일의 파워와 토크 값에 맞도록 조절됩니다.</value>
+  </data>
+  <data name="CarSpecs_ScaleCurvesToPowerTorqueHeader" xml:space="preserve">
+    <value>토크 그래프를 파워/토크값에 맞도록 조절</value>
+  </data>
+  <data name="CarSpecs_SetPowerCurve" xml:space="preserve">
+    <value>토크 그래프 설정</value>
+  </data>
+  <data name="CarSpecs_SpecifyPowerAndTorqueFirst" xml:space="preserve">
+    <value>먼저 파워와 토크 값을 정해야합니다.</value>
+  </data>
+  <data name="CarSpecs_Title" xml:space="preserve">
+    <value>{0} 스펙</value>
+  </data>
+  <data name="CarSpecs_Torque_Tooltip" xml:space="preserve">
+    <value>최대 토크값입니다. 추천 형식: “{0}”</value>
+  </data>
+  <data name="CarSpecs_TorqueLabel" xml:space="preserve">
+    <value>토크:</value>
+  </data>
+  <data name="CarSpecs_TransmissionLoss" xml:space="preserve">
+    <value>트랜스미션 손실</value>
+  </data>
+  <data name="CarSpecs_TransmissionLossTitle" xml:space="preserve">
+    <value>트랜스미션 손실량 {0}</value>
+  </data>
+  <data name="CarSpecs_UpdateCurves" xml:space="preserve">
+    <value>토크 그래프 업데이트</value>
+  </data>
+  <data name="CarSpecs_Weight_Tooltip" xml:space="preserve">
+    <value>드라이버를 제외한 무게입니다. 추천 형식: “{0}”</value>
+  </data>
+  <data name="CarSpecs_WeightLabel" xml:space="preserve">
+    <value>무게:</value>
+  </data>
+  <data name="Changelog_CannotLoad" xml:space="preserve">
+    <value>변경점을 불러올 수 없습니다</value>
+  </data>
+  <data name="Changelog_RecentChanges_Title" xml:space="preserve">
+    <value>최근 변화</value>
+  </data>
+  <data name="Common_AddToLibrary" xml:space="preserve">
+    <value>라이브러리에 추가합니까?</value>
+  </data>
+  <data name="Common_CannotAddToLibrary" xml:space="preserve">
+    <value>라이브러리에 새로운 항목을 추가할 수 없습니다</value>
+  </data>
+  <data name="Common_CannotFindCarById" xml:space="preserve">
+    <value>해당 ID의 차량을 찾을 수 없습니다</value>
+  </data>
+  <data name="Common_CannotFindObjectById" xml:space="preserve">
+    <value>해당 ID의 오브젝트를 찾을 수 없습니다</value>
+  </data>
+  <data name="Common_CannotStartRace" xml:space="preserve">
+    <value>레이스를 시작할 수 없습니다</value>
+  </data>
+  <data name="Common_ColorLabel" xml:space="preserve">
+    <value>색:</value>
+  </data>
+  <data name="Common_DevMode" xml:space="preserve">
+    <value>개발자 모드</value>
+  </data>
+  <data name="Common_DisablingFormat" xml:space="preserve">
+    <value>비활성화 {0}...</value>
+  </data>
+  <data name="Common_FileIsMissingDot" xml:space="preserve">
+    <value>“{0}”파일이 없습니다.</value>
+  </data>
+  <data name="Common_Go" xml:space="preserve">
+    <value>출발!</value>
+  </data>
+  <data name="Common_Go_RaceTooltip" xml:space="preserve">
+    <value>레이스 시작 (컨트롤+G)</value>
+  </data>
+  <data name="Common_GotId" xml:space="preserve">
+    <value>알겠습니다</value>
+  </data>
+  <data name="Common_HowTo_Title" xml:space="preserve">
+    <value>방법</value>
+  </data>
+  <data name="Common_Manage" xml:space="preserve">
+    <value>관리</value>
+  </data>
+  <data name="Common_MoreInformationInMainLog" xml:space="preserve">
+    <value>자세한 내용은 기본 로그.log를 참조하십시오.</value>
+  </data>
+  <data name="Common_NewBrandName" xml:space="preserve">
+    <value>새 브랜드 이름</value>
+  </data>
+  <data name="Common_NewName" xml:space="preserve">
+    <value>새 이름</value>
+  </data>
+  <data name="Common_OneMoreThing" xml:space="preserve">
+    <value>한가지 더</value>
+  </data>
+  <data name="Common_RequiredValue" xml:space="preserve">
+    <value>필수값</value>
+  </data>
+  <data name="Common_Restart" xml:space="preserve">
+    <value>재시작</value>
+  </data>
+  <data name="Common_RoadTemperature" xml:space="preserve">
+    <value>노면 온도:</value>
+  </data>
+  <data name="Common_SelectFile" xml:space="preserve">
+    <value>파일선택</value>
+  </data>
+  <data name="Common_SelectImageForPreview" xml:space="preserve">
+    <value>미리 볼 이미지 선택</value>
+  </data>
+  <data name="Common_Share" xml:space="preserve">
+    <value>공유 링크</value>
+  </data>
+  <data name="Common_Share_SettingsTooltip" xml:space="preserve">
+    <value>현재 설정 공유 (Ctrl+Page Up)</value>
+  </data>
+  <data name="Common_Share_WeatherTooltip" xml:space="preserve">
+    <value>날씨 공유 (Ctrl+페이지 위로)</value>
+  </data>
+  <data name="Common_ShootingCancelled" xml:space="preserve">
+    <value>촬영 취소됨</value>
+  </data>
+  <data name="Common_SignIn" xml:space="preserve">
+    <value>서명</value>
+  </data>
+  <data name="Common_SignOut" xml:space="preserve">
+    <value>로그아웃</value>
+  </data>
+  <data name="Common_Test" xml:space="preserve">
+    <value>테스트</value>
+  </data>
+  <data name="Common_Update" xml:space="preserve">
+    <value>업데이트</value>
+  </data>
+  <data name="Common_ViewUserFolder" xml:space="preserve">
+    <value>사용자 라이브러리</value>
+  </data>
+  <data name="ContentTools_BatchPreviewsUpdater_AutoSelect" xml:space="preserve">
+    <value>자동 선택</value>
+  </data>
+  <data name="ContentTools_BatchPreviewsUpdater_SomeErrorHappened" xml:space="preserve">
+    <value>오류가 발생했습니다.</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_More" xml:space="preserve">
+    <value>더 많은…</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_MoreDetails" xml:space="preserve">
+    <value>자세한 내용:</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_NoIssuesFound" xml:space="preserve">
+    <value>문제를 찾을 수 없습니다.</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Compress" xml:space="preserve">
+    <value>압축</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Compressed" xml:space="preserve">
+    <value>압축된</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_CompressionAlgorithm" xml:space="preserve">
+    <value>압축 알고리즘:</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Decompress" xml:space="preserve">
+    <value>압축 풀기</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Description" xml:space="preserve">
+    <value>컨텐츠 매니저는 모든 모델과 텍스쳐(KN5와 DDS파일)를 스캔합니다. 이 파일들은 압축 될 수 있고, 때로는 여러번 압축이 가능합니다. 하지만 soundbank파일이나 PNG 이미지 파일 등은 이미 잘 압축이 되어 있고, 추가로 압축 하는 것에 대한 이점이 별로 없습니다. 오히려 아세토 코르사의 로딩 시간만 늦출 뿐이죠. [br][br]저는 최고의 압축 알고리즘인 LZX를 사용하는것을 추천합니다. LZX는 로딩 시 CPU 사용량이 증가하지만, 로딩시엔 별 상관이 없고, 오히려 불러오는 양을 상당히 줄여주죠.
+[br][br]당연히, [b]FPS엔 아무런 영향이 없습니다[/b]: 아세토 코르사는 리소스를 동적으로 불러오지 않습니다.</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_NotCompressed" xml:space="preserve">
+    <value>압축되지 않음</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Original" xml:space="preserve">
+    <value>오리지널</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Path" xml:space="preserve">
+    <value>경로</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Ratio" xml:space="preserve">
+    <value>비율</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_ViewInExplorer" xml:space="preserve">
+    <value>익스플로러에서 보기</value>
+  </data>
+  <data name="Controls_AdditionalBindings" xml:space="preserve">
+    <value>추가 바인딩:</value>
+  </data>
+  <data name="Controls_AlreadyUsed" xml:space="preserve">
+    <value>이미 사용됨</value>
+  </data>
+  <data name="Controls_AlreadyUsed_Message" xml:space="preserve">
+    <value>"{0}"이(가) {1}에 이미 사용되고 있습니다. 먼저 이전 항목을 제거하시겠습니까?</value>
+  </data>
+  <data name="Controls_AlreadyUsed_MultipleMessage" xml:space="preserve">
+    <value>"{0}"은(는) {1} 및 {2}에 이미 사용되고 있습니다. 오래된 용도를 먼저 제거하시겠습니까?</value>
+  </data>
+  <data name="Controls_ApplyToAll" xml:space="preserve">
+    <value>아니요, 모두 적용하세요.</value>
+  </data>
+  <data name="Controls_Axis" xml:space="preserve">
+    <value>축</value>
+  </data>
+  <data name="Controls_BrakeBalance" xml:space="preserve">
+    <value>브레이크 밸런스</value>
+  </data>
+  <data name="Controls_Buttons" xml:space="preserve">
+    <value>버튼</value>
+  </data>
+  <data name="Controls_CombineWithKeyboard" xml:space="preserve">
+    <value>키보드 단축키와 함께쓰기</value>
+  </data>
+  <data name="Controls_DetectedControllersHeader" xml:space="preserve">
+    <value>컨트롤러:</value>
+  </data>
+  <data name="Controls_DeviceFormat" xml:space="preserve">
+    <value>디바이스: {0}</value>
+  </data>
+  <data name="Controls_EnableMouseSteering" xml:space="preserve">
+    <value>마우스 스티어링 활성화</value>
+  </data>
+  <data name="Controls_EngineBrake" xml:space="preserve">
+    <value>엔진 브레이크:</value>
+  </data>
+  <data name="Controls_ForceFeedback" xml:space="preserve">
+    <value>포스 피드백</value>
+  </data>
+  <data name="Controls_GearShiftDebouncing" xml:space="preserve">
+    <value>기어 변속 오류방지:</value>
+  </data>
+  <data name="Controls_GearShiftDebouncing_Tooltip" xml:space="preserve">
+    <value>하드웨어 고장으로 인한 우발적인 기어 변속(중복 입력) 방지 지연시간 </value>
+  </data>
+  <data name="Controls_Gestures" xml:space="preserve">
+    <value>제스처:</value>
+  </data>
+  <data name="Controls_InputMethodLabel" xml:space="preserve">
+    <value>인풋 장치:</value>
+  </data>
+  <data name="Controls_InvalidDirectory_Commentary" xml:space="preserve">
+    <value>초기 디렉토리("cfg\controllers\saved setups") 또는 일부 하위 디렉토리에서 파일을 선택하십시오.</value>
+  </data>
+  <data name="Controls_InvertFfb" xml:space="preserve">
+    <value>FFB 반전</value>
+  </data>
+  <data name="Controls_KeyboardSteeringHeader" xml:space="preserve">
+    <value>키보드 조향:</value>
+  </data>
+  <data name="Controls_Miscellaneous" xml:space="preserve">
+    <value>기타:</value>
+  </data>
+  <data name="Controls_MouseSteeringHeader" xml:space="preserve">
+    <value>마우스 조향:</value>
+  </data>
+  <data name="Controls_OppositeLockSpeed" xml:space="preserve">
+    <value>반대 잠금 속도</value>
+  </data>
+  <data name="Controls_RemoveOld" xml:space="preserve">
+    <value>예, 오래된 것을 제거합니다.</value>
+  </data>
+  <data name="Controls_ReturnRate" xml:space="preserve">
+    <value>수익률</value>
+  </data>
+  <data name="Controls_SharedFfbOnly" xml:space="preserve">
+    <value>{0} (FFB에만 해당)</value>
+  </data>
+  <data name="Controls_SharedFor_Keyboard" xml:space="preserve">
+    <value>키보드</value>
+  </data>
+  <data name="Controls_SharedFor_XboxController" xml:space="preserve">
+    <value>XBOX 360 컨트롤러</value>
+  </data>
+  <data name="Controls_ShareFfbOnly" xml:space="preserve">
+    <value>FFB 설정만 공유</value>
+  </data>
+  <data name="Controls_ShareFfbOnly_Tooltip" xml:space="preserve">
+    <value>실험용 FFB 특성 포함</value>
+  </data>
+  <data name="Controls_SharePreset" xml:space="preserve">
+    <value>사전설정 공유</value>
+  </data>
+  <data name="Controls_SharePreset_Tooltip" xml:space="preserve">
+    <value>실험 속성 없이 기본 속성만 사용할 수 있습니다.</value>
+  </data>
+  <data name="Controls_ShiftersHeader" xml:space="preserve">
+    <value>쉬프터 :</value>
+  </data>
+  <data name="Controls_SteeringSpeed" xml:space="preserve">
+    <value>스티어링 속도</value>
+  </data>
+  <data name="Controls_SwapUsings" xml:space="preserve">
+    <value>교환해서 사용</value>
+  </data>
+  <data name="Controls_Test_Tooltip" xml:space="preserve">
+    <value>Quick Drive로 현재 사전 설정 테스트</value>
+  </data>
+  <data name="Controls_TractionControl" xml:space="preserve">
+    <value>트랙션 컨트롤:</value>
+  </data>
+  <data name="Controls_Turbo" xml:space="preserve">
+    <value>터보:</value>
+  </data>
+  <data name="Controls_UseHShifter" xml:space="preserve">
+    <value>H-쉬프터 사용</value>
+  </data>
+  <data name="Controls_UseMouseButtons" xml:space="preserve">
+    <value>스로틀 및 브레이크에 마우스 버튼 사용</value>
+  </data>
+  <data name="Controls_View" xml:space="preserve">
+    <value>보기:</value>
+  </data>
+  <data name="Controls_WarnAboutUnsaved" xml:space="preserve">
+    <value>저장하지 않은 변경 사항에 대한 경고</value>
+  </data>
+  <data name="Controls_WarnAboutUnsaved_Tooltip" xml:space="preserve">
+    <value>그렇지 않으면 앱에서 변경된 이전 버전을 자동으로 휴지통으로 이동</value>
+  </data>
+  <data name="CreateShowroom_CannotCreate" xml:space="preserve">
+    <value>새로운 쇼룸을 만들수 없음</value>
+  </data>
+  <data name="CreateShowroom_InShadow" xml:space="preserve">
+    <value>그림자 속에</value>
+  </data>
+  <data name="CreateShowroom_NameLabel" xml:space="preserve">
+    <value>이름:</value>
+  </data>
+  <data name="CreateShowroom_Panorama_Commentary" xml:space="preserve">
+    <value>권장 형식: DDS 이미지, 32f.32f.32f, 5120×2560
+하지만 200MB를 낭비하고 싶지 않다면 TIFF 이미지, 픽셀당 96비트, ZIP</value>
+  </data>
+  <data name="CreateShowroom_Panorama_Example" xml:space="preserve">
+    <value>이와 유사한 것:</value>
+  </data>
+  <data name="CreateShowroom_PanoramaLabel" xml:space="preserve">
+    <value>파노라마:</value>
+  </data>
+  <data name="CreateShowroom_SelectPanorama_Title" xml:space="preserve">
+    <value>파노라마 파일 선택</value>
+  </data>
+  <data name="CreateShowroom_Title" xml:space="preserve">
+    <value>새로운 쇼룸 만들기</value>
+  </data>
+  <data name="CropImage_Skip" xml:space="preserve">
+    <value>자르지 마세요</value>
+  </data>
+  <data name="CropImage_Title" xml:space="preserve">
+    <value>이미지 자르기</value>
+  </data>
+  <data name="CustomLocalesUpdated_Message" xml:space="preserve">
+    <value>사용자 언어가 업데이트 되었습니다. 지금 앱을 다시 시작하시겠습니까?</value>
+  </data>
+  <data name="CustomLocalesUpdated_Title" xml:space="preserve">
+    <value>언어가 업데이트 되었습니다.</value>
+  </data>
+  <data name="Dialog_CarSetupsFormat" xml:space="preserve">
+    <value>{0} 설정</value>
+  </data>
+  <data name="Dialog_CarSkinsFormat" xml:space="preserve">
+    <value>{0} 스킨</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu" xml:space="preserve">
+    <value>시작 메뉴에 바로 가기를 추가하시겠습니까?</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu_Tooltip" xml:space="preserve">
+    <value>이를 통해 CM은 Windows 8, 8.1 또는 10에서 적절한 알림을 사용할 수 있습니다.</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_AppJustHasBeenUpdatedPleaseReview" xml:space="preserve">
+    <value>앱이 업데이트되었습니다. 다음 설정이 여전히 유효한지 검토하십시오.</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_Create" xml:space="preserve">
+    <value>생성(권장)</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_Delete" xml:space="preserve">
+    <value>삭제</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_InstallRecommendedPlugins" xml:space="preserve">
+    <value>권장 플러그인 설치</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_InstallSomePlugins" xml:space="preserve">
+    <value>플러그인도 몇 개 설치하시겠습니까?</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_WhatsYourName" xml:space="preserve">
+    <value>이름이 무엇인가요?</value>
+  </data>
+  <data name="Dialogs_BookingDialog_BookingIsFinished" xml:space="preserve">
+    <value>예약이 종료되었습니다</value>
+  </data>
+  <data name="Dialogs_CarUpdatePreviewsDialog_Done" xml:space="preserve">
+    <value>완료</value>
+  </data>
+  <data name="Dialogs_GameDialog_Benchmark" xml:space="preserve">
+    <value>벤치마크:</value>
+  </data>
+  <data name="Dialogs_GameDialog_BestDelta" xml:space="preserve">
+    <value>베스트 델타</value>
+  </data>
+  <data name="Dialogs_GameDialog_GameCrashed" xml:space="preserve">
+    <value>게임이 중단됨</value>
+  </data>
+  <data name="Dialogs_GameDialog_TotalDelta" xml:space="preserve">
+    <value>총 델타</value>
+  </data>
+  <data name="Dialogs_GameDialog_TotalTime" xml:space="preserve">
+    <value>총 시간</value>
+  </data>
+  <data name="Dialogs_ImageEditor_CantLoadImage" xml:space="preserve">
+    <value>이미지를 로드할 수 없음</value>
+  </data>
+  <data name="Dialogs_ImageEditor_UseMouseWheelOrKeysToAdjust" xml:space="preserve">
+    <value>마우스 휠 또는 +/- 키를 사용하여 영역의 크기를 조정합니다. Ctrl 또는 Shift 키를 누른 채 정확도를 조정합니다.</value>
+  </data>
+  <data name="Dialogs_InstallAdditionalContentDialog_Hint" xml:space="preserve">
+    <value>다운로드할 파일 또는 링크 삭제</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_DeleteTag" xml:space="preserve">
+    <value>태그 삭제...</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_NameOfTheTag_Tooltip" xml:space="preserve">
+    <value>태그 이름</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_Names" xml:space="preserve">
+    <value>이름:</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_Names_Tooltip" xml:space="preserve">
+    <value>여기에 이름만 적어주세요. 한 줄에 한 개씩.</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_NewTag" xml:space="preserve">
+    <value>새 태그</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_RestoreDeleted" xml:space="preserve">
+    <value>복원 삭제됨</value>
+  </data>
+  <data name="DownloadList_7ZipComment" xml:space="preserve">
+    <value>7-Zip 플러그인을 사용하면 설치 성능이 향상되고 CM에서 모든 유형의 아카이브의 압축을 풀 수 있습니다.</value>
+  </data>
+  <data name="DownloadList_Cancel" xml:space="preserve">
+    <value>취소</value>
+  </data>
+  <data name="DownloadList_Cancelled" xml:space="preserve">
+    <value>취소된</value>
+  </data>
+  <data name="DownloadList_Cancelling" xml:space="preserve">
+    <value>취소 중...</value>
+  </data>
+  <data name="DownloadList_DetectionFailed" xml:space="preserve">
+    <value>앱에서 설치할 콘텐츠를 검색할 수 없습니다. 수동으로 설치하시겠습니까?</value>
+  </data>
+  <data name="DownloadList_ExtraOptions" xml:space="preserve">
+    <value>추가 옵션:</value>
+  </data>
+  <data name="DownloadList_Failed" xml:space="preserve">
+    <value>실패</value>
+  </data>
+  <data name="DownloadList_From" xml:space="preserve">
+    <value>출처:</value>
+  </data>
+  <data name="DownloadList_Install" xml:space="preserve">
+    <value>설치</value>
+  </data>
+  <data name="DownloadList_Installing" xml:space="preserve">
+    <value>설치 중...</value>
+  </data>
+  <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
+    <value>활성 다운로드 없음</value>
+  </data>
+  <data name="DownloadList_NothingFound" xml:space="preserve">
+    <value>찾을 수 없음</value>
+  </data>
+  <data name="DownloadList_Password" xml:space="preserve">
+    <value>암호:</value>
+  </data>
+  <data name="DownloadList_Pause" xml:space="preserve">
+    <value>일시 중지</value>
+  </data>
+  <data name="DownloadList_PluginsLoadFailed" xml:space="preserve">
+    <value>플러그인 목록을 로드할 수 없음</value>
+  </data>
+  <data name="DownloadList_Restart" xml:space="preserve">
+    <value>다시 시작</value>
+  </data>
+  <data name="DownloadList_Resume" xml:space="preserve">
+    <value>개요</value>
+  </data>
+  <data name="DownloadList_Retry" xml:space="preserve">
+    <value>다시 시도</value>
+  </data>
+  <data name="DownloadList_ScanAgain" xml:space="preserve">
+    <value>다시 검색</value>
+  </data>
+  <data name="DownloadList_ShowFile" xml:space="preserve">
+    <value>파일 표시</value>
+  </data>
+  <data name="DownloadList_ViewInExplorer" xml:space="preserve">
+    <value>익스플로러에서 보기</value>
+  </data>
+  <data name="Drive_ActualTemperature" xml:space="preserve">
+    <value>실제 온도:</value>
+  </data>
+  <data name="Drive_AiArrangeOrder" xml:space="preserve">
+    <value>AI 정렬 순서:</value>
+  </data>
+  <data name="Drive_AiArrangeOrder_Tooltip" xml:space="preserve">
+    <value>시작 그리드의 끝에서 가장 스마트한 봇을 시작하려면 Ascending으로 설정</value>
+  </data>
+  <data name="Drive_AiCarsLoading" xml:space="preserve">
+    <value>AI 차량 적재 중…</value>
+  </data>
+  <data name="Drive_AiFiltering" xml:space="preserve">
+    <value>AI 자동차 필터링…</value>
+  </data>
+  <data name="Drive_AiLevelInDriverName" xml:space="preserve">
+    <value>운전자 이름에 AI 레벨 표시</value>
+  </data>
+  <data name="Drive_ArrangeInReverseOrder" xml:space="preserve">
+    <value>역순으로 배열</value>
+  </data>
+  <data name="Drive_ArrangeInReverseOrder_Tooltip" xml:space="preserve">
+    <value>가장 강한 상대는 출발선에서 마지막이 됩니다</value>
+  </data>
+  <data name="Drive_ArrangeRandomly" xml:space="preserve">
+    <value>랜덤으로 정렬</value>
+  </data>
+  <data name="Drive_AvoidCarsWithoutSkinNumbers" xml:space="preserve">
+    <value>스킨 번호가 없는 차는 피하십시오.</value>
+  </data>
+  <data name="Drive_AvoidCarsWithoutSkinNumbers_Tooltip" xml:space="preserve">
+    <value>다양성을 크게 감소시킬 수 있음</value>
+  </data>
+  <data name="Drive_CannotFilter" xml:space="preserve">
+    <value>그리드에 적합한 차량을 필터링할 수 없습니다.</value>
+  </data>
+  <data name="Drive_CannotFilter_Commentary" xml:space="preserve">
+    <value>GridType.json을 변경한 경우 해당 항목이 올바른지 확인합니다.</value>
+  </data>
+  <data name="Drive_CannotInitializeLua" xml:space="preserve">
+    <value>Lua를 초기화할 수 없음</value>
+  </data>
+  <data name="Drive_CannotStart_CannotFindAnyCar" xml:space="preserve">
+    <value>선택한 그리드 유형에 맞는 차량을 찾지 못했습니다.</value>
+  </data>
+  <data name="Drive_CannotStart_SelectNonDisabled" xml:space="preserve">
+    <value>일부 가능한 차량을 선택하십시오.</value>
+  </data>
+  <data name="Drive_CannotStart_SelectTrack" xml:space="preserve">
+    <value>트랙을 선택하십시오.</value>
+  </data>
+  <data name="Drive_CannotStart_SetOpponent" xml:space="preserve">
+    <value>하나 이상의 상대를 설정하십시오.</value>
+  </data>
+  <data name="Drive_CannotStart_Title" xml:space="preserve">
+    <value>경주를 시작할 수 없습니다.</value>
+  </data>
+  <data name="Drive_ConsiderTimezones" xml:space="preserve">
+    <value>시간대 고려</value>
+  </data>
+  <data name="Drive_DoNotRecordGhostCar" xml:space="preserve">
+    <value>고스트카 녹화 안 함</value>
+  </data>
+  <data name="Drive_FixedOpponentsStrength" xml:space="preserve">
+    <value>상대 실력 고정</value>
+  </data>
+  <data name="Drive_GhostCar" xml:space="preserve">
+    <value>고스트카</value>
+  </data>
+  <data name="Drive_GhostCarAdvantage" xml:space="preserve">
+    <value>고스트카 어드밴티지</value>
+  </data>
+  <data name="Drive_GridCarVarietyLimit" xml:space="preserve">
+    <value>차종제한</value>
+  </data>
+  <data name="Drive_GridCarVarietyLimit_Tooltip" xml:space="preserve">
+    <value>이 슬라이더를 사용하면 AC가 적재할 수 있는 다양한 차량의 최대 수를 제한할 수 있습니다.</value>
+  </data>
+  <data name="Drive_InvalidScript" xml:space="preserve">
+    <value>잘못된 스크립트</value>
+  </data>
+  <data name="Drive_JumpStartPenalty" xml:space="preserve">
+    <value>점프스타트 페널티</value>
+  </data>
+  <data name="Drive_ListOfPossibleOpponents_Tooltip" xml:space="preserve">
+    <value>앱이 이 목록에서 {0} {opendor}을(를) 가져옵니다.</value>
+  </data>
+  <data name="Drive_ListOfPossibleOpponentsLabel" xml:space="preserve">
+    <value>가능한 상대 목록:</value>
+  </data>
+  <data name="Drive_LoadingFailed" xml:space="preserve">
+    <value>로드 실패</value>
+  </data>
+  <data name="Drive_LocalWeather_Tooltip" xml:space="preserve">
+    <value>트랙위의 날씨 대신 현지 날씨를 이용하세요.</value>
+  </data>
+  <data name="Drive_LocalWeatherHeader" xml:space="preserve">
+    <value>현지 날씨</value>
+  </data>
+  <data name="Drive_OnlineServer_CarIsMissing" xml:space="preserve">
+    <value>차가 없어졌다.</value>
+  </data>
+  <data name="Drive_OnlineServer_GetLinkToStats" xml:space="preserve">
+    <value>통계에 대한 링크 가져오기</value>
+  </data>
+  <data name="Drive_OnlineServer_JoinTSServer" xml:space="preserve">
+    <value>TS 서버 참가</value>
+  </data>
+  <data name="Drive_OnlineServer_MaximumOfContacts_Tooltip" xml:space="preserve">
+    <value>킬로미터당 최대 접점 수</value>
+  </data>
+  <data name="Drive_OnlineServer_ResetStats" xml:space="preserve">
+    <value>통계 재설정</value>
+  </data>
+  <data name="Drive_OnlineServer_ServerIsEmpty" xml:space="preserve">
+    <value>서버가 비어 있습니다.</value>
+  </data>
+  <data name="Drive_OnlineServer_SkinForBooking" xml:space="preserve">
+    <value>예약용 스킨:</value>
+  </data>
+  <data name="Drive_OnlineServer_Stop" xml:space="preserve">
+    <value>정지</value>
+  </data>
+  <data name="Drive_OnlineServer_TrackIsMissing" xml:space="preserve">
+    <value>트랙이 누락되었습니다.</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForAnyCar" xml:space="preserve">
+    <value>아무 차량을 기다립니다</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForAnyCar_Tooltip" xml:space="preserve">
+    <value>아무 차량이나 사용할 수 있을때까지 대기</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForThisCar" xml:space="preserve">
+    <value>이 차량을 기다립니다</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForThisCar_Tooltip" xml:space="preserve">
+    <value>해당 차량을 사용할 수 있을때까지 대기</value>
+  </data>
+  <data name="Drive_OpponentsMaximumLimitation_Tooltip" xml:space="preserve">
+    <value>사용 가능한 피트 수({0})로 제한됨</value>
+  </data>
+  <data name="Drive_OpponentsStrength" xml:space="preserve">
+    <value>상대 실력</value>
+  </data>
+  <data name="Drive_OpponentsStrengthMin" xml:space="preserve">
+    <value>상대 실력(최소)</value>
+  </data>
+  <data name="Drive_Ordinal_Last" xml:space="preserve">
+    <value>마지막</value>
+  </data>
+  <data name="Drive_Ordinal_Parameter" xml:space="preserve">
+    <value>운전자</value>
+  </data>
+  <data name="Drive_Ordinal_Random" xml:space="preserve">
+    <value>랜덤</value>
+  </data>
+  <data name="Drive_Penalties" xml:space="preserve">
+    <value>패널티</value>
+  </data>
+  <data name="Drive_PickSkinsSequentially" xml:space="preserve">
+    <value>스킨을 순차적으로 선택</value>
+  </data>
+  <data name="Drive_PickSkinsSequentially_Tooltip" xml:space="preserve">
+    <value>앱은 스킨을 오름차순으로 정렬하지만, 필터를 존중하고 필요한 경우 모든 것을 섞습니다</value>
+  </data>
+  <data name="Drive_Quick_CantStartTheRace" xml:space="preserve">
+    <value>경주를 시작할 수 없습니다.</value>
+  </data>
+  <data name="Drive_Quick_CarSpecificFanatecSettings" xml:space="preserve">
+    <value>차량별 Fanatec 설정</value>
+  </data>
+  <data name="Drive_Quick_ChangeCarToRandom" xml:space="preserve">
+    <value>차량을 랜덤으로 변경</value>
+  </data>
+  <data name="Drive_Quick_ChangeSkinToRandom" xml:space="preserve">
+    <value>스킨을 랜덤으로 변경</value>
+  </data>
+  <data name="Drive_Quick_ChangeTrackToRandom" xml:space="preserve">
+    <value>트랙을 랜덤으로 변경</value>
+  </data>
+  <data name="Drive_Quick_DisableLEDsAndDisplay" xml:space="preserve">
+    <value>LED 및 디스플레이 비활성화</value>
+  </data>
+  <data name="Drive_Quick_RandomizeEverything" xml:space="preserve">
+    <value>모든 것을 랜덤화합니다</value>
+  </data>
+  <data name="Drive_Quick_SetRandomTemperature" xml:space="preserve">
+    <value>무작위 온도 설정</value>
+  </data>
+  <data name="Drive_Quick_SetRandomTime" xml:space="preserve">
+    <value>랜덤 시간 설정</value>
+  </data>
+  <data name="Drive_Quick_SetRandomWeather" xml:space="preserve">
+    <value>임의의 날씨 설정</value>
+  </data>
+  <data name="Drive_Quick_ShowCurrentGearOnly" xml:space="preserve">
+    <value>현재 기어만 표시</value>
+  </data>
+  <data name="Drive_Quick_StartingTheRace" xml:space="preserve">
+    <value>레이스 시작중…</value>
+  </data>
+  <data name="Drive_Quick_YesAndFixIt" xml:space="preserve">
+    <value>네, 그리고 고치세요.</value>
+  </data>
+  <data name="Drive_RaceDuration" xml:space="preserve">
+    <value>레이스 지속시간</value>
+  </data>
+  <data name="Drive_RealConditions" xml:space="preserve">
+    <value>실제 날씨</value>
+  </data>
+  <data name="Drive_SetTimeManuallyHeader" xml:space="preserve">
+    <value>수동으로 시간 설정</value>
+  </data>
+  <data name="Drive_SkipSession" xml:space="preserve">
+    <value>건너뛰기</value>
+  </data>
+  <data name="Drive_StartFrom" xml:space="preserve">
+    <value>시작:</value>
+  </data>
+  <data name="Drive_StartingPosition" xml:space="preserve">
+    <value>시작위치</value>
+  </data>
+  <data name="Drive_Temperature" xml:space="preserve">
+    <value>온도</value>
+  </data>
+  <data name="Drive_Temperature_Random" xml:space="preserve">
+    <value>랜덤</value>
+  </data>
+  <data name="Drive_Temperature_Warning" xml:space="preserve">
+    <value>실제 온도가 범위를 벗어납니다. 가장 가까운 값이 사용됩니다.</value>
+  </data>
+  <data name="Drive_Time" xml:space="preserve">
+    <value>시간</value>
+  </data>
+  <data name="Drive_Time_Random" xml:space="preserve">
+    <value>랜덤</value>
+  </data>
+  <data name="Drive_Time_Warning" xml:space="preserve">
+    <value>실제 시간이 범위를 벗어납니다. 가장 가까운 값이 사용됩니다.</value>
+  </data>
+  <data name="Drive_TimeMultiplerLabel" xml:space="preserve">
+    <value>시간 배속</value>
+  </data>
+  <data name="Drive_TrackStateLabel" xml:space="preserve">
+    <value>트랙:</value>
+  </data>
+  <data name="Drive_TyreBlankets" xml:space="preserve">
+    <value>타이어 예열</value>
+  </data>
+  <data name="Drive_Weather_CannotLoad" xml:space="preserve">
+    <value>실제 날씨를 로드할 수 없습니다.</value>
+  </data>
+  <data name="Drive_Weather_Warning" xml:space="preserve">
+    <value>{}실제 날씨({0})가 지원되지 않습니다.</value>
+  </data>
+  <data name="Drive_WeatherLabel" xml:space="preserve">
+    <value>날씨:</value>
+  </data>
+  <data name="DriverModel_MissingDriverModels" xml:space="preserve">
+    <value>드라이버 모델 누락</value>
+  </data>
+  <data name="Filter_ByAcceleration" xml:space="preserve">
+    <value>유사한 가속도로 필터링</value>
+  </data>
+  <data name="Filter_ByAge" xml:space="preserve">
+    <value>연령으로 필터링</value>
+  </data>
+  <data name="Filter_ByAuthor" xml:space="preserve">
+    <value>작성자로 필터링</value>
+  </data>
+  <data name="Filter_ByBrand" xml:space="preserve">
+    <value>브랜드로 필터링</value>
+  </data>
+  <data name="Filter_ByCar" xml:space="preserve">
+    <value>차량으로 필터링</value>
+  </data>
+  <data name="Filter_ByCity" xml:space="preserve">
+    <value>도시로 필터링</value>
+  </data>
+  <data name="Filter_ByClass" xml:space="preserve">
+    <value>클래스로 필터링</value>
+  </data>
+  <data name="Filter_ByCountry" xml:space="preserve">
+    <value>국가로 필터링</value>
+  </data>
+  <data name="Filter_ByDecade" xml:space="preserve">
+    <value>10년 단위로 필터링</value>
+  </data>
+  <data name="Filter_ByDriver" xml:space="preserve">
+    <value>드라이버 이름으로 필터링</value>
+  </data>
+  <data name="Filter_ByLength" xml:space="preserve">
+    <value>유사한 길이로 필터링</value>
+  </data>
+  <data name="Filter_ByNumber" xml:space="preserve">
+    <value>번호로 필터링</value>
+  </data>
+  <data name="Filter_ByPitboxes" xml:space="preserve">
+    <value>유사한 피트스톱 양으로 필터링</value>
+  </data>
+  <data name="Filter_ByPower" xml:space="preserve">
+    <value>유사한 전력으로 필터링</value>
+  </data>
+  <data name="Filter_ByPriority" xml:space="preserve">
+    <value>우선 순위로 필터링</value>
+  </data>
+  <data name="Filter_ByPwRatio" xml:space="preserve">
+    <value>유사한 P/W 비율로 필터링</value>
+  </data>
+  <data name="Filter_BySize" xml:space="preserve">
+    <value>크기로 필터링</value>
+  </data>
+  <data name="Filter_ByTag" xml:space="preserve">
+    <value>태그로 필터링</value>
+  </data>
+  <data name="Filter_ByTeam" xml:space="preserve">
+    <value>팀으로 필터링</value>
+  </data>
+  <data name="Filter_ByTopSpeed" xml:space="preserve">
+    <value>유사한 최고 속도로 필터링</value>
+  </data>
+  <data name="Filter_ByTorque" xml:space="preserve">
+    <value>유사한 토크로 필터링</value>
+  </data>
+  <data name="Filter_ByTrack" xml:space="preserve">
+    <value>트랙별으로필터링</value>
+  </data>
+  <data name="Filter_ByWeather" xml:space="preserve">
+    <value>날씨로 필터</value>
+  </data>
+  <data name="Filter_ByWeight" xml:space="preserve">
+    <value>유사한 무게로 필터링</value>
+  </data>
+  <data name="Filter_ByWidth" xml:space="preserve">
+    <value>비슷한 너비로 필터링</value>
+  </data>
+  <data name="Filter_ByYear" xml:space="preserve">
+    <value>연도로 필터링</value>
+  </data>
+  <data name="Font_MissingFonts" xml:space="preserve">
+    <value>누락된 글꼴</value>
+  </data>
+  <data name="Hibernate_TrayText" xml:space="preserve">
+    <value>CM가 숨겨져 있습니다</value>
+  </data>
+  <data name="KunosCareer_AiLevelLabel" xml:space="preserve">
+    <value>AI 레벨</value>
+  </data>
+  <data name="KunosCareer_FullyCompleted" xml:space="preserve">
+    <value>완전히 완성</value>
+  </data>
+  <data name="KunosCareer_LapsLabel" xml:space="preserve">
+    <value>랩:</value>
+  </data>
+  <data name="KunosCareer_LeftToEarn" xml:space="preserve">
+    <value>남은수입:</value>
+  </data>
+  <data name="KunosCareer_Next" xml:space="preserve">
+    <value>다음</value>
+  </data>
+  <data name="KunosCareer_OpponentsLabel" xml:space="preserve">
+    <value>상대:</value>
+  </data>
+  <data name="KunosCareer_ProgressFormat" xml:space="preserve">
+    <value>진행률: {0}</value>
+  </data>
+  <data name="KunosCareer_RequiredSeriesAreNotDoneYet" xml:space="preserve">
+    <value>필수 시리즈가 아직 완료되지 않았습니다.</value>
+  </data>
+  <data name="KunosCareer_ResetProgress_Message" xml:space="preserve">
+    <value>이 챔피언십의 모든 진행 상황이 손실됩니다. 확실한가요?</value>
+  </data>
+  <data name="KunosCareer_ResetProgress_Title" xml:space="preserve">
+    <value>챔피언십 진행 상황 재설정</value>
+  </data>
+  <data name="KunosCareer_SeriesGoal" xml:space="preserve">
+    <value>시리즈 목표:</value>
+  </data>
+  <data name="KunosCareer_StartingPositionLabel" xml:space="preserve">
+    <value>시작 위치:</value>
+  </data>
+  <data name="KunosCareer_TemperatureLabel" xml:space="preserve">
+    <value>온도:</value>
+  </data>
+  <data name="KunosCareer_TimeLabel" xml:space="preserve">
+    <value>시간:</value>
+  </data>
+  <data name="KunosCareer_Title" xml:space="preserve">
+    <value>Kunos 경력</value>
+  </data>
+  <data name="KunosCareer_TrackState" xml:space="preserve">
+    <value>트랙 상태:</value>
+  </data>
+  <data name="KunosCareer_WeatherLabel" xml:space="preserve">
+    <value>날씨:</value>
+  </data>
+  <data name="List_Apps" xml:space="preserve">
+    <value>앱</value>
+  </data>
+  <data name="List_Cars" xml:space="preserve">
+    <value>{0} 차량</value>
+  </data>
+  <data name="List_DriverModels" xml:space="preserve">
+    <value>{0} 드라이버 모델</value>
+  </data>
+  <data name="List_Fonts" xml:space="preserve">
+    <value>{0} 폰트</value>
+  </data>
+  <data name="List_PpFilters" xml:space="preserve">
+    <value>{0} 필터</value>
+  </data>
+  <data name="List_Replays" xml:space="preserve">
+    <value>{0} 리플레이</value>
+  </data>
+  <data name="List_ServerPresets" xml:space="preserve">
+    <value>{0} 프리셋</value>
+  </data>
+  <data name="List_Setups" xml:space="preserve">
+    <value>{0} 셋업</value>
+  </data>
+  <data name="List_Showrooms" xml:space="preserve">
+    <value>{0} 쇼룸</value>
+  </data>
+  <data name="List_Skins" xml:space="preserve">
+    <value>{0} 스킨</value>
+  </data>
+  <data name="List_Tracks" xml:space="preserve">
+    <value>{0} 트랙</value>
+  </data>
+  <data name="List_Weather" xml:space="preserve">
+    <value>{0} 날씨</value>
+  </data>
+  <data name="Lists_ToolsListPage_Launch" xml:space="preserve">
+    <value>시작</value>
+  </data>
+  <data name="LiveryIcon_CannotChange" xml:space="preserve">
+    <value>리버리 아이콘을 변경할 수 없습니다</value>
+  </data>
+  <data name="LiveryIcon_CannotChange_Commentary" xml:space="preserve">
+    <value>livery.png가 바쁘지 않은지 확인</value>
+  </data>
+  <data name="LiveryIcon_ChangeNumber_Message" xml:space="preserve">
+    <value>스킨 번호를“{0}”(으)로 변경 하시겠습니까?</value>
+  </data>
+  <data name="LiveryIcon_ChangeNumber_Title" xml:space="preserve">
+    <value>스킨 번호가 변경됨</value>
+  </data>
+  <data name="LiveryIcon_ColorLabel" xml:space="preserve">
+    <value>색상:</value>
+  </data>
+  <data name="LiveryIcon_Number_Condensed" xml:space="preserve">
+    <value>응축됨</value>
+  </data>
+  <data name="LiveryIcon_Number_Light" xml:space="preserve">
+    <value>빛</value>
+  </data>
+  <data name="LiveryIcon_Number_LightOutlined" xml:space="preserve">
+    <value>빛 (윤곽 포함)</value>
+  </data>
+  <data name="LiveryIcon_NumberHeader" xml:space="preserve">
+    <value>번호:</value>
+  </data>
+  <data name="LiveryIcon_NumberValue" xml:space="preserve">
+    <value>값</value>
+  </data>
+  <data name="LiveryIcon_ResultLabel" xml:space="preserve">
+    <value>결과:</value>
+  </data>
+  <data name="LiveryIcon_SecondaryColorLabel" xml:space="preserve">
+    <value>보조 색상 :</value>
+  </data>
+  <data name="LiveryIcon_Shape_Carbon" xml:space="preserve">
+    <value>카본</value>
+  </data>
+  <data name="LiveryIcon_Shape_Circle" xml:space="preserve">
+    <value>원형</value>
+  </data>
+  <data name="LiveryIcon_Shape_Diagonal" xml:space="preserve">
+    <value>대각선</value>
+  </data>
+  <data name="LiveryIcon_Shape_DiagonalLineWithCircle" xml:space="preserve">
+    <value>대각선 형태의 원</value>
+  </data>
+  <data name="LiveryIcon_Shape_DiagonalWithCircle" xml:space="preserve">
+    <value>대각 형태의 원</value>
+  </data>
+  <data name="LiveryIcon_Shape_DoubleStripes" xml:space="preserve">
+    <value>이중 줄무늬</value>
+  </data>
+  <data name="LiveryIcon_Shape_Flat" xml:space="preserve">
+    <value>평면</value>
+  </data>
+  <data name="LiveryIcon_Shape_HorizontalSplit" xml:space="preserve">
+    <value>수평 분할</value>
+  </data>
+  <data name="LiveryIcon_Shape_HorizontalStripes" xml:space="preserve">
+    <value>가로 줄무늬</value>
+  </data>
+  <data name="LiveryIcon_Shape_SideStripes" xml:space="preserve">
+    <value>옆줄</value>
+  </data>
+  <data name="LiveryIcon_Shape_Stripes" xml:space="preserve">
+    <value>줄무늬</value>
+  </data>
+  <data name="LiveryIcon_Shape_TripleHorizontalSplit" xml:space="preserve">
+    <value>삼중 수평 분할</value>
+  </data>
+  <data name="LiveryIcon_Shape_TripleVerticalSplit" xml:space="preserve">
+    <value>삼중 수직 분할</value>
+  </data>
+  <data name="LiveryIcon_Shape_VerticalSplit" xml:space="preserve">
+    <value>수직 분할</value>
+  </data>
+  <data name="LiveryIcon_ShapeLabel" xml:space="preserve">
+    <value>모양:</value>
+  </data>
+  <data name="LiveryIcon_Style_Bright" xml:space="preserve">
+    <value>밝은</value>
+  </data>
+  <data name="LiveryIcon_Style_Gloss" xml:space="preserve">
+    <value>광택</value>
+  </data>
+  <data name="LiveryIcon_Style_Gradient" xml:space="preserve">
+    <value>그라데이션</value>
+  </data>
+  <data name="LiveryIcon_StyleLabel" xml:space="preserve">
+    <value>스타일:</value>
+  </data>
+  <data name="LiveryIcon_TertiaryColorLabel" xml:space="preserve">
+    <value>3차 색상:</value>
+  </data>
+  <data name="LiveryIcon_TextColorLabel" xml:space="preserve">
+    <value>텍스트 색상:</value>
+  </data>
+  <data name="LiveryIcon_Title" xml:space="preserve">
+    <value>리버리 아이콘</value>
+  </data>
+  <data name="Main_About" xml:space="preserve">
+    <value>정보</value>
+  </data>
+  <data name="Main_AboutContentManager" xml:space="preserve">
+    <value>콘텐츠 매니저에 대해</value>
+  </data>
+  <data name="Main_ACSettings" xml:space="preserve">
+    <value>AC 설정</value>
+  </data>
+  <data name="Main_Apps" xml:space="preserve">
+    <value>앱</value>
+  </data>
+  <data name="Main_AppsSettings" xml:space="preserve">
+    <value>앱 설정</value>
+  </data>
+  <data name="Main_AssettoCorsa" xml:space="preserve">
+    <value>아세토 코르사</value>
+  </data>
+  <data name="Main_CannotProcessArgument" xml:space="preserve">
+    <value>인수를 처리할 수 없음: “{0}”</value>
+  </data>
+  <data name="Main_CannotProcessArgument_Commentary" xml:space="preserve">
+    <value>올바른 형식인지 확인하세요</value>
+  </data>
+  <data name="Main_Career" xml:space="preserve">
+    <value>커리어</value>
+  </data>
+  <data name="Main_Cars" xml:space="preserve">
+    <value>차량</value>
+  </data>
+  <data name="Main_Challenges" xml:space="preserve">
+    <value>도전과제</value>
+  </data>
+  <data name="Main_Challenges_Championships" xml:space="preserve">
+    <value>챔피언쉽</value>
+  </data>
+  <data name="Main_Challenges_Drags" xml:space="preserve">
+    <value>드래그</value>
+  </data>
+  <data name="Main_Challenges_Drifts" xml:space="preserve">
+    <value>드리프트</value>
+  </data>
+  <data name="Main_Challenges_Hotlaps" xml:space="preserve">
+    <value>핫랩</value>
+  </data>
+  <data name="Main_Challenges_NotPassedYet" xml:space="preserve">
+    <value>아직 통과하지 못함</value>
+  </data>
+  <data name="Main_Challenges_Races" xml:space="preserve">
+    <value>레이스</value>
+  </data>
+  <data name="Main_Challenges_SomethingToImprove" xml:space="preserve">
+    <value>개선 할 사항</value>
+  </data>
+  <data name="Main_Challenges_TimeAttacks" xml:space="preserve">
+    <value>타임어택</value>
+  </data>
+  <data name="Main_CMSettings" xml:space="preserve">
+    <value>콘텐츠 매니저 설정</value>
+  </data>
+  <data name="Main_Content" xml:space="preserve">
+    <value>콘텐츠</value>
+  </data>
+  <data name="Main_ContentManager" xml:space="preserve">
+    <value>콘텐츠 매니저</value>
+  </data>
+  <data name="Main_CSPSettings" xml:space="preserve">
+    <value>CSP 설정</value>
+  </data>
+  <data name="Main_Downloads" xml:space="preserve">
+    <value>다운로드</value>
+  </data>
+  <data name="Main_DownloadsAndInstallations" xml:space="preserve">
+    <value>다운로드 및 설치</value>
+  </data>
+  <data name="Main_Drive" xml:space="preserve">
+    <value>드라이브</value>
+  </data>
+  <data name="Main_DriverModels" xml:space="preserve">
+    <value>드라이버 모델이 누락되었을 수 있습니다.</value>
+  </data>
+  <data name="Main_EverythingAboutFiltering" xml:space="preserve">
+    <value>필터링에 대한 모든 정보</value>
+  </data>
+  <data name="Main_Fonts" xml:space="preserve">
+    <value>글꼴</value>
+  </data>
+  <data name="Main_FPS_Average" xml:space="preserve">
+    <value>평균:</value>
+  </data>
+  <data name="Main_FPS_Minimum" xml:space="preserve">
+    <value>최소:</value>
+  </data>
+  <data name="Main_FPS_Taken" xml:space="preserve">
+    <value>촬영:</value>
+  </data>
+  <data name="Main_FPS_TakenFormat" xml:space="preserve">
+    <value>{0} 샘플</value>
+  </data>
+  <data name="Main_FPS_Title" xml:space="preserve">
+    <value>이전 세션의 성능 :</value>
+  </data>
+  <data name="Main_FPS_Tooltip" xml:space="preserve">
+    <value>이전 세션의 성능</value>
+  </data>
+  <data name="Main_FPS_ValueFormat" xml:space="preserve">
+    <value>초당 {0 : F1} 프레임</value>
+  </data>
+  <data name="Main_GetNewMods" xml:space="preserve">
+    <value>새로운 모드 받기</value>
+  </data>
+  <data name="Main_GetNewMods_ManageSources" xml:space="preserve">
+    <value>소스 관리</value>
+  </data>
+  <data name="Main_ImportantTips" xml:space="preserve">
+    <value>중요한 팁</value>
+  </data>
+  <data name="Main_Language" xml:space="preserve">
+    <value>언어 및 지역</value>
+  </data>
+  <data name="Main_LapTimes" xml:space="preserve">
+    <value>랩 타임</value>
+  </data>
+  <data name="Main_LapTimes_Sources" xml:space="preserve">
+    <value>자료</value>
+  </data>
+  <data name="Main_LapTimes_Table" xml:space="preserve">
+    <value>테이블</value>
+  </data>
+  <data name="Main_LapTimesGrid" xml:space="preserve">
+    <value>그리드</value>
+  </data>
+  <data name="Main_Live" xml:space="preserve">
+    <value>라이브</value>
+  </data>
+  <data name="Main_Media" xml:space="preserve">
+    <value>미디어</value>
+  </data>
+  <data name="Main_Miscellaneous" xml:space="preserve">
+    <value>기타</value>
+  </data>
+  <data name="Main_Mods" xml:space="preserve">
+    <value>모드</value>
+  </data>
+  <data name="Main_OfficialSupportNotification" xml:space="preserve">
+    <value>이제 공식으로 지원합니다!</value>
+  </data>
+  <data name="Main_OfficialSupportNotification_Details" xml:space="preserve">
+    <value>이제 패치 적용 없이 새 스타터 준비 완료</value>
+  </data>
+  <data name="Main_OfficialSupportNotification_Message" xml:space="preserve">
+    <value>1.7 이후 Kunos는 맞춤형 런처의  공식 지원을 추가했습니다. 기본적으로 Starter+와 같이 작동하지만, 이제 CM이 AssettoCorsa.exe를 교체할 필요가 없습니다. 새 공식 스타터로 전환하시겠습니까?</value>
+  </data>
+  <data name="Main_Online" xml:space="preserve">
+    <value>온라인</value>
+  </data>
+  <data name="Main_OriginalLauncherLink" xml:space="preserve">
+    <value>오리지널 런처</value>
+  </data>
+  <data name="Main_PpFilters" xml:space="preserve">
+    <value>PP 필터</value>
+  </data>
+  <data name="Main_Profile" xml:space="preserve">
+    <value>프로필</value>
+  </data>
+  <data name="Main_QuickDrive" xml:space="preserve">
+    <value>빠른게임</value>
+  </data>
+  <data name="Main_RecentLapTimes" xml:space="preserve">
+    <value>최근</value>
+  </data>
+  <data name="Main_ReleaseNotes" xml:space="preserve">
+    <value>릴리즈 노트</value>
+  </data>
+  <data name="Main_Replays" xml:space="preserve">
+    <value>리플레이</value>
+  </data>
+  <data name="Main_Results" xml:space="preserve">
+    <value>결과</value>
+  </data>
+  <data name="Main_Screenshots" xml:space="preserve">
+    <value>스크린 샷</value>
+  </data>
+  <data name="Main_Server" xml:space="preserve">
+    <value>서버</value>
+  </data>
+  <data name="Main_ServerPresets" xml:space="preserve">
+    <value>사전 설정</value>
+  </data>
+  <data name="Main_ServerRunning" xml:space="preserve">
+    <value>실행중</value>
+  </data>
+  <data name="Main_Settings" xml:space="preserve">
+    <value>설정</value>
+  </data>
+  <data name="Main_Setups" xml:space="preserve">
+    <value>설정</value>
+  </data>
+  <data name="Main_Showrooms" xml:space="preserve">
+    <value>쇼룸</value>
+  </data>
+  <data name="Main_Single" xml:space="preserve">
+    <value>싱글플레이</value>
+  </data>
+  <data name="Main_Skins" xml:space="preserve">
+    <value>스킨</value>
+  </data>
+  <data name="Main_Stats" xml:space="preserve">
+    <value>통계</value>
+  </data>
+  <data name="Main_Stats_KunosCars" xml:space="preserve">
+    <value>Kunos 자량 만</value>
+  </data>
+  <data name="Main_Stats_KunosCarsAndTracks" xml:space="preserve">
+    <value>Kunos 자량 및 트랙 만</value>
+  </data>
+  <data name="Main_Stats_ModsOnly" xml:space="preserve">
+    <value>모드 만</value>
+  </data>
+  <data name="Main_Stats_MostUsed" xml:space="preserve">
+    <value>가장 많이 사용</value>
+  </data>
+  <data name="Main_Title" xml:space="preserve">
+    <value>콘텐츠 매니저 (라이트 모드)</value>
+  </data>
+  <data name="Main_Tools" xml:space="preserve">
+    <value>도구</value>
+  </data>
+  <data name="Main_Tracks" xml:space="preserve">
+    <value>트랙:</value>
+  </data>
+  <data name="Main_UnhandledException" xml:space="preserve">
+    <value>처리되지 않은 예외:
+
+{0}</value>
+  </data>
+  <data name="Main_UnsavedChanges" xml:space="preserve">
+    <value>다음 항목에 대한 변경 사항을 저장 하시겠습니까?</value>
+  </data>
+  <data name="Main_UnsavedChangesHeader" xml:space="preserve">
+    <value>저장되지 않은 변경 사항</value>
+  </data>
+  <data name="Main_UserChampionships" xml:space="preserve">
+    <value>사용자 챔피언쉽</value>
+  </data>
+  <data name="Main_Weather" xml:space="preserve">
+    <value>날씨</value>
+  </data>
+  <data name="Main_Workshop" xml:space="preserve">
+    <value>워크샵</value>
+  </data>
+  <data name="MainWindow_AddDownload_Comment" xml:space="preserve">
+    <value>또는 링크 또는 파일을 복사하고 Content Manager에서 Ctrl + V를 누릅니다.</value>
+  </data>
+  <data name="MainWindow_AddDownload_MenuItem" xml:space="preserve">
+    <value>다운로드…</value>
+  </data>
+  <data name="MainWindow_AddDownload_Message" xml:space="preserve">
+    <value>다운로드 할 URL 입력 :</value>
+  </data>
+  <data name="MainWindow_AddDownload_Title" xml:space="preserve">
+    <value>다운로드</value>
+  </data>
+  <data name="MainWindow_ContentUpdate_ViewDetails" xml:space="preserve">
+    <value>자세히</value>
+  </data>
+  <data name="MainWindow_Downloads" xml:space="preserve">
+    <value>다운로드:</value>
+  </data>
+  <data name="MainWindow_Downloads_InstallAll" xml:space="preserve">
+    <value>모두 설치</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveAll" xml:space="preserve">
+    <value>모두 제거</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveCompleted" xml:space="preserve">
+    <value>완료된 항목 제거</value>
+  </data>
+  <data name="MainWindow_Downloads_Tooltip" xml:space="preserve">
+    <value>여기에 자동차 나 다른 것을 놓아 콘텐츠 관리 섹션에서 엽니 다.</value>
+  </data>
+  <data name="MainWindow_Downloads_TooltipFormat" xml:space="preserve">
+    <value>{0} 설치중</value>
+  </data>
+  <data name="MainWindow_Errors_Format" xml:space="preserve">
+    <value>{0} {error}이(가) 걸렸습니다.</value>
+  </data>
+  <data name="MainWindow_FoundNModUpdates" xml:space="preserve">
+    <value>모드에 대한 {0} {update}을(를) 찾았습니다.</value>
+  </data>
+  <data name="MainWindow_InstallFromAFile_MenuItem" xml:space="preserve">
+    <value>파일에서 설치…</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_DisableAutoUpdates" xml:space="preserve">
+    <value>자동 업데이트 사용 안 함</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_SkipUpdate" xml:space="preserve">
+    <value>이 업데이트를 건너뜁니다.</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_ViewChangelog" xml:space="preserve">
+    <value>변경사항 보기</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_RemoveAllSessionsWithMissingContent_Tooltip" xml:space="preserve">
+    <value>콘텐츠가 누락 된 모든 세션 제거</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_RemoveMissing" xml:space="preserve">
+    <value>누락 된 항목 제거</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_SessionsNotFound" xml:space="preserve">
+    <value>세션을 찾을 수 없습니다.</value>
+  </data>
+  <data name="Online_AddByIp" xml:space="preserve">
+    <value>IP로 추가</value>
+  </data>
+  <data name="Online_AddingServer" xml:space="preserve">
+    <value>서버 추가 중…</value>
+  </data>
+  <data name="Online_AddNewServer" xml:space="preserve">
+    <value>새 서버 추가</value>
+  </data>
+  <data name="Online_AddServer" xml:space="preserve">
+    <value>서버 주소 (IP 및 HTTP 또는 TCP 포트) :</value>
+  </data>
+  <data name="Online_AddServer_Title" xml:space="preserve">
+    <value>새 서버 추가</value>
+  </data>
+  <data name="Online_AddServer_Tooltip" xml:space="preserve">
+    <value>포트를 생략 할 수 있습니다.이 경우 앱은 모든 특정 포트를 스캔합니다.</value>
+  </data>
+  <data name="Online_AllCarsAreTaken" xml:space="preserve">
+    <value>모든 차량</value>
+  </data>
+  <data name="Online_CannotAddServer" xml:space="preserve">
+    <value>서버를 추가할수 없습니다.</value>
+  </data>
+  <data name="Online_ClientsLabel" xml:space="preserve">
+    <value>클라이언트:</value>
+  </data>
+  <data name="Online_DriversOnlineLabel" xml:space="preserve">
+    <value>온라인 드라이버:</value>
+  </data>
+  <data name="Online_FilterBooking_Short" xml:space="preserve">
+    <value>예약</value>
+  </data>
+  <data name="Online_FilterEmpty" xml:space="preserve">
+    <value>빈 서버 표시</value>
+  </data>
+  <data name="Online_FilterEmpty_Short" xml:space="preserve">
+    <value>비어 있음</value>
+  </data>
+  <data name="Online_FilterFull" xml:space="preserve">
+    <value>가득찬 서버 표시</value>
+  </data>
+  <data name="Online_FilterFull_Short" xml:space="preserve">
+    <value>가득참</value>
+  </data>
+  <data name="Online_FilterMissing" xml:space="preserve">
+    <value>콘텐츠가 누락 된 서버</value>
+  </data>
+  <data name="Online_FilterMissing_Short" xml:space="preserve">
+    <value>누락됨</value>
+  </data>
+  <data name="Online_FilterPassword" xml:space="preserve">
+    <value>암호로 보호된 서버 표시</value>
+  </data>
+  <data name="Online_FilterPassword_Short" xml:space="preserve">
+    <value>비밀번호</value>
+  </data>
+  <data name="Online_FilterWithBooking" xml:space="preserve">
+    <value>예약한 서버 표시</value>
+  </data>
+  <data name="Online_LeftLabel" xml:space="preserve">
+    <value>왼쪽:</value>
+  </data>
+  <data name="Online_NothingToDisplay" xml:space="preserve">
+    <value>표시 할 항목이 없습니다</value>
+  </data>
+  <data name="Online_PasswordLabel" xml:space="preserve">
+    <value>비밀번호:</value>
+  </data>
+  <data name="Online_Refresh" xml:space="preserve">
+    <value>새로 고침</value>
+  </data>
+  <data name="Online_Scanning_NothingFoundMessage" xml:space="preserve">
+    <value>아무것도 찾을 수 없음</value>
+  </data>
+  <data name="Online_ServersFormat" xml:space="preserve">
+    <value>{0} 서버</value>
+  </data>
+  <data name="Online_ServerWithIdIsMissing" xml:space="preserve">
+    <value>제공된 ID가 "{0}"인 서버가 누락되었습니다</value>
+  </data>
+  <data name="Online_SessionsLabel" xml:space="preserve">
+    <value>{0} 랩</value>
+  </data>
+  <data name="Online_SetFiltersAsDefault" xml:space="preserve">
+    <value>새 탭의 기본값으로 필터 설정</value>
+  </data>
+  <data name="Online_SetSortingAsDefault" xml:space="preserve">
+    <value>새 탭의 기본값으로 정렬 설정</value>
+  </data>
+  <data name="Online_SkinIsMissing" xml:space="preserve">
+    <value>스킨이 누락됨</value>
+  </data>
+  <data name="Online_SortByCapacity" xml:space="preserve">
+    <value>용량으로 정렬</value>
+  </data>
+  <data name="Online_SortByCarsNumber" xml:space="preserve">
+    <value>번호로 정렬</value>
+  </data>
+  <data name="Online_SortByDrivers" xml:space="preserve">
+    <value>드라이버로 정렬</value>
+  </data>
+  <data name="Online_SortByLabel" xml:space="preserve">
+    <value>정렬기준:</value>
+  </data>
+  <data name="Online_SortByName" xml:space="preserve">
+    <value>이름으로 정렬</value>
+  </data>
+  <data name="Online_SortByPing" xml:space="preserve">
+    <value>핑으로 정렬</value>
+  </data>
+  <data name="Online_Sorting_Capacity" xml:space="preserve">
+    <value>용량</value>
+  </data>
+  <data name="Online_Sorting_CarsNumber" xml:space="preserve">
+    <value>차량 번호</value>
+  </data>
+  <data name="Online_Sorting_ConnectedDrivers" xml:space="preserve">
+    <value>연결된 드라이버</value>
+  </data>
+  <data name="Online_Sorting_Drivers" xml:space="preserve">
+    <value>드라이버</value>
+  </data>
+  <data name="Online_Sorting_Favourites" xml:space="preserve">
+    <value>즐겨찾기</value>
+  </data>
+  <data name="Online_Sorting_Name" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="Online_Sorting_NameOriginal" xml:space="preserve">
+    <value>이름(원본)</value>
+  </data>
+  <data name="Online_Sorting_Ping" xml:space="preserve">
+    <value>핑</value>
+  </data>
+  <data name="Online_SortingMode_Default" xml:space="preserve">
+    <value>기본</value>
+  </data>
+  <data name="Online_TimeLabel" xml:space="preserve">
+    <value>시간:</value>
+  </data>
+  <data name="Page_Wip" xml:space="preserve">
+    <value>이 섹션은 아직 준비되지 않았습니다</value>
+  </data>
+  <data name="Page_Wip_Commentary" xml:space="preserve">
+    <value>개발에 대해 자세히 알고 싶으시다면 [url="https://trello.com/b/MwqpL8Bw/content-manager"]여기에 많은 정보가 포함된 Tello 보드[/url]가 있습니다.</value>
+  </data>
+  <data name="QuickDrive_BestLapOnThisTrack" xml:space="preserve">
+    <value>이 트랙에서 배스트 랩:</value>
+  </data>
+  <data name="QuickDrive_CarSpecificControls" xml:space="preserve">
+    <value>차량별 컨트롤</value>
+  </data>
+  <data name="QuickDrive_ChangeCar_Tooltip" xml:space="preserve">
+    <value>차량 변경</value>
+  </data>
+  <data name="QuickDrive_ChangeTrack_Tooltip" xml:space="preserve">
+    <value>트랙 바꾸기</value>
+  </data>
+  <data name="QuickDrive_CustomRoadTemperature" xml:space="preserve">
+    <value>수동 노면 온도</value>
+  </data>
+  <data name="QuickDrive_Drag_Total" xml:space="preserve">
+    <value>합계</value>
+  </data>
+  <data name="QuickDrive_DrivenInCar" xml:space="preserve">
+    <value>차량 주행거리:</value>
+  </data>
+  <data name="QuickDrive_DrivenOnTrack" xml:space="preserve">
+    <value>트랙 주행거리:</value>
+  </data>
+  <data name="QuickDrive_FixCar" xml:space="preserve">
+    <value>차량 수정</value>
+  </data>
+  <data name="QuickDrive_FixCar_Tooltip" xml:space="preserve">
+    <value>{0} {중요한 문제} 발견됨</value>
+  </data>
+  <data name="QuickDrive_IdealConditions" xml:space="preserve">
+    <value>이상적인 날씨</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+    <value>빠른 드라이브 사전 설정으로로드 지원 (전역)</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets_Tooltip" xml:space="preserve">
+    <value>Ctrl 키를 누른 상태에서 사전 설정을 선택하면이 동작이 한 번 반전됩니다.</value>
+  </data>
+  <data name="QuickDrive_ManageCar_Tooltip" xml:space="preserve">
+    <value>차량 설정</value>
+  </data>
+  <data name="QuickDrive_ManageSetups_Tooltip" xml:space="preserve">
+    <value>셋업 설정</value>
+  </data>
+  <data name="QuickDrive_ManageTrack_Tooltip" xml:space="preserve">
+    <value>트랙 설정</value>
+  </data>
+  <data name="QuickDrive_NoCarSelected" xml:space="preserve">
+    <value>차량이 선택되지 않음</value>
+  </data>
+  <data name="QuickDrive_NoTrackSelected" xml:space="preserve">
+    <value>트랙이 선택되지 않음</value>
+  </data>
+  <data name="QuickDrive_OpenInShowroom_Tooltip" xml:space="preserve">
+    <value>쇼룸에서 열기</value>
+  </data>
+  <data name="QuickDrive_RandomTemperature" xml:space="preserve">
+    <value>무작위 온도</value>
+  </data>
+  <data name="QuickDrive_RandomTime" xml:space="preserve">
+    <value>무작위 시간</value>
+  </data>
+  <data name="QuickDrive_RoadTemperature" xml:space="preserve">
+    <value>노면 온도</value>
+  </data>
+  <data name="QuickDrive_SetWindManually" xml:space="preserve">
+    <value>수동으로 바람 설정</value>
+  </data>
+  <data name="QuickDrive_SpecificDate" xml:space="preserve">
+    <value>특정 날짜</value>
+  </data>
+  <data name="QuickDrive_TimeIsOutOfWeatherRange_Tooltip" xml:space="preserve">
+    <value>시간이 날씨 범위를 벗어남</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedData_ResetCarSpecificFlag" xml:space="preserve">
+    <value>차량별 플래그 재설정</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataGlobal" xml:space="preserve">
+    <value>압축되지 않은 데이터 사용(글로벌)</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataIfExists" xml:space="preserve">
+    <value>있는 경우 압축되지 않은 데이터 사용</value>
+  </data>
+  <data name="QuickDrive_Wind" xml:space="preserve">
+    <value>바람</value>
+  </data>
+  <data name="QuickDrive_Wind_Degrees" xml:space="preserve">
+    <value>바람 방향</value>
+  </data>
+  <data name="QuickDrive_Wind_MetersPerSecond" xml:space="preserve">
+    <value>바람 속도</value>
+  </data>
+  <data name="QuickDrive_Wind_RandomDirection" xml:space="preserve">
+    <value>무작위 바람 방향</value>
+  </data>
+  <data name="QuickDrive_Wind_RandomSpeed" xml:space="preserve">
+    <value>무작위 바람 속도</value>
+  </data>
+  <data name="QuickDrive_Wind_RelativeRange" xml:space="preserve">
+    <value>바람 속도</value>
+  </data>
+  <data name="Race_CleaningUp" xml:space="preserve">
+    <value>항목 정리중...</value>
+  </data>
+  <data name="Race_Initializing" xml:space="preserve">
+    <value>초기화 중...</value>
+  </data>
+  <data name="Race_LaunchingBenchmark" xml:space="preserve">
+    <value>시작 벤치마크…</value>
+  </data>
+  <data name="Race_LaunchingGame" xml:space="preserve">
+    <value>세션을 시작하는 중...</value>
+  </data>
+  <data name="Race_LaunchingReplay" xml:space="preserve">
+    <value>재생 시작 중...</value>
+  </data>
+  <data name="Race_Preparing" xml:space="preserve">
+    <value>준비 중…</value>
+  </data>
+  <data name="Race_Waiting" xml:space="preserve">
+    <value>레이스 종료 대기중...</value>
+  </data>
+  <data name="Race_WaitingBenchmark" xml:space="preserve">
+    <value>밴치마크 종료 대기중...</value>
+  </data>
+  <data name="Race_WaitingReplay" xml:space="preserve">
+    <value>리플레이 종료 대기중...</value>
+  </data>
+  <data name="RaceGrid_CandidatePriority" xml:space="preserve">
+    <value>랜덤 확률 승수</value>
+  </data>
+  <data name="RaceGrid_Candidates" xml:space="preserve">
+    <value>후보:</value>
+  </data>
+  <data name="RaceGrid_ClassFormat" xml:space="preserve">
+    <value>클래스: {0}</value>
+  </data>
+  <data name="RaceGrid_DetailedSettings" xml:space="preserve">
+    <value>상세 설정</value>
+  </data>
+  <data name="RaceGrid_LoadingProgress" xml:space="preserve">
+    <value>{0}개 중 {1}개를 로드했습니다.</value>
+  </data>
+  <data name="RaceGrid_Opponents" xml:space="preserve">
+    <value>상대:</value>
+  </data>
+  <data name="RaceGrid_OverTheLimit" xml:space="preserve">
+    <value>이 차량을 위한 피트가 없음</value>
+  </data>
+  <data name="RaceGridEditor_AILimitationsAreActive_Tooltip" xml:space="preserve">
+    <value>AI 제한이 설정되었습니다.</value>
+  </data>
+  <data name="RaceResult_BestCombo" xml:space="preserve">
+    <value>베스트 콤보:</value>
+  </data>
+  <data name="RaceResult_BestLap" xml:space="preserve">
+    <value>베스트 랩:</value>
+  </data>
+  <data name="RaceResult_CancelledHeader" xml:space="preserve">
+    <value>레이스 취소됨</value>
+  </data>
+  <data name="RaceResult_ErrorHeader" xml:space="preserve">
+    <value>오류:</value>
+  </data>
+  <data name="RaceResult_Laps" xml:space="preserve">
+    <value>랩:</value>
+  </data>
+  <data name="RaceResult_MaxLevel" xml:space="preserve">
+    <value>최대 레벨:</value>
+  </data>
+  <data name="RaceResult_ResultProcessingError" xml:space="preserve">
+    <value>결과처리오류</value>
+  </data>
+  <data name="RaceResult_SaveReplay" xml:space="preserve">
+    <value>재생 유지</value>
+  </data>
+  <data name="RaceResult_Threoretical" xml:space="preserve">
+    <value>이론:</value>
+  </data>
+  <data name="RaceResult_TryAgain" xml:space="preserve">
+    <value>다시 시도</value>
+  </data>
+  <data name="RaceResult_UnsaveReplay" xml:space="preserve">
+    <value>계속 재생하지 않음</value>
+  </data>
+  <data name="Replay_CannotShare" xml:space="preserve">
+    <value>리플레이를 공유 할 수 없습니다</value>
+  </data>
+  <data name="Replay_DefaultUploadedName" xml:space="preserve">
+    <value>AC 리플레이</value>
+  </data>
+  <data name="Replay_SharedReadMe" xml:space="preserve">
+    <value>{0}
+
+재생하려면 ,  “{1}” 에서 “…\Documents\Assetto Corsa\replay”로 압축해제</value>
+  </data>
+  <data name="Rsr_AppIsDisabled" xml:space="preserve">
+    <value>RSR 앱이 비활성화됨</value>
+  </data>
+  <data name="Rsr_AppIsDisabled_Commentary" xml:space="preserve">
+    <value>먼저 활성화해야 합니다.</value>
+  </data>
+  <data name="Rsr_AppIsMissing" xml:space="preserve">
+    <value>RSR 앱이 없습니다.</value>
+  </data>
+  <data name="Rsr_AppIsMissing_Commentary" xml:space="preserve">
+    <value>[url="http://www.radiators-champ.com/RSRLiveTiming/"]여기[/url]를 다운로드하십시오.</value>
+  </data>
+  <data name="Rsr_Commentary" xml:space="preserve">
+    <value>브라우저에서 직접 RSR 세션을 시작하려면 [url="https://github.com/gro-ove/actools-cm-download-extension"]여기[/url]를 확장하십시오!</value>
+  </data>
+  <data name="Rsr_ContentIsMissing_Commentary" xml:space="preserve">
+    <value>[url="https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit"]여기[/url]는 RSR에서 사용하는 모드 목록입니다(다운로드 링크 포함).</value>
+  </data>
+  <data name="Rsr_InvalidParameters" xml:space="preserve">
+    <value>잘못된 RSR 매개 변수</value>
+  </data>
+  <data name="Rsr_InvalidParameters_Commentary" xml:space="preserve">
+    <value>RSR 웹 사이트가 제대로 작동하는지 확인합니다.</value>
+  </data>
+  <data name="Rsr_Quit" xml:space="preserve">
+    <value>종료</value>
+  </data>
+  <data name="Rsr_Quit_Tooltip" xml:space="preserve">
+    <value>등록 종료</value>
+  </data>
+  <data name="Rsr_SessionName" xml:space="preserve">
+    <value>RSR 핫랩</value>
+  </data>
+  <data name="RsrStarter_GettingInformation" xml:space="preserve">
+    <value>이벤트에 대한 정보를 얻는 중...</value>
+  </data>
+  <data name="Select_All" xml:space="preserve">
+    <value>모두</value>
+  </data>
+  <data name="Select_Brands" xml:space="preserve">
+    <value>브랜드</value>
+  </data>
+  <data name="Select_Categories" xml:space="preserve">
+    <value>카테고리</value>
+  </data>
+  <data name="Select_Countries" xml:space="preserve">
+    <value>국가</value>
+  </data>
+  <data name="Select_ManageSetups_Tooltip" xml:space="preserve">
+    <value>차량 설정 관리</value>
+  </data>
+  <data name="Selected_CarPage_ClearStatsFromThisCar" xml:space="preserve">
+    <value>이 차의 통계를 지웁니다.</value>
+  </data>
+  <data name="Selected_CarPage_New_PowerGraph" xml:space="preserve">
+    <value>파워 그래프:</value>
+  </data>
+  <data name="Selected_CarPage_New_Property_Tooltip" xml:space="preserve">
+    <value>[i] 알고 계셨습니까?[/i] 속성을 마우스 오른쪽 버튼으로 클릭하여 자동차를 필터링 할 수 있습니다.</value>
+  </data>
+  <data name="Selected_CarPage_New_TSMSetups_Tooltip" xml:space="preserve">
+    <value>셋업 마켓에서 설치 준비 완료된 수</value>
+  </data>
+  <data name="Selected_CarPage_ReplaceTyres" xml:space="preserve">
+    <value>타이어 교체</value>
+  </data>
+  <data name="Selected_CarSetupPage_DefaultValue" xml:space="preserve">
+    <value>기본값:</value>
+  </data>
+  <data name="Selected_CarSetupPage_Unknown" xml:space="preserve">
+    <value>알 수 없는</value>
+  </data>
+  <data name="Selected_CarSkinPage_CMShowroom" xml:space="preserve">
+    <value>CM 쇼룸</value>
+  </data>
+  <data name="Selected_ClearNotes" xml:space="preserve">
+    <value>노트 지우기</value>
+  </data>
+  <data name="Selected_FilterByHavingNotes" xml:space="preserve">
+    <value>노트를 사용하여 필터링</value>
+  </data>
+  <data name="Selected_FilterByOrigin" xml:space="preserve">
+    <value>기원 별 필터링</value>
+  </data>
+  <data name="Selected_FilterBySimilarDrivenDistance" xml:space="preserve">
+    <value>유사한 주행 거리를 기준으로 필터링</value>
+  </data>
+  <data name="Selected_FilterBySimilarMaxSpeedAchieved" xml:space="preserve">
+    <value>유사한 최대 속도 달성 기준 필터</value>
+  </data>
+  <data name="Settings_AcSettingsHeader" xml:space="preserve">
+    <value>AC설정:</value>
+  </data>
+  <data name="Settings_Appearance" xml:space="preserve">
+    <value>외형 설정</value>
+  </data>
+  <data name="Settings_Appearance_AutomaticallyNavigateToDownloadsPage" xml:space="preserve">
+    <value>새 다운로드가 시작되면 자동으로 다운로드 페이지로 이동</value>
+  </data>
+  <data name="Settings_Appearance_Background" xml:space="preserve">
+    <value>백그라운드:</value>
+  </data>
+  <data name="Settings_Appearance_BindToScreen" xml:space="preserve">
+    <value>화면에 맞추기</value>
+  </data>
+  <data name="Settings_Appearance_BindToScreen_Hint" xml:space="preserve">
+    <value>변경사항은 이미 표시된 창에는 영향이 없음</value>
+  </data>
+  <data name="Settings_Appearance_Blur" xml:space="preserve">
+    <value>블러(흐림)</value>
+  </data>
+  <data name="Settings_Appearance_BlurButtonsBackground" xml:space="preserve">
+    <value>블러(흐림) 버튼의 배경(성능 저하 가능)</value>
+  </data>
+  <data name="Settings_Appearance_BlurImageViewersBackground" xml:space="preserve">
+    <value>이미지 뷰어 배경 흐림</value>
+  </data>
+  <data name="Settings_Appearance_BlurImageViewersBackground_Tooltip" xml:space="preserve">
+    <value>Windows 7 또는 Windows 10에서만 작동</value>
+  </data>
+  <data name="Settings_Appearance_BoldFont" xml:space="preserve">
+    <value>두꺼운 폰트</value>
+  </data>
+  <data name="Settings_Appearance_ChangePictureEvery" xml:space="preserve">
+    <value>사진 변경 시간:</value>
+  </data>
+  <data name="Settings_Appearance_DisableHardwareAccelerationForUI" xml:space="preserve">
+    <value>UI에 대해 하드웨어 가속 사용 안 함</value>
+  </data>
+  <data name="Settings_Appearance_DisableWindowsTransparency" xml:space="preserve">
+    <value>윈도우의 투명기능 사용 안 함</value>
+  </data>
+  <data name="Settings_Appearance_DisableWindowsTransparency_Tooltip" xml:space="preserve">
+    <value>성능을 향상시키거나 관련 문제를 해결할 수 있습니다.</value>
+  </data>
+  <data name="Settings_Appearance_DoNotInterfereWithWindows" xml:space="preserve">
+    <value>윈도우의 위치 및 크기에 간섭하지 않음</value>
+  </data>
+  <data name="Settings_Appearance_DoNotInterfereWithWindows_Tooltip" xml:space="preserve">
+    <value>CM이 창을 올바르게 배치하지 못할 경우 사용합니다.[br][br]나는 여전히 이 문제에 대한 해결책을 찾고 있습니다.</value>
+  </data>
+  <data name="Settings_Appearance_DynamicBackground" xml:space="preserve">
+    <value>다이나믹 배경</value>
+  </data>
+  <data name="Settings_Appearance_FastAccessButtons" xml:space="preserve">
+    <value>퀵 드라이브 에서 자동차 및 트랙 위에 빠른 사용 버튼 표시</value>
+  </data>
+  <data name="Settings_Appearance_FolderForSlideshow" xml:space="preserve">
+    <value>슬라이드쇼 폴더</value>
+  </data>
+  <data name="Settings_Appearance_ForceFullscreenMode" xml:space="preserve">
+    <value>전체화면 강제 적용</value>
+  </data>
+  <data name="Settings_Appearance_FullscreenOverTaskbar" xml:space="preserve">
+    <value>작업표시줄에 전체화면</value>
+  </data>
+  <data name="Settings_Appearance_HideButtonsInImageViewers" xml:space="preserve">
+    <value>상단에 마우스 포인터가없는 경우 이미지 뷰어의 버튼 숨기기</value>
+  </data>
+  <data name="Settings_Appearance_ImageScaling_Tooltip" xml:space="preserve">
+    <value>변경 내용을 적용하려면 앱 다시 시작</value>
+  </data>
+  <data name="Settings_Appearance_ImageScalingLabel" xml:space="preserve">
+    <value>이미지 스케일링 품질:</value>
+  </data>
+  <data name="Settings_Appearance_ImageViewer" xml:space="preserve">
+    <value>이미지 뷰어 :</value>
+  </data>
+  <data name="Settings_Appearance_Interface" xml:space="preserve">
+    <value>인터페이스:</value>
+  </data>
+  <data name="Settings_Appearance_LargerFont" xml:space="preserve">
+    <value>큰 폰트</value>
+  </data>
+  <data name="Settings_Appearance_LargeSearchBoxes" xml:space="preserve">
+    <value>큰 검색 메뉴</value>
+  </data>
+  <data name="Settings_Appearance_LargeSearchBoxes_Tooltip" xml:space="preserve">
+    <value>F6/Ctrl+T/Ctrl+W/Ctrl+Tab/etc 등과 같은 바로 가기를 사용해 보십시오.</value>
+  </data>
+  <data name="Settings_Appearance_Links" xml:space="preserve">
+    <value>링크:</value>
+  </data>
+  <data name="Settings_Appearance_NarrowScrollbars" xml:space="preserve">
+    <value>좁은 스크롤바</value>
+  </data>
+  <data name="Settings_Appearance_Opacity" xml:space="preserve">
+    <value>투명도</value>
+  </data>
+  <data name="Settings_Appearance_OpenNewWindowsOnTheSameScreen" xml:space="preserve">
+    <value>저장위치 무시하고 첫번째 창과 동일한 화면에 새창 열기</value>
+  </data>
+  <data name="Settings_Appearance_OpenSkinsAndSetupsNewWindow" xml:space="preserve">
+    <value>새창에서 스킨및 설정 목록 열기</value>
+  </data>
+  <data name="Settings_Appearance_OpenSkinsAndSetupsNewWindow_Tooltip" xml:space="preserve">
+    <value>비활성화된 경우 Ctrl 키를 누른 상태에서 스킨 또는 설정을 열어 새 창에서 엽니다.</value>
+  </data>
+  <data name="Settings_Appearance_Placement" xml:space="preserve">
+    <value>배치방법:</value>
+  </data>
+  <data name="Settings_Appearance_PopupScrollbars" xml:space="preserve">
+    <value>팝업 스크롤바</value>
+  </data>
+  <data name="Settings_Appearance_PopupToolbars" xml:space="preserve">
+    <value>팝업 도구 모음</value>
+  </data>
+  <data name="Settings_Appearance_PopupToolbars_Tooltip" xml:space="preserve">
+    <value>모든 버튼에 키보드 단축키가 있습니다</value>
+  </data>
+  <data name="Settings_Appearance_SemiTransparentToolsInCustomShowroom" xml:space="preserve">
+    <value>Custom Showroom, DirectX-specific tools 에서 반투명 툴 사용</value>
+  </data>
+  <data name="Settings_Appearance_ShowBackButton" xml:space="preserve">
+    <value>메인창에 뒤로가기 버튼 표시</value>
+  </data>
+  <data name="Settings_Appearance_ShowDownloadsAmpInstallationsList" xml:space="preserve">
+    <value>우측 상단 모서리에 있는 메뉴에 다운로드 및 설치 목록 표시</value>
+  </data>
+  <data name="Settings_Appearance_ShowDraggableAreas" xml:space="preserve">
+    <value>검색결과상자에 끌 수 있는 영역표기</value>
+  </data>
+  <data name="Settings_Appearance_ShowDraggableAreas_Tooltip" xml:space="preserve">
+    <value>비활성화된 경우 닫기 버튼을 눌러 끌 수 있습니다. 활성시 드레그버튼 및 버튼에 마우스 우클릭시 메뉴제공</value>
+  </data>
+  <data name="Settings_Appearance_SingleImage" xml:space="preserve">
+    <value>단일 이미지</value>
+  </data>
+  <data name="Settings_Appearance_SmallFont" xml:space="preserve">
+    <value>글씨체 작게</value>
+  </data>
+  <data name="Settings_Appearance_StickMainMenuAtTheTop" xml:space="preserve">
+    <value>전체화면 모드에서 맨 위에 주 메뉴를 고정합니다</value>
+  </data>
+  <data name="Settings_Appearance_TextRenderingLabel" xml:space="preserve">
+    <value>글씨 표현 :</value>
+  </data>
+  <data name="Settings_Appearance_ThemeDefined" xml:space="preserve">
+    <value>테마 정의</value>
+  </data>
+  <data name="Settings_Appearance_ThemeLabel" xml:space="preserve">
+    <value>테마 :</value>
+  </data>
+  <data name="Settings_Appearance_TitleLinksAndMenu" xml:space="preserve">
+    <value>제목 링크 및 메뉴:</value>
+  </data>
+  <data name="Settings_Appearance_TransitionAnimationLabel" xml:space="preserve">
+    <value>화면전환 효과</value>
+  </data>
+  <data name="Settings_Appearance_UIScale" xml:space="preserve">
+    <value>인터페이스 크기</value>
+  </data>
+  <data name="Settings_Appearance_YouCanAccessDisabledLinks" xml:space="preserve">
+    <value>윈도우 버튼 옆에 있는 메뉴 또는 바로가기를 통해 비활성화된 링크에 액세스 할 수 있습니다</value>
+  </data>
+  <data name="Settings_Content_AddYearPostfix" xml:space="preserve">
+    <value>차량 이름에 연도 첨부</value>
+  </data>
+  <data name="Settings_Content_CarsHeader" xml:space="preserve">
+    <value>차량:</value>
+  </data>
+  <data name="Settings_Content_CarSkins" xml:space="preserve">
+    <value>차량 스킨:</value>
+  </data>
+  <data name="Settings_Content_ChangeBrandIcon" xml:space="preserve">
+    <value>브랜드 아이콘 자동 변경</value>
+  </data>
+  <data name="Settings_Content_ConfirmBeforeRemoval" xml:space="preserve">
+    <value>제거 전에 확인</value>
+  </data>
+  <data name="Settings_Content_ConfirmBeforeRemoval_Tooltip" xml:space="preserve">
+    <value>제거된 모든 콘텐츠는 항상 휴지통에서 복원할 수 있습니다</value>
+  </data>
+  <data name="Settings_Content_DisplaySkinIDsInsteadOfNames" xml:space="preserve">
+    <value>이름 대신 스킨 ID 표시</value>
+  </data>
+  <data name="Settings_Content_DisplaySteerLock" xml:space="preserve">
+    <value>디스플레이 스티어링 잠금</value>
+  </data>
+  <data name="Settings_Content_DownloadingContent" xml:space="preserve">
+    <value>콘텐츠 다운로드 중:</value>
+  </data>
+  <data name="Settings_Content_DownloadPreviews" xml:space="preserve">
+    <value>일반 쇼룸의 미리 보기 다운로드</value>
+  </data>
+  <data name="Settings_Content_DownloadPreviews_Tooltip" xml:space="preserve">
+    <value>모든 정보를 업데이트할 시간이 있을 것 같지 않음</value>
+  </data>
+  <data name="Settings_Content_EMail" xml:space="preserve">
+    <value>이메일</value>
+  </data>
+  <data name="Settings_Content_FixMissingSpacesInSpecsInDrive" xml:space="preserve">
+    <value>주행 섹션에서 빠진 차량 스펙 수정</value>
+  </data>
+  <data name="Settings_Content_FontIconSymbol" xml:space="preserve">
+    <value>글꼴 아이콘 기호:</value>
+  </data>
+  <data name="Settings_Content_FontIconSymbol_Tooltip" xml:space="preserve">
+    <value>아이콘에 사용할 하나의 기호</value>
+  </data>
+  <data name="Settings_Content_FontsHeader" xml:space="preserve">
+    <value>글꼴:</value>
+  </data>
+  <data name="Settings_Content_FourDigitForYearPostfix" xml:space="preserve">
+    <value>연도첨부시 4자리 표기</value>
+  </data>
+  <data name="Settings_Content_HideSymbolsLikeFromCarNames" xml:space="preserve">
+    <value>자동차 이름에서 ™과 같은 기호 숨기기</value>
+  </data>
+  <data name="Settings_Content_InformationSearchHeader" xml:space="preserve">
+    <value>정보 검색:</value>
+  </data>
+  <data name="Settings_Content_LoadingConcurrency_Tooltip" xml:space="preserve">
+    <value>값이 작을수록 UI 응답성은 향상되지만 로드 속도는 저하될 수 있습니다</value>
+  </data>
+  <data name="Settings_Content_LoadingConcurrencyLabel" xml:space="preserve">
+    <value>동시 로딩 :</value>
+  </data>
+  <data name="Settings_Content_LogIn" xml:space="preserve">
+    <value>로그인</value>
+  </data>
+  <data name="Settings_Content_LogOut" xml:space="preserve">
+    <value>로그아웃</value>
+  </data>
+  <data name="Settings_Content_LookAtWikipedia" xml:space="preserve">
+    <value>검색을 위키피디아로 제한</value>
+  </data>
+  <data name="Settings_Content_LookAtWikipedia_Tooltip" xml:space="preserve">
+    <value>기본적으로 "site:wikipedia.org"을 추가</value>
+  </data>
+  <data name="Settings_Content_MarkAsNewLabel" xml:space="preserve">
+    <value>새 것으로 표시:</value>
+  </data>
+  <data name="Settings_Content_MarkObjectsWithNotesWithIcon" xml:space="preserve">
+    <value>특별 아이콘으로 객체(예:차량 또는 트렉)에 메모로 표시</value>
+  </data>
+  <data name="Settings_Content_MegaNzCredentials" xml:space="preserve">
+    <value>Mega.nz 인증:</value>
+  </data>
+  <data name="Settings_Content_MegaNzCredentials_Tooltip" xml:space="preserve">
+    <value>선택 사항이지만 다운로드 할당량에 도움을 줍니다. 경우에 따라 CM은 암호를 저장하지 않고, 대신 액세스 토큰을 저장합니다.</value>
+  </data>
+  <data name="Settings_Content_MentionCMInPacked" xml:space="preserve">
+    <value>패킹시, 패킹된 콘텐츠를 CM으로 드래그앤드롭 해서 설치할 수 있다고 설명란에 써주세요.</value>
+  </data>
+  <data name="Settings_Content_ModsAutoUpdate" xml:space="preserve">
+    <value>모드 자동 업데이트:</value>
+  </data>
+  <data name="Settings_Content_OriginIcons" xml:space="preserve">
+    <value>오리진 아이콘:</value>
+  </data>
+  <data name="Settings_Content_PowerAndTorqueCurves" xml:space="preserve">
+    <value>출력 및 토크 곡선:</value>
+  </data>
+  <data name="Settings_Content_PWRatioFormat" xml:space="preserve">
+    <value>P/W 비율 형식:</value>
+  </data>
+  <data name="Settings_Content_ScrollAutomatically" xml:space="preserve">
+    <value>선택한 항목으로 자동 스크롤</value>
+  </data>
+  <data name="Settings_Content_ScrollAutomatically_Tooltip" xml:space="preserve">
+    <value>예시: 사용안함으로 설정</value>
+  </data>
+  <data name="Settings_Content_SearchEngine" xml:space="preserve">
+    <value>검색 엔진:</value>
+  </data>
+  <data name="Settings_Content_SearchMissingContentVia" xml:space="preserve">
+    <value>다음을 통해 누락된 콘텐츠 검색:</value>
+  </data>
+  <data name="Settings_Content_ShowCarPreviewsInTooltips" xml:space="preserve">
+    <value>툴팁에서 차량 미리보기 표시</value>
+  </data>
+  <data name="Settings_Content_ShowCurvesInDriveSection" xml:space="preserve">
+    <value>드라이브 섹션에 곡선 표시</value>
+  </data>
+  <data name="Settings_Content_ShowOriginIconsInLists" xml:space="preserve">
+    <value>목록에 오리진 아이콘 표시(예: Kunos 또는 RSS 아이콘)</value>
+  </data>
+  <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
+    <value>쇼룸:</value>
+  </data>
+  <data name="Settings_Content_SignedAs" xml:space="preserve">
+    <value>다음과 같이 서명됨:</value>
+  </data>
+  <data name="Settings_Content_SmoothCurves" xml:space="preserve">
+    <value>부드러운 곡선</value>
+  </data>
+  <data name="Settings_Content_TemporaryFilesLocation" xml:space="preserve">
+    <value>임시 파일 위치:</value>
+  </data>
+  <data name="Settings_Content_TyresReplacementFilter" xml:space="preserve">
+    <value>타이어 교체 필터</value>
+  </data>
+  <data name="Settings_Content_TyresReplacementFilter_Tooltip" xml:space="preserve">
+    <value>비워두거나 "*"를 사용하여 모든 차량 허용</value>
+  </data>
+  <data name="Settings_CustomShowroom_AddExtendedInformationInEXIFData" xml:space="preserve">
+    <value>EXIF 데이터에 확장 정보 추가</value>
+  </data>
+  <data name="Settings_CustomShowroom_AutoAdjustPivot" xml:space="preserve">
+    <value>카메라 중심점 자동 조정</value>
+  </data>
+  <data name="Settings_CustomShowroom_AutoAdjustPivot_Tooltip" xml:space="preserve">
+    <value>차량을 최대한 화면 중앙에 두려고 합니다(큰 계산은 하지 않음)</value>
+  </data>
+  <data name="Settings_CustomShowroom_Bloom" xml:space="preserve">
+    <value>HDR 사용</value>
+  </data>
+  <data name="Settings_CustomShowroom_Bloom_Tooltip" xml:space="preserve">
+    <value>최대 성능이 필요한 경우 사용 안 함. B를 눌러 언제든지 전환할 수 있습니다.</value>
+  </data>
+  <data name="Settings_CustomShowroom_Controls" xml:space="preserve">
+    <value>컨트롤:</value>
+  </data>
+  <data name="Settings_CustomShowroom_DefaultType" xml:space="preserve">
+    <value>기본적으로 사용:</value>
+  </data>
+  <data name="Settings_CustomShowroom_DefaultType_Tooltip" xml:space="preserve">
+    <value>다른 항목 선택을 시작할 때 Ctrl 키를 누른 상태로 유지</value>
+  </data>
+  <data name="Settings_CustomShowroom_FancyHeader" xml:space="preserve">
+    <value>화려한 쇼룸:</value>
+  </data>
+  <data name="Settings_CustomShowroom_Fxaa" xml:space="preserve">
+    <value>FXAA 사용</value>
+  </data>
+  <data name="Settings_CustomShowroom_Fxaa_Tooltip" xml:space="preserve">
+    <value>F를 눌러 언제든지 전환할 수 있습니다.</value>
+  </data>
+  <data name="Settings_CustomShowroom_InvertMouseButtons" xml:space="preserve">
+    <value>마우스 버튼 반전</value>
+  </data>
+  <data name="Settings_CustomShowroom_InvertMouseButtons_Tooltip" xml:space="preserve">
+    <value>패닝하려면 마우스 왼쪽 버튼을 사용하고 모델을 회전하려면 오른쪽 버튼을 사용하십시오.</value>
+  </data>
+  <data name="Settings_CustomShowroom_LiteHeader" xml:space="preserve">
+    <value>라이트 쇼룸:</value>
+  </data>
+  <data name="Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin" xml:space="preserve">
+    <value>이전 미리 보기를 휴지통으로 이동</value>
+  </data>
+  <data name="Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin_Tooltip" xml:space="preserve">
+    <value>상당히 느린 작업이기 때문에 사용하지 않는 것이 좋습니다.</value>
+  </data>
+  <data name="Settings_CustomShowroom_Msaa" xml:space="preserve">
+    <value>MSAA 사용</value>
+  </data>
+  <data name="Settings_CustomShowroom_Msaa_Tooltip" xml:space="preserve">
+    <value>M을 눌러 언제든지 전환할 수 있습니다.</value>
+  </data>
+  <data name="Settings_CustomShowroom_Previews" xml:space="preserve">
+    <value>미리 보기:</value>
+  </data>
+  <data name="Settings_CustomShowroom_Reset_Tooltip" xml:space="preserve">
+    <value>커스텀 쇼룸이 오류난 경우 사용 (예: 너무 높은 설정)</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetAll" xml:space="preserve">
+    <value>모두 재설정:</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetAllForPreviews" xml:space="preserve">
+    <value>미리 보기를 위해 모두 재설정:</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetHeavyOptions" xml:space="preserve">
+    <value>헤비 옵션 재설정:</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetHeavyOptionsForPreviews" xml:space="preserve">
+    <value>미리 보기에 대한 헤비 옵션 재설정:</value>
+  </data>
+  <data name="Settings_CustomShowroom_Showroom" xml:space="preserve">
+    <value>기본 쇼룸 :</value>
+  </data>
+  <data name="Settings_CustomShowroom_TypeComment" xml:space="preserve">
+    <value>라이트 쇼룸은 DirectX 10과 호환되며, 훨씬 단순하고 사양이 낮습니다. 스킨 제작에 매우 적합합니다.</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseCustomShowroomForPreviews" xml:space="preserve">
+    <value>커스텀 쇼룸을 사용하여 미리 보기</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
+    <value>경우에 따라 원래 전시장 대신 커스텀 쇼룸 사용</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseTheOldVersion" xml:space="preserve">
+    <value>이전 버전 사용</value>
+  </data>
+  <data name="Settings_Dev" xml:space="preserve">
+    <value>개발자</value>
+  </data>
+  <data name="Settings_Drive_32bit" xml:space="preserve">
+    <value>32비트 버전 사용</value>
+  </data>
+  <data name="Settings_Drive_AiLevelInDriverName" xml:space="preserve">
+    <value>운전자 이름에 AI 레벨 표시</value>
+  </data>
+  <data name="Settings_Drive_AiLevelInDriverName_Tooltip" xml:space="preserve">
+    <value>비고정 AI 레벨에만 해당</value>
+  </data>
+  <data name="Settings_Drive_AllowDecimalValuesForTrackState" xml:space="preserve">
+    <value>트랙 상태에 소수점 값 허용</value>
+  </data>
+  <data name="Settings_Drive_AllowDecimalValuesForTrackState_Tooltip" xml:space="preserve">
+    <value>사용할 경우 일부 앱에 문제가 발생할 수 있음</value>
+  </data>
+  <data name="Settings_Drive_AlwaysRecordGhost" xml:space="preserve">
+    <value>항상 고스트를 핫랩 모드로 기록</value>
+  </data>
+  <data name="Settings_Drive_AlwaysRecordGhost_Tooltip" xml:space="preserve">
+    <value>고스트가 숨겨져 있어도 핫랩을 하면서 기록</value>
+  </data>
+  <data name="Settings_Drive_BeepIfRaceIsCancelled" xml:space="preserve">
+    <value>경주가 취소된 경우 신호음:</value>
+  </data>
+  <data name="Settings_Drive_BeepIfRaceIsCancelled_Tooltip" xml:space="preserve">
+    <value>VR에서 게임이 충돌할 경우 발견에 도움이 될 수 있음</value>
+  </data>
+  <data name="Settings_Drive_CacheBrands_Tooltip" xml:space="preserve">
+    <value>차량 선택 대화 상자</value>
+  </data>
+  <data name="Settings_Drive_ChangeAiLevel" xml:space="preserve">
+    <value>AI 레벨 변경 허용</value>
+  </data>
+  <data name="Settings_Drive_ChangeCarSkin" xml:space="preserve">
+    <value>차량 스킨 변경 허용</value>
+  </data>
+  <data name="Settings_Drive_CheckIfTrackFitsSelectedMode" xml:space="preserve">
+    <value>트랙이 선택한 모드에 맞는지 확인합니다</value>
+  </data>
+  <data name="Settings_Drive_CheckIfTrackFitsSelectedMode_Tooltip" xml:space="preserve">
+    <value>사용하지 않도록 설정하는 것이 좋습니다. CM에서 잘못된 트랙의 설명을 수정해 줄 것입니다. 그러나 기본 태그가 아닌 태그를 사용하는 경우에는 반드시 사용합니다.</value>
+  </data>
+  <data name="Settings_Drive_ContinueRaceIfEscapePressed" xml:space="preserve">
+    <value>Esc를 누른 경우 레이스 계속함</value>
+  </data>
+  <data name="Settings_Drive_ConvertScreenshots" xml:space="preserve">
+    <value>종료 시 스크린샷을 BMP 형식의 JPEG로 자동 변환</value>
+  </data>
+  <data name="Settings_Drive_ConvertScreenshots_Tooltip" xml:space="preserve">
+    <value>Magick을 활성화하는 것이 좋습니다. 더  높은 품질로 이어집니다.</value>
+  </data>
+  <data name="Settings_Drive_CustomClouds" xml:space="preserve">
+    <value>존재하는 경우 모드 날씨 구름으로 구름 교체</value>
+  </data>
+  <data name="Settings_Drive_CustomClouds_Tooltip" xml:space="preserve">
+    <value>물론, 임시방편일 뿐입니다.</value>
+  </data>
+  <data name="Settings_Drive_EventsHeader" xml:space="preserve">
+    <value>AC 관련 이벤트:</value>
+  </data>
+  <data name="Settings_Drive_ExpandBounds" xml:space="preserve">
+    <value>경계를 확장함</value>
+  </data>
+  <data name="Settings_Drive_ExpandBounds_Tooltip" xml:space="preserve">
+    <value>최대 999랩 까지 설치할 수 있으며, 위험 부담 없이 사용할 수 있습니다</value>
+  </data>
+  <data name="Settings_Drive_HibernateCMWhileRacing" xml:space="preserve">
+    <value>레이싱 중 CM 최대 절전모드</value>
+  </data>
+  <data name="Settings_Drive_KeepResultsOfTheLast" xml:space="preserve">
+    <value>마지막 결과의 유지</value>
+  </data>
+  <data name="Settings_Drive_KeepResultsOfTheLast_Tooltip" xml:space="preserve">
+    <value>“…\AppData\Local\AcTools Content Manager\Progress\Sessions” 에 결과가 저장됩니다</value>
+  </data>
+  <data name="Settings_Drive_KunosCareerHeader" xml:space="preserve">
+    <value>Kunos 커리어:</value>
+  </data>
+  <data name="Settings_Drive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+    <value>빠른 드라이브 사전 설정 로드 지원</value>
+  </data>
+  <data name="Settings_Drive_LocalAddress" xml:space="preserve">
+    <value>로컬 주소</value>
+  </data>
+  <data name="Settings_Drive_LocalAddress_Tooltip" xml:space="preserve">
+    <value>현지 날씨</value>
+  </data>
+  <data name="Settings_Drive_MonitorFPS" xml:space="preserve">
+    <value>경기 중에 FPS 모니터링</value>
+  </data>
+  <data name="Settings_Drive_MonitorFPS_Tooltip" xml:space="preserve">
+    <value>[b]Settings/Assetto Corsa/Video[/b] 에 결과를 알 수 있습니다</value>
+  </data>
+  <data name="Settings_Drive_NameLabel" xml:space="preserve">
+    <value>이름:</value>
+  </data>
+  <data name="Settings_Drive_NationalityLabel" xml:space="preserve">
+    <value>국적:</value>
+  </data>
+  <data name="Settings_Drive_OnlineName_Tooltip" xml:space="preserve">
+    <value>온라인에서 다른 이름 사용</value>
+  </data>
+  <data name="Settings_Drive_OnlineNameLabel" xml:space="preserve">
+    <value>온라인 이름:</value>
+  </data>
+  <data name="Settings_Drive_OverridePpFilterOculusFix" xml:space="preserve">
+    <value>VR에서 기본 PP 필터 재정의</value>
+  </data>
+  <data name="Settings_Drive_OverridePpFilterOculusFix_Tooltip" xml:space="preserve">
+    <value>Oculus Lift 모드가 활성화된 경우 선택한 PP 필터로  system/cfg/ppfilter/default.ini를 임시로 덮어씁니다.</value>
+  </data>
+  <data name="Settings_Drive_PlayerNameHeader" xml:space="preserve">
+    <value>플레이어 이름:</value>
+  </data>
+  <data name="Settings_Drive_PostCommand_Tooltip" xml:space="preserve">
+    <value>이 명령은 acs.exe가 완료된 후 모든 결과를 읽기 전에 실행됩니다.
+
+교체 값:
+ [b][mono]{type}[/mono][/b] — type of race;
+ [b][mono]{car}[/mono][/b] — car's name;
+ [b][mono]{car.id}[/mono][/b] — car's id;
+ [b][mono]{track}[/mono][/b] — track's name;
+ [b][mono]{track.id}[/mono][/b] — track's id.
+
+다른 값이 필요한 경우 당사에 문의하면 추가해 드립니다.
+
+작업 디렉토리는 문서의 Asset to Corsa 폴더로 설정됩니다.</value>
+  </data>
+  <data name="Settings_Drive_PreCommand_Tooltip" xml:space="preserve">
+    <value>이 명령은 acs.exe를 시작하기 전에 실행되지만 모든 ini 파일을 설정한 후에 실행됩니다.
+
+교체 값:
+ [b][mono]{type}[/mono][/b] — type of race;
+ [b][mono]{car}[/mono][/b] — car's name;
+ [b][mono]{car.id}[/mono][/b] — car's id;
+ [b][mono]{track}[/mono][/b] — track's name;
+ [b][mono]{track.id}[/mono][/b] — track's id.
+
+다른 값이 필요한 경우 당사에 문의하면 추가해 드립니다.
+
+작업 디렉토리는 문서의 Asset to Corsa 폴더로 설정됩니다.</value>
+  </data>
+  <data name="Settings_Drive_QuickDriveHeader" xml:space="preserve">
+    <value>빠른 주행:</value>
+  </data>
+  <data name="Settings_Drive_RaceResults_Hint" xml:space="preserve">
+    <value>한도가 초과되면, 가장 오래된 결과는 경기가 끝난 후 삭제됩니다</value>
+  </data>
+  <data name="Settings_Drive_RealHeadMotion" xml:space="preserve">
+    <value>리얼 헤드 모션:</value>
+  </data>
+  <data name="Settings_Drive_RHMIntegration" xml:space="preserve">
+    <value>RHM 통합</value>
+  </data>
+  <data name="Settings_Drive_RHMLocation" xml:space="preserve">
+    <value>RHM 위치:</value>
+  </data>
+  <data name="Settings_Drive_ShowExtraDropDownListsForSkins" xml:space="preserve">
+    <value>스킨, 차량 수정 및 트랙 레이아웃에 대한 추가 드롭다운 목록 표시</value>
+  </data>
+  <data name="Settings_Drive_ShowExtraDropDownListsForSkins_Tooltip" xml:space="preserve">
+    <value>앱이 약간 다운될 수 있음</value>
+  </data>
+  <data name="Settings_Drive_SkipPracticeResults" xml:space="preserve">
+    <value>연습 세션의 결과를 표시하지 않음</value>
+  </data>
+  <data name="Settings_Drive_Starter" xml:space="preserve">
+    <value>게임 실행기</value>
+  </data>
+  <data name="Settings_Drive_StartImmediately" xml:space="preserve">
+    <value>즉시 레이스를 시작</value>
+  </data>
+  <data name="Settings_Drive_StopServiceOnCMExit" xml:space="preserve">
+    <value>CM 종료 시 서비스 중지</value>
+  </data>
+  <data name="Settings_Drive_SwitchToSteamStarter" xml:space="preserve">
+    <value>스팀 실행기로 전환(스팀에서 실행)</value>
+  </data>
+  <data name="Settings_Drive_TerminateLoadingIfEscapeIsPressed" xml:space="preserve">
+    <value>Escape를 누르면 즉시 로딩 종료</value>
+  </data>
+  <data name="Settings_Drive_TryToStartSteamIfNotRunning" xml:space="preserve">
+    <value>실행 중이 아니라도 스팀 실행(권장)</value>
+  </data>
+  <data name="Settings_Drive_UiModuleFallback" xml:space="preserve">
+    <value>원래 시작 프로그램이 실행되지 않는 경우 공식 시작 프로그램으로 돌아가기</value>
+  </data>
+  <data name="Settings_Drive_UsePracticeForTrackDay" xml:space="preserve">
+    <value>트랙 데이의 경우 세션 유형으로 연습 사용</value>
+  </data>
+  <data name="Settings_Drive_UsePracticeForTrackDay_Tooltip" xml:space="preserve">
+    <value>이렇게 하면 피트를 위한 크루원이 생기지만 봇이 더 수동적일 수 있습니다.</value>
+  </data>
+  <data name="Settings_Drive_WeatherParticles" xml:space="preserve">
+    <value>맞춤형 날씨 입자 사용</value>
+  </data>
+  <data name="Settings_Drive_WeatherParticles_Tooltip" xml:space="preserve">
+    <value>입자는 나중에 다시 반환됩니다.</value>
+  </data>
+  <data name="Settings_Drive_WeatherPpFilter" xml:space="preserve">
+    <value>맞춤형 날씨 PP 필터 사용</value>
+  </data>
+  <data name="Settings_Drive_WeatherPpFilter_Tooltip" xml:space="preserve">
+    <value>PP-필터가 나중에 다시 전환됩니다.</value>
+  </data>
+  <data name="Settings_General" xml:space="preserve">
+    <value>일반설정</value>
+  </data>
+  <data name="Settings_General_AcFolderLabel" xml:space="preserve">
+    <value>아세토 코르사 폴더</value>
+  </data>
+  <data name="Settings_General_AppHeader" xml:space="preserve">
+    <value>앱</value>
+  </data>
+  <data name="Settings_General_AppKeyLabel" xml:space="preserve">
+    <value>앱 인증키</value>
+  </data>
+  <data name="Settings_General_AppVersionLabel" xml:space="preserve">
+    <value>앱 버전</value>
+  </data>
+  <data name="Settings_General_AutoUpdatesHeader" xml:space="preserve">
+    <value>자동 업데이트</value>
+  </data>
+  <data name="Settings_General_ChangeAcRoot" xml:space="preserve">
+    <value>폴더변경</value>
+  </data>
+  <data name="Settings_General_ChangeAcRoot_Message" xml:space="preserve">
+    <value>경로를 변경하시겠습니까? 앱이 다시 시작됩니다.</value>
+  </data>
+  <data name="Settings_General_CheckForUpdates" xml:space="preserve">
+    <value>업데이트 확인</value>
+  </data>
+  <data name="Settings_General_CheckForUpdatesLabel" xml:space="preserve">
+    <value>업데이트 확인</value>
+  </data>
+  <data name="Settings_General_ContentVersionLabel" xml:space="preserve">
+    <value>데이터 버전</value>
+  </data>
+  <data name="Settings_General_DontShowAgainInDialogs" xml:space="preserve">
+    <value>대화에서 다시 표시 안함</value>
+  </data>
+  <data name="Settings_General_LaunchSteamAutomatically" xml:space="preserve">
+    <value>콘텐츠메니저 실행시 자동으로 스팀 실행</value>
+  </data>
+  <data name="Settings_General_Open" xml:space="preserve">
+    <value>폴더열기</value>
+  </data>
+  <data name="Settings_General_OpenAppsDataFolder" xml:space="preserve">
+    <value>데이터 폴더 열기</value>
+  </data>
+  <data name="Settings_General_OpenLogsFolder" xml:space="preserve">
+    <value>로그 폴더 열기</value>
+  </data>
+  <data name="Settings_General_RecentChangesNotification" xml:space="preserve">
+    <value>최근 변경 알림</value>
+  </data>
+  <data name="Settings_General_ResetDoNotShowAgainCheckboxes" xml:space="preserve">
+    <value>다시표시안함 확인란을 재설정</value>
+  </data>
+  <data name="Settings_General_ResetOccasionalHits" xml:space="preserve">
+    <value>이미 표시한 힌트를 다시 표시</value>
+  </data>
+  <data name="Settings_General_ShowOccasionalHints" xml:space="preserve">
+    <value>힌트를 표시함</value>
+  </data>
+  <data name="Settings_General_ShowRecentChangesNotification_Tooltip" xml:space="preserve">
+    <value>업데이트후 최근 변경내용을 알림</value>
+  </data>
+  <data name="Settings_General_SteamProfile" xml:space="preserve">
+    <value>스팀 프로파일</value>
+  </data>
+  <data name="Settings_General_SteamProfile_Tooltip" xml:space="preserve">
+    <value>온라인에서 사용됨</value>
+  </data>
+  <data name="Settings_General_TestingAccess" xml:space="preserve">
+    <value>테스트되지 않은 버전으로 업데이트</value>
+  </data>
+  <data name="Settings_General_TestingAccessHeader" xml:space="preserve">
+    <value>테스트 접속:</value>
+  </data>
+  <data name="Settings_General_ValuesCleanUp" xml:space="preserve">
+    <value>저장내용 정리</value>
+  </data>
+  <data name="Settings_General_ValuesCleanUp_Tooltip" xml:space="preserve">
+    <value>중요하지 않은 모든 값 제거</value>
+  </data>
+  <data name="Settings_General_ValuesHeader" xml:space="preserve">
+    <value>중요 파일 저장소 (Values storage):</value>
+  </data>
+  <data name="Settings_General_ValuesNumber" xml:space="preserve">
+    <value>{0} 엔트리</value>
+  </data>
+  <data name="Settings_General_ValuesSavingTimeLabel" xml:space="preserve">
+    <value>시간 절약:</value>
+  </data>
+  <data name="Settings_General_WindowsRegistry" xml:space="preserve">
+    <value>Windows 레지스트리:</value>
+  </data>
+  <data name="Settings_General_WindowsShortcut" xml:space="preserve">
+    <value>시작 메뉴 바로 가기 (최신 알림의 경우 권장됩니다)</value>
+  </data>
+  <data name="Settings_General_WindowsShortcut_Tooltip" xml:space="preserve">
+    <value>Windows 8, 8.1 및 10에서 알림을 표시하는 데 필요한 시작 메뉴 바로 가기 만들기</value>
+  </data>
+  <data name="Settings_LapTimes_ClearCache" xml:space="preserve">
+    <value>캐시 지우기</value>
+  </data>
+  <data name="Settings_Live_CustomStyle" xml:space="preserve">
+    <value>커스텀 스타일</value>
+  </data>
+  <data name="Settings_Live_EnableRsr" xml:space="preserve">
+    <value>RSR 실시간 타이밍 탭 사용</value>
+  </data>
+  <data name="Settings_Live_EnableSrs" xml:space="preserve">
+    <value>SRS(Sim Racing System) 탭 사용</value>
+  </data>
+  <data name="Settings_Live_RsrAutoToggleApp" xml:space="preserve">
+    <value>RSR 앱 자동 전환</value>
+  </data>
+  <data name="Settings_Live_RsrAutoToggleApp_Tooltip" xml:space="preserve">
+    <value>시작 레이스가 RSR과 관련이 없는 경우 RSR 앱을 자동으로 표시하거나 숨깁니다.</value>
+  </data>
+  <data name="Settings_Live_RsrCustomStyle_Tooltip" xml:space="preserve">
+    <value>내장 RSR 웹 사이트를 위한 맞춤식 최적화 스타일</value>
+  </data>
+  <data name="Settings_Live_RsrName_Tooltip" xml:space="preserve">
+    <value>RSR 양식을 사용할 때 다른 이름 사용</value>
+  </data>
+  <data name="Settings_Live_RsrNameLabel" xml:space="preserve">
+    <value>RSR 이름:</value>
+  </data>
+  <data name="Settings_Live_SrsCustomStyle_Tooltip" xml:space="preserve">
+    <value>내장 SRS 웹 사이트를 위한 맞춤식 최적화 스타일</value>
+  </data>
+  <data name="Settings_Live_SrsJoinFromOnline" xml:space="preserve">
+    <value>온라인 참가</value>
+  </data>
+  <data name="Settings_Live_SrsJoinFromOnline_Tooltip" xml:space="preserve">
+    <value>문제를 방지하기 위해 앱에서 특수 SRS 이름을 자동으로 설정합니다</value>
+  </data>
+  <data name="Settings_Live_SrsOnlineMask_Tooltip" xml:space="preserve">
+    <value>기본값: "SimRacingSystem*"</value>
+  </data>
+  <data name="Settings_Live_SrsOnlineMaskLabel" xml:space="preserve">
+    <value>SRS 서버용 마스크:</value>
+  </data>
+  <data name="Settings_Locale_Custom" xml:space="preserve">
+    <value>커스텀</value>
+  </data>
+  <data name="Settings_Locale_CustomTranslationsHeader" xml:space="preserve">
+    <value>커스텀 번역:</value>
+  </data>
+  <data name="Settings_Locale_ForceLocaleWarning" xml:space="preserve">
+    <value>플래그 "--force-locale"이 설정되었습니다!</value>
+  </data>
+  <data name="Settings_Locale_HowToTranslate" xml:space="preserve">
+    <value>번역 방법</value>
+  </data>
+  <data name="Settings_Locale_Installed" xml:space="preserve">
+    <value>설치된</value>
+  </data>
+  <data name="Settings_Locale_LanguageLabel" xml:space="preserve">
+    <value>언어:</value>
+  </data>
+  <data name="Settings_Locale_LoadCustom" xml:space="preserve">
+    <value>패킹되지 않은 언어가 있는 경우 문자열을 덮어씁니다.</value>
+  </data>
+  <data name="Settings_Locale_LoadCustom_Tooltip" xml:space="preserve">
+    <value> “AppData\Local\AcTools Content Manager\Locales\(ID)"에서 압축 해제된 언어가 로드됩니다. 여기서 ID는 선택한 언어입니다.</value>
+  </data>
+  <data name="Settings_Locale_LocaleId" xml:space="preserve">
+    <value>언어 ID</value>
+  </data>
+  <data name="Settings_Locale_OfficiallySupported" xml:space="preserve">
+    <value>공식 지원</value>
+  </data>
+  <data name="Settings_Locale_Prepare" xml:space="preserve">
+    <value>준비</value>
+  </data>
+  <data name="Settings_Locale_Prepare_Tooltip" xml:space="preserve">
+    <value>패킹되지 않은 언어 준비</value>
+  </data>
+  <data name="Settings_Locale_RestartApp" xml:space="preserve">
+    <value>다시 시작</value>
+  </data>
+  <data name="Settings_Locale_RestartApp_Tooltip" xml:space="preserve">
+    <value>Close(닫기) 버튼을 클릭할 때 Ctrl 키를 누른 상태로 CM을 더 빨리 다시 시작합니다.</value>
+  </data>
+  <data name="Settings_Locale_RestartMessage" xml:space="preserve">
+    <value>변경 후 앱을 다시 시작하는 것을 잊지 마십시오.</value>
+  </data>
+  <data name="Settings_Locale_ResxMode" xml:space="preserve">
+    <value>RESX 파일 변환</value>
+  </data>
+  <data name="Settings_Locale_SetLocaleById" xml:space="preserve">
+    <value>ID로 언어 설정</value>
+  </data>
+  <data name="Settings_Locale_Submit_Tooltip" xml:space="preserve">
+    <value>패킹되지 않은 언어를 보내 CM에 포함시킴</value>
+  </data>
+  <data name="Settings_Locale_TemperatureUnits" xml:space="preserve">
+    <value>온도 단위:</value>
+  </data>
+  <data name="Settings_Locale_UpdateBeforeStartUp" xml:space="preserve">
+    <value>시작하기 전에 언어 업데이트</value>
+  </data>
+  <data name="Settings_Locale_UpdateBeforeStartUp_Tooltip" xml:space="preserve">
+    <value>500ms 이상 소요되지 않음</value>
+  </data>
+  <data name="Settings_Locale_Use12HourClock" xml:space="preserve">
+    <value>12시간 시계 사용</value>
+  </data>
+  <data name="Settings_Locale_UseImperialUnits" xml:space="preserve">
+    <value>영국식 단위 사용</value>
+  </data>
+  <data name="Settings_Locale_VersionLabel" xml:space="preserve">
+    <value>언어 버전:</value>
+  </data>
+  <data name="Settings_Online_AddingByIpHeader" xml:space="preserve">
+    <value>IP별 추가:</value>
+  </data>
+  <data name="Settings_Online_AddingByIpScanTimeout" xml:space="preserve">
+    <value>검색 시간 초과</value>
+  </data>
+  <data name="Settings_Online_AlwaysAllowToUsePassword" xml:space="preserve">
+    <value>항상 암호 사용 허용</value>
+  </data>
+  <data name="Settings_Online_AlwaysAllowToUsePassword_Tooltip" xml:space="preserve">
+    <value>관리자로 연결하려는 경우 사용</value>
+  </data>
+  <data name="Settings_Online_AutoRefreshSelected" xml:space="preserve">
+    <value>선택한 자동 새로 고침:</value>
+  </data>
+  <data name="Settings_Online_CompactUi" xml:space="preserve">
+    <value>컴팩트 UI</value>
+  </data>
+  <data name="Settings_Online_ConnectionHeader" xml:space="preserve">
+    <value>연결:</value>
+  </data>
+  <data name="Settings_Online_Display" xml:space="preserve">
+    <value>표시:</value>
+  </data>
+  <data name="Settings_Online_FixNames" xml:space="preserve">
+    <value>이름 수정:</value>
+  </data>
+  <data name="Settings_Online_FixNames_Tooltip" xml:space="preserve">
+    <value>변경 후 새로 고침이 필요할 수 있음</value>
+  </data>
+  <data name="Settings_Online_LanScanConnectionLabel" xml:space="preserve">
+    <value>연결을 사용하여 검색:</value>
+  </data>
+  <data name="Settings_Online_LoadInformationDirectly" xml:space="preserve">
+    <value>서버 정보 직접 로드</value>
+  </data>
+  <data name="Settings_Online_LoadInformationDirectly_Tooltip" xml:space="preserve">
+    <value>AC 서버를 사용하는 대신 서버 정보를 직접 로드합니다. 더 빠르고 실제적일 수 있지만 일부 정보(예: 활성 세션)가 누락됩니다.</value>
+  </data>
+  <data name="Settings_Online_ManageDriversTags" xml:space="preserve">
+    <value>드라이버 태그 관리</value>
+  </data>
+  <data name="Settings_Online_ManageLists" xml:space="preserve">
+    <value>목록 관리</value>
+  </data>
+  <data name="Settings_Online_Passwords" xml:space="preserve">
+    <value>암호:</value>
+  </data>
+  <data name="Settings_Online_PausePingingDuringTheRace" xml:space="preserve">
+    <value>레이스 도중 일시 중지</value>
+  </data>
+  <data name="Settings_Online_PingAttempts" xml:space="preserve">
+    <value>Ping 시도</value>
+  </data>
+  <data name="Settings_Online_PingConcurrency" xml:space="preserve">
+    <value>Ping 동시성</value>
+  </data>
+  <data name="Settings_Online_PingConcurrency_Tooltip" xml:space="preserve">
+    <value>값을 높여 전체 목록의 ping을 빠르게 진행하지만 정확도는 떨어집니다.</value>
+  </data>
+  <data name="Settings_Online_PingServersOnce" xml:space="preserve">
+    <value>서버를 한 번 ping</value>
+  </data>
+  <data name="Settings_Online_PingServersOnce_Tooltip" xml:space="preserve">
+    <value>원래 실행기에서와 같이 새로 고침 버튼을 누른 상태에서 서버를 한 번만 핑합니다.</value>
+  </data>
+  <data name="Settings_Online_PingTimeout" xml:space="preserve">
+    <value>Ping 시간 초과</value>
+  </data>
+  <data name="Settings_Online_PingWithThreads" xml:space="preserve">
+    <value>비동기 API 대신 스레드 사용</value>
+  </data>
+  <data name="Settings_Online_PingWithThreads_Tooltip" xml:space="preserve">
+    <value>가장 정확한 핑이지만 가장 느린 핑</value>
+  </data>
+  <data name="Settings_Online_PortsByIp_Tooltip" xml:space="preserve">
+    <value>"9000-10000"과 같은 일부 열거</value>
+  </data>
+  <data name="Settings_Online_PortsLabel" xml:space="preserve">
+    <value>검색 포트:</value>
+  </data>
+  <data name="Settings_Online_PortsLan_Tooltip" xml:space="preserve">
+    <value>9600,9602,9700-9750과 같은 열거형</value>
+  </data>
+  <data name="Settings_Online_PresetsFolder" xml:space="preserve">
+    <value>사전 설정 폴더</value>
+  </data>
+  <data name="Settings_Online_RememberPasswords" xml:space="preserve">
+    <value>암호 기억</value>
+  </data>
+  <data name="Settings_Online_ServerLabel" xml:space="preserve">
+    <value>서버:</value>
+  </data>
+  <data name="Settings_Online_ServerPresetsManagerHeader" xml:space="preserve">
+    <value>서버 사전 설정 관리자:</value>
+  </data>
+  <data name="Settings_Online_ShowBrandBadges" xml:space="preserve">
+    <value>자동차 목록에 브랜드 배지 표시</value>
+  </data>
+  <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
+    <value>내용이 없는 경우 확장 정보 표시</value>
+  </data>
+  <data name="Settings_Plugins" xml:space="preserve">
+    <value>플러그인</value>
+  </data>
+  <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
+    <value>변경 내용이 자동으로 저장됩니다. 구성 파일이 표시되는 방식을 최적화하려면 [url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"]여기[/url]에서 해당 파일에 대한 자세한 정보를 찾을 수 있습니다.</value>
+  </data>
+  <data name="Settings_PythonApps_NoConfigurableAppsFound" xml:space="preserve">
+    <value>구성 가능한 앱이 없습니다</value>
+  </data>
+  <data name="Settings_QuickSwitches" xml:space="preserve">
+    <value>퀵 스위치</value>
+  </data>
+  <data name="Settings_QuickSwitches_AddedLabel" xml:space="preserve">
+    <value>추가 :</value>
+  </data>
+  <data name="Settings_QuickSwitches_Description" xml:space="preserve">
+    <value>빠른 전환 - 프로그램의 모든 장소와 다른 설정을 변경할 수 있는 작은 팝업 메뉴입니다. 이 메뉴를 열려면 Alt+~를 누르거나 마우스 가운데 버튼을 클릭합니다. Alt+1을 눌러 설정을 변경할 수도 있습니다.Alt+9.[br][br]새로운 옵션이 필요한 경우 [url="https://acstuff.ru/app/#filename"](으)로 문의하십시오. [/url](으)</value>
+  </data>
+  <data name="Settings_QuickSwitches_Enable" xml:space="preserve">
+    <value>빠른 전환 활성화</value>
+  </data>
+  <data name="Settings_QuickSwitches_LibraryLabel" xml:space="preserve">
+    <value>라이브러리:</value>
+  </data>
+  <data name="Settings_Replays_AddExtension" xml:space="preserve">
+    <value>새 재생에 자동으로 ".acreplay" 추가</value>
+  </data>
+  <data name="Settings_Replays_AddExtension_Tooltip" xml:space="preserve">
+    <value>AC에서 만든 새 재생에 자동으로 ".acreplay" 확장 추가</value>
+  </data>
+  <data name="Settings_Replays_AddExtensionToExisting" xml:space="preserve">
+    <value>기존 에 추가</value>
+  </data>
+  <data name="Settings_Replays_AddExtensionToExisting_Tooltip" xml:space="preserve">
+    <value>모든 기존 재생에 ".acreplay" 확장 추가</value>
+  </data>
+  <data name="Settings_Replays_AutosaveReplays" xml:space="preserve">
+    <value>자동 저장 재생</value>
+  </data>
+  <data name="Settings_Replays_AutosaveReplays_Tooltip" xml:space="preserve">
+    <value>일반적인 "cr"은 자동으로 이름이 변경됩니다.</value>
+  </data>
+  <data name="Settings_Replays_ExtensionHeader" xml:space="preserve">
+    <value>재생의 파일 이름 및 확장명:</value>
+  </data>
+  <data name="Settings_Replays_ExtensionHeader_Tooltip" xml:space="preserve">
+    <value>.acreplay 확장 기능을 사용하면 Windows 탐색기에서 클릭하기만 하면 재생을 시작할 수 있습니다.</value>
+  </data>
+  <data name="Settings_Replays_LoadInformation" xml:space="preserve">
+    <value>재생에 대한 정보 로드</value>
+  </data>
+  <data name="Settings_Replays_LoadInformation_Tooltip" xml:space="preserve">
+    <value>미디어/재생 탭의 트랙, 차량 및 날씨 탐지 시도</value>
+  </data>
+  <data name="Settings_Replays_NameFormat" xml:space="preserve">
+    <value>재생 이름 형식</value>
+  </data>
+  <data name="Settings_Replays_NameFormat_Tooltip" xml:space="preserve">
+    <value>레이스 후 재생을 저장하거나 자동 저장하는 데 사용됩니다.
+
+교체 값:
+ [b][mono]{type}[/mono][/b] — 레이스 유형;
+ [b][mono]{car}[/mono][/b] —  차량 이름;
+ [b][mono]{car.id}[/mono][/b] — 차량 ID;
+ [b][mono]{track}[/mono][/b] — 트렉 이름;
+ [b][mono]{track.id}[/mono][/b] — 트렉 ID;
+ [b][mono]{date}[/mono][/b] — 날짜 및 시간 적절한 형식;
+ [b][mono]{date_ac}[/mono][/b] — 날짜와 시간을 AC 형식으로 지정.
+
+편집:
+ [b][mono]{…:l}[/mono][/b] — 소문자;
+ [b][mono]{…:u}[/mono][/b] — 대문자;
+ [b][mono]{…:0}[/mono][/b] — 첫번째 기호만.
+
+예:
+ [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — 기본 Kunos 형식;
+ [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — something like “[w] bmw m3 e30 on brands hatch.acreplay”.
+
+다른 값이 필요하시면 저희에게 연락하시면 추가해 드리겠습니다.
+
+[b]경고[/b]:
+ 다음과 같은 기호는 사용하지 마세요 “[” or “]”!</value>
+  </data>
+  <data name="Settings_Sharing" xml:space="preserve">
+    <value>공유</value>
+  </data>
+  <data name="Settings_Sharing_Anonymously" xml:space="preserve">
+    <value>익명으로 공유</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesDestinationLabel" xml:space="preserve">
+    <value>대상:</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesFolderLabel" xml:space="preserve">
+    <value>폴더:</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesFoldersUpdate_Tooltip" xml:space="preserve">
+    <value>폴더 목록을 다시 로드하려면 "업데이트"를 누르십시오.</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesHeader" xml:space="preserve">
+    <value>큰 파일:</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesSelectedFolder" xml:space="preserve">
+    <value>선택한 폴더: {0}</value>
+  </data>
+  <data name="Settings_Sharing_Content" xml:space="preserve">
+    <value>내용:</value>
+  </data>
+  <data name="Settings_Sharing_CopyLinkAutomatically" xml:space="preserve">
+    <value>자동으로 클립보드에 링크 복사</value>
+  </data>
+  <data name="Settings_Sharing_CustomIds" xml:space="preserve">
+    <value>사용자 정의 ID</value>
+  </data>
+  <data name="Settings_Sharing_HistoryHeader" xml:space="preserve">
+    <value>기록:</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableName" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableTarget" xml:space="preserve">
+    <value>대상</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableType" xml:space="preserve">
+    <value>유형</value>
+  </data>
+  <data name="Settings_Sharing_NameLabel" xml:space="preserve">
+    <value>공유 닉네임:</value>
+  </data>
+  <data name="Settings_Sharing_Remove" xml:space="preserve">
+    <value>제거</value>
+  </data>
+  <data name="Settings_Sharing_SpecialHeader" xml:space="preserve">
+    <value>특수:</value>
+  </data>
+  <data name="Settings_Sharing_Unnamed" xml:space="preserve">
+    <value>공유에 대한 사용자 지정 이름 사용 안 함</value>
+  </data>
+  <data name="Settings_Sharing_VerifyParams" xml:space="preserve">
+    <value>공유하기 전에 매개 변수 확인</value>
+  </data>
+  <data name="Showroom_CannotUpdatePreview" xml:space="preserve">
+    <value>쇼룸의 미리 보기를 업데이트할 수 없습니다.</value>
+  </data>
+  <data name="Skin_CannotRemoveUiSkin" xml:space="preserve">
+    <value>ui_skin.json을 제거할 수 없습니다.</value>
+  </data>
+  <data name="Skin_CannotRemoveUiSkin_Commentary" xml:space="preserve">
+    <value>파일이 사용되지 않는지 확인하십시오.</value>
+  </data>
+  <data name="Solution_CannotRestoreJsonFile" xml:space="preserve">
+    <value>손상된 JSON을 복원할 수 없습니다.</value>
+  </data>
+  <data name="Solution_ChangeBrandBadge" xml:space="preserve">
+    <value>브랜드 배지 변경</value>
+  </data>
+  <data name="Solution_ChangeBrandBadge_Details" xml:space="preserve">
+    <value>목록에서 새 브랜드의 배지를 선택하십시오.</value>
+  </data>
+  <data name="Solution_ChangeParent" xml:space="preserve">
+    <value>상위 차량 변경</value>
+  </data>
+  <data name="Solution_ChangeParent_Details" xml:space="preserve">
+    <value>자동차 목록에서 새 상위 차량 선택</value>
+  </data>
+  <data name="Solution_ChangeUpgradeIcon" xml:space="preserve">
+    <value>업그레이드 아이콘 변경</value>
+  </data>
+  <data name="Solution_ChangeUpgradeIcon_Details" xml:space="preserve">
+    <value>편집기로 새 업그레이드 아이콘 선택 또는 생성</value>
+  </data>
+  <data name="Solution_CreateEmptySkin" xml:space="preserve">
+    <value>빈 스킨 만들기</value>
+  </data>
+  <data name="Solution_CreateEmptySkin_Details" xml:space="preserve">
+    <value>기본값이라는 새 빈 스킨 만들기</value>
+  </data>
+  <data name="Solution_Enable" xml:space="preserve">
+    <value>활성화</value>
+  </data>
+  <data name="Solution_Enable_Details" xml:space="preserve">
+    <value>글꼴을 "글꼴 끄기"에서 "글꼴"로 이동</value>
+  </data>
+  <data name="Solution_EnableSkin" xml:space="preserve">
+    <value>{0} 사용</value>
+  </data>
+  <data name="Solution_EnableSkin_Details" xml:space="preserve">
+    <value>비활성화된 스킨 활성화</value>
+  </data>
+  <data name="Solution_FindTrack" xml:space="preserve">
+    <value>트랙 찾기</value>
+  </data>
+  <data name="Solution_FindTrack_Details" xml:space="preserve">
+    <value>온라인으로 트랙 찾기</value>
+  </data>
+  <data name="Solution_FixName" xml:space="preserve">
+    <value>이름 수정</value>
+  </data>
+  <data name="Solution_FixName_Details" xml:space="preserve">
+    <value>잘못된 기호 제거</value>
+  </data>
+  <data name="Solution_GenerateLivery" xml:space="preserve">
+    <value>새 리버리 아이콘 생성</value>
+  </data>
+  <data name="Solution_GenerateLivery_Details" xml:space="preserve">
+    <value>리버리 아이콘 에디터의 마지막 설정을 사용하여 새 리버리 아이콘 생성</value>
+  </data>
+  <data name="Solution_GenerateNew" xml:space="preserve">
+    <value>새 파일 생성</value>
+  </data>
+  <data name="Solution_GenerateNew_Details" xml:space="preserve">
+    <value>빈 파일이 새로 작성됩니다. 나중에 적절한 값을 설정하고 저장해야 합니다.</value>
+  </data>
+  <data name="Solution_GeneratePreview" xml:space="preserve">
+    <value>새 미리 보기 생성</value>
+  </data>
+  <data name="Solution_GeneratePreview_Details" xml:space="preserve">
+    <value>최근에 사용한 사전 설정을 사용하여 새 미리 보기 생성</value>
+  </data>
+  <data name="Solution_MakeEmptyModel" xml:space="preserve">
+    <value>빈 모델 만들기</value>
+  </data>
+  <data name="Solution_MakeEmptyModel_Details" xml:space="preserve">
+    <value>아무것도 없이 오직 공허함만</value>
+  </data>
+  <data name="Solution_MakeGeneric" xml:space="preserve">
+    <value>일반으로 만들기</value>
+  </data>
+  <data name="Solution_MakeGeneric_Details" xml:space="preserve">
+    <value>일반 폴더로 이동</value>
+  </data>
+  <data name="Solution_MakeIndependent" xml:space="preserve">
+    <value>독립시키다</value>
+  </data>
+  <data name="Solution_MakeIndependent_Details" xml:space="preserve">
+    <value>ui_car.json에서 누락된 상위 차량 항목의 ID 제거</value>
+  </data>
+  <data name="Solution_RandomLivery" xml:space="preserve">
+    <value>임의 전달 생성 아이콘</value>
+  </data>
+  <data name="Solution_RandomLivery_Details" xml:space="preserve">
+    <value>임의 설정을 사용하여 새 전송 아이콘 생성</value>
+  </data>
+  <data name="Solution_RemoveObject" xml:space="preserve">
+    <value>개체 제거</value>
+  </data>
+  <data name="Solution_RemoveObject_Details" xml:space="preserve">
+    <value>개체가 휴지통으로 제거됨</value>
+  </data>
+  <data name="Solution_RemoveReplay" xml:space="preserve">
+    <value>재생 제거</value>
+  </data>
+  <data name="Solution_RemoveReplay_Details" xml:space="preserve">
+    <value>재생이 휴지통으로 제거됩니다.</value>
+  </data>
+  <data name="Solution_RestoreJsonFile" xml:space="preserve">
+    <value>JSON 파일 복원 시도</value>
+  </data>
+  <data name="Solution_RestoreJsonFile_Details" xml:space="preserve">
+    <value>앱이 손상된 JSON 파일에서 알려진 속성을 읽으려고 시도합니다 (주의, 데이터 손실 가능)</value>
+  </data>
+  <data name="Solution_SetBrandBadge" xml:space="preserve">
+    <value>{0} 배지 설정</value>
+  </data>
+  <data name="Solution_SetBrandBadge_Details" xml:space="preserve">
+    <value>콘텐츠 저장소에서 브랜드 배지 설정</value>
+  </data>
+  <data name="Solution_SetBrandName" xml:space="preserve">
+    <value>브랜드 이름 설정</value>
+  </data>
+  <data name="Solution_SetBrandName_Details" xml:space="preserve">
+    <value>새 브랜드 이름 설정</value>
+  </data>
+  <data name="Solution_SetBrandName_Prompt" xml:space="preserve">
+    <value>새 브랜드 이름 입력:</value>
+  </data>
+  <data name="Solution_SetBrandNameFromName" xml:space="preserve">
+    <value>자동차 이름을 기준으로 브랜드 이름 설정</value>
+  </data>
+  <data name="Solution_SetBrandNameFromName_Details" xml:space="preserve">
+    <value>새 브랜드 이름은 다음과 같습니다. “{0}”</value>
+  </data>
+  <data name="Solution_SetName" xml:space="preserve">
+    <value>이름 설정</value>
+  </data>
+  <data name="Solution_SetName_Details" xml:space="preserve">
+    <value>새 이름을 설정하십시오.</value>
+  </data>
+  <data name="Solution_SetName_Prompt" xml:space="preserve">
+    <value>새 이름 입력:</value>
+  </data>
+  <data name="Solution_SetNameFromId" xml:space="preserve">
+    <value>ID를 기준으로 이름 설정</value>
+  </data>
+  <data name="Solution_SetNameFromId_Details" xml:space="preserve">
+    <value>새 이름은 다음과 같습니다. “{0}”</value>
+  </data>
+  <data name="Solution_SetUpgradeIcon" xml:space="preserve">
+    <value>{0} 아이콘 설정</value>
+  </data>
+  <data name="Solution_SetUpgradeIcon_Details" xml:space="preserve">
+    <value>콘텐츠 저장소에서 업그레이드 아이콘 설정</value>
+  </data>
+  <data name="Solution_SetupLivery" xml:space="preserve">
+    <value>새 리버리 아이콘 설정</value>
+  </data>
+  <data name="Solution_SetupLivery_Details" xml:space="preserve">
+    <value>리버리 아이콘 에디터를 사용하여 새 리버리 아이콘 선택</value>
+  </data>
+  <data name="Solution_SetupPreview" xml:space="preserve">
+    <value>새 미리 보기 설정 및 생성</value>
+  </data>
+  <data name="Solution_SetupPreview_Details" xml:space="preserve">
+    <value>설정을 통해 새 미리보기 선택</value>
+  </data>
+  <data name="SpecialEvents_Difficulty" xml:space="preserve">
+    <value>난이도</value>
+  </data>
+  <data name="Srs_CarIsMissing_Commentary" xml:space="preserve">
+    <value>필요한 모든 모드가 설치되어 있는지 확인하십시오.</value>
+  </data>
+  <data name="Srs_Commentary" xml:space="preserve">
+    <value>이 섹션을 사용할 수 없거나 참가 시간을 놓친 경우 대신 온라인 섹션을 사용하십시오.</value>
+  </data>
+  <data name="Srs_PortLabel" xml:space="preserve">
+    <value>포트:</value>
+  </data>
+  <data name="Srs_ReadyNotification" xml:space="preserve">
+    <value>레이스에 참가하려면 클릭하십시오.</value>
+  </data>
+  <data name="Srs_ReadyNotificationHeader" xml:space="preserve">
+    <value>SRS 서버가 준비되었습니다.</value>
+  </data>
+  <data name="Srs_StartAtLabel" xml:space="preserve">
+    <value>시작 시간:</value>
+  </data>
+  <data name="Tags_CleanUp" xml:space="preserve">
+    <value>태그 정리</value>
+  </data>
+  <data name="Tags_CleanUpAndSort" xml:space="preserve">
+    <value>태그 정리 및 정렬</value>
+  </data>
+  <data name="Tags_Sort" xml:space="preserve">
+    <value>태그 정렬</value>
+  </data>
+  <data name="Toolbar_Analyze" xml:space="preserve">
+    <value>분석</value>
+  </data>
+  <data name="Toolbar_CarSetups" xml:space="preserve">
+    <value>설정</value>
+  </data>
+  <data name="Toolbar_CarSetups_Tooltip" xml:space="preserve">
+    <value>설정 관리(Ctrl+U)</value>
+  </data>
+  <data name="Toolbar_CarSkins" xml:space="preserve">
+    <value>스킨</value>
+  </data>
+  <data name="Toolbar_CarSkins_Tooltip" xml:space="preserve">
+    <value>스킨 관리(Ctrl+K)</value>
+  </data>
+  <data name="Toolbar_ChangeId" xml:space="preserve">
+    <value>ID 변경</value>
+  </data>
+  <data name="Toolbar_ChangeId_SkinTooltip" xml:space="preserve">
+    <value>스킨 ID 변경(Ctrl+Shift+F2)</value>
+  </data>
+  <data name="Toolbar_ChangeId_WeatherTooltip" xml:space="preserve">
+    <value>날씨 ID 변경(Ctrl+Shift+F2)</value>
+  </data>
+  <data name="Toolbar_ChangeLivery" xml:space="preserve">
+    <value>리버리 아이콘 변경</value>
+  </data>
+  <data name="Toolbar_ChangeLivery_Tooltip" xml:space="preserve">
+    <value>스킨의 사징.png(Alt+J) 변경</value>
+  </data>
+  <data name="Toolbar_Clone" xml:space="preserve">
+    <value>복제</value>
+  </data>
+  <data name="Toolbar_Clone_WeatherTooltip" xml:space="preserve">
+    <value>날씨 복제(Ctrl+Shift+D)</value>
+  </data>
+  <data name="Toolbar_CopyValues" xml:space="preserve">
+    <value>값 복사</value>
+  </data>
+  <data name="Toolbar_CopyValues_Tooltip" xml:space="preserve">
+    <value>값을 다른 레이아웃에 복사</value>
+  </data>
+  <data name="Toolbar_CreateJson" xml:space="preserve">
+    <value>JSON 파일 생성</value>
+  </data>
+  <data name="Toolbar_CreateNewFont" xml:space="preserve">
+    <value>새 글꼴 만들기</value>
+  </data>
+  <data name="Toolbar_CreateNewFont_Tooltip" xml:space="preserve">
+    <value>Kunos 도구를 사용하여 새 글꼴 만들기(Ctrl+N)</value>
+  </data>
+  <data name="Toolbar_CreateNewShowroom" xml:space="preserve">
+    <value>새로운 쇼룸 만들기</value>
+  </data>
+  <data name="Toolbar_CreateNewShowroom_Tooltip" xml:space="preserve">
+    <value>기존 파노라마에서 새로운 쇼룸 만들기(Ctrl+N)</value>
+  </data>
+  <data name="Toolbar_CustomShowroom" xml:space="preserve">
+    <value>커스텀 쇼룸</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Fancy" xml:space="preserve">
+    <value>고급 맞춤형 쇼룸</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Fancy_Tooltip" xml:space="preserve">
+    <value>느리고 덜 정확하지만 적절한 조명과 반사가 있음</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Lite" xml:space="preserve">
+    <value>라이트 커스텀 쇼룸</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Lite_Tooltip" xml:space="preserve">
+    <value>더 빠르고 정확하며 모딩 또는 스킨 그리기에 유용합니다.</value>
+  </data>
+  <data name="Toolbar_Delete" xml:space="preserve">
+    <value>삭제</value>
+  </data>
+  <data name="Toolbar_Delete_AppTooltip" xml:space="preserve">
+    <value>휴지통에서 앱 제거 (Ctrl + Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_CarTooltip" xml:space="preserve">
+    <value>휴지통으로 차량 제거 (Ctrl + Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_DriverModelTooltip" xml:space="preserve">
+    <value>차량을 휴지통으로 이동(Ctrl+Delete</value>
+  </data>
+  <data name="Toolbar_Delete_FontTooltip" xml:space="preserve">
+    <value>휴지통에서 글꼴 제거(Ctrl+Delete</value>
+  </data>
+  <data name="Toolbar_Delete_PpFilterTooltip" xml:space="preserve">
+    <value>휴지통으로 PP 필터 제거(Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_ReplayTooltip" xml:space="preserve">
+    <value>휴지통으로 재생 제거(Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_SetupTooltip" xml:space="preserve">
+    <value>휴지통에서 설정 제거 (Ctrl + Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_ShowroomTooltip" xml:space="preserve">
+    <value>쇼룸을 휴지통으로 제거 (Ctrl + Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_SkinTooltip" xml:space="preserve">
+    <value>휴지통에서 스킨 제거 (Ctrl + Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_TrackTooltip" xml:space="preserve">
+    <value>휴지통에서 트랙 제거 (Ctrl + Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_WeatherTooltip" xml:space="preserve">
+    <value>휴지통에서 날씨 제거 (Ctrl + Delete)</value>
+  </data>
+  <data name="Toolbar_DeleteJson" xml:space="preserve">
+    <value>JSON 파일 삭제</value>
+  </data>
+  <data name="Toolbar_DisableEditMode" xml:space="preserve">
+    <value>편집 모드 사용 안 함</value>
+  </data>
+  <data name="Toolbar_DisableEditMode_Tooltip" xml:space="preserve">
+    <value>편집 모드에서 전환(Ctrl+E)</value>
+  </data>
+  <data name="Toolbar_DisableUnused" xml:space="preserve">
+    <value>사용하지 않음</value>
+  </data>
+  <data name="Toolbar_DisableUnused_Tooltip" xml:space="preserve">
+    <value>다시 검색하고 사용되지 않는 모든 글꼴(Ctrl+Shift+D) 사용 안 함</value>
+  </data>
+  <data name="Toolbar_Drive" xml:space="preserve">
+    <value>드라이브</value>
+  </data>
+  <data name="Toolbar_Drive_CarTooltip" xml:space="preserve">
+    <value>빠른 주행 세션에서 차량 사용(Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Drive_TrackTooltip" xml:space="preserve">
+    <value>빠른 드라이브 세션에서 트랙 사용(Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_EditMode" xml:space="preserve">
+    <value>편집 모드</value>
+  </data>
+  <data name="Toolbar_EditMode_Tooltip" xml:space="preserve">
+    <value>편집 모드로 전환(Ctrl+E)</value>
+  </data>
+  <data name="Toolbar_Enable" xml:space="preserve">
+    <value>활성화</value>
+  </data>
+  <data name="Toolbar_Enable_Tooltip" xml:space="preserve">
+    <value>활성화(Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_FindInformation" xml:space="preserve">
+    <value>정보 찾기</value>
+  </data>
+  <data name="Toolbar_FindInformation_CarTooltip" xml:space="preserve">
+    <value>차량에 대한 정보 찾기(Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_FindInformation_TrackTooltip" xml:space="preserve">
+    <value>트랙에 대한 정보 찾기(Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_Folder" xml:space="preserve">
+    <value>폴더</value>
+  </data>
+  <data name="Toolbar_Folder_AppTooltip" xml:space="preserve">
+    <value>앱 폴더 열기(Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_CarTooltip" xml:space="preserve">
+    <value>차량 폴더 열기(Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_DriverModelTooltip" xml:space="preserve">
+    <value>모델의 폴더 열기(Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_FontTooltip" xml:space="preserve">
+    <value>글꼴 폴더 열기(Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_PpFilterTooltip" xml:space="preserve">
+    <value>PP 필터 폴더 열기(Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_ReplayTooltip" xml:space="preserve">
+    <value>재생 폴더 열기(Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_SetupTooltip" xml:space="preserve">
+    <value>설치 프로그램의 폴더 열기(Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_ShowroomTooltip" xml:space="preserve">
+    <value>쇼룸 폴더 열기(Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_SkinTooltip" xml:space="preserve">
+    <value>스킨 폴더 열기(Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_TrackTooltip" xml:space="preserve">
+    <value>트랙 폴더 열기(Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_WeatherTooltip" xml:space="preserve">
+    <value>날씨 폴더 열기(Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_GenerateLivery" xml:space="preserve">
+    <value>리버리 아이콘 생성</value>
+  </data>
+  <data name="Toolbar_GenerateLivery_Tooltip" xml:space="preserve">
+    <value>리버리 아이콘 에디터의 마지막 설정을 사용하여 새 리버리 아이콘 생성</value>
+  </data>
+  <data name="Toolbar_GenerateRandomLivery" xml:space="preserve">
+    <value>무작위 리버리 생성</value>
+  </data>
+  <data name="Toolbar_GenerateRandomLivery_Tooltip" xml:space="preserve">
+    <value>임의 설정을 사용하여 새 리버리 아이콘 생성</value>
+  </data>
+  <data name="Toolbar_Join" xml:space="preserve">
+    <value>참가</value>
+  </data>
+  <data name="Toolbar_Join_OnlineTooltip" xml:space="preserve">
+    <value>서버 참가(Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_PackData" xml:space="preserve">
+    <value>데이터 패킹</value>
+  </data>
+  <data name="Toolbar_Play" xml:space="preserve">
+    <value>실행</value>
+  </data>
+  <data name="Toolbar_Play_Tooltip" xml:space="preserve">
+    <value>리플레이 실행(Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Refresh" xml:space="preserve">
+    <value>새로 고침</value>
+  </data>
+  <data name="Toolbar_Refresh_OnlineTooltip" xml:space="preserve">
+    <value>서버 정보 새로 고침(Ctrl+R)</value>
+  </data>
+  <data name="Toolbar_Reload" xml:space="preserve">
+    <value>리로드</value>
+  </data>
+  <data name="Toolbar_Reload_Tooltip" xml:space="preserve">
+    <value>리로드(Ctrl+R)</value>
+  </data>
+  <data name="Toolbar_Rename" xml:space="preserve">
+    <value>이름 바꾸기</value>
+  </data>
+  <data name="Toolbar_Rename_AppTooltip" xml:space="preserve">
+    <value>새 이름에 따라 앱 이름 변경(Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Rename_ReplayTooltip" xml:space="preserve">
+    <value>새 이름에 따라 재생 이름 변경(Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_ReplaceSound" xml:space="preserve">
+    <value>소리 변경</value>
+  </data>
+  <data name="Toolbar_ReplaceSound_Tooltip" xml:space="preserve">
+    <value>소리를 다른 차 소리로 변경(Alt+S)</value>
+  </data>
+  <data name="Toolbar_RescanUsings" xml:space="preserve">
+    <value>사용중인것 다시 스캔</value>
+  </data>
+  <data name="Toolbar_RescanUsings_Tooltip" xml:space="preserve">
+    <value>글꼴당 차량 목록 수집(Ctrl+U)</value>
+  </data>
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>저장</value>
+  </data>
+  <data name="Toolbar_Save_IniTooltip" xml:space="preserve">
+    <value>변경된 INI 파일 저장(Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Save_JsonTooltip" xml:space="preserve">
+    <value>변경된 JSON 파일 저장(Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Share_FilterTooltip" xml:space="preserve">
+    <value>공유 필터(Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_Share_SetupTooltip" xml:space="preserve">
+    <value>공유 설정(Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_Showroom" xml:space="preserve">
+    <value>쇼룸</value>
+  </data>
+  <data name="Toolbar_Showroom_Tooltip" xml:space="preserve">
+    <value>쇼룸에서 차량 보기</value>
+  </data>
+  <data name="Toolbar_ShowroomOptions_Tooltip" xml:space="preserve">
+    <value>쇼룸, 필터 등을 선택하십시오.</value>
+  </data>
+  <data name="Toolbar_Test_FilterTooltip" xml:space="preserve">
+    <value>쇼룸,필터 등 사용(Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Test_SetupTooltip" xml:space="preserve">
+    <value>테스트 설정(Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Test_WeatherTooltip" xml:space="preserve">
+    <value>트랙에서 날씨 테스트(Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_TurnOffSound" xml:space="preserve">
+    <value>소리 끄기</value>
+  </data>
+  <data name="Toolbar_TurnOffSound_Tooltip" xml:space="preserve">
+    <value>소리 사용 안 함(Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_TurnOnSound" xml:space="preserve">
+    <value>소리 켜기</value>
+  </data>
+  <data name="Toolbar_TurnOnSound_Tooltip" xml:space="preserve">
+    <value>사운드 사용(Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_UnpackData" xml:space="preserve">
+    <value>데이터 풀기</value>
+  </data>
+  <data name="Toolbar_UnpackData_Tooltip" xml:space="preserve">
+    <value>개발 전용(Alt+J)</value>
+  </data>
+  <data name="Toolbar_UpdateMap" xml:space="preserve">
+    <value>지도 업데이트</value>
+  </data>
+  <data name="Toolbar_UpdatePreview" xml:space="preserve">
+    <value>업데이트 미리 보기</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_ShowroomTooltip" xml:space="preserve">
+    <value>전시장 미리보기 업데이트(Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_SkinTooltip" xml:space="preserve">
+    <value>스킨 미리보기 업데이트(Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_TrackTooltip" xml:space="preserve">
+    <value>트랙 미리보기 업데이트(Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_WeatherTooltip" xml:space="preserve">
+    <value>날씨 미리보기 업데이트(Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreviews" xml:space="preserve">
+    <value>미리 보기 업데이트</value>
+  </data>
+  <data name="Toolbar_UpdatePreviews_Tooltip" xml:space="preserve">
+    <value>모든 미리 보기 업데이트(Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewsManually" xml:space="preserve">
+    <value>수동 모드</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewsManually_Tooltip" xml:space="preserve">
+    <value>카메라 위치를 수동으로 설정한 다음 F8 키를 눌러 촬영을 시작합니다.</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewsOptions_Tooltip" xml:space="preserve">
+    <value>쇼룸, 필터, 카메라 위치 등을 선택하십시오.</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewWithoutShooting" xml:space="preserve">
+    <value>촬영하지 않고 보기</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewWithoutShooting_Tooltip" xml:space="preserve">
+    <value>기존 이미지만 선택하십시오.</value>
+  </data>
+  <data name="Toolbar_UploadAndShare" xml:space="preserve">
+    <value>업로드 및 공유</value>
+  </data>
+  <data name="Toolbar_UploadAndShare_ReplayTooltip" xml:space="preserve">
+    <value>설정에서 선택한 클라우드 스토리지를 사용하여 재생 공유(Ctrl+Page Up)</value>
+  </data>
+  <data name="TrackSpecs_Length_Tooltip" xml:space="preserve">
+    <value>총 길이, 권장 형식: “{0}”</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_Tooltip" xml:space="preserve">
+    <value>권장 형식인 트랙에 있는 차량 수에 대한 제한뿐만 아니라 피트 스톨의 양: “{0}”</value>
+  </data>
+  <data name="TrackSpecs_Width_Tooltip" xml:space="preserve">
+    <value>평균 트랙 폭, 권장 형식: “{0}”</value>
+  </data>
+  <data name="TrackStateEditor_Description" xml:space="preserve">
+    <value>설명:</value>
+  </data>
+  <data name="TrackStateEditor_GripRandomization" xml:space="preserve">
+    <value>그립 무작위화</value>
+  </data>
+  <data name="TrackStateEditor_GripTransfer" xml:space="preserve">
+    <value>그립 전달</value>
+  </data>
+  <data name="TrackStateEditor_GripTransfer_Tooltip" xml:space="preserve">
+    <value>다음 세션으로 전달되는 그립의 추가 양</value>
+  </data>
+  <data name="TrackStateEditor_InitialGrip" xml:space="preserve">
+    <value>초기 그립</value>
+  </data>
+  <data name="TrackStateEditor_InitialGrip_Tooltip" xml:space="preserve">
+    <value>세션 시작 시 그립 양</value>
+  </data>
+  <data name="TrackStateEditor_LapGain" xml:space="preserve">
+    <value>랩수</value>
+  </data>
+  <data name="UpgradeIcon_AddAs" xml:space="preserve">
+    <value>새 업그레이드 아이콘으로 추가:</value>
+  </data>
+  <data name="UpgradeIcon_CannotChange" xml:space="preserve">
+    <value>업그레이드 아이콘을 변경할 수 없습니다.</value>
+  </data>
+  <data name="UpgradeIcon_CannotChange_Commentary" xml:space="preserve">
+    <value>업그레이드 아이콘 파일을 쓸 수 있는지 확인합니다.</value>
+  </data>
+  <data name="UpgradeIcon_Commentary" xml:space="preserve">
+    <value>Ctrl+I: 기울임, Ctrl+B: 굵게 표시</value>
+  </data>
+  <data name="UpgradeIcon_Current" xml:space="preserve">
+    <value>현재</value>
+  </data>
+  <data name="UpgradeIcon_Editor" xml:space="preserve">
+    <value>에디터</value>
+  </data>
+  <data name="UpgradeIcon_Library" xml:space="preserve">
+    <value>자료</value>
+  </data>
+  <data name="UpgradeIcon_New" xml:space="preserve">
+    <value>신규</value>
+  </data>
+  <data name="UpgradeIcon_SelectNew" xml:space="preserve">
+    <value>새 업그레이드 아이콘 선택</value>
+  </data>
+  <data name="UpgradeIcon_Title" xml:space="preserve">
+    <value>업그레이드 아이콘</value>
+  </data>
+  <data name="UserChampionships_NoPreview" xml:space="preserve">
+    <value>미리보기 없음</value>
+  </data>
+  <data name="UserChampionships_RealConditions" xml:space="preserve">
+    <value>실제 날씨</value>
+  </data>
+  <data name="VersionInfo_Title" xml:space="preserve">
+    <value>버전 정보</value>
+  </data>
+  <data name="Weather_CannotShare" xml:space="preserve">
+    <value>날씨를 공유할 수 없습니다.</value>
+  </data>
+  <data name="Weather_CannotShare_Commentary" xml:space="preserve">
+    <value>파일이 너무 큽니다. 제한은 {0}입니다.</value>
+  </data>
+  <data name="Weather_KunosReadme" xml:space="preserve">
+    <value>우리는 주변 온도, 날씨, 낮 시간에 비례하여 아스팔트 온도를 결정하는 그래프를 만들기 위해 방정식을 사용하고 있습니다.
+
+url="http://fooplot.com/plot/3x7y44pfli"]이 링크[/url]에서 그래프를 확인합니다.
+
+사용되는 방정식은 다음과 같습니다.
+[mono](((-10×α)*x)+10*α)*2((exp(-6*x)*(0.4*sin(6*x))+0.1)*(15/1.5)*sin(0.9*x))+15[/mono]
+
+((-10*1)*x)+10*1)에서 1개의 값을 변경하여 그래프에서 결과를 확인합니다.
+허용되는 값은 -1 ~ 1입니다.</value>
+  </data>
+  <data name="Weather_SeemsEmpty" xml:space="preserve">
+    <value>빈 것 같나요?</value>
+  </data>
+  <data name="Weather_SeemsEmpty_Commentary" xml:space="preserve">
+    <value>다른 날씨의 파라미터를 수정하려면 편집 모드로 전환합니다.</value>
+  </data>
+  <data name="WeatherEdit_AdditionalHeader" xml:space="preserve">
+    <value>추가:</value>
+  </data>
+  <data name="WeatherEdit_AngleGamma" xml:space="preserve">
+    <value>각도 감마</value>
+  </data>
+  <data name="WeatherEdit_Blend" xml:space="preserve">
+    <value>혼합</value>
+  </data>
+  <data name="WeatherEdit_Brightness" xml:space="preserve">
+    <value>밝기</value>
+  </data>
+  <data name="WeatherEdit_CloudsHeader" xml:space="preserve">
+    <value>구름:</value>
+  </data>
+  <data name="WeatherEdit_Color" xml:space="preserve">
+    <value>색깔.</value>
+  </data>
+  <data name="WeatherEdit_Color_Tooltip" xml:space="preserve">
+    <value>기본 색상. 여기에 햇빛, 밝은 색상 및 주변 색상이 추가됩니다.</value>
+  </data>
+  <data name="WeatherEdit_ColorCurvesHeader" xml:space="preserve">
+    <value>색상 곡선:</value>
+  </data>
+  <data name="WeatherEdit_Cover" xml:space="preserve">
+    <value>커버</value>
+  </data>
+  <data name="WeatherEdit_Cover_Tooltip" xml:space="preserve">
+    <value>구름 투명성 조절</value>
+  </data>
+  <data name="WeatherEdit_CutOff" xml:space="preserve">
+    <value>컷오프</value>
+  </data>
+  <data name="WeatherEdit_CutOff_Tooltip" xml:space="preserve">
+    <value>구름에 미치는 다른 색상의 영향을 조절합니다.
+ • [b]0%:[/b] 구름에 미치는 색상 효과만 고려한다.
+ • [b]50%:[/b] 구름 색상의 50%, 효과의 50%
+ • [b] 100%:[/b] 구름의 색상만 고려</value>
+  </data>
+  <data name="WeatherEdit_Distance" xml:space="preserve">
+    <value>거리</value>
+  </data>
+  <data name="WeatherEdit_FogHeader" xml:space="preserve">
+    <value>안개:</value>
+  </data>
+  <data name="WeatherEdit_HdrOffMultipler" xml:space="preserve">
+    <value>다중 HDR-OFF </value>
+  </data>
+  <data name="WeatherEdit_HdrOffMultipler_Tooltip" xml:space="preserve">
+    <value>HDR이 비활성화된 경우 사용</value>
+  </data>
+  <data name="WeatherEdit_Headlights" xml:space="preserve">
+    <value>헤드라이트 켜기</value>
+  </data>
+  <data name="WeatherEdit_Height_Tooltip" xml:space="preserve">
+    <value>쿼드의 높이</value>
+  </data>
+  <data name="WeatherEdit_Multipler" xml:space="preserve">
+    <value>승수</value>
+  </data>
+  <data name="WeatherEdit_Number_Tooltip" xml:space="preserve">
+    <value>구름 수</value>
+  </data>
+  <data name="WeatherEdit_Radius_Tooltip" xml:space="preserve">
+    <value>스카이박스 중앙에서 쿼드까지의 거리</value>
+  </data>
+  <data name="WeatherEdit_SpeedMultipler_Tooltip" xml:space="preserve">
+    <value>기준 속도 승수</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficient" xml:space="preserve">
+    <value>온도 계수</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficient_Tooltip" xml:space="preserve">
+    <value>날씨, 주변 온도 및 시간에 따른 아스팔트 온도 변화를 생성합니다. 자세한 내용은 "readme_weather.txt"를 참조하십시오</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficientAirTemperature" xml:space="preserve">
+    <value>공기 온도.</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficientTesting" xml:space="preserve">
+    <value>온도 계수 테스트:</value>
+  </data>
+  <data name="WeatherEdit_ViewReadmeHeader" xml:space="preserve">
+    <value>readme_weather.txt 보기</value>
+  </data>
+  <data name="WeatherEdit_Width_Tooltip" xml:space="preserve">
+    <value>쿼드의 너비</value>
+  </data>
+  <data name="WebSource_DeleteBookmark" xml:space="preserve">
+    <value>웹 사이트 "{0}"에 대한 책갈피를 삭제하시겠습니까?</value>
+  </data>
+  <data name="WebSource_FailedToShareMessage" xml:space="preserve">
+    <value>데이터가 너무 많을 수 있습니다.</value>
+  </data>
+  <data name="WebSource_FailedToShareTitle" xml:space="preserve">
+    <value>설정을 공유할 수 없음</value>
+  </data>
+  <data name="WebSource_SharedDescriptionTitle" xml:space="preserve">
+    <value>{0}에 대한 설명</value>
+  </data>
+  <data name="WebSource_SharedMessageCopiedTitle" xml:space="preserve">
+    <value>세부 정보가 포함된 메시지가 클립보드에 복사됨</value>
+  </data>
+  <data name="Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter" xml:space="preserve">
+    <value>오리지날 런처 (스팀 기동시 함께 표시됨)</value>
+  </data>
+  <data name="Windows_MainWindow_VideoSettingsFPSCounter" xml:space="preserve">
+    <value>비디오 세팅 (FPS 카운터)</value>
+  </data>
+</root>

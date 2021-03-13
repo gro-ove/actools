@@ -1405,11 +1405,11 @@
     <value>在车辆加速时最大化抓地力</value>
   </data>
   <data name="Assists_TyreBlankets" xml:space="preserve">
-    <value>暖胎毯</value>
-  </data>
+    <value>轮胎加热毯（器）</value>
+  <alternative>暖胎毯</alternative></data>
   <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
-    <value>在维修区内暖胎</value>
-  </data>
+    <value>在维修区内暖胎（将轮胎加热至半融化状态，以提高轮胎抓地力，常用于F1）</value>
+  <alternative>在维修区内暖胎</alternative></data>
   <data name="Assists_TyreWear" xml:space="preserve">
     <value>轮胎磨损</value>
   </data>
@@ -1729,5 +1729,14 @@
   </data>
   <data name="Race_OpponentsAggression" xml:space="preserve">
     <value>对手的侵略性</value>
+  </data>
+  <data name="Online_LoadingCars" xml:space="preserve">
+    <value>正在加载车辆中 ({0})…</value>
+  </data>
+  <data name="Online_LoadingPlayersList" xml:space="preserve">
+    <value>正在载入玩家名单…</value>
+  </data>
+  <data name="Online_LoadingSkins" xml:space="preserve">
+    <value>正在加载{0} 涂装…</value>
   </data>
 </root>

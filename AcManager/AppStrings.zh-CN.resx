@@ -1334,8 +1334,8 @@
     <value>打开后处理滤镜文件夹(Ctrl+F)</value>
   </data>
   <data name="Toolbar_Folder_AppTooltip" xml:space="preserve">
-    <value>打开插件文件夹(Ctrl+F)</value>
-  </data>
+    <value>打开app的文件夹r (Ctrl+F)</value>
+  <alternative>打开插件文件夹(Ctrl+F)</alternative></data>
   <data name="Toolbar_Folder_ReplayTooltip" xml:space="preserve">
     <value>打开录像文件夹(Ctrl+F)</value>
   </data>
@@ -1870,8 +1870,8 @@
     <value>缺内容</value>
   </data>
   <data name="Online_NothingToDisplay" xml:space="preserve">
-    <value>没有符合条件的结果</value>
-  <alternative>无内容</alternative></data>
+    <value>没有可显示的内容</value>
+  <alternative>无内容</alternative><alternative>没有符合条件的结果</alternative></data>
   <data name="Online_AddNewServer" xml:space="preserve">
     <value>添加新服务器</value>
   </data>
@@ -1981,8 +1981,8 @@
     <value>时间倍率</value>
   </data>
   <data name="Drive_TyreBlankets" xml:space="preserve">
-    <value>暖胎毯</value>
-  </data>
+    <value>轮胎加热毯（器）</value>
+  <alternative>暖胎毯</alternative></data>
   <data name="Drive_Penalties" xml:space="preserve">
     <value>惩罚</value>
   </data>
@@ -3149,8 +3149,8 @@
   Content Manager [url="/Pages/About/License.xaml|_top"]许可[/url].</value>
   </data>
   <data name="About_Copyright" xml:space="preserve">
-    <value>版权所有 © 2016 AcClub. 保留所有权利</value>
-  </data>
+    <value>版权所有 © 2016–2020 AcClub. 保留所有权利</value>
+  <alternative>版权所有 © 2016 AcClub. 保留所有权利</alternative></data>
   <data name="About_MarkAllAsRead" xml:space="preserve">
     <value>标记所有为已读</value>
   </data>
@@ -3527,8 +3527,8 @@
     <value>驾驶的赛道：</value>
   </data>
   <data name="QuickDrive_CarSpecificControls" xml:space="preserve">
-    <value>汽车单独用的控制：</value>
-  </data>
+    <value>单独设置车辆外设配置文件：</value>
+  <alternative>汽车单独用的控制：</alternative></data>
   <data name="QuickDrive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
     <value>读取辅助与快速驾驶预设（全局）</value>
   </data>
@@ -3692,8 +3692,8 @@
     <value>用户冠军</value>
   </data>
   <data name="Main_GetNewMods" xml:space="preserve">
-    <value>获取新的mod</value>
-  </data>
+    <value>获取新的MOD</value>
+  <alternative>获取新的mod</alternative></data>
   <data name="Main_Mods" xml:space="preserve">
     <value>MOD</value>
   </data>
@@ -3885,5 +3885,570 @@
   </data>
   <data name="Windows_MainWindow_VideoSettingsFPSCounter" xml:space="preserve">
     <value>视频设置（FPS计数器）</value>
+  </data>
+  <data name="AcSettings_Audio_CantGetTheListOfAudioDevices" xml:space="preserve">
+    <value>无法获取音频列表</value>
+  </data>
+  <data name="AcSettings_Audio_DeviceName" xml:space="preserve">
+    <value>设备名：</value>
+  </data>
+  <data name="AcSettings_Audio_OutputDevice" xml:space="preserve">
+    <value>输出设备：</value>
+  </data>
+  <data name="AcSettings_Audio_Unknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="AcSettings_ChaseCamera_Params" xml:space="preserve">
+    <value>参数：</value>
+  </data>
+  <data name="AcSettings_ChaseCamera_Pitch" xml:space="preserve">
+    <value>倾角</value>
+  </data>
+  <data name="AcSettings_Controls_DeviceSettings_Tooltip" xml:space="preserve">
+    <value>设备设置</value>
+  </data>
+  <data name="AcSettings_Controls_EditNames" xml:space="preserve">
+    <value>编辑姓名</value>
+  </data>
+  <data name="AcSettings_Controls_ResetSystemBindings" xml:space="preserve">
+    <value>重置系统绑定</value>
+  </data>
+  <data name="AcSettings_Controls_ScanDevicesAtLaunch" xml:space="preserve">
+    <value>启动时扫描设备</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ABSEffect" xml:space="preserve">
+    <value>ABS效果</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_HandleMode" xml:space="preserve">
+    <value>Handle模式:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_HardwareLock" xml:space="preserve">
+    <value>硬件锁 (实验)</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV" xml:space="preserve">
+    <value>导入CSV</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Car" xml:space="preserve">
+    <value>汽车：</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Online" xml:space="preserve">
+    <value>在线：</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Options" xml:space="preserve">
+    <value>选项：</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Race" xml:space="preserve">
+    <value>赛事：</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Replay" xml:space="preserve">
+    <value>回放：</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_UI" xml:space="preserve">
+    <value>用户界面：</value>
+  </data>
+  <data name="AcSettings_General_KeepCameraInTheCar" xml:space="preserve">
+    <value>保持车内视角</value>
+  </data>
+  <data name="AcSettings_General_LimitForOtherSessions" xml:space="preserve">
+    <value>其它赛程限制</value>
+  </data>
+  <data name="AcSettings_General_LimitForQualifications" xml:space="preserve">
+    <value>资格限制</value>
+  </data>
+  <data name="AcSettings_General_LimitForRaces" xml:space="preserve">
+    <value>赛事限制</value>
+  </data>
+  <data name="AcSettings_General_MinimumTime" xml:space="preserve">
+    <value>最短时间</value>
+  </data>
+  <data name="AcSettings_General_PitStops" xml:space="preserve">
+    <value>维修站：</value>
+  </data>
+  <data name="AcSettings_General_ReplaysAutosave" xml:space="preserve">
+    <value>自动保存回放：</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Audio" xml:space="preserve">
+    <value>音频:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Condition" xml:space="preserve">
+    <value>条件：</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_CreateNew" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Enabled" xml:space="preserve">
+    <value>开启</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_RearViewMirror" xml:space="preserve">
+    <value>后视镜</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_UpdatePresetsDuringTheRace" xml:space="preserve">
+    <value>如果在比赛中更改了设置，则同步更新至预设</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Video" xml:space="preserve">
+    <value>视频：</value>
+  </data>
+  <data name="AcSettings_Python_EnablePythonApps" xml:space="preserve">
+    <value>打开Python apps</value>
+  </data>
+  <data name="AcSettings_Python_KeepDeveloperAppsFlagWithAppsPresets" xml:space="preserve">
+    <value>一直保留预装APP开发者标签</value>
+  </data>
+  <data name="AcSettings_System_VRCameraShake" xml:space="preserve">
+    <value>VR相机抖动</value>
+  </data>
+  <data name="AcSettings_Video_PerformanceHit" xml:space="preserve">
+    <value>性能指标：</value>
+  </data>
+  <data name="AcSettings_Video_PerformanceHit_Tooltip" xml:space="preserve">
+    <value>近似值，可能与实际情况不同。以1920×1080解析度测量。</value>
+  </data>
+  <data name="AcSettings_Video_TimeLimitedBenchmark" xml:space="preserve">
+    <value>限时性能测试</value>
+  </data>
+  <data name="AcSettings_Video_TimeLimitedBenchmark_Tooltip" xml:space="preserve">
+    <value>如果你需要对比设置，可以用它来获得类似的效果</value>
+  </data>
+  <data name="ContentTools_BatchPreviewsUpdater_AutoSelect" xml:space="preserve">
+    <value>自动选择</value>
+  </data>
+  <data name="ContentTools_BatchPreviewsUpdater_SomeErrorHappened" xml:space="preserve">
+    <value>发生了一些错误</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_More" xml:space="preserve">
+    <value>更多…</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_MoreDetails" xml:space="preserve">
+    <value>详情:</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_NoIssuesFound" xml:space="preserve">
+    <value>未发现问题</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Compress" xml:space="preserve">
+    <value>压缩</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Compressed" xml:space="preserve">
+    <value>已压缩</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_CompressionAlgorithm" xml:space="preserve">
+    <value>压缩算法：</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Decompress" xml:space="preserve">
+    <value>解压缩</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Description" xml:space="preserve">
+    <value>Content Manager将扫描所有模型和纹理文件（KN5和DDS文件）。这些文件很容易压缩，有时甚至可以多次压缩。如soundbanks音档或PNG图像这样的文件则无压缩必要，这些格式已经有适当的压缩，而且它只会稍微减慢AC加载速度。[br][br]推荐使用LZX压缩法。它在加载过程中会增加一些CPU的负载，但CPU会在等待磁碟获取数据的过程中閒置，需要读取的数据也会少很多。[br][br]当然，[b]应该不会对帧率有任何影响[/b]，因为AC不会动态载入资源。</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_NotCompressed" xml:space="preserve">
+    <value>未压缩</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Original" xml:space="preserve">
+    <value>原始档</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Path" xml:space="preserve">
+    <value>路径</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Ratio" xml:space="preserve">
+    <value>压缩比</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_ViewInExplorer" xml:space="preserve">
+    <value>在资源管理器中浏览</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu" xml:space="preserve">
+    <value>添加快捷方式到启动菜单？</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu_Tooltip" xml:space="preserve">
+    <value>使用它, CM将能够在Windows 8、8.1或10中使用系统通知。</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_AppJustHasBeenUpdatedPleaseReview" xml:space="preserve">
+    <value>应用程序已更新。请检查这些设置是否仍然有效:</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_Create" xml:space="preserve">
+    <value>新建(推荐)</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_Delete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_InstallRecommendedPlugins" xml:space="preserve">
+    <value>安装推荐插件</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_InstallSomePlugins" xml:space="preserve">
+    <value>你还想安装更多插件吗?</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_WhatsYourName" xml:space="preserve">
+    <value>你叫什么名字？</value>
+  </data>
+  <data name="Dialogs_CarUpdatePreviewsDialog_Done" xml:space="preserve">
+    <value>完成</value>
+  </data>
+  <data name="Dialogs_GameDialog_GameCrashed" xml:space="preserve">
+    <value>游戏崩溃了</value>
+  </data>
+  <data name="Dialogs_GameDialog_TotalTime" xml:space="preserve">
+    <value>总耗时：</value>
+  </data>
+  <data name="Dialogs_ImageEditor_CantLoadImage" xml:space="preserve">
+    <value>无法加载图片</value>
+  </data>
+  <data name="Dialogs_ImageEditor_UseMouseWheelOrKeysToAdjust" xml:space="preserve">
+    <value>使用鼠标滚轮或+/−键来调整区域的大小。按住Ctrl或Shift键调整精度。</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_DeleteTag" xml:space="preserve">
+    <value>清除标签…</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_NameOfTheTag_Tooltip" xml:space="preserve">
+    <value>标签名称</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_Names" xml:space="preserve">
+    <value>名称：</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_Names_Tooltip" xml:space="preserve">
+    <value>将名字写在这里，每行一个名字</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_NewTag" xml:space="preserve">
+    <value>新标签</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_RestoreDeleted" xml:space="preserve">
+    <value>恢复已删除</value>
+  </data>
+  <data name="Drive_OnlineServer_CarIsMissing" xml:space="preserve">
+    <value>车辆丢失</value>
+  </data>
+  <data name="Drive_OnlineServer_GetLinkToStats" xml:space="preserve">
+    <value>获取统计链接</value>
+  </data>
+  <data name="Drive_OnlineServer_JoinTSServer" xml:space="preserve">
+    <value>加入TS服务</value>
+  </data>
+  <data name="Drive_OnlineServer_MaximumOfContacts_Tooltip" xml:space="preserve">
+    <value>每公里最大接触量</value>
+  </data>
+  <data name="Drive_OnlineServer_ResetStats" xml:space="preserve">
+    <value>重置统计</value>
+  </data>
+  <data name="Drive_OnlineServer_ServerIsEmpty" xml:space="preserve">
+    <value>服务器是空的</value>
+  </data>
+  <data name="Drive_OnlineServer_SkinForBooking" xml:space="preserve">
+    <value>预定涂装：</value>
+  </data>
+  <data name="Drive_OnlineServer_Stop" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="Drive_OnlineServer_TrackIsMissing" xml:space="preserve">
+    <value>赛道丢失</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForAnyCar" xml:space="preserve">
+    <value>等候任何车辆</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForAnyCar_Tooltip" xml:space="preserve">
+    <value>直到有其它车的時候再加入</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForThisCar" xml:space="preserve">
+    <value>等候任何车辆这辆车</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForThisCar_Tooltip" xml:space="preserve">
+    <value>等到有了这款车的时候再加入</value>
+  </data>
+  <data name="Drive_Quick_CantStartTheRace" xml:space="preserve">
+    <value>无法开始比赛</value>
+  </data>
+  <data name="Drive_Quick_CarSpecificFanatecSettings" xml:space="preserve">
+    <value>特定车辆的Fanatec设置</value>
+  </data>
+  <data name="Drive_Quick_ChangeCarToRandom" xml:space="preserve">
+    <value>随机车辆</value>
+  </data>
+  <data name="Drive_Quick_ChangeSkinToRandom" xml:space="preserve">
+    <value>随机涂装</value>
+  </data>
+  <data name="Drive_Quick_ChangeTrackToRandom" xml:space="preserve">
+    <value>随机赛道</value>
+  </data>
+  <data name="Drive_Quick_DisableLEDsAndDisplay" xml:space="preserve">
+    <value>停用LED和提示</value>
+  </data>
+  <data name="Drive_Quick_RandomizeEverything" xml:space="preserve">
+    <value>随机所有设定</value>
+  </data>
+  <data name="Drive_Quick_SetRandomTemperature" xml:space="preserve">
+    <value>设置为随机温度</value>
+  </data>
+  <data name="Drive_Quick_SetRandomTime" xml:space="preserve">
+    <value>
+设置为随机时间</value>
+  </data>
+  <data name="Drive_Quick_SetRandomWeather" xml:space="preserve">
+    <value>设置为随机温度天气</value>
+  </data>
+  <data name="Drive_Quick_ShowCurrentGearOnly" xml:space="preserve">
+    <value>仅显示当前档位</value>
+  </data>
+  <data name="Drive_Quick_StartingTheRace" xml:space="preserve">
+    <value>开始比赛…</value>
+  </data>
+  <data name="Drive_Quick_YesAndFixIt" xml:space="preserve">
+    <value>好的，修复它</value>
+  </data>
+  <data name="Lists_ToolsListPage_Launch" xml:space="preserve">
+    <value>启动</value>
+  </data>
+  <data name="MainWindow_ContentUpdate_ViewDetails" xml:space="preserve">
+    <value>浏览详情</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_RemoveAllSessionsWithMissingContent_Tooltip" xml:space="preserve">
+    <value>删除所有丢失内容的赛程</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_RemoveMissing" xml:space="preserve">
+    <value>移除丢失</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_SessionsNotFound" xml:space="preserve">
+    <value>找不到赛程</value>
+  </data>
+  <data name="RaceGridEditor_AILimitationsAreActive_Tooltip" xml:space="preserve">
+    <value>AI限制已启用</value>
+  </data>
+  <data name="Selected_CarPage_ClearStatsFromThisCar" xml:space="preserve">
+    <value>清除这辆车的统计数据</value>
+  </data>
+  <data name="Selected_CarPage_New_PowerGraph" xml:space="preserve">
+    <value>功率图：</value>
+  </data>
+  <data name="Selected_CarPage_New_Property_Tooltip" xml:space="preserve">
+    <value>[i]你知道吗？[/i]您可以用鼠标右键单击某个属性以按其过滤汽车。</value>
+  </data>
+  <data name="Selected_CarPage_ReplaceTyres" xml:space="preserve">
+    <value>更换轮胎</value>
+  </data>
+  <data name="Selected_CarSetupPage_DefaultValue" xml:space="preserve">
+    <value>默认值:</value>
+  </data>
+  <data name="Selected_CarSetupPage_Unknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="Selected_ClearNotes" xml:space="preserve">
+    <value>清理记录</value>
+  </data>
+  <data name="Settings_Appearance_BlurButtonsBackground" xml:space="preserve">
+    <value>模糊背景按钮 (可能会降低性能)</value>
+  </data>
+  <data name="Settings_Appearance_BlurImageViewersBackground" xml:space="preserve">
+    <value>模糊图像查看的背景</value>
+  </data>
+  <data name="Settings_Appearance_BlurImageViewersBackground_Tooltip" xml:space="preserve">
+    <value>仅工作于Windows 7或Windows 10</value>
+  </data>
+  <data name="Settings_Appearance_DisableHardwareAccelerationForUI" xml:space="preserve">
+    <value>为UI界面禁用硬件加速</value>
+  </data>
+  <data name="Settings_Appearance_DisableWindowsTransparency" xml:space="preserve">
+    <value>禁用窗口透明度</value>
+  </data>
+  <data name="Settings_Appearance_DisableWindowsTransparency_Tooltip" xml:space="preserve">
+    <value>可能提高性能或解决Wine的问题</value>
+  </data>
+  <data name="Settings_Appearance_DoNotInterfereWithWindows" xml:space="preserve">
+    <value>不影响窗口的位置和大小</value>
+  </data>
+  <data name="Settings_Appearance_ForceFullscreenMode" xml:space="preserve">
+    <value>强制全屏显示</value>
+  </data>
+  <data name="Settings_Appearance_HideButtonsInImageViewers" xml:space="preserve">
+    <value>隐藏图像浏览器的按钮（鼠标移至顶部可恢复显示）</value>
+  </data>
+  <data name="Settings_Appearance_ImageViewer" xml:space="preserve">
+    <value>图像浏览器：</value>
+  </data>
+  <data name="Settings_Appearance_OpenSkinsAndSetupsNewWindow" xml:space="preserve">
+    <value>在新窗口中打开涂装和设置列表</value>
+  </data>
+  <data name="Settings_Appearance_SemiTransparentToolsInCustomShowroom" xml:space="preserve">
+    <value>半透明工具在自定义展示厅和DirectX-特定工具中</value>
+  </data>
+  <data name="Settings_Appearance_ShowBackButton" xml:space="preserve">
+    <value>在主页窗口中显示返回按钮</value>
+  </data>
+  <data name="Settings_Appearance_SingleImage" xml:space="preserve">
+    <value>单幅图像</value>
+  </data>
+  <data name="Settings_Appearance_StickMainMenuAtTheTop" xml:space="preserve">
+    <value>在全屏模式下，将主菜单贴在顶部</value>
+  </data>
+  <data name="Settings_Appearance_YouCanAccessDisabledLinks" xml:space="preserve">
+    <value>你可以通过窗口按钮旁边的菜单或者热键来访问被禁用的链接。</value>
+  </data>
+  <data name="Settings_Content_CarSkins" xml:space="preserve">
+    <value>汽车涂装：</value>
+  </data>
+  <data name="Settings_Content_DisplaySkinIDsInsteadOfNames" xml:space="preserve">
+    <value>显示皮肤ID而不是名称</value>
+  </data>
+  <data name="Settings_Content_DownloadingContent" xml:space="preserve">
+    <value>下载内容：</value>
+  </data>
+  <data name="Settings_Content_EMail" xml:space="preserve">
+    <value>电子邮件</value>
+  </data>
+  <data name="Settings_Content_SignedAs" xml:space="preserve">
+    <value>签名：</value>
+  </data>
+  <data name="Settings_Content_TemporaryFilesLocation" xml:space="preserve">
+    <value>临时文件位置:</value>
+  </data>
+  <data name="Settings_CustomShowroom_Previews" xml:space="preserve">
+    <value>预览:</value>
+  </data>
+  <data name="Settings_Drive_HibernateCMWhileRacing" xml:space="preserve">
+    <value>游戏时将CM进入休眠模式</value>
+  </data>
+  <data name="Settings_Drive_MonitorFPS" xml:space="preserve">
+    <value>在比赛中监测FPS</value>
+  </data>
+  <data name="Settings_Drive_MonitorFPS_Tooltip" xml:space="preserve">
+    <value>你将在此看到相关规则[b]Settings/Assetto Corsa/Video[/b]</value>
+  </data>
+  <data name="Settings_Drive_RHMLocation" xml:space="preserve">
+    <value>RHM 地点:</value>
+  </data>
+  <data name="Settings_General_DontShowAgainInDialogs" xml:space="preserve">
+    <value>对话框中的“不再显示”:</value>
+  </data>
+  <data name="Settings_General_LaunchSteamAutomatically" xml:space="preserve">
+    <value>当Content Manager启动时，自动启动Steam</value>
+  </data>
+  <data name="Settings_General_Open" xml:space="preserve">
+    <value>打开</value>
+  </data>
+  <data name="Settings_General_OpenAppsDataFolder" xml:space="preserve">
+    <value>打开应用文件夹</value>
+  </data>
+  <data name="Settings_General_OpenLogsFolder" xml:space="preserve">
+    <value>打开日志文件夹</value>
+  </data>
+  <data name="Settings_LapTimes_ClearCache" xml:space="preserve">
+    <value>清除缓存</value>
+  </data>
+  <data name="Settings_Locale_TemperatureUnits" xml:space="preserve">
+    <value>温度单位:</value>
+  </data>
+  <data name="Settings_Locale_Use12HourClock" xml:space="preserve">
+    <value>使用12小时制</value>
+  </data>
+  <data name="Settings_Locale_UseImperialUnits" xml:space="preserve">
+    <value>使用英制单位</value>
+  </data>
+  <data name="Settings_Online_AutoRefreshSelected" xml:space="preserve">
+    <value>自动刷新设置：</value>
+  </data>
+  <data name="Settings_Online_FixNames_Tooltip" xml:space="preserve">
+    <value>更改后可能需要刷新</value>
+  </data>
+  <data name="Settings_Online_ManageDriversTags" xml:space="preserve">
+    <value>管理驾驶员标签</value>
+  </data>
+  <data name="Settings_Online_ManageLists" xml:space="preserve">
+    <value>管理列表</value>
+  </data>
+  <data name="Settings_Online_Passwords" xml:space="preserve">
+    <value>密码：</value>
+  </data>
+  <data name="Settings_Online_PresetsFolder" xml:space="preserve">
+    <value>预设文件夹</value>
+  </data>
+  <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
+    <value>如果缺少内容，则显示扩展信息</value>
+  </data>
+  <data name="Settings_Sharing_Content" xml:space="preserve">
+    <value>内容：</value>
+  </data>
+  <data name="Settings_Sharing_Remove" xml:space="preserve">
+    <value>移除</value>
+  </data>
+  <data name="TrackStateEditor_Description" xml:space="preserve">
+    <value>描述：</value>
+  </data>
+  <data name="TrackStateEditor_GripRandomization" xml:space="preserve">
+    <value>控制随机化</value>
+  </data>
+  <data name="TrackStateEditor_GripTransfer" xml:space="preserve">
+    <value>控制传输</value>
+  </data>
+  <data name="TrackStateEditor_InitialGrip" xml:space="preserve">
+    <value>初始抓地力</value>
+  </data>
+  <data name="Main_Workshop" xml:space="preserve">
+    <value>工坊</value>
+  </data>
+  <data name="MainWindow_AddDownload_Message" xml:space="preserve">
+    <value>输入URL下载</value>
+  </data>
+  <data name="MainWindow_AddDownload_Comment" xml:space="preserve">
+    <value>或者，复制一个链接或文件，并按Ctrl+V在内容管理器。</value>
+  </data>
+  <data name="MainWindow_AddDownload_Title" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="MainWindow_AddDownload_MenuItem" xml:space="preserve">
+    <value>正在下载…</value>
+  </data>
+  <data name="MainWindow_InstallFromAFile_MenuItem" xml:space="preserve">
+    <value>从文件夹中安装…</value>
+  </data>
+  <data name="DownloadList_PluginsLoadFailed" xml:space="preserve">
+    <value>无法加载插件列表</value>
+  </data>
+  <data name="DownloadList_7ZipComment" xml:space="preserve">
+    <value>使用7-Zip插件，您可以提高安装性能并允许CM解压缩所有类型的档案：</value>
+  </data>
+  <data name="DownloadList_Password" xml:space="preserve">
+    <value>密码：</value>
+  </data>
+  <data name="DownloadList_DetectionFailed" xml:space="preserve">
+    <value>应用无法检测到要在此处安装的任何内容。 您要手动安装吗？</value>
+  </data>
+  <data name="DownloadList_ScanAgain" xml:space="preserve">
+    <value>重新扫描</value>
+  </data>
+  <data name="DownloadList_Retry" xml:space="preserve">
+    <value>重试</value>
+  </data>
+  <data name="DownloadList_ExtraOptions" xml:space="preserve">
+    <value>高级选项：</value>
+  </data>
+  <data name="DownloadList_Failed" xml:space="preserve">
+    <value>失败</value>
+  </data>
+  <data name="DownloadList_NothingFound" xml:space="preserve">
+    <value>没有找到</value>
+  </data>
+  <data name="DownloadList_Cancelled" xml:space="preserve">
+    <value>已取消</value>
+  </data>
+  <data name="DownloadList_Cancelling" xml:space="preserve">
+    <value>取消...</value>
+  </data>
+  <data name="DownloadList_Installing" xml:space="preserve">
+    <value>安装中</value>
+  </data>
+  <data name="DownloadList_Install" xml:space="preserve">
+    <value>安装</value>
+  </data>
+  <data name="DownloadList_Resume" xml:space="preserve">
+    <value>继续</value>
+  </data>
+  <data name="DownloadList_Pause" xml:space="preserve">
+    <value>暂停</value>
+  </data>
+  <data name="DownloadList_Restart" xml:space="preserve">
+    <value>重新开始</value>
+  </data>
+  <data name="DownloadList_Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="DownloadList_From" xml:space="preserve">
+    <value>来自：</value>
+  </data>
+  <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
+    <value>么有活动下载</value>
   </data>
 </root>
