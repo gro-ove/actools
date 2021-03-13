@@ -403,7 +403,7 @@ window.AC.setLinks = function (links){ return window.AC._setLinks(JSON.stringify
             }
 
             protected override JsProxyBase MakeProxy() {
-                throw new NotImplementedException();
+                return new RaceUApiProxy(this);
             }
         }
 

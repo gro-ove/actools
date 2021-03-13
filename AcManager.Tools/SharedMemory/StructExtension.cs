@@ -5,7 +5,7 @@ using AcManager.Tools.AcPlugins.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.SharedMemory {
-    internal static class StructExtension {
+    public static class StructExtension {
         [Pure, NotNull]
         public static T ToStruct<T>(this MemoryMappedFile file, byte[] buffer) {
             using (var stream = file.CreateViewStream()) {

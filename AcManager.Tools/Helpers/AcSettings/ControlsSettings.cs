@@ -175,8 +175,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     var index = name.IndexOf('(');
                     if (index != -1 && name.EndsWith(")")) {
                         description = CapitalizeFirst(name.Substring(index + 1, name.Length - index - 2)).TrimEnd('.');
-                        name = name.Substring(0, index);
+                        name = name.Substring(0, index).TrimStart();
                     }
+
+                    var flags = k.GetStrings(p.Key + "_FLAGS_");
+                    var canBeHeld = flags.ArrayContains("canBeHeld"); // TODO
 
                     list.Add(new CustomButtonEntryCombined(p.Key, name, description,
                             keys.Count > 0 ? keys.LastOrDefault() : (Keys?)null, modifiers));

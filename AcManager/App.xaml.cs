@@ -634,7 +634,7 @@ namespace AcManager {
         private static async Task CheckFaultTolerantHeap() {
             try {
                 await Task.Delay(500);
-                if (ValuesStorage.Get(".fth.shown", false) && FaultTolerantHeapFix.Check()) {
+                if (ValuesStorage.Get(".fth.shown2", false) && FaultTolerantHeapFix.Check()) {
                     NonfatalError.NotifyBackground("Performance issue detected",
                             "Assetto Corsa performance is negatively affected by FTH. Content Manager can try to fix it.",
                             solutions: new[] {

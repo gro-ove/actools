@@ -38,12 +38,26 @@ namespace AcManager.Tools.Miscellaneous {
     public static class OAuth {
         private const string SubUrl = "Temporary_Listen_Addresses/Cm_Auth";
 
+        private static string DefaultResponseCallback(bool success) {
+            return string.Format($@"<!DOCTYPE html><html><head><title>Content Manager</title><base href=""{InternalUtils.MainApiDomain}/"">
+<meta http-equiv=""content-type"" content=""text/html; charset=UTF-8""><link rel=""stylesheet"" href=""/s/style.css"" />
+<link rel=""shortcut icon"" type=""image/x-icon"" href=""/app/icon.ico"" sizes=""16x16"" />
+<link rel=""icon"" type=""image/x-icon"" href=""/app/icon_48.png"" sizes=""16x16"" />
+<link rel=""apple-touch-icon-precomposed"" href=""/app/icon_96.png"" /></head><body><div class=""background""></div>
+<div class=""header""><a href=""/""><img src=""/app/icon_48.png"">Content Manager</a></div><div class=""body_main"">
+<h1>{{0}}</h1><p>{{1}}</p></div></body></html>",
+                    success ? "Authorized" : "Failed to authorize",
+                    success
+                            ? "Authorized! Now, please, close this page and go back to  CM."
+                            : "Authorization failed. Please, close this page and go back to CM.");
+        }
+
         [ItemNotNull]
         public static Task<OAuthCode> GetCode(
                 string name, string requestUrl, [CanBeNull] string noRedirectUrl,
                 [CanBeNull] string successCodeRegex = @"Success code=(\S+)", string redirectUrlKey = "redirect_uri",
                 string responseError = "error", string responseCode = "code",
-                string description = null, string title = null,
+                string description = null, string title = null, Func<bool, string> responseCallback = null,
                 CancellationToken cancellation = default) {
             Logging.Debug("Name: " + name);
             Logging.Debug("Request URL: " + requestUrl);
@@ -81,7 +95,7 @@ namespace AcManager.Tools.Miscellaneous {
                         tcs.TrySetResult(new OAuthCode(false, s, redirectUri));
                     }
                     DisposeLater();
-                }));
+                }, responseCallback ?? DefaultResponseCallback));
 
                 cancellation.Register(() => {
                     Logging.Debug("Cancellation token");
@@ -232,11 +246,13 @@ namespace AcManager.Tools.Miscellaneous {
         private class IndexPageController : WebApiController {
             private readonly string _errorKey, _codeKey;
             private readonly Action<string, string> _callback;
+            private readonly Func<bool, string> _responseCallback;
 
-            public IndexPageController(string errorKey, string codeKey, Action<string, string> callback) {
+            public IndexPageController(string errorKey, string codeKey, Action<string, string> callback, Func<bool, string> responseCallback) {
                 _errorKey = errorKey;
                 _codeKey = codeKey;
                 _callback = callback;
+                _responseCallback = responseCallback;
             }
 
             [WebApiHandler(HttpVerbs.Get, @"/Temporary_Listen_Addresses/*")]
@@ -247,18 +263,7 @@ namespace AcManager.Tools.Miscellaneous {
                 _callback(error, code);
 
                 try {
-                    var buffer =
-                            Encoding.UTF8.GetBytes(string.Format($@"<!DOCTYPE html><html><head><title>Content Manager</title><base href=""{InternalUtils.MainApiDomain}/"">
-<meta http-equiv=""content-type"" content=""text/html; charset=UTF-8""><link rel=""stylesheet"" href=""/s/style.css"" />
-<link rel=""shortcut icon"" type=""image/x-icon"" href=""/app/icon.ico"" sizes=""16x16"" />
-<link rel=""icon"" type=""image/x-icon"" href=""/app/icon_48.png"" sizes=""16x16"" />
-<link rel=""apple-touch-icon-precomposed"" href=""/app/icon_96.png"" /></head><body><div class=""background""></div>
-<div class=""header""><a href=""/""><img src=""/app/icon_48.png"">Content Manager</a></div><div class=""body_main"">
-<h1>{0}</h1><p>{1}</p></div></body></html>",
-                                    success ? "Authorized" : "Failed to authorize",
-                                    success
-                                            ? "Authorized! Now, please, close this page and go back to  CM."
-                                            : "Authorization failed. Please, close this page and go back to CM."));
+                    var buffer = Encoding.UTF8.GetBytes(_responseCallback(success));
                     context.Response.ContentType = "text/html; charset=utf-8";
                     context.Response.OutputStream.Write(buffer, 0, buffer.Length);
                     return true;

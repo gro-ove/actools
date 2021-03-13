@@ -162,7 +162,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 IsReloading = false;
                 Ini.Save(Filename);
             } catch (Exception e) {
-                NonfatalError.Notify(ToolsStrings.AcSettings_CannotSave, ToolsStrings.AcSettings_CannotSave_Commentary, e);
+                if (Path.GetFileName(Filename) != "assetto_corsa.ini") {
+                    NonfatalError.Notify(ToolsStrings.AcSettings_CannotSave, ToolsStrings.AcSettings_CannotSave_Commentary, e);
+                }
             } finally {
                 IsSaving = false;
                 _hasToSave = false;
@@ -180,7 +182,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 IgnoreChangesForAWhile();
                 Ini.Save(Filename);
             } catch (Exception e) {
-                NonfatalError.Notify(ToolsStrings.AcSettings_CannotSave, ToolsStrings.AcSettings_CannotSave_Commentary, e);
+                if (Path.GetFileName(Filename) != "assetto_corsa.ini") {
+                    NonfatalError.Notify(ToolsStrings.AcSettings_CannotSave, ToolsStrings.AcSettings_CannotSave_Commentary, e);
+                }
             } finally {
                 IsSaving = false;
                 _hasToSave = false;

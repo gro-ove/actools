@@ -24,6 +24,9 @@ namespace AcManager.Tools.SharedMemory {
             Instance = new AcSharedMemory();
         }
 
+        public event EventHandler Tick;
+        public event EventHandler Connect;
+
         private Timer _timer;
 
         private AcSharedMemory() {
@@ -277,6 +280,7 @@ namespace AcManager.Tools.SharedMemory {
 
                     var staticInfo = _staticInfoFile.ToStruct<AcSharedStaticInfo>(AcSharedStaticInfo.Buffer);
                     Shared = new AcShared(physics, graphics, staticInfo);
+                    Tick?.Invoke(this, EventArgs.Empty);
                 } else if (_gameProcess?.HasExitedSafe() ?? (DateTime.Now - _previousPacketTime).TotalSeconds > 1d) {
                     IsPaused = false;
                     Status = AcSharedMemoryStatus.Connected;
@@ -317,6 +321,7 @@ namespace AcManager.Tools.SharedMemory {
                 _staticInfoFile = MemoryMappedFile.OpenExisting(@"Local\acpmf_static");
 
                 Status = AcSharedMemoryStatus.Connected;
+                Connect?.Invoke(this, EventArgs.Empty);
                 return true;
             } catch (FileNotFoundException) {
                 Status = AcSharedMemoryStatus.Disconnected;
@@ -325,23 +330,29 @@ namespace AcManager.Tools.SharedMemory {
         }
 
         private void Update(object sender, ElapsedEventArgs e) {
-            switch (Status) {
-                case AcSharedMemoryStatus.Disconnected:
-                    if (Reconnect()) {
+            try {
+                switch (Status) {
+                    case AcSharedMemoryStatus.Disconnected:
+                        if (Reconnect()) {
+                            UpdateData();
+                        }
+                        break;
+
+                    case AcSharedMemoryStatus.Connected:
+                    case AcSharedMemoryStatus.Live:
                         UpdateData();
-                    }
-                    break;
+                        break;
 
-                case AcSharedMemoryStatus.Connected:
-                case AcSharedMemoryStatus.Live:
-                    UpdateData();
-                    break;
+                    case AcSharedMemoryStatus.Connecting:
+                        break;
 
-                case AcSharedMemoryStatus.Connecting:
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            } catch (Exception ex) {
+                #if DEBUG
+                    Logging.Warning("ERROR: " + ex);
+                #endif
             }
         }
 

@@ -21,9 +21,9 @@ namespace LicensePlates {
         private readonly List<PlateValueBase> _inputParams;
         private readonly Closure _closure;
         private MagickImage _textLayer;
+        private MagickImage _textFlatLayer;
 
         private readonly Dictionary<string, MagickImage> _images = new Dictionary<string, MagickImage>();
-
 
         private MagickImage LoadImage(string filename) {
             filename = filename.ToLowerInvariant();
@@ -86,6 +86,7 @@ namespace LicensePlates {
             public string GetFileName(string filename) => Path.GetFileName(filename);
             public string GetFileNameWithoutExtension(string filename) => Path.GetFileNameWithoutExtension(filename);
         }
+
         // ReSharper restore UnusedMember.Local
 
         private static object DefaultValue(DynValue value) {
@@ -99,9 +100,7 @@ namespace LicensePlates {
         }
 
         private void BindState() {
-            _state.Globals["showMsg"] = new Action<string>(m => {
-                MessageBox.Show(m);
-            });
+            _state.Globals["showMsg"] = new Action<string>(m => { MessageBox.Show(m); });
 
             _state.Globals["fs"] = new MoonSharpFsHelper();
             _state.Globals["path"] = new MoonSharpPathHelper();
@@ -117,13 +116,17 @@ namespace LicensePlates {
                         : new InputSelectValue(name, DefaultValue(defaultValue), values.Values.Select(x => new KeyValuePair<string, string>(x, x)).ToList()));
             });
 
-            _state.Globals["defineText"] = new Action<string, int, int, DynValue>((name, length, lengthMode, defaultValue) => {
-                _inputParams.Add(new InputTextValue(name, DefaultValue(defaultValue), length, (InputLength)lengthMode));
-            });
+            _state.Globals["defineText"] =
+                    new Action<string, int, int, DynValue>(
+                            (name, length, lengthMode, defaultValue) => {
+                                _inputParams.Add(new InputTextValue(name, DefaultValue(defaultValue), length, (InputLength)lengthMode));
+                            });
 
-            _state.Globals["defineNumber"] = new Action<string, int, int, int, DynValue>((name, length, from, to, defaultValue) => {
-                _inputParams.Add(new InputNumberValue(name, DefaultValue(defaultValue), length, from, to));
-            });
+            _state.Globals["defineNumber"] =
+                    new Action<string, int, int, int, DynValue>(
+                            (name, length, from, to, defaultValue) => {
+                                _inputParams.Add(new InputNumberValue(name, DefaultValue(defaultValue), length, from, to));
+                            });
         }
 
         private void RebindState() {
@@ -133,23 +136,24 @@ namespace LicensePlates {
 
             _state.Globals["measureText"] = new Func<string, double, double, int?, TextSize>(GetTextSize);
             _state.Globals["drawText"] = new Func<string, double, double, int?, TextSize>(DrawText);
+            _state.Globals["drawFlatText"] = new Func<string, double, double, int?, TextSize>(DrawFlatText);
         }
 
-        private TextSize TextFn(string v, double x, double y, int? position, bool measureOnly) {
+        private TextSize TextFn(MagickImage layer, string v, double x, double y, int? position, bool measureOnly) {
             EnsureTextLayerIsCreated();
 
             var current = Environment.CurrentDirectory;
             try {
                 Environment.CurrentDirectory = _directory;
 
-                _textLayer.Settings.FillColor = new MagickColor(_textParams.Color);
-                _textLayer.Settings.Font = _textParams.Font;
-                _textLayer.Settings.FontPointsize = _textParams.Size * _plateParams.SizeMultipler;
-                _textLayer.Settings.FontWeight = (FontWeight)_textParams.Weight;
-                _textLayer.Settings.TextKerning = _textParams.Kerning * _plateParams.SizeMultipler;
+                layer.Settings.FillColor = new MagickColor(_textParams.Color);
+                layer.Settings.Font = _textParams.Font;
+                layer.Settings.FontPointsize = _textParams.Size * _plateParams.SizeMultipler;
+                layer.Settings.FontWeight = (FontWeight)_textParams.Weight;
+                layer.Settings.TextKerning = _textParams.Kerning * _plateParams.SizeMultipler;
 
                 if (_textParams.LineSpacing.HasValue) {
-                    _textLayer.Settings.TextInterlineSpacing = _textParams.LineSpacing.Value * _plateParams.SizeMultipler;
+                    layer.Settings.TextInterlineSpacing = _textParams.LineSpacing.Value * _plateParams.SizeMultipler;
                 }
 
                 var spaces = _textParams.GetSpaces()?.ToArray() ?? new double[0];
@@ -157,7 +161,7 @@ namespace LicensePlates {
                     spaces[i] = spaces[i] * _plateParams.SizeMultipler;
                 }
 
-                return DrawText(_textLayer, v, spaces, x * _plateParams.SizeMultipler, y * _plateParams.SizeMultipler,
+                return DrawText(layer, v, spaces, x * _plateParams.SizeMultipler, y * _plateParams.SizeMultipler,
                         position.HasValue ? (Gravity)position : Gravity.Northwest, measureOnly);
             } finally {
                 Environment.CurrentDirectory = current;
@@ -165,11 +169,20 @@ namespace LicensePlates {
         }
 
         private TextSize GetTextSize(string v, double x, double y, int? position) {
-            return TextFn(v, x, y, position, true);
+            return TextFn(_textLayer, v, x, y, position, true);
         }
 
         private TextSize DrawText(string v, double x, double y, int? position) {
-            return TextFn(v, x, y, position, false);
+            return TextFn(_textLayer, v, x, y, position, false);
+        }
+
+        private TextSize DrawFlatText(string v, double x, double y, int? position) {
+            EnsureTextLayerIsCreated();
+            if (_textFlatLayer == null) {
+                _textFlatLayer = new MagickImage(MagickColors.Transparent, _textLayer.Width, _textLayer.Height);
+                _textFlatLayer.Evaluate(Channels.All, EvaluateOperator.Set, 0d);
+            }
+            return TextFn(_textFlatLayer, v, x, y, position, false);
         }
 
         public LicensePlatesStyle(string directory) {
@@ -235,7 +248,7 @@ namespace LicensePlates {
 
         public MagickImage CreateDiffuseMap(bool previewMode) {
             EnsureTextLayerIsActual();
-            return DiffuseMap(_textLayer, Path.Combine(_directory, _plateParams.Background), _plateParams.Light, previewMode);
+            return DiffuseMap(_textLayer, _textFlatLayer, Path.Combine(_directory, _plateParams.Background), _plateParams.Light, previewMode);
         }
 
         public MagickImage CreateNormalsMap(bool previewMode) {
@@ -379,7 +392,7 @@ namespace LicensePlates {
             }
         }
 
-        private MagickImage DiffuseMap(MagickImage textLayer, string backgroundFile, double lightDirection, bool previewMode) {
+        private MagickImage DiffuseMap(MagickImage textLayer, MagickImage textFlatLayer, string backgroundFile, double lightDirection, bool previewMode) {
             var image = LoadImage(backgroundFile).Clone();
             if (_disposed) return image;
 
@@ -396,8 +409,13 @@ namespace LicensePlates {
             if (_disposed) return image;
             image.Composite(textLayer, 0, 0, CompositeOperator.Over);
 
+            if (_disposed) return image;
+            if (textFlatLayer != null) {
+                image.Composite(textFlatLayer, 0, 0, CompositeOperator.Over);
+            }
+
             var textAlpha = textLayer.Clone();
-           // textAlpha.HasAlpha = false;
+            // textAlpha.HasAlpha = false;
             // textAlpha.FloodFill(); = false;
             // textAlpha.Negate();
             // textAlpha.Level(255, 240);
@@ -501,6 +519,7 @@ namespace LicensePlates {
         public class PlateParams {
             [CanBeNull]
             public int[] Size;
+
             public double SizeMultipler = 1.0;
             public string Background = "background.png";
             public string Normals = "nm.png";
@@ -511,6 +530,7 @@ namespace LicensePlates {
         public class TextParams {
             [CanBeNull]
             public object Spaces = null;
+
             public string Font = "default.ttf";
             public double Size = 210d;
             public int Weight = (int)FontWeight.Normal;
@@ -530,6 +550,9 @@ namespace LicensePlates {
 
             _textLayer?.Dispose();
             _textLayer = null;
+
+            _textFlatLayer?.Dispose();
+            _textFlatLayer = null;
 
             foreach (var image in _images.Values) {
                 image.Dispose();

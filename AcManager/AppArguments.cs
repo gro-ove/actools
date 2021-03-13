@@ -15,43 +15,49 @@ namespace AcManager {
     public static class AppArguments {
         private static Dictionary<AppFlag, string> _args;
 
-        public static IReadOnlyList<string> Values { get; private set; }
+        public static List<string> Values { get; private set; }
 
         public static void Initialize(IEnumerable<string> args) {
             var list = args.ToList();
 
             _args = list.TakeWhile(x => x != "-")
-                .Where(x => x.StartsWith("--"))
-                .Select(x => x.Split(new[] { '=' }, 2))
-                .Select(x => new {
-                    Key = ArgStringToFlag(x[0]),
-                    Value = x.Length == 2 ? x[1] : null
-                })
-                .Where(x => x.Key != null)
-                .ToDictionary(x => x.Key ?? (AppFlag)0, x => x.Value);
+                    .Where(x => x.StartsWith("--"))
+                    .Select(x => x.Split(new[] { '=' }, 2))
+                    .Select(x => new {
+                        Key = ArgStringToFlag(x[0]),
+                        Value = x.Length == 2 ? x[1] : null
+                    })
+                    .Where(x => x.Key != null)
+                    .ToDictionary(x => x.Key ?? (AppFlag)0, x => x.Value);
 
             Values = list.Where(x => !x.StartsWith("-"))
-                         .Union(list.SkipWhile(x => x != "-").Skip(1).Where(x => x.StartsWith("-")))
-                         .Where(x => x != "/dev")
-                         .ToList();
+                    .Union(list.SkipWhile(x => x != "-").Skip(1).Where(x => x.StartsWith("-")))
+                    .Where(x => x != "/dev")
+                    .ToList();
         }
 
         public static void AddFromFile(string filename) {
             if (!File.Exists(filename)) return;
-
             foreach (var pair in File.ReadAllLines(filename).Where(x => x.StartsWith("--"))
-                                     .Select(x => x.Split(new[] { '=' }, 2).Select(y => y.Trim()).ToArray())
-                                     .Select(x => new {
-                                         Key = ArgStringToFlag(x[0]),
-                                         Value = x.Length == 2 ? x[1] : null
-                                     })
-                                     .Where(x => x.Key != null)) {
-                _args[pair.Key ?? (AppFlag)0] = pair.Value;
+                    .Select(x => x.Split(new[] { '=' }, 2).Select(y => y.Trim()).ToArray())
+                    .Select(x => new {
+                        KeyRaw = x[0],
+                        Key = ArgStringToFlag(x[0]),
+                        Value = x.Length == 2 ? x[1] : null
+                    })
+                    .Where(x => x.Key != null || x.KeyRaw == "--open")) {
+                if (pair.KeyRaw != "--open") {
+                    _args[pair.Key ?? (AppFlag)0] = pair.Value;
+                } else if (pair.Value != null) {
+                    Values.Add(pair.Value);
+                }
             }
         }
 
         private static AppFlag? ArgStringToFlag(string arg) {
-            var s = string.Join("", arg.Split('-').Where(x => x.Length > 0).Select(x => (char)(x[0] + 'A' - 'a') + (x.Length > 1 ? x.Substring(1) : "")));
+            var s = string.Join("", arg.Split('-')
+                    .Where(x => x.Length > 0)
+                    .Select(x => (char)(x[0] + 'A' - 'a') + (x.Length > 1 ? x.Substring(1) : "")));
             return Enum.TryParse(s, out AppFlag result) ? result : (AppFlag?)null;
         }
 

@@ -7,6 +7,8 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 namespace FirstFloor.ModernUI.Dialogs {
     public class FatalErrorMessage : ModernDialog {
+        public static string ErrorHeader { get; set; } = "ɿ(｡･ɜ･)ɾ";
+
         internal FatalErrorMessage() {
             DefaultStyleKey = typeof(FatalErrorMessage);
         }

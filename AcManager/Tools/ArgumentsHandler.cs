@@ -263,6 +263,13 @@ namespace AcManager.Tools {
                 return ArgumentHandleResult.Successful;
             }
 
+            /*if (!isDirectory && filename.EndsWith(@".report", StringComparison.OrdinalIgnoreCase)) {
+                await GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
+                    Filename = filename
+                }));
+                return ArgumentHandleResult.Successful;
+            }*/
+
             if (!isDirectory && filename.EndsWith(@".kn5", StringComparison.OrdinalIgnoreCase)) {
                 if ((Keyboard.Modifiers == ModifierKeys.Alt || Keyboard.Modifiers == ModifierKeys.Shift) && SettingsHolder.Common.DeveloperMode) {
                     try {

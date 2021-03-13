@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AcManager.Internal;
@@ -37,11 +38,24 @@ namespace AcManager.Tools.Helpers {
             Instance = new SteamIdHelper(forced);
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void SetSteamIdInner_Impl(string value) {
+            InternalUtils.SetSteamId(value);
+        }
+
+        private static void SetSteamIdInner(string value) {
+            try {
+                SetSteamIdInner_Impl(value);
+            } catch {
+                // ignore
+            }
+        }
+
         private SteamIdHelper(string forced) {
             if (IsValidSteamId(forced)) {
                 _value = forced;
                 _loaded = true;
-                InternalUtils.SetSteamId(_value);
+                SetSteamIdInner(_value);
             } else {
                 if (forced != null) {
                     Logging.Warning($"Invalid forced value: “{forced}”");
@@ -50,7 +64,7 @@ namespace AcManager.Tools.Helpers {
                         var loaded = ValuesStorage.Get<string>(Key);
                         _value = loaded == NoneValue ? null : loaded;
                         _loaded = true;
-                        InternalUtils.SetSteamId(_value);
+                        SetSteamIdInner(_value);
                     }
                 }
             }
@@ -69,7 +83,7 @@ namespace AcManager.Tools.Helpers {
                 if (!_loaded && !_default) {
                     _value = GetDefaultValue();
                     _default = true;
-                    InternalUtils.SetSteamId(_value);
+                    SetSteamIdInner(_value);
                 }
 
                 return _value;
@@ -85,7 +99,7 @@ namespace AcManager.Tools.Helpers {
 
                 _loaded = true;
                 ValuesStorage.Set(Key, _value ?? NoneValue);
-                InternalUtils.SetSteamId(_value);
+                SetSteamIdInner(_value);
                 SettingsHolder.Online.CachingServerAvailable = false;
             }
         }

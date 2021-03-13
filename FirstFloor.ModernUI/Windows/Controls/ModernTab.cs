@@ -125,7 +125,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void SavePinned() {
             if (SaveKey != null) {
                 ValuesStorage.Storage.SetStringList(SaveKey + "/pinned",
-                        PinnedLinks.Select(x => Storage.EncodeList(x.DisplayName, x.Source.OriginalString)));
+                        PinnedLinks.Select(x => Storage.EncodeList(x.DisplayName, x.Source?.OriginalString ?? "")));
             }
         }
 
@@ -213,8 +213,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             } else {
                 var saved = skipLoading || SaveKey == null ? null : ValuesStorage.Get<string>(SaveKey);
                 _linkList.SelectedItem = (saved == null ? null
-                        : Links.FirstOrDefault(l => l.IsShown && l.Source.OriginalString == saved)
-                                ?? PinnedLinks.FirstOrDefault(l => l.IsShown && l.Source.OriginalString == saved))
+                        : Links.FirstOrDefault(l => l.IsShown && l.Source?.OriginalString == saved)
+                                ?? PinnedLinks.FirstOrDefault(l => l.IsShown && l.Source?.OriginalString == saved))
                         ?? Links.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource)
                                 ?? PinnedLinks.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource)
                                         ?? (skipLoading ? null : Links.FirstOrDefault());

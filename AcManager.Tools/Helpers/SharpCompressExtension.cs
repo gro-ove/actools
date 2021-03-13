@@ -20,6 +20,16 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
+        public static void WriteStreamWriter(this IWriter writer, string entryPath, Action<StreamWriter> streamWriter) {
+            using (var m = new MemoryStream()){
+                using (var w = new StreamWriter(m, Encoding.UTF8, 8192, true)) {
+                    streamWriter(w);
+                }
+                m.Position = 0;
+                writer.Write(entryPath, m);
+            }
+        }
+
         public static void AddZipDescription(this Stream stream, string description) {
             if (string.IsNullOrWhiteSpace(description)) return;
             stream.Seek(-2, SeekOrigin.End);

@@ -173,7 +173,7 @@
             <Border BorderBrush="#2067b2" BorderThickness="1">
               <AdornerDecorator>
                 <StackPanel Margin="40" RenderOptions.ClearTypeHint="Enabled">
-                  <TextBlock Text="ɿ(｡･ɜ･)ɾ" Style="{StaticResource Heading1}" FontSize="50" Margin="0 0 0 20" />
+                  <TextBlock Text="{x:Static dialogs:FatalErrorMessage.ErrorHeader}" Style="{StaticResource Heading1}" FontSize="50" Margin="0 0 0 20" />
                   <TextBlock Text="{x:Static mui:UiStrings.FatalError_Message}" Style="{StaticResource Light}" Margin="0 0 0 20" TextWrapping="Wrap" />
 
                   <TextBlock Text="Detailed information:" Style="{StaticResource Light}" Margin="0 0 0 8" />
