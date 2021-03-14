@@ -127,17 +127,17 @@
     <value>차량 "{0}"이(가) 누락</value>
   </data>
   <data name="AcError_CarParentIsMissing" xml:space="preserve">
-    <value>차량의 상위 차량 정보가 없음</value>
-  </data>
+    <value>차량의 상위 차량 정보가 없습니다</value>
+  <alternative>차량의 상위 차량 정보가 없음</alternative></data>
   <data name="AcError_ColorCurvesIniIsMissing" xml:space="preserve">
-    <value>colorCurves.ini 파일이 없음</value>
-  </data>
+    <value>colorCurves.ini 파일이 없습니다</value>
+  <alternative>colorCurves.ini 파일이 없음</alternative></data>
   <data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
-    <value>디렉토리 "ui"가 없음</value>
-  </data>
+    <value>디렉토리 "ui"가 없습니다</value>
+  <alternative>디렉토리 "ui"가 없음</alternative></data>
   <data name="AcError_EventConditionsAreNotSupported" xml:space="preserve">
-    <value>이벤트 조건 "{0}"은(는) 아직 지원되지 않음</value>
-  </data>
+    <value>이벤트 조건 "{0}"은(는) 아직 지원되지 않습니다</value>
+  <alternative>이벤트 조건 "{0}"은(는) 아직 지원되지 않음</alternative></data>
   <data name="AcError_EventsOfAreMissing" xml:space="preserve">
     <value>{0}의 이벤트가 누락됨</value>
   </data>
@@ -193,8 +193,8 @@
     <value>스킨이 누락되었습니다</value>
   </data>
   <data name="AcError_SkinsDirectoryIsUnavailable" xml:space="preserve">
-    <value>스킨 디렉터리를 사용할 수 없음</value>
-  </data>
+    <value>스킨 디렉터리를 사용할 수 없습니다</value>
+  <alternative>스킨 디렉터리를 사용할 수 없음</alternative></data>
   <data name="AcError_TrackIsMissing" xml:space="preserve">
     <value>트랙 "{0}"이(가) 누락되었습니다</value>
   </data>
@@ -202,11 +202,11 @@
     <value>업그레이드 아이콘이 없습니다</value>
   </data>
   <data name="AcObject_CannotBeDisabled" xml:space="preserve">
-    <value>비활성화 할 수 없음</value>
-  </data>
+    <value>비활성화 할 수 없습니다</value>
+  <alternative>비활성화 할 수 없음</alternative></data>
   <data name="AcObject_CannotBeMoved" xml:space="preserve">
-    <value>개체를 이동할 수 없음</value>
-  </data>
+    <value>개체를 이동할 수 없습니다</value>
+  <alternative>개체를 이동할 수 없음</alternative></data>
   <data name="AcObject_CannotChangeId" xml:space="preserve">
     <value>ID변경불가</value>
   </data>
@@ -214,26 +214,26 @@
     <value>ID를 변경할 수 없습니다 : {0}</value>
   </data>
   <data name="AcObject_CannotClone" xml:space="preserve">
-    <value>개체를 복제할 수 없음</value>
-  </data>
+    <value>개체를 복제할 수 없습니다</value>
+  <alternative>개체를 복제할 수 없음</alternative></data>
   <data name="AcObject_CannotClone_Commentary" xml:space="preserve">
     <value>디스크 공간이 충분한지 확인합니다.</value>
   </data>
   <data name="AcObject_CannotDelete" xml:space="preserve">
-    <value>삭제할 수 없음</value>
-  </data>
+    <value>삭제할 수 없습니다</value>
+  <alternative>삭제할 수 없음</alternative></data>
   <data name="AcObject_CannotGetId" xml:space="preserve">
     <value>경로에서 ID를 가져올 수 없습니다.</value>
   </data>
   <data name="AcObject_CannotRemove" xml:space="preserve">
-    <value>기존 디렉터리를 제거할 수 없음</value>
-  </data>
+    <value>기존 디렉터리를 제거할 수 없습니다</value>
+  <alternative>기존 디렉터리를 제거할 수 없음</alternative></data>
   <data name="AcObject_CannotToggle" xml:space="preserve">
-    <value>토글할 수 없음</value>
-  </data>
+    <value>토글할 수 없습니다</value>
+  <alternative>토글할 수 없음</alternative></data>
   <data name="AcObject_CannotToggleExt" xml:space="preserve">
-    <value>토글할 수 없음: {0}</value>
-  </data>
+    <value>토글할 수 없습니다: {0}</value>
+  <alternative>토글할 수 없음: {0}</alternative></data>
   <data name="AcObject_DisablingNotSupported_Commentary" xml:space="preserve">
     <value>죄송합니다. 이 개체 유형을 비활성화할 수 없습니다.</value>
   </data>
@@ -241,20 +241,20 @@
     <value>ID가 틀립니다</value>
   </data>
   <data name="AcObject_NotValidAnymore" xml:space="preserve">
-    <value>더 이상 유효하지 않음</value>
-  </data>
+    <value>더 이상 유효하지 않습니다</value>
+  <alternative>더 이상 유효하지 않음</alternative></data>
   <data name="AcObject_PlaceIsTaken" xml:space="preserve">
-    <value>촬영 장소</value>
-  </data>
+    <value>장소를 이미 사용중입니다</value>
+  <alternative>촬영 장소</alternative></data>
   <data name="AcObject_ReloadAutomatically" xml:space="preserve">
-    <value>파일을 다시 로드할까요?</value>
-  </data>
+    <value>파일을 다시 불러올까요?</value>
+  <alternative>파일을 다시 로드할까요?</alternative></data>
   <data name="AcObject_ReloadAutomatically_Ini" xml:space="preserve">
     <value>INI 파일이 변경되었습니다. 재로드? 모든 로컬 변경 내용이 손실됩니다.</value>
   </data>
   <data name="AcObject_ReloadAutomatically_Json" xml:space="preserve">
-    <value>JSON 파일이 변경되었습니다. 재로드? 모든 로컬 변경 내용이 손실됩니다.</value>
-  </data>
+    <value>JSON 파일이 변경되었습니다. 다시 불러올까요? 모든 로컬 변경 내용이 손실됩니다.</value>
+  <alternative>JSON 파일이 변경되었습니다. 재로드? 모든 로컬 변경 내용이 손실됩니다.</alternative></data>
   <data name="AcRootDirectory_Missing" xml:space="preserve">
     <value>디렉토리가 없습니다.</value>
   </data>
@@ -280,11 +280,11 @@
     <value>트리플 스크린</value>
   </data>
   <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
-    <value>올바른 해상도 목록을 가져올 수 없음</value>
-  </data>
+    <value>올바른 해상도 목록을 가져올 수 없습니다</value>
+  <alternative>올바른 해상도 목록을 가져올 수 없음</alternative></data>
   <data name="AcSettings_CannotSave" xml:space="preserve">
-    <value>AC 설정을 저장할 수 없음</value>
-  </data>
+    <value>AC 설정을 저장할 수 없습니다</value>
+  <alternative>AC 설정을 저장할 수 없음</alternative></data>
   <data name="AcSettings_CannotSave_Commentary" xml:space="preserve">
     <value>앱에서 cfg 폴더에 액세스할 수 있는지 확인합니다.</value>
   </data>
@@ -442,8 +442,8 @@
     <value>액세스가 거부되었습니다.</value>
   </data>
   <data name="AppUpdater_AccessIsDenied_Commentary" xml:space="preserve">
-    <value>권한이 없어 앱을 업데이트 할 수 없습니다. 수동으로 업데이트 하십시오.</value>
-  </data>
+    <value>권한이 없어 앱을 업데이트 할 수 없습니다. 수동으로 업데이트 하세요.</value>
+  <alternative>권한이 없어 앱을 업데이트 할 수 없습니다. 수동으로 업데이트 하십시오.</alternative></data>
   <data name="AppUpdater_AccessIsDenied_Short" xml:space="preserve">
     <value>권한이 없어 앱을 업데이트 할 수 없습니다.</value>
   </data>
@@ -457,14 +457,14 @@
     <value>새 버전을 로드할 수 없습니다.</value>
   </data>
   <data name="AppUpdater_CannotUpdate_HelpNeeded" xml:space="preserve">
-    <value>업데이트를 설치할 원본 파일 "{0}"을(를) 제거할 수 없습니다. 수동으로 제거한 후 "{1}"를 실행하십시오.</value>
-  </data>
+    <value>업데이트를 설치할 원본 파일 "{0}"을(를) 제거할 수 없습니다. 수동으로 제거한 후 "{1}"를 실행하세요.</value>
+  <alternative>업데이트를 설치할 원본 파일 "{0}"을(를) 제거할 수 없습니다. 수동으로 제거한 후 "{1}"를 실행하십시오.</alternative></data>
   <data name="AppUpdater_CannotUpdate_Message" xml:space="preserve">
     <value>업데이트 할 수 없습니다. {0}. 죄송합니다. 수동으로 업데이트해야 합니다.</value>
   </data>
   <data name="AppUpdater_CannotUpdateApp" xml:space="preserve">
-    <value>앱을 업데이트 할 수 없음</value>
-  </data>
+    <value>앱을 업데이트 할 수 없습니다</value>
+  <alternative>앱을 업데이트 할 수 없음</alternative></data>
   <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
     <value>압축 해제 버전은 자동 업데이트를 지원하지 않습니다.</value>
   </data>
@@ -502,8 +502,8 @@
     <value>자동 변속</value>
   </data>
   <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
-    <value>자동 변속 장치와 혼동하지 마십시오.</value>
-  </data>
+    <value>자동 변속 장치와 혼동하지 마세요.</value>
+  <alternative>자동 변속 장치와 혼동하지 마십시오.</alternative></data>
   <data name="Assists_FuelConsumption" xml:space="preserve">
     <value>연료 소모</value>
   </data>
@@ -571,11 +571,11 @@
     <value>베스트 랩:</value>
   </data>
   <data name="Car_ReplaceSound_CannotReplace" xml:space="preserve">
-    <value>차 소리를 교체할 수 없음</value>
-  </data>
+    <value>차 소리를 교체할 수 없습니다</value>
+  <alternative>차 소리를 교체할 수 없음</alternative></data>
   <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
-    <value>공간이 충분하고 원본 파일을 제거할 수 있는지 확인하십시오.</value>
-  </data>
+    <value>공간이 충분하고 원본 파일을 제거할 수 있는지 확인하세요.</value>
+  <alternative>공간이 충분하고 원본 파일을 제거할 수 있는지 확인하십시오.</alternative></data>
   <data name="Car_ReplaceSound_WrongCar" xml:space="preserve">
     <value>선택된 차량이 적절한 사운드를 가지고 있지 않습니다</value>
   </data>
@@ -664,14 +664,14 @@
     <value>길이</value>
   </data>
   <data name="Common_LuaFailed" xml:space="preserve">
-    <value>Lua를 초기화할 수 없음</value>
-  </data>
+    <value>Lua를 초기화할 수 없습니다</value>
+  <alternative>Lua를 초기화할 수 없음</alternative></data>
   <data name="Common_MakeSureInternetWorks" xml:space="preserve">
     <value>인터넷 연결이 작동하는지 확인합니다.</value>
   </data>
   <data name="Common_MakeSureThereIsEnoughSpace" xml:space="preserve">
-    <value>충분한 공간이 있는지 확인하십시오.</value>
-  </data>
+    <value>충분한 공간이 있는지 확인하세요.</value>
+  <alternative>충분한 공간이 있는지 확인하십시오.</alternative></data>
   <data name="Common_None" xml:space="preserve">
     <value>없음</value>
   </data>
@@ -772,8 +772,8 @@
     <value>새로운 날씨 "{0}"</value>
   </data>
   <data name="ContentSyncronizer_CannotLoadContent" xml:space="preserve">
-    <value>CM 데이터를 로드할 수 없음</value>
-  </data>
+    <value>CM 데이터를 로드할 수 없습니다</value>
+  <alternative>CM 데이터를 로드할 수 없음</alternative></data>
   <data name="ContentSyncronizer_CannotLoadContent_Commentary" xml:space="preserve">
     <value>인터넷 연결을 사용할 수 있고 데이터 폴더에서 아무 작업도 수행되지 않는지 확인합니다.</value>
   </data>
@@ -937,8 +937,8 @@
     <value>반복이 감지됨</value>
   </data>
   <data name="DirectoryInstallator_FileNotFound" xml:space="preserve">
-    <value>파일을 찾을 수 없음</value>
-  </data>
+    <value>파일을 찾을 수 없습니다</value>
+  <alternative>파일을 찾을 수 없음</alternative></data>
   <data name="Drive_Grid_FilteredBy" xml:space="preserve">
     <value>필터링 사용</value>
   </data>
@@ -991,8 +991,8 @@
     <value>이 폰트가 필요한 차들이 있다. 사용하지 않도록 설정하시겠습니까?</value>
   </data>
   <data name="Fonts_RescanUsings" xml:space="preserve">
-    <value>차량을 다시 검색할 수 없음</value>
-  </data>
+    <value>차량을 다시 검색할 수 없습니다</value>
+  <alternative>차량을 다시 검색할 수 없음</alternative></data>
   <data name="GameCommand_CannotExecute" xml:space="preserve">
     <value>명령을 실행할 수 없습니다.</value>
   </data>
@@ -1063,8 +1063,8 @@
     <value>원격 서버에 연결할 수 없습니다</value>
   </data>
   <data name="LogHelper_CloudsMightBeMissing" xml:space="preserve">
-    <value>구름 (내용/질감/클라우드)가 누락되었을 수 있음</value>
-  </data>
+    <value>구름 (내용/질감/클라우드)가 누락되었을 수 있습니다</value>
+  <alternative>구름 (내용/질감/클라우드)가 누락되었을 수 있음</alternative></data>
   <data name="LogHelper_DefaultPpFilterIsMissing" xml:space="preserve">
     <value>기본 PP 필터(default.ini)가 누락되었지만 필요합니다.</value>
   </data>
@@ -1078,8 +1078,8 @@
     <value>PP 필터 "{0}"이(가) 없습니다.</value>
   </data>
   <data name="LogHelper_ShaderIsMissing" xml:space="preserve">
-    <value>셰이더 "{0}"이(가) 누락되었습니다(일부 AC 업데이트에서 제거되었을 수 있음). 모델을 수정해야 합니다.</value>
-  </data>
+    <value>셰이더 "{0}"이(가) 누락되었습니다(일부 AC 업데이트에서 제거되었을 수 있습니다). 모델을 수정해야 합니다.</value>
+  <alternative>셰이더 "{0}"이(가) 누락되었습니다(일부 AC 업데이트에서 제거되었을 수 있음). 모델을 수정해야 합니다.</alternative></data>
   <data name="LogHelper_SuspensionIsMissing" xml:space="preserve">
     <value>서스펜션 개체 (SUSP_LF, SUSP_LR,…)가 누락됨</value>
   </data>
@@ -1105,24 +1105,25 @@
     <value>레이스를 할수 없다</value>
   </data>
   <data name="OfficialStarter_DownloadAndRestore" xml:space="preserve">
-    <value>패치되지 않은 버전의 원래 시작 프로그램을 복원할 수 없습니다. 
-[url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk"]수동으로 복원하십시오[/url]</value>
-  </data>
+    <value>패치되지 않은 버전의 오리지널 런처를 복원할 수 없습니다. 
+[url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk"]수동으로 복원하세요[/url]</value>
+  <alternative>패치되지 않은 버전의 원래 시작 프로그램을 복원할 수 없습니다. 
+[url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk"]수동으로 복원하십시오[/url]</alternative></data>
   <data name="OfficialStarter_GameIsTooOld" xml:space="preserve">
-    <value>공식 스타터를 사용할 수 없음: AC 버전이 너무 오래되었습니다. 대신 Ticky Starter로 전환하시겠습니까? 언제든지 설정/드라이브로 이동하여 변경할 수 있습니다.</value>
-  </data>
+    <value>공식 스타터를 사용할 수 없습니다: AC 버전이 너무 오래되었습니다. 대신 Ticky Starter로 전환하시겠습니까? 언제든지 설정/드라이브로 이동하여 변경할 수 있습니다.</value>
+  <alternative>공식 스타터를 사용할 수 없음: AC 버전이 너무 오래되었습니다. 대신 Ticky Starter로 전환하시겠습니까? 언제든지 설정/드라이브로 이동하여 변경할 수 있습니다.</alternative></data>
   <data name="OfficialStarter_OriginalLauncherIsMissing" xml:space="preserve">
-    <value>원래 런처가 없습니다. 우선 변경해주세요</value>
-  </data>
+    <value>오리지널 런처가 없습니다. 스타터를 변경해주세요</value>
+  <alternative>원래 런처가 없습니다. 우선 변경해주세요</alternative></data>
   <data name="OfficialStarter_RestoreLauncherManually" xml:space="preserve">
-    <value>패치되지 않은 버전의 원래 시작 프로그램을 복원할 수 없습니다. 수동으로 복원하십시오. "AssettoCorsa.exe"를 "AssetoCorsa_backup_sp.exe"로 바꿔야 합니다.</value>
-  </data>
+    <value>패치되지 않은 버전의 오리지널 런처를 복원할 수 없습니다. 수동으로 복원하세요. "AssettoCorsa.exe"를 "AssetoCorsa_backup_sp.exe"로 바꿔야 합니다.</value>
+  <alternative>패치되지 않은 버전의 원래 시작 프로그램을 복원할 수 없습니다. 수동으로 복원하십시오. "AssettoCorsa.exe"를 "AssetoCorsa_backup_sp.exe"로 바꿔야 합니다.</alternative></data>
   <data name="OfficialStarter_RestoreOriginalLauncher" xml:space="preserve">
-    <value>원래 시작 프로그램을 복원하고 다시 시도하십시오(또는 시작 프로그램 변경).</value>
-  </data>
+    <value>원래 시작 프로그램을 복원하고 다시 시도하세요(또는 시작 프로그램 변경).</value>
+  <alternative>원래 시작 프로그램을 복원하고 다시 시도하십시오(또는 시작 프로그램 변경).</alternative></data>
   <data name="OfficialStarter_UpdateAC" xml:space="preserve">
-    <value>AC를 업데이트하거나 스타터를 다른 것으로 변경하십시오.</value>
-  </data>
+    <value>AC를 업데이트하거나 스타터를 다른 것으로 변경하세요.</value>
+  <alternative>AC를 업데이트하거나 스타터를 다른 것으로 변경하십시오.</alternative></data>
   <data name="Online_AdminPassword" xml:space="preserve">
     <value>관리자 비밀번호:</value>
   </data>
@@ -1172,8 +1173,8 @@
     <value>{0} 스킨로드 중…</value>
   </data>
   <data name="Online_ScanningNothingFound" xml:space="preserve">
-    <value>아무것도 찾을 수 없음</value>
-  </data>
+    <value>아무것도 없습니다</value>
+  <alternative>아무것도 찾을 수 없음</alternative></data>
   <data name="Online_ScanningNothingFound_Commentary" xml:space="preserve">
     <value>서버의 주소가 올바르고 서버 자체에 액세스할 수 있는지 확인합니다</value>
   </data>
@@ -1196,8 +1197,8 @@
     <value>{0} 차량이 없습니다.</value>
   </data>
   <data name="Online_Server_CarsDoNotMatch" xml:space="preserve">
-    <value>차량이 일치하지 않음</value>
-  </data>
+    <value>차량이 동일하지 않습니다</value>
+  <alternative>차량이 일치하지 않음</alternative></data>
   <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
     <value>차량 스킨 {0}이 없습니다</value>
   </data>
@@ -1280,11 +1281,11 @@
     <value>PP 필터를 저장할 수 없습니다</value>
   </data>
   <data name="PpFilterObject_MakeSureCouldBeOverwritten" xml:space="preserve">
-    <value>파일을 덮어쓸 수 있는지 확인하십시오.</value>
-  </data>
+    <value>파일을 덮어쓸 수 있는지 확인하세요.</value>
+  <alternative>파일을 덮어쓸 수 있는지 확인하십시오.</alternative></data>
   <data name="Presets_ChooseFileInInitialDirectory" xml:space="preserve">
-    <value>초기 디렉토리 또는 일부 하위 디렉토리에서 파일을 선택하십시오.</value>
-  </data>
+    <value>초기 디렉토리 또는 일부 하위 디렉토리에서 파일을 선택하세요.</value>
+  <alternative>초기 디렉토리 또는 일부 하위 디렉토리에서 파일을 선택하십시오.</alternative></data>
   <data name="Presets_FileFilter" xml:space="preserve">
     <value>사전 설정(*{0}|*{0})</value>
   </data>
@@ -1304,14 +1305,14 @@
     <value>상대 범위 표시</value>
   </data>
   <data name="RaceGrid_CannotUpdate" xml:space="preserve">
-    <value>레이스 그리드를 업데이트할 수 없음</value>
-  </data>
+    <value>레이스 그리드를 업데이트할 수 없습니다</value>
+  <alternative>레이스 그리드를 업데이트할 수 없음</alternative></data>
   <data name="RaceGrid_GridModeIsMissing" xml:space="preserve">
     <value>레이싱 그리드 모드가 누락되었습니다.</value>
   </data>
   <data name="RaceGrid_GridModeIsMissing_Commentary" xml:space="preserve">
-    <value>ID가 "{0}"인 레이싱 그리드 모드를 찾을 수 없음</value>
-  </data>
+    <value>ID가 "{0}"인 레이싱 그리드 모드를 찾을 수 없습니다</value>
+  <alternative>ID가 "{0}"인 레이싱 그리드 모드를 찾을 수 없음</alternative></data>
   <data name="RaceGrid_InvalidScriptResult" xml:space="preserve">
     <value>스크립트는 필터링 기능을 반환해야 합니다.</value>
   </data>
@@ -1331,8 +1332,8 @@
     <value>리플레이 이름을 바꿀 수 없습니다</value>
   </data>
   <data name="Replay_CannotRenameReplays_Commentary" xml:space="preserve">
-    <value>현재 사용중인 파일이 없는지 확인하십시오</value>
-  </data>
+    <value>현재 사용중인 파일이 없는지 확인하세요</value>
+  <alternative>현재 사용중인 파일이 없는지 확인하십시오</alternative></data>
   <data name="ReplayHelper_CannotSaveReplay" xml:space="preserve">
     <value>재생을 저장할 수 없습니다.</value>
   </data>
@@ -1346,8 +1347,8 @@
     <value>지원되지 않는 형식</value>
   </data>
   <data name="RhmService_CannotStart" xml:space="preserve">
-    <value>RHM을 시작할 수 없음</value>
-  </data>
+    <value>RHM을 시작할 수 없습니다</value>
+  <alternative>RHM을 시작할 수 없음</alternative></data>
   <data name="ServerPreset_UnpackedDataWarning" xml:space="preserve">
     <value>{0}의 데이터가 패킹되지 않았으므로 참가하기 전에 데이터를 변경하여 부당한 이득을 얻을 수 있습니다.
 
@@ -1405,23 +1406,23 @@
     <value>공식</value>
   </data>
   <data name="Settings_Starter_Official_Description" xml:space="preserve">
-    <value>Kunos로부터의 공식적인 방법, 느리고 신뢰할 수 없지만 패치 적용 필요 없음</value>
-  </data>
+    <value>Kunos 공식 방법입니다. 느리고 신뢰할 수 없지만 패치를 적용 할 필요가 없습니다</value>
+  <alternative>Kunos로부터의 공식적인 방법, 느리고 신뢰할 수 없지만 패치 적용 필요 없음</alternative></data>
   <data name="Settings_Starter_Sse_Description" xml:space="preserve">
-    <value>가장 빠른 것은 스팀을 전혀 사용하지 않고 직접 레이스를 진행함. 온라인은 작동하지만 모든 성과를 놓치게 됩니다.</value>
-  </data>
+    <value>가장 빠른 것은 스팀을 전혀 사용하지 않고 직접 레이스를 시작하는 것입니다. 온라인은 작동하지만, 스팀 도전과제를 달성할 수 없습니다.</value>
+  <alternative>가장 빠른 것은 스팀을 전혀 사용하지 않고 직접 레이스를 진행함. 온라인은 작동하지만 모든 성과를 놓치게 됩니다.</alternative></data>
   <data name="Settings_Starter_StarterPlus" xml:space="preserve">
     <value>실행기+</value>
   </data>
   <data name="Settings_Starter_StarterPlus_Description" xml:space="preserve">
-    <value>원본 실행기의 수정된 버전, 1.7 릴리스 이후 사용되지 않음</value>
-  </data>
+    <value>원본 실행기의 수정된 버전입니다. 1.7 릴리스 이후 사용되지 않습니다</value>
+  <alternative>원본 실행기의 수정된 버전, 1.7 릴리스 이후 사용되지 않음</alternative></data>
   <data name="Settings_Starter_Tricky" xml:space="preserve">
     <value>까다로운</value>
   </data>
   <data name="Settings_Starter_Tricky_Description" xml:space="preserve">
-    <value>레이스를 시작하는 까다로운 방법. 가장 빠르지만 스팀 또는 인터넷 연결이 없으면 작동하지 않음</value>
-  </data>
+    <value>레이스를 시작하는 까다로운 방법입니다. 가장 빠르지만 스팀 또는 인터넷 연결이 없으면 작동하지 않습니다</value>
+  <alternative>레이스를 시작하는 까다로운 방법. 가장 빠르지만 스팀 또는 인터넷 연결이 없으면 작동하지 않음</alternative></data>
   <data name="Settings_Starter_UiModule" xml:space="preserve">
     <value>UI 모듈</value>
   </data>
@@ -1429,8 +1430,8 @@
     <value>일부 주문을 듣고 레이스를 실행하는 원래 실행 프로그램에 특수 UI 모듈을 추가합니다. CM과 원래 실행 프로그램을 동시에 사용해야 하는 경우 이 모듈을 사용합니다.</value>
   </data>
   <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
-    <value>UI 모듈 "CM 도우미"가 설치 및 활성화되었습니다. 경주를 시작하기 전에 AssettoCorsa.exe를 재시작하는 것을 잊지 마십시오!</value>
-  </data>
+    <value>UI 모듈 "CM 도우미"가 설치 및 활성화 되었습니다. 레이스를 시작하기 전에 AssettoCorsa.exe를 재시작하는 것을 잊지 마세요!</value>
+  <alternative>UI 모듈 "CM 도우미"가 설치 및 활성화되었습니다. 경주를 시작하기 전에 AssettoCorsa.exe를 재시작하는 것을 잊지 마십시오!</alternative></data>
   <data name="Shared_AssistsSetupPreset" xml:space="preserve">
     <value>어시스트 프리셋 :</value>
   </data>
@@ -1486,11 +1487,11 @@
     <value>공유 항목을 가져올 수 없습니다. 유형 "{0}"은(는) 지원되지 않습니다.</value>
   </data>
   <data name="SharingHelper_NotSupported_Commentary" xml:space="preserve">
-    <value>최신 버전의 CM이 있는지 확인하십시오.</value>
-  </data>
+    <value>최신 버전의 CM이 있는지 확인하세요.</value>
+  <alternative>최신 버전의 CM이 있는지 확인하십시오.</alternative></data>
   <data name="ShowroomObject_CannotToggleSound" xml:space="preserve">
-    <value>소리를 전환할 수 없음</value>
-  </data>
+    <value>소리를 전환할 수 없습니다</value>
+  <alternative>소리를 전환할 수 없음</alternative></data>
   <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
     <value>쇼룸의 사운드 파일로 작동하는 실행 중인 앱이 없는지 확인합니다.</value>
   </data>
@@ -1498,8 +1499,8 @@
     <value>단일 이벤트</value>
   </data>
   <data name="Solving_Cancelled" xml:space="preserve">
-    <value>취소된</value>
-  </data>
+    <value>취소됨</value>
+  <alternative>취소된</alternative></data>
   <data name="Solving_CreateNewFile" xml:space="preserve">
     <value>새 파일 만들기</value>
   </data>
@@ -1561,14 +1562,14 @@
     <value>인증 프로세스를 완료할 수 없습니다.</value>
   </data>
   <data name="Uploader_CannotShareGoogleDrive" xml:space="preserve">
-    <value>Google Drive 파일을 공유할 수 없음</value>
-  </data>
+    <value>Google Drive 파일을 공유할 수 없습니다</value>
+  <alternative>Google Drive 파일을 공유할 수 없음</alternative></data>
   <data name="Uploader_CannotUploadToGoogleDrive" xml:space="preserve">
-    <value>Google 드라이브에 파일을 업로드할 수 없음</value>
-  </data>
+    <value>Google 드라이브에 파일을 업로드할 수 없습니다</value>
+  <alternative>Google 드라이브에 파일을 업로드할 수 없음</alternative></data>
   <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
-    <value>Google Drive 인증 코드를 입력하십시오.</value>
-  </data>
+    <value>Google Drive 인증 코드를 입력하세요.</value>
+  <alternative>Google Drive 인증 코드를 입력하십시오.</alternative></data>
   <data name="Uploader_GoogleDrive" xml:space="preserve">
     <value>구글 드라이브</value>
   </data>
@@ -1578,21 +1579,18 @@
   <data name="Uploader_RootDirectory" xml:space="preserve">
     <value>루트</value>
   </data>
-  <data name="Weather_BrokenClouds" xml:space="preserve">
-    <value>깨진 구름</value>
-  </data>
   <data name="Weather_ColorCurves_AmbientHigh" xml:space="preserve">
-    <value>주변(높음)</value>
-  </data>
+    <value>앰비언트(높음)</value>
+  <alternative>주변(높음)</alternative></data>
   <data name="Weather_ColorCurves_AmbientLow" xml:space="preserve">
-    <value>주변(낮음)</value>
-  </data>
+    <value>앰비언트(낮음)</value>
+  <alternative>주변(낮음)</alternative></data>
   <data name="Weather_ColorCurves_HorizonHigh" xml:space="preserve">
-    <value>시야(높음)</value>
-  </data>
+    <value>지평선(높음)</value>
+  <alternative>시야(높음)</alternative></data>
   <data name="Weather_ColorCurves_HorizonLow" xml:space="preserve">
-    <value>시야(낮음)</value>
-  </data>
+    <value>지평선(낮음)</value>
+  <alternative>시야(낮음)</alternative></data>
   <data name="Weather_ColorCurves_SkyHigh" xml:space="preserve">
     <value>하늘(높음)</value>
   </data>

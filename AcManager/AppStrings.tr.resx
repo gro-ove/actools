@@ -1028,14 +1028,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lisansı[/url].</alternati
     <value>Sonuç:</value>
   </data>
   <data name="LiveryIcon_SecondaryColorLabel" xml:space="preserve">
-    <value>İkinci renk:</value>
-  </data>
+    <value>İkincil renk:</value>
+  <alternative>İkinci renk:</alternative></data>
   <data name="LiveryIcon_Shape_Carbon" xml:space="preserve">
     <value>Karbon</value>
   </data>
   <data name="LiveryIcon_Shape_Circle" xml:space="preserve">
-    <value>Yuvarlak</value>
-  </data>
+    <value>Daire</value>
+  <alternative>Yuvarlak</alternative></data>
   <data name="LiveryIcon_Shape_Diagonal" xml:space="preserve">
     <value>Çapraz</value>
   </data>
@@ -1046,8 +1046,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lisansı[/url].</alternati
     <value>Yuvarlak Çapraz</value>
   </data>
   <data name="LiveryIcon_Shape_DoubleStripes" xml:space="preserve">
-    <value>İkili Çizgiler</value>
-  </data>
+    <value>Çift çizgi</value>
+  <alternative>İkili Çizgiler</alternative></data>
   <data name="LiveryIcon_Shape_Flat" xml:space="preserve">
     <value>Düz</value>
   </data>
@@ -1262,8 +1262,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lisansı[/url].</alternati
     <value>Bu bölüm henüz hazır değil</value>
   </data>
   <data name="Page_Wip_Commentary" xml:space="preserve">
-    <value>Bu uygulamanın gelişmesi ile ilgili daha fazla bilgi almak isterseniz [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] dan daha detaylı bir şekilde bakabilirsiniz.</value>
-  </data>
+    <value>Bu uygulamanın gelişmesi ile ilgili daha fazla bilgi almak isterseniz [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello board[/url]'u ziyaret edebilirsiniz.</value>
+  <alternative>Bu uygulamanın gelişmesi ile ilgili daha fazla bilgi almak isterseniz [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] dan daha detaylı bir şekilde bakabilirsiniz.</alternative></data>
   <data name="Race_Preparing" xml:space="preserve">
     <value>Hazırlanıyor...</value>
   </data>
@@ -2146,8 +2146,10 @@ Yapımcı: [b]{3}[/b]</value>
     <value>Önayarlar</value>
   </data>
   <data name="Main_UnhandledException" xml:space="preserve">
-    <value>Beklenmedik hata: {0}</value>
-  </data>
+    <value>Beklenmedik hata: 
+
+{0}</value>
+  <alternative>Beklenmedik hata: {0}</alternative></data>
   <data name="Online_AddServer_Tooltip" xml:space="preserve">
     <value>Port dahil edilmeyebilir, bu durumda uygulama tüm spesifik portları tarayacaktır</value>
   </data>
@@ -3988,5 +3990,73 @@ Kabul edilen değerler -1 ile 1 arasındadır.</value>
   </data>
   <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
     <value>Devam eden indirme yok</value>
+  </data>
+  <data name="AcSettings_Video_SkyboxReflection_Tooltip" xml:space="preserve">
+    <value>Gökyüzü yansıma kazanımı</value>
+  </data>
+  <data name="Controls_Gestures" xml:space="preserve">
+    <value>İfadeler:</value>
+  </data>
+  <data name="LiveryIcon_Number_LightOutlined" xml:space="preserve">
+    <value>Işık (kontürlü)</value>
+  </data>
+  <data name="Main_Setups" xml:space="preserve">
+    <value>Setuplar</value>
+  </data>
+  <data name="Main_UnsavedChanges" xml:space="preserve">
+    <value>Bu öğelere yapılan değişiklikler kaydedilsin mi?</value>
+  </data>
+  <data name="Online_Pinged" xml:space="preserve">
+    <value>{1} taneden {0} pinglendi</value>
+  </data>
+  <data name="Settings_QuickSwitches" xml:space="preserve">
+    <value>Hızlı Menü</value>
+  </data>
+  <data name="Settings_QuickSwitches_Description" xml:space="preserve">
+    <value>Hızlı Menü - çeşitli ayaları hızlıca değiştirebileceğiniz küçük bir açılır menü.</value>
+  </data>
+  <data name="Settings_QuickSwitches_Enable" xml:space="preserve">
+    <value>Hızlı Menüyü etkinleştir</value>
+  </data>
+  <data name="Settings_Replays_NameFormat_Tooltip" xml:space="preserve">
+    <value>Yarıştan sonra tekrarları kaydetmek için kullanılır.
+
+Değiştiriebilir değerler:
+ [b][mono]{type}[/mono][/b] — yarış tipi;
+ [b][mono]{car}[/mono][/b] — araba adı;
+ [b][mono]{car.id}[/mono][/b] — araba id;
+ [b][mono]{track}[/mono][/b] — pist adı;
+ [b][mono]{track.id}[/mono][/b] — pist id;
+ [b][mono]{date}[/mono][/b] — düzgün formatta tarih ve saat;
+ [b][mono]{date_ac}[/mono][/b] — AC formatında tarih ve saat.
+
+Düzenleyiciler:
+ [b][mono]{…:l}[/mono][/b] — küçük harf;
+ [b][mono]{…:u}[/mono][/b] — büyük harf;
+ [b][mono]{…:0}[/mono][/b] — yalnızca ilk sembol.
+
+Örnekler:
+ [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — varsayılan Kunos formatı;
+ [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — “[w] bmw m3 e30 on brands hatch.acreplay” gibi.
+
+Başka değerlerin eklenmesini istiyorsanız bizimle iletişime geçin.
+
+[b]Uyarı[/b]:
+ “[” or “]” gibi semboller kullanmayın!</value>
+  </data>
+  <data name="Solution_CannotRestoreJsonFile" xml:space="preserve">
+    <value>Hasarlı JSON dosyası geri getirilemiyor</value>
+  </data>
+  <data name="Solution_ChangeBrandBadge" xml:space="preserve">
+    <value>Marka logosunu değiştir</value>
+  </data>
+  <data name="Solution_ChangeBrandBadge_Details" xml:space="preserve">
+    <value>Listeden yeni bir marka logosu seç</value>
+  </data>
+  <data name="Solution_ChangeUpgradeIcon" xml:space="preserve">
+    <value>Yükseltme ikonunu değiştir</value>
+  </data>
+  <data name="Solution_ChangeUpgradeIcon_Details" xml:space="preserve">
+    <value>Düzenleyiciyi kullanarak yeni bir yükseltme ikonu seçin ya da oluşturun</value>
   </data>
 </root>

@@ -244,8 +244,8 @@
     <value>Windows (Sağ)</value>
   </data>
   <data name="MarkLimited" xml:space="preserve">
-    <value>KISITLI</value>
-  </data>
+    <value>SINIRLI</value>
+  <alternative>KISITLI</alternative></data>
   <data name="MarkNew" xml:space="preserve">
     <value>YENİ</value>
   </data>
@@ -509,5 +509,14 @@
   </data>
   <data name="Reload" xml:space="preserve">
     <value>Yeniden yükle</value>
+  </data>
+  <data name="NavigateLink" xml:space="preserve">
+    <value>Bağlantıya git</value>
+  </data>
+  <data name="NavigationFailedFrameNotFound" xml:space="preserve">
+    <value>{0} konumuna gidilemiyor, ModernFrame hedefi "{1}" bulunamadı</value>
+  </data>
+  <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
+    <value>{0} konumuna gidilemiyor, kaynak belirtilmedi</value>
   </data>
 </root>

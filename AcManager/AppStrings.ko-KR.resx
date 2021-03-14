@@ -118,8 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="About_ContactInformation" xml:space="preserve">
-    <value>이 앱에 대한 질문, 아이디어 또는 제안 사항이 있거나 특정 문제를 보고하려면 [url="https://acstuff.ru/app/#contacts"]contact us[/url]연락처[/url]로 문의하십시오.</value>
-  </data>
+    <value>이 앱에 대한 질문, 아이디어 또는 제안 사항이 있거나 특정 문제를 보고하려면 [url="https://acstuff.ru/app/#contacts"]contact us[/url]연락처[/url]로 문의하세요.</value>
+  <alternative>이 앱에 대한 질문, 아이디어 또는 제안 사항이 있거나 특정 문제를 보고하려면 [url="https://acstuff.ru/app/#contacts"]contact us[/url]연락처[/url]로 문의하십시오.</alternative></data>
   <data name="About_ContactUsHeader" xml:space="preserve">
     <value>연락처:</value>
   </data>
@@ -135,7 +135,8 @@
   <data name="About_Footer" xml:space="preserve">
     <value>Content Manager is made possible by some [url="/Pages/About/Credits.xaml|_top"]open source and not only softw[/urlare].
 Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
-  </data>
+  <alternative>Content Manager is made possible by some [url="/Pages/About/Credits.xaml|_top"]open source and not only softw[/urlare].
+Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</alternative></data>
   <data name="About_MarkAllAsRead" xml:space="preserve">
     <value>모두 읽음</value>
   </data>
@@ -176,8 +177,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>사용 가능한 {solution}:</value>
   </data>
   <data name="AcError_CannotSolveProblem" xml:space="preserve">
-    <value>문제를 해결할 수 없음</value>
-  </data>
+    <value>문제를 해결할 수 없습니다</value>
+  <alternative>문제를 해결할 수 없음</alternative></data>
   <data name="AcError_SolutionsNotFound" xml:space="preserve">
     <value>사용할 수 있는 솔루션이 없습니다.</value>
   </data>
@@ -192,8 +193,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>활성화됨</value>
   </data>
   <data name="AcObject_Author_TooltipExt" xml:space="preserve">
-    <value>자신만의 모드를 만들 경우 설명(또는 물론 이름) 대신 이 필드를 사용하십시오</value>
-  </data>
+    <value>자신만의 모드를 만들 경우 설명(또는 물론 이름) 대신 이 필드를 사용하세요</value>
+  <alternative>자신만의 모드를 만들 경우 설명(또는 물론 이름) 대신 이 필드를 사용하십시오</alternative></data>
   <data name="AcObject_ChangeId_Tooltip" xml:space="preserve">
     <value>주의, ID 변경시 온라인에서 문제를 일으킬 수 있습니다. </value>
   </data>
@@ -249,14 +250,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>레이아웃 이름:</value>
   </data>
   <data name="AcObject_Url_TooltipExt" xml:space="preserve">
-    <value>이 개체에 대한 추가 정보와 새 버전이 포함된 웹 페이지가 있는 경우 이 필드를 다시 사용하십시오</value>
-  </data>
+    <value>이 개체에 대한 추가 정보와 새 버전이 포함된 웹 페이지가 있는 경우 이 필드를 다시 사용하세요</value>
+  <alternative>이 개체에 대한 추가 정보와 새 버전이 포함된 웹 페이지가 있는 경우 이 필드를 다시 사용하십시오</alternative></data>
   <data name="AcObject_UsingsRescan" xml:space="preserve">
     <value>재스캔</value>
   </data>
   <data name="AcObject_Version_TooltipExt" xml:space="preserve">
-    <value>자동 업데이트에 사용할 수 있음</value>
-  </data>
+    <value>자동 업데이트에 사용할 수 있습니다</value>
+  <alternative>자동 업데이트에 사용할 수 있음</alternative></data>
   <data name="AcObject_WeatherLabel" xml:space="preserve">
     <value>날씨:</value>
   </data>
@@ -288,8 +289,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>오디오</value>
   </data>
   <data name="AcSettings_Audio_CantGetTheListOfAudioDevices" xml:space="preserve">
-    <value>오디오 장치 목록을 가져올 수 없음</value>
-  </data>
+    <value>오디오 장치 목록을 가져올 수 없습니다</value>
+  <alternative>오디오 장치 목록을 가져올 수 없음</alternative></data>
   <data name="AcSettings_Audio_DeviceName" xml:space="preserve">
     <value>장치 이름:</value>
   </data>
@@ -300,8 +301,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>지연시간:</value>
   </data>
   <data name="AcSettings_Audio_LatencyLabel_Tooltip" xml:space="preserve">
-    <value>사운드에 문제가 있는 경우 낮음 또는 보통으로 전환</value>
-  </data>
+    <value>사운드에 문제가 있는 경우 낮음 또는 보통으로 전환하세요</value>
+  <alternative>사운드에 문제가 있는 경우 낮음 또는 보통으로 전환</alternative></data>
   <data name="AcSettings_Audio_LevelsHeader" xml:space="preserve">
     <value>레벨:</value>
   </data>
@@ -744,14 +745,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>보기 &amp; UI</value>
   </data>
   <data name="AdditionalContent_CannotInstall" xml:space="preserve">
-    <value>파일에서 콘텐츠를 설치할 수 없음</value>
-  </data>
+    <value>파일에서 콘텐츠를 설치할 수 없습니다</value>
+  <alternative>파일에서 콘텐츠를 설치할 수 없음</alternative></data>
   <data name="AdditionalContent_CannotInstallFormat" xml:space="preserve">
-    <value>설치할 수 없음 {0}</value>
-  </data>
+    <value>설치할 수 없습니다 {0}</value>
+  <alternative>설치할 수 없음 {0}</alternative></data>
   <data name="AdditionalContent_CannotUnpack" xml:space="preserve">
-    <value>풀 수 없음</value>
-  </data>
+    <value>풀 수 없습니다</value>
+  <alternative>풀 수 없음</alternative></data>
   <data name="AdditionalContent_CannotUnpack_Commentary" xml:space="preserve">
     <value>기록이 손상되었거나 비밀번호가 틀립니다.</value>
   </data>
@@ -957,14 +958,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>취소됨</value>
   </data>
   <data name="CarPreviews_CannotDownloadShowroom" xml:space="preserve">
-    <value>쇼룸 "{0}"을(를) 다운로드할 수 없음</value>
-  </data>
+    <value>쇼룸 "{0}"을(를) 다운로드할 수 없습니다</value>
+  <alternative>쇼룸 "{0}"을(를) 다운로드할 수 없음</alternative></data>
   <data name="CarPreviews_CannotInstallShowroom" xml:space="preserve">
-    <value>쇼룸 "{0}"을(를) 설치할 수 없음</value>
-  </data>
+    <value>쇼룸 "{0}"을(를) 설치할 수 없습니다</value>
+  <alternative>쇼룸 "{0}"을(를) 설치할 수 없음</alternative></data>
   <data name="CarPreviews_CannotSave" xml:space="preserve">
-    <value>미리 보기를 저장할 수 없음</value>
-  </data>
+    <value>미리 보기를 저장할 수 없습니다</value>
+  <alternative>미리 보기를 저장할 수 없음</alternative></data>
   <data name="CarPreviews_CannotUpdateForDisabled" xml:space="preserve">
     <value>해제된 차량 또는 스킨의 미리 보기를 업데이트할 수 없습니다.</value>
   </data>
@@ -1173,8 +1174,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>관리</value>
   </data>
   <data name="Common_MoreInformationInMainLog" xml:space="preserve">
-    <value>자세한 내용은 기본 로그.log를 참조하십시오.</value>
-  </data>
+    <value>자세한 내용은 기본 로그.log를 참조하세요.</value>
+  <alternative>자세한 내용은 기본 로그.log를 참조하십시오.</alternative></data>
   <data name="Common_NewBrandName" xml:space="preserve">
     <value>새 브랜드 이름</value>
   </data>
@@ -1245,8 +1246,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>압축</value>
   </data>
   <data name="ContentTools_FilesCompressor_Compressed" xml:space="preserve">
-    <value>압축된</value>
-  </data>
+    <value>압축됨</value>
+  <alternative>압축된</alternative></data>
   <data name="ContentTools_FilesCompressor_CompressionAlgorithm" xml:space="preserve">
     <value>압축 알고리즘:</value>
   </data>
@@ -1327,8 +1328,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>인풋 장치:</value>
   </data>
   <data name="Controls_InvalidDirectory_Commentary" xml:space="preserve">
-    <value>초기 디렉토리("cfg\controllers\saved setups") 또는 일부 하위 디렉토리에서 파일을 선택하십시오.</value>
-  </data>
+    <value>초기 디렉토리("cfg\controllers\saved setups") 또는 일부 하위 디렉토리에서 파일을 선택하세요.</value>
+  <alternative>초기 디렉토리("cfg\controllers\saved setups") 또는 일부 하위 디렉토리에서 파일을 선택하십시오.</alternative></data>
   <data name="Controls_InvertFfb" xml:space="preserve">
     <value>FFB 반전</value>
   </data>
@@ -1402,11 +1403,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>저장하지 않은 변경 사항에 대한 경고</value>
   </data>
   <data name="Controls_WarnAboutUnsaved_Tooltip" xml:space="preserve">
-    <value>그렇지 않으면 앱에서 변경된 이전 버전을 자동으로 휴지통으로 이동</value>
-  </data>
+    <value>그렇지 않으면 앱에서 변경된 이전 버전은 자동으로 휴지통으로 이동됩니다</value>
+  <alternative>그렇지 않으면 앱에서 변경된 이전 버전을 자동으로 휴지통으로 이동</alternative></data>
   <data name="CreateShowroom_CannotCreate" xml:space="preserve">
-    <value>새로운 쇼룸을 만들수 없음</value>
-  </data>
+    <value>새로운 쇼룸을 만들수 없습니다</value>
+  <alternative>새로운 쇼룸을 만들수 없음</alternative></data>
   <data name="CreateShowroom_InShadow" xml:space="preserve">
     <value>그림자 속에</value>
   </data>
@@ -1415,8 +1416,9 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="CreateShowroom_Panorama_Commentary" xml:space="preserve">
     <value>권장 형식: DDS 이미지, 32f.32f.32f, 5120×2560
-하지만 200MB를 낭비하고 싶지 않다면 TIFF 이미지, 픽셀당 96비트, ZIP</value>
-  </data>
+하지만 200MB를 낭비하고 싶지 않다면 TIFF 이미지, 픽셀당 96비트, ZIP 을 사용하세요</value>
+  <alternative>권장 형식: DDS 이미지, 32f.32f.32f, 5120×2560
+하지만 200MB를 낭비하고 싶지 않다면 TIFF 이미지, 픽셀당 96비트, ZIP</alternative></data>
   <data name="CreateShowroom_Panorama_Example" xml:space="preserve">
     <value>이와 유사한 것:</value>
   </data>
@@ -1454,8 +1456,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>이를 통해 CM은 Windows 8, 8.1 또는 10에서 적절한 알림을 사용할 수 있습니다.</value>
   </data>
   <data name="Dialogs_AcRootDirectorySelector_AppJustHasBeenUpdatedPleaseReview" xml:space="preserve">
-    <value>앱이 업데이트되었습니다. 다음 설정이 여전히 유효한지 검토하십시오.</value>
-  </data>
+    <value>앱이 업데이트 되었습니다. 다음 설정이 여전히 유효한지 검토하세요.</value>
+  <alternative>앱이 업데이트되었습니다. 다음 설정이 여전히 유효한지 검토하십시오.</alternative></data>
   <data name="Dialogs_AcRootDirectorySelector_Create" xml:space="preserve">
     <value>생성(권장)</value>
   </data>
@@ -1493,8 +1495,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>총 시간</value>
   </data>
   <data name="Dialogs_ImageEditor_CantLoadImage" xml:space="preserve">
-    <value>이미지를 로드할 수 없음</value>
-  </data>
+    <value>이미지를 로드할 수 없습니다</value>
+  <alternative>이미지를 로드할 수 없음</alternative></data>
   <data name="Dialogs_ImageEditor_UseMouseWheelOrKeysToAdjust" xml:space="preserve">
     <value>마우스 휠 또는 +/- 키를 사용하여 영역의 크기를 조정합니다. Ctrl 또는 Shift 키를 누른 채 정확도를 조정합니다.</value>
   </data>
@@ -1526,8 +1528,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>취소</value>
   </data>
   <data name="DownloadList_Cancelled" xml:space="preserve">
-    <value>취소된</value>
-  </data>
+    <value>취소됨</value>
+  <alternative>취소된</alternative></data>
   <data name="DownloadList_Cancelling" xml:space="preserve">
     <value>취소 중...</value>
   </data>
@@ -1550,11 +1552,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>설치 중...</value>
   </data>
   <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
-    <value>활성 다운로드 없음</value>
-  </data>
+    <value>활성화된 다운로드가 없습니다</value>
+  <alternative>활성 다운로드 없음</alternative></data>
   <data name="DownloadList_NothingFound" xml:space="preserve">
-    <value>찾을 수 없음</value>
-  </data>
+    <value>아무것도 없습니다</value>
+  <alternative>찾을 수 없음</alternative></data>
   <data name="DownloadList_Password" xml:space="preserve">
     <value>암호:</value>
   </data>
@@ -1562,8 +1564,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>일시 중지</value>
   </data>
   <data name="DownloadList_PluginsLoadFailed" xml:space="preserve">
-    <value>플러그인 목록을 로드할 수 없음</value>
-  </data>
+    <value>플러그인 목록을 로드할 수 없습니다</value>
+  <alternative>플러그인 목록을 로드할 수 없음</alternative></data>
   <data name="DownloadList_Restart" xml:space="preserve">
     <value>다시 시작</value>
   </data>
@@ -1589,14 +1591,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>AI 정렬 순서:</value>
   </data>
   <data name="Drive_AiArrangeOrder_Tooltip" xml:space="preserve">
-    <value>시작 그리드의 끝에서 가장 스마트한 봇을 시작하려면 Ascending으로 설정</value>
-  </data>
+    <value>시작 그리드의 끝에 가장 실력이 좋은 AI를 배치하려면 Ascending으로 설정하세요</value>
+  <alternative>시작 그리드의 끝에서 가장 스마트한 봇을 시작하려면 Ascending으로 설정</alternative></data>
   <data name="Drive_AiCarsLoading" xml:space="preserve">
-    <value>AI 차량 적재 중…</value>
-  </data>
+    <value>AI 차량 로딩중…</value>
+  <alternative>AI 차량 적재 중…</alternative></data>
   <data name="Drive_AiFiltering" xml:space="preserve">
-    <value>AI 자동차 필터링…</value>
-  </data>
+    <value>AI 자동차 필터링중…</value>
+  <alternative>AI 자동차 필터링…</alternative></data>
   <data name="Drive_AiLevelInDriverName" xml:space="preserve">
     <value>운전자 이름에 AI 레벨 표시</value>
   </data>
@@ -1604,17 +1606,17 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>역순으로 배열</value>
   </data>
   <data name="Drive_ArrangeInReverseOrder_Tooltip" xml:space="preserve">
-    <value>가장 강한 상대는 출발선에서 마지막이 됩니다</value>
-  </data>
+    <value>가장 실력이 좋은 상대는 출발선의 끝에 서게 됩니다</value>
+  <alternative>가장 강한 상대는 출발선에서 마지막이 됩니다</alternative></data>
   <data name="Drive_ArrangeRandomly" xml:space="preserve">
     <value>랜덤으로 정렬</value>
   </data>
   <data name="Drive_AvoidCarsWithoutSkinNumbers" xml:space="preserve">
-    <value>스킨 번호가 없는 차는 피하십시오.</value>
-  </data>
+    <value>스킨 번호가 없는 차는 피하세요.</value>
+  <alternative>스킨 번호가 없는 차는 피하십시오.</alternative></data>
   <data name="Drive_AvoidCarsWithoutSkinNumbers_Tooltip" xml:space="preserve">
-    <value>다양성을 크게 감소시킬 수 있음</value>
-  </data>
+    <value>다양성을 크게 감소시킬 수 있습니다</value>
+  <alternative>다양성을 크게 감소시킬 수 있음</alternative></data>
   <data name="Drive_CannotFilter" xml:space="preserve">
     <value>그리드에 적합한 차량을 필터링할 수 없습니다.</value>
   </data>
@@ -1622,23 +1624,23 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>GridType.json을 변경한 경우 해당 항목이 올바른지 확인합니다.</value>
   </data>
   <data name="Drive_CannotInitializeLua" xml:space="preserve">
-    <value>Lua를 초기화할 수 없음</value>
-  </data>
+    <value>Lua를 초기화할 수 없습니다</value>
+  <alternative>Lua를 초기화할 수 없음</alternative></data>
   <data name="Drive_CannotStart_CannotFindAnyCar" xml:space="preserve">
     <value>선택한 그리드 유형에 맞는 차량을 찾지 못했습니다.</value>
   </data>
   <data name="Drive_CannotStart_SelectNonDisabled" xml:space="preserve">
-    <value>일부 가능한 차량을 선택하십시오.</value>
-  </data>
+    <value>선택 가능한 차량을 선택하세요.</value>
+  <alternative>일부 가능한 차량을 선택하십시오.</alternative></data>
   <data name="Drive_CannotStart_SelectTrack" xml:space="preserve">
-    <value>트랙을 선택하십시오.</value>
-  </data>
+    <value>트랙을 선택하세요.</value>
+  <alternative>트랙을 선택하십시오.</alternative></data>
   <data name="Drive_CannotStart_SetOpponent" xml:space="preserve">
-    <value>하나 이상의 상대를 설정하십시오.</value>
-  </data>
+    <value>하나 이상의 상대를 설정하세요.</value>
+  <alternative>하나 이상의 상대를 설정하십시오.</alternative></data>
   <data name="Drive_CannotStart_Title" xml:space="preserve">
-    <value>경주를 시작할 수 없습니다.</value>
-  </data>
+    <value>레이스를 시작할 수 없습니다.</value>
+  <alternative>경주를 시작할 수 없습니다.</alternative></data>
   <data name="Drive_ConsiderTimezones" xml:space="preserve">
     <value>시간대 고려</value>
   </data>
@@ -1658,8 +1660,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>차종제한</value>
   </data>
   <data name="Drive_GridCarVarietyLimit_Tooltip" xml:space="preserve">
-    <value>이 슬라이더를 사용하면 AC가 적재할 수 있는 다양한 차량의 최대 수를 제한할 수 있습니다.</value>
-  </data>
+    <value>이 슬라이더를 사용하면 AC가 로딩할 수 있는 다양한 차량의 최대 수를 제한할 수 있습니다.</value>
+  <alternative>이 슬라이더를 사용하면 AC가 적재할 수 있는 다양한 차량의 최대 수를 제한할 수 있습니다.</alternative></data>
   <data name="Drive_InvalidScript" xml:space="preserve">
     <value>잘못된 스크립트</value>
   </data>
@@ -1748,8 +1750,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>앱은 스킨을 오름차순으로 정렬하지만, 필터를 존중하고 필요한 경우 모든 것을 섞습니다</value>
   </data>
   <data name="Drive_Quick_CantStartTheRace" xml:space="preserve">
-    <value>경주를 시작할 수 없습니다.</value>
-  </data>
+    <value>레이스를 시작할 수 없습니다.</value>
+  <alternative>경주를 시작할 수 없습니다.</alternative></data>
   <data name="Drive_Quick_CarSpecificFanatecSettings" xml:space="preserve">
     <value>차량별 Fanatec 설정</value>
   </data>
@@ -2138,8 +2140,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>아세토 코르사</value>
   </data>
   <data name="Main_CannotProcessArgument" xml:space="preserve">
-    <value>인수를 처리할 수 없음: “{0}”</value>
-  </data>
+    <value>인수를 처리할 수 없습니다: “{0}”</value>
+  <alternative>인수를 처리할 수 없음: “{0}”</alternative></data>
   <data name="Main_CannotProcessArgument_Commentary" xml:space="preserve">
     <value>올바른 형식인지 확인하세요</value>
   </data>
@@ -2503,8 +2505,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>새로 고침</value>
   </data>
   <data name="Online_Scanning_NothingFoundMessage" xml:space="preserve">
-    <value>아무것도 찾을 수 없음</value>
-  </data>
+    <value>아무것도 없습니다</value>
+  <alternative>아무것도 찾을 수 없음</alternative></data>
   <data name="Online_ServersFormat" xml:space="preserve">
     <value>{0} 서버</value>
   </data>
@@ -2725,8 +2727,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>상대:</value>
   </data>
   <data name="RaceGrid_OverTheLimit" xml:space="preserve">
-    <value>이 차량을 위한 피트가 없음</value>
-  </data>
+    <value>이 차량을 위한 피트가 없습니다</value>
+  <alternative>이 차량을 위한 피트가 없음</alternative></data>
   <data name="RaceGridEditor_AILimitationsAreActive_Tooltip" xml:space="preserve">
     <value>AI 제한이 설정되었습니다.</value>
   </data>
@@ -2761,8 +2763,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>다시 시도</value>
   </data>
   <data name="RaceResult_UnsaveReplay" xml:space="preserve">
-    <value>계속 재생하지 않음</value>
-  </data>
+    <value>리플레이를 저장하지 않습니다</value>
+  <alternative>계속 재생하지 않음</alternative></data>
   <data name="Replay_CannotShare" xml:space="preserve">
     <value>리플레이를 공유 할 수 없습니다</value>
   </data>
@@ -2784,11 +2786,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>RSR 앱이 없습니다.</value>
   </data>
   <data name="Rsr_AppIsMissing_Commentary" xml:space="preserve">
-    <value>[url="http://www.radiators-champ.com/RSRLiveTiming/"]여기[/url]를 다운로드하십시오.</value>
-  </data>
+    <value>[url="http://www.radiators-champ.com/RSRLiveTiming/"]여기[/url]를 다운로드하세요.</value>
+  <alternative>[url="http://www.radiators-champ.com/RSRLiveTiming/"]여기[/url]를 다운로드하십시오.</alternative></data>
   <data name="Rsr_Commentary" xml:space="preserve">
-    <value>브라우저에서 직접 RSR 세션을 시작하려면 [url="https://github.com/gro-ove/actools-cm-download-extension"]여기[/url]를 확장하십시오!</value>
-  </data>
+    <value>브라우저에서 직접 RSR 세션을 시작하려면 [url="https://github.com/gro-ove/actools-cm-download-extension"]여기[/url]를 확장하세요!</value>
+  <alternative>브라우저에서 직접 RSR 세션을 시작하려면 [url="https://github.com/gro-ove/actools-cm-download-extension"]여기[/url]를 확장하십시오!</alternative></data>
   <data name="Rsr_ContentIsMissing_Commentary" xml:space="preserve">
     <value>[url="https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit"]여기[/url]는 RSR에서 사용하는 모드 목록입니다(다운로드 링크 포함).</value>
   </data>
@@ -2880,8 +2882,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>화면에 맞추기</value>
   </data>
   <data name="Settings_Appearance_BindToScreen_Hint" xml:space="preserve">
-    <value>변경사항은 이미 표시된 창에는 영향이 없음</value>
-  </data>
+    <value>변경사항은 이미 표시된 창에는 영향이 없습니다</value>
+  <alternative>변경사항은 이미 표시된 창에는 영향이 없음</alternative></data>
   <data name="Settings_Appearance_Blur" xml:space="preserve">
     <value>블러(흐림)</value>
   </data>
@@ -2910,8 +2912,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>성능을 향상시키거나 관련 문제를 해결할 수 있습니다.</value>
   </data>
   <data name="Settings_Appearance_DoNotInterfereWithWindows" xml:space="preserve">
-    <value>윈도우의 위치 및 크기에 간섭하지 않음</value>
-  </data>
+    <value>윈도우의 위치 및 크기에 간섭하지 않습니다</value>
+  <alternative>윈도우의 위치 및 크기에 간섭하지 않음</alternative></data>
   <data name="Settings_Appearance_DoNotInterfereWithWindows_Tooltip" xml:space="preserve">
     <value>CM이 창을 올바르게 배치하지 못할 경우 사용합니다.[br][br]나는 여전히 이 문제에 대한 해결책을 찾고 있습니다.</value>
   </data>
@@ -2952,8 +2954,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>큰 검색 메뉴</value>
   </data>
   <data name="Settings_Appearance_LargeSearchBoxes_Tooltip" xml:space="preserve">
-    <value>F6/Ctrl+T/Ctrl+W/Ctrl+Tab/etc 등과 같은 바로 가기를 사용해 보십시오.</value>
-  </data>
+    <value>F6/Ctrl+T/Ctrl+W/Ctrl+Tab/etc 등과 같은 바로 가기를 사용해 보세요.</value>
+  <alternative>F6/Ctrl+T/Ctrl+W/Ctrl+Tab/etc 등과 같은 바로 가기를 사용해 보십시오.</alternative></data>
   <data name="Settings_Appearance_Links" xml:space="preserve">
     <value>링크:</value>
   </data>
@@ -3060,8 +3062,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>일반 쇼룸의 미리 보기 다운로드</value>
   </data>
   <data name="Settings_Content_DownloadPreviews_Tooltip" xml:space="preserve">
-    <value>모든 정보를 업데이트할 시간이 있을 것 같지 않음</value>
-  </data>
+    <value>모든 정보를 업데이트할 시간이 있을 것 같지 않습니다</value>
+  <alternative>모든 정보를 업데이트할 시간이 있을 것 같지 않음</alternative></data>
   <data name="Settings_Content_EMail" xml:space="preserve">
     <value>이메일</value>
   </data>
@@ -3108,8 +3110,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>새 것으로 표시:</value>
   </data>
   <data name="Settings_Content_MarkObjectsWithNotesWithIcon" xml:space="preserve">
-    <value>특별 아이콘으로 객체(예:차량 또는 트렉)에 메모로 표시</value>
-  </data>
+    <value>특별 아이콘으로 객체(예:차량 또는 트랙)에 메모로 표시</value>
+  <alternative>특별 아이콘으로 객체(예:차량 또는 트렉)에 메모로 표시</alternative></data>
   <data name="Settings_Content_MegaNzCredentials" xml:space="preserve">
     <value>Mega.nz 인증:</value>
   </data>
@@ -3177,8 +3179,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>카메라 중심점 자동 조정</value>
   </data>
   <data name="Settings_CustomShowroom_AutoAdjustPivot_Tooltip" xml:space="preserve">
-    <value>차량을 최대한 화면 중앙에 두려고 합니다(큰 계산은 하지 않음)</value>
-  </data>
+    <value>차량을 최대한 화면 중앙에 두려고 합니다(복잡한 계산은 하지 않음)</value>
+  <alternative>차량을 최대한 화면 중앙에 두려고 합니다(큰 계산은 하지 않음)</alternative></data>
   <data name="Settings_CustomShowroom_Bloom" xml:space="preserve">
     <value>HDR 사용</value>
   </data>
@@ -3207,8 +3209,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>마우스 버튼 반전</value>
   </data>
   <data name="Settings_CustomShowroom_InvertMouseButtons_Tooltip" xml:space="preserve">
-    <value>패닝하려면 마우스 왼쪽 버튼을 사용하고 모델을 회전하려면 오른쪽 버튼을 사용하십시오.</value>
-  </data>
+    <value>패닝하려면 마우스 왼쪽 버튼을 사용하고, 모델을 회전하려면 오른쪽 버튼을 사용하세요.</value>
+  <alternative>패닝하려면 마우스 왼쪽 버튼을 사용하고 모델을 회전하려면 오른쪽 버튼을 사용하십시오.</alternative></data>
   <data name="Settings_CustomShowroom_LiteHeader" xml:space="preserve">
     <value>라이트 쇼룸:</value>
   </data>
@@ -3273,8 +3275,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>트랙 상태에 소수점 값 허용</value>
   </data>
   <data name="Settings_Drive_AllowDecimalValuesForTrackState_Tooltip" xml:space="preserve">
-    <value>사용할 경우 일부 앱에 문제가 발생할 수 있음</value>
-  </data>
+    <value>사용할 경우 일부 앱에 문제가 발생할 수 있습니다</value>
+  <alternative>사용할 경우 일부 앱에 문제가 발생할 수 있음</alternative></data>
   <data name="Settings_Drive_AlwaysRecordGhost" xml:space="preserve">
     <value>항상 고스트를 핫랩 모드로 기록</value>
   </data>
@@ -3282,11 +3284,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>고스트가 숨겨져 있어도 핫랩을 하면서 기록</value>
   </data>
   <data name="Settings_Drive_BeepIfRaceIsCancelled" xml:space="preserve">
-    <value>경주가 취소된 경우 신호음:</value>
-  </data>
+    <value>레이스가 취소된 경우 신호음:</value>
+  <alternative>경주가 취소된 경우 신호음:</alternative></data>
   <data name="Settings_Drive_BeepIfRaceIsCancelled_Tooltip" xml:space="preserve">
-    <value>VR에서 게임이 충돌할 경우 발견에 도움이 될 수 있음</value>
-  </data>
+    <value>VR에서 게임이 충돌할 경우 문제 발견에 도움이 될 수 있습니다</value>
+  <alternative>VR에서 게임이 충돌할 경우 발견에 도움이 될 수 있음</alternative></data>
   <data name="Settings_Drive_CacheBrands_Tooltip" xml:space="preserve">
     <value>차량 선택 대화 상자</value>
   </data>
@@ -3300,8 +3302,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>트랙이 선택한 모드에 맞는지 확인합니다</value>
   </data>
   <data name="Settings_Drive_CheckIfTrackFitsSelectedMode_Tooltip" xml:space="preserve">
-    <value>사용하지 않도록 설정하는 것이 좋습니다. CM에서 잘못된 트랙의 설명을 수정해 줄 것입니다. 그러나 기본 태그가 아닌 태그를 사용하는 경우에는 반드시 사용합니다.</value>
-  </data>
+    <value>사용 하는것이 좋습니다. CM에서 잘못된 트랙의 설명을 수정해 줄 것입니다. 그러나 기본 태그가 아닌 태그를 사용하는 경우에는 반드시 사용하세요.</value>
+  <alternative>사용하지 않도록 설정하는 것이 좋습니다. CM에서 잘못된 트랙의 설명을 수정해 줄 것입니다. 그러나 기본 태그가 아닌 태그를 사용하는 경우에는 반드시 사용합니다.</alternative></data>
   <data name="Settings_Drive_ContinueRaceIfEscapePressed" xml:space="preserve">
     <value>Esc를 누른 경우 레이스 계속함</value>
   </data>
@@ -3401,7 +3403,18 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
 다른 값이 필요한 경우 당사에 문의하면 추가해 드립니다.
 
 작업 디렉토리는 문서의 Asset to Corsa 폴더로 설정됩니다.</value>
-  </data>
+  <alternative>이 명령은 acs.exe를 시작하기 전에 실행되지만 모든 ini 파일을 설정한 후에 실행됩니다.
+
+교체 값:
+ [b][mono]{type}[/mono][/b] — type of race;
+ [b][mono]{car}[/mono][/b] — car's name;
+ [b][mono]{car.id}[/mono][/b] — car's id;
+ [b][mono]{track}[/mono][/b] — track's name;
+ [b][mono]{track.id}[/mono][/b] — track's id.
+
+다른 값이 필요한 경우 당사에 문의하면 추가해 드립니다.
+
+작업 디렉토리는 문서의 Asset to Corsa 폴더로 설정됩니다.</alternative></data>
   <data name="Settings_Drive_QuickDriveHeader" xml:space="preserve">
     <value>빠른 주행:</value>
   </data>
@@ -3421,11 +3434,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>스킨, 차량 수정 및 트랙 레이아웃에 대한 추가 드롭다운 목록 표시</value>
   </data>
   <data name="Settings_Drive_ShowExtraDropDownListsForSkins_Tooltip" xml:space="preserve">
-    <value>앱이 약간 다운될 수 있음</value>
-  </data>
+    <value>앱이 다운될 수 있습니다</value>
+  <alternative>앱이 약간 다운될 수 있음</alternative></data>
   <data name="Settings_Drive_SkipPracticeResults" xml:space="preserve">
-    <value>연습 세션의 결과를 표시하지 않음</value>
-  </data>
+    <value>연습 세션의 결과를 표시하지 않습니다</value>
+  <alternative>연습 세션의 결과를 표시하지 않음</alternative></data>
   <data name="Settings_Drive_Starter" xml:space="preserve">
     <value>게임 실행기</value>
   </data>
@@ -3619,8 +3632,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>번역 방법</value>
   </data>
   <data name="Settings_Locale_Installed" xml:space="preserve">
-    <value>설치된</value>
-  </data>
+    <value>설치됨</value>
+  <alternative>설치된</alternative></data>
   <data name="Settings_Locale_LanguageLabel" xml:space="preserve">
     <value>언어:</value>
   </data>
@@ -3646,11 +3659,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>다시 시작</value>
   </data>
   <data name="Settings_Locale_RestartApp_Tooltip" xml:space="preserve">
-    <value>Close(닫기) 버튼을 클릭할 때 Ctrl 키를 누른 상태로 CM을 더 빨리 다시 시작합니다.</value>
-  </data>
+    <value>Ctrl 키를 누른채 Close(닫기) 버튼을 누르면 CM을 빠르게 재시작 합니다</value>
+  <alternative>Close(닫기) 버튼을 클릭할 때 Ctrl 키를 누른 상태로 CM을 더 빨리 다시 시작합니다.</alternative></data>
   <data name="Settings_Locale_RestartMessage" xml:space="preserve">
-    <value>변경 후 앱을 다시 시작하는 것을 잊지 마십시오.</value>
-  </data>
+    <value>변경 후 앱을 다시 시작하는 것을 잊지 마세요.</value>
+  <alternative>변경 후 앱을 다시 시작하는 것을 잊지 마십시오.</alternative></data>
   <data name="Settings_Locale_ResxMode" xml:space="preserve">
     <value>RESX 파일 변환</value>
   </data>
@@ -3667,8 +3680,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>시작하기 전에 언어 업데이트</value>
   </data>
   <data name="Settings_Locale_UpdateBeforeStartUp_Tooltip" xml:space="preserve">
-    <value>500ms 이상 소요되지 않음</value>
-  </data>
+    <value>500ms 이상 소요되지 않을 것입니다</value>
+  <alternative>500ms 이상 소요되지 않음</alternative></data>
   <data name="Settings_Locale_Use12HourClock" xml:space="preserve">
     <value>12시간 시계 사용</value>
   </data>
@@ -3706,8 +3719,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>이름 수정:</value>
   </data>
   <data name="Settings_Online_FixNames_Tooltip" xml:space="preserve">
-    <value>변경 후 새로 고침이 필요할 수 있음</value>
-  </data>
+    <value>변경 후 새로 고침이 필요할 수 있습니다</value>
+  <alternative>변경 후 새로 고침이 필요할 수 있음</alternative></data>
   <data name="Settings_Online_LanScanConnectionLabel" xml:space="preserve">
     <value>연결을 사용하여 검색:</value>
   </data>
@@ -3796,8 +3809,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>추가 :</value>
   </data>
   <data name="Settings_QuickSwitches_Description" xml:space="preserve">
-    <value>빠른 전환 - 프로그램의 모든 장소와 다른 설정을 변경할 수 있는 작은 팝업 메뉴입니다. 이 메뉴를 열려면 Alt+~를 누르거나 마우스 가운데 버튼을 클릭합니다. Alt+1을 눌러 설정을 변경할 수도 있습니다.Alt+9.[br][br]새로운 옵션이 필요한 경우 [url="https://acstuff.ru/app/#filename"](으)로 문의하십시오. [/url](으)</value>
-  </data>
+    <value>빠른 전환 - 프로그램의 모든 장소와 다른 설정을 변경할 수 있는 작은 팝업 메뉴입니다. 이 메뉴를 열려면 Alt+~를 누르거나 마우스 가운데 버튼을 클릭합니다. Alt+1을 눌러 설정을 변경할 수도 있습니다. Alt+9.[br][br]새로운 옵션이 필요한 경우 [url="https://acstuff.ru/app/#filename"](으)로 문의하세요. [/url](으)</value>
+  <alternative>빠른 전환 - 프로그램의 모든 장소와 다른 설정을 변경할 수 있는 작은 팝업 메뉴입니다. 이 메뉴를 열려면 Alt+~를 누르거나 마우스 가운데 버튼을 클릭합니다. Alt+1을 눌러 설정을 변경할 수도 있습니다.Alt+9.[br][br]새로운 옵션이 필요한 경우 [url="https://acstuff.ru/app/#filename"](으)로 문의하십시오. [/url](으)</alternative></data>
   <data name="Settings_QuickSwitches_Enable" xml:space="preserve">
     <value>빠른 전환 활성화</value>
   </data>
@@ -3844,6 +3857,30 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
  [b][mono]{type}[/mono][/b] — 레이스 유형;
  [b][mono]{car}[/mono][/b] —  차량 이름;
  [b][mono]{car.id}[/mono][/b] — 차량 ID;
+ [b][mono]{track}[/mono][/b] — 트랙 이름;
+ [b][mono]{track.id}[/mono][/b] — 트랙 ID;
+ [b][mono]{date}[/mono][/b] — 날짜 및 시간 적절한 형식;
+ [b][mono]{date_ac}[/mono][/b] — 날짜와 시간을 AC 형식으로 지정.
+
+편집:
+ [b][mono]{…:l}[/mono][/b] — 소문자;
+ [b][mono]{…:u}[/mono][/b] — 대문자;
+ [b][mono]{…:0}[/mono][/b] — 첫번째 기호만.
+
+예:
+ [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — 기본 Kunos 형식;
+ [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — something like “[w] bmw m3 e30 on brands hatch.acreplay”.
+
+다른 값이 필요하시면 저희에게 연락하시면 추가해 드리겠습니다.
+
+[b]경고[/b]:
+ 다음과 같은 기호는 사용하지 마세요 “[” or “]”!</value>
+  <alternative>레이스 후 재생을 저장하거나 자동 저장하는 데 사용됩니다.
+
+교체 값:
+ [b][mono]{type}[/mono][/b] — 레이스 유형;
+ [b][mono]{car}[/mono][/b] —  차량 이름;
+ [b][mono]{car.id}[/mono][/b] — 차량 ID;
  [b][mono]{track}[/mono][/b] — 트렉 이름;
  [b][mono]{track.id}[/mono][/b] — 트렉 ID;
  [b][mono]{date}[/mono][/b] — 날짜 및 시간 적절한 형식;
@@ -3861,8 +3898,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
 다른 값이 필요하시면 저희에게 연락하시면 추가해 드리겠습니다.
 
 [b]경고[/b]:
- 다음과 같은 기호는 사용하지 마세요 “[” or “]”!</value>
-  </data>
+ 다음과 같은 기호는 사용하지 마세요 “[” or “]”!</alternative></data>
   <data name="Settings_Sharing" xml:space="preserve">
     <value>공유</value>
   </data>
@@ -3876,8 +3912,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>폴더:</value>
   </data>
   <data name="Settings_Sharing_BigFilesFoldersUpdate_Tooltip" xml:space="preserve">
-    <value>폴더 목록을 다시 로드하려면 "업데이트"를 누르십시오.</value>
-  </data>
+    <value>폴더 목록을 다시 로드하려면 "업데이트"를 누르세요.</value>
+  <alternative>폴더 목록을 다시 로드하려면 "업데이트"를 누르십시오.</alternative></data>
   <data name="Settings_Sharing_BigFilesHeader" xml:space="preserve">
     <value>큰 파일:</value>
   </data>
@@ -3927,8 +3963,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>ui_skin.json을 제거할 수 없습니다.</value>
   </data>
   <data name="Skin_CannotRemoveUiSkin_Commentary" xml:space="preserve">
-    <value>파일이 사용되지 않는지 확인하십시오.</value>
-  </data>
+    <value>파일이 사용되지 않는지 확인하세요.</value>
+  <alternative>파일이 사용되지 않는지 확인하십시오.</alternative></data>
   <data name="Solution_CannotRestoreJsonFile" xml:space="preserve">
     <value>손상된 JSON을 복원할 수 없습니다.</value>
   </data>
@@ -3936,8 +3972,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>브랜드 배지 변경</value>
   </data>
   <data name="Solution_ChangeBrandBadge_Details" xml:space="preserve">
-    <value>목록에서 새 브랜드의 배지를 선택하십시오.</value>
-  </data>
+    <value>목록에서 새 브랜드의 배지를 선택하세요.</value>
+  <alternative>목록에서 새 브랜드의 배지를 선택하십시오.</alternative></data>
   <data name="Solution_ChangeParent" xml:space="preserve">
     <value>상위 차량 변경</value>
   </data>
@@ -4065,8 +4101,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>이름 설정</value>
   </data>
   <data name="Solution_SetName_Details" xml:space="preserve">
-    <value>새 이름을 설정하십시오.</value>
-  </data>
+    <value>새 이름을 설정하세요.</value>
+  <alternative>새 이름을 설정하십시오.</alternative></data>
   <data name="Solution_SetName_Prompt" xml:space="preserve">
     <value>새 이름 입력:</value>
   </data>
@@ -4098,17 +4134,17 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>난이도</value>
   </data>
   <data name="Srs_CarIsMissing_Commentary" xml:space="preserve">
-    <value>필요한 모든 모드가 설치되어 있는지 확인하십시오.</value>
-  </data>
+    <value>필요한 모든 모드가 설치되어 있는지 확인하세요.</value>
+  <alternative>필요한 모든 모드가 설치되어 있는지 확인하십시오.</alternative></data>
   <data name="Srs_Commentary" xml:space="preserve">
-    <value>이 섹션을 사용할 수 없거나 참가 시간을 놓친 경우 대신 온라인 섹션을 사용하십시오.</value>
-  </data>
+    <value>이 섹션을 사용할 수 없거나 참가 시간을 놓친 경우 대신 온라인 섹션을 사용하세요.</value>
+  <alternative>이 섹션을 사용할 수 없거나 참가 시간을 놓친 경우 대신 온라인 섹션을 사용하십시오.</alternative></data>
   <data name="Srs_PortLabel" xml:space="preserve">
     <value>포트:</value>
   </data>
   <data name="Srs_ReadyNotification" xml:space="preserve">
-    <value>레이스에 참가하려면 클릭하십시오.</value>
-  </data>
+    <value>레이스에 참가하려면 클릭하세요.</value>
+  <alternative>레이스에 참가하려면 클릭하십시오.</alternative></data>
   <data name="Srs_ReadyNotificationHeader" xml:space="preserve">
     <value>SRS 서버가 준비되었습니다.</value>
   </data>
@@ -4188,8 +4224,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>고급 맞춤형 쇼룸</value>
   </data>
   <data name="Toolbar_CustomShowroom_Fancy_Tooltip" xml:space="preserve">
-    <value>느리고 덜 정확하지만 적절한 조명과 반사가 있음</value>
-  </data>
+    <value>느리고 정확도가 떨어지지만, 적절한 조명과 반사가 있습니다</value>
+  <alternative>느리고 덜 정확하지만 적절한 조명과 반사가 있음</alternative></data>
   <data name="Toolbar_CustomShowroom_Lite" xml:space="preserve">
     <value>라이트 커스텀 쇼룸</value>
   </data>
@@ -4395,8 +4431,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>쇼룸에서 차량 보기</value>
   </data>
   <data name="Toolbar_ShowroomOptions_Tooltip" xml:space="preserve">
-    <value>쇼룸, 필터 등을 선택하십시오.</value>
-  </data>
+    <value>쇼룸, 필터 등을 선택하세요.</value>
+  <alternative>쇼룸, 필터 등을 선택하십시오.</alternative></data>
   <data name="Toolbar_Test_FilterTooltip" xml:space="preserve">
     <value>쇼룸,필터 등 사용(Ctrl+G)</value>
   </data>
@@ -4455,14 +4491,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>카메라 위치를 수동으로 설정한 다음 F8 키를 눌러 촬영을 시작합니다.</value>
   </data>
   <data name="Toolbar_UpdatePreviewsOptions_Tooltip" xml:space="preserve">
-    <value>쇼룸, 필터, 카메라 위치 등을 선택하십시오.</value>
-  </data>
+    <value>쇼룸, 필터, 카메라 위치 등을 선택하세요.</value>
+  <alternative>쇼룸, 필터, 카메라 위치 등을 선택하십시오.</alternative></data>
   <data name="Toolbar_UpdatePreviewWithoutShooting" xml:space="preserve">
     <value>촬영하지 않고 보기</value>
   </data>
   <data name="Toolbar_UpdatePreviewWithoutShooting_Tooltip" xml:space="preserve">
-    <value>기존 이미지만 선택하십시오.</value>
-  </data>
+    <value>기존 이미지만 선택하세요.</value>
+  <alternative>기존 이미지만 선택하십시오.</alternative></data>
   <data name="Toolbar_UploadAndShare" xml:space="preserve">
     <value>업로드 및 공유</value>
   </data>
@@ -4491,8 +4527,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>다음 세션으로 전달되는 그립의 추가 양</value>
   </data>
   <data name="TrackStateEditor_InitialGrip" xml:space="preserve">
-    <value>초기 그립</value>
-  </data>
+    <value>초기 그립 양</value>
+  <alternative>초기 그립</alternative></data>
   <data name="TrackStateEditor_InitialGrip_Tooltip" xml:space="preserve">
     <value>세션 시작 시 그립 양</value>
   </data>
@@ -4545,7 +4581,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>파일이 너무 큽니다. 제한은 {0}입니다.</value>
   </data>
   <data name="Weather_KunosReadme" xml:space="preserve">
-    <value>우리는 주변 온도, 날씨, 낮 시간에 비례하여 아스팔트 온도를 결정하는 그래프를 만들기 위해 방정식을 사용하고 있습니다.
+    <value>우리는 주변 온도, 날씨, 낮 시간에 비례하여 노면 온도를 결정하는 그래프를 만들기 위해 방정식을 사용하고 있습니다.
 
 url="http://fooplot.com/plot/3x7y44pfli"]이 링크[/url]에서 그래프를 확인합니다.
 
@@ -4554,7 +4590,15 @@ url="http://fooplot.com/plot/3x7y44pfli"]이 링크[/url]에서 그래프를 확
 
 ((-10*1)*x)+10*1)에서 1개의 값을 변경하여 그래프에서 결과를 확인합니다.
 허용되는 값은 -1 ~ 1입니다.</value>
-  </data>
+  <alternative>우리는 주변 온도, 날씨, 낮 시간에 비례하여 아스팔트 온도를 결정하는 그래프를 만들기 위해 방정식을 사용하고 있습니다.
+
+url="http://fooplot.com/plot/3x7y44pfli"]이 링크[/url]에서 그래프를 확인합니다.
+
+사용되는 방정식은 다음과 같습니다.
+[mono](((-10×α)*x)+10*α)*2((exp(-6*x)*(0.4*sin(6*x))+0.1)*(15/1.5)*sin(0.9*x))+15[/mono]
+
+((-10*1)*x)+10*1)에서 1개의 값을 변경하여 그래프에서 결과를 확인합니다.
+허용되는 값은 -1 ~ 1입니다.</alternative></data>
   <data name="Weather_SeemsEmpty" xml:space="preserve">
     <value>빈 것 같나요?</value>
   </data>
@@ -4599,7 +4643,10 @@ url="http://fooplot.com/plot/3x7y44pfli"]이 링크[/url]에서 그래프를 확
  • [b]0%:[/b] 구름에 미치는 색상 효과만 고려한다.
  • [b]50%:[/b] 구름 색상의 50%, 효과의 50%
  • [b] 100%:[/b] 구름의 색상만 고려</value>
-  </data>
+  <alternative>구름에 미치는 다른 색상의 영향을 조절합니다.
+ • [b]0%:[/b] 구름에 미치는 색상 효과만 고려한다.
+ • [b]50%:[/b] 구름 색상의 50%, 효과의 50%
+ • [b] 100%:[/b] 구름의 색상만 고려</alternative></data>
   <data name="WeatherEdit_Distance" xml:space="preserve">
     <value>거리</value>
   </data>
@@ -4634,8 +4681,8 @@ url="http://fooplot.com/plot/3x7y44pfli"]이 링크[/url]에서 그래프를 확
     <value>온도 계수</value>
   </data>
   <data name="WeatherEdit_TemperatureCoefficient_Tooltip" xml:space="preserve">
-    <value>날씨, 주변 온도 및 시간에 따른 아스팔트 온도 변화를 생성합니다. 자세한 내용은 "readme_weather.txt"를 참조하십시오</value>
-  </data>
+    <value>날씨, 주변 온도 및 시간에 따른 아스팔트 온도 변화를 생성합니다. 자세한 내용은 "readme_weather.txt"를 참조하세요</value>
+  <alternative>날씨, 주변 온도 및 시간에 따른 아스팔트 온도 변화를 생성합니다. 자세한 내용은 "readme_weather.txt"를 참조하십시오</alternative></data>
   <data name="WeatherEdit_TemperatureCoefficientAirTemperature" xml:space="preserve">
     <value>공기 온도.</value>
   </data>
@@ -4655,8 +4702,8 @@ url="http://fooplot.com/plot/3x7y44pfli"]이 링크[/url]에서 그래프를 확
     <value>데이터가 너무 많을 수 있습니다.</value>
   </data>
   <data name="WebSource_FailedToShareTitle" xml:space="preserve">
-    <value>설정을 공유할 수 없음</value>
-  </data>
+    <value>설정을 공유할 수 없습니다</value>
+  <alternative>설정을 공유할 수 없음</alternative></data>
   <data name="WebSource_SharedDescriptionTitle" xml:space="preserve">
     <value>{0}에 대한 설명</value>
   </data>

@@ -148,8 +148,8 @@
     <value>잠시만 기다려 주세요…</value>
   </data>
   <data name="FatalCrashSuggestionsMessage" xml:space="preserve">
-    <value>오류 세부 정보를 클립보드에 [url=cmd://copy]복사[/url]합니다. 이 앱을  [url=cmd://restart]restart[/url] 다시 시작[/url]하거나  [url=cmd://exit]닫으십시오.[/url]</value>
-  </data>
+    <value>오류 세부 정보를 클립보드에 [url=cmd://copy]복사[/url]합니다. 이 앱을  [url=cmd://restart]restart[/url] 다시 시작[/url]하거나  [url=cmd://exit]닫으세요.[/url]</value>
+  <alternative>오류 세부 정보를 클립보드에 [url=cmd://copy]복사[/url]합니다. 이 앱을  [url=cmd://restart]restart[/url] 다시 시작[/url]하거나  [url=cmd://exit]닫으십시오.[/url]</alternative></data>
   <data name="FatalError_Message" xml:space="preserve">
     <value>앱에 문제가 발생하여 다시 시작해야 합니다.</value>
   </data>

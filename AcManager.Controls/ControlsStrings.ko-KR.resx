@@ -124,8 +124,8 @@
     <value>제작자:</value>
   </data>
   <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
-    <value>미리 보기를 업데이트할 수 없음</value>
-  </data>
+    <value>미리 보기를 업데이트할 수 없습니다</value>
+  <alternative>미리 보기를 업데이트할 수 없음</alternative></data>
   <data name="AcObject_CannotUpdatePreview_TrackCommentary" xml:space="preserve">
     <value>스크린샷을 하나 이상 만들어야 합니다.</value>
   </data>
@@ -361,8 +361,8 @@
     <value>대기중...</value>
   </data>
   <data name="Common_WhatIsIt" xml:space="preserve">
-    <value>그것은 무엇일까요?</value>
-  </data>
+    <value>그것이 무엇인가요?</value>
+  <alternative>그것은 무엇일까요?</alternative></data>
   <data name="Controls_BuiltInPresets" xml:space="preserve">
     <value>내장 프리셋</value>
   </data>
@@ -475,8 +475,8 @@
     <value>밝기</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_CannotUpdate" xml:space="preserve">
-    <value>주변 그림자를 업데이트할 수 없음</value>
-  </data>
+    <value>주변 그림자를 업데이트할 수 없습니다</value>
+  <alternative>주변 그림자를 업데이트할 수 없음</alternative></data>
   <data name="CustomShowroom_AmbientShadows_Diffusion" xml:space="preserve">
     <value>확산</value>
   </data>
@@ -526,11 +526,11 @@
     <value>크기</value>
   </data>
   <data name="CustomShowroom_CannotExport" xml:space="preserve">
-    <value>질감을 내보낼수 없음</value>
-  </data>
+    <value>질감을 내보낼 수 없습니다</value>
+  <alternative>질감을 내보낼수 없음</alternative></data>
   <data name="CustomShowroom_CannotStart" xml:space="preserve">
-    <value>사용자 지정 쇼룸을 시작할 수 없음</value>
-  </data>
+    <value>사용자 지정 쇼룸을 시작할 수 없습니다</value>
+  <alternative>사용자 지정 쇼룸을 시작할 수 없음</alternative></data>
   <data name="CustomShowroom_Control_Lights" xml:space="preserve">
     <value>라이트</value>
   </data>
@@ -559,7 +559,12 @@
 혼합 모드: [b]{2}[/b]
 알파 테스트: [b]{3}[/b]
 깊이 모드: [b]{4}[/b]</value>
-  </data>
+  <alternative>재료명: [b]{0}[/b]
+셰이더: [b]{1}[/b]
+
+혼합 모드: [b]{2}[/b]
+알파 테스트: [b]{3}[/b]
+깊이 모드: [b]{4}[/b]</alternative></data>
   <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
     <value>개체 이름: [b]{0}[/b]
 클래스: [b]{1}[/b]
@@ -576,7 +581,21 @@ LOD 삽입: [b]{8}[/b]
 LOD 삽입: [b]{9}[/b]
 
 재료: [b]{10}[/b]</value>
-  </data>
+  <alternative>개체 이름: [b]{0}[/b]
+클래스: [b]{1}[/b]
+
+활성: [b]{2}[/b]
+렌더링 가능: [b]{3}[/b]
+표시: [b]{4}[/b]
+
+투명: [b]{5}[/b]
+그림자 선정: [b]{6}[/b]
+
+계층: [b]{7}[/b]
+LOD 삽입: [b]{8}[/b]
+LOD 삽입: [b]{9}[/b]
+
+재료: [b]{10}[/b]</alternative></data>
   <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
     <value>재료:</value>
   </data>
@@ -587,8 +606,8 @@ LOD 삽입: [b]{9}[/b]
     <value>질감:</value>
   </data>
   <data name="CustomShowroom_SelectedHeader" xml:space="preserve">
-    <value>선택된</value>
-  </data>
+    <value>선택됨</value>
+  <alternative>선택된</alternative></data>
   <data name="CustomShowroom_ShaderProperties" xml:space="preserve">
     <value>셰이더 속성:</value>
   </data>
@@ -647,14 +666,14 @@ LOD 삽입: [b]{9}[/b]
     <value>차원을 파악할 수 없습니다.</value>
   </data>
   <data name="CustomShowroom_ViewMapping_ParsingFailed_Commentary" xml:space="preserve">
-    <value>올바른 형식을 사용하십시오.</value>
-  </data>
+    <value>올바른 형식을 사용하세요.</value>
+  <alternative>올바른 형식을 사용하십시오.</alternative></data>
   <data name="CustomShowroom_ViewMapping_Prompt" xml:space="preserve">
     <value>크기 (\[Width]×\[Height]):</value>
   </data>
   <data name="FindInformation_Description" xml:space="preserve">
-    <value>연도 또는 설명을 선택하고 확인을 누른 다음 Ctrl 키를 누른 상태에서 설명을 대신 확장하십시오.</value>
-  </data>
+    <value>연도 또는 설명을 선택하고 확인을 누른 다음 Ctrl 키를 누른 상태에서 설명을 대신 확장하세요.</value>
+  <alternative>연도 또는 설명을 선택하고 확인을 누른 다음 Ctrl 키를 누른 상태에서 설명을 대신 확장하십시오.</alternative></data>
   <data name="FindInformation_SaveAndClose" xml:space="preserve">
     <value>저장 &amp; 닫기</value>
   </data>
@@ -755,8 +774,8 @@ LOD 삽입: [b]{9}[/b]
     <value>전체 화면</value>
   </data>
   <data name="QuickSwitches_Fullscreen_Tooltip" xml:space="preserve">
-    <value>전체 화면 모드(예: 섀도우 재생이 없으면 작동하지 않음)</value>
-  </data>
+    <value>전체 화면 모드(예: 섀도우 재생이 없으면 작동하지 않습니다)</value>
+  <alternative>전체 화면 모드(예: 섀도우 재생이 없으면 작동하지 않음)</alternative></data>
   <data name="QuickSwitches_Header" xml:space="preserve">
     <value>빠른 전환</value>
   </data>
@@ -827,8 +846,8 @@ LOD 삽입: [b]{9}[/b]
     <value>비디오 설정 사전 설정 간 전환</value>
   </data>
   <data name="Replay_CrMessage" xml:space="preserve">
-    <value>리플레이는 다음 레이스 이후 덮어 쓰기됩니다. 유지하려면 이름을 변경하십시오</value>
-  </data>
+    <value>리플레이는 다음 레이스 이후 덮어 쓰기됩니다. 유지하려면 이름을 변경하세요</value>
+  <alternative>리플레이는 다음 레이스 이후 덮어 쓰기됩니다. 유지하려면 이름을 변경하십시오</alternative></data>
   <data name="Replay_CrMessage_Commentary" xml:space="preserve">
     <value>설정으로 이동하여 "자동으로 리플레이 저장"옵션을 활성화하여 소중한 것을 잃지 않도록 할 수 있습니다.</value>
   </data>
@@ -857,8 +876,8 @@ LOD 삽입: [b]{9}[/b]
     <value>링크가 클립보드에 복사됨</value>
   </data>
   <data name="Share_SharedMessageAlternative" xml:space="preserve">
-    <value>링크를 열려면 클릭하십시오.</value>
-  </data>
+    <value>링크를 열려면 클릭하세요.</value>
+  <alternative>링크를 열려면 클릭하십시오.</alternative></data>
   <data name="Share_VerifyMessage" xml:space="preserve">
     <value>작성자 이름: [b]{0}[/b]
 항목 이름: [b]{1}[/b]
@@ -937,14 +956,14 @@ LOD 삽입: [b]{9}[/b]
     <value>비디오를 재생할 수 없습니다.</value>
   </data>
   <data name="Video_CannotPlay_Commentary" xml:space="preserve">
-    <value>설정으로 이동하여 VLC 플러그인을 사용하도록 설정하십시오.</value>
-  </data>
+    <value>설정으로 이동하여 VLC 플러그인을 사용하도록 설정하세요.</value>
+  <alternative>설정으로 이동하여 VLC 플러그인을 사용하도록 설정하십시오.</alternative></data>
   <data name="VideoViewer_CannotPlay" xml:space="preserve">
     <value>비디오를 재생할 수 없습니다.</value>
   </data>
   <data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
-    <value>VLC 플러그인이 올바르게 설치되었는지 확인하십시오.</value>
-  </data>
+    <value>VLC 플러그인이 올바르게 설치되었는지 확인하세요.</value>
+  <alternative>VLC 플러그인이 올바르게 설치되었는지 확인하십시오.</alternative></data>
   <data name="WebBrowser_Prompt" xml:space="preserve">
     <value>웹 페이지에 다음과 같이 표시됩니다.</value>
   </data>

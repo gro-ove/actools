@@ -1240,8 +1240,8 @@
     <value>Orijinal başlatıcı bulunamadı; lütfen başlatıcıyı değiştirin.</value>
   </data>
   <data name="OfficialStarter_RestoreLauncherManually" xml:space="preserve">
-    <value>Orijinal başlatıcının yamasız hali geri getirilemiyor. Lütfen el ile değiştirin. “AssettoCorsa.exe”'yi, “AssettoCorsa_backup_sp.exe” ile değiştirmeniz gerekmekte.</value>
-  </data>
+    <value>Orijinal başlatıcının yamasız hali geri getirilemiyor. Lütfen el ile geri getirin. “AssettoCorsa.exe”'yi, “AssettoCorsa_backup_sp.exe” ile değiştirmeniz gerekmekte.</value>
+  <alternative>Orijinal başlatıcının yamasız hali geri getirilemiyor. Lütfen el ile değiştirin. “AssettoCorsa.exe”'yi, “AssettoCorsa_backup_sp.exe” ile değiştirmeniz gerekmekte.</alternative></data>
   <data name="OfficialStarter_UpdateAC" xml:space="preserve">
     <value>Lütfen Assetto Corsa'yı güncelleştirin ya da başlatıcıyı değiştirin</value>
   </data>
@@ -1538,5 +1538,32 @@
   </data>
   <data name="Online_LoadingActualInformation" xml:space="preserve">
     <value>Gerçek sunucu bilgileri yükleniyor...</value>
+  </data>
+  <data name="Drive_Grid_FilteredBy" xml:space="preserve">
+    <value>Şuna göre filtrelendi...</value>
+  </data>
+  <data name="LogHelper_ShaderIsMissing" xml:space="preserve">
+    <value>Gölgelendirme “{0}” kayıp (AC güncelleştirmelerinden birinde kaldırılmış olabilir), modelin düzeltilmesi gerek</value>
+  </data>
+  <data name="OfficialStarter_DownloadAndRestore" xml:space="preserve">
+    <value>Orijinal başlatıcının yamasız hali geri getirilemiyor. Lütfen [url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk"]el ile geri getirin[/url].</value>
+  </data>
+  <data name="OfficialStarter_RestoreOriginalLauncher" xml:space="preserve">
+    <value>Lütfen orijinal başlatıcıya geri dönüp yeniden deneyin (ya da başlatıcıyı değiştirin)</value>
+  </data>
+  <data name="Online_TryingToFindOutHttpPort" xml:space="preserve">
+    <value>HTTP portunun tespiti için pingleniyor...</value>
+  </data>
+  <data name="Settings_Starter_Official_Description" xml:space="preserve">
+    <value>Resmi Kunos metodu; hızlı ve güvenilir değil, ancak yama gerektirmez</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
+    <value>Başlatıcı+</value>
+  </data>
+  <data name="Settings_Starter_UiModule" xml:space="preserve">
+    <value>Arayüz Modülü</value>
+  </data>
+  <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
+    <value>Arayüz modülü "CM Helper" yüklendi ve etkinleştirildi. Yarıştan önce AssettoCorsa.exe'yi yeniden başlatmayı unutmayın!</value>
   </data>
 </root>

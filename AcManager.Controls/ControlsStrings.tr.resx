@@ -819,8 +819,8 @@ Materyal: [b]{10}[/b]</alternative></data>
     <value>Pozlama</value>
   </data>
   <data name="QuickSwitches_Header" xml:space="preserve">
-    <value>Çabuk değiştir</value>
-  </data>
+    <value>Hızlı menü</value>
+  <alternative>Çabuk değiştir</alternative></data>
   <data name="QuickSwitches_LockCamera_Tooltip" xml:space="preserve">
     <value>Kamerayı ufuk çizgisine sabitle</value>
   </data>
@@ -936,5 +936,8 @@ Girdi türü: [b]{2}[/b]</value>
   </data>
   <data name="Common_Rating" xml:space="preserve">
     <value>Derecelendirme:</value>
+  </data>
+  <data name="Controls_MinimumForce" xml:space="preserve">
+    <value>Minimum kuvvet</value>
   </data>
 </root>
