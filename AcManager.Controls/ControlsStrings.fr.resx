@@ -921,4 +921,67 @@ Depth mode (Mode de profondeur) : [b]{4}[/b]</value>
   <data name="Common_Rating" xml:space="preserve">
     <value>Évaluation:</value>
   </data>
+  <data name="Common_FpsPostfix" xml:space="preserve">
+    <value> FPS</value>
+  </data>
+  <data name="Common_MinutePostfix" xml:space="preserve">
+    <value> minute</value>
+  </data>
+  <data name="Common_PointsPostfix" xml:space="preserve">
+    <value> point</value>
+  </data>
+  <data name="Common_PsiPostfix" xml:space="preserve">
+    <value> psi</value>
+  </data>
+  <data name="Common_CelsiusFormat" xml:space="preserve">
+    <value>{0:F0} °C</value>
+  </data>
+  <data name="TableHeader_Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Diffusion" xml:space="preserve">
+    <value>Diffusion</value>
+  </data>
+  <data name="QuickSwitches_Fov" xml:space="preserve">
+    <value>FOV</value>
+  </data>
+  <data name="Controls_Gain" xml:space="preserve">
+    <value>Gain</value>
+  </data>
+  <data name="Controls_GammaAxis" xml:space="preserve">
+    <value>Gamma</value>
+  </data>
+  <data name="ImageViewer_DefaultName" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="Theme_Nordschleife" xml:space="preserve">
+    <value>Nordschleife</value>
+  </data>
+  <data name="Common_Options" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="AssistsPreset_Pro" xml:space="preserve">
+    <value>Pro</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Common_Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Showroom_DialogHeader" xml:space="preserve">
+    <value>Showroom</value>
+  </data>
+  <data name="CustomShowroom_SkinHeader" xml:space="preserve">
+    <value>Skin</value>
+  </data>
+  <data name="TableHeader_Visible" xml:space="preserve">
+    <value>Visible</value>
+  </data>
+  <data name="TableHeader_X" xml:space="preserve">
+    <value>X</value>
+  </data>
+  <data name="TableHeader_Y" xml:space="preserve">
+    <value>Y</value>
+  </data>
 </root>

@@ -4597,4 +4597,256 @@ mentre aspetta che il disco ottenga i dati e ci saranno molti meno dati da legge
   <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
     <value>Nessun download attivo</value>
   </data>
+  <data name="AcObject_IdLabel" xml:space="preserve">
+    <value>ID:</value>
+  </data>
+  <data name="AcSettings_Audio" xml:space="preserve">
+    <value>Audio</value>
+  </data>
+  <data name="AcSettings_Audio_Ui" xml:space="preserve">
+    <value>UI</value>
+  </data>
+  <data name="AcSettings_Video" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="AcSettings_Video_Benchmark" xml:space="preserve">
+    <value>Benchmark</value>
+  </data>
+  <data name="AcSettings_Video_Framerate" xml:space="preserve">
+    <value>Framerate</value>
+  </data>
+  <data name="AcSettings_Video_Fxaa" xml:space="preserve">
+    <value>FXAA</value>
+  </data>
+  <data name="AcSettings_Video_MipLodBias" xml:space="preserve">
+    <value>Mip LOD bias</value>
+  </data>
+  <data name="AcSettings_Video_MotionBlur" xml:space="preserve">
+    <value>Motion blur</value>
+  </data>
+  <data name="AcSettings_Video_OculusHeader" xml:space="preserve">
+    <value>Oculus:</value>
+  </data>
+  <data name="AcSettings_Video_PixelsPerDisplay" xml:space="preserve">
+    <value>Pixels per display</value>
+  </data>
+  <data name="AcSettings_Video_PostProcessingHeader" xml:space="preserve">
+    <value>Post-Processing:</value>
+  </data>
+  <data name="AdditionalContent_IdFormat" xml:space="preserve">
+    <value>ID: {0}</value>
+  </data>
+  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
+    <value>[/b][i]?[/i][b]</value>
+  </data>
+  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Car_SkinFormat" xml:space="preserve">
+    <value>Skin: {0}</value>
+  </data>
+  <data name="Common_IdFormat" xml:space="preserve">
+    <value>ID: {0}</value>
+  </data>
+  <data name="Common_MillisecondsFormat" xml:space="preserve">
+    <value>{0:F2} ms</value>
+  </data>
+  <data name="Common_Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="Controls_MguK" xml:space="preserve">
+    <value>MGU-K:</value>
+  </data>
+  <data name="Controls_OppositeLockSpeed" xml:space="preserve">
+    <value>Opposite lock speed</value>
+  </data>
+  <data name="Controls_Turbo" xml:space="preserve">
+    <value>Turbo:</value>
+  </data>
+  <data name="CreateShowroom_PanoramaLabel" xml:space="preserve">
+    <value>Panorama:</value>
+  </data>
+  <data name="List_Apps" xml:space="preserve">
+    <value>{0} app</value>
+  </data>
+  <data name="List_Replays" xml:space="preserve">
+    <value>{0} replay</value>
+  </data>
+  <data name="List_ServerPresets" xml:space="preserve">
+    <value>{0} preset</value>
+  </data>
+  <data name="List_Showrooms" xml:space="preserve">
+    <value>{0} showroom</value>
+  </data>
+  <data name="List_Skins" xml:space="preserve">
+    <value>{0} skin</value>
+  </data>
+  <data name="LiveryIcon_Style_Miura" xml:space="preserve">
+    <value>Miura</value>
+  </data>
+  <data name="LiveryIcon_Style_Tesla" xml:space="preserve">
+    <value>Tesla</value>
+  </data>
+  <data name="Main_AssettoCorsa" xml:space="preserve">
+    <value>Assetto Corsa</value>
+  </data>
+  <data name="Main_ContentManager" xml:space="preserve">
+    <value>Content Manager</value>
+  </data>
+  <data name="Main_Lan" xml:space="preserve">
+    <value>LAN</value>
+  </data>
+  <data name="Main_Live" xml:space="preserve">
+    <value>Live</value>
+  </data>
+  <data name="Main_Media" xml:space="preserve">
+    <value>Media</value>
+  </data>
+  <data name="Main_Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Main_Rsr" xml:space="preserve">
+    <value>RSR</value>
+  </data>
+  <data name="Main_Server" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="Main_Srs" xml:space="preserve">
+    <value>SRS</value>
+  </data>
+  <data name="Online_FilterBooking_Short" xml:space="preserve">
+    <value>Booking</value>
+  </data>
+  <data name="Online_FilterPassword_Short" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Online_PasswordLabel" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="Online_ServersFormat" xml:space="preserve">
+    <value>{0} server</value>
+  </data>
+  <data name="Online_Sorting_Ping" xml:space="preserve">
+    <value>Ping</value>
+  </data>
+  <data name="Settings_Drive_Starter" xml:space="preserve">
+    <value>Game starter</value>
+  </data>
+  <data name="Settings_General_AppHeader" xml:space="preserve">
+    <value>App:</value>
+  </data>
+  <data name="Settings_Online_LanHeader" xml:space="preserve">
+    <value>LAN:</value>
+  </data>
+  <data name="Settings_Online_ServerLabel" xml:space="preserve">
+    <value>Server:</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableUrl" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="Srs_IpLabel" xml:space="preserve">
+    <value>IP:</value>
+  </data>
+  <data name="Toolbar_Showroom" xml:space="preserve">
+    <value>Showroom</value>
+  </data>
+  <data name="TrackSpecs_Length_FormatTooltip" xml:space="preserve">
+    <value>… m</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_FormatTooltip" xml:space="preserve">
+    <value>…</value>
+  </data>
+  <data name="TrackSpecs_Width_FormatTooltip" xml:space="preserve">
+    <value>… m</value>
+  </data>
+  <data name="UpgradeIcon_Editor" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="Main_Challenges_Drifts" xml:space="preserve">
+    <value>Drift</value>
+  </data>
+  <data name="Main_Challenges_Drags" xml:space="preserve">
+    <value>Drag</value>
+  </data>
+  <data name="Main_Challenges_TimeAttacks" xml:space="preserve">
+    <value>Time Attack</value>
+  </data>
+  <data name="Main_Online_KunosLobbySection" xml:space="preserve">
+    <value>Kunos</value>
+  </data>
+  <data name="Main_Online_LAN" xml:space="preserve">
+    <value>LAN</value>
+  </data>
+  <data name="Main_FPS_ValueShortFormat" xml:space="preserve">
+    <value>{0:F1} FPS</value>
+  </data>
+  <data name="Main_FPS_Unknown" xml:space="preserve">
+    <value>? FPS</value>
+  </data>
+  <data name="Settings_Appearance_Links" xml:space="preserve">
+    <value>Links:</value>
+  </data>
+  <data name="AcSettings_ChaseCamera_Pitch" xml:space="preserve">
+    <value>Pitch</value>
+  </data>
+  <data name="Dialogs_GameDialog_Benchmark" xml:space="preserve">
+    <value>Benchmark:</value>
+  </data>
+  <data name="Dialogs_GameDialog_GameCrashed" xml:space="preserve">
+    <value>Game crashed</value>
+  </data>
+  <data name="Drive_OnlineServer_Stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="Selected_CarSkinPage_CMShowroom" xml:space="preserve">
+    <value>CM Showroom</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Apps" xml:space="preserve">
+    <value>Apps:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Audio" xml:space="preserve">
+    <value>Audio:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Video" xml:space="preserve">
+    <value>Video:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_CSP" xml:space="preserve">
+    <value>CSP:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_CSP_Tooltip" xml:space="preserve">
+    <value>Custom Shaders Patch</value>
+  </data>
+  <data name="Settings_Content_EMail" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessing" xml:space="preserve">
+    <value>Post-processing:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Online" xml:space="preserve">
+    <value>Online:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_UI" xml:space="preserve">
+    <value>UI:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Replay" xml:space="preserve">
+    <value>Replay:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Discord" xml:space="preserve">
+    <value>Discord:</value>
+  </data>
+  <data name="AcSettings_General_PitStops" xml:space="preserve">
+    <value>Pit stops:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_LUT" xml:space="preserve">
+    <value>LUT:</value>
+  </data>
+  <data name="Settings_Online_Display" xml:space="preserve">
+    <value>Display:</value>
+  </data>
+  <data name="Main_Workshop" xml:space="preserve">
+    <value>Workshop</value>
+  </data>
+  <data name="DownloadList_Password" xml:space="preserve">
+    <value>Password:</value>
+  </data>
 </root>

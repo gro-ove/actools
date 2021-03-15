@@ -1739,4 +1739,46 @@
   <data name="Online_LoadingSkins" xml:space="preserve">
     <value>正在加载{0} 涂装…</value>
   </data>
+  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
+    <value>Oculus Rift</value>
+  </data>
+  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
+    <value>{0}×{1}, {2} Hz</value>
+  </data>
+  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
+    <value>JPEG</value>
+  </data>
+  <data name="Assists_AbsLabel" xml:space="preserve">
+    <value>ABS:</value>
+  </data>
+  <data name="Common_DistanceLarge_Format" xml:space="preserve">
+    <value>{0:F1} km</value>
+  </data>
+  <data name="Common_FeetPerSecondPostfix" xml:space="preserve">
+    <value> ft/s</value>
+  </data>
+  <data name="Common_KN5" xml:space="preserve">
+    <value>KN5</value>
+  </data>
+  <data name="Common_MetersPerSecondPostfix" xml:space="preserve">
+    <value> m/s</value>
+  </data>
+  <data name="Common_Unit_Hz" xml:space="preserve">
+    <value> Hz</value>
+  </data>
+  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
+    <value>DuckDuckGo</value>
+  </data>
+  <data name="SearchEngine_Yandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
+    <value>Starter+</value>
+  </data>
+  <data name="Units_RPM" xml:space="preserve">
+    <value>RPM</value>
+  </data>
+  <data name="Uploader_GoogleDrive" xml:space="preserve">
+    <value>Google Drive</value>
+  </data>
 </root>

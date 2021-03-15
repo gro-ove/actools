@@ -2470,4 +2470,58 @@ Autor: [b]{3}[/b]</alternative></data>
   <data name="Common_RoadTemperature" xml:space="preserve">
     <value>Temperatura da estrada: </value>
   </data>
+  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
+    <value>[/b][i]?[/i][b]</value>
+  </data>
+  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Main_AssettoCorsa" xml:space="preserve">
+    <value>Assetto Corsa</value>
+  </data>
+  <data name="Main_Apps" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="Main_Rsr" xml:space="preserve">
+    <value>RSR</value>
+  </data>
+  <data name="Main_Srs" xml:space="preserve">
+    <value>SRS</value>
+  </data>
+  <data name="Main_Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Main_Lan" xml:space="preserve">
+    <value>LAN</value>
+  </data>
+  <data name="Main_Showrooms" xml:space="preserve">
+    <value>Showrooms</value>
+  </data>
+  <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
+    <value>Showrooms:</value>
+  </data>
+  <data name="Toolbar_Showroom" xml:space="preserve">
+    <value>Showroom</value>
+  </data>
+  <data name="Toolbar_CarSkins" xml:space="preserve">
+    <value>Skins</value>
+  </data>
+  <data name="AcObject_IdLabel" xml:space="preserve">
+    <value>ID:</value>
+  </data>
+  <data name="WeatherEdit_HdrOffMultipler" xml:space="preserve">
+    <value>HDR-off mult.</value>
+  </data>
+  <data name="CarPreviews_Manual" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="LiveryIcon_Shape_Diagonal" xml:space="preserve">
+    <value>Diagonal</value>
+  </data>
+  <data name="CreateShowroom_PanoramaLabel" xml:space="preserve">
+    <value>Panorama:</value>
+  </data>
+  <data name="UpgradeIcon_Editor" xml:space="preserve">
+    <value>Editor</value>
+  </data>
 </root>

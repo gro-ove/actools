@@ -4716,4 +4716,145 @@ url="http://fooplot.com/plot/3x7y44pfli"]이 링크[/url]에서 그래프를 확
   <data name="Windows_MainWindow_VideoSettingsFPSCounter" xml:space="preserve">
     <value>비디오 세팅 (FPS 카운터)</value>
   </data>
+  <data name="About_Copyright" xml:space="preserve">
+    <value>Copyright © 2016–2020 AcClub.</value>
+  </data>
+  <data name="AcObject_IdLabel" xml:space="preserve">
+    <value>ID:</value>
+  </data>
+  <data name="AcSettings_Audio_Ui" xml:space="preserve">
+    <value>UI</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_LUT" xml:space="preserve">
+    <value>LUT:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_UI" xml:space="preserve">
+    <value>UI:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_CSP" xml:space="preserve">
+    <value>CSP:</value>
+  </data>
+  <data name="AcSettings_Video_AntiAliasingLabel" xml:space="preserve">
+    <value>MSAA:</value>
+  </data>
+  <data name="AcSettings_Video_Fxaa" xml:space="preserve">
+    <value>FXAA</value>
+  </data>
+  <data name="AdditionalContent_IdFormat" xml:space="preserve">
+    <value>ID: {0}</value>
+  </data>
+  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
+    <value>[/b][i]?[/i][b]</value>
+  </data>
+  <data name="Arguments_SharedMessage_For" xml:space="preserve">
+    <value>For</value>
+  </data>
+  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="CarSpecs_Acceleration_FormatTooltip" xml:space="preserve">
+    <value>… s 0–100</value>
+  </data>
+  <data name="CarSpecs_MaxSpeed_FormatTooltip" xml:space="preserve">
+    <value>… km/h</value>
+  </data>
+  <data name="CarSpecs_Power_FormatTooltip" xml:space="preserve">
+    <value>… bhp</value>
+  </data>
+  <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
+    <value>… whp</value>
+  </data>
+  <data name="CarSpecs_PwRatio_FormatTooltip" xml:space="preserve">
+    <value>… kg/hp</value>
+  </data>
+  <data name="CarSpecs_Torque_FormatTooltip" xml:space="preserve">
+    <value>… Nm</value>
+  </data>
+  <data name="CarSpecs_Weight_FormatTooltip" xml:space="preserve">
+    <value>… kg</value>
+  </data>
+  <data name="Common_IdFormat" xml:space="preserve">
+    <value>ID: {0}</value>
+  </data>
+  <data name="Common_MillisecondsFormat" xml:space="preserve">
+    <value>{0:F2} ms</value>
+  </data>
+  <data name="Controls_Abs" xml:space="preserve">
+    <value>ABS:</value>
+  </data>
+  <data name="Controls_MguK" xml:space="preserve">
+    <value>MGU-K:</value>
+  </data>
+  <data name="LiveryIcon_Style_Miura" xml:space="preserve">
+    <value>Miura</value>
+  </data>
+  <data name="LiveryIcon_Style_Solid" xml:space="preserve">
+    <value>Solid</value>
+  </data>
+  <data name="LiveryIcon_Style_Tesla" xml:space="preserve">
+    <value>Tesla</value>
+  </data>
+  <data name="Main_FPS_Unknown" xml:space="preserve">
+    <value>? FPS</value>
+  </data>
+  <data name="Main_FPS_ValueShortFormat" xml:space="preserve">
+    <value>{0:F1} FPS</value>
+  </data>
+  <data name="Main_Lan" xml:space="preserve">
+    <value>LAN</value>
+  </data>
+  <data name="Main_NotSupportedRequest" xml:space="preserve">
+    <value>Not supported request: “{0}”</value>
+  </data>
+  <data name="Main_Online_KunosLobbySection" xml:space="preserve">
+    <value>Kunos</value>
+  </data>
+  <data name="Main_Online_LAN" xml:space="preserve">
+    <value>LAN</value>
+  </data>
+  <data name="Main_Rsr" xml:space="preserve">
+    <value>RSR</value>
+  </data>
+  <data name="Main_Srs" xml:space="preserve">
+    <value>SRS</value>
+  </data>
+  <data name="Online_Pinged" xml:space="preserve">
+    <value>Pinged {0} out of {1}</value>
+  </data>
+  <data name="Settings_Drive_CacheBrands" xml:space="preserve">
+    <value>Cache brands</value>
+  </data>
+  <data name="Settings_Drive_ExtendedWeatherHeader" xml:space="preserve">
+    <value>Extended weather:</value>
+  </data>
+  <data name="Settings_Online_LanHeader" xml:space="preserve">
+    <value>LAN:</value>
+  </data>
+  <data name="Settings_Online_PingingHeader" xml:space="preserve">
+    <value>Pinging:</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableUrl" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="Srs_IpLabel" xml:space="preserve">
+    <value>IP:</value>
+  </data>
+  <data name="Toolbar_Disable" xml:space="preserve">
+    <value>Disable</value>
+  </data>
+  <data name="Toolbar_Disable_Tooltip" xml:space="preserve">
+    <value>Disable (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_PackData_Tooltip" xml:space="preserve">
+    <value>For a decent online (Ctrl+Alt+J)</value>
+  </data>
+  <data name="TrackSpecs_Length_FormatTooltip" xml:space="preserve">
+    <value>… m</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_FormatTooltip" xml:space="preserve">
+    <value>…</value>
+  </data>
+  <data name="TrackSpecs_Width_FormatTooltip" xml:space="preserve">
+    <value>… m</value>
+  </data>
 </root>

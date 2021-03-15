@@ -963,4 +963,22 @@
   <data name="Common_WhatIsIt" xml:space="preserve">
     <value>这是什么？</value>
   </data>
+  <data name="AcObject_ErrorsHeader" xml:space="preserve">
+    <value>{Error}:</value>
+  </data>
+  <data name="AcObject_UrlLabel" xml:space="preserve">
+    <value>URL:</value>
+  </data>
+  <data name="Common_CelsiusFormat" xml:space="preserve">
+    <value>{0:F0} °C</value>
+  </data>
+  <data name="TableHeader_Ai" xml:space="preserve">
+    <value>AI</value>
+  </data>
+  <data name="TableHeader_X" xml:space="preserve">
+    <value>X</value>
+  </data>
+  <data name="TableHeader_Y" xml:space="preserve">
+    <value>Y</value>
+  </data>
 </root>

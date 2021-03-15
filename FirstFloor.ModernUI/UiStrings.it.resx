@@ -564,4 +564,67 @@
   <data name="Reload" xml:space="preserve">
     <value>Ricarica</value>
   </data>
+  <data name="Common_Oops" xml:space="preserve">
+    <value>Oops!</value>
+  </data>
+  <data name="KeyAlt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="KeyBrowserStop" xml:space="preserve">
+    <value>Browser Stop</value>
+  </data>
+  <data name="KeyControl" xml:space="preserve">
+    <value>Control</value>
+  </data>
+  <data name="KeyEnd" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="KeyHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="KeyMediaStop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="KeyShift" xml:space="preserve">
+    <value>Shift</value>
+  </data>
+  <data name="KeyTab" xml:space="preserve">
+    <value>Tab</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
+    <value>EB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
+    <value>GB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
+    <value>KB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
+    <value>PB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
+    <value>TB</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="UnexpectedToken" xml:space="preserve">
+    <value>Unexpected token</value>
+  </data>
+  <data name="ValueLabel_Format" xml:space="preserve">
+    <value>{0}: </value>
+  </data>
+  <data name="Progress_Short" xml:space="preserve">
+    <value>{0}</value>
+  </data>
 </root>

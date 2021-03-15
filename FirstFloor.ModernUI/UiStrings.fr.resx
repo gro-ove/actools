@@ -590,4 +590,49 @@
   <data name="Reload" xml:space="preserve">
     <value>Recharger</value>
   </data>
+  <data name="Progress_Short" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="KeyAlt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
+    <value>GB</value>
+  </data>
+  <data name="Go" xml:space="preserve">
+    <value>Go</value>
+  </data>
+  <data name="KeyHelp" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="KeyHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="NavigateLink" xml:space="preserve">
+    <value>Navigate link</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="KeyPause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="Ordinalizing_Second" xml:space="preserve">
+    <value>Second</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="KeyMediaStop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="Suggestions" xml:space="preserve">
+    <value>Suggestions</value>
+  </data>
+  <data name="KeyZoom" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
 </root>

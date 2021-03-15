@@ -480,4 +480,148 @@
   <data name="Yes" xml:space="preserve">
     <value>예</value>
   </data>
+  <data name="ImagesFilter" xml:space="preserve">
+    <value>Image files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
+  </data>
+  <data name="KeyAlt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="KeyAltLeft" xml:space="preserve">
+    <value>Alt (Left)</value>
+  </data>
+  <data name="KeyAltRight" xml:space="preserve">
+    <value>Alt (Right)</value>
+  </data>
+  <data name="KeyBackspace" xml:space="preserve">
+    <value>Backspace</value>
+  </data>
+  <data name="KeyBrowserBack" xml:space="preserve">
+    <value>Browser Back</value>
+  </data>
+  <data name="KeyBrowserFavorites" xml:space="preserve">
+    <value>Browser Favorites</value>
+  </data>
+  <data name="KeyBrowserForward" xml:space="preserve">
+    <value>Browser Forward</value>
+  </data>
+  <data name="KeyBrowserHome" xml:space="preserve">
+    <value>Browser Home</value>
+  </data>
+  <data name="KeyBrowserRefresh" xml:space="preserve">
+    <value>Browser Refresh</value>
+  </data>
+  <data name="KeyBrowserSearch" xml:space="preserve">
+    <value>Browser Search</value>
+  </data>
+  <data name="KeyBrowserStop" xml:space="preserve">
+    <value>Browser Stop</value>
+  </data>
+  <data name="KeyCapsLock" xml:space="preserve">
+    <value>Caps Lock</value>
+  </data>
+  <data name="KeyContextMenu" xml:space="preserve">
+    <value>Context Menu</value>
+  </data>
+  <data name="KeyControl" xml:space="preserve">
+    <value>Control</value>
+  </data>
+  <data name="KeyControlLeft" xml:space="preserve">
+    <value>Control (Left)</value>
+  </data>
+  <data name="KeyControlRight" xml:space="preserve">
+    <value>Control (Right)</value>
+  </data>
+  <data name="KeyDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="KeyEnd" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="KeyEnter" xml:space="preserve">
+    <value>Enter</value>
+  </data>
+  <data name="KeyEscape" xml:space="preserve">
+    <value>Escape</value>
+  </data>
+  <data name="KeyHelp" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="KeyHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="KeyInsert" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="KeyNumberPad" xml:space="preserve">
+    <value>Numpad {0}</value>
+  </data>
+  <data name="KeyNumLock" xml:space="preserve">
+    <value>Num Lock</value>
+  </data>
+  <data name="KeyPageDown" xml:space="preserve">
+    <value>Page Down</value>
+  </data>
+  <data name="KeyPageUp" xml:space="preserve">
+    <value>Page Up</value>
+  </data>
+  <data name="KeyPause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="KeyPrintScreen" xml:space="preserve">
+    <value>Print Screen</value>
+  </data>
+  <data name="KeyScrollLock" xml:space="preserve">
+    <value>Scroll Lock</value>
+  </data>
+  <data name="KeySelectMedia" xml:space="preserve">
+    <value>Select Media</value>
+  </data>
+  <data name="KeyShift" xml:space="preserve">
+    <value>Shift</value>
+  </data>
+  <data name="KeyShiftLeft" xml:space="preserve">
+    <value>Shift (Left)</value>
+  </data>
+  <data name="KeyShiftRight" xml:space="preserve">
+    <value>Shift (Right)</value>
+  </data>
+  <data name="KeySpace" xml:space="preserve">
+    <value>Space</value>
+  </data>
+  <data name="KeyTab" xml:space="preserve">
+    <value>Tab</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
+    <value>EB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
+    <value>GB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
+    <value>KB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
+    <value>PB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
+    <value>TB</value>
+  </data>
+  <data name="Progress_Short" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="TexturesDdsFilter" xml:space="preserve">
+    <value>DDS files (*.dds)|*.dds|All files (*.*)|*.*</value>
+  </data>
+  <data name="TexturesFilter" xml:space="preserve">
+    <value>DDS &amp; TIFF files|*.dds;*.tif;*.tiff|Image files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</value>
+  </data>
+  <data name="ValueLabel_Format" xml:space="preserve">
+    <value>{0}: </value>
+  </data>
 </root>

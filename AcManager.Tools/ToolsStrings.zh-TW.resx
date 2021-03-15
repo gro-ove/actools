@@ -1747,4 +1747,34 @@
   <data name="Online_LoadingActualInformation" xml:space="preserve">
     <value>正在加載實際的服務器信息…</value>
   </data>
+  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
+    <value>Oculus Rift</value>
+  </data>
+  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
+    <value>{0}×{1}, {2} Hz</value>
+  </data>
+  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
+    <value>JPEG</value>
+  </data>
+  <data name="Common_KN5" xml:space="preserve">
+    <value>KN5</value>
+  </data>
+  <data name="SearchEngine_Bing" xml:space="preserve">
+    <value>Bing</value>
+  </data>
+  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
+    <value>DuckDuckGo</value>
+  </data>
+  <data name="SearchEngine_Google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="SearchEngine_Yandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
+    <value>Starter+</value>
+  </data>
+  <data name="Uploader_GoogleDrive" xml:space="preserve">
+    <value>Google Drive</value>
+  </data>
 </root>

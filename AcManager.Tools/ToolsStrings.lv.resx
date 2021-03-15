@@ -1705,4 +1705,61 @@ Vai vēlies tos sapakot pirms servera palaišanas? Tikai neaizmirsti izdalīt sa
   <data name="Race_OpponentsAggression" xml:space="preserve">
     <value>Pretinieku agresija</value>
   </data>
+  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
+    <value>{0}×{1}, {2} Hz</value>
+  </data>
+  <data name="Assists_AbsLabel" xml:space="preserve">
+    <value>ABS:</value>
+  </data>
+  <data name="SearchEngine_Baidu" xml:space="preserve">
+    <value>Baidu</value>
+  </data>
+  <data name="SearchEngine_Bing" xml:space="preserve">
+    <value>Bing</value>
+  </data>
+  <data name="Session_Booking" xml:space="preserve">
+    <value>Booking</value>
+  </data>
+  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
+    <value>DuckDuckGo</value>
+  </data>
+  <data name="SearchEngine_Google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="Uploader_GoogleDrive" xml:space="preserve">
+    <value>Google Drive</value>
+  </data>
+  <data name="Common_KN5" xml:space="preserve">
+    <value>KN5</value>
+  </data>
+  <data name="Common_NA" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="Units_Nm" xml:space="preserve">
+    <value>Nm</value>
+  </data>
+  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
+    <value>Oculus Rift</value>
+  </data>
+  <data name="Units_RPM" xml:space="preserve">
+    <value>RPM</value>
+  </data>
+  <data name="Settings_Starter_Sse" xml:space="preserve">
+    <value>SSE</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
+    <value>Starter+</value>
+  </data>
+  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
+    <value>Ultra</value>
+  </data>
+  <data name="SearchEngine_Yandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="Weather_Mods" xml:space="preserve">
+    <value>Mods</value>
+  </data>
+  <data name="Common_DistanceLarge_Format" xml:space="preserve">
+    <value>{0:F1} km</value>
+  </data>
 </root>

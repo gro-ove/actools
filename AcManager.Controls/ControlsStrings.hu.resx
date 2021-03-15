@@ -669,4 +669,279 @@ Depth mode: [b]{4}[/b]</value>
   <data name="CustomShowroom_Tools_Title" xml:space="preserve">
     <value>Eszközök</value>
   </data>
+  <data name="AcObject_ErrorsHeader" xml:space="preserve">
+    <value>{Error}:</value>
+  </data>
+  <data name="AcObject_UrlLabel" xml:space="preserve">
+    <value>URL:</value>
+  </data>
+  <data name="Animation_Modern" xml:space="preserve">
+    <value>Modern</value>
+  </data>
+  <data name="Common_CelsiusFormat" xml:space="preserve">
+    <value>{0:F0} °C</value>
+  </data>
+  <data name="Common_CelsiusPostfix" xml:space="preserve">
+    <value> °C</value>
+  </data>
+  <data name="Common_MetersPostfix" xml:space="preserve">
+    <value> m</value>
+  </data>
+  <data name="Common_MillisecondsPostfix" xml:space="preserve">
+    <value> ms</value>
+  </data>
+  <data name="Common_PsiPostfix" xml:space="preserve">
+    <value> psi</value>
+  </data>
+  <data name="Common_SecondsPostfix" xml:space="preserve">
+    <value> sec</value>
+  </data>
+  <data name="Controls_GammaAxis" xml:space="preserve">
+    <value>Gamma</value>
+  </data>
+  <data name="CustomShowroom_ShaderProperties" xml:space="preserve">
+    <value>Shader properties:</value>
+  </data>
+  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
+    <value>FPS:</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_1024" xml:space="preserve">
+    <value>View in 1024×1024</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_2048" xml:space="preserve">
+    <value>View in 2048×2048</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_4096" xml:space="preserve">
+    <value>View in 4096×4096</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_512" xml:space="preserve">
+    <value>View in 512×512</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Custom" xml:space="preserve">
+    <value>View in custom resolution</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_ParsingFailed" xml:space="preserve">
+    <value>Can’t figure out dimensions</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_ParsingFailed_Commentary" xml:space="preserve">
+    <value>Please, use valid format for them.</value>
+  </data>
+  <data name="FindInformation_Description" xml:space="preserve">
+    <value>Select year or description and press OK; hold Ctrl to extend description instead of replacing it.</value>
+  </data>
+  <data name="FindInformation_SaveAndClose" xml:space="preserve">
+    <value>Save &amp; Close</value>
+  </data>
+  <data name="ImageViewer_CannotSave" xml:space="preserve">
+    <value>Can’t save image</value>
+  </data>
+  <data name="ImageViewer_DefaultName" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="KunosCareer_CompletedLabel" xml:space="preserve">
+    <value>Completed: </value>
+  </data>
+  <data name="KunosCareer_Error" xml:space="preserve">
+    <value>{0} error</value>
+  </data>
+  <data name="KunosCareer_RequiredSeries" xml:space="preserve">
+    <value>Required series: {0}</value>
+  </data>
+  <data name="KunosCareer_RequiredSeriesAreNotFinishedYet" xml:space="preserve">
+    <value>Required series aren’t finished yet</value>
+  </data>
+  <data name="Online_CarIsMissingLabel" xml:space="preserve">
+    <value>Car is missing:</value>
+  </data>
+  <data name="Online_DriversOnlineLabel" xml:space="preserve">
+    <value>Drivers online:</value>
+  </data>
+  <data name="Online_PasswordRequired" xml:space="preserve">
+    <value>Password required</value>
+  </data>
+  <data name="Online_TrackIsMissingLabel" xml:space="preserve">
+    <value>Track is missing:</value>
+  </data>
+  <data name="Plugins_NotAvailable" xml:space="preserve">
+    <value>Not available, required app version is {0}.</value>
+  </data>
+  <data name="Presets_Save_Tooltip" xml:space="preserve">
+    <value>Save current settings as preset (Ctrl+S)</value>
+  </data>
+  <data name="QuickSwitches_ControlsPresets_Tooltip" xml:space="preserve">
+    <value>Switch between controls presets</value>
+  </data>
+  <data name="QuickSwitches_DamageUi" xml:space="preserve">
+    <value>Damage (UI)</value>
+  </data>
+  <data name="QuickSwitches_DamageUi_Tooltip" xml:space="preserve">
+    <value>Display damage</value>
+  </data>
+  <data name="QuickSwitches_DevApps" xml:space="preserve">
+    <value>Dev apps</value>
+  </data>
+  <data name="QuickSwitches_DevApps_Tooltip" xml:space="preserve">
+    <value>Enable developer apps</value>
+  </data>
+  <data name="QuickSwitches_Exposure" xml:space="preserve">
+    <value>Exposure</value>
+  </data>
+  <data name="QuickSwitches_Exposure_Tooltip" xml:space="preserve">
+    <value>Brightness level</value>
+  </data>
+  <data name="QuickSwitches_Fov" xml:space="preserve">
+    <value>FOV</value>
+  </data>
+  <data name="QuickSwitches_Fov_Tooltip" xml:space="preserve">
+    <value>Field of view (vertical angle)</value>
+  </data>
+  <data name="QuickSwitches_FreeCamera" xml:space="preserve">
+    <value>Free camera</value>
+  </data>
+  <data name="QuickSwitches_Fullscreen" xml:space="preserve">
+    <value>Fullscreen</value>
+  </data>
+  <data name="QuickSwitches_Fullscreen_Tooltip" xml:space="preserve">
+    <value>Fullscreen mode (for example, Shadowplay won’t work without it)</value>
+  </data>
+  <data name="QuickSwitches_HideArms" xml:space="preserve">
+    <value>Hide arms</value>
+  </data>
+  <data name="QuickSwitches_HideArms_Tooltip" xml:space="preserve">
+    <value>Hide driver’s arms</value>
+  </data>
+  <data name="QuickSwitches_HideDriver" xml:space="preserve">
+    <value>Hide driver</value>
+  </data>
+  <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
+    <value>Hide driver model</value>
+  </data>
+  <data name="QuickSwitches_HideWheel" xml:space="preserve">
+    <value>Hide wheel</value>
+  </data>
+  <data name="QuickSwitches_HideWheel_Tooltip" xml:space="preserve">
+    <value>Hide steering wheel</value>
+  </data>
+  <data name="QuickSwitches_Leaderboard" xml:space="preserve">
+    <value>Leaderboard</value>
+  </data>
+  <data name="QuickSwitches_Leaderboard_Tooltip" xml:space="preserve">
+    <value>Display leaderboard</value>
+  </data>
+  <data name="QuickSwitches_LockCamera" xml:space="preserve">
+    <value>Lock camera</value>
+  </data>
+  <data name="QuickSwitches_LockCamera_Tooltip" xml:space="preserve">
+    <value>Lock onboard camera to horizon</value>
+  </data>
+  <data name="QuickSwitches_LockWheel" xml:space="preserve">
+    <value>Lock wheel</value>
+  </data>
+  <data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
+    <value>Lock steering wheel</value>
+  </data>
+  <data name="QuickSwitches_Mirror" xml:space="preserve">
+    <value>Mirror</value>
+  </data>
+  <data name="QuickSwitches_Mirror_Tooltip" xml:space="preserve">
+    <value>Display virtual mirror</value>
+  </data>
+  <data name="QuickSwitches_Names" xml:space="preserve">
+    <value>Names</value>
+  </data>
+  <data name="QuickSwitches_Names_Tooltip" xml:space="preserve">
+    <value>Display drivers’ names</value>
+  </data>
+  <data name="QuickSwitches_Nearest" xml:space="preserve">
+    <value>Nearest</value>
+  </data>
+  <data name="QuickSwitches_OnlineName" xml:space="preserve">
+    <value>Online name</value>
+  </data>
+  <data name="QuickSwitches_OnlineName_Tooltip" xml:space="preserve">
+    <value>Use different name online</value>
+  </data>
+  <data name="QuickSwitches_PpFilters_Tooltip" xml:space="preserve">
+    <value>Switch between PP filters</value>
+  </data>
+  <data name="QuickSwitches_UiPresets_Tooltip" xml:space="preserve">
+    <value>Switch between UI presets</value>
+  </data>
+  <data name="QuickSwitches_VideoPresets_Tooltip" xml:space="preserve">
+    <value>Switch between video-settings presets</value>
+  </data>
+  <data name="Replay_CrMessage" xml:space="preserve">
+    <value>Replay will be overwritten after the next race. Rename it to keep it.</value>
+  </data>
+  <data name="Replay_CrMessage_Commentary" xml:space="preserve">
+    <value>You can go to Settings and enable “Save replays automatically” option to avoid losing something valuable.</value>
+  </data>
+  <data name="Share_CannotShare" xml:space="preserve">
+    <value>Can’t share {0}</value>
+  </data>
+  <data name="Share_EnterCustomId" xml:space="preserve">
+    <value>Enter custom ID:</value>
+  </data>
+  <data name="Share_EnterCustomIdHeader" xml:space="preserve">
+    <value>Custom ID</value>
+  </data>
+  <data name="Share_EnterName" xml:space="preserve">
+    <value>Enter name or keep field empty:</value>
+  </data>
+  <data name="Share_InProgress" xml:space="preserve">
+    <value>Sharing…</value>
+  </data>
+  <data name="Share_Shared" xml:space="preserve">
+    <value>{0} Shared</value>
+  </data>
+  <data name="Share_VerifyMessage" xml:space="preserve">
+    <value>Author name: [b]{0}[/b]
+Entry name: [b]{1}[/b]
+Entry type: [b]{2}[/b]</value>
+  </data>
+  <data name="Showroom_CannotStart" xml:space="preserve">
+    <value>Can’t start showroom</value>
+  </data>
+  <data name="Showroom_DialogHeader" xml:space="preserve">
+    <value>Showroom</value>
+  </data>
+  <data name="Showroom_DisableSweetFx" xml:space="preserve">
+    <value>Disable SweetFX</value>
+  </data>
+  <data name="Showroom_FovLabel" xml:space="preserve">
+    <value>FOV:</value>
+  </data>
+  <data name="Showroom_HideWatermark" xml:space="preserve">
+    <value>Hide watermark</value>
+  </data>
+  <data name="Showroom_HideWatermark_Tooltip" xml:space="preserve">
+    <value>Kunos watermark will be temporary hidden</value>
+  </data>
+  <data name="Showroom_ShowroomLabel" xml:space="preserve">
+    <value>Showroom:</value>
+  </data>
+  <data name="Theme_Black" xml:space="preserve">
+    <value>Black</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Theme_Nordschleife" xml:space="preserve">
+    <value>Nordschleife</value>
+  </data>
+  <data name="Toolbar_CreateJson_Tooltip" xml:space="preserve">
+    <value>Create a new ui_skin.json file (Alt+S)</value>
+  </data>
+  <data name="Video_CannotPlay" xml:space="preserve">
+    <value>Can’t play video</value>
+  </data>
+  <data name="VideoViewer_CannotPlay" xml:space="preserve">
+    <value>Can’t play video</value>
+  </data>
+  <data name="WebBrowser_Prompt" xml:space="preserve">
+    <value>Webpage says</value>
+  </data>
 </root>

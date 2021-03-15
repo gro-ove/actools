@@ -24,7 +24,7 @@ namespace AcManager {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -13666,8 +13666,6 @@ namespace AcManager {
         
         /// <summary>
         ///   Looks up a localized string similar to We are using an equation to create a graph that determines the asphalt temperature relatively to ambient temperature, weather and day time.
-        ///
-        ///Check the graph in [url=&quot;http://fooplot.com/plot/3x7y44pfli&quot;]this link[/url].
         ///
         ///The equation used is:
         ///[mono](((-10×α)*x)+10*α)*2((exp(-6*x)*(0.4*sin(6*x))+0.1)*(15/1.5)*sin(0.9*x))+15[/mono]

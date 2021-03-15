@@ -779,4 +779,76 @@
   <data name="Settings_Content_ConfirmBeforeRemoval" xml:space="preserve">
     <value>Ga akkoord voor verwijdering</value>
   </data>
+  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
+    <value>[/b][i]?[/i][b]</value>
+  </data>
+  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Main_Server" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="Main_Media" xml:space="preserve">
+    <value>Media</value>
+  </data>
+  <data name="Main_ContentManager" xml:space="preserve">
+    <value>Content Manager</value>
+  </data>
+  <data name="Main_AssettoCorsa" xml:space="preserve">
+    <value>Assetto Corsa</value>
+  </data>
+  <data name="Main_Apps" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="Main_Rsr" xml:space="preserve">
+    <value>RSR</value>
+  </data>
+  <data name="Main_Srs" xml:space="preserve">
+    <value>SRS</value>
+  </data>
+  <data name="Main_Single" xml:space="preserve">
+    <value>Single</value>
+  </data>
+  <data name="Main_Live" xml:space="preserve">
+    <value>Live</value>
+  </data>
+  <data name="Main_Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Main_Lan" xml:space="preserve">
+    <value>LAN</value>
+  </data>
+  <data name="Main_Screenshots" xml:space="preserve">
+    <value>Screenshots</value>
+  </data>
+  <data name="Main_Replays" xml:space="preserve">
+    <value>Replays</value>
+  </data>
+  <data name="Main_ServerPresets" xml:space="preserve">
+    <value>Presets</value>
+  </data>
+  <data name="Settings_Appearance_PopupToolbars" xml:space="preserve">
+    <value>Popup toolbars</value>
+  </data>
+  <data name="Settings_Drive_Starter" xml:space="preserve">
+    <value>Game starter</value>
+  </data>
+  <data name="Settings_General_AcFolderLabel" xml:space="preserve">
+    <value>Assetto Corsa folder:</value>
+  </data>
+  <data name="Settings_General_AppHeader" xml:space="preserve">
+    <value>App:</value>
+  </data>
+  <data name="Settings_General_AppKeyLabel" xml:space="preserve">
+    <value>App key:</value>
+  </data>
+  <data name="Common_MillisecondsFormat" xml:space="preserve">
+    <value>{0:F2} ms</value>
+  </data>
+  <data name="Settings_Locale_LocaleId" xml:space="preserve">
+    <value>Locale ID</value>
+  </data>
+  <data name="Settings_Locale_Custom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
 </root>

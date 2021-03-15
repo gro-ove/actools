@@ -2543,8 +2543,6 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   <data name="Weather_KunosReadme" xml:space="preserve">
     <value>We are using an equation to create a graph that determines the asphalt temperature relatively to ambient temperature, weather and day time.
 
-Check the graph in [url="http://fooplot.com/plot/3x7y44pfli"]this link[/url].
-
 The equation used is:
 [mono](((-10×α)*x)+10*α)*2((exp(-6*x)*(0.4*sin(6*x))+0.1)*(15/1.5)*sin(0.9*x))+15[/mono]
 

@@ -4769,4 +4769,40 @@
   <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
     <value>沒有有效的下載</value>
   </data>
+  <data name="AcSettings_PresetsPerMode_CSP_Tooltip" xml:space="preserve">
+    <value>Custom Shaders Patch</value>
+  </data>
+  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Common_MillisecondsFormat" xml:space="preserve">
+    <value>{0:F2} ms</value>
+  </data>
+  <data name="List_Apps" xml:space="preserve">
+    <value>{0} app</value>
+  </data>
+  <data name="LiveryIcon_Style_Miura" xml:space="preserve">
+    <value>Miura</value>
+  </data>
+  <data name="LiveryIcon_Style_Tesla" xml:space="preserve">
+    <value>Tesla</value>
+  </data>
+  <data name="Main_Apps" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="Main_AssettoCorsa" xml:space="preserve">
+    <value>Assetto Corsa</value>
+  </data>
+  <data name="Main_ContentManager" xml:space="preserve">
+    <value>Content Manager</value>
+  </data>
+  <data name="Main_FPS_Unknown" xml:space="preserve">
+    <value>? FPS</value>
+  </data>
+  <data name="Main_FPS_ValueShortFormat" xml:space="preserve">
+    <value>{0:F1} FPS</value>
+  </data>
+  <data name="Main_Online_KunosLobbySection" xml:space="preserve">
+    <value>Kunos</value>
+  </data>
 </root>

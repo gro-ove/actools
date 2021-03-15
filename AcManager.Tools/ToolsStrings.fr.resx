@@ -1706,4 +1706,112 @@ Voulez-vous l'emballer avant de démarrer le serveur? Mais n'oubliez pas de part
   <data name="Online_LoadingActualInformation" xml:space="preserve">
     <value>Chargement des informations du server actuel...</value>
   </data>
+  <data name="Common_Unit_Hz" xml:space="preserve">
+    <value> Hz</value>
+  </data>
+  <data name="Common_KilogramsPostfix" xml:space="preserve">
+    <value> kg</value>
+  </data>
+  <data name="Common_DistanceLarge_Format" xml:space="preserve">
+    <value>{0:F1} km</value>
+  </data>
+  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
+    <value>{0}×{1}, {2} Hz</value>
+  </data>
+  <data name="DifficultyLevel_Alien" xml:space="preserve">
+    <value>Alien</value>
+  </data>
+  <data name="SearchEngine_Baidu" xml:space="preserve">
+    <value>Baidu</value>
+  </data>
+  <data name="SearchEngine_Bing" xml:space="preserve">
+    <value>Bing</value>
+  </data>
+  <data name="Common_Destination" xml:space="preserve">
+    <value>Destination</value>
+  </data>
+  <data name="Session_Drift" xml:space="preserve">
+    <value>Drift</value>
+  </data>
+  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
+    <value>DuckDuckGo</value>
+  </data>
+  <data name="SearchEngine_Google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="Uploader_GoogleDrive" xml:space="preserve">
+    <value>Google Drive</value>
+  </data>
+  <data name="Session_Hotlap" xml:space="preserve">
+    <value>Hotlap</value>
+  </data>
+  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
+    <value>JPEG</value>
+  </data>
+  <data name="Common_KN5" xml:space="preserve">
+    <value>KN5</value>
+  </data>
+  <data name="AcSettings_View_Longtudinal" xml:space="preserve">
+    <value>Longitudinal</value>
+  </data>
+  <data name="AcSettings_Quality_Maximum" xml:space="preserve">
+    <value>Maximum</value>
+  </data>
+  <data name="AcSettings_Quality_Minimum" xml:space="preserve">
+    <value>Minimum</value>
+  </data>
+  <data name="Weather_Mods" xml:space="preserve">
+    <value>Mods</value>
+  </data>
+  <data name="Common_NA" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="Settings_Starter_Naive" xml:space="preserve">
+    <value>Naive</value>
+  </data>
+  <data name="Units_Nm" xml:space="preserve">
+    <value>Nm</value>
+  </data>
+  <data name="AcSettings_Quality_Normal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
+    <value>Oculus Rift</value>
+  </data>
+  <data name="AcSettings_Off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="PlaceConditionType_Points" xml:space="preserve">
+    <value>Points</value>
+  </data>
+  <data name="PlaceConditionType_Position" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="Session_Qualification" xml:space="preserve">
+    <value>Qualification</value>
+  </data>
+  <data name="Shared_Replay" xml:space="preserve">
+    <value>Replay</value>
+  </data>
+  <data name="AdditionalContent_Showroom" xml:space="preserve">
+    <value>showroom</value>
+  </data>
+  <data name="Settings_Starter_Sse" xml:space="preserve">
+    <value>SSE</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
+    <value>Starter+</value>
+  </data>
+  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
+    <value>Ultra</value>
+  </data>
+  <data name="AcSettings_View_Vertical" xml:space="preserve">
+    <value>Vertical</value>
+  </data>
+  <data name="Common_Weekend" xml:space="preserve">
+    <value>Weekend</value>
+  </data>
+  <data name="SearchEngine_Yandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
 </root>

@@ -1696,4 +1696,94 @@ Chciałbyś spakować to przed uruchomieniem serwera? Jeśli tak, nie zapomnij u
   <data name="Online_LoadingActualInformation" xml:space="preserve">
     <value>Wczytywanie aktualnych informacji o serwerze...</value>
   </data>
+  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
+    <value>{0}×{1}, {2} Hz</value>
+  </data>
+  <data name="Assists_AbsLabel" xml:space="preserve">
+    <value>ABS:</value>
+  </data>
+  <data name="DifficultyLevel_Alien" xml:space="preserve">
+    <value>Alien</value>
+  </data>
+  <data name="SearchEngine_Baidu" xml:space="preserve">
+    <value>Baidu</value>
+  </data>
+  <data name="SearchEngine_Bing" xml:space="preserve">
+    <value>Bing</value>
+  </data>
+  <data name="Session_Drift" xml:space="preserve">
+    <value>Drift</value>
+  </data>
+  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
+    <value>DuckDuckGo</value>
+  </data>
+  <data name="CustomShowroom_Fancy" xml:space="preserve">
+    <value>Fancy</value>
+  </data>
+  <data name="SearchEngine_Google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
+    <value>JPEG</value>
+  </data>
+  <data name="Common_KN5" xml:space="preserve">
+    <value>KN5</value>
+  </data>
+  <data name="Windows_Kn5Commentary" xml:space="preserve">
+    <value>KN5 model</value>
+  </data>
+  <data name="CustomShowroom_Lite" xml:space="preserve">
+    <value>Lite</value>
+  </data>
+  <data name="Drive_Grid_Manual" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="Settings_Starter_Naive" xml:space="preserve">
+    <value>Naive</value>
+  </data>
+  <data name="Units_Nm" xml:space="preserve">
+    <value>Nm</value>
+  </data>
+  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
+    <value>Oculus Rift</value>
+  </data>
+  <data name="Settings_DefaultPlayerName" xml:space="preserve">
+    <value>Player</value>
+  </data>
+  <data name="Uploader_RootDirectory" xml:space="preserve">
+    <value>Root</value>
+  </data>
+  <data name="Units_RPM" xml:space="preserve">
+    <value>RPM</value>
+  </data>
+  <data name="Settings_Starter_Sse" xml:space="preserve">
+    <value>SSE</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
+    <value>Starter+</value>
+  </data>
+  <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
+    <value>Subpixel</value>
+  </data>
+  <data name="Weather_Tornado" xml:space="preserve">
+    <value>Tornado</value>
+  </data>
+  <data name="Settings_Starter_Tricky" xml:space="preserve">
+    <value>Tricky</value>
+  </data>
+  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
+    <value>Ultra</value>
+  </data>
+  <data name="Common_Weekend" xml:space="preserve">
+    <value>Weekend</value>
+  </data>
+  <data name="SearchEngine_Yandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="Common_DistanceLarge_Format" xml:space="preserve">
+    <value>{0:F1} km</value>
+  </data>
+  <data name="Common_KilogramsPostfix" xml:space="preserve">
+    <value> kg</value>
+  </data>
 </root>

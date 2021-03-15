@@ -2824,4 +2824,642 @@ A főkönyvtár az Assetto Corsa mappára lesz beállítva a Dokumentumokban.</v
   <data name="Drive_GridCarVarietyLimit" xml:space="preserve">
     <value>Változatossági korlát</value>
   </data>
+  <data name="AcSettings_Video_Fxaa" xml:space="preserve">
+    <value>FXAA</value>
+  </data>
+  <data name="AcSettings_Video_OculusHeader" xml:space="preserve">
+    <value>Oculus:</value>
+  </data>
+  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
+    <value>[/b][i]?[/i][b]</value>
+  </data>
+  <data name="CarSpecs_MaxSpeed_FormatTooltip" xml:space="preserve">
+    <value>… km/h</value>
+  </data>
+  <data name="CarSpecs_Power_FormatTooltip" xml:space="preserve">
+    <value>… bhp</value>
+  </data>
+  <data name="CarSpecs_PwRatio_FormatTooltip" xml:space="preserve">
+    <value>… kg/hp</value>
+  </data>
+  <data name="CarSpecs_Torque_FormatTooltip" xml:space="preserve">
+    <value>… Nm</value>
+  </data>
+  <data name="CarSpecs_Weight_FormatTooltip" xml:space="preserve">
+    <value>… kg</value>
+  </data>
+  <data name="Common_MillisecondsFormat" xml:space="preserve">
+    <value>{0:F2} ms</value>
+  </data>
+  <data name="Controls_Abs" xml:space="preserve">
+    <value>ABS:</value>
+  </data>
+  <data name="Controls_InvalidDirectory_Commentary" xml:space="preserve">
+    <value>Please, choose a file in initial directory (“cfg\controllers\savedsetups”) or some subdirectory.</value>
+  </data>
+  <data name="Controls_MguK" xml:space="preserve">
+    <value>MGU-K:</value>
+  </data>
+  <data name="Controls_Turbo" xml:space="preserve">
+    <value>Turbo:</value>
+  </data>
+  <data name="Drive_CannotFilter" xml:space="preserve">
+    <value>Can’t filter appropriate cars for starting grid</value>
+  </data>
+  <data name="Drive_CannotInitializeLua" xml:space="preserve">
+    <value>Can’t initialize Lua</value>
+  </data>
+  <data name="LiveryIcon_Style_Miura" xml:space="preserve">
+    <value>Miura</value>
+  </data>
+  <data name="LiveryIcon_Style_Tesla" xml:space="preserve">
+    <value>Tesla</value>
+  </data>
+  <data name="Main_AssettoCorsa" xml:space="preserve">
+    <value>Assetto Corsa</value>
+  </data>
+  <data name="Main_ContentManager" xml:space="preserve">
+    <value>Content Manager</value>
+  </data>
+  <data name="Main_Lan" xml:space="preserve">
+    <value>LAN</value>
+  </data>
+  <data name="Main_Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Main_Rsr" xml:space="preserve">
+    <value>RSR</value>
+  </data>
+  <data name="Main_Srs" xml:space="preserve">
+    <value>SRS</value>
+  </data>
+  <data name="Online_AddServer_Tooltip" xml:space="preserve">
+    <value>Port could be omitted, in this case app will scan all specific ports</value>
+  </data>
+  <data name="Online_FilterBooking_Short" xml:space="preserve">
+    <value>Booking</value>
+  </data>
+  <data name="Online_FilterWithBooking" xml:space="preserve">
+    <value>Show servers with booking</value>
+  </data>
+  <data name="Online_Sorting_Ping" xml:space="preserve">
+    <value>Ping</value>
+  </data>
+  <data name="Race_CleaningUp" xml:space="preserve">
+    <value>Cleaning up some stuff…</value>
+  </data>
+  <data name="Race_Initializing" xml:space="preserve">
+    <value>Initializing…</value>
+  </data>
+  <data name="RaceResult_Threoretical" xml:space="preserve">
+    <value>Theoretical: </value>
+  </data>
+  <data name="Settings_Content_FontIconSymbol" xml:space="preserve">
+    <value>Font’s icon symbol:</value>
+  </data>
+  <data name="Settings_CustomShowroom_FancyHeader" xml:space="preserve">
+    <value>Fancy Showroom:</value>
+  </data>
+  <data name="Settings_CustomShowroom_LiteHeader" xml:space="preserve">
+    <value>Lite Showroom:</value>
+  </data>
+  <data name="Settings_Drive_CacheBrands" xml:space="preserve">
+    <value>Cache brands</value>
+  </data>
+  <data name="Settings_Drive_UiModuleFallback" xml:space="preserve">
+    <value>Fallback to Official Starter if original launcher isn’t running</value>
+  </data>
+  <data name="Settings_Live_EnableRsr" xml:space="preserve">
+    <value>Enable RSR Live Timing tab</value>
+  </data>
+  <data name="Settings_Live_EnableSrs" xml:space="preserve">
+    <value>Enable Sim Racing System (SRS) tab</value>
+  </data>
+  <data name="Settings_Live_RsrAutoToggleApp" xml:space="preserve">
+    <value>Automatically toggle RSR app</value>
+  </data>
+  <data name="Settings_Live_RsrAutoToggleApp_Tooltip" xml:space="preserve">
+    <value>Automatically show or hide RSR app if starting race isn’t RSR-related</value>
+  </data>
+  <data name="Settings_Live_RsrCustomStyle_Tooltip" xml:space="preserve">
+    <value>Custom optimized style for built-in RSR website</value>
+  </data>
+  <data name="Settings_Live_RsrName_Tooltip" xml:space="preserve">
+    <value>Use different name when RSR form is enabled</value>
+  </data>
+  <data name="Settings_Live_RsrNameLabel" xml:space="preserve">
+    <value>RSR name:</value>
+  </data>
+  <data name="Settings_Live_SrsCustomStyle_Tooltip" xml:space="preserve">
+    <value>Custom optimized style for built-in SRS website</value>
+  </data>
+  <data name="Settings_Live_SrsJoinFromOnline" xml:space="preserve">
+    <value>Joining from Online</value>
+  </data>
+  <data name="Settings_Live_SrsJoinFromOnline_Tooltip" xml:space="preserve">
+    <value>App will set a special SRS name automatically to avoid problems</value>
+  </data>
+  <data name="Settings_Live_SrsOnlineMask_Tooltip" xml:space="preserve">
+    <value>Default value: “SimRacingSystem*”</value>
+  </data>
+  <data name="Settings_Live_SrsOnlineMaskLabel" xml:space="preserve">
+    <value>Mask for SRS servers:</value>
+  </data>
+  <data name="Settings_Locale_ForceLocaleWarning" xml:space="preserve">
+    <value>Flag “--force-locale” is set!</value>
+  </data>
+  <data name="Settings_Online_LanHeader" xml:space="preserve">
+    <value>LAN:</value>
+  </data>
+  <data name="Settings_Online_LoadInformationDirectly_Tooltip" xml:space="preserve">
+    <value>Load server information directly instead of using AC servers; could be faster and more actual, but some information (such as active session) will be missing</value>
+  </data>
+  <data name="Settings_Online_PingConcurrency" xml:space="preserve">
+    <value>Ping concurrency</value>
+  </data>
+  <data name="Settings_Online_PingConcurrency_Tooltip" xml:space="preserve">
+    <value>Increase value to make pinging of the whole list go faster, but it’ll be less accurate</value>
+  </data>
+  <data name="Settings_Online_PingWithThreads" xml:space="preserve">
+    <value>Use threads instead of asynchronous API</value>
+  </data>
+  <data name="Settings_Online_PingWithThreads_Tooltip" xml:space="preserve">
+    <value>The most correct pinging, but the slowest one</value>
+  </data>
+  <data name="Settings_Online_PortsByIp_Tooltip" xml:space="preserve">
+    <value>Some enumeration like “9000-10000”</value>
+  </data>
+  <data name="Settings_Online_PortsLan_Tooltip" xml:space="preserve">
+    <value>Some enumeration like “9600,9602,9700-9750”</value>
+  </data>
+  <data name="Settings_Replays_AutosaveReplays_Tooltip" xml:space="preserve">
+    <value>Usual “cr” will be renamed automatically.</value>
+  </data>
+  <data name="Settings_Replays_ExtensionHeader" xml:space="preserve">
+    <value>Replays’ file names and extensions:</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesFoldersUpdate_Tooltip" xml:space="preserve">
+    <value>Press “Update” to reload list of folders</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableUrl" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="Solution_GenerateNew" xml:space="preserve">
+    <value>Generate new file</value>
+  </data>
+  <data name="Solution_GenerateNew_Details" xml:space="preserve">
+    <value>New empty file will be created; don’t forget to set proper values and save it afterwards</value>
+  </data>
+  <data name="Solution_MakeEmptyModel" xml:space="preserve">
+    <value>Make an empty model</value>
+  </data>
+  <data name="Solution_MakeGeneric" xml:space="preserve">
+    <value>Make generic</value>
+  </data>
+  <data name="Solution_MakeGeneric_Details" xml:space="preserve">
+    <value>Move to generic folder</value>
+  </data>
+  <data name="Solution_MakeIndependent" xml:space="preserve">
+    <value>Make independent</value>
+  </data>
+  <data name="Solution_MakeIndependent_Details" xml:space="preserve">
+    <value>Remove id of missing parent from ui_car.json</value>
+  </data>
+  <data name="Solution_RemoveObject" xml:space="preserve">
+    <value>Remove object</value>
+  </data>
+  <data name="Solution_RemoveObject_Details" xml:space="preserve">
+    <value>Object will be removed to the Recycle Bin</value>
+  </data>
+  <data name="Solution_RemoveReplay" xml:space="preserve">
+    <value>Remove replay</value>
+  </data>
+  <data name="Solution_RemoveReplay_Details" xml:space="preserve">
+    <value>Replay will be removed to the Recycle Bin</value>
+  </data>
+  <data name="Solution_RestoreJsonFile" xml:space="preserve">
+    <value>Try to restore JSON file</value>
+  </data>
+  <data name="Solution_SetBrandBadge" xml:space="preserve">
+    <value>Set {0} badge</value>
+  </data>
+  <data name="Solution_SetBrandName" xml:space="preserve">
+    <value>Set brand name</value>
+  </data>
+  <data name="Solution_SetBrandName_Details" xml:space="preserve">
+    <value>Just set a new brand name</value>
+  </data>
+  <data name="Solution_SetBrandName_Prompt" xml:space="preserve">
+    <value>Enter a new brand name:</value>
+  </data>
+  <data name="Solution_SetBrandNameFromName" xml:space="preserve">
+    <value>Set brand name based on car’s name</value>
+  </data>
+  <data name="Solution_SetBrandNameFromName_Details" xml:space="preserve">
+    <value>New brand name will be: “{0}”</value>
+  </data>
+  <data name="Solution_SetName" xml:space="preserve">
+    <value>Set name</value>
+  </data>
+  <data name="Solution_SetName_Details" xml:space="preserve">
+    <value>Just set a new name</value>
+  </data>
+  <data name="Solution_SetName_Prompt" xml:space="preserve">
+    <value>Enter a new name:</value>
+  </data>
+  <data name="Solution_SetNameFromId" xml:space="preserve">
+    <value>Set name based on ID</value>
+  </data>
+  <data name="Solution_SetNameFromId_Details" xml:space="preserve">
+    <value>New name will be: “{0}”</value>
+  </data>
+  <data name="Solution_SetUpgradeIcon" xml:space="preserve">
+    <value>Set “{0}” icon</value>
+  </data>
+  <data name="Solution_SetupPreview" xml:space="preserve">
+    <value>Setup and generate new preview</value>
+  </data>
+  <data name="Solution_SetupPreview_Details" xml:space="preserve">
+    <value>Select a new preview through settings</value>
+  </data>
+  <data name="Srs_CarIsMissing_Commentary" xml:space="preserve">
+    <value>Make sure all required mods are installed.</value>
+  </data>
+  <data name="Srs_Commentary" xml:space="preserve">
+    <value>Just in case, if you can't join using this section (or missed joining time), use Online section instead.</value>
+  </data>
+  <data name="Srs_IpLabel" xml:space="preserve">
+    <value>IP:</value>
+  </data>
+  <data name="Srs_PortLabel" xml:space="preserve">
+    <value>Port:</value>
+  </data>
+  <data name="Srs_ReadyNotification" xml:space="preserve">
+    <value>Click to join the race</value>
+  </data>
+  <data name="Srs_StartAtLabel" xml:space="preserve">
+    <value>Start at:</value>
+  </data>
+  <data name="Toolbar_Analyze" xml:space="preserve">
+    <value>Analyze</value>
+  </data>
+  <data name="Toolbar_CarSetups" xml:space="preserve">
+    <value>Setups</value>
+  </data>
+  <data name="Toolbar_CarSetups_Tooltip" xml:space="preserve">
+    <value>Manage setups (Ctrl+U)</value>
+  </data>
+  <data name="Toolbar_CarSkins" xml:space="preserve">
+    <value>Skins</value>
+  </data>
+  <data name="Toolbar_CarSkins_Tooltip" xml:space="preserve">
+    <value>Manage skins (Ctrl+K)</value>
+  </data>
+  <data name="Toolbar_ChangeId" xml:space="preserve">
+    <value>Change ID</value>
+  </data>
+  <data name="Toolbar_ChangeId_SkinTooltip" xml:space="preserve">
+    <value>Change skin’s ID (Ctrl+Shift+F2)</value>
+  </data>
+  <data name="Toolbar_ChangeId_WeatherTooltip" xml:space="preserve">
+    <value>Change weather’s ID (Ctrl+Shift+F2)</value>
+  </data>
+  <data name="Toolbar_Clone" xml:space="preserve">
+    <value>Clone</value>
+  </data>
+  <data name="Toolbar_Clone_WeatherTooltip" xml:space="preserve">
+    <value>Clone weather (Ctrl+Shift+D)</value>
+  </data>
+  <data name="Toolbar_CopyValues_Tooltip" xml:space="preserve">
+    <value>Copy values to other layouts</value>
+  </data>
+  <data name="Toolbar_CreateJson" xml:space="preserve">
+    <value>Create JSON-file</value>
+  </data>
+  <data name="Toolbar_CreateNewFont_Tooltip" xml:space="preserve">
+    <value>Create a new font using Kunos tool (Ctrl+N)</value>
+  </data>
+  <data name="Toolbar_CreateNewShowroom_Tooltip" xml:space="preserve">
+    <value>Create new showroom from existing panorama (Ctrl+N)</value>
+  </data>
+  <data name="Toolbar_CustomShowroom" xml:space="preserve">
+    <value>Custom Showroom</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Fancy" xml:space="preserve">
+    <value>Fancy Custom Showroom</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Fancy_Tooltip" xml:space="preserve">
+    <value>Slower and less accurate, but with proper lighting and reflections</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Lite" xml:space="preserve">
+    <value>Lite Custom Showroom</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Lite_Tooltip" xml:space="preserve">
+    <value>Faster and more accurate, helpful for modding or skins drawing</value>
+  </data>
+  <data name="Toolbar_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Toolbar_Delete_CarTooltip" xml:space="preserve">
+    <value>Remove car to the Recycle Bin (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_DeleteJson" xml:space="preserve">
+    <value>Delete JSON-file</value>
+  </data>
+  <data name="Toolbar_Disable" xml:space="preserve">
+    <value>Disable</value>
+  </data>
+  <data name="Toolbar_Disable_Tooltip" xml:space="preserve">
+    <value>Disable (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_DisableUnused_Tooltip" xml:space="preserve">
+    <value>Rescan usings and disable all unused fonts (Ctrl+Shift+D)</value>
+  </data>
+  <data name="Toolbar_Drive" xml:space="preserve">
+    <value>Drive</value>
+  </data>
+  <data name="Toolbar_Drive_CarTooltip" xml:space="preserve">
+    <value>Use car in a Quick Drive session (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Drive_TrackTooltip" xml:space="preserve">
+    <value>Use track in a Quick Drive session (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Enable" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+  <data name="Toolbar_Enable_Tooltip" xml:space="preserve">
+    <value>Enable (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_FindInformation_CarTooltip" xml:space="preserve">
+    <value>Find information about car (Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_FindInformation_TrackTooltip" xml:space="preserve">
+    <value>Find information about track (Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_Folder" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="Toolbar_Folder_AppTooltip" xml:space="preserve">
+    <value>Open app’s folder (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_CarTooltip" xml:space="preserve">
+    <value>Open car’s folder (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_FontTooltip" xml:space="preserve">
+    <value>Open font’s folder (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_PpFilterTooltip" xml:space="preserve">
+    <value>Open PP filter’s folder (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_ReplayTooltip" xml:space="preserve">
+    <value>Open replay’s folder (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_SetupTooltip" xml:space="preserve">
+    <value>Open setup’s folder (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_ShowroomTooltip" xml:space="preserve">
+    <value>Open showroom’s folder (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_SkinTooltip" xml:space="preserve">
+    <value>Open skin’s folder (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_TrackTooltip" xml:space="preserve">
+    <value>Open track’s folder (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_WeatherTooltip" xml:space="preserve">
+    <value>Open weather’s folder (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Join" xml:space="preserve">
+    <value>Join</value>
+  </data>
+  <data name="Toolbar_Join_OnlineTooltip" xml:space="preserve">
+    <value>Join server (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Play" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="Toolbar_Play_Tooltip" xml:space="preserve">
+    <value>Run replay (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Toolbar_Refresh_OnlineTooltip" xml:space="preserve">
+    <value>Refresh server information (Ctrl+R)</value>
+  </data>
+  <data name="Toolbar_Reload" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="Toolbar_Reload_Tooltip" xml:space="preserve">
+    <value>Reload (Ctrl+R)</value>
+  </data>
+  <data name="Toolbar_Rename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="Toolbar_Rename_AppTooltip" xml:space="preserve">
+    <value>Rename app according to the new name (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Rename_ReplayTooltip" xml:space="preserve">
+    <value>Rename replay according to the new name (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_RescanUsings_Tooltip" xml:space="preserve">
+    <value>Collect list of cars per font (Ctrl+U)</value>
+  </data>
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Toolbar_Save_IniTooltip" xml:space="preserve">
+    <value>Save changed INI-file (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Save_JsonTooltip" xml:space="preserve">
+    <value>Save changed JSON-file (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Share_FilterTooltip" xml:space="preserve">
+    <value>Share filter (Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_Share_SetupTooltip" xml:space="preserve">
+    <value>Share setup (Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_Showroom" xml:space="preserve">
+    <value>Showroom</value>
+  </data>
+  <data name="Toolbar_Showroom_Tooltip" xml:space="preserve">
+    <value>View car in showroom (Ctrl+H)</value>
+  </data>
+  <data name="Toolbar_ShowroomOptions_Tooltip" xml:space="preserve">
+    <value>Select showroom, filter and etc.</value>
+  </data>
+  <data name="Toolbar_Test_FilterTooltip" xml:space="preserve">
+    <value>Test filter in showroom (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Test_SetupTooltip" xml:space="preserve">
+    <value>Test setup (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Test_WeatherTooltip" xml:space="preserve">
+    <value>Test weather on track (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_TurnOffSound_Tooltip" xml:space="preserve">
+    <value>Disable sound (Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_TurnOnSound_Tooltip" xml:space="preserve">
+    <value>Enable sound (Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_UnpackData_Tooltip" xml:space="preserve">
+    <value>For development purposes only (Alt+J)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_ShowroomTooltip" xml:space="preserve">
+    <value>Update showroom’s preview (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_SkinTooltip" xml:space="preserve">
+    <value>Update skin’s preview (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_TrackTooltip" xml:space="preserve">
+    <value>Update track’s preview (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_WeatherTooltip" xml:space="preserve">
+    <value>Update weather’s preview (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreviews_Tooltip" xml:space="preserve">
+    <value>Update all previews (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewsManually_Tooltip" xml:space="preserve">
+    <value>Set camera position manually and then press F8 to start shooting</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewsOptions_Tooltip" xml:space="preserve">
+    <value>Select showroom, filter, camera position and etc.</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewWithoutShooting_Tooltip" xml:space="preserve">
+    <value>Just select existing image</value>
+  </data>
+  <data name="UpgradeIcon_AddAs" xml:space="preserve">
+    <value>Add as a new upgrade icon:</value>
+  </data>
+  <data name="UpgradeIcon_CannotChange" xml:space="preserve">
+    <value>Can’t change upgrade icon.</value>
+  </data>
+  <data name="UpgradeIcon_CannotChange_Commentary" xml:space="preserve">
+    <value>Make sure upgrade icon file is available to write.</value>
+  </data>
+  <data name="UpgradeIcon_Current" xml:space="preserve">
+    <value>Current</value>
+  </data>
+  <data name="UpgradeIcon_Editor" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="UpgradeIcon_Library" xml:space="preserve">
+    <value>Library</value>
+  </data>
+  <data name="UpgradeIcon_New" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="Weather_CannotShare" xml:space="preserve">
+    <value>Can’t share weather</value>
+  </data>
+  <data name="Weather_CannotShare_Commentary" xml:space="preserve">
+    <value>Files are too big. Limit is {0}.</value>
+  </data>
+  <data name="Weather_KunosReadme" xml:space="preserve">
+    <value>We are using an equation to create a graph that determines the asphalt temperature relatively to ambient temperature, weather and day time.
+
+Check the graph in [url="http://fooplot.com/plot/3x7y44pfli"]this link[/url].
+
+The equation used is:
+[mono](((-10×α)*x)+10*α)*2((exp(-6*x)*(0.4*sin(6*x))+0.1)*(15/1.5)*sin(0.9*x))+15[/mono]
+
+Change the 1 values in (((-10*1)*x)+10*1) to see the results in your graphs.
+Accepted values are from -1 to 1.</value>
+  </data>
+  <data name="Weather_SeemsEmpty" xml:space="preserve">
+    <value>Seems empty?</value>
+  </data>
+  <data name="Weather_SeemsEmpty_Commentary" xml:space="preserve">
+    <value>Switch to Edit Mode if you want to modify other weather's parameters.</value>
+  </data>
+  <data name="WeatherEdit_AdditionalHeader" xml:space="preserve">
+    <value>Additional:</value>
+  </data>
+  <data name="WeatherEdit_AngleGamma" xml:space="preserve">
+    <value>Angle gamma</value>
+  </data>
+  <data name="WeatherEdit_Blend" xml:space="preserve">
+    <value>Blend</value>
+  </data>
+  <data name="WeatherEdit_Brightness" xml:space="preserve">
+    <value>Brightness</value>
+  </data>
+  <data name="WeatherEdit_CloudsHeader" xml:space="preserve">
+    <value>Clouds:</value>
+  </data>
+  <data name="WeatherEdit_Color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="WeatherEdit_Color_Tooltip" xml:space="preserve">
+    <value>Base color; the sunlight, light color and ambient will be added to this</value>
+  </data>
+  <data name="WeatherEdit_ColorCurvesHeader" xml:space="preserve">
+    <value>Color curves:</value>
+  </data>
+  <data name="WeatherEdit_Cover" xml:space="preserve">
+    <value>Cover</value>
+  </data>
+  <data name="WeatherEdit_Cover_Tooltip" xml:space="preserve">
+    <value>Regulates clouds transparency</value>
+  </data>
+  <data name="WeatherEdit_CutOff" xml:space="preserve">
+    <value>Cut-off</value>
+  </data>
+  <data name="WeatherEdit_CutOff_Tooltip" xml:space="preserve">
+    <value>Regulates other colors influencies on the cloud:
+ • [b]0%:[/b] just the color effects on the clouds are considered;
+ • [b]50%:[/b] 50% of cloud color and 50% of effects;
+ • [b]100%:[/b] just the color of the cloud is considered</value>
+  </data>
+  <data name="WeatherEdit_Distance" xml:space="preserve">
+    <value>Distance</value>
+  </data>
+  <data name="WeatherEdit_FogHeader" xml:space="preserve">
+    <value>Fog:</value>
+  </data>
+  <data name="WeatherEdit_HdrOffMultipler" xml:space="preserve">
+    <value>HDR-off mult.</value>
+  </data>
+  <data name="WeatherEdit_HdrOffMultipler_Tooltip" xml:space="preserve">
+    <value>Used when HDR is disabled</value>
+  </data>
+  <data name="WeatherEdit_Headlights" xml:space="preserve">
+    <value>Turn on headlights</value>
+  </data>
+  <data name="WeatherEdit_Height_Tooltip" xml:space="preserve">
+    <value>Height of the quad</value>
+  </data>
+  <data name="WeatherEdit_Multipler" xml:space="preserve">
+    <value>Multiplier</value>
+  </data>
+  <data name="WeatherEdit_Number_Tooltip" xml:space="preserve">
+    <value>Number of clouds</value>
+  </data>
+  <data name="WeatherEdit_Radius_Tooltip" xml:space="preserve">
+    <value>Distance from the center of the skybox to the quad</value>
+  </data>
+  <data name="WeatherEdit_SpeedMultipler_Tooltip" xml:space="preserve">
+    <value>Base speed multiplier</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficient" xml:space="preserve">
+    <value>Temp. coefficient</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficient_Tooltip" xml:space="preserve">
+    <value>Creates a variation of the asphalt temperature relative to the weather, ambient temperature and time. More information in “readme_weather.txt”</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficientAirTemperature" xml:space="preserve">
+    <value>Air temp.</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficientTesting" xml:space="preserve">
+    <value>Temperature coefficient testing:</value>
+  </data>
+  <data name="WeatherEdit_ViewReadmeHeader" xml:space="preserve">
+    <value>View “readme_weather.txt”</value>
+  </data>
+  <data name="WeatherEdit_Width_Tooltip" xml:space="preserve">
+    <value>Width of the quad</value>
+  </data>
 </root>

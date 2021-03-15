@@ -947,4 +947,55 @@ de substitui-la.</value>
   <data name="Common_WhatIsIt" xml:space="preserve">
     <value>O que é isso?</value>
   </data>
+  <data name="AcObject_UrlLabel" xml:space="preserve">
+    <value>URL:</value>
+  </data>
+  <data name="Assists_AutoBlipLabel" xml:space="preserve">
+    <value>Autoblip:</value>
+  </data>
+  <data name="Common_CelsiusFormat" xml:space="preserve">
+    <value>{0:F0} °C</value>
+  </data>
+  <data name="Common_CelsiusPostfix" xml:space="preserve">
+    <value> °C</value>
+  </data>
+  <data name="Common_PsiPostfix" xml:space="preserve">
+    <value> psi</value>
+  </data>
+  <data name="Controls_ExperimentalHeader" xml:space="preserve">
+    <value>Experimental:</value>
+  </data>
+  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
+    <value>Material:</value>
+  </data>
+  <data name="CustomShowroom_SkinHeader" xml:space="preserve">
+    <value>Skin</value>
+  </data>
+  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
+    <value>FPS:</value>
+  </data>
+  <data name="QuickSwitches_Fov" xml:space="preserve">
+    <value>FOV</value>
+  </data>
+  <data name="Showroom_DialogHeader" xml:space="preserve">
+    <value>Showroom</value>
+  </data>
+  <data name="Showroom_FovLabel" xml:space="preserve">
+    <value>FOV:</value>
+  </data>
+  <data name="Showroom_ShowroomLabel" xml:space="preserve">
+    <value>Showroom:</value>
+  </data>
+  <data name="TableHeader_CarSkin" xml:space="preserve">
+    <value>Skin</value>
+  </data>
+  <data name="TableHeader_X" xml:space="preserve">
+    <value>X</value>
+  </data>
+  <data name="TableHeader_Y" xml:space="preserve">
+    <value>Y</value>
+  </data>
+  <data name="Theme_Nordschleife" xml:space="preserve">
+    <value>Nordschleife</value>
+  </data>
 </root>
