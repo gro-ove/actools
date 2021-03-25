@@ -436,8 +436,26 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static void OnCollapseIfNullChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
             var b = (BetterImage)o;
             b._collapseIfNull = (bool)e.NewValue;
-            if (b._filename == null) {
+            if (b._collapseIfNull && b._filename == null) {
                 b.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private bool _hideIfNull;
+
+        public static readonly DependencyProperty HideIfNullProperty = DependencyProperty.Register(nameof(HideIfNull), typeof(bool),
+                typeof(BetterImage), new PropertyMetadata(OnHideIfNullChanged));
+
+        public bool HideIfNull {
+            get => _hideIfNull;
+            set => SetValue(HideIfNullProperty, value);
+        }
+
+        private static void OnHideIfNullChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            var b = (BetterImage)o;
+            b._hideIfNull = (bool)e.NewValue;
+            if (b._hideIfNull && b._filename == null) {
+                b.Visibility = Visibility.Hidden;
             }
         }
         #endregion
@@ -626,7 +644,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 // Regular loading
                 var tcs = new TaskCompletionSource<byte[]>();
                 ThreadPool.Run(async () => {
-                    if (origin != null && origin.Filename != filename) return;
+                    if (origin != null && origin.Filename != filename) {
+                        tcs.SetResult(null);
+                        return;
+                    }
                     try {
                         using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true)) {
                             if (stream.Length > 40 * 1024 * 1024) {
@@ -1128,6 +1149,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     Visibility = Visibility.Visible;
                 } else {
                     Visibility = Visibility.Collapsed;
+                    SetCurrent(Image.Empty);
+                    return;
+                }
+            }
+
+            if (_hideIfNull) {
+                if (value != null) {
+                    Visibility = Visibility.Visible;
+                } else {
+                    Visibility = Visibility.Hidden;
                     SetCurrent(Image.Empty);
                     return;
                 }

@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -76,6 +77,7 @@ namespace AcManager.Tools.Objects {
                 if (Equals(value, _selectedSkin)) return;
                 _selectedSkin = value;
                 OnPropertyChanged(nameof(SelectedSkin));
+                OnPropertyChanged(nameof(SelectedSkinLazy));
 
                 if (_selectedSkin == null) return;
                 if (_selectedSkin.Id == SkinsManager.WrappersList.FirstOrDefault()?.Value.Id) {
@@ -83,6 +85,15 @@ namespace AcManager.Tools.Objects {
                 } else {
                     LimitedStorage.Set(LimitedSpace.SelectedSkin, Id, _selectedSkin.Id);
                 }
+            }
+        }
+
+        public CarSkinObject SelectedSkinLazy {
+            get {
+                if (!SkinsManager.IsScanned) {
+                    Task.Run(() => SkinsManager.Scan());
+                }
+                return _selectedSkin;
             }
         }
 

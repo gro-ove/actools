@@ -35,7 +35,7 @@
                         d:DataContext="{d:DesignInstance t:AcItemWrapper}">
                       <mui:Cell DataContext="{Binding Value}" Background="Transparent" d:DataContext="{d:DesignInstance t:CarObject}"
                           ac:ToolTips.Car="{Binding}" ac:ContextMenus.Car="{Binding}" mui:Draggable.Data="{Binding}">
-                        <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" Margin="0 8 0 0" />
+                        <mui:BetterImage Filename="{Binding SelectedSkinLazy.PreviewImage}" HideIfNull="True" Margin="0 8 0 0" />
                         <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="{DynamicResource CardHeaderBackground}"
                             Text="{Binding DisplayName}" Foreground="{DynamicResource CardHeaderText}" Style="{StaticResource Small}" TextAlignment="Center"
                             TextTrimming="CharacterEllipsis" />

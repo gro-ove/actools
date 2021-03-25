@@ -14,7 +14,7 @@
     <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
       <mui:BbCodeBlock Mode="WithoutBbCodes" Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" />
       <mui:BooleanSwitch Value="{Binding ShowCarPreviewInToolTips, Source={x:Static t:SettingsHolder.Content}}" CollapseOnFalse="True">
-        <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" Width="480" Height="270" Stretch="UniformToFill" />
+        <mui:BetterImage Filename="{Binding SelectedSkinLazy.PreviewImage}" HideIfNull="True" Width="480" Height="270" Stretch="UniformToFill" />
       </mui:BooleanSwitch>
       <c:CarBlock Car="{Binding}" ShowSkinsAndPreview="False" SelectSkin="False" Width="480" MaxHeight="320" ShowDescription="False" />
     </StackPanel>

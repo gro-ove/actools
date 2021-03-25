@@ -56,7 +56,7 @@
                         VirtualizationMode="Recycling" IsVirtualizing="True" CacheLength="24,24" CacheLengthUnit="Item" />-->
                     <mui:VirtualizingColumnsPanel
                         Columns="{Binding ActualWidth, Converter={x:Static ac:AcObjectListBox.ThumbnailColumnsConverter}, RelativeSource={RelativeSource Self}}"
-                        ItemHeightModifier="0.5625" VirtualizationMode="Recycling" IsVirtualizing="True" CacheLength="12,12" CacheLengthUnit="Item" />
+                        ItemHeightModifier="0.5625" VirtualizationMode="Recycling" IsVirtualizing="True" CacheLength="2,2" CacheLengthUnit="Item" />
                   </ItemsPanelTemplate>
                 </Setter.Value>
               </Setter>
