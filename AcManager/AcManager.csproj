@@ -479,6 +479,9 @@
     <Compile Include="Pages\Drive\TempSurvey.xaml.cs">
       <DependentUpon>TempSurvey.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\TrackTitan.xaml.cs">
+      <DependentUpon>TrackTitan.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\UserChampionships_SelectedPage.xaml.cs">
       <DependentUpon>UserChampionships_SelectedPage.xaml</DependentUpon>
     </Compile>
@@ -1234,6 +1237,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Drive\TempSurvey.xaml" />
+    <Page Include="Pages\Drive\TrackTitan.xaml" />
     <Page Include="Pages\Drive\UserChampionships_SelectedPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

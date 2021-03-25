@@ -107,6 +107,12 @@
           </DockPanel>-->
         </StackPanel>
 
+        <TextBlock Text="Track Titan:" Style="{StaticResource SettingsPanel.Heading2}" />
+
+        <CheckBox IsChecked="{Binding Live.WorldSimSeriesEnabled}">
+          <Label Content="Enable Track Titan" />
+        </CheckBox>
+
         <TextBlock Text="World Sim Series:" Style="{StaticResource SettingsPanel.Heading2}" />
 
         <CheckBox IsChecked="{Binding Live.WorldSimSeriesEnabled}">

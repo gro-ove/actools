@@ -192,6 +192,9 @@ namespace AcManager.Tools.Starters {
                 FileName = AcsFilename,
                 WorkingDirectory = _acRoot
             });
+            if (GameProcess != null && OptionTrackProcess) {
+                ChildProcessTracker.AddProcess(GameProcess);
+            }
         }
 
         private static Assembly _assembly;

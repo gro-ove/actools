@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 
 namespace AcManager.Tools.Starters {
@@ -17,6 +18,9 @@ namespace AcManager.Tools.Starters {
                 FileName = AcsFilename,
                 WorkingDirectory = AcRootDirectory.Instance.RequireValue
             });
+            if (GameProcess != null && OptionTrackProcess) {
+                ChildProcessTracker.AddProcess(GameProcess);
+            }
         }
     }
 }

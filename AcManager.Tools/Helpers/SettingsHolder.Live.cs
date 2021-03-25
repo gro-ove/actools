@@ -30,6 +30,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _trackTitanEnabled;
+
+            public bool TrackTitanEnabled {
+                get => _trackTitanEnabled ?? (_trackTitanEnabled = ValuesStorage.Get("Settings.LiveSettings.TrackTitanEnabled", true)).Value;
+                set {
+                    if (Equals(value, _trackTitanEnabled)) return;
+                    _trackTitanEnabled = value;
+                    ValuesStorage.Set("Settings.LiveSettings.TrackTitanEnabled", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _srsCustomStyle;
 
             public bool SrsCustomStyle {

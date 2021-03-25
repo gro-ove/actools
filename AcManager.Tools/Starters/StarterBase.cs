@@ -14,6 +14,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Starters {
     public abstract class StarterBase : IAcsPlatformSpecificStarter {
+        public static bool OptionTrackProcess { get; set; }
+        
         public static string GetAcsName(bool use32BitVersion) {
             return use32BitVersion ? @"acs_x86.exe" : @"acs.exe";
         }

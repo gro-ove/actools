@@ -63,6 +63,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Doesn’t do anything if OptionDecodeImageSync is true.
         /// </summary>
         public static int OptionDecodeImageSyncThreshold = 50 * 1000; // 50 KB
+
         // public static int OptionDecodeImageSyncThreshold = 50; // 50 KB
 
         /// <summary>
@@ -82,7 +83,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Before loading cached entity, check if according file exists and was not updated.
         /// </summary>
         // public static bool OptionEnsureCacheIsFresh = true;
-        public static bool OptionEnsureCacheIsFresh = false;
+                public static bool OptionEnsureCacheIsFresh = false;
 
         /// <summary>
         /// Do not set it to zero if OptionReadFileSync is true and OptionDecodeImageSync is true!
@@ -606,7 +607,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Safe (handles all exceptions inside).
         /// </summary>
         [ItemCanBeNull]
-        private static async Task<byte[]> ReadBytesAsync([CanBeNull] string filename, CancellationToken cancellation = default) {
+        private static async Task<byte[]> ReadBytesAsync([CanBeNull] string filename, CancellationToken cancellation = default, BetterImage origin = null) {
             if (filename == null) return null;
 
             try {
@@ -617,20 +618,29 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         using (stream) {
                             var result = new byte[stream.Length];
                             await stream.ReadAsync(result, 0, (int)stream.Length, cancellation).ConfigureAwait(false);
-                            return await ConvertSpecialAsync(result);
+                            return await ConvertSpecialAsync(result).ConfigureAwait(false);
                         }
                     }
                 }
 
                 // Regular loading
-                using (var stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                    if (stream.Length > 40 * 1024 * 1024) {
-                        throw new Exception($"Image “{filename}” is way too big to display: {stream.Length.ToReadableSize()}");
+                var tcs = new TaskCompletionSource<byte[]>();
+                ThreadPool.Run(async () => {
+                    if (origin != null && origin.Filename != filename) return;
+                    try {
+                        using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true)) {
+                            if (stream.Length > 40 * 1024 * 1024) {
+                                throw new Exception($"Image “{filename}” is way too big to display: {stream.Length.ToReadableSize()}");
+                            }
+                            var result = new byte[stream.Length];
+                            await stream.ReadAsync(result, 0, result.Length, cancellation).ConfigureAwait(false);
+                            tcs.SetResult(await ConvertSpecialAsync(result).ConfigureAwait(false));
+                        }
+                    } catch (Exception e) {
+                        tcs.SetException(e);
                     }
-                    var result = new byte[stream.Length];
-                    await stream.ReadAsync(result, 0, result.Length, cancellation).ConfigureAwait(false);
-                    return await ConvertSpecialAsync(result).ConfigureAwait(false);
-                }
+                });
+                return await tcs.Task.ConfigureAwait(false);
             } catch (FileNotFoundException) {
                 return null;
             } catch (Exception e) {
@@ -771,7 +781,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             RemoveFromCache(filename);
             foreach (var image in VisualTreeHelperEx.GetAllOfType<BetterImage>()
-                                                    .Where(x => string.Equals(x.Filename, filename, StringComparison.OrdinalIgnoreCase))) {
+                    .Where(x => string.Equals(x.Filename, filename, StringComparison.OrdinalIgnoreCase))) {
                 image.OnFilenameChanged(filename);
             }
         }
@@ -1094,7 +1104,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (OptionReadFileSync) {
                 ApplyReloadImage(filename, loading, ReadBytes(filename));
             } else {
-                ApplyReloadImage(filename, loading, await ReadBytesAsync(filename));
+                ApplyReloadImage(filename, loading, await ReadBytesAsync(filename, default, this));
                 /*ThreadPool.Run(() => {
                     ApplyReloadImage(filename, loading, ReadBytes(filename));
                 });*/

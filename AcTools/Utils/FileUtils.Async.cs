@@ -18,7 +18,7 @@ namespace AcTools.Utils {
         [ItemNotNull]
         public static async Task<string[]> ReadAllLinesAsync(string filename, CancellationToken cancellation = default) {
             var lines = new List<string>();
-            using (var sr = new StreamReader(filename, Encoding.UTF8)) {
+            using (var sr = new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true), Encoding.UTF8)) {
                 string line;
                 while ((line = await sr.ReadLineAsync()) != null) {
                     if (cancellation.IsCancellationRequested) return new string[0];
@@ -31,7 +31,7 @@ namespace AcTools.Utils {
 
         [ItemNotNull]
         public static async Task<byte[]> ReadAllBytesAsync(string filename, CancellationToken cancellation = default) {
-            using (var stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true)) {
                 var result = new byte[stream.Length];
                 await stream.ReadAsync(result, 0, (int)stream.Length, cancellation);
                 return result;
@@ -43,7 +43,7 @@ namespace AcTools.Utils {
             if (filename == null) throw new ArgumentNullException(nameof(filename));
             if (bytes == null) throw new ArgumentNullException(nameof(bytes));
 
-            using (var stream = File.Open(filename, FileMode.Create)) {
+            using (var stream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true)) {
                 await stream.WriteAsync(bytes, 0, bytes.Length, cancellation);
             }
         }
@@ -51,7 +51,7 @@ namespace AcTools.Utils {
         public static async Task WriteAllBytesAsync([NotNull] string filename, [NotNull] Stream source,
                 CancellationToken cancellation = default) {
             if (filename == null) throw new ArgumentNullException(nameof(filename));
-            using (var stream = File.Open(filename, FileMode.Create)) {
+            using (var stream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true)) {
                 await source.CopyToAsync(stream, 81920, cancellation);
             }
         }

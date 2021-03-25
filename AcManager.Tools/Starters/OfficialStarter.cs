@@ -75,6 +75,9 @@ namespace AcManager.Tools.Starters {
                 FileName = LauncherFilename,
                 WorkingDirectory = AcRootDirectory.Instance.RequireValue
             });
+            if (LauncherProcess != null && OptionTrackProcess) {
+                ChildProcessTracker.AddProcess(LauncherProcess);
+            }
         }
 
         public override void Run() {

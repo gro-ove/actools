@@ -34,6 +34,9 @@ namespace AcManager.Tools.Starters {
                 FileName = AcsFilename,
                 WorkingDirectory = AcRootDirectory.Instance.RequireValue
             });
+            if (GameProcess != null && OptionTrackProcess) {
+                ChildProcessTracker.AddProcess(GameProcess);
+            }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

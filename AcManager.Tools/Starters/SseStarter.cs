@@ -149,6 +149,9 @@ namespace AcManager.Tools.Starters {
                 WorkingDirectory = addon.Directory,
                 Arguments = ConfigName
             });
+            if (LauncherProcess != null && OptionTrackProcess) {
+                ChildProcessTracker.AddProcess(LauncherProcess);
+            }
         }
 
         public override void CleanUp() {
