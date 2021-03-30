@@ -127,8 +127,8 @@
     <value>차량 "{0}"이(가) 누락</value>
   </data>
   <data name="AcError_CarParentIsMissing" xml:space="preserve">
-    <value>차량의 상위 차량 정보가 없습니다</value>
-  <alternative>차량의 상위 차량 정보가 없음</alternative></data>
+    <value>차량의 기본 모델 정보가 없습니다</value>
+  <alternative>차량의 상위 차량 정보가 없음</alternative><alternative>차량의 상위 차량 정보가 없습니다</alternative></data>
   <data name="AcError_ColorCurvesIniIsMissing" xml:space="preserve">
     <value>colorCurves.ini 파일이 없습니다</value>
   <alternative>colorCurves.ini 파일이 없음</alternative></data>
@@ -583,8 +583,8 @@
     <value>다른 차량을 고르세요</value>
   </data>
   <data name="CarParentIsMissing" xml:space="preserve">
-    <value>상위 차량 항목이 누락되었습니다</value>
-  </data>
+    <value>기본 모델 항목이 누락되었습니다</value>
+  <alternative>상위 차량 항목이 누락되었습니다</alternative></data>
   <data name="CarSetupObject_Load_InvalidLocation" xml:space="preserve">
     <value>잘못된 위치</value>
   </data>
@@ -1614,167 +1614,5 @@
   </data>
   <data name="Windows_Kn5Commentary" xml:space="preserve">
     <value>KN5 모델</value>
-  </data>
-  <data name="AcObject_CannotToggle_Commentary" xml:space="preserve">
-    <value>Make sure there are no running apps working with object’s folder.</value>
-  </data>
-  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
-    <value>{0}×{1}, {2} Hz</value>
-  </data>
-  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
-    <value>JPEG</value>
-  </data>
-  <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
-    <value>G-Forces:</value>
-  </data>
-  <data name="Assists_AbsLabel" xml:space="preserve">
-    <value>ABS:</value>
-  </data>
-  <data name="Common_FeetPerSecondPostfix" xml:space="preserve">
-    <value> ft/s</value>
-  </data>
-  <data name="Common_KilogramsPostfix" xml:space="preserve">
-    <value> kg</value>
-  </data>
-  <data name="Common_KN5" xml:space="preserve">
-    <value>KN5</value>
-  </data>
-  <data name="Common_MetersPerSecondPostfix" xml:space="preserve">
-    <value> m/s</value>
-  </data>
-  <data name="Common_NA" xml:space="preserve">
-    <value>N/A</value>
-  </data>
-  <data name="Common_Unit_Hz" xml:space="preserve">
-    <value> Hz</value>
-  </data>
-  <data name="GameCommand_TimeoutExceeded" xml:space="preserve">
-    <value>Timeout exceeded</value>
-  </data>
-  <data name="Online_YouFormat" xml:space="preserve">
-    <value>{0} (You)</value>
-  </data>
-  <data name="SearchEngine_Baidu" xml:space="preserve">
-    <value>Baidu</value>
-  </data>
-  <data name="SearchEngine_Bing" xml:space="preserve">
-    <value>Bing</value>
-  </data>
-  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
-    <value>DuckDuckGo</value>
-  </data>
-  <data name="SearchEngine_Google" xml:space="preserve">
-    <value>Google</value>
-  </data>
-  <data name="SearchEngine_Yandex" xml:space="preserve">
-    <value>Yandex</value>
-  </data>
-  <data name="Settings_Starter_Sse" xml:space="preserve">
-    <value>SSE</value>
-  </data>
-  <data name="Units_Nm" xml:space="preserve">
-    <value>Nm</value>
-  </data>
-  <data name="Units_RPM" xml:space="preserve">
-    <value>RPM</value>
-  </data>
-  <data name="Weather_BrokenClouds" xml:space="preserve">
-    <value>Broken clouds</value>
-  </data>
-  <data name="Weather_Clear" xml:space="preserve">
-    <value>Clear</value>
-  </data>
-  <data name="Weather_Cold" xml:space="preserve">
-    <value>Cold</value>
-  </data>
-  <data name="Weather_Drizzle" xml:space="preserve">
-    <value>Drizzle</value>
-  </data>
-  <data name="Weather_Dust" xml:space="preserve">
-    <value>Dust</value>
-  </data>
-  <data name="Weather_FewClouds" xml:space="preserve">
-    <value>Few clouds</value>
-  </data>
-  <data name="Weather_Fog" xml:space="preserve">
-    <value>Fog</value>
-  </data>
-  <data name="Weather_Hail" xml:space="preserve">
-    <value>Hail</value>
-  </data>
-  <data name="Weather_Haze" xml:space="preserve">
-    <value>Haze</value>
-  </data>
-  <data name="Weather_HeavyDrizzle" xml:space="preserve">
-    <value>Heavy drizzle</value>
-  </data>
-  <data name="Weather_HeavyRain" xml:space="preserve">
-    <value>Heavy rain</value>
-  </data>
-  <data name="Weather_HeavySleet" xml:space="preserve">
-    <value>Heavy sleet</value>
-  </data>
-  <data name="Weather_HeavySnow" xml:space="preserve">
-    <value>Heavy snow</value>
-  </data>
-  <data name="Weather_HeavyThunderstorm" xml:space="preserve">
-    <value>Heavy thunderstorm</value>
-  </data>
-  <data name="Weather_Hot" xml:space="preserve">
-    <value>Hot</value>
-  </data>
-  <data name="Weather_Hurricane" xml:space="preserve">
-    <value>Hurricane</value>
-  </data>
-  <data name="Weather_LightDrizzle" xml:space="preserve">
-    <value>Light drizzle</value>
-  </data>
-  <data name="Weather_LightRain" xml:space="preserve">
-    <value>Light rain</value>
-  </data>
-  <data name="Weather_LightSleet" xml:space="preserve">
-    <value>Light sleet</value>
-  </data>
-  <data name="Weather_LightSnow" xml:space="preserve">
-    <value>Light snow</value>
-  </data>
-  <data name="Weather_LightThunderstorm" xml:space="preserve">
-    <value>Light thunderstorm</value>
-  </data>
-  <data name="Weather_Mist" xml:space="preserve">
-    <value>Mist</value>
-  </data>
-  <data name="Weather_OvercastClouds" xml:space="preserve">
-    <value>Overcast clouds</value>
-  </data>
-  <data name="Weather_Rain" xml:space="preserve">
-    <value>Rain</value>
-  </data>
-  <data name="Weather_Sand" xml:space="preserve">
-    <value>Sand</value>
-  </data>
-  <data name="Weather_ScatteredClouds" xml:space="preserve">
-    <value>Scattered clouds</value>
-  </data>
-  <data name="Weather_Sleet" xml:space="preserve">
-    <value>Sleet</value>
-  </data>
-  <data name="Weather_Smoke" xml:space="preserve">
-    <value>Smoke</value>
-  </data>
-  <data name="Weather_Snow" xml:space="preserve">
-    <value>Snow</value>
-  </data>
-  <data name="Weather_Squalls" xml:space="preserve">
-    <value>Squalls</value>
-  </data>
-  <data name="Weather_Thunderstorm" xml:space="preserve">
-    <value>Thunderstorm</value>
-  </data>
-  <data name="Weather_Tornado" xml:space="preserve">
-    <value>Tornado</value>
-  </data>
-  <data name="Weather_Windy" xml:space="preserve">
-    <value>Windy</value>
   </data>
 </root>

@@ -987,16 +987,4 @@
   <data name="Controls_DegreesLabel" xml:space="preserve">
     <value>度</value>
   </data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
-  </data>
-  <data name="TableHeader_Ai" xml:space="preserve">
-    <value>AI</value>
-  </data>
-  <data name="TableHeader_X" xml:space="preserve">
-    <value>X</value>
-  </data>
-  <data name="TableHeader_Y" xml:space="preserve">
-    <value>Y</value>
-  </data>
 </root>

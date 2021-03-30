@@ -943,8 +943,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</alternativ
     <value>스킨: {0}</value>
   </data>
   <data name="CarParent_Title" xml:space="preserve">
-    <value>상위 차량 선택</value>
-  </data>
+    <value>기본 모델 선택</value>
+  <alternative>상위 차량 선택</alternative></data>
   <data name="CarPreviews_AllEffects" xml:space="preserve">
     <value>모든 효과 활성화</value>
   </data>
@@ -2167,8 +2167,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</alternativ
     <value>핫랩</value>
   </data>
   <data name="Main_Challenges_NotPassedYet" xml:space="preserve">
-    <value>아직 통과하지 못함</value>
-  </data>
+    <value>미달성</value>
+  <alternative>아직 통과하지 못함</alternative></data>
   <data name="Main_Challenges_Races" xml:space="preserve">
     <value>레이스</value>
   </data>
@@ -3975,11 +3975,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</alternativ
     <value>목록에서 새 브랜드의 배지를 선택하세요.</value>
   <alternative>목록에서 새 브랜드의 배지를 선택하십시오.</alternative></data>
   <data name="Solution_ChangeParent" xml:space="preserve">
-    <value>상위 차량 변경</value>
-  </data>
+    <value>기본 모델 변경</value>
+  <alternative>상위 차량 변경</alternative></data>
   <data name="Solution_ChangeParent_Details" xml:space="preserve">
-    <value>자동차 목록에서 새 상위 차량 선택</value>
-  </data>
+    <value>자동차 목록에서 새 기본 모델 선택</value>
+  <alternative>자동차 목록에서 새 상위 차량 선택</alternative></data>
   <data name="Solution_ChangeUpgradeIcon" xml:space="preserve">
     <value>업그레이드 아이콘 변경</value>
   </data>
@@ -4050,8 +4050,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</alternativ
     <value>독립시키다</value>
   </data>
   <data name="Solution_MakeIndependent_Details" xml:space="preserve">
-    <value>ui_car.json에서 누락된 상위 차량 항목의 ID 제거</value>
-  </data>
+    <value>ui_car.json에서 누락된 기본 모델 항목의 ID 제거</value>
+  <alternative>ui_car.json에서 누락된 상위 차량 항목의 ID 제거</alternative></data>
   <data name="Solution_RandomLivery" xml:space="preserve">
     <value>임의 전달 생성 아이콘</value>
   </data>
@@ -4458,14 +4458,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</alternativ
     <value>데이터 풀기</value>
   </data>
   <data name="Toolbar_UnpackData_Tooltip" xml:space="preserve">
-    <value>개발 전용(Alt+J)</value>
-  </data>
+    <value>개발자 전용(Alt+J)</value>
+  <alternative>개발 전용(Alt+J)</alternative></data>
   <data name="Toolbar_UpdateMap" xml:space="preserve">
     <value>지도 업데이트</value>
   </data>
   <data name="Toolbar_UpdatePreview" xml:space="preserve">
-    <value>업데이트 미리 보기</value>
-  </data>
+    <value>미리 보기 업데이트</value>
+  <alternative>업데이트 미리 보기</alternative></data>
   <data name="Toolbar_UpdatePreview_ShowroomTooltip" xml:space="preserve">
     <value>전시장 미리보기 업데이트(Ctrl+P)</value>
   </data>
@@ -4716,145 +4716,10 @@ url="http://fooplot.com/plot/3x7y44pfli"]이 링크[/url]에서 그래프를 확
   <data name="Windows_MainWindow_VideoSettingsFPSCounter" xml:space="preserve">
     <value>비디오 세팅 (FPS 카운터)</value>
   </data>
-  <data name="About_Copyright" xml:space="preserve">
-    <value>Copyright © 2016–2020 AcClub.</value>
+  <data name="Settings_Drive_PostCommandLabel" xml:space="preserve">
+    <value>레이스 후 이벤트 명령:</value>
   </data>
-  <data name="AcObject_IdLabel" xml:space="preserve">
-    <value>ID:</value>
-  </data>
-  <data name="AcSettings_Audio_Ui" xml:space="preserve">
-    <value>UI</value>
-  </data>
-  <data name="AcSettings_Controls_Wheel_ForceFeedback_LUT" xml:space="preserve">
-    <value>LUT:</value>
-  </data>
-  <data name="AcSettings_Controls_Wheel_System_UI" xml:space="preserve">
-    <value>UI:</value>
-  </data>
-  <data name="AcSettings_PresetsPerMode_CSP" xml:space="preserve">
-    <value>CSP:</value>
-  </data>
-  <data name="AcSettings_Video_AntiAliasingLabel" xml:space="preserve">
-    <value>MSAA:</value>
-  </data>
-  <data name="AcSettings_Video_Fxaa" xml:space="preserve">
-    <value>FXAA</value>
-  </data>
-  <data name="AdditionalContent_IdFormat" xml:space="preserve">
-    <value>ID: {0}</value>
-  </data>
-  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
-    <value>[/b][i]?[/i][b]</value>
-  </data>
-  <data name="Arguments_SharedMessage_For" xml:space="preserve">
-    <value>For</value>
-  </data>
-  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
-    <value>ID</value>
-  </data>
-  <data name="CarSpecs_Acceleration_FormatTooltip" xml:space="preserve">
-    <value>… s 0–100</value>
-  </data>
-  <data name="CarSpecs_MaxSpeed_FormatTooltip" xml:space="preserve">
-    <value>… km/h</value>
-  </data>
-  <data name="CarSpecs_Power_FormatTooltip" xml:space="preserve">
-    <value>… bhp</value>
-  </data>
-  <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
-    <value>… whp</value>
-  </data>
-  <data name="CarSpecs_PwRatio_FormatTooltip" xml:space="preserve">
-    <value>… kg/hp</value>
-  </data>
-  <data name="CarSpecs_Torque_FormatTooltip" xml:space="preserve">
-    <value>… Nm</value>
-  </data>
-  <data name="CarSpecs_Weight_FormatTooltip" xml:space="preserve">
-    <value>… kg</value>
-  </data>
-  <data name="Common_IdFormat" xml:space="preserve">
-    <value>ID: {0}</value>
-  </data>
-  <data name="Common_MillisecondsFormat" xml:space="preserve">
-    <value>{0:F2} ms</value>
-  </data>
-  <data name="Controls_Abs" xml:space="preserve">
-    <value>ABS:</value>
-  </data>
-  <data name="Controls_MguK" xml:space="preserve">
-    <value>MGU-K:</value>
-  </data>
-  <data name="LiveryIcon_Style_Miura" xml:space="preserve">
-    <value>Miura</value>
-  </data>
-  <data name="LiveryIcon_Style_Solid" xml:space="preserve">
-    <value>Solid</value>
-  </data>
-  <data name="LiveryIcon_Style_Tesla" xml:space="preserve">
-    <value>Tesla</value>
-  </data>
-  <data name="Main_FPS_Unknown" xml:space="preserve">
-    <value>? FPS</value>
-  </data>
-  <data name="Main_FPS_ValueShortFormat" xml:space="preserve">
-    <value>{0:F1} FPS</value>
-  </data>
-  <data name="Main_Lan" xml:space="preserve">
-    <value>LAN</value>
-  </data>
-  <data name="Main_NotSupportedRequest" xml:space="preserve">
-    <value>Not supported request: “{0}”</value>
-  </data>
-  <data name="Main_Online_KunosLobbySection" xml:space="preserve">
-    <value>Kunos</value>
-  </data>
-  <data name="Main_Online_LAN" xml:space="preserve">
-    <value>LAN</value>
-  </data>
-  <data name="Main_Rsr" xml:space="preserve">
-    <value>RSR</value>
-  </data>
-  <data name="Main_Srs" xml:space="preserve">
-    <value>SRS</value>
-  </data>
-  <data name="Online_Pinged" xml:space="preserve">
-    <value>Pinged {0} out of {1}</value>
-  </data>
-  <data name="Settings_Drive_CacheBrands" xml:space="preserve">
-    <value>Cache brands</value>
-  </data>
-  <data name="Settings_Drive_ExtendedWeatherHeader" xml:space="preserve">
-    <value>Extended weather:</value>
-  </data>
-  <data name="Settings_Online_LanHeader" xml:space="preserve">
-    <value>LAN:</value>
-  </data>
-  <data name="Settings_Online_PingingHeader" xml:space="preserve">
-    <value>Pinging:</value>
-  </data>
-  <data name="Settings_Sharing_HistoryTableUrl" xml:space="preserve">
-    <value>URL</value>
-  </data>
-  <data name="Srs_IpLabel" xml:space="preserve">
-    <value>IP:</value>
-  </data>
-  <data name="Toolbar_Disable" xml:space="preserve">
-    <value>Disable</value>
-  </data>
-  <data name="Toolbar_Disable_Tooltip" xml:space="preserve">
-    <value>Disable (Ctrl+D)</value>
-  </data>
-  <data name="Toolbar_PackData_Tooltip" xml:space="preserve">
-    <value>For a decent online (Ctrl+Alt+J)</value>
-  </data>
-  <data name="TrackSpecs_Length_FormatTooltip" xml:space="preserve">
-    <value>… m</value>
-  </data>
-  <data name="TrackSpecs_Pitboxes_FormatTooltip" xml:space="preserve">
-    <value>…</value>
-  </data>
-  <data name="TrackSpecs_Width_FormatTooltip" xml:space="preserve">
-    <value>… m</value>
+  <data name="Settings_Drive_PreCommandLabel" xml:space="preserve">
+    <value>사전 레이스 이벤트 명령:</value>
   </data>
 </root>

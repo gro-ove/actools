@@ -963,46 +963,4 @@ Tryb głębi: [b]{4}[/b]</value>
   <data name="Common_Rating" xml:space="preserve">
     <value>Ocena:</value>
   </data>
-  <data name="Common_FahrenheitPostfix" xml:space="preserve">
-    <value> °F</value>
-  </data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
-  </data>
-  <data name="CustomShowroom_TextureFormatLabel" xml:space="preserve">
-    <value>Format:</value>
-  </data>
-  <data name="QuickSwitches_Fov" xml:space="preserve">
-    <value>FOV</value>
-  </data>
-  <data name="Showroom_FovLabel" xml:space="preserve">
-    <value>FOV:</value>
-  </data>
-  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
-    <value>FPS:</value>
-  </data>
-  <data name="Controls_GammaAxis" xml:space="preserve">
-    <value>Gamma</value>
-  </data>
-  <data name="Theme_Nordschleife" xml:space="preserve">
-    <value>Nordschleife</value>
-  </data>
-  <data name="AssistsPreset_Pro" xml:space="preserve">
-    <value>Pro</value>
-  </data>
-  <data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
-    <value>Reset</value>
-  </data>
-  <data name="Common_Reset" xml:space="preserve">
-    <value>Reset</value>
-  </data>
-  <data name="AcObject_UrlLabel" xml:space="preserve">
-    <value>URL:</value>
-  </data>
-  <data name="TableHeader_X" xml:space="preserve">
-    <value>X</value>
-  </data>
-  <data name="TableHeader_Y" xml:space="preserve">
-    <value>Y</value>
-  </data>
 </root>

@@ -940,34 +940,4 @@ Girdi türü: [b]{2}[/b]</value>
   <data name="Controls_MinimumForce" xml:space="preserve">
     <value>Minimum kuvvet</value>
   </data>
-  <data name="AcObject_ErrorsHeader" xml:space="preserve">
-    <value>{Error}:</value>
-  </data>
-  <data name="AcObject_UrlLabel" xml:space="preserve">
-    <value>URL:</value>
-  </data>
-  <data name="Animation_Modern" xml:space="preserve">
-    <value>Modern</value>
-  </data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
-  </data>
-  <data name="Common_PsiPostfix" xml:space="preserve">
-    <value> psi</value>
-  </data>
-  <data name="CustomShowroom_TextureFormatLabel" xml:space="preserve">
-    <value>Format:</value>
-  </data>
-  <data name="QuickSwitches_Fov" xml:space="preserve">
-    <value>FOV</value>
-  </data>
-  <data name="Theme_Nordschleife" xml:space="preserve">
-    <value>Nordschleife</value>
-  </data>
-  <data name="TableHeader_X" xml:space="preserve">
-    <value>X</value>
-  </data>
-  <data name="TableHeader_Y" xml:space="preserve">
-    <value>Y</value>
-  </data>
 </root>

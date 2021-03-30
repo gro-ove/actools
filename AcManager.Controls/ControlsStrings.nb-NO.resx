@@ -342,22 +342,4 @@
   <data name="TableHeader_Nationality" xml:space="preserve">
     <value>Nasjonalitet</value>
   </data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
-  </data>
-  <data name="Common_CelsiusPostfix" xml:space="preserve">
-    <value> °C</value>
-  </data>
-  <data name="Common_MillisecondsPostfix" xml:space="preserve">
-    <value> ms</value>
-  </data>
-  <data name="Theme_Nordschleife" xml:space="preserve">
-    <value>Nordschleife</value>
-  </data>
-  <data name="TableHeader_X" xml:space="preserve">
-    <value>X</value>
-  </data>
-  <data name="TableHeader_Y" xml:space="preserve">
-    <value>Y</value>
-  </data>
 </root>

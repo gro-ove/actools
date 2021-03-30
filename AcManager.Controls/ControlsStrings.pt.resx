@@ -785,16 +785,4 @@ Tipo de entrada: [b]{2}[/b]</value>
   <data name="TableHeader_Locked" xml:space="preserve">
     <value>Bloqueado</value>
   </data>
-  <data name="Showroom_ShowroomLabel" xml:space="preserve">
-    <value>Showroom:</value>
-  </data>
-  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
-    <value>Material:</value>
-  </data>
-  <data name="Showroom_DialogHeader" xml:space="preserve">
-    <value>Showroom</value>
-  </data>
-  <data name="TableHeader_CarSkin" xml:space="preserve">
-    <value>Skin</value>
-  </data>
 </root>

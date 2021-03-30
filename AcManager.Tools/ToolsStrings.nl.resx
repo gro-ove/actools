@@ -242,7 +242,4 @@ Wil je de data inpakken voordat je de server start? Maar vergeet niet de ingepak
   <data name="TagIsMissing_Format" xml:space="preserve">
     <value>Label “{0}” mist</value>
   </data>
-  <data name="DifficultyLevel_Alien" xml:space="preserve">
-    <value>Alien</value>
-  </data>
 </root>

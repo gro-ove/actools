@@ -136,11 +136,11 @@
     <value>클래스:</value>
   </data>
   <data name="AcObject_CarParentLabel" xml:space="preserve">
-    <value>상위 차량:</value>
-  </data>
+    <value>기본 모델:</value>
+  <alternative>상위 차량:</alternative></data>
   <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
-    <value>상위 차량(설정된 경우 이 차량은 튜닝된 버전이 됩니다)</value>
-  </data>
+    <value>기본 모델 (기본 모델이 설정된 경우 이 차량은 하위 라인업이 됩니다)</value>
+  <alternative>상위 차량(설정된 경우 이 차량은 튜닝된 버전이 됩니다)</alternative></data>
   <data name="AcObject_CityLabel" xml:space="preserve">
     <value>도시:</value>
   </data>
@@ -223,8 +223,8 @@
     <value>쇼룸에서 열기</value>
   </data>
   <data name="CarParent_ChildrenWillBeMoved" xml:space="preserve">
-    <value>하위 차량 항목이 새로운 상위 차량 항목으로 옮겨질 것입니다!</value>
-  </data>
+    <value>하위 라인업이 새로운 기본 모델 항목으로 옮겨질 것입니다!</value>
+  <alternative>하위 차량 항목이 새로운 상위 차량 항목으로 옮겨질 것입니다!</alternative></data>
   <data name="CarParent_MakeIndependent" xml:space="preserve">
     <value>독립시키다</value>
   </data>
@@ -966,38 +966,5 @@ LOD 삽입: [b]{9}[/b]
   <alternative>VLC 플러그인이 올바르게 설치되었는지 확인하십시오.</alternative></data>
   <data name="WebBrowser_Prompt" xml:space="preserve">
     <value>웹 페이지에 다음과 같이 표시됩니다.</value>
-  </data>
-  <data name="AcObject_ErrorsHeader" xml:space="preserve">
-    <value>{Error}:</value>
-  </data>
-  <data name="AcObject_UrlLabel" xml:space="preserve">
-    <value>URL:</value>
-  </data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
-  </data>
-  <data name="Common_FpsPostfix" xml:space="preserve">
-    <value> FPS</value>
-  </data>
-  <data name="Common_LapsPostfix" xml:space="preserve">
-    <value> lap</value>
-  </data>
-  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
-    <value>FPS:</value>
-  </data>
-  <data name="QuickSwitches_Fov" xml:space="preserve">
-    <value>FOV</value>
-  </data>
-  <data name="Showroom_FovLabel" xml:space="preserve">
-    <value>FOV:</value>
-  </data>
-  <data name="TableHeader_Ai" xml:space="preserve">
-    <value>AI</value>
-  </data>
-  <data name="TableHeader_X" xml:space="preserve">
-    <value>X</value>
-  </data>
-  <data name="TableHeader_Y" xml:space="preserve">
-    <value>Y</value>
   </data>
 </root>

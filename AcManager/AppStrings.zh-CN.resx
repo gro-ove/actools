@@ -3085,8 +3085,8 @@
     <value>系统:</value>
   </data>
   <data name="AcSettings_Video_AllowDirectX10" xml:space="preserve">
-    <value>允许未支持的DX10(请自行负责,无法工作?)</value>
-  </data>
+    <value>允许未支持的DX10(请自行负责,不起作用?)</value>
+  <alternative>允许未支持的DX10(请自行负责,无法工作?)</alternative></data>
   <data name="AcSettings_Video_SkyboxReflection" xml:space="preserve">
     <value>天空盒子反射</value>
   </data>
@@ -3785,8 +3785,8 @@
     <value>默认</value>
   </data>
   <data name="Online_Sorting_NameOriginal" xml:space="preserve">
-    <value>姓名（原）</value>
-  </data>
+    <value>名称（原来的）</value>
+  <alternative>姓名（原）</alternative></data>
   <data name="Online_Sorting_Favourites" xml:space="preserve">
     <value>收藏</value>
   </data>
@@ -3866,8 +3866,8 @@
     <value>更改将自动保存。如果您想优化显示配置文件的方式，可以在此处找到有关它们的更多信息[url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"][/url].</value>
   </data>
   <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
-    <value>在某些情况下，使用自定义的陈列室而不是原始陈列室</value>
-  </data>
+    <value>在某些情况下，使用自定义的展厅而不是原始展厅</value>
+  <alternative>在某些情况下，使用自定义的陈列室而不是原始陈列室</alternative></data>
   <data name="Settings_Appearance_ShowDraggableAreas" xml:space="preserve">
     <value>在搜索框旁边显示可拖动区域</value>
   </data>
@@ -4175,9 +4175,9 @@
     <value>设置为随机温度</value>
   </data>
   <data name="Drive_Quick_SetRandomTime" xml:space="preserve">
-    <value>
-设置为随机时间</value>
-  </data>
+    <value>设置为随机时间</value>
+  <alternative>
+设置为随机时间</alternative></data>
   <data name="Drive_Quick_SetRandomWeather" xml:space="preserve">
     <value>设置为随机温度天气</value>
   </data>
@@ -4215,8 +4215,8 @@
     <value>功率图：</value>
   </data>
   <data name="Selected_CarPage_New_Property_Tooltip" xml:space="preserve">
-    <value>[i]你知道吗？[/i]您可以用鼠标右键单击某个属性以按其过滤汽车。</value>
-  </data>
+    <value>[i]你知道吗？[/i]您可以用鼠标右键单击某个属性以按其进行筛选汽车。</value>
+  <alternative>[i]你知道吗？[/i]您可以用鼠标右键单击某个属性以按其过滤汽车。</alternative></data>
   <data name="Selected_CarPage_ReplaceTyres" xml:space="preserve">
     <value>更换轮胎</value>
   </data>
@@ -4308,8 +4308,8 @@
     <value>你将在此看到相关规则[b]Settings/Assetto Corsa/Video[/b]</value>
   </data>
   <data name="Settings_Drive_RHMLocation" xml:space="preserve">
-    <value>RHM 地点:</value>
-  </data>
+    <value>RHM位置:</value>
+  <alternative>RHM 地点:</alternative></data>
   <data name="Settings_General_DontShowAgainInDialogs" xml:space="preserve">
     <value>对话框中的“不再显示”:</value>
   </data>
@@ -4451,58 +4451,208 @@
   <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
     <value>么有活动下载</value>
   </data>
-  <data name="AcObject_IdLabel" xml:space="preserve">
-    <value>ID:</value>
+  <data name="AcSettings_Controls_Controller_Main_RumbleEffects" xml:space="preserve">
+    <value>引擎声效果</value>
   </data>
-  <data name="AcSettings_Video_Fxaa" xml:space="preserve">
-    <value>FXAA</value>
+  <data name="AcSettings_Controls_Controller_Main_SteeringAndFFB" xml:space="preserve">
+    <value>转向反馈调整</value>
   </data>
-  <data name="AcSettings_Video_OculusHeader" xml:space="preserve">
-    <value>Oculus:</value>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_EnableFFBPostProcessing" xml:space="preserve">
+    <value>启用FFB后处理</value>
   </data>
-  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
-    <value>[/b][i]?[/i][b]</value>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_Import_Tooltip" xml:space="preserve">
+    <value>如果需要，只需将其拖放即可</value>
   </data>
-  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
-    <value>ID</value>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV_Tooltip" xml:space="preserve">
+    <value>从WheelCheck导入CSV（如果需要，只需将其拖放即可）</value>
   </data>
-  <data name="Common_MillisecondsFormat" xml:space="preserve">
-    <value>{0:F2} ms</value>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportLUT" xml:space="preserve">
+    <value>导入LUT</value>
   </data>
-  <data name="Controls_Abs" xml:space="preserve">
-    <value>ABS:</value>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_LogitechHardwareLockOptions" xml:space="preserve">
+    <value>罗技硬件索定选项：</value>
   </data>
-  <data name="Controls_MguK" xml:space="preserve">
-    <value>MGU-K:</value>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessing" xml:space="preserve">
+    <value>后处理：</value>
   </data>
-  <data name="LiveryIcon_Style_Miura" xml:space="preserve">
-    <value>Miura</value>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessingMode" xml:space="preserve">
+    <value>模式：</value>
   </data>
-  <data name="LiveryIcon_Style_Tesla" xml:space="preserve">
-    <value>Tesla</value>
+  <data name="AcSettings_General_UseMousePitStop" xml:space="preserve">
+    <value>使用鼠标进站</value>
   </data>
-  <data name="Main_AppsSettings" xml:space="preserve">
-    <value>Apps settings</value>
+  <data name="Dialogs_GameDialog_Benchmark" xml:space="preserve">
+    <value>基准</value>
   </data>
-  <data name="Main_AssettoCorsa" xml:space="preserve">
-    <value>Assetto Corsa</value>
+  <data name="Dialogs_GameDialog_TotalDelta" xml:space="preserve">
+    <value>总增量：</value>
   </data>
-  <data name="Main_Challenges_Hotlaps" xml:space="preserve">
-    <value>Hotlaps</value>
+  <data name="Dialogs_InstallAdditionalContentDialog_Hint" xml:space="preserve">
+    <value>将文件或链接拖放到此处下载</value>
   </data>
-  <data name="Main_Challenges_TimeAttacks" xml:space="preserve">
-    <value>Time Attack</value>
+  <data name="Selected_CarSkinPage_CMShowroom" xml:space="preserve">
+    <value>CM展厅</value>
   </data>
-  <data name="Main_ContentManager" xml:space="preserve">
-    <value>Content Manager</value>
+  <data name="Selected_FilterByHavingNotes" xml:space="preserve">
+    <value>通过备注进行筛选</value>
   </data>
-  <data name="Main_FPS_ValueShortFormat" xml:space="preserve">
-    <value>{0:F1} FPS</value>
+  <data name="Selected_FilterByOrigin" xml:space="preserve">
+    <value>通过来源进行筛选</value>
   </data>
-  <data name="Main_Online_KunosLobbySection" xml:space="preserve">
-    <value>Kunos</value>
+  <data name="Selected_FilterBySimilarDrivenDistance" xml:space="preserve">
+    <value>通过相似行驶距离进行筛选</value>
   </data>
-  <data name="Settings_Sharing_HistoryTableUrl" xml:space="preserve">
-    <value>URL</value>
+  <data name="Selected_FilterBySimilarMaxSpeedAchieved" xml:space="preserve">
+    <value>通过相似最大速度进行筛选</value>
+  </data>
+  <data name="Settings_Appearance_AutomaticallyNavigateToDownloadsPage" xml:space="preserve">
+    <value>启动新下载时自动导航到下载页面</value>
+  </data>
+  <data name="Settings_Appearance_BindToScreen_Hint" xml:space="preserve">
+    <value>更改不会影响已显示的窗口。</value>
+  </data>
+  <data name="Settings_Appearance_FullscreenOverTaskbar" xml:space="preserve">
+    <value>任务栏全屏显示</value>
+  </data>
+  <data name="Settings_Content_HideSymbolsLikeFromCarNames" xml:space="preserve">
+    <value>从汽车名称中隐藏像™这样的符号</value>
+  </data>
+  <data name="Settings_Content_LogIn" xml:space="preserve">
+    <value>登录</value>
+  </data>
+  <data name="Settings_Content_LogOut" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="Settings_Content_ModsAutoUpdate" xml:space="preserve">
+    <value>Mod 自动更新</value>
+  </data>
+  <data name="Settings_Content_PowerAndTorqueCurves" xml:space="preserve">
+    <value>功率和扭矩曲线：</value>
+  </data>
+  <data name="Settings_Content_PWRatioFormat" xml:space="preserve">
+    <value>P / W比率格式：</value>
+  </data>
+  <data name="Settings_Content_SearchMissingContentVia" xml:space="preserve">
+    <value>通过以下方式搜索缺少的內容：</value>
+  </data>
+  <data name="Settings_Content_SmoothCurves" xml:space="preserve">
+    <value>平滑曲线</value>
+  </data>
+  <data name="Settings_Content_TyresReplacementFilter" xml:space="preserve">
+    <value>轮胎更换筛选项</value>
+  </data>
+  <data name="Settings_Content_TyresReplacementFilter_Tooltip" xml:space="preserve">
+    <value>将其保留为空或使用“*”允许任何车辆</value>
+  </data>
+  <data name="Settings_CustomShowroom_AddExtendedInformationInEXIFData" xml:space="preserve">
+    <value>在EXIF数据中添加扩展信息</value>
+  </data>
+  <data name="Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin" xml:space="preserve">
+    <value>将上一个预览移到回收站</value>
+  </data>
+  <data name="Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin_Tooltip" xml:space="preserve">
+    <value>这是一个相当慢的操作，所以最好禁用它</value>
+  </data>
+  <data name="Settings_CustomShowroom_Reset_Tooltip" xml:space="preserve">
+    <value>如果展厅崩溃，请使用它，例如，由于设置太高而导致的崩溃 </value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetAll" xml:space="preserve">
+    <value>重置全部：</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetAllForPreviews" xml:space="preserve">
+    <value>重设所有预览:</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetHeavyOptions" xml:space="preserve">
+    <value>重设选项:</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetHeavyOptionsForPreviews" xml:space="preserve">
+    <value>重设预览选项:</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseCustomShowroomForPreviews" xml:space="preserve">
+    <value>使用自定义展厅进行预览 </value>
+  </data>
+  <data name="Settings_CustomShowroom_UseTheOldVersion" xml:space="preserve">
+    <value>使用旧版本</value>
+  </data>
+  <data name="Settings_Drive_AllowDecimalValuesForTrackState" xml:space="preserve">
+    <value>允许赛道状态的最小数值</value>
+  </data>
+  <data name="Settings_Drive_AllowDecimalValuesForTrackState_Tooltip" xml:space="preserve">
+    <value>如果使用，可能会导致某些应用程序出现问题</value>
+  </data>
+  <data name="Settings_Drive_BeepIfRaceIsCancelled" xml:space="preserve">
+    <value>比赛取消时发出嘟嘟声:</value>
+  </data>
+  <data name="Settings_Drive_BeepIfRaceIsCancelled_Tooltip" xml:space="preserve">
+    <value>可能有助于发现游戏是否在VR中崩溃 </value>
+  </data>
+  <data name="Settings_Drive_CheckIfTrackFitsSelectedMode" xml:space="preserve">
+    <value>检查赛道是否适合所选模式</value>
+  </data>
+  <data name="Settings_Drive_CheckIfTrackFitsSelectedMode_Tooltip" xml:space="preserve">
+    <value>我不建议禁用它，如果有任何问题，CM将为您提供修复轨道的描述。但是，如果您使用的是非默认标签，那么一定要这样做。</value>
+  </data>
+  <data name="Settings_Drive_ContinueRaceIfEscapePressed" xml:space="preserve">
+    <value>如果按Escape键，则继续比赛</value>
+  </data>
+  <data name="Settings_Drive_KeepResultsOfTheLast" xml:space="preserve">
+    <value>保留最后的结果</value>
+  </data>
+  <data name="Settings_Drive_KeepResultsOfTheLast_Tooltip" xml:space="preserve">
+    <value>结果保存在“…\ AppData \ Local \ AcTools Content Manager \ Progress \ Sessions”中</value>
+  </data>
+  <data name="Settings_Drive_RealHeadMotion" xml:space="preserve">
+    <value>真实头部运动:</value>
+  </data>
+  <data name="Settings_Drive_ShowExtraDropDownListsForSkins" xml:space="preserve">
+    <value>显示皮肤、汽车改装和赛道布局的额外下拉列表</value>
+  </data>
+  <data name="Settings_Drive_ShowExtraDropDownListsForSkins_Tooltip" xml:space="preserve">
+    <value>可能会稍微显示应用程序 </value>
+  </data>
+  <data name="Settings_Drive_StopServiceOnCMExit" xml:space="preserve">
+    <value>在CM退出时停止服务</value>
+  </data>
+  <data name="Settings_Drive_SwitchToSteamStarter" xml:space="preserve">
+    <value>切换到Steam启动器</value>
+  </data>
+  <data name="Settings_Drive_TerminateLoadingIfEscapeIsPressed" xml:space="preserve">
+    <value>如果按Escape键，则立即终止加载</value>
+  </data>
+  <data name="Settings_Drive_TryToStartSteamIfNotRunning" xml:space="preserve">
+    <value>如果未运行，请尝试启动Steam(推荐)</value>
+  </data>
+  <data name="Settings_Drive_UsePracticeForTrackDay" xml:space="preserve">
+    <value>对于赛道日，请使用“练习”作为会话类型 </value>
+  </data>
+  <data name="Settings_Drive_UsePracticeForTrackDay_Tooltip" xml:space="preserve">
+    <value>这样，会有一个维修站的工作人员，但机器人可能会更被动</value>
+  </data>
+  <data name="Settings_General_ResetDoNotShowAgainCheckboxes" xml:space="preserve">
+    <value>重置“不再显示”复选框</value>
+  </data>
+  <data name="Settings_General_WindowsRegistry" xml:space="preserve">
+    <value>windows注册表</value>
+  </data>
+  <data name="Settings_Online_AlwaysAllowToUsePassword" xml:space="preserve">
+    <value>始终允许使用密码</value>
+  </data>
+  <data name="Settings_Online_AlwaysAllowToUsePassword_Tooltip" xml:space="preserve">
+    <value>如果你要以管理员身份连接，请启用</value>
+  </data>
+  <data name="Settings_Online_Display" xml:space="preserve">
+    <value>展示:</value>
+  </data>
+  <data name="Settings_Online_PingServersOnce_Tooltip" xml:space="preserve">
+    <value>比赛时暂停测试网络延迟</value>
+  </data>
+  <data name="MainWindow_FoundNModUpdates" xml:space="preserve">
+    <value>找到 {0} {更新} mods</value>
+  </data>
+  <data name="DownloadList_ViewInExplorer" xml:space="preserve">
+    <value>在资源管理器中查看</value>
+  </data>
+  <data name="DownloadList_ShowFile" xml:space="preserve">
+    <value>显示档案</value>
   </data>
 </root>
