@@ -77,6 +77,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Implementations\Fanatec.cs" />
     <Compile Include="Implementations\LogitechDFGT.cs" />
     <Compile Include="Implementations\LogitechG25.cs" />
     <Compile Include="Implementations\LogitechG27.cs" />
