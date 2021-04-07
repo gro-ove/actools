@@ -14,8 +14,10 @@ namespace AcTools.WheelAngles.Implementations {
         public override bool Test(string productGuid)
         {
             return string.Equals(productGuid, "038E0EB7-0000-0000-0000-504944564944",
-                StringComparison.OrdinalIgnoreCase)
+                    StringComparison.OrdinalIgnoreCase)
                 || string.Equals(productGuid, "00040EB7-0000-0000-0000-504944564944",
+                    StringComparison.OrdinalIgnoreCase)
+                || string.Equals(productGuid, "00010EB7-0000-0000-0000-504944564944",
                     StringComparison.OrdinalIgnoreCase);
         }
 
