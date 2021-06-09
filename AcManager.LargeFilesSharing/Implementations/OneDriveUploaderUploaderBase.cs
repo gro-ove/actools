@@ -96,12 +96,17 @@ namespace AcManager.LargeFilesSharing.Implementations {
                 return;
             }
 
-            var refresh = await Request.Post<RefreshResponse>(@"https://login.microsoftonline.com/common/oauth2/v2.0/token", new NameValueCollection {
-                { @"client_id", clientId },
-                { @"client_secret", clientSecret },
-                { @"refresh_token", _authToken.RefreshToken },
-                { @"grant_type", @"refresh_token" }
-            }, null, cancellation: cancellation);
+            RefreshResponse refresh = null;
+            try {
+                refresh = await Request.Post<RefreshResponse>(@"https://login.microsoftonline.com/common/oauth2/v2.0/token", new NameValueCollection {
+                    { @"client_id", clientId },
+                    { @"client_secret", clientSecret },
+                    { @"refresh_token", _authToken.RefreshToken },
+                    { @"grant_type", @"refresh_token" }
+                }, null, cancellation: cancellation);
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
             cancellation.ThrowIfCancellationRequested();
 
             if (refresh == null) {

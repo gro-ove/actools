@@ -334,7 +334,7 @@ namespace AcManager.Tools.SemiGui {
                             await PrepareReplay(properties, ui, cancellationToken);
                         }
 
-                        if (PatchHelper.IsActive()) {
+                        if (SettingsHolder.Drive.LoadPatchDataAutomatically && PatchHelper.IsActive()) {
                             var trackId = string.IsNullOrWhiteSpace(properties.BasicProperties?.TrackConfigurationId)
                                     ? properties.BasicProperties?.TrackId
                                     : properties.BasicProperties?.TrackId + @"/" + properties.BasicProperties?.TrackConfigurationId;

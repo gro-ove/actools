@@ -221,6 +221,19 @@
           </StackPanel>
         </mui:Switch>
 
+        <!-- FFB reduction at lower speeds -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Lower speeds FFB reduction" />
+
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding System.FfbLowSpeedThreshold}" Postfix=" km/h" Content="Low speed threshold" />
+          <Slider Minimum="0" Maximum="10" Value="{Binding System.FfbLowSpeedThreshold}" TickFrequency="1" TickPlacement="BottomRight" />
+        </DockPanel>
+
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding System.FfbLowSpeedMult}" Postfix="%" Content="Low speed FFB strength" />
+          <Slider Minimum="0" Maximum="100" Value="{Binding System.FfbLowSpeedMult}" TickFrequency="10" TickPlacement="BottomRight" />
+        </DockPanel>
+
         <!-- Experimental -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static с:ControlsStrings.Controls_ExperimentalHeader}" />
 

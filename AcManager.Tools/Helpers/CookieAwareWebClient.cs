@@ -278,7 +278,8 @@ namespace AcManager.Tools.Helpers {
             return response;
         }
 
-        public IDisposable SetDownloadProgress([CanBeNull] IProgress<AsyncProgressEntry> progress, long? suggestedTotal = null, Action callback = null) {
+        public IDisposable SetDownloadProgress([CanBeNull] IProgress<AsyncProgressEntry> progress, long? suggestedTotal = null, Action callback = null,
+                AsyncProgressBytesStopwatch stopwatch = null) {
             var s = Stopwatch.StartNew();
 
             void Handler(object sender, DownloadProgressChangedEventArgs args) {
@@ -292,14 +293,15 @@ namespace AcManager.Tools.Helpers {
                     total = Math.Max(suggestedTotal.Value, args.BytesReceived);
                 }
 
-                progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, total, null));
+                progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, total, stopwatch));
             }
 
             DownloadProgressChanged += Handler;
             return new ActionAsDisposable(() => DownloadProgressChanged -= Handler);
         }
 
-        public IDisposable SetUploadProgress([CanBeNull] IProgress<AsyncProgressEntry> progress, long? suggestedTotal = null, Action callback = null) {
+        public IDisposable SetUploadProgress([CanBeNull] IProgress<AsyncProgressEntry> progress, long? suggestedTotal = null, Action callback = null,
+                AsyncProgressBytesStopwatch stopwatch = null) {
             var s = Stopwatch.StartNew();
 
             void Handler(object sender, UploadProgressChangedEventArgs args) {
@@ -313,7 +315,7 @@ namespace AcManager.Tools.Helpers {
                     total = Math.Max(suggestedTotal.Value, args.BytesSent);
                 }
 
-                progress?.Report(AsyncProgressEntry.CreateUploading(args.BytesSent, total, null));
+                progress?.Report(AsyncProgressEntry.CreateUploading(args.BytesSent, total, stopwatch));
             }
 
             UploadProgressChanged += Handler;

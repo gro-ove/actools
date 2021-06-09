@@ -1089,6 +1089,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _loadPatchDataAutomatically;
+
+            public bool LoadPatchDataAutomatically {
+                get => _loadPatchDataAutomatically ?? (_loadPatchDataAutomatically = ValuesStorage.Get("Settings.DriveSettings.LoadPatchDataAutomatically", true)).Value;
+                set {
+                    if (Equals(value, _loadPatchDataAutomatically)) return;
+                    _loadPatchDataAutomatically = value;
+                    ValuesStorage.Set("Settings.DriveSettings.LoadPatchDataAutomatically", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _sameControllersKeepFirst;
 
             public bool SameControllersKeepFirst {

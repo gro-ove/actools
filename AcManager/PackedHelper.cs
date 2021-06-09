@@ -256,7 +256,7 @@ namespace AcManager {
             }
 
             var msg = MessageBox.Show(
-                    "Can’t load SlimDX library. Please, make sure you have Visual C++ Redistributable 2015 (x86) installed. Would you like to download it?.\n\nPress “No” to use SlimDX from AC instead (not recommended).",
+                    "Can’t load SlimDX library. Please, make sure you have Visual C++ Redistributable 2015 (x86) installed. Would you like to download it?\n\nPress “No” to use SlimDX from AC instead (not recommended).",
                     "Error", MessageBoxButton.YesNoCancel, MessageBoxImage.Asterisk);
 
             switch (msg) {

@@ -35,13 +35,10 @@ namespace AcManager.Tools.Helpers.Loaders {
                 var step1 = await client.DownloadStringTaskAsync(Url);
                 if (cancellation.IsCancellationRequested) return false;
 
-                var step2 = (await client.UploadValuesTaskAsync(Url, @"POST", GetFormData(step1, @"//div[@id='plans_free']//form"))).ToUtf8String();
+                var step2 = (await client.UploadValuesTaskAsync(Url, @"POST", GetFormData(step1, @"//div[@id='content']//form[@name='F1']"))).ToUtf8String();
                 if (cancellation.IsCancellationRequested) return false;
 
-                var step3 = (await client.UploadValuesTaskAsync(Url, @"POST", GetFormData(step2, @"//form[@name='F1']"))).ToUtf8String();
-                if (cancellation.IsCancellationRequested) return false;
-
-                Url = GetDocument(step3).DocumentNode.SelectSingleNode(@"//a[contains(@href, 'sharemods.com/cgi-bin')]")?.Attributes[@"href"]?.Value;
+                Url = GetDocument(step2).DocumentNode.SelectSingleNode(@"//a[contains(@href, 'sharemods.com/cgi-bin')]")?.Attributes[@"href"]?.Value;
                 return Url != null;
             } catch (Exception e) {
                 Logging.Error(e);

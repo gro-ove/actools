@@ -219,16 +219,16 @@ namespace AcManager.Tools.Miscellaneous {
                 mainFile.Exists ? null
                         : new FoundIssue("Main patch file “dwrite.dll” is missing in AC root folder", @"reinstallCurrent", "reinstall patch",
                                 "Reinstall currently active patch version to fix the problem automatically"),
-                !mainFile.Exists || !FileUtils.IsBlocked(mainFile.FullName) ? null
-                        : new FoundIssue("Main patch file “dwrite.dll” is blocked as downloaded online", @"unblockPatch", "unblock file",
-                                "Delete that mark Windows sets on files downloaded from remote sources, so DLL could work without any issues"),
+                /*!mainFile.Exists || !FileUtils.IsBlocked(mainFile.FullName) ? null
+                        : new FoundIssue("Main patch file “dwrite.dll” is restricted", @"unblockPatch", "click to unblock file",
+                                "Delete that mark Windows sets on files downloaded from remote sources, so DLL could work without any issues"),*/
                 Directory.Exists(Path.Combine(root, "config")) ? null
                         : new FoundIssue("Base configs in “extension/config” are missing", @"reinstallCurrent", "reinstall patch",
                                 "Reinstall currently active patch version to fix the problem automatically"),
-                File.Exists(Path.Combine(root, "shaders.zip")) || Directory.Exists(Path.Combine(root, "shaders", "custom")) ? null
-                        : new FoundIssue("Custom shaders pack “extension/shaders.zip” are missing", @"reinstallCurrent", "reinstall patch",
+                File.Exists(Path.Combine(root, "shaders.pak")) || File.Exists(Path.Combine(root, "shaders.zip")) || Directory.Exists(Path.Combine(root, "shaders", "custom")) ? null
+                        : new FoundIssue("Custom shaders pack “extension/shaders.pak” are missing", @"reinstallCurrent", "reinstall patch",
                                 "Reinstall currently active patch version to fix the problem automatically"),
-                File.Exists(Path.Combine(root, "lua", "ac_common.lua")) ? null
+                File.Exists(Path.Combine(root, "lua", "ac_common.lua")) || File.Exists(Path.Combine(root, "lua", "std.zip")) ? null
                         : new FoundIssue("Lua utilities in “extension/lua” are missing", @"reinstallCurrent", "reinstall patch",
                                 "Reinstall currently active patch version to fix the problem automatically"),
                 File.Exists(Path.Combine(root, "tzdata", "europe")) ? null
@@ -236,6 +236,8 @@ namespace AcManager.Tools.Miscellaneous {
                                 "Reinstall currently active patch version to fix the problem automatically"),
                 version == null || version.CompareAsVersionTo(RequiredAcVersion) >= 0 ? null
                         : new FoundIssue($"Assetto Corsa is obsolete (v{RequiredAcVersion} is required)"),
+                Environment.Is64BitOperatingSystem ? null
+                        : new FoundIssue("64-bit AC and Windows installation is required"),
                 !SettingsHolder.Drive.Use32BitVersion ? null
                         : new FoundIssue("32-bit AC is not supported", @"switchTo64Bits", "switch AC to 64 bits",
                                 "Change AC settings so 64-bit version would be used (the one patch was made for)"),

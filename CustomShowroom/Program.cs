@@ -112,12 +112,6 @@ namespace CustomShowroom {
                 return 1;
             }
 
-            var filename = Assembly.GetEntryAssembly()?.Location;
-            if (options.Verbose || filename.IndexOf("log", StringComparison.OrdinalIgnoreCase) != -1
-                    || filename.IndexOf("debug", StringComparison.OrdinalIgnoreCase) != -1) {
-                // TODO
-            }
-
             var inputItems = options.Items;
 #if DEBUG
             inputItems = inputItems.Any() ? inputItems : new[] { DebugHelper.GetCarKn5(), DebugHelper.GetShowroomKn5() };

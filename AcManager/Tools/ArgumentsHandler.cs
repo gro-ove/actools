@@ -87,7 +87,7 @@ namespace AcManager.Tools {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop) && !e.Data.GetDataPresent(DataFormats.UnicodeText)) return;
 
             if (Application.Current?.Windows.OfType<Window>().SelectMany(VisualTreeHelperEx.FindVisualChildren<WebBlock>)
-                           .Any(x => x.IsMouseOver) == true) {
+                    .Any(x => x.IsMouseOver) == true) {
                 return;
             }
 
@@ -263,12 +263,11 @@ namespace AcManager.Tools {
                 return ArgumentHandleResult.Successful;
             }
 
-            /*if (!isDirectory && filename.EndsWith(@".report", StringComparison.OrdinalIgnoreCase)) {
-                await GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
-                    Filename = filename
-                }));
+            if (!isDirectory && (filename.EndsWith(@".report", StringComparison.OrdinalIgnoreCase)
+                    || filename.EndsWith(@".report-launch", StringComparison.OrdinalIgnoreCase))) {
+                CspReportUtils.Load(filename);
                 return ArgumentHandleResult.Successful;
-            }*/
+            }
 
             if (!isDirectory && filename.EndsWith(@".kn5", StringComparison.OrdinalIgnoreCase)) {
                 if ((Keyboard.Modifiers == ModifierKeys.Alt || Keyboard.Modifiers == ModifierKeys.Shift) && SettingsHolder.Common.DeveloperMode) {

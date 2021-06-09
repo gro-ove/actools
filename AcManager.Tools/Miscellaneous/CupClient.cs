@@ -64,7 +64,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         private async Task CheckRegistriesAsync() {
-            foreach (var registry in SettingsHolder.Content.CupRegistries.Split(new[] { ';', '\n', ' ' }, StringSplitOptions.RemoveEmptyEntries)) {
+            foreach (var registry in SettingsHolder.Content.CupRegistriesList) {
                 try {
                     await LoadList(registry);
                 } catch (Exception e) {

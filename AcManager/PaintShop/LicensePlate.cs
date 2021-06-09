@@ -78,7 +78,7 @@ namespace AcManager.PaintShop {
         }
 
         private LicensePlatesStyle _selectedStyle;
-        private object _selectedStyleSync = new object();
+        private int _selectedStyleUsed;
 
         [CanBeNull]
         protected LicensePlatesStyle SelectedStyle {
@@ -86,21 +86,63 @@ namespace AcManager.PaintShop {
             private set {
                 if (Equals(value, _selectedStyle)) return;
 
-                lock (_selectedStyleSync) {
+                if (_selectedStyleUsed == 0) {
                     _selectedStyle?.Dispose();
-                    _selectedStyle = value;
-                    _onlyPreviewModeChanged = false;
-                    OnPropertyChanged();
-
-                    lock (InputParams) {
-                        if (value != null) {
-                            InputParams.ReplaceEverythingBy(value.InputParams.Select(x => x.Clone()));
-                        } else {
-                            InputParams.Clear();
-                        }
-                    }
                 }
+
+                _selectedStyle = value;
+                _onlyPreviewModeChanged = false;
+                OnPropertyChanged();
+
+                if (value != null) {
+                    InputParams.ReplaceEverythingBy(value.InputParams.Select(x => x.Clone()));
+                } else {
+                    InputParams.Clear();
+                }
+                Update();
             }
+        }
+
+        private class StyleHolder : IDisposable {
+            public LicensePlatesStyle Style { get; set; }
+
+            public Action Callback { get; set; }
+
+            public void Dispose() {
+                Callback?.Invoke();
+            }
+        }
+
+        private StyleHolder Hold() {
+            var styleSet = false;
+            LicensePlatesStyle style = null;
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                _selectedStyleUsed++;
+                style = _selectedStyle;
+                for (var i = 0; i < style.InputParams.Count; i++) {
+                    style.InputParams[i].Value = InputParams.ElementAtOrDefault(i)?.Value;
+                }
+                styleSet = true;
+            });
+            while (!styleSet) {
+                Thread.Sleep(10);
+            }
+            return new StyleHolder {
+                Style = style,
+                Callback = () => {
+                    if (_selectedStyle != style) {
+                        style?.Dispose();
+                        return;
+                    }
+                    ActionExtension.InvokeInMainThreadAsync(() => {
+                        if (_selectedStyle == style) {
+                            _selectedStyleUsed--;
+                        } else {
+                            style.Dispose();
+                        }
+                    });
+                }
+            };
         }
 
         public ChangeableObservableCollection<PlateValueBase> InputParams { get; }
@@ -132,12 +174,6 @@ namespace AcManager.PaintShop {
         private bool _flatNormals, _onlyPreviewModeChanged;
         private IPaintShopRenderer _renderer;
 
-        private LicensePlatesStyle GetSelectedStyle() {
-            lock (_selectedStyleSync) {
-                return _selectedStyle;
-            }
-        }
-
         private void ApplyTexture(Action<IPaintShopRenderer> action) {
             ActionExtension.InvokeInMainThreadAsync(() => {
                 var renderer = _renderer;
@@ -156,13 +192,13 @@ namespace AcManager.PaintShop {
             });
         }
 
-        private void ApplyQuick() {
+        private void ApplyQuick(LicensePlatesStyle style) {
             var applyId = ++_applyId;
             var diffuseTexture = DiffuseTexture;
             var normalsTexture = NormalsTexture;
 
             if (diffuseTexture != null) {
-                var diffuse = GetSelectedStyle()?.CreateDiffuseMap(true, LicensePlatesStyle.Format.Png);
+                var diffuse = style?.CreateDiffuseMap(true, LicensePlatesStyle.Format.Png);
                 if (_applyId != applyId) return;
                 ApplyTexture(diffuseTexture, diffuse);
             }
@@ -176,96 +212,83 @@ namespace AcManager.PaintShop {
             }
         }
 
-        private void ApplySlowDiffuse() {
+        private void ApplySlowDiffuse(LicensePlatesStyle style) {
             var applyId = ++_applyId;
             var diffuseTexture = DiffuseTexture;
             if (diffuseTexture == null) return;
 
-            var diffuse = GetSelectedStyle()?.CreateDiffuseMap(false, LicensePlatesStyle.Format.Png);
+            var diffuse = style?.CreateDiffuseMap(false, LicensePlatesStyle.Format.Png);
             if (_applyId != applyId) return;
             ApplyTexture(diffuseTexture, diffuse);
         }
 
-        private void ApplySlowNormals() {
+        private void ApplySlowNormals(LicensePlatesStyle style) {
             var applyId = ++_applyId;
             var normalsTexture = NormalsTexture;
             if (normalsTexture == null) return;
 
-            var normals = GetSelectedStyle()?.CreateNormalsMap(PreviewMode, LicensePlatesStyle.Format.Png);
+            var normals = style?.CreateNormalsMap(PreviewMode, LicensePlatesStyle.Format.Png);
             if (_applyId != applyId) return;
             ApplyTexture(normalsTexture, normals);
-        }
-
-        private void SyncValues() {
-            List<string> input;
-            lock (InputParams) {
-                input = InputParams.Select(x => x.Value).ToList();
-            }
-
-            var style = GetSelectedStyle();
-            for (var i = 0; i < style.InputParams.Count; i++) {
-                style.InputParams[i].Value = input.ElementAtOrDefault(i);
-            }
         }
 
         private readonly object _threadObj = new object();
 
         private void EnsureThreadCreated() {
             if (_thread != null) return;
-
-            try {
-                _thread = new Thread(() => {
-                    try {
-                        lock (_threadObj) {
-                            while (_keepGoing) {
-                                if (_dirty) {
-                                    try {
-                                        if (_onlyPreviewModeChanged) {
-                                            _onlyPreviewModeChanged = false;
-                                            ApplySlowNormals();
-                                        } else {
-                                            Update:
-                                            SyncValues();
-                                            ApplyQuick();
-                                            _dirty = false;
-
-                                            for (var i = 0; i < 10; i++) {
-                                                if (!_keepGoing) return;
-                                                Monitor.Wait(_threadObj, 50);
-
-                                                if (!_keepGoing) return;
-                                                if (_dirty) goto Update;
-                                            }
-
-                                            ApplySlowDiffuse();
-                                            ApplySlowNormals();
+            _thread = new Thread(() => {
+                try {
+                    lock (_threadObj) {
+                        while (_keepGoing) {
+                            if (_dirty) {
+                                try {
+                                    if (_onlyPreviewModeChanged) {
+                                        _onlyPreviewModeChanged = false;
+                                        using (var held = Hold()) {
+                                            ApplySlowNormals(held.Style);
                                         }
-                                    } catch (Exception e) {
-                                        NonfatalError.Notify("Can’t generate number plate", e);
-                                    } finally {
+                                    } else {
+                                        Update:
+                                        using (var held = Hold()) {
+                                            ApplyQuick(held.Style);
+                                        }
                                         _dirty = false;
+
+                                        for (var i = 0; i < 10; i++) {
+                                            if (!_keepGoing) return;
+                                            Monitor.Wait(_threadObj, 50);
+
+                                            if (!_keepGoing) return;
+                                            if (_dirty) goto Update;
+                                        }
+
+                                        using (var held = Hold()) {
+                                            ApplySlowDiffuse(held.Style);
+                                            ApplySlowNormals(held.Style);
+                                        }
                                     }
+                                } catch (Exception e) {
+                                    NonfatalError.Notify("Can’t generate number plate", e);
+                                } finally {
+                                    _dirty = false;
                                 }
-
-                                if (!_keepGoing) return;
-
-                                Monitor.Wait(_threadObj);
                             }
-                        }
-                    } catch (ThreadAbortException) { } catch (Exception e) {
-                        NonfatalError.Notify("Can’t keep License Plates Generator thread running", e);
-                    }
-                }) {
-                    Name = "License Plates Generator",
-                    IsBackground = true,
-                    Priority = ThreadPriority.Lowest
-                };
 
-                _keepGoing = true;
-                _thread.Start();
-            } catch (Exception e) {
-                NonfatalError.Notify("Can’t initialize License Plates Generator thread", e);
-            }
+                            if (!_keepGoing) return;
+                            Monitor.Wait(_threadObj);
+                        }
+                    }
+                } catch (ThreadAbortException) { } catch (Exception e) {
+                    NonfatalError.Notify("Can’t keep License Plates Generator thread running", e);
+                }
+            }) {
+                Name = "License Plates Generator",
+                IsBackground = true,
+                Priority = ThreadPriority.Lowest
+            };
+
+            _keepGoing = true;
+            _thread.Start();
         }
 
         protected override void ApplyOverride(IPaintShopRenderer renderer) {

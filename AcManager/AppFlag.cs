@@ -6,6 +6,12 @@ namespace AcManager {
     public enum AppFlag {
         /// <summary>
         /// For development purposes.
+        /// Example: --csp-reports-location.
+        /// </summary>
+        CspReportsLocation,
+
+        /// <summary>
+        /// For development purposes.
         /// Example: --cm-workshop.
         /// </summary>
         CmWorkshop,

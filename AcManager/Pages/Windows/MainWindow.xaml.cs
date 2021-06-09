@@ -5,6 +5,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -207,13 +209,22 @@ namespace AcManager.Pages.Windows {
             ContentInstallationManager.Instance.TaskAdded += OnContentInstallationTaskAdded;
             UpdateDiscordRichPresence();
 
-            if (ValuesStorage.Contains("RaceU.CurrentLocation")) {
+            if (ValuesStorage.Contains("RaceU.CurrentLocation") || RaceUCheckAb()) {
                 RaceUGroup.IsShown = true;
             }
 
 #if DEBUG
             // LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
 #endif
+        }
+
+        private static bool RaceUCheckAb() {
+            var steamId = SteamIdHelper.Instance.Value;
+            if (steamId == null) return false;
+
+            using (var algo = MD5.Create()) {
+                return BitConverter.ToInt32(algo.ComputeHash(Encoding.UTF8.GetBytes(steamId)), 0) % 10 < 4;
+            }
         }
 
         private static Uri _navigateOnOpen;
@@ -801,9 +812,9 @@ namespace AcManager.Pages.Windows {
         }
 
         private void OnMouseUp(object sender, MouseButtonEventArgs e) {
-            if (e.Handled) return;
+            if (e.Handled || !SettingsHolder.Drive.QuickSwitches) return;
             if (e.ChangedButton == MouseButton.Middle) {
-                ToggleQuickSwitches(true);
+                ToggleQuickSwitches();
                 e.Handled = true;
             }
         }

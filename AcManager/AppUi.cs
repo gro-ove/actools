@@ -89,13 +89,18 @@ namespace AcManager {
             return (_waiting ?? (_waiting = new TaskCompletionSource<bool>())).Task;
         }
 
+        private static bool CanGoWithoutWindow(string arg) {
+            return arg.EndsWith(".report", StringComparison.OrdinalIgnoreCase)
+                    || arg.EndsWith(".report-launch", StringComparison.OrdinalIgnoreCase);
+        }
+
         private bool HandleMessages(IEnumerable<string> obj) {
             if (AcRootDirectory.Instance?.IsReady != true) return false;
 
             var list = obj.ToList();
             Logging.Write(list.Select(x => $"“{x}”").JoinToReadableString());
             HandleMessagesAsync(list).Ignore();
-            return true;
+            return list.Count == 0 || !list.All(CanGoWithoutWindow);
         }
 
         private bool _mainWindowShown;

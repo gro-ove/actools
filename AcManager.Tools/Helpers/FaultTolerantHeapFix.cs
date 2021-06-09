@@ -104,7 +104,7 @@ pause");
 
         public static async Task CheckAndFixAsync() {
             if (Check()) {
-                ValuesStorage.Set(".fth.shown2", true);
+                ValuesStorage.Set(".fth.shown3", true);
                 try {
                     await FixAsync();
                 } catch (Exception e) {

@@ -134,7 +134,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
             new SettingEntry("1024", @"1024×1024"),
             new SettingEntry("2048", @"2048×2048"),
             new SettingEntry("3072", @"3072×3072"),
-            new SettingEntry("4096", @"4096×4096")
+            new SettingEntry("4096", @"4096×4096"),
+            new SettingEntry("6144", @"6144×6144 (not recommended)"),
+            new SettingEntry("8192", @"8192×8192 (not recommended)"),
         };
 
         public SettingEntry[] WorldDetailsLevels { get; } = {

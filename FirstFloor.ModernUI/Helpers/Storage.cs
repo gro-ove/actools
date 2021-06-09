@@ -260,7 +260,9 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             string[] DecodeLines(string filename) {
-                return DecodeBytes(File.ReadAllBytes(filename))
+                var bytes = File.ReadAllBytes(filename);
+                if (bytes.Length == 0) return new string[0];
+                return DecodeBytes(bytes)
                         .Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
             }
         }

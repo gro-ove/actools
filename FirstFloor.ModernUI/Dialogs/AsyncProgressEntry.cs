@@ -34,7 +34,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         }
     }
 
-    // TODO: SORT THIS SHIT OUT! ALL THAT 0.0001–0.9999 IS VERY IDIOTIC.
+    // TODO: SORT THIS CRAP OUT! ALL THIS 0.0001–0.9999 MESS IS UNACCEPTABLE
     public struct AsyncProgressEntry : INotifyPropertyChanged {
         public static readonly AsyncProgressEntry Indetermitate = new AsyncProgressEntry("", 0d);
         public static readonly AsyncProgressEntry Ready = new AsyncProgressEntry("", 1d);

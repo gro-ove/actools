@@ -1,40 +1,18 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using AcManager.Tools.Data;
+using System.Threading.Tasks;
 using AcTools.DataFile;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class SystemSettings : IniSettings {
-        internal SystemSettings() : base("assetto_corsa", systemConfig: true) {
-            PatchHelper.Reloaded += (sender, args) => { ScreenshotFormats = DefaultScreenshotFormats().ToList(); };
-        }
+        internal SystemSettings() : base("assetto_corsa", systemConfig: true) { }
 
-        public static IEnumerable<SettingEntry> DefaultScreenshotFormats() {
-            return new[] {
-                new SettingEntry("JPG", ToolsStrings.AcSettings_ScreenshotFormat_Jpeg),
-                new SettingEntry("BMP", ToolsStrings.AcSettings_ScreenshotFormat_Bmp),
-                new SettingEntry("PNG", "PNG (requires Custom Shaders Patch)")
-            };
-            /*.Concat(PatchHelper.IsFeatureSupported(PatchHelper.FeatureExtraScreenshotFormats)
-                    ? PatchHelper.GetConfig("data_manifest.ini")["FEATURES"].GetStrings("SUPPORTED_SCREENSHOT_FORMATS")
-                            .Select(x => new SettingEntry(x, $"{x} (added by Custom Shaders Patch)"))
-                    : new SettingEntry[0]);*/
-        }
-
-        private List<SettingEntry> _screenshotFormats = DefaultScreenshotFormats().ToList();
-
-        public IReadOnlyList<SettingEntry> ScreenshotFormats {
-            get => _screenshotFormats;
-            set {
-                if (value.SequenceEqual(_screenshotFormats)) return;
-                _screenshotFormats = value.ToList();
-                OnPropertyChanged(false);
-                ScreenshotFormat = _screenshotFormats.GetByIdOrDefault(ScreenshotFormat?.Id) ?? _screenshotFormats.FirstOrDefault();
-            }
-        }
+        public IList<SettingEntry> ScreenshotFormats { get; } = new[] {
+            new SettingEntry("JPG", ToolsStrings.AcSettings_ScreenshotFormat_Jpeg),
+            new SettingEntry("BMP", ToolsStrings.AcSettings_ScreenshotFormat_Bmp),
+            new SettingEntry("PNG", "PNG (requires Custom Shaders Patch)")
+        };
 
         #region Miscellaneous
         private int _simulationValue;
@@ -126,10 +104,24 @@ namespace AcManager.Tools.Helpers.AcSettings {
         #endregion
 
         #region Experimental FFB
-        private static readonly Busy _ffbSettingsBusy = new Busy();
+        private static readonly Busy FfbSettingsBusy = new Busy();
 
         private static void OnSystemFfbSettingsChanged() {
-            _ffbSettingsBusy.Do(() => { AcSettingsHolder.Controls.OnSystemFfbSettingsChanged(); });
+            FfbSettingsBusy.Do(() => AcSettingsHolder.Controls.OnSystemFfbSettingsChanged());
+        }
+
+        private double _ffbLowSpeedThreshold;
+
+        public double FfbLowSpeedThreshold {
+            get => _ffbLowSpeedThreshold;
+            set => Apply(value.Round(0.1), ref _ffbLowSpeedThreshold, OnSystemFfbSettingsChanged);
+        }
+
+        private int _ffbLowSpeedMult;
+
+        public int FfbLowSpeedMult {
+            get => _ffbLowSpeedMult;
+            set => Apply(value.Clamp(0, 100), ref _ffbLowSpeedMult, OnSystemFfbSettingsChanged);
         }
 
         private bool _softLock;
@@ -162,15 +154,23 @@ namespace AcManager.Tools.Helpers.AcSettings {
         #endregion
 
         public void LoadFfbFromIni(IniFile ini) {
-            using (_ffbSettingsBusy.Set()) {
+            using (FfbSettingsBusy.Set()) {
                 SoftLock = ini["SOFT_LOCK"].GetBool("ENABLED", false);
                 VrCameraShake = ini["VR"].GetBool("ENABLE_CAMERA_SHAKE", false);
                 //FfbSkipSteps = ini["FORCE_FEEDBACK"].GetInt("FF_SKIP_STEPS", 1);
 
-                var section = ini["FF_EXPERIMENTAL"];
-                FfbGyro = section.GetBool("ENABLE_GYRO", false);
-                FfbDamperMinLevel = section.GetDouble("DAMPER_MIN_LEVEL", 0d).ToIntPercentage();
-                FfbDamperGain = section.GetDouble("DAMPER_GAIN", 1d).ToIntPercentage();
+                var sectionExperimental = ini["FF_EXPERIMENTAL"];
+                FfbGyro = sectionExperimental.GetBool("ENABLE_GYRO", false);
+                FfbDamperMinLevel = sectionExperimental.GetDouble("DAMPER_MIN_LEVEL", 0d).ToIntPercentage();
+                FfbDamperGain = sectionExperimental.GetDouble("DAMPER_GAIN", 1d).ToIntPercentage();
+
+                if (!ini.ContainsKey("LOW_SPEED_FF")) {
+                    Task.Delay(100).ContinueWith(r => { Save(); });
+                }
+
+                var sectionLowSpeed = ini["LOW_SPEED_FF"];
+                FfbLowSpeedThreshold = sectionLowSpeed.GetDouble("SPEED_KMH", 3d);
+                FfbLowSpeedMult = sectionLowSpeed.GetDouble("MIN_VALUE", 0.01).ToIntPercentage();
             }
         }
 
@@ -179,10 +179,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
             ini["VR"].Set("ENABLE_CAMERA_SHAKE", VrCameraShake);
             //ini["FORCE_FEEDBACK"].Set("FF_SKIP_STEPS", FfbSkipSteps);
 
-            var section = ini["FF_EXPERIMENTAL"];
-            section.Set("ENABLE_GYRO", FfbGyro);
-            section.Set("DAMPER_MIN_LEVEL", FfbDamperMinLevel.ToDoublePercentage());
-            section.Set("DAMPER_GAIN", FfbDamperGain.ToDoublePercentage());
+            var sectionExperimental = ini["FF_EXPERIMENTAL"];
+            sectionExperimental.Set("ENABLE_GYRO", FfbGyro);
+            sectionExperimental.Set("DAMPER_MIN_LEVEL", FfbDamperMinLevel.ToDoublePercentage());
+            sectionExperimental.Set("DAMPER_GAIN", FfbDamperGain.ToDoublePercentage());
+
+            var sectionLowSpeed = ini["LOW_SPEED_FF"];
+            sectionLowSpeed.Set("SPEED_KMH", FfbLowSpeedThreshold);
+            sectionLowSpeed.Set("MIN_VALUE", FfbLowSpeedMult.ToDoublePercentage());
         }
 
         public void ImportFfb(string serialized) {
@@ -204,7 +208,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             AllowFreeCamera = Ini["CAMERA"].GetBool("ALLOW_FREE_CAMERA", false);
             Logging = !Ini["LOG"].GetBool("SUPPRESS", false);
             HideDriver = Ini["DRIVER"].GetBool("HIDE", false);
-            ScreenshotFormat = Ini["SCREENSHOT"].GetOrCreateEntry("FORMAT", _screenshotFormats, v => $"{v} (not supported)");
+            ScreenshotFormat = Ini["SCREENSHOT"].GetOrCreateEntry("FORMAT", ScreenshotFormats, v => $"{v} (not supported)");
             MirrorsFieldOfView = Ini["MIRRORS"].GetInt("FOV", MirrorsFieldOfViewDefault);
             MirrorsFarPlane = Ini["MIRRORS"].GetInt("FAR_PLANE", MirrorsFarPlaneDefault);
         }

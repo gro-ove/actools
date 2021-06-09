@@ -25,7 +25,7 @@ namespace AcManager.Tools.Helpers {
             }
 
             try {
-                var result = await YahooApiProvider.LocateAsync(address);
+                var result = await PositionStackApiProvider.LocateAsync(address);
                 if (result.LatitudeValue.HasValue && result.LongitudeValue.HasValue) {
                     Logging.Write($"“{address}”, geo tags: ({result})");
                     CacheStorage.Set(key, new Point(result.LatitudeValue.Value, result.LongitudeValue.Value).As<string>());

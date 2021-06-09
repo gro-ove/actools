@@ -3762,7 +3762,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <value>Kunos cars only</value>
     </data>
     <data name="Main_Stats_KunosCarsAndTracks" xml:space="preserve">
-      <value>Kunos cars &amp;amp; tracks only</value>
+      <value>Kunos cars &amp; tracks only</value>
     </data>
     <data name="Main_Stats_ModsOnly" xml:space="preserve">
       <value>Mods only</value>

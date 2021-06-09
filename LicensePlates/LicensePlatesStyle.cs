@@ -16,11 +16,17 @@ namespace LicensePlates {
         private readonly Script _state;
 
         private readonly PlateParams _plateParams;
+
+        [NotNull]
         private readonly TextParams _textParams;
 
         private readonly List<PlateValueBase> _inputParams;
         private readonly Closure _closure;
+
+        [CanBeNull]
         private MagickImage _textLayer;
+
+        [CanBeNull]
         private MagickImage _textFlatLayer;
 
         private readonly Dictionary<string, MagickImage> _images = new Dictionary<string, MagickImage>();
@@ -139,9 +145,7 @@ namespace LicensePlates {
             _state.Globals["drawFlatText"] = new Func<string, double, double, int?, TextSize>(DrawFlatText);
         }
 
-        private TextSize TextFn(MagickImage layer, string v, double x, double y, int? position, bool measureOnly) {
-            EnsureTextLayerIsCreated();
-
+        private TextSize TextFn([NotNull] MagickImage layer, string v, double x, double y, int? position, bool measureOnly) {
             var current = Environment.CurrentDirectory;
             try {
                 Environment.CurrentDirectory = _directory;
@@ -169,20 +173,15 @@ namespace LicensePlates {
         }
 
         private TextSize GetTextSize(string v, double x, double y, int? position) {
-            return TextFn(_textLayer, v, x, y, position, true);
+            return TextFn(EnsureTextLayerIsCreated(), v, x, y, position, true);
         }
 
         private TextSize DrawText(string v, double x, double y, int? position) {
-            return TextFn(_textLayer, v, x, y, position, false);
+            return TextFn(EnsureTextLayerIsCreated(), v, x, y, position, false);
         }
 
         private TextSize DrawFlatText(string v, double x, double y, int? position) {
-            EnsureTextLayerIsCreated();
-            if (_textFlatLayer == null) {
-                _textFlatLayer = new MagickImage(MagickColors.Transparent, _textLayer.Width, _textLayer.Height);
-                _textFlatLayer.Evaluate(Channels.All, EvaluateOperator.Set, 0d);
-            }
-            return TextFn(_textFlatLayer, v, x, y, position, false);
+            return TextFn(EnsureTextFlatLayerIsCreated(), v, x, y, position, false);
         }
 
         public LicensePlatesStyle(string directory) {
@@ -233,7 +232,8 @@ namespace LicensePlates {
             }
         }
 
-        private void EnsureTextLayerIsCreated() {
+        [NotNull]
+        private MagickImage EnsureTextLayerIsCreated() {
             if (_textLayer == null) {
                 if (_plateParams.Size == null) {
                     var background = LoadImage(Path.Combine(_directory, _plateParams.Background));
@@ -244,6 +244,17 @@ namespace LicensePlates {
                         (int)(_plateParams.Size[0] * _plateParams.SizeMultipler),
                         (int)(_plateParams.Size[1] * _plateParams.SizeMultipler));
             }
+            return _textLayer;
+        }
+
+        [NotNull]
+        private MagickImage EnsureTextFlatLayerIsCreated() {
+            if (_textFlatLayer == null) {
+                var textLayer = EnsureTextLayerIsCreated();
+                _textFlatLayer = new MagickImage(MagickColors.Transparent, textLayer.Width, textLayer.Height);
+                _textFlatLayer.Evaluate(Channels.All, EvaluateOperator.Set, 0d);
+            }
+            return _textFlatLayer;
         }
 
         public MagickImage CreateDiffuseMap(bool previewMode) {

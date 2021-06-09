@@ -398,6 +398,7 @@
     <Compile Include="Helpers\Api\Kunos\ServerInformationExtendedAssists.cs" />
     <Compile Include="Helpers\Api\IpGeoEntry.cs" />
     <Compile Include="Helpers\Api\Kunos\ServerInformationExtra.cs" />
+    <Compile Include="Helpers\Api\PositionStackApiProvider.cs" />
     <Compile Include="Helpers\Api\RemoteSetupInformation.cs" />
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
     <Compile Include="Helpers\AudioDevice.cs" />

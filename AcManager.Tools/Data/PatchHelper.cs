@@ -9,6 +9,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 using StringBasedFilter;
@@ -34,6 +35,11 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureKeyboardForcedThrottle = "KEYBOARD_FORCED_THROTTLE";
         public static readonly string FeatureSharedMemoryReduceGForcesWhenSlow = "SHARED_MEMORY_REDUCE_GFORCES_WHEN_SLOW";
         public static readonly string FeatureWindowPosition = "WINDOW_POSITION";
+
+        public class AudioDescription : Displayable {
+            public string Id { get; set; }
+            public double DefaultLevel { get; set; }
+        }
 
         public static bool OptionPatchSupport = true;
 
@@ -67,6 +73,8 @@ namespace AcManager.Tools.Data {
 
         private static Dictionary<string, IniFile> _configs = new Dictionary<string, IniFile>();
         private static Dictionary<string, bool> _featureSupported = new Dictionary<string, bool>();
+        private static BetterObservableCollection<AudioDescription> _audioDescriptions = new BetterObservableCollection<AudioDescription>();
+        private static bool _audioDescriptionsSet;
         private static bool? _active;
 
         [CanBeNull]
@@ -137,6 +145,30 @@ namespace AcManager.Tools.Data {
             });
         }
 
+        public static IReadOnlyList<AudioDescription> GetExtraAudioLevels() {
+            if (!_audioDescriptionsSet) {
+                _audioDescriptionsSet = true;
+                if (IsActive()) {
+                    _audioDescriptions.ReplaceEverythingBy_Direct(GetManifest()["AUDIO_LEVELS"].Select(p => {
+                        if (p.Key.EndsWith("_")) return null;
+
+                        var value = p.Value.WrapQuoted(out var unwrap)
+                                .Split(',').Select(x => x.Trim()).Where(x => x.Length > 0).ToList();
+                        if (value.Count != 2) return null;
+
+                        return new AudioDescription {
+                            Id = p.Key,
+                            DefaultLevel = unwrap(value[1]).As(0.8),
+                            DisplayName = unwrap(value[0])
+                        };
+                    }).NonNull());
+                } else {
+                    _audioDescriptions.Clear();
+                }
+            }
+            return _audioDescriptions;
+        }
+
         public static int ClampTime(int time) {
             return IsFeatureSupported(FeatureFullDay)
                     ? time.Clamp(0, CommonAcConsts.TimeAbsoluteMaximum)
@@ -196,7 +228,11 @@ namespace AcManager.Tools.Data {
             _configs.Clear();
             _featureSupported.Clear();
             _installed.Reset();
-            ActionExtension.InvokeInMainThreadAsync(() => Reloaded?.Invoke(null, EventArgs.Empty));
+            _audioDescriptionsSet = false;
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                Reloaded?.Invoke(null, EventArgs.Empty);
+                GetExtraAudioLevels();
+            });
         }
     }
 }

@@ -187,6 +187,9 @@ namespace AcManager.Tools {
                     case "importwebsite":
                         return await ProcessImportWebsite(custom.Params.GetValues(@"data") ?? new string[0]);
 
+                    case "cup/registry":
+                        return await ProcessCupRegistry(custom.Params.Get(@"url"));
+
                     case "replay":
                         return await ProcessReplay(custom.Params.Get(@"url"), custom.Params.Get(@"uncompressed") == null);
 
@@ -267,6 +270,25 @@ namespace AcManager.Tools {
                     Toast.Show("Imported", $"Added {PluralizingConverter.PluralizeExt(result.Value, @"{0} website")}");
                     return ArgumentHandleResult.Successful;
             }
+        }
+
+        private static async Task<ArgumentHandleResult> ProcessCupRegistry(string url) {
+            await Task.Delay(0);
+
+            if (SettingsHolder.Content.CupRegistriesList.Contains(url)) {
+                Toast.Show("Nothing to import", "This CUP registry is already added");
+                return ArgumentHandleResult.Successful;
+            }
+
+            if (ModernDialog.ShowMessage(
+                    $"Do you want to add “{url}” to the list of CUP registeries? Content Manager will use it to check and download latest updates for installed mods.",
+                    "New CUP registry", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                SettingsHolder.Content.CupRegistriesList = SettingsHolder.Content.CupRegistriesList.Append(url);
+                Toast.Show("New CUP registry", "New CUP registry has been added");
+                return ArgumentHandleResult.Successful;
+            }
+
+            return ArgumentHandleResult.Failed;
         }
 
         private static async Task<ArgumentHandleResult> ProcessReplay(string url, bool compressed) {

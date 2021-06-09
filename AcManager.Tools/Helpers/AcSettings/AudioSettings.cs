@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using AcTools.DataFile;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class AudioSettings : IniPresetableSettings {
@@ -84,6 +87,31 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
         #endregion
 
+        private Dictionary<string, CustomItem> _customItems = new Dictionary<string, CustomItem>();
+
+        public class CustomItem : Displayable {
+            public string Id { get; set; }
+            public double DefaultValue { get; set; }
+
+            private double _value;
+
+            public double Value {
+                get => _value;
+                set => Apply(value, ref _value);
+            }
+        }
+
+        public CustomItem GetItem(string id, string displayName = null, double defaultValue = -1) {
+            var item = _customItems.GetValueOrSet(id, () => {
+                var ret = new CustomItem { Id = id, Value = Ini["LEVELS_EXT"].GetDouble(id, defaultValue) * 100d };
+                ret.PropertyChanged += (sender, args) => Save();
+                return ret;
+            });
+            if (displayName != null) item.DisplayName = displayName;
+            if (defaultValue != -1) item.DefaultValue = defaultValue;
+            return item;
+        }
+
         protected override void LoadFromIni() {
             EndPointName = Ini["SETTINGS"].GetNonEmpty("DRIVER_NAME");
 
@@ -100,6 +128,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             // Latency = Ini["SETTINGS"].GetEntry("LATENCY", Latencies, 1);
             SkidsEntryPoint = Ini["SKIDS"].GetInt("ENTRY_POINT", 100);
+
+            var levelsExt = Ini["LEVELS_EXT"];
+            foreach (var p in levelsExt.Keys) {
+                var item = GetItem(p);
+                item.Value = levelsExt.GetDouble(p, item.DefaultValue) * 100d;
+            }
         }
 
         protected override void SetToIni(IniFile ini) {
@@ -118,6 +152,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             // Ini["SETTINGS"].Set("LATENCY", Latency);
             ini["SKIDS"].Set("ENTRY_POINT", SkidsEntryPoint);
+
+            var levelsExt = Ini["LEVELS_EXT"];
+            foreach (var p in _customItems) {
+                levelsExt.Set(p.Key, p.Value.Value / 100d);
+            }
         }
 
         protected override void InvokeChanged() {

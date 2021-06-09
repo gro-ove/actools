@@ -18,7 +18,8 @@ using Path = System.IO.Path;
 
 namespace AcManager.Tools.ContentInstallation {
     public enum AddInstallMode {
-        ShareTasks, ForceNewTask
+        ShareTasks,
+        ForceNewTask
     }
 
     public class ContentInstallationManager : NotifyPropertyChanged {
@@ -246,8 +247,10 @@ namespace AcManager.Tools.ContentInstallation {
                 if (filename.StartsWith(@"--") || filename.Contains(@"://")) return false;
                 if (!FileUtils.ArePathsEqual(FileUtils.EnsureFilenameIsValid(filename, true), filename)) return false;
                 if (fullPathsOnly && !Path.IsPathRooted(filename)) return false;
-                return FileUtils.Exists(filename) && FileUtils.IsDirectory(filename) ||
-                        !filename.EndsWith(@".kn5") && !filename.EndsWith(@".acreplay") && !FileUtils.IsAffectedBy(filename, AcPaths.GetReplaysDirectory());
+                return FileUtils.Exists(filename) && FileUtils.IsDirectory(filename)
+                        || !filename.EndsWith(@".kn5") && !filename.EndsWith(@".acreplay")
+                                && !filename.EndsWith(@".report") && !filename.EndsWith(@".report-launch")
+                                && !FileUtils.IsAffectedBy(filename, AcPaths.GetReplaysDirectory());
             } catch (Exception e) {
                 Logging.Warning(e);
                 return false;

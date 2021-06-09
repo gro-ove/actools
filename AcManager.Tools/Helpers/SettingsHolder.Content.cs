@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Managers;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
@@ -23,6 +25,11 @@ namespace AcManager.Tools.Helpers {
                     ValuesStorage.Set("Settings.ContentSettings.CupRegistries", value);
                     OnPropertyChanged();
                 }
+            }
+
+            public IEnumerable<string> CupRegistriesList {
+                get => CupRegistries.Split(new[] { ';', '\n', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                set => CupRegistries = value.JoinToString("\n");
             }
 
             private bool? _displaySteerLock;

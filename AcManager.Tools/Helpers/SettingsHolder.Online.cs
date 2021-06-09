@@ -73,8 +73,9 @@ namespace AcManager.Tools.Helpers {
             private bool? _cachingServerAvailable;
 
             public bool CachingServerAvailable {
-                get => _cachingServerAvailable ?? (_cachingServerAvailable =
-                        ValuesStorage.Get("Settings.OnlineSettings.CachingServerAvailable", false)).Value;
+                /*get => _cachingServerAvailable ?? (_cachingServerAvailable =
+                        ValuesStorage.Get("Settings.OnlineSettings.CachingServerAvailable", false)).Value;*/
+                get => true;
                 set {
                     if (Equals(value, _cachingServerAvailable)) return;
                     _cachingServerAvailable = value;

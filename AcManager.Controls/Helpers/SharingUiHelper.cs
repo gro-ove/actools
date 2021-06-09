@@ -91,8 +91,8 @@ namespace AcManager.Controls.Helpers {
                 ShowShared(type, link);
                 await Task.Delay(2000);
             } catch (Exception e) {
-                NonfatalError.Notify(string.Format(ControlsStrings.Share_CannotShare, type.GetDescription()), ToolsStrings.Common_CannotDownloadFile_Commentary,
-                        e);
+                NonfatalError.Notify(string.Format(ControlsStrings.Share_CannotShare, type.GetDescription()),
+                        ToolsStrings.Common_CannotDownloadFile_Commentary, e);
             } finally {
                 _sharingInProcess = false;
             }
@@ -144,9 +144,9 @@ namespace AcManager.Controls.Helpers {
             } else {
                 // Toast.Show(string.Format(ControlsStrings.Share_Shared, type.ToTitle()),
                 Toast.Show(type,
-                        SettingsHolder.Sharing.CopyLinkToClipboard && Clipboard.GetText() == link
+                        SettingsHolder.Sharing.CopyLinkToClipboard && ClipboardHelper.GetText() == link
                                 ? ControlsStrings.Share_SharedMessage : ControlsStrings.Share_SharedMessageAlternative,
-                        () => { WindowsHelper.ViewInBrowser(link + "#noauto"); });
+                        () => WindowsHelper.ViewInBrowser(link + "#noauto"));
             }
         }
     }

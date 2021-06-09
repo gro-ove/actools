@@ -10,6 +10,7 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.Api {
+    // F in the chat
     public static class YahooApiProvider {
         private const string RequestLocationUri = "https://query.yahooapis.com/v1/public/yql?q=select centroid from geo.places(1) where text='{0}'";
         private static readonly Regex CleanUpRegex = new Regex(@"[^,\w-]+", RegexOptions.Compiled);

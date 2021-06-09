@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Miscellaneous;
@@ -92,6 +93,8 @@ namespace AcManager.Pages.AcSettings {
             internal ViewModel(IReadOnlyList<AudioDevice> audioDevicesList) {
                 AudioOutputDevices = audioDevicesList;
                 Audio.SubscribeWeak(OnAudioSettingsChanged);
+                var levels = PatchHelper.GetExtraAudioLevels();
+                PatchItems = levels.Select(x => Audio.GetItem(x.Id, x.DisplayName, x.DefaultLevel)).ToList();
             }
 
             private void OnAudioSettingsChanged(object sender, PropertyChangedEventArgs args) {
@@ -99,6 +102,8 @@ namespace AcManager.Pages.AcSettings {
                     RefreshSelectedAudioDevice();
                 }
             }
+
+            public IReadOnlyCollection<AudioSettings.CustomItem> PatchItems { get; }
 
             private IReadOnlyCollection<AudioDevice> _audioOutputDevices;
 

@@ -7,7 +7,7 @@ using AcTools.Windows;
 namespace AcManager.Tools.Helpers.AcSettings {
     public class ReplaySettings : IniSettings {
         public static int GetQualityFrequency(int qualityValue) {
-            return new[] { 8, 12, 16, 32, 64 }.ElementAtOr(qualityValue, 16);
+            return new[] { 8, 12, 16, 33, 67 }.ElementAtOr(qualityValue, 16);
         }
 
         public SettingEntry[] Qualities { get; } = {

@@ -246,7 +246,9 @@ namespace AcManager.Pages.Drive {
                 if (list.Count == 0) {
                     ModernDialog.ShowMessage(AppStrings.Online_Scanning_NothingFoundMessage, AppStrings.Online_AddServer_Title, MessageBoxButton.OK);
                 } else {
-                    new OnlineAddManuallyDialog(listKey, list).ShowDialog();
+                    new OnlineAddManuallyDialog(listKey, list) {
+                        DoNotAttachToWaitingDialogs = true
+                    }.ShowDialog();
                 }
             } catch (Exception e) {
                 NonfatalError.Notify(AppStrings.Online_CannotAddServer, e);

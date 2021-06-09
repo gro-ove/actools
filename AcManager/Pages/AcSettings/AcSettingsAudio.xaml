@@ -44,13 +44,14 @@
                   <mui:Cell Margin="0 0 8 0">
                     <Image Width="32" Height="32" Source="{Binding IconPath, Converter={StaticResource IconPathToImageConverter}}" HorizontalAlignment="Center"
                         VerticalAlignment="Center" />
-                    <Path Width="10" Height="10" Margin="2" Stretch="Fill" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                        Fill="{DynamicResource Go}" Data="F1 M 15,21L 22,28L 32.9999,14.0001L 35.9999,17.0001L 22,34L 12.0001,24L 15,21 Z"
+                    <Path Width="10" Height="10" Margin="2" Stretch="Fill" HorizontalAlignment="Right" VerticalAlignment="Bottom" Fill="{DynamicResource Go}"
+                        Data="F1 M 15,21L 22,28L 32.9999,14.0001L 35.9999,17.0001L 22,34L 12.0001,24L 15,21 Z"
                         Visibility="{Binding IsDefault, Converter={StaticResource BooleanToVisibilityConverter}}" />
                   </mui:Cell>
                   <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
                   <TextBlock Text="{Binding DeviceName}" Style="{StaticResource Small}" />
-                  <TextBlock x:Name="PART_State" Text="{Binding State, StringFormat='{} ({0})', Converter={StaticResource ToLowerConverter}}" Style="{StaticResource Small}"
+                  <TextBlock x:Name="PART_State" Text="{Binding State, StringFormat='{} ({0})', Converter={StaticResource ToLowerConverter}}"
+                      Style="{StaticResource Small}"
                       Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠Active'}" />
                 </DockPanel>
                 <DataTemplate.Triggers>
@@ -99,6 +100,18 @@
               Content="{x:Static g:AppStrings.AcSettings_Audio_Ui}" />
           <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelUi}" TickFrequency="10" TickPlacement="BottomRight" />
         </DockPanel>
+        <ItemsControl ItemsSource="{Binding PatchItems}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Resources="{StaticResource SettingsStyle}">
+                <DockPanel>
+                  <mui:ValueLabel Value="{Binding Value, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%" Content="{Binding DisplayName}" />
+                  <Slider Minimum="0" Maximum="100" Value="{Binding Value}" TickFrequency="10" TickPlacement="BottomRight" />
+                </DockPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
       </StackPanel>
     </ScrollViewer>
 

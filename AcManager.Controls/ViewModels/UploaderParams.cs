@@ -90,6 +90,8 @@ namespace AcManager.Controls.ViewModels {
             try {
                 IsBusy++;
                 await SelectedUploader.PrepareAsync(default);
+            } catch (Exception e) {
+                Logging.Warning(e);
             } finally {
                 IsBusy--;
             }
