@@ -248,7 +248,7 @@ namespace AcManager.Tools.ContentInstallation {
                 if (!FileUtils.ArePathsEqual(FileUtils.EnsureFilenameIsValid(filename, true), filename)) return false;
                 if (fullPathsOnly && !Path.IsPathRooted(filename)) return false;
                 return FileUtils.Exists(filename) && FileUtils.IsDirectory(filename)
-                        || !filename.EndsWith(@".kn5") && !filename.EndsWith(@".acreplay")
+                        || !filename.EndsWith(@".kn5") && !filename.EndsWith(@".acreplay") && !filename.EndsWith(@".cmpreset")
                                 && !filename.EndsWith(@".report") && !filename.EndsWith(@".report-launch")
                                 && !FileUtils.IsAffectedBy(filename, AcPaths.GetReplaysDirectory());
             } catch (Exception e) {

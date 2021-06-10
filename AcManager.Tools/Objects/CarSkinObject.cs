@@ -330,14 +330,16 @@ namespace AcManager.Tools.Objects {
                 yield return Add("preview.jpg", "livery.png", "ui_skin.json");
 
                 if (Params.CmForFlag) {
-                    yield return AddString("cm_skin_for.json", new JObject {
-                        ["id"] = t.CarId
+                    yield return AddString(@"cm_skin_for.json", new JObject {
+                        [@"id"] = t.CarId
                     }.ToString(Formatting.Indented));
                 }
 
                 if (Params.CmPaintShopValues) {
                     yield return Add("cm_skin.json");
                 }
+
+                yield return Add("ext_config.ini");
 
                 if (t.CarId == _recentCarId && _recentTextures != null) {
                     yield return Add(_recentTextures);

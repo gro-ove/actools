@@ -83,6 +83,7 @@ namespace AcManager.Tools.Helpers {
                     RegisterClass(ClassName, AppTitle, true, 0, true, @"{0} ""%1""");
                     RegisterExtension(@".kn5", ToolsStrings.Windows_Kn5Commentary, isFilesIntegrationEnabled, 1);
                     RegisterExtension(@".acreplay", ToolsStrings.Common_AcReplay, isFilesIntegrationEnabled, 2);
+                    RegisterExtension(@".cmpreset", ToolsStrings.Common_CmPreset, isFilesIntegrationEnabled, 3);
                 }
 
                 ValuesStorage.Set(KeyRegisteredLocation, MainExecutingFile.Location);

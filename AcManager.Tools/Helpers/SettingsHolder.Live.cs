@@ -42,6 +42,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _raceUEnabled;
+
+            public bool RaceUEnabled {
+                get => _raceUEnabled ?? (_raceUEnabled = ValuesStorage.Get("Settings.LiveSettings.RaceUEnabled", true)).Value;
+                set {
+                    if (Equals(value, _raceUEnabled)) return;
+                    _raceUEnabled = value;
+                    ValuesStorage.Set("Settings.LiveSettings.RaceUEnabled", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _srsCustomStyle;
 
             public bool SrsCustomStyle {

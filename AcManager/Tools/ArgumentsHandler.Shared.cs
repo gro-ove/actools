@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AcManager.Controls;
 using AcManager.Controls.ViewModels;
@@ -26,14 +27,7 @@ namespace AcManager.Tools {
     public static partial class ArgumentsHandler {
         public static bool OptionUserChampionshipExtMode = true;
 
-        private static async Task<ArgumentHandleResult> ProcessShared(string id) {
-            SharedEntry shared;
-
-            using (var waiting = new WaitingDialog()) {
-                waiting.Report(ControlsStrings.Common_Loading);
-                shared = await SharingHelper.GetSharedAsync(id, waiting.CancellationToken);
-            }
-
+        private static async Task<ArgumentHandleResult> ProcessSharedEntry(SharedEntry shared) {
             var data = shared?.Data;
             if (data == null) return ArgumentHandleResult.Failed;
 
@@ -96,6 +90,59 @@ namespace AcManager.Tools {
 
                 default:
                     throw new Exception(string.Format(AppStrings.Arguments_SharedUnsupported, shared.EntryType));
+            }
+        }
+
+        private static async Task<ArgumentHandleResult> ProcessSharedById(string id) {
+            SharedEntry shared;
+            using (var waiting = new WaitingDialog()) {
+                waiting.Report(ControlsStrings.Common_Loading);
+                shared = await SharingHelper.GetSharedAsync(id, waiting.CancellationToken);
+            }
+            return await ProcessSharedEntry(shared);
+        }
+
+        private static SharedEntryType GuessEntryType(string data) {
+            data = data.TrimStart();
+            if (data.StartsWith(@"{")) {
+                if (data.Contains(@"""StabilityControl"":")) return SharedEntryType.AssistsSetupPreset;
+                if (data.Contains(@"""AudioData"":")) return SharedEntryType.AudioSettingsPreset;
+                if (data.Contains(@"""SoftwareDownsize"":")) return SharedEntryType.CustomPreviewsPreset;
+                if (data.Contains(@"""CubemapReflectionMapSize"":")) return SharedEntryType.CustomShowroomPreset;
+                if (data.Contains(@"""ModeData"":")) return SharedEntryType.QuickDrivePreset;
+                if (data.Contains(@"""AiLevelArrangeReverse"":")) return SharedEntryType.RaceGridPreset;
+                if (data.Contains(@"""VideoData"":")) return SharedEntryType.VideoSettingsPreset;
+                if (data.Contains(@"""s"":") && data.Contains(@"""t"":") && data.Contains(@"""r"":")) return SharedEntryType.TrackStatePreset;
+
+                if (data.Contains("\"AmbientShadowDiffusion\":")) return SharedEntryType.AmbientShadowsPreset;
+                if (data.Contains("\"ShadowBiasCullBack\":")) return SharedEntryType.BakedShadowsPreset;
+                if (data.Contains("\"PythonData\":")) return SharedEntryType.InGameAppsPreset;
+                if (data.Contains("\"PackIntoSingle\":")) return SharedEntryType.PackServerPreset;
+                if (data.Contains("\"DisableSweetFx\":")) return SharedEntryType.AcPreviewsPreset;
+                if (data.Contains("\"DisableWatermark\":")) return SharedEntryType.AcShowroomPreset;
+                if (data.Contains("\"TyresShortName\":")) return SharedEntryType.TyresGenerationExamplesPreset;
+                if (data.Contains("\"SeparateNetworks\":")) return SharedEntryType.TyresGenerationParamsPreset;
+            } else if (data.StartsWith("<RealHeadMotion>")) {
+                return SharedEntryType.RhmPreset;
+            } else if (data.StartsWith(@"[") && Regex.IsMatch(data, @"\[[A-Z_]+:[A-Z_]+\]")) {
+                return SharedEntryType.CspSettings;
+            }
+            Logging.Warning(data);
+            throw new Exception("Failed to determine CM preset type");
+        }
+
+        private static async Task<ArgumentHandleResult> ProcessSharedFile(string filename) {
+            try {
+                var data = await FileUtils.ReadAllTextAsync(filename);
+                return await ProcessSharedEntry(new SharedEntry {
+                    EntryType = GuessEntryType(data),
+                    Name = Path.GetFileNameWithoutExtension(filename),
+                    Data = Encoding.UTF8.GetBytes(data),
+                    LocalSource = filename
+                });
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t load CM preset", e);
+                return ArgumentHandleResult.Failed;
             }
         }
 
@@ -393,7 +440,8 @@ namespace AcManager.Tools {
             switch (result) {
                 case Choise.Save:
                 case Choise.ApplyAndSave:
-                    var filename = PpFiltersManager.Instance.Directories.GetLocation(PpFiltersManager.Instance.Directories.GetUniqueId(shared.GetFileName()), true);
+                    var filename = PpFiltersManager.Instance.Directories.GetLocation(PpFiltersManager.Instance.Directories.GetUniqueId(shared.GetFileName()),
+                            true);
                     Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                     File.WriteAllBytes(filename, data);
                     if (result == Choise.ApplyAndSave) {

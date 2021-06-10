@@ -119,6 +119,12 @@
           <Label Content="Enable World Sim Series" />
         </CheckBox>
 
+        <TextBlock Text="RaceU:" Style="{StaticResource SettingsPanel.Heading2}" />
+
+        <CheckBox IsChecked="{Binding Live.RaceUEnabled}">
+          <Label Content="Enable RaceU" />
+        </CheckBox>
+
         <!-- Real Head Motion -->
         <DockPanel set:Search.SubCategory="Real Head Motion:" Margin="0 20 0 8" Style="{x:Null}" set:Search.Keywords="real head motion;rhm">
           <TextBlock Text="Real Head Motion:" Style="{StaticResource Heading2}" />

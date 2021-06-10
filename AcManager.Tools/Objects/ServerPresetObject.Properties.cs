@@ -13,6 +13,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 using SharpCompress.Compressors;
@@ -995,7 +996,35 @@ namespace AcManager.Tools.Objects {
 
         #endregion
 
-        #region Advanced
+        #region Plugins
+        private bool _useCmPlugin;
+
+        public bool UseCmPlugin {
+            get => _useCmPlugin;
+            set => Apply(value, ref _useCmPlugin, () => {
+                if (Loaded) Changed = true;
+            });
+        }
+
+        public class PluginEntry : NotifyPropertyChanged {
+            private string _address;
+
+            public string Address {
+                get => _address;
+                set => Apply(value, ref _address);
+            }
+
+            private int? _udpPort;
+
+            public int? UdpPort {
+                get => _udpPort;
+                set {
+                    if (value == 0) value = null;
+                    Apply(value, ref _udpPort);
+                }
+            }
+        }
+
         private int? _pluginUdpPort;
 
         public int? PluginUdpPort {
@@ -1038,7 +1067,9 @@ namespace AcManager.Tools.Objects {
                 }
             }
         }
+        #endregion
 
+        #region Advanced
         private string _ftpHost;
 
         public string FtpHost {

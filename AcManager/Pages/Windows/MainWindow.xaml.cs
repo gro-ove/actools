@@ -209,22 +209,9 @@ namespace AcManager.Pages.Windows {
             ContentInstallationManager.Instance.TaskAdded += OnContentInstallationTaskAdded;
             UpdateDiscordRichPresence();
 
-            if (ValuesStorage.Contains("RaceU.CurrentLocation") || RaceUCheckAb()) {
-                RaceUGroup.IsShown = true;
-            }
-
 #if DEBUG
             // LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
 #endif
-        }
-
-        private static bool RaceUCheckAb() {
-            var steamId = SteamIdHelper.Instance.Value;
-            if (steamId == null) return false;
-
-            using (var algo = MD5.Create()) {
-                return BitConverter.ToInt32(algo.ComputeHash(Encoding.UTF8.GetBytes(steamId)), 0) % 10 < 4;
-            }
         }
 
         private static Uri _navigateOnOpen;
@@ -373,6 +360,17 @@ namespace AcManager.Pages.Windows {
             TrackTitanLink.IsShown = SettingsHolder.Live.TrackTitanEnabled;
             LiveGroup.IsShown = LiveGroup.Links.Any(x => x.IsShown);
             // ShortSurveyLink.IsShown = !Stored.Get<bool>("surveyHide").Value;
+
+            RaceUGroup.IsShown = SettingsHolder.Live.RaceUEnabled && (ValuesStorage.Contains("RaceU.CurrentLocation") || RaceUCheckAb());
+
+            bool RaceUCheckAb() {
+                var steamId = SteamIdHelper.Instance.Value;
+                if (steamId == null) return false;
+
+                using (var algo = MD5.Create()) {
+                    return BitConverter.ToInt32(algo.ComputeHash(Encoding.UTF8.GetBytes(steamId)), 0) % 10 < 4;
+                }
+            }
         }
 
         /// <summary>

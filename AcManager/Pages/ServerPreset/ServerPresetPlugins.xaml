@@ -1,0 +1,41 @@
+<UserControl x:Class="AcManager.Pages.ServerPreset.ServerPresetPlugins" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}" Background="Transparent">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <ScrollViewer>
+    <StackPanel Style="{StaticResource SettingsCompactPanel}">
+
+      <!--<CheckBox IsChecked="{Binding SelectedObject.UseCmPlugin}"
+          ToolTip="Using CM as server plugin allows to connect several other plugins at once and better track server state">
+        <Label Content="Use Content Manager as server plugin" />
+      </CheckBox>-->
+
+      <TextBlock Text="Server plugin:" Style="{StaticResource SettingsPanel.Heading2}" />
+      <DockPanel>
+        <Label Content="Address:" />
+        <mui:BetterTextBox Text="{Binding SelectedObject.PluginUdpAddress}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      </DockPanel>
+      <DockPanel>
+        <Label Content="Local port:" />
+        <mui:BetterTextBox Text="{Binding SelectedObject.PluginUdpPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
+            Maximum="65535" />
+      </DockPanel>
+      <DockPanel>
+        <Label Content="Auth:" />
+        <mui:BetterTextBox Text="{Binding SelectedObject.PluginAuthAddress}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      </DockPanel>
+
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

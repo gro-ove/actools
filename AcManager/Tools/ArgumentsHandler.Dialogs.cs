@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -27,11 +29,17 @@ namespace AcManager.Tools {
         /// <returns>User choise.</returns>
         private static Choise ShowDialog(SharedEntry shared, string additionalButton = null, bool saveable = true, bool applyable = true,
                 bool appliableWithoutSaving = true) {
-            var description = string.Format(AppStrings.Arguments_SharedMessage, shared.Name ?? AppStrings.Arguments_SharedMessage_EmptyValue,
-                    shared.EntryType == SharedEntryType.Weather
-                            ? AppStrings.Arguments_SharedMessage_Id : AppStrings.Arguments_SharedMessage_For,
-                    shared.Target ?? AppStrings.Arguments_SharedMessage_EmptyValue,
-                    shared.Author ?? AppStrings.Arguments_SharedMessage_EmptyValue);
+            if (shared.LocalSource != null && FileUtils.IsAffectedBy(shared.LocalSource, PresetsManager.Instance.RootDirectory)) {
+                saveable = false;
+            }
+
+            var description = shared.LocalSource != null
+                    ? string.Format(AppStrings.Arguments_SharedMessage_LocalSource, shared.Name ?? AppStrings.Arguments_SharedMessage_EmptyValue)
+                    : string.Format(AppStrings.Arguments_SharedMessage, shared.Name ?? AppStrings.Arguments_SharedMessage_EmptyValue,
+                            shared.EntryType == SharedEntryType.Weather
+                                    ? AppStrings.Arguments_SharedMessage_Id : AppStrings.Arguments_SharedMessage_For,
+                            shared.Target ?? AppStrings.Arguments_SharedMessage_EmptyValue,
+                            shared.Author ?? AppStrings.Arguments_SharedMessage_EmptyValue);
 
             var dlg = new ModernDialog {
                 Title = shared.EntryType.GetDescription().ToTitle(),

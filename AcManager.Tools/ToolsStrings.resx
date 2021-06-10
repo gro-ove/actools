@@ -1804,4 +1804,37 @@ Would you like to pack it before starting the server? But don’t forget to shar
   <data name="Online_LoadingActualInformation" xml:space="preserve">
       <value>Loading actual server information…</value>
   </data>
+  <data name="Common_CmPreset" xml:space="preserve">
+      <value>CM preset</value>
+  </data>
+  <data name="Shared_Results" xml:space="preserve">
+      <value>Results</value>
+  </data>
+  <data name="Shared_CspSettings" xml:space="preserve">
+      <value>Custom Shaders Patch settings</value>
+  </data>
+  <data name="Shared_AmbientShadowsPreset" xml:space="preserve">
+      <value>Ambient shadows preset</value>
+  </data>
+  <data name="Shared_BakedShadowsPreset" xml:space="preserve">
+      <value>Baked shadows preset</value>
+  </data>
+  <data name="Shared_InGameAppsPreset" xml:space="preserve">
+      <value>In-game apps preset</value>
+  </data>
+  <data name="Shared_PackServerPreset" xml:space="preserve">
+      <value>Server packing preset</value>
+  </data>
+  <data name="Shared_AcPreviewsPreset" xml:space="preserve">
+      <value>AC previews preset</value>
+  </data>
+  <data name="Shared_AcShowroomPreset" xml:space="preserve">
+      <value>AC showroom preset</value>
+  </data>
+  <data name="Shared_TyresGenerationExamplesPreset" xml:space="preserve">
+      <value>Tyres generation examples preset</value>
+  </data>
+  <data name="Shared_TyresGenerationParamsPreset" xml:space="preserve">
+      <value>Tyres generation params preset</value>
+  </data>
 </root>

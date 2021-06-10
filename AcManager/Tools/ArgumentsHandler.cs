@@ -263,6 +263,10 @@ namespace AcManager.Tools {
                 return ArgumentHandleResult.Successful;
             }
 
+            if (!isDirectory && filename.EndsWith(@".cmpreset", StringComparison.OrdinalIgnoreCase)) {
+                return await ProcessSharedFile(filename);
+            }
+
             if (!isDirectory && (filename.EndsWith(@".report", StringComparison.OrdinalIgnoreCase)
                     || filename.EndsWith(@".report-launch", StringComparison.OrdinalIgnoreCase))) {
                 CspReportUtils.Load(filename);

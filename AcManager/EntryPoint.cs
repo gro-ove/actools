@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
@@ -58,6 +59,12 @@ namespace AcManager {
                 Process.Start("https://www.microsoft.com/net/download/dotnet-framework-runtime/net452");
                 return;
             }
+
+            var profileDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AcTools Content Manager",
+                    "Temporary", "Profile");
+            Directory.CreateDirectory(profileDirectory);
+            ProfileOptimization.SetProfileRoot(profileDirectory);
+            ProfileOptimization.StartProfile("Startup.Profile");
 
             try {
                 MainReal(a);

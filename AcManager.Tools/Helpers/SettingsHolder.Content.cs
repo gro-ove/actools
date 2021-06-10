@@ -73,8 +73,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _mentionCmInPackedContent;
 
             public bool MentionCmInPackedContent {
-                get => _mentionCmInPackedContent ??
-                        (_mentionCmInPackedContent = ValuesStorage.Get("Settings.ContentSettings.MentionCmInPackedContent", true)).Value;
+                get => _mentionCmInPackedContent ?? (_mentionCmInPackedContent =
+                        ValuesStorage.Get("Settings.ContentSettings.MentionCmInPackedContent", true)).Value;
                 set {
                     if (Equals(value, _mentionCmInPackedContent)) return;
                     _mentionCmInPackedContent = value;
@@ -98,12 +98,8 @@ namespace AcManager.Tools.Helpers {
             private int? _loadingConcurrency;
 
             public int LoadingConcurrency {
-                get
-                        =>
-                                _loadingConcurrency
-                                        ?? (_loadingConcurrency =
-                                                ValuesStorage.Get("Settings.ContentSettings.LoadingConcurrency",
-                                                        BaseAcManagerNew.OptionAcObjectsLoadingConcurrency)).Value;
+                get => _loadingConcurrency ?? (_loadingConcurrency =
+                        ValuesStorage.Get("Settings.ContentSettings.LoadingConcurrency", BaseAcManagerNew.OptionAcObjectsLoadingConcurrency)).Value;
                 set {
                     value = value < 1 ? 1 : value;
                     if (Equals(value, _loadingConcurrency)) return;
@@ -165,7 +161,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _showCarPreviewInToolTips;
 
             public bool ShowCarPreviewInToolTips {
-                get => _showCarPreviewInToolTips ?? (_showCarPreviewInToolTips = ValuesStorage.Get("Settings.ContentSettings.ShowCarPreviewInToolTips", true)).Value;
+                get => _showCarPreviewInToolTips ?? (_showCarPreviewInToolTips =
+                        ValuesStorage.Get("Settings.ContentSettings.ShowCarPreviewInToolTips", true)).Value;
                 set {
                     if (Equals(value, _showCarPreviewInToolTips)) return;
                     _showCarPreviewInToolTips = value;

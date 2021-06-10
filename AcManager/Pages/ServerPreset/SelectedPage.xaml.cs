@@ -12,8 +12,8 @@ using System.Windows.Input;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Selected;
+using AcManager.Tools.AcPlugins.Extras;
 using AcManager.Tools.Filters.Testers;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
@@ -100,6 +100,12 @@ namespace AcManager.Pages.ServerPreset {
 
             public CarObject Car => Cars.FirstOrDefault();
 
+            [CanBeNull]
+            public ServerPresetObject.CmServerPlugin CmPlugin => SelectedObject.CmPlugin;
+
+            [CanBeNull]
+            public AcLeaderboard Leaderboard => CmPlugin?.Leaderboard;
+
             private int _maximumCapacity;
 
             public int MaximumCapacity {
@@ -147,9 +153,9 @@ namespace AcManager.Pages.ServerPreset {
 
             private IEnumerable<WrapperContentObject> Wrappers() {
                 return WrapperContentCars.SelectMany(x => x.Children)
-                                         .Concat(WrapperContentCars)
-                                         .Concat(WrapperContentTracks)
-                                         .Concat(WrapperContentWeather);
+                        .Concat(WrapperContentCars)
+                        .Concat(WrapperContentTracks)
+                        .Concat(WrapperContentWeather);
             }
 
             private void OnSaveWrapperContent(object sender, EventArgs eventArgs) {
@@ -501,14 +507,14 @@ namespace AcManager.Pages.ServerPreset {
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
-            if (SettingsHolder.Online.ServerPresetsFitInFewerTabs) {
+            /*if (SettingsHolder.Online.ServerPresetsFitInFewerTabs) {
                 Tab.Links.Remove(MainBasicLink);
                 Tab.Links.Remove(AssistsLink);
                 Tab.Links.Remove(ConditionsLink);
                 Tab.Links.Remove(SessionsLink);
             } else {
                 Tab.Links.Remove(MainCombinedLink);
-            }
+            }*/
 
             SetModel();
             InitializeComponent();
@@ -541,6 +547,7 @@ namespace AcManager.Pages.ServerPreset {
             _model?.Unload();
             _object.SubscribeWeak(OnServerPropertyChanged);
             RunningLogLink.IsShown = _object.RunningLog != null;
+            RunningStatusLink.IsShown = _object.CmPlugin != null;
             InitializeAcObjectPage(_model = new ViewModel(_object, _track, _cars));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
@@ -549,17 +556,9 @@ namespace AcManager.Pages.ServerPreset {
                 new InputBinding(_model.PackOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift))
             });
 
-            foreach (
-                    var binding in
-                            Enumerable.Range(0, 8).Select(
-                                    i =>
-                                            new InputBinding(
-                                                    new DelegateCommand(
-                                                            () => {
-                                                                Tab.SelectedSource = Tab.Links.ApartFrom(RunningLogLink).ElementAtOrDefault(i)?.Source
-                                                                        ?? Tab.SelectedSource;
-                                                            }),
-                                                    new KeyGesture(Key.F1 + i, ModifierKeys.Alt | ModifierKeys.Control)))) {
+            foreach (var binding in Enumerable.Range(0, 8).Select(i => new InputBinding(new DelegateCommand(() =>
+                    Tab.SelectedSource = Tab.Links.ApartFrom(RunningLogLink, RunningStatusLink).ElementAtOrDefault(i)?.Source ?? Tab.SelectedSource),
+                    new KeyGesture(Key.F1 + i, ModifierKeys.Alt | ModifierKeys.Control)))) {
                 InputBindings.Add(binding);
             }
         }
@@ -568,6 +567,10 @@ namespace AcManager.Pages.ServerPreset {
             switch (e.PropertyName) {
                 case nameof(ServerPresetObject.RunningLog):
                     RunningLogLink.IsShown = _object.RunningLog != null;
+                    _widthCondition?.UpdateAfterRender();
+                    break;
+                case nameof(ServerPresetObject.CmPlugin):
+                    RunningStatusLink.IsShown = _object.CmPlugin != null;
                     _widthCondition?.UpdateAfterRender();
                     break;
             }

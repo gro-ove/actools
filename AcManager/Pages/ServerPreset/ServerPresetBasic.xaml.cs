@@ -2,7 +2,6 @@
 using System.Windows;
 using AcManager.Controls;
 using AcManager.Tools.Data;
-using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -14,9 +13,9 @@ namespace AcManager.Pages.ServerPreset {
         public ServerPresetBasic() {
             InitializeComponent();
             CspVersionAutoFill.IsEnabled = PatchHelper.IsFeatureSupported(PatchHelper.FeatureTestOnline);
-            if (SettingsHolder.Online.ServerPresetsFitInFewerTabs) {
+            /*if (SettingsHolder.Online.ServerPresetsFitInFewerTabs) {
                 WelcomeMessageTextArea.Height = 80;
-            }
+            }*/
         }
 
         private void CspVersionAutoFillClick(object sender, RoutedEventArgs e) {

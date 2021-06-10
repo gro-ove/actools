@@ -6,9 +6,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.AcPlugins;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
@@ -357,6 +357,42 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _inviteCommand);
         }
 
+        public enum LogMessageType {
+            Debug = '…',
+            Message = '>',
+            Warning = '‽',
+            Error = '▲',
+            Info = '→'
+        }
+
+        [CanBeNull]
+        private string GetServerLogFilename() {
+            if (!SettingsHolder.Online.ServerLogsSave) {
+                return null;
+            }
+
+            var name = FileUtils.EnsureFileNameIsValid($"{Name ?? "server"}_{DateTime.Now:yyMMdd_HHmmss}.log", true);
+            var directory = string.IsNullOrWhiteSpace(SettingsHolder.Online.ServerLogsDirectory)
+                    ? FilesStorage.Instance.GetTemporaryDirectory("Server Logs")
+                    : SettingsHolder.Online.ServerLogsDirectory;
+            var keepLogsFor = SettingsHolder.Online.ServerKeepLogsDuration.TimeSpan;
+            if (keepLogsFor > TimeSpan.Zero) {
+                Task.Run(() => {
+                    try {
+                        var files = new DirectoryInfo(directory).GetFiles("*.log")
+                                .Where(x => DateTime.Now - x.LastWriteTime > keepLogsFor).Select(x => x.FullName).ToArray();
+                        if (files.Length > 0) {
+                            Logging.Debug("Removing old log files: " + files.JoinToString("\n\t"));
+                            FileUtils.Recycle(files);
+                        }
+                    } catch (Exception e) {
+                        Logging.Warning(e);
+                    }
+                }).Ignore();
+            }
+            return FileUtils.EnsureUnique(Path.Combine(directory, name));
+        }
+
         /// <summary>
         /// Start server (all stdout stuff will end up in RunningLog).
         /// </summary>
@@ -406,12 +442,33 @@ namespace AcManager.Tools.Objects {
             }
 
             var log = new BetterObservableCollection<string>();
+            var logFilename = GetServerLogFilename();
+
+            void LogAction(LogMessageType type, string msg) {
+                ActionExtension.InvokeInMainThreadAsync(() => {
+                    if (msg == null) return;
+                    if (type == LogMessageType.Message && msg.StartsWith(@"Warning", StringComparison.OrdinalIgnoreCase)) {
+                        type = LogMessageType.Warning;
+                    }
+
+                    var t = DateTime.Now;
+                    var prepared = $@"{t.Hour:D2}:{t.Minute:D2}:{t.Second:D2}.{t.Millisecond:D3}: {(char)type} {msg.Replace("\n", "\n  ")}";
+                    log.Add(prepared);
+
+                    if (logFilename != null) {
+                        using (var writer = new StreamWriter(logFilename, true)) {
+                            writer.WriteLine(SettingsHolder.Online.ServerLogsCmFormat ? prepared : msg);
+                        }
+                    }
+                });
+            }
+
             RunningLog = log;
 
             if (ProvideDetails && DetailsMode == ServerPresetDetailsMode.ViaWrapper) {
-                await RunWrapper(serverExecutable, log, progress, cancellation);
+                await RunWrapper(serverExecutable, LogAction, progress, cancellation);
             } else {
-                await RunAcServer(serverExecutable, log, progress, cancellation);
+                await RunAcServer(serverExecutable, LogAction, progress, cancellation);
             }
         }
 
@@ -455,7 +512,7 @@ namespace AcManager.Tools.Objects {
             return (await CmApiProvider.GetStaticDataAsync("ac_server_wrapper-linux-x64", TimeSpan.Zero, cancellation: cancellation))?.Item1;
         }
 
-        private async Task RunWrapper(string serverExecutable, ICollection<string> log, [CanBeNull] IProgress<AsyncProgressEntry> progress,
+        private async Task RunWrapper(string serverExecutable, Action<LogMessageType, string> log, [CanBeNull] IProgress<AsyncProgressEntry> progress,
                 CancellationToken cancellation) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Loading wrapper…"));
             var wrapperFilename = await LoadWinWrapper(cancellation);
@@ -492,14 +549,14 @@ namespace AcManager.Tools.Objects {
                     process.OutputDataReceived += (sender, args) => {
                         if (!string.IsNullOrWhiteSpace(args.Data)) {
                             writer.WriteLine(args.Data);
-                            ActionExtension.InvokeInMainThread(() => log.Add(Regex.Replace(args.Data, @"\b(WARNING: .+)", @"[color=#ff8800]$1[/color]")));
+                            log(LogMessageType.Message, args.Data);
                         }
                     };
 
                     process.ErrorDataReceived += (sender, args) => {
                         if (!string.IsNullOrWhiteSpace(args.Data)) {
                             writer.WriteLine(args.Data);
-                            ActionExtension.InvokeInMainThread(() => log.Add($@"[color=#ff0000]{args.Data}[/color]"));
+                            log(LogMessageType.Error, args.Data);
                         }
                     };
 
@@ -508,14 +565,25 @@ namespace AcManager.Tools.Objects {
                         process.Kill();
                     }
 
-                    log.Add($@"[CM] Stopped: {process.ExitCode}");
+                    log(LogMessageType.Info, $"Stopped: {process.ExitCode}");
                 }
             } finally {
                 SetRunning(null);
             }
         }
 
-        private async Task RunAcServer(string serverExecutable, ICollection<string> log, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+        private AcServerPluginManager _pluginManager;
+
+        private CmServerPlugin _cmPlugin;
+
+        [CanBeNull]
+        public CmServerPlugin CmPlugin {
+            get => _cmPlugin;
+            set => Apply(value, ref _cmPlugin);
+        }
+
+        private async Task RunAcServer(string serverExecutable, Action<LogMessageType, string> log, IProgress<AsyncProgressEntry> progress,
+                CancellationToken cancellation) {
             Process process = null;
             try {
                 process = new Process {
@@ -537,22 +605,30 @@ namespace AcManager.Tools.Objects {
                 ChildProcessTracker.AddProcess(process);
                 progress?.Report(AsyncProgressEntry.Finished);
 
+                if (UseCmPlugin) {
+                    DisposeHelper.Dispose(ref _pluginManager);
+                    _pluginManager = new AcServerPluginManager(new AcServerPluginManagerSettings(this) { LogServerRequests = false });
+                    _pluginManager.AddPlugin(CmPlugin = new CmServerPlugin(log, Capacity));
+                }
+
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
-                process.OutputDataReceived += (sender, args) => ActionExtension.InvokeInMainThread(() => log.Add(args.Data));
-                process.ErrorDataReceived += (sender, args) => ActionExtension.InvokeInMainThread(() => log.Add($@"[color=#ff0000]{args.Data}[/color]"));
+                process.OutputDataReceived += (sender, args) => log(LogMessageType.Message, args.Data);
+                process.ErrorDataReceived += (sender, args) => log(LogMessageType.Error, args.Data);
 
                 await process.WaitForExitAsync(cancellation);
                 if (!process.HasExitedSafe()) {
                     process.Kill();
                 }
 
-                log.Add($@"[color=#00ff00][CM] Stopped: {process.ExitCode}[/color]");
+                log(LogMessageType.Info, $"Stopped: {process.ExitCode}");
             } catch (TaskCanceledException) {
                 StopServer();
             } finally {
                 SetRunning(null);
                 process?.Dispose();
+                CmPlugin = null;
+                DisposeHelper.Dispose(ref _pluginManager);
             }
         }
 

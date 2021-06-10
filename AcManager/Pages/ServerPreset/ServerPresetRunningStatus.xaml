@@ -1,0 +1,71 @@
+<UserControl x:Class="AcManager.Pages.ServerPreset.ServerPresetRunningStatus" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:extras="clr-namespace:AcManager.Tools.AcPlugins.Extras;assembly=AcManager.Tools"
+    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/OnlineSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
+      <DataTemplate x:Key="DataGridCell.Name" DataType="{x:Type extras:AcDriverLeaderboardDetails}">
+        <TextBlock Text="{Binding Driver.DriverName}" />
+      </DataTemplate>
+      <DataTemplate x:Key="DataGridCell.CarName" DataType="{x:Type extras:AcDriverLeaderboardDetails}">
+        <TextBlock Text="{Binding Driver.CarName}" />
+      </DataTemplate>
+      <DataTemplate x:Key="DataGridCell.Laps" DataType="{x:Type extras:AcDriverLeaderboardDetails}">
+        <TextBlock Text="{Binding TotalLaps}" />
+      </DataTemplate>
+
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <DockPanel>
+    <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="20" DockPanel.Dock="Top" Margin="0 0 0 20">
+
+      <DataGrid ItemsSource="{Binding Leaderboard.Leaderboard}" Style="{StaticResource DataGrid.Lite}">
+        <DataGrid.Columns>
+          <DataGridTemplateColumn Width="90" Header="Name" SortMemberPath="Driver.DriverName" CellTemplate="{StaticResource DataGridCell.Name}" />
+          <DataGridTemplateColumn Width="90" Header="Car" SortMemberPath="Driver.CarName" CellTemplate="{StaticResource DataGridCell.CarName}" />
+          <DataGridTemplateColumn Width="90" Header="Laps" SortMemberPath="TotalLaps" CellTemplate="{StaticResource DataGridCell.Laps}" />
+        </DataGrid.Columns>
+        <DataGrid.RowDetailsTemplate>
+          <DataTemplate DataType="{x:Type extras:AcDriverLeaderboardDetails}">
+            <c:PropertiesGrid Margin="20 4 8 8">
+              <mui:SelectableBbCodeBlock c:PropertiesGrid.Label="GUID" Text="{Binding Driver.Guid}" />
+            </c:PropertiesGrid>
+          </DataTemplate>
+        </DataGrid.RowDetailsTemplate>
+      </DataGrid>
+
+      <mui:Cell>
+        <mui:BetterImage x:Name="TrackMap" Filename="{Binding Track.MapImage}" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#44000000" />
+        <mui:Cell x:Name="TrackMapItems" Width="{Binding ActualWidth, ElementName=TrackMap}" Height="{Binding ActualHeight, ElementName=TrackMap}"
+            HorizontalAlignment="Center" VerticalAlignment="Center" SizeChanged="OnTrackMapSizeChanged" Background="Transparent" />
+      </mui:Cell>
+
+    </mui:SpacingUniformGrid>
+
+    <DockPanel DataContext="{Binding CmPlugin.Chat}">
+      <DockPanel DockPanel.Dock="Bottom" Margin="0 4 0 0">
+        <mui:AsyncButton Command="{Binding SendChatCommand}" Content="Send" DockPanel.Dock="Right" Margin="4 0 0 0" />
+        <mui:BetterTextBox Text="{Binding ChatText, UpdateSourceTrigger=PropertyChanged}" Placeholder="Write chat message…" />
+      </DockPanel>
+      <ItemsControl ItemsSource="{Binding ChatMessages}" Style="{StaticResource VirtualizingItemsControl}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <DockPanel>
+              <TextBlock Text="{Binding Author}" DockPanel.Dock="Top" Style="{StaticResource Small}" FontWeight="Bold" Margin="0 0 0 2" />
+              <mui:SelectableBbCodeBlock Mode="WithoutBbCodes" Text="{Binding Message}" Margin="0 0 0 8" />
+            </DockPanel>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </DockPanel>
+
+  </DockPanel>
+</UserControl>

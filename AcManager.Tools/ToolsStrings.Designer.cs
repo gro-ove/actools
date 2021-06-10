@@ -24,7 +24,7 @@ namespace AcManager.Tools {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ToolsStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Tools {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -1641,6 +1641,15 @@ namespace AcManager.Tools {
         public static string Common_CarIdIsMissing {
             get {
                 return ResourceManager.GetString("Common_CarIdIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CM preset.
+        /// </summary>
+        public static string Common_CmPreset {
+            get {
+                return ResourceManager.GetString("Common_CmPreset", resourceCulture);
             }
         }
         
@@ -4167,6 +4176,33 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AC previews preset.
+        /// </summary>
+        public static string Shared_AcPreviewsPreset {
+            get {
+                return ResourceManager.GetString("Shared_AcPreviewsPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AC showroom preset.
+        /// </summary>
+        public static string Shared_AcShowroomPreset {
+            get {
+                return ResourceManager.GetString("Shared_AcShowroomPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ambient shadows preset.
+        /// </summary>
+        public static string Shared_AmbientShadowsPreset {
+            get {
+                return ResourceManager.GetString("Shared_AmbientShadowsPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Assists preset.
         /// </summary>
         public static string Shared_AssistsSetupPreset {
@@ -4185,6 +4221,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Baked shadows preset.
+        /// </summary>
+        public static string Shared_BakedShadowsPreset {
+            get {
+                return ResourceManager.GetString("Shared_BakedShadowsPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Car setup.
         /// </summary>
         public static string Shared_CarSetup {
@@ -4199,6 +4244,15 @@ namespace AcManager.Tools {
         public static string Shared_ControlsPreset {
             get {
                 return ResourceManager.GetString("Shared_ControlsPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Shaders Patch settings.
+        /// </summary>
+        public static string Shared_CspSettings {
+            get {
+                return ResourceManager.GetString("Shared_CspSettings", resourceCulture);
             }
         }
         
@@ -4226,6 +4280,24 @@ namespace AcManager.Tools {
         public static string Shared_ForceFeedbackPreset {
             get {
                 return ResourceManager.GetString("Shared_ForceFeedbackPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In-game apps preset.
+        /// </summary>
+        public static string Shared_InGameAppsPreset {
+            get {
+                return ResourceManager.GetString("Shared_InGameAppsPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server packing preset.
+        /// </summary>
+        public static string Shared_PackServerPreset {
+            get {
+                return ResourceManager.GetString("Shared_PackServerPreset", resourceCulture);
             }
         }
         
@@ -4266,6 +4338,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Results.
+        /// </summary>
+        public static string Shared_Results {
+            get {
+                return ResourceManager.GetString("Shared_Results", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Real Head Motion preset.
         /// </summary>
         public static string Shared_RhmPreset {
@@ -4280,6 +4361,24 @@ namespace AcManager.Tools {
         public static string Shared_TrackStatePreset {
             get {
                 return ResourceManager.GetString("Shared_TrackStatePreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tyres generation examples preset.
+        /// </summary>
+        public static string Shared_TyresGenerationExamplesPreset {
+            get {
+                return ResourceManager.GetString("Shared_TyresGenerationExamplesPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tyres generation params preset.
+        /// </summary>
+        public static string Shared_TyresGenerationParamsPreset {
+            get {
+                return ResourceManager.GetString("Shared_TyresGenerationParamsPreset", resourceCulture);
             }
         }
         

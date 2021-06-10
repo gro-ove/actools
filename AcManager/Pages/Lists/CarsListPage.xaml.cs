@@ -23,6 +23,8 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
+using AcTools;
+using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
@@ -98,6 +100,7 @@ namespace AcManager.Pages.Lists {
                 BatchAction_FixCarClass.Instance,
                 BatchAction_RecalculateCurves.Instance,
                 BatchAction_SortAndCleanUpTags.Instance,
+                BatchAction_RecalculateWeight.Instance,
                 BatchAction_UpdatePwRatio.Instance,
                 BatchAction_FixSpecsFormat.Instance,
                 BatchAction_SetBrandBadge.Instance,
@@ -459,6 +462,29 @@ namespace AcManager.Pages.Lists {
                 } else if (CleanUpTags) {
                     obj.TagsCleanUpCommand.Execute();
                 }
+            }
+        }
+
+        public class BatchAction_RecalculateWeight : BatchAction<CarObject> {
+            public static readonly BatchAction_RecalculateWeight Instance = new BatchAction_RecalculateWeight();
+
+            public BatchAction_RecalculateWeight()
+                    : base("Recalculate weight", "Recalculate car weight based on data", "UI", null) {
+                DisplayApply = "Recalculate";
+            }
+
+            public override bool IsAvailable(CarObject obj) {
+                return true;
+            }
+
+            protected override void ApplyOverride(CarObject obj) {
+                var data = obj.AcdData;
+                var weight = data?.GetIniFile("car.ini")["BASIC"].GetInt("TOTALMASS", 0);
+                if (weight == null || data.IsEmpty || weight < CommonAcConsts.DriverWeight) {
+                    return;
+                }
+                obj.SpecsWeight = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Weight_FormatTooltip,
+                        (weight.Value - CommonAcConsts.DriverWeight).ToString(@"F0", CultureInfo.InvariantCulture));
             }
         }
 

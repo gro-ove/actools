@@ -72,7 +72,6 @@ namespace AcManager.Tools.AcPlugins {
         #endregion
 
         public AcServerPluginManager([NotNull] AcServerPluginManagerSettings settings) {
-            Logging.Warning($"New manager created (manager: {GetHashCode()}, cars dict.: {_carUsedByDictionary.GetHashCode()})");
             _settings = settings;
             _currentSession.MaxClients = settings.Capacity;
 

@@ -4897,4 +4897,8 @@ anyway while it’s waiting for disk to get the data, and there will much less d
     <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
         <value>No active downloads</value>
     </data>
+    <data name="Arguments_SharedMessage_LocalSource" xml:space="preserve">
+        <value>Name: [b]{0}[/b]</value>
+        <comment>Shown when .cmpreset files are being opened</comment>
+    </data>
 </root>

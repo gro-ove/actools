@@ -399,7 +399,7 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _serverPresetsFitInFewerTabs;
+            /*private bool? _serverPresetsFitInFewerTabs;
 
             public bool ServerPresetsFitInFewerTabs {
                 get => _serverPresetsFitInFewerTabs ??
@@ -408,6 +408,70 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _serverPresetsFitInFewerTabs)) return;
                     _serverPresetsFitInFewerTabs = value;
                     ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsFitInFewerTabs", value);
+                    OnPropertyChanged();
+                }
+            }*/
+
+            private bool? _serverLogsSave;
+
+            public bool ServerLogsSave {
+                get => _serverLogsSave ?? (_serverLogsSave = ValuesStorage.Get("Settings.OnlineSettings.ServerLogsSave", true)).Value;
+                set {
+                    if (Equals(value, _serverLogsSave)) return;
+                    _serverLogsSave = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerLogsSave", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _serverLogsCmFormat;
+
+            public bool ServerLogsCmFormat {
+                get => _serverLogsCmFormat ?? (_serverLogsCmFormat = ValuesStorage.Get("Settings.OnlineSettings.ServerLogsCmFormat", false)).Value;
+                set {
+                    if (Equals(value, _serverLogsCmFormat)) return;
+                    _serverLogsCmFormat = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerLogsCmFormat", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _serverLogsDirectory;
+
+            public string ServerLogsDirectory {
+                get => _serverLogsDirectory ?? (_serverLogsDirectory = ValuesStorage.Get("Settings.OnlineSettings.ServerLogsDirectory", ""));
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _serverLogsDirectory)) return;
+                    _serverLogsDirectory = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerLogsDirectory", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private DelayEntry[] _serverKeepLogsDurations;
+
+            public DelayEntry[] ServerKeepLogsDurations => _serverKeepLogsDurations ?? (_serverKeepLogsDurations = new[] {
+                new DelayEntry(TimeSpan.FromDays(3)),
+                new DelayEntry(TimeSpan.FromDays(7)),
+                new DelayEntry(TimeSpan.FromDays(14)),
+                new DelayEntry(TimeSpan.FromDays(30)),
+                new DelayEntry(TimeSpan.FromDays(60)),
+                new DelayEntry(TimeSpan.FromDays(356))
+            });
+
+            private DelayEntry _serverKeepLogsDuration;
+
+            public DelayEntry ServerKeepLogsDuration {
+                get {
+                    var saved = ValuesStorage.Get<TimeSpan?>("Settings.OnlineSettings.ServerKeepLogsDuration");
+                    return _serverKeepLogsDuration ?? (_serverKeepLogsDuration = ServerKeepLogsDurations.FirstOrDefault(x => x.TimeSpan == saved) ??
+                            ServerKeepLogsDurations.ElementAt(2));
+                }
+                set {
+                    if (Equals(value, _serverKeepLogsDuration)) return;
+                    _serverKeepLogsDuration = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerKeepLogsDuration", value.TimeSpan);
                     OnPropertyChanged();
                 }
             }

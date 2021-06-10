@@ -67,6 +67,26 @@ namespace AcManager.Pages.Settings {
             public DelegateCommand OpenServerPresetsDirectoryCommand => _openServerPresetsDirectoryCommand
                     ?? (_openServerPresetsDirectoryCommand = new DelegateCommand(() => WindowsHelper.ViewDirectory(Online.ServerPresetsDirectory)));
 
+            private DelegateCommand _changeServerLogsDirectoryCommand;
+
+            public DelegateCommand ChangeServerLogsDirectoryCommand
+                => _changeServerLogsDirectoryCommand ?? (_changeServerLogsDirectoryCommand = new DelegateCommand(() => {
+                    var dialog = new FolderBrowserDialog {
+                        ShowNewFolderButton = true,
+                        Description = "Pick a new folder to store server logs in",
+                        SelectedPath = Online.ServerLogsDirectory
+                    };
+
+                    if (dialog.ShowDialog() == DialogResult.OK) {
+                        Online.ServerLogsDirectory = dialog.SelectedPath;
+                    }
+                }));
+
+            private DelegateCommand _openServerLogsDirectoryCommand;
+
+            public DelegateCommand OpenServerLogsDirectoryCommand => _openServerLogsDirectoryCommand
+                    ?? (_openServerLogsDirectoryCommand = new DelegateCommand(() => WindowsHelper.ViewDirectory(Online.ServerPresetsDirectory)));
+
             public ViewModel() {
                 NetworkInterfaces = NetworkInterface.GetAllNetworkInterfaces().Where(
                         x => x.GetIPProperties().UnicastAddresses.Any(y => y.Address.AddressFamily == AddressFamily.InterNetwork)).ToList();

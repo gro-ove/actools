@@ -174,13 +174,31 @@
           <Button Command="{Binding OpenServerPresetsDirectoryCommand}" Content="{x:Static g:AppStrings.Settings_General_Open}" />
           <mui:PathTrimmingTextBlock Text="{Binding Online.ServerPresetsDirectory, Mode=OneTime}" />
         </DockPanel>
+        <CheckBox IsChecked="{Binding Online.ServerLogsSave}" mui:LimitedService.Limited="True">
+          <Label Content="Write server logs in files" />
+        </CheckBox>
+        <CheckBox IsChecked="{Binding Online.ServerLogsCmFormat}" IsEnabled="{Binding Online.ServerLogsSave}" mui:LimitedService.Limited="True"
+            ToolTip="CM format means each line would also get a prefix with time and message type">
+          <Label Content="Use CM format for logs" />
+        </CheckBox>
+        <DockPanel IsEnabled="{Binding Online.ServerLogsSave}">
+          <Label Content="Logs folder" />
+          <Button Command="{Binding ChangeServerLogsDirectoryCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
+          <Button Command="{Binding OpenServerLogsDirectoryCommand}" Content="{x:Static g:AppStrings.Settings_General_Open}" />
+          <mui:PathTrimmingTextBlock Text="{Binding Online.ServerLogsDirectory, Mode=OneTime}" />
+        </DockPanel>
+        <DockPanel IsEnabled="{Binding Online.ServerLogsSave}">
+          <Label Content="Keep old logs for" />
+          <mui:BetterComboBox ItemsSource="{Binding Online.ServerKeepLogsDurations}" SelectedItem="{Binding Online.ServerKeepLogsDuration}" DisplayMemberPath="DisplayName"
+              IsEditable="False" mui:LimitedService.Limited="True" />
+        </DockPanel>
         <CheckBox IsChecked="{Binding Online.ServerPresetsUpdateDataAutomatically}" mui:LimitedService.Limited="True">
           <Label Content="Update server’s data automatically before starting server" />
         </CheckBox>
-        <CheckBox IsChecked="{Binding Online.ServerPresetsFitInFewerTabs}" mui:LimitedService.Limited="True"
+        <!--<CheckBox IsChecked="{Binding Online.ServerPresetsFitInFewerTabs}" mui:LimitedService.Limited="True"
             ToolTip="You might want to enable this option if you run Content Manager fullscreen. Also, just in case, shortcuts Alt+F1…Alt+F5 allow you to switch between those tabs quickly.">
           <Label Content="Combine together main, assists, conditions and sessions tabs" />
-        </CheckBox>
+        </CheckBox>-->
       </StackPanel>
 
     </mui:SpacingUniformGrid>

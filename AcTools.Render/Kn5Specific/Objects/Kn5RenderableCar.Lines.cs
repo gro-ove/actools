@@ -466,7 +466,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         [NotNull]
-        public string CarId => Path.GetFileName(RootDirectory) ?? "-";
+        public string CarId => Path.GetFileName(RootDirectory);
         #endregion
 
         #region Colliders from colliders.ini
@@ -560,7 +560,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private readonly CarDebugLinesWrapper _flamesLines = new CarDebugLinesWrapper((car, data) => {
             return data.GetFlames().Select(x => {
                 var renderable = DebugLinesObject.GetLinesArrow(
-                        Matrix.LookAtLH(Vector3.Zero, x.Direction, Math.Abs(x.Direction.Y) > 0.9 ? -Vector3.UnitZ : -Vector3.UnitY)
+                        Matrix.LookAtLH(Vector3.Zero, x.Direction, Math.Abs(x.Direction.Y) > 0.9 ? Vector3.UnitZ : Vector3.UnitY)
                                 * Matrix.Translation(x.Position), Vector3.UnitZ,
                         new Color4(1f, 1f, 0f, 0f));
                 return new CarDebugLinesObject(x.Name, renderable) {

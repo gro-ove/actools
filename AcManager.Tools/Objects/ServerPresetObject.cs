@@ -202,6 +202,7 @@ namespace AcManager.Tools.Objects {
             BlacklistMode = section.GetBool("BLACKLIST_MODE", true);
             MaxCollisionsPerKm = section.GetInt("MAX_CONTACTS_PER_KM", -1);
 
+            UseCmPlugin = section.GetBool("__CM_PLUGIN", false);
             PluginUdpPort = section.GetIntNullable("UDP_PLUGIN_LOCAL_PORT");
             PluginUdpAddress = section.GetNonEmpty("UDP_PLUGIN_ADDRESS");
             PluginAuthAddress = section.GetNonEmpty("AUTH_PLUGIN_ADDRESS");
@@ -339,6 +340,7 @@ namespace AcManager.Tools.Objects {
                 section.Remove("WELCOME_MESSAGE");
             }
 
+            section.Set("__CM_PLUGIN", UseCmPlugin);
             section.Set("UDP_PLUGIN_LOCAL_PORT", PluginUdpPort);
             section.Set("UDP_PLUGIN_ADDRESS", PluginUdpAddress);
             section.Set("AUTH_PLUGIN_ADDRESS", PluginAuthAddress);

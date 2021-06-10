@@ -1,20 +1,15 @@
 ﻿<UserControl x:Class="AcManager.Pages.ServerPreset.ServerPresetRunningLog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/TextEditor.xaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </UserControl.Resources>
-
-  <ListBox ItemsSource="{Binding SelectedObject.RunningLog}" Style="{StaticResource VirtualizingListBox}" TextBlock.FontSize="11">
-    <ListBox.ItemTemplate>
-      <DataTemplate>
-        <mui:SelectableBbCodeBlock Text="{Binding Mode=OneWay}" FontWeight="Normal" FontFamily="{StaticResource MonospaceFont}" />
-      </DataTemplate>
-    </ListBox.ItemTemplate>
-  </ListBox>
+  <ae:TextEditor x:Name="Text" IsReadOnly="True" ShowLineNumbers="False" WordWrap="True" Margin="0 0 0 8" />
 </UserControl>

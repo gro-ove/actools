@@ -6,10 +6,13 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
+using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
@@ -434,6 +437,17 @@ namespace AcManager.CustomShowroom {
 
         public void ImportFromPresetData(string data) {
             _saveable.FromSerializedString(data);
+        }
+
+        private ICommand _shareCommand;
+
+        public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
+
+        private async Task Share() {
+            var data = ExportToPresetData();
+            if (data == null) return;
+            await SharingUiHelper.ShareAsync(SharedEntryType.BakedShadowsPreset,
+                    Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(PresetableKey)), null, data);
         }
         #endregion
 

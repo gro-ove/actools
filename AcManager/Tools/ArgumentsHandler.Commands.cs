@@ -205,7 +205,7 @@ namespace AcManager.Tools {
                     case "shared":
                         var result = ArgumentHandleResult.Ignore;
                         foreach (var id in custom.Params.GetValues(@"id") ?? new string[0]) {
-                            result = await ProcessShared(id);
+                            result = await ProcessSharedById(id);
                         }
                         return result;
 
@@ -306,16 +306,6 @@ namespace AcManager.Tools {
                 }
 
                 var filename = FileUtils.GetTempFileName(Path.GetTempPath(), @".acreplay");
-
-                /*using (var archive = ZipFile.OpenRead(path)) {
-                    foreach (var entry in archive.Entries.Where(x => !string.Equals(x.Name, "ReadMe.txt", StringComparison.OrdinalIgnoreCase))) {
-                        await Task.Run(() => {
-                            entry.ExtractToFile(filename);
-                        });
-                        break;
-                    }
-                }*/
-
                 var archive = ZipArchive.Open(path);
                 var acreplay = archive.Entries.FirstOrDefault(
                         x => x.IsDirectory == false && !string.Equals(x.Key, @"ReadMe.txt", StringComparison.OrdinalIgnoreCase));

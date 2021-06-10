@@ -672,7 +672,7 @@ namespace AcManager.Tools.Objects {
                 }
 
                 yield return Add(textureNames.Select(x => $"skins/*/{x}"));
-                yield return Add("skins/*/livery.png", "skins/*/preview.jpg", "skins/*/ui_skin.json", "skins/*/cm_*.json");
+                yield return Add("skins/*/livery.png", "skins/*/preview.jpg", "skins/*/ui_skin.json", "skins/*/cm_*.json", "skins/*/ext_config.ini");
 
                 yield return Add("data.acd");
                 if (!Has("data.acd")) {

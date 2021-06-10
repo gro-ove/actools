@@ -641,6 +641,9 @@
       <DependentUpon>SelectedPythonAppPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ServerPreset\ServerPresetDriverEntryDraggableConverter.cs" />
+    <Compile Include="Pages\ServerPreset\ServerPresetPlugins.xaml.cs">
+      <DependentUpon>ServerPresetPlugins.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\ServerPreset\ServerPresetRunningLog.xaml.cs">
       <DependentUpon>ServerPresetRunningLog.xaml</DependentUpon>
     </Compile>
@@ -653,6 +656,9 @@
     <Compile Include="Pages\ServerPreset\SelectedPage.Details.cs" />
     <Compile Include="Pages\ServerPreset\ServerPresetCombined.xaml.cs">
       <DependentUpon>ServerPresetCombined.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ServerPreset\ServerPresetRunningStatus.xaml.cs">
+      <DependentUpon>ServerPresetRunningStatus.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ServerPreset\ServerPresetSessions.xaml.cs">
       <DependentUpon>ServerPresetSessions.xaml</DependentUpon>
@@ -1536,6 +1542,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\ServerPreset\ServerPresetPlugins.xaml" />
+    <Page Include="Pages\ServerPreset\ServerPresetRunningStatus.xaml" />
     <Page Include="Pages\ServerPreset\ServerPresetSpecific.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

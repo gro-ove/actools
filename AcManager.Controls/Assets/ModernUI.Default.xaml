@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    xmlns:s="clr-namespace:System;assembly=mscorlib">
   <!-- Default values for themes are taken from here. Feel free to override any of them. But you don’t have to override all. -->
   <!-- Special colors -->
   <Color x:Key="AccentColor">#1BA1E2</Color>
@@ -216,7 +216,7 @@
   <SolidColorBrush x:Key="TextEditorBackground">#202021</SolidColorBrush>
   <SolidColorBrush x:Key="TextEditorForeground">#ffffff</SolidColorBrush>
   <SolidColorBrush x:Key="TextEditorLineNumbersForeground">#717171</SolidColorBrush>
-  <system:String x:Key="TextEditorSyntaxIni"><![CDATA[
+  <s:String x:Key="TextEditorSyntaxIni"><![CDATA[
 		<SyntaxDefinition name="INI" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
 			<Color name="Section" foreground="#FCE94F" />
 			<Color name="Comment" foreground="#959A8F" />
@@ -237,5 +237,19 @@
 					([eE][+-]?[0-9]+)? # optional exponent
 				</Rule>
 			</RuleSet>
-		</SyntaxDefinition>]]></system:String>
+		</SyntaxDefinition>]]></s:String>
+  <s:String x:Key="TextEditorSyntaxLog"><![CDATA[
+		<SyntaxDefinition name="LOG" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+	    <Color name="Debug" foreground="#44AAFF" />
+	    <Color name="Warning" foreground="#FFFF44" />
+	    <Color name="Error" foreground="#FF4444" />
+	    <Color name="Info" foreground="#44FF44" />
+	    <RuleSet>
+		    <Span color="Debug" begin="…" />
+		    <Span color="Warning" begin="‽" />
+		    <Span color="Error" begin="▲" />
+		    <Span color="Info" begin="→" />
+        <Rule foreground="#888888">\b\d\d:\d\d:\d\d.\d\d\d:</Rule>
+	    </RuleSet>
+    </SyntaxDefinition>]]></s:String>
 </ResourceDictionary>

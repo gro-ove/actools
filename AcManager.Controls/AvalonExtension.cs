@@ -172,7 +172,7 @@ namespace AcManager.Controls {
         }
     }
 
-    internal static class HighlighterHolder {
+    public static class HighlighterHolder {
         [CanBeNull]
         public static IHighlightingDefinition Get(string data) {
             if (data == null) return null;

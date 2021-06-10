@@ -13,8 +13,10 @@
       </ResourceDictionary.MergedDictionaries>
       <CollectionViewSource x:Key="PackServerPresetsItems" Source="{Binding PackServerPresets}" />
       <system:Uri x:Key="RunningLogUri">/Pages/ServerPreset/ServerPresetRunningLog.xaml</system:Uri>
+      <system:Uri x:Key="RunningStatusUri">/Pages/ServerPreset/ServerPresetRunningStatus.xaml</system:Uri>
       <system:Uri x:Key="EntryListUri">/Pages/ServerPreset/ServerPresetEntryList.xaml</system:Uri>
       <system:Uri x:Key="AdvancedUri">/Pages/ServerPreset/ServerPresetAdvanced.xaml</system:Uri>
+      <system:Uri x:Key="PluginsUri">/Pages/ServerPreset/ServerPresetPlugins.xaml</system:Uri>
       <system:Uri x:Key="DetailsUri">/Pages/ServerPreset/ServerPresetDetails.xaml</system:Uri>
     </ResourceDictionary>
   </UserControl.Resources>
@@ -83,13 +85,15 @@
         </mui:ModernTab.LinksListBoxTemplate>
         <mui:ModernTab.Links>
           <mui:Link x:Name="RunningLogLink" DisplayName="Log" Source="{StaticResource RunningLogUri}" />
+          <mui:Link x:Name="RunningStatusLink" DisplayName="Status" Source="{StaticResource RunningStatusUri}" />
           <mui:Link x:Name="MainBasicLink" DisplayName="Main" Source="/Pages/ServerPreset/ServerPresetBasic.xaml" />
-          <mui:Link x:Name="MainCombinedLink" DisplayName="Main" Source="/Pages/ServerPreset/ServerPresetCombined.xaml" />
+          <!--<mui:Link x:Name="MainCombinedLink" DisplayName="Main" Source="/Pages/ServerPreset/ServerPresetCombined.xaml" />-->
           <mui:Link DisplayName="Entry list" Source="{StaticResource EntryListUri}" />
           <mui:Link x:Name="AssistsLink" DisplayName="Rules" Source="/Pages/ServerPreset/ServerPresetAssists.xaml" />
           <mui:Link x:Name="ConditionsLink" DisplayName="Conditions" Source="/Pages/ServerPreset/ServerPresetConditions.xaml" />
           <mui:Link x:Name="SessionsLink" DisplayName="Sessions" Source="/Pages/ServerPreset/ServerPresetSessions.xaml" />
           <mui:Link DisplayName="Advanced" Source="{StaticResource AdvancedUri}" />
+          <!--<mui:Link DisplayName="Plugins" Source="{StaticResource PluginsUri}" />-->
           <mui:Link DisplayName="Details" Source="{StaticResource DetailsUri}" />
         </mui:ModernTab.Links>
       </mui:ModernTab>

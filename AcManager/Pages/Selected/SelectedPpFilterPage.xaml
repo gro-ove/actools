@@ -2,8 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:av="http://icsharpcode.net/sharpdevelop/avalonedit" xmlns:g="clr-namespace:AcManager"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-    mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
+    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance sel:SelectedPpFilterPage+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/TextEditor.xaml" />
@@ -28,7 +27,8 @@
             Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" PreviewMouseLeftButtonUp="OnToggleClick" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
-            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" PreviewMouseLeftButtonUp="OnToggleClick" />
+            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
+            PreviewMouseLeftButtonUp="OnToggleClick" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Save_JsonTooltip}" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
@@ -36,6 +36,13 @@
       </ToolBar>
     </c:AcObjectBase.ToolBars>
 
-    <av:TextEditor c:AvalonExtension.Text="{Binding SelectedObject.Content}" c:AvalonExtension.Mode="Ini" />
+    <DockPanel>
+      <c:MessageBlock CloseKey="csp-info" Margin="0 0 0 20" DockPanel.Dock="Top">
+        <mui:BbCodeBlock
+            Text="With [url=&quot;https://acstuff.ru/patch/&quot;]Custom Shaders Patch[/url] you can create and edit filters in-game, seeing changes live." />
+      </c:MessageBlock>
+      <av:TextEditor c:AvalonExtension.Text="{Binding SelectedObject.Content}" c:AvalonExtension.Mode="Ini" />
+    </DockPanel>
+
   </c:AcObjectBase>
 </sel:SelectedAcObjectPage>

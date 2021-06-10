@@ -1,8 +1,13 @@
 ﻿<DockPanel x:Class="AcManager.UserControls.BakedShadowsSettings" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:cs="clr-namespace:AcManager.CustomShowroom" mc:Ignorable="d" d:DataContext="{d:DesignInstance cs:BakedShadowsRendererViewModel}">
-  <c:UserPresetsControl DockPanel.Dock="Bottom" UserPresetable="{Binding}" Margin="0 8 0 0" />
+    xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance cs:BakedShadowsRendererViewModel}">
+  <DockPanel DockPanel.Dock="Bottom" Margin="0 8 0 0">
+    <Button Command="{Binding ShareCommand}" ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}" Content="{x:Static g:AppStrings.Common_Share}"
+        DockPanel.Dock="Right" />
+    <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding}" MinWidth="300" Margin="0 0 4 0" />
+  </DockPanel>
   <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20">
     <mui:SpacingStackPanel Spacing="4">
       <DockPanel>
@@ -53,8 +58,8 @@
       </DockPanel>
       <DockPanel ToolTip="Be careful with pixel density if you need a high-resolution (≥4K) AO map">
         <mui:ValueLabel Value="{Binding PixelDensity}" DockPanel.Dock="Top" Content="Pixel density" />
-        <Slider Minimum="1" Maximum="8" Value="{Binding PixelDensity, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}"
-            TickFrequency="1" TickPlacement="None" IsSnapToTickEnabled="False" />
+        <Slider Minimum="1" Maximum="8" Value="{Binding PixelDensity, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" TickFrequency="1"
+            TickPlacement="None" IsSnapToTickEnabled="False" />
       </DockPanel>
       <DockPanel ToolTip="Higher values won’t change too much since there are a lot of shadows being casted">
         <Label Content="Shadow maps’ resolution:" DockPanel.Dock="Top" Margin="0 0 0 2" />

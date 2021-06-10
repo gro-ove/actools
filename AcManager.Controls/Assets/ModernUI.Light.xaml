@@ -233,6 +233,20 @@
 				</Rule>
 			</RuleSet>
 		</SyntaxDefinition>]]></s:String>
+  <s:String x:Key="TextEditorSyntaxLog"><![CDATA[
+		<SyntaxDefinition name="LOG" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+	    <Color name="Debug" foreground="#0044AA" />
+	    <Color name="Warning" foreground="#888800" />
+	    <Color name="Error" foreground="#AA0000" />
+	    <Color name="Info" foreground="#00AA00" />
+	    <RuleSet>
+		    <Span color="Debug" begin="…" />
+		    <Span color="Warning" begin="‽" />
+		    <Span color="Error" begin="▲" />
+		    <Span color="Info" begin="→" />
+        <Rule foreground="#888888">\b\d\d:\d\d:\d\d.\d\d\d:</Rule>
+	    </RuleSet>
+    </SyntaxDefinition>]]></s:String>
 
 	<!-- About -->
 	<s:String x:Key="Description">I recommend you to switch to a light car previews style with this theme.</s:String>

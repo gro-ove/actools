@@ -122,6 +122,7 @@ namespace AcManager.Tools.Managers {
         public bool IsReady => _value != null;
 
         public delegate void AcRootDirectoryEventHandler(object sender, AcRootDirectoryEventArgs e);
+
         public event AcRootDirectoryEventHandler Changed;
 
         private static void TryToFix(string from, string to) {
@@ -164,7 +165,9 @@ namespace AcManager.Tools.Managers {
                     Logging.Warning("Apps folder not found: " + appsDirectory);
                     Logging.Warning("All directories found: " + Directory.GetDirectories(directory).JoinToString(@", "));
                     Logging.Warning("All files found: " + Directory.GetFiles(directory).JoinToString(@", "));
-                    reason = string.Format(ToolsStrings.AcRootDirectory_MissingDirectory, @"apps");
+                    reason = File.Exists(Path.Combine(directory, @"acc.exe"))
+                            ? "AC Competizione is not supported, original Assetto Corsa only"
+                            : string.Format(ToolsStrings.AcRootDirectory_MissingDirectory, @"apps");
                     return false;
                 }
 

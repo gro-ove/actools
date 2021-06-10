@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -64,17 +63,43 @@ namespace AcManager.Tools.Miscellaneous {
         [LocalizedDescription(nameof(ToolsStrings.Shared_UserChampionship))]
         UserChampionship,
 
-        [Description("Results")]
+        [LocalizedDescription(nameof(ToolsStrings.Shared_Results))]
         Results,
 
         [LocalizedDescription(nameof(ToolsStrings.Shared_Weather))]
         Weather,
 
-        [Description("Custom Shaders Patch settings")]
+        [LocalizedDescription(nameof(ToolsStrings.Shared_CspSettings))]
         CspSettings,
+
+        // Non-shareable, for internal use:
+        [LocalizedDescription(nameof(ToolsStrings.Shared_AmbientShadowsPreset))]
+        AmbientShadowsPreset,
+
+        [LocalizedDescription(nameof(ToolsStrings.Shared_BakedShadowsPreset))]
+        BakedShadowsPreset,
+
+        [LocalizedDescription(nameof(ToolsStrings.Shared_InGameAppsPreset))]
+        InGameAppsPreset,
+
+        [LocalizedDescription(nameof(ToolsStrings.Shared_PackServerPreset))]
+        PackServerPreset,
+
+        [LocalizedDescription(nameof(ToolsStrings.Shared_AcPreviewsPreset))]
+        AcPreviewsPreset,
+
+        [LocalizedDescription(nameof(ToolsStrings.Shared_AcShowroomPreset))]
+        AcShowroomPreset,
+
+        [LocalizedDescription(nameof(ToolsStrings.Shared_TyresGenerationExamplesPreset))]
+        TyresGenerationExamplesPreset,
+
+        [LocalizedDescription(nameof(ToolsStrings.Shared_TyresGenerationParamsPreset))]
+        TyresGenerationParamsPreset,
     }
 
     public class SharedEntry : NotifyPropertyChanged {
+        [CanBeNull]
         public string Id { get; set; }
 
         public SharedEntryType EntryType { get; set; }
@@ -85,19 +110,20 @@ namespace AcManager.Tools.Miscellaneous {
         [CanBeNull]
         public string Target { get; set; }
 
-        [JsonIgnore]
-        [CanBeNull]
+        [JsonIgnore, CanBeNull]
         public string Author { get; set; }
 
-        [JsonIgnore]
-        [CanBeNull]
+        [JsonIgnore, CanBeNull]
         public byte[] Data { get; set; }
 
-        [JsonIgnore]
-        public string Url => InternalUtils.ShareResult.GetUrl(Id);
+        [JsonIgnore, CanBeNull]
+        public string Url => Id == null ? null : InternalUtils.ShareResult.GetUrl(Id);
 
         [CanBeNull]
         public string RemovalKey { get; set; }
+
+        [CanBeNull]
+        public string LocalSource { get; set; }
 
         [JsonIgnore]
         private string _json;
