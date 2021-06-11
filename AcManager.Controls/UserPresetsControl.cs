@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
@@ -595,6 +596,10 @@ namespace AcManager.Controls {
             }
 
             return null;
+        }
+
+        PlacementMode IHierarchicalItemPreviewProvider.GetPlacementMode(object item) {
+            return PlacementMode.Mouse;
         }
     }
 }

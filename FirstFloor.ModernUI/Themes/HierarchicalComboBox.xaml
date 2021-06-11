@@ -140,7 +140,7 @@
   <ControlTemplate x:Key="SpecialMenuItemControlTemplate" TargetType="{x:Type c:HierarchicalItem}">
     <Border x:Name="Bg" Background="Transparent" SnapsToDevicePixels="True">
       <Border.ToolTip>
-        <ToolTip
+        <ToolTip Placement="{Binding ToolTipPlacement, RelativeSource={RelativeSource TemplatedParent}}"
             Visibility="{Binding PreviewValue, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource NullToVisibilityConverter},
                     ConverterParameter=inverse}">
           <ContentPresenter IsHitTestVisible="False" Margin="4" Content="{Binding PreviewValue, RelativeSource={RelativeSource TemplatedParent}}"

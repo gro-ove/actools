@@ -179,10 +179,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     }
 
                     var flags = k.GetStrings(p.Key + "_FLAGS_");
-                    var canBeHeld = flags.ArrayContains("canBeHeld"); // TODO
-
+                    var canBeHeld = flags.ArrayContains("canBeHeld");
                     list.Add(new CustomButtonEntryCombined(p.Key, name, description,
-                            keys.Count > 0 ? keys.LastOrDefault() : (Keys?)null, modifiers));
+                            keys.Count > 0 ? keys.LastOrDefault() : (Keys?)null, modifiers, canBeHeld));
                 }
 
                 sectionsList.Add(new CustomButtonEntrySection { DisplayName = n, Entries = list.ToArray() });

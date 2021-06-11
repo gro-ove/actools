@@ -258,6 +258,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static string ToSentenceMember(this string s) {
+            s = s.Trim();
             if (s.Length < 2) return s;
             s = char.IsUpper(s[0]) ? ToSentenceCase(s) : s;
             return s[s.Length - 1] == '.' || s[s.Length - 1] == '…' ? s.Substring(0, s.Length - 1) : s;

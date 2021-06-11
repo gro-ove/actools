@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools;
@@ -375,7 +376,7 @@ namespace AcManager.Pages.Drive {
                 OnPropertyChanged(nameof(RaceDurationEstimate));
             }
 
-            public object GetPreview(object item) {
+            object IHierarchicalItemPreviewProvider.GetPreview(object item) {
                 if (!(item is ISavedPresetEntry preset)) return null;
 
                 RaceGridViewModel.SaveableData saved;
@@ -401,6 +402,10 @@ namespace AcManager.Pages.Drive {
                             ? $"Starting position: [b]{GetDisplayPosition(saved.StartingPosition.Value, opponentsNumber.Value)}[/b]" : null,
                 }.NonNull().JoinToString(Environment.NewLine);
                 return new BbCodeBlock { Text = description };
+            }
+
+            PlacementMode IHierarchicalItemPreviewProvider.GetPlacementMode(object item) {
+                return PlacementMode.Mouse;
             }
 
             public void SetRaceGridData(string serializedRaceGrid) {

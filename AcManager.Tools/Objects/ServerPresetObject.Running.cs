@@ -531,7 +531,7 @@ namespace AcManager.Tools.Objects {
                     "-e", serverExecutable, $"presets/{Id}"
                 }, new ProcessStartInfo {
                     UseShellExecute = false,
-                    WorkingDirectory = Path.GetDirectoryName(serverExecutable) ?? "",
+                    WorkingDirectory = Path.Combine(Path.GetDirectoryName(serverExecutable) ?? "", "system"),
                     RedirectStandardOutput = true,
                     CreateNoWindow = true,
                     RedirectStandardError = true,

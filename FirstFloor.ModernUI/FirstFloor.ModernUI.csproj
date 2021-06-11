@@ -285,6 +285,7 @@
     <Compile Include="Windows\Converters\SliderRoundConverter.cs" />
     <Compile Include="Windows\Converters\SolidBrushToColorConverter.cs" />
     <Compile Include="Windows\Converters\ToSentenceConverter.cs" />
+    <Compile Include="Windows\Converters\ToSentenceMemberConverter.cs" />
     <Compile Include="Windows\Converters\ToThicknessConverter.cs" />
     <Compile Include="Windows\CubicBesierEase.cs" />
     <Compile Include="Windows\DragPopup.cs" />

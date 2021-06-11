@@ -5,7 +5,7 @@ using AcManager.Tools.ContentInstallation.Entries;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Installators {
-    public class InstallationDetails {
+    public class InstallationDetails : IDisposable {
         [NotNull]
         public readonly ICopyCallback CopyCallback;
 
@@ -24,5 +24,9 @@ namespace AcManager.Tools.ContentInstallation.Installators {
         }
 
         internal ContentEntryBase OriginalEntry { get; set; }
+
+        public void Dispose() {
+            CopyCallback.Dispose();
+        }
     }
 }

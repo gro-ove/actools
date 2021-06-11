@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Presentation;
@@ -28,6 +29,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     public interface IHierarchicalItemPreviewProvider {
         [CanBeNull]
         object GetPreview([CanBeNull] object item);
+
+        PlacementMode GetPlacementMode([CanBeNull] object item);
     }
 
     public interface IShortDisplayable {
@@ -139,6 +142,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _previewInitialized = true;
 
             SetValue(PreviewValuePropertyKey, _view.PreviewProvider?.GetPreview(OriginalValue));
+            SetValue(ToolTipPlacementPropertyKey, _view.PreviewProvider?.GetPlacementMode(OriginalValue));
         }
 
         public static readonly DependencyPropertyKey PreviewValuePropertyKey = DependencyProperty.RegisterReadOnly(nameof(PreviewValue), typeof(object),
@@ -148,6 +152,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         [CanBeNull]
         public object PreviewValue => GetValue(PreviewValueProperty);
+
+        public static readonly DependencyPropertyKey ToolTipPlacementPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ToolTipPlacement), typeof(PlacementMode),
+                typeof(HierarchicalItem), new PropertyMetadata(PlacementMode.Mouse));
+
+        public static readonly DependencyProperty ToolTipPlacementProperty = ToolTipPlacementPropertyKey.DependencyProperty;
+
+        public PlacementMode ToolTipPlacement => (PlacementMode)GetValue(ToolTipPlacementProperty);
     }
 
     public delegate void ItemChosenCallback(object item, [CanBeNull] HierarchicalGroup parentGroup);

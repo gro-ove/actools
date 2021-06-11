@@ -73,19 +73,19 @@ namespace AcManager.Tools.ContentInstallation {
             var j = JObject.Parse(data);
             return new ContentInstallationEntry(j.GetStringValueOnly("source"),
                     j["params"]?.ToObject<ContentInstallationParams>() ?? ContentInstallationParams.DefaultWithoutExecutables) {
-                AddedDateTime = j["added"]?.ToObject<DateTime>() ?? DateTime.Now,
-                DisplayName = j.GetStringValueOnly("name"),
-                InformationUrl = j.GetStringValueOnly("informationUrl"),
-                Version = j.GetStringValueOnly("version"),
-                IsPaused = j.GetBoolValueOnly("paused", false),
-                FileName = j.GetStringValueOnly("fileName"),
-                LocalFilename = j.GetStringValueOnly("localFilename"),
-                InputPassword = j.GetStringValueOnly("password"),
-                Progress = j.GetBoolValueOnly("finished", false) ? AsyncProgressEntry.Ready : default,
-                Cancelled = j.GetBoolValueOnly("cancelled", false),
-                FailedMessage = j.GetStringValueOnly("failedMessage"),
-                FailedCommentary = j.GetStringValueOnly("failedCommentary"),
-            };
+                        AddedDateTime = j["added"]?.ToObject<DateTime>() ?? DateTime.Now,
+                        DisplayName = j.GetStringValueOnly("name"),
+                        InformationUrl = j.GetStringValueOnly("informationUrl"),
+                        Version = j.GetStringValueOnly("version"),
+                        IsPaused = j.GetBoolValueOnly("paused", false),
+                        FileName = j.GetStringValueOnly("fileName"),
+                        LocalFilename = j.GetStringValueOnly("localFilename"),
+                        InputPassword = j.GetStringValueOnly("password"),
+                        Progress = j.GetBoolValueOnly("finished", false) ? AsyncProgressEntry.Ready : default,
+                        Cancelled = j.GetBoolValueOnly("cancelled", false),
+                        FailedMessage = j.GetStringValueOnly("failedMessage"),
+                        FailedCommentary = j.GetStringValueOnly("failedCommentary"),
+                    };
         }
 
         public string Serialize() {
@@ -108,11 +108,12 @@ namespace AcManager.Tools.ContentInstallation {
             }.ToString(Formatting.None);
         }
 
-        internal static ContentInstallationEntry ReadyExample => new ContentInstallationEntry("input.bin", ContentInstallationParams.DefaultWithoutExecutables) {
-            FileName = "input.bin",
-            LocalFilename = @"U:\dump.bin",
-            Progress = AsyncProgressEntry.Ready
-        };
+        internal static ContentInstallationEntry ReadyExample
+            => new ContentInstallationEntry("input.bin", ContentInstallationParams.DefaultWithoutExecutables) {
+                FileName = "input.bin",
+                LocalFilename = @"U:\dump.bin",
+                Progress = AsyncProgressEntry.Ready
+            };
 
         public ContentInstallationEntryState State => _progress.IsReady ? ContentInstallationEntryState.Finished :
                 _isPasswordRequired ? ContentInstallationEntryState.PasswordRequired :
@@ -733,77 +734,59 @@ namespace AcManager.Tools.ContentInstallation {
                             if (CheckCancellation()) return false;
 
                             _taskbar?.Set(TaskbarState.Indeterminate, 0d);
-                            var toInstall = (await Entries.Where(x => x.Active)
-                                                          .Select(x => x.GetInstallationDetails(cancellation.Token)).WhenAll(15)).ToList();
-                            if (toInstall.Count == 0 || CheckCancellation()) return false;
+                            using (var toInstall = DisposableList.Create(await Entries.Where(x => x.Active)
+                                    .Select(x => x.GetInstallationDetails(cancellation.Token)).WhenAll(15))) {
+                                if (toInstall.Items.Count == 0 || CheckCancellation()) return false;
 
-                            /*foreach (var extra in _installationParams.PreInstallation.NonNull()) {
-                                _taskbar?.Set(TaskbarState.Indeterminate, 0d);
-                                await extra(progress, cancellation.Token);
-                                if (CheckCancellation()) return false;
-                            }*/
-
-                            /*var toRemoval = toInstall.SelectMany(x => x.ToRemoval).ToArray();
-                            if (toRemoval.Length > 0) {
-                                Logging.Warning("To removal: " + toRemoval.JoinToString('\n'));
-                                if (MessageDialog.Show(
-                                        $@"You’re about to remove to the Recycle Bin:
-{BbCodeBlock.Encode(toRemoval.Select(x => "• " + x).JoinToString(";\n"))}.
-Are you sure to continue?",
-                                        "Warning!", MessageDialogButton.YesNo) != MessageBoxResult.Yes) {
-                                    Cancel();
-                                    return false;
+                                string GetToInstallName(InstallationDetails details) {
+                                    return details.OriginalEntry?.DisplayName;
                                 }
-                            }*/
 
-                            string GetToInstallName(InstallationDetails details) {
-                                return details.OriginalEntry?.DisplayName;
-                            }
-
-                            foreach (var extra in ExtraOptions.Select(x => x.PreInstallation).NonNull()) {
-                                await extra(progress, cancellation.Token);
-                                if (CheckCancellation()) return false;
-                            }
-
-                            await Task.Run(() => FileUtils.Recycle(toInstall.SelectMany(x => x.ToRemoval).ToArray()));
-
-                            if (CheckCancellation()) return false;
-
-                            try {
-                                foreach (var t in toInstall) {
-                                    if (t.BeforeTask == null) continue;
-
-                                    progress.Report(AsyncProgressEntry.FromStringIndetermitate($"Preparing to install {GetToInstallName(t)}…"));
-                                    await t.BeforeTask(cancellation.Token);
+                                foreach (var extra in ExtraOptions.Select(x => x.PreInstallation).NonNull()) {
+                                    await extra(progress, cancellation.Token);
                                     if (CheckCancellation()) return false;
                                 }
 
-                                await InstallAsync(installator, toInstall, new Progress<AsyncProgressEntry>(p => {
-                                    progress.Report(p);
-                                    _taskbar?.Set(p.IsIndeterminate ? TaskbarState.Indeterminate : TaskbarState.Normal, p.Progress ?? 0d);
-                                }), cancellation);
-                            } finally {
-                                foreach (var t in toInstall) {
-                                    if (t.AfterTask == null) continue;
+                                await Task.Run(() => FileUtils.Recycle(toInstall.Items.SelectMany(x => x.ToRemoval).ToArray()));
 
-                                    progress.Report(AsyncProgressEntry.FromStringIndetermitate($"Finishing installation {GetToInstallName(t)}…"));
-                                    _taskbar?.Set(TaskbarState.Indeterminate, 0d);
-
-                                    await t.AfterTask(cancellation.Token);
-                                    if (CheckCancellation()) break;
-                                }
-                            }
-
-                            if (CheckCancellation()) return false;
-
-                            foreach (var extra in ExtraOptions.Select(x => x.PostInstallation).NonNull()) {
-                                _taskbar?.Set(TaskbarState.Indeterminate, 0d);
-                                await extra(progress, cancellation.Token);
                                 if (CheckCancellation()) return false;
-                            }
 
-                            _taskbar?.Set(TaskbarState.Indeterminate, 0d);
-                            await InstallationParams.PostInstallation(progress, cancellation.Token);
+                                try {
+                                    foreach (var t in toInstall.Items) {
+                                        if (t.BeforeTask == null) continue;
+
+                                        progress.Report(AsyncProgressEntry.FromStringIndetermitate($"Preparing to install {GetToInstallName(t)}…"));
+                                        await t.BeforeTask(cancellation.Token);
+                                        if (CheckCancellation()) return false;
+                                    }
+
+                                    await InstallAsync(installator, toInstall.Items, new Progress<AsyncProgressEntry>(p => {
+                                        progress.Report(p);
+                                        _taskbar?.Set(p.IsIndeterminate ? TaskbarState.Indeterminate : TaskbarState.Normal, p.Progress ?? 0d);
+                                    }), cancellation);
+                                } finally {
+                                    foreach (var t in toInstall.Items) {
+                                        if (t.AfterTask == null) continue;
+
+                                        progress.Report(AsyncProgressEntry.FromStringIndetermitate($"Finishing installation {GetToInstallName(t)}…"));
+                                        _taskbar?.Set(TaskbarState.Indeterminate, 0d);
+
+                                        await t.AfterTask(cancellation.Token);
+                                        if (CheckCancellation()) break;
+                                    }
+                                }
+
+                                if (CheckCancellation()) return false;
+
+                                foreach (var extra in ExtraOptions.Select(x => x.PostInstallation).NonNull()) {
+                                    _taskbar?.Set(TaskbarState.Indeterminate, 0d);
+                                    await extra(progress, cancellation.Token);
+                                    if (CheckCancellation()) return false;
+                                }
+
+                                _taskbar?.Set(TaskbarState.Indeterminate, 0d);
+                                await InstallationParams.PostInstallation(progress, cancellation.Token);
+                            }
                         }
 
                         return true;
@@ -861,7 +844,8 @@ Are you sure to continue?",
             return _toInstall?.Select(x => x.CopyCallback.Directory(info)).FirstOrDefault(x => x != null);
         }
 
-        private async Task InstallAsync(IAdditionalContentInstallator installator, [NotNull] List<InstallationDetails> toInstall, IProgress<AsyncProgressEntry> progress,
+        private async Task InstallAsync(IAdditionalContentInstallator installator, [NotNull] List<InstallationDetails> toInstall,
+                IProgress<AsyncProgressEntry> progress,
                 CancellationTokenSource cancellation) {
             _modsPreviousLogs = new Dictionary<string, string[]>();
             _modsToInstall = new Dictionary<string, Tuple<string, List<string>>>();
@@ -870,7 +854,6 @@ Are you sure to continue?",
                 _toInstall = toInstall;
                 await installator.InstallAsync(this, progress, cancellation.Token);
             } finally {
-                _toInstall.ForEach(x => x.CopyCallback.Dispose());
                 _toInstall = null;
                 await FinishSettingMods();
             }

@@ -56,7 +56,9 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             var installedLog = new StreamWriter(installedLogStream);
             IsBusy = true;
 
+            Logging.Debug("STARTING TO INSTALL");
             return new CopyCallback(info => {
+                Logging.Debug("KEY: " + info.Key);
                 var filename = info.Key;
 
                 if (path != string.Empty && !FileUtils.IsAffectedBy(filename, path)
@@ -90,6 +92,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
                 return result;
             }, dispose: () => {
+                Logging.Debug("DISPOSE");
                 installedLog.Dispose();
                 File.WriteAllBytes(PatchHelper.GetInstalledLog(), installedLogStream.ToArray());
                 installedLogStream.Dispose();

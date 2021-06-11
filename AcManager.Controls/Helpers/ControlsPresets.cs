@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers.Presets;
@@ -223,6 +224,10 @@ namespace AcManager.Controls.Helpers {
         object IHierarchicalItemPreviewProvider.GetPreview(object item) {
             var data = (item as ISavedPresetEntry)?.ReadData();
             return data == null ? null : GetPreview(data);
+        }
+
+        PlacementMode IHierarchicalItemPreviewProvider.GetPlacementMode(object item) {
+            return PlacementMode.Left;
         }
 
         public HierarchicalGroup Presets { get; } = new HierarchicalGroup();

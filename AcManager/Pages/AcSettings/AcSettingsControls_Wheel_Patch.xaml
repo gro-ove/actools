@@ -2,9 +2,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:acset="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:acs="clr-namespace:AcManager.Tools.Helpers.AcSettingsControls;assembly=AcManager.Tools"
-    xmlns:t="http://acstuff.ru/app/tools"
-    mc:Ignorable="d" Loaded="OnLoaded" Unloaded="OnUnloaded">
+    xmlns:acs="clr-namespace:AcManager.Tools.Helpers.AcSettingsControls;assembly=AcManager.Tools" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
+    Loaded="OnLoaded" Unloaded="OnUnloaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -25,10 +24,8 @@
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1.2*" MaxWidth="160" />
             <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="0.75*" MinWidth="80"
-                c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoystickModifiers}" />
-            <ColumnDefinition Width="Auto"
-                c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoystickModifiers}" />
+            <ColumnDefinition Width="0.75*" MinWidth="80" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoystickModifiers}" />
+            <ColumnDefinition Width="Auto" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoystickModifiers}" />
             <ColumnDefinition Width="1.5*" MinWidth="160" />
           </Grid.ColumnDefinitions>
 
@@ -86,34 +83,42 @@
             </mui:Cell>
           </Button>
 
-          <DockPanel Grid.Column="3" Margin="0 1 0 -1"
-              c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoystickModifiers}">
+          <DockPanel Grid.Column="3" Margin="0 1 0 -1" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoystickModifiers}">
             <TextBlock Style="{StaticResource Label}" TextAlignment="Left" Text="+" />
           </DockPanel>
 
-          <Button Grid.Column="4" ToolTip="{x:Static c:ControlsStrings.Controls_SteeringWheelButton}" Margin="4 0 0 0" Style="{StaticResource WaitingButton}"
-              Command="{Binding ToggleWaitingCommand, Source={x:Static acset:AcSettingsHolder.Controls}}" CommandParameter="{Binding WheelButton}">
-            <Button.ContextMenu>
-              <ContextMenu>
-                <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding WheelButton.ClearCommand}" />
-              </ContextMenu>
-            </Button.ContextMenu>
+          <DockPanel Grid.Column="4">
+            <mui:LabeledToggleButton IsChecked="{Binding HoldMode}" Visibility="{Binding CanBeHeld, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Margin="4 0 0 0" DockPanel.Dock="Right" LabelChecked="Hold" LabelUnchecked="Toggle" Width="80">
+              <mui:LabeledToggleButton.ToolTip>
+                <TextBlock
+                    Text="{Binding WheelButton.DisplayName, Converter={StaticResource ToSentenceMemberConverter}, StringFormat='{}With hold mode, {0} will be active while button is held down'}" />
+              </mui:LabeledToggleButton.ToolTip>
+            </mui:LabeledToggleButton>
+            <Button ToolTip="{x:Static c:ControlsStrings.Controls_SteeringWheelButton}" Margin="4 0 0 0" Style="{StaticResource WaitingButton}"
+                Command="{Binding ToggleWaitingCommand, Source={x:Static acset:AcSettingsHolder.Controls}}" CommandParameter="{Binding WheelButton}">
+              <Button.ContextMenu>
+                <ContextMenu>
+                  <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding WheelButton.ClearCommand}" />
+                </ContextMenu>
+              </Button.ContextMenu>
 
-            <mui:Cell HorizontalAlignment="Stretch" Margin="0 -2" DataContext="{Binding WheelButton}">
-              <mui:Cell Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
-                <TextBlock Text="{Binding Input.Device.DisplayName}" DockPanel.Dock="Top" Style="{StaticResource Small}" HorizontalAlignment="Left"
-                    TextTrimming="CharacterEllipsis" FontStyle="{Binding Input.Device.IsVirtual, Converter={StaticResource BooleanToFontStyleConverter}}" />
-                <TextBlock Text="{Binding Input.DisplayName}" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 8 0 0" TextTrimming="CharacterEllipsis" />
-                <TextBlock Text="{x:Static c:ControlsStrings.Controls_ClickToAssign}" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center"
-                    Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" TextTrimming="CharacterEllipsis"
-                    Style="{StaticResource Small}" />
-                <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
-                    Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
+              <mui:Cell HorizontalAlignment="Stretch" Margin="0 -2" DataContext="{Binding WheelButton}">
+                <mui:Cell Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
+                  <TextBlock Text="{Binding Input.Device.DisplayName}" DockPanel.Dock="Top" Style="{StaticResource Small}" HorizontalAlignment="Left"
+                      TextTrimming="CharacterEllipsis" FontStyle="{Binding Input.Device.IsVirtual, Converter={StaticResource BooleanToFontStyleConverter}}" />
+                  <TextBlock Text="{Binding Input.DisplayName}" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 8 0 0" TextTrimming="CharacterEllipsis" />
+                  <TextBlock Text="{x:Static c:ControlsStrings.Controls_ClickToAssign}" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center"
+                      Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" TextTrimming="CharacterEllipsis"
+                      Style="{StaticResource Small}" />
+                  <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
+                      Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
+                </mui:Cell>
+                <TextBlock Text="{x:Static c:ControlsStrings.Controls_WaitingForInput}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
               </mui:Cell>
-              <TextBlock Text="{x:Static c:ControlsStrings.Controls_WaitingForInput}" HorizontalAlignment="Left" VerticalAlignment="Center"
-                  Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
-            </mui:Cell>
-          </Button>
+            </Button>
+          </DockPanel>
         </Grid>
       </DataTemplate>
     </ResourceDictionary>

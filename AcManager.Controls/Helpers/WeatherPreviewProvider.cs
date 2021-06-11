@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -13,7 +14,7 @@ namespace AcManager.Controls.Helpers {
             Source = new Uri("/AcManager.Controls;component/Assets/ToolTips.xaml", UriKind.Relative)
         });
 
-        public object GetPreview(object item) {
+        object IHierarchicalItemPreviewProvider.GetPreview(object item) {
             if (item is WeatherObject weather) {
                 var t = (FrameworkElement)((ToolTip)Dictionary["WeatherPreviewTooltip"]).Content;
                 t.DataContext = weather;
@@ -22,6 +23,10 @@ namespace AcManager.Controls.Helpers {
             }
 
             return null;
+        }
+
+        PlacementMode IHierarchicalItemPreviewProvider.GetPlacementMode(object item) {
+            return PlacementMode.Left;
         }
     }
 }
