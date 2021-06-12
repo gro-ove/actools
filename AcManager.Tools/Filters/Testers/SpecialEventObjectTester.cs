@@ -39,6 +39,9 @@ namespace AcManager.Tools.Filters.Testers {
                 case "place":
                     return nameof(SpecialEventObject.TakenPlace);
 
+                case "rare":
+                    return nameof(SpecialEventObject.PlaceStats);
+
                 case "fpt":
                 case "firstplacetarget":
                     return nameof(SpecialEventObject.FirstPlaceTarget);
@@ -112,6 +115,9 @@ namespace AcManager.Tools.Filters.Testers {
                 case "place":
                     return value.Test(obj.TakenPlace);
 
+                case "rare":
+                    return value.Test(obj.PlaceStats != null && obj.PlaceStats.LastOrDefault() < 0.65);
+
                 case "fpt":
                 case "firstplacetarget":
                     return value.Test(obj.FirstPlaceTarget ?? 0);
@@ -148,16 +154,13 @@ namespace AcManager.Tools.Filters.Testers {
             return new[] {
                 new KeywordDescription("type", "Type", KeywordType.String, KeywordPriority.Important),
                 new KeywordDescription("guid", "GUID", KeywordType.String, KeywordPriority.Obscured),
-
                 new KeywordDescription("car", "Car", KeywordType.String | KeywordType.Child, KeywordPriority.Important, "c"),
                 new KeywordDescription("skin", "Skin", KeywordType.String | KeywordType.Child, KeywordPriority.Important),
                 new KeywordDescription("track", "Track", KeywordType.String | KeywordType.Child, KeywordPriority.Important, "t"),
                 new KeywordDescription("weather", "Weather", KeywordType.String | KeywordType.Child, KeywordPriority.Important),
-
                 new KeywordDescription("passed", "Passed", KeywordType.Flag, KeywordPriority.Important),
                 new KeywordDescription("won", "Won", KeywordType.Flag, KeywordPriority.Important),
                 new KeywordDescription("place", "Taken place", KeywordType.Number, KeywordPriority.Important),
-
                 new KeywordDescription("firstplacetarget", "Target for first place", KeywordType.Number, KeywordPriority.Obscured, "fpt"),
                 new KeywordDescription("secondplacetarget", "Target for second place", KeywordType.Number, KeywordPriority.Obscured, "spt"),
                 new KeywordDescription("thirdplacetarget", "Target for third place", KeywordType.Number, KeywordPriority.Obscured, "tpt")

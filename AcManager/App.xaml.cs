@@ -470,12 +470,12 @@ namespace AcManager {
 
             BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadMissing/car"), new DelegateCommand<string>(id => {
                 var s = id.Split('|');
-                IndexDirectDownloader.DownloadCarAsync(s[0], s.ArrayElementAtOrDefault(1)).Forget();
+                IndexDirectDownloader.DownloadCarAsync(s[0], s.ArrayElementAtOrDefault(1)).Ignore();
             }));
 
             BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadMissing/track"), new DelegateCommand<string>(id => {
                 var s = id.Split('|');
-                IndexDirectDownloader.DownloadTrackAsync(s[0], s.ArrayElementAtOrDefault(1)).Forget();
+                IndexDirectDownloader.DownloadTrackAsync(s[0], s.ArrayElementAtOrDefault(1)).Ignore();
             }));
 
             BbCodeBlock.AddLinkCommand(new Uri("cmd://createNeutralLut"), new DelegateCommand<string>(id =>
@@ -500,8 +500,9 @@ namespace AcManager {
             }.ShowDialog()));
 
             BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += (sender, args) => {
-                if (args.Uri.IsAbsoluteUri && args.Uri.Scheme == "acmanager") {
-                    ArgumentsHandler.ProcessArguments(new[] { args.Uri.ToString() }, true).Forget();
+                if (args.Uri.IsAbsoluteUri && (args.Uri.OriginalString.StartsWith("https://acstuff.ru/s/", StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(args.Uri.Scheme, "acmanager", StringComparison.OrdinalIgnoreCase))) {
+                    ArgumentsHandler.ProcessArguments(new[] { args.Uri.ToString() }, true).Ignore();
                     args.Cancel = true;
                 }
             };
@@ -526,7 +527,7 @@ namespace AcManager {
             SettingsHolder.Content.OldLayout = AppArguments.GetBool(AppFlag.CarsOldLayout);
 
             var acRootIsFine = Superintendent.Instance.IsReady && !AcRootDirectorySelector.IsReviewNeeded();
-            if (acRootIsFine && SteamStarter.Initialize(AcRootDirectory.Instance.Value)) {
+            if (acRootIsFine && SteamStarter.Initialize(AcRootDirectory.Instance.Value, false)) {
                 if (SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
                     SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.SteamStarterType;
                     Toast.Show("Starter changed to replacement", "Enjoy Steam being included into CM");
@@ -771,7 +772,7 @@ namespace AcManager {
         private static async void BackgroundInitialization() {
             try {
 #if DEBUG
-                CupClient.Instance?.LoadRegistries().Forget();
+                CupClient.Instance?.LoadRegistries().Ignore();
 #endif
 
                 await Task.Delay(500);
@@ -826,7 +827,7 @@ namespace AcManager {
                 CustomUriSchemeHelper.Initialize();
 
 #if !DEBUG
-                CupClient.Instance?.LoadRegistries().Forget();
+                CupClient.Instance?.LoadRegistries().Ignore();
 #endif
 
                 await Task.Delay(5000);
@@ -919,7 +920,7 @@ namespace AcManager {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void InitializeDirectInputScanner() {
-            DirectInputScanner.GetAsync().Forget();
+            DirectInputScanner.GetAsync().Ignore();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

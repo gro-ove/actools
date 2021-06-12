@@ -100,18 +100,19 @@
       <DockPanel Grid.ColumnSpan="3"
           Visibility="{Binding ActualHeight, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=540}">
         <mui:Switch Value="{Binding SelectedStarterType.Id, Source={x:Static t:SettingsHolder.Drive}}" DockPanel.Dock="Right" Margin="4 0 0 0">
-          <Button mui:Switch.When="Steam" Command="{Binding SyncronizeProgressUsingSteamStarterCommand}" ToolTip="Always works (at least should)"
-              Content="Sync progress via Steam" />
-          <Button mui:Switch.When="AppID" Command="{Binding SyncronizeProgressUsingAppIdStarterCommand}" ToolTip="Always works (at least should)"
-              Content="Sync progress via AppID starter" />
+          <Button mui:Switch.When="Steam" Command="{Binding SyncronizeProgressUsingSteamStarterCommand}"
+              Content="{x:Static g:AppStrings.SpecialEvents_SyncProgress}" />
+          <Button mui:Switch.When="AppID" Command="{Binding SyncronizeProgressUsingAppIdStarterCommand}"
+              Content="{x:Static g:AppStrings.SpecialEvents_SyncProgress}" />
           <mui:SpacingStackPanel Spacing="4" Orientation="Horizontal">
             <Button Command="{Binding SyncronizeProgressUsingModuleCommand}"
                 ToolTip="Works with private Steam profiles, but UI module should be installed and AC launcher should be running"
-                Content="Sync progress via Module Starter" />
+                Content="{x:Static g:AppStrings.SpecialEvents_SyncProgress}" />
             <Button Command="{Binding SyncronizeProgressUsingSidePassageCommand}"
-                ToolTip="Works with private Steam profiles, but AC Service should be used as a starter" Content="Sync progress via AC Service" />
-            <Button Command="{Binding SyncronizeProgressCommand}" ToolTip="Works only with non-private Steam profiles at the moment"
-                Content="Sync progress via Steam Web API" />
+                ToolTip="Works with private Steam profiles, but AC Service should be used as a starter"
+                Content="{x:Static g:AppStrings.SpecialEvents_SyncProgress}" />
+            <Button Command="{Binding SyncronizeProgressCommand}" ToolTip="Works only with non-private Steam profiles"
+                Content="{x:Static g:AppStrings.SpecialEvents_SyncProgress}" />
           </mui:SpacingStackPanel>
         </mui:Switch>
 
@@ -209,6 +210,13 @@
           <TextBlock Text="{Binding TrackPreset.Name}" Style="{StaticResource Value}" />
         </DockPanel>
 
+        <mui:SpacingStackPanel Spacing="4" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Grid.RowSpan="3" Margin="0 0 0 47" HorizontalAlignment="Left"
+            VerticalAlignment="Bottom" Visibility="{Binding StartingPosition, Converter={StaticResource NullToVisibilityConverter}}">
+          <c:BestLapsList x:Name="BestLapBlock" CarId="{Binding CarId}" TrackId="{Binding TrackObject.IdWithLayout}" />
+          <TextBlock Text="{x:Static g:AppStrings.QuickDrive_BestLapOnThisTrack}" Style="{StaticResource Label}" />
+          <c:BestLapsList TrackId="{Binding TrackObject.IdWithLayout}" Limit="1" Order="FastestFirst" ShowTitle="False" EntryPadding="0" />
+        </mui:SpacingStackPanel>
+
         <!-- Race params -->
         <DockPanel Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"
             Visibility="{Binding StartingPosition, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
@@ -220,7 +228,7 @@
             <Run Text="(" /><Run
                                 Text="{Binding OpponentsCount, Mode=OneWay, Converter={StaticResource PluralizingConverter},
                 ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsFormat}}" /><Run
-                                                                                                                                                                                                                            Text=")" />
+                Text=")" />
           </TextBlock>
         </DockPanel>
         <DockPanel Grid.Column="0" Grid.Row="4">
@@ -313,30 +321,30 @@
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" Margin="0 0 0 12">
-          <mui:SpacingStackPanel Spacing="4">
-            <TextBlock Text="{Binding Selected.DisplayDescription}" TextWrapping="Wrap" />
-            <c:BestLapsList x:Name="BestLapBlock" CarId="{Binding Selected.CarId}" TrackId="{Binding Selected.TrackObject.IdWithLayout}"
-                VerticalAlignment="Top" Margin="0 16 0 0" />
-            <TextBlock Text="{x:Static g:AppStrings.QuickDrive_BestLapOnThisTrack}" Style="{StaticResource Label}" />
-            <c:BestLapsList TrackId="{Binding Selected.TrackObject.IdWithLayout}" Limit="1" Order="FastestFirst" ShowTitle="False" EntryPadding="0" />
-          </mui:SpacingStackPanel>
+          <TextBlock Text="{Binding Selected.DisplayDescription}" TextWrapping="Wrap" />
         </ScrollViewer>
 
         <StackPanel Grid.Row="2" Margin="0 0 0 24"
             Visibility="{Binding Selected.ConditionType, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
           <TextBlock Style="{StaticResource Heading2}" Text="{Binding Selected.ConditionType, Converter={StaticResource EnumToDescriptionConverter}}" />
           <StackPanel Orientation="Horizontal">
-            <Ellipse Width="8" Height="8" Margin="0 4 8 4" Fill="{DynamicResource GoldBrush}" VerticalAlignment="Center" />
-            <TextBlock Text="{Binding Selected.DisplayFirstPlaceTarget}" Style="{StaticResource TargetValue}"
-                IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=2}" />
+            <DockPanel Background="Transparent" ToolTip="{Binding Selected.DisplayFirstPlaceStat}">
+              <Ellipse Width="8" Height="8" Margin="0 4 8 4" Fill="{DynamicResource GoldBrush}" VerticalAlignment="Center" />
+              <TextBlock Text="{Binding Selected.DisplayFirstPlaceTarget}" Style="{StaticResource TargetValue}"
+                  IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=2}" />
+            </DockPanel>
 
-            <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{DynamicResource SilverBrush}" VerticalAlignment="Center" />
-            <TextBlock Text="{Binding Selected.DisplaySecondPlaceTarget}" Style="{StaticResource TargetValue}"
-                IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=3}" />
+            <DockPanel Background="Transparent" ToolTip="{Binding Selected.DisplaySecondPlaceStat}">
+              <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{DynamicResource SilverBrush}" VerticalAlignment="Center" />
+              <TextBlock Text="{Binding Selected.DisplaySecondPlaceTarget}" Style="{StaticResource TargetValue}"
+                  IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=3}" />
+            </DockPanel>
 
-            <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{DynamicResource BronzeBrush}" VerticalAlignment="Center" />
-            <TextBlock Text="{Binding Selected.DisplayThirdPlaceTarget}" Style="{StaticResource TargetValue}"
-                IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=4}" />
+            <DockPanel Background="Transparent" ToolTip="{Binding Selected.DisplayThirdPlaceStat}">
+              <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{DynamicResource BronzeBrush}" VerticalAlignment="Center" />
+              <TextBlock Text="{Binding Selected.DisplayThirdPlaceTarget}" Style="{StaticResource TargetValue}"
+                  IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=4}" />
+            </DockPanel>
           </StackPanel>
         </StackPanel>
 
@@ -353,7 +361,13 @@
               <DataTemplate>
                 <StackPanel Orientation="Horizontal">
                   <StackPanel.ToolTip>
-                    <ToolTip Content="{Binding AiLevel}" ContentStringFormat="{}AI level: {0}%" />
+                    <ToolTip>
+                      <StackPanel>
+                        <TextBlock Text="{Binding AiLevel, StringFormat='{}AI level: {0}%'}" />
+                        <TextBlock Text="{Binding PlaceStat, StringFormat='{}Won by {0:F1}% AC players'}"
+                            Visibility="{Binding PlaceStat, Converter={StaticResource MoreToVisibilityConverter}}" />
+                      </StackPanel>
+                    </ToolTip>
                   </StackPanel.ToolTip>
                   <Ellipse Width="8" Height="8" Margin="0 4 8 4" VerticalAlignment="Center"
                       Fill="{Binding Place, Converter={StaticResource RacePlaceToColorConverter}}" />

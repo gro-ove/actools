@@ -137,7 +137,7 @@ namespace AcManager.Pages.Drive {
                     var selectedCar = Model.SelectedCar;
                     var track = Model.SelectedTrack;
                     if (selectedCar == null || track == null) return;
-                    LapTimesManager.Instance.AddEntry(selectedCar.Id, track.IdWithLayout, DateTime.Now, TimeSpan.FromMilliseconds(_something -= 193)).Forget();
+                    LapTimesManager.Instance.AddEntry(selectedCar.Id, track.IdWithLayout, DateTime.Now, TimeSpan.FromMilliseconds(_something -= 193)).Ignore();
                 }), new KeyGesture(Key.L, ModifierKeys.Alt | ModifierKeys.Control)),
 #endif
             });
@@ -568,7 +568,7 @@ namespace AcManager.Pages.Drive {
                 if (uiMode && SettingsHolder.Drive.ShowExtraComboBoxes) {
                     CarsManager.Instance.WrappersList.ItemPropertyChanged += OnListItemPropertyChanged;
                     CarsManager.Instance.WrappersList.WrappedValueChanged += OnListWrappedValueChanged;
-                    CarsManager.Instance.EnsureLoadedAsync().Forget();
+                    CarsManager.Instance.EnsureLoadedAsync().Ignore();
                 }
 
                 CustomDateSupported = PatchHelper.IsFeatureSupported(PatchHelper.FeatureSpecificDate);
@@ -789,7 +789,7 @@ namespace AcManager.Pages.Drive {
 
                 UpdateConditions();
 
-                //UpdateHierarchicalWeatherList().Forget();
+                //UpdateHierarchicalWeatherList().Ignore();
                 //WeakEventManager<IBaseAcObjectObservableCollection, EventArgs>.AddHandler(WeatherManager.Instance.WrappersList,
                 //       nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
 
@@ -1047,6 +1047,7 @@ namespace AcManager.Pages.Drive {
         private static readonly Uri QuickDriveUri = new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative);
 
         public static void NavigateToPage() {
+            if (IsActive()) return;
             switch (Application.Current?.MainWindow) {
                 case MainWindow mainWindow:
                     mainWindow.NavigateTo(QuickDriveUri);

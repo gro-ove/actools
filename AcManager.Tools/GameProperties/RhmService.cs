@@ -143,7 +143,7 @@ namespace AcManager.Tools.GameProperties {
                     EnsureStopped();
                     break;
                 case nameof(SettingsHolder.Drive.RhmKeepAlivePeriod):
-                    ResetKeepAlive().Forget();
+                    ResetKeepAlive().Ignore();
                     break;
             }
         }
@@ -258,7 +258,7 @@ namespace AcManager.Tools.GameProperties {
             if (_process?.HasExitedSafe() != false) return;
             var visiblity = CheckVisibility();
             EnsureStopped();
-            EnsureRunnedAsync(visiblity == true).Forget();
+            EnsureRunnedAsync(visiblity == true).Ignore();
         }
 
         private AsyncCommand _showSettingsCommand;

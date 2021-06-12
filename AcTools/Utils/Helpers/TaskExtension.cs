@@ -8,22 +8,12 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class TaskExtension {
-        /// <summary>
-        /// Use .Ignore() instead, it captures exceptions properly.
-        /// </summary>
-        public static void Forget(this Task task) { }
-
-        /// <summary>
-        /// Use .Ignore() instead, it captures exceptions properly.
-        /// </summary>
-        public static void Forget<T>(this Task<T> task) { }
-
         public static void Ignore(this Task task) {
-            task.ContinueWith(x => { AcToolsLogging.Write(x.Exception?.Flatten()); }, TaskContinuationOptions.NotOnRanToCompletion);
+            task.ContinueWith(x => AcToolsLogging.Write(x.Exception?.Flatten()), TaskContinuationOptions.NotOnRanToCompletion);
         }
 
         public static void Ignore<T>(this Task<T> task) {
-            task.ContinueWith(x => { AcToolsLogging.Write(x.Exception?.Flatten()); }, TaskContinuationOptions.OnlyOnFaulted);
+            task.ContinueWith(x => AcToolsLogging.Write(x.Exception?.Flatten()), TaskContinuationOptions.OnlyOnFaulted);
         }
 
         [Pure]

@@ -98,6 +98,10 @@
               ToolTip="Disable if you want for users to join directly through IP (or using LAN connection)">
             <Label Content="Make server public (show on lobby)" />
           </CheckBox>
+          <CheckBox IsChecked="{Binding SelectedObject.DisableChecksums}"
+              ToolTip="With integrity verification disabled clients will be able to modify their versions of cars and tracks and get an unfair advantage">
+            <Label Content="Disable integrity verification (not recommended)" />
+          </CheckBox>
           <DockPanel Margin="0 20 0 8">
             <Label Content="Welcome msg file:" />
             <DockPanel Visibility="{Binding SelectedObject.WelcomeMessageMissing, Converter={StaticResource BooleanToVisibilityConverter}}"

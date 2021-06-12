@@ -177,7 +177,7 @@ namespace AcManager.Tools.Objects {
                     if (existing != null) {
                         if (existing.HardLinks.Any(x => FileUtils.ArePathsEqual(x, p.Key))) {
                             // Already correct version, do not touch
-                        } else if (existing.HardLinks.Any(x => !FileUtils.ArePathsEqual(Path.GetDirectoryName(x), directory))) {
+                        } else if (existing.HardLinks.Any(x => !FileUtils.ArePathsEqual(Path.GetDirectoryName(x) ?? string.Empty, directory))) {
                             Try(() => File.Delete(existing.Filename), ref totalFailures);
                         } else {
                             recycle.Add(existing.Filename);

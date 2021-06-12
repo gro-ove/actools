@@ -64,7 +64,7 @@ namespace AcManager.Pages.Dialogs {
                         }
 
                         if (_pack.Status == OnlineManagerStatus.Ready) {
-                            StartPinging().Forget();
+                            StartPinging().Ignore();
                         }
 
                         _pack.Ready += Pack_Ready;
@@ -120,7 +120,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             private void Pack_Ready(object sender, EventArgs e) {
-                StartPinging().Forget();
+                StartPinging().Ignore();
             }
 
             private bool FilterTest(object obj) {

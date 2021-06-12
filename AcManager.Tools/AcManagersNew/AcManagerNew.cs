@@ -106,8 +106,7 @@ namespace AcManager.Tools.AcManagersNew {
                 return;
             }
 
-            bool isFreshlyLoaded;
-            var obj = GetById(id, out isFreshlyLoaded);
+            var obj = GetById(id, out var isFreshlyLoaded);
 
 #if LOGGING
             Debug.WriteLine($"    id: {id}; object: {obj}; location: {obj?.Location}");
@@ -169,7 +168,7 @@ namespace AcManager.Tools.AcManagersNew {
                     if (obj != null) {
                         if (dir == change.NewLocation) {
                             if (isFreshlyLoaded) {
-                                // TODO: why without inversion? could be an issue? or some explanation required
+                                // TODO: why without inversion? could be an issue? some explanation is needed
                                 obj.Reload();
                             }
                             break;
@@ -207,8 +206,7 @@ namespace AcManager.Tools.AcManagersNew {
                 return;
             }
 
-            bool inner;
-            var objectLocation = GetLocationByFilename(fullPath, out inner)?.ToLowerInvariant();
+            var objectLocation = GetLocationByFilename(fullPath, out var inner)?.ToLowerInvariant();
             if (objectLocation == null) return;
 
             var objectId = Directories.GetId(objectLocation);
@@ -231,8 +229,7 @@ namespace AcManager.Tools.AcManagersNew {
         protected virtual void OnCreatedIgnored(string filename) {}
 
         private void OnCreated(string fullPath) {
-            bool inner;
-            var objectLocation = GetLocationByFilename(fullPath, out inner)?.ToLowerInvariant();
+            var objectLocation = GetLocationByFilename(fullPath, out var inner)?.ToLowerInvariant();
             if (objectLocation == null) return;
 
             var objectId = Directories.GetId(objectLocation);
@@ -246,7 +243,7 @@ namespace AcManager.Tools.AcManagersNew {
             }
 
             // some very special case for Kunos DLC content
-            if (objectId.StartsWith("ks_") && GetWrapperById(objectId) == null) {
+            if (objectId.StartsWith(@"ks_") && GetWrapperById(objectId) == null) {
                 GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Created, null, fullPath);
                 return;
             }
@@ -274,8 +271,7 @@ namespace AcManager.Tools.AcManagersNew {
         protected virtual void OnDeletedIgnored(string filename, string pseudoId) {}
 
         private void OnDeleted(string fullPath) {
-            bool inner;
-            var objectLocation = GetLocationByFilename(fullPath, out inner)?.ToLowerInvariant();
+            var objectLocation = GetLocationByFilename(fullPath, out var inner)?.ToLowerInvariant();
             if (objectLocation == null) return;
 
             var objectId = Directories.GetId(objectLocation);

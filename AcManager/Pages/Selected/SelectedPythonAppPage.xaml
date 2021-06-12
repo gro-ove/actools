@@ -50,7 +50,7 @@
 
       <StackPanel>
         <TextBlock Text="Windows:" Style="{StaticResource Label.Padding}" Margin="0 8 0 4" />
-        <mui:Switch Value="{Binding SelectedObject.Windows.Value.Count, FallbackValue=0}" Background="Transparent"
+        <mui:Switch Value="{Binding SelectedObject.Windows.Value.Count, FallbackValue=0}"
             ToolTip="You can add lines like “# app window: Window Name” to your code to help CM figure out their names" Height="27">
           <mui:BooleanSwitch Value="{Binding SelectedObject.Windows.IsSet}" mui:Switch.When="0">
             <mui:BooleanSwitch.True>

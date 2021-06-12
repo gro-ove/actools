@@ -7,6 +7,7 @@ using System.Windows.Data;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -102,7 +103,7 @@ namespace AcManager.Controls.ViewModels {
         private void SetGrouping() {
             if (_groupByPropertyName == null || _grouped) return;
             _grouped = true;
-            MainList.GroupDescriptions.Add(_groupDescription ?? new PropertyGroupDescription(
+            MainList.GroupDescriptions?.Add(_groupDescription ?? new PropertyGroupDescription(
                     $@"Value.{_groupByPropertyName}",
                     _groupByConverter == null ? null : new ToGroupNameConverter(_groupByConverter)));
         }
@@ -203,22 +204,31 @@ namespace AcManager.Controls.ViewModels {
         protected abstract void SaveCurrentKey(string id);
 
         private bool _userChange = true;
+        private bool _loadCurrentWaiting;
 
         private void LoadCurrent() {
-            if (!Loaded || _mainList.IsEmpty) return;
+            if (!Loaded || _mainList.IsEmpty || _loadCurrentWaiting) return;
 
             var selectedId = LoadCurrentId();
             if (selectedId == InvalidId) return;
 
-            var selected = selectedId == null ? null : _manager.GetObjectById(selectedId);
+            var selected = selectedId == null ? null : _manager.GetWrapperById(selectedId);
+            if (selected?.IsLoaded == false) {
+                _loadCurrentWaiting = true;
+                selected.LoadedAsync().ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => {
+                    _mainList.MoveCurrentToOrFirst(r.Result);
+                    _loadCurrentWaiting = false;
+                }));
+                return;
+            }
 
             _userChange = false;
             if (_allowNonSelected) {
-                _mainList.MoveCurrentToOrNull(selected);
+                _mainList.MoveCurrentToOrNull(selected?.Loaded());
             } else if (selected == null) {
                 _mainList.MoveCurrentToFirst();
             } else {
-                _mainList.MoveCurrentToOrFirst(selected);
+                _mainList.MoveCurrentToOrFirst(selected.Loaded());
             }
             _userChange = true;
         }

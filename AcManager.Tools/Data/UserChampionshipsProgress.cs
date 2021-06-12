@@ -22,7 +22,7 @@ namespace AcManager.Tools.Data {
 
         private UserChampionshipsProgress(string filename) {
             _filename = filename;
-            _watcher = KunosLauncherDataWatcher.Subscribe(_filename, () => { Reload().Forget(); }, () => {
+            _watcher = KunosLauncherDataWatcher.Subscribe(_filename, () => { Reload().Ignore(); }, () => {
                 lock (_ignoreChangesSync) {
                     return (DateTime.Now - _ignoreChanges).TotalSeconds < 1d;
                 }

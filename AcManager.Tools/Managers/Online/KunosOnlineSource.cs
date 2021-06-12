@@ -32,11 +32,11 @@ namespace AcManager.Tools.Managers.Online {
 
             public void Report(int value) {
                 _target.Report(value == 0 ? AsyncProgressEntry.Indetermitate :
-                        AsyncProgressEntry.FromStringIndetermitate($"Fallback to server #{value + 1}"));
+                        AsyncProgressEntry.FromStringIndetermitate(string.Format(ToolsStrings.OnlineSource_Loading_Fallback, value + 1)));
             }
         }
 
-        public async Task<bool> LoadAsync(ListAddCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+        public async Task<bool> LoadAsync(ListAddAsyncCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             if (SteamIdHelper.Instance.Value == null) {
                 throw new Exception(ToolsStrings.Common_SteamIdIsMissing);
             }
@@ -49,8 +49,8 @@ namespace AcManager.Tools.Managers.Online {
                 throw new InformativeException(ToolsStrings.Online_CannotLoadData, ToolsStrings.Common_MakeSureInternetWorks);
             }
 
-            progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Applying list…"));
-            callback(data);
+            progress?.Report(AsyncProgressEntry.FromStringIndetermitate(ToolsStrings.OnlineSource_Loading_FinalStep));
+            await callback(data).ConfigureAwait(false);
             return true;
         }
     }
@@ -68,7 +68,7 @@ namespace AcManager.Tools.Managers.Online {
             remove { }
         }
 
-        public async Task<bool> LoadAsync(ListAddCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+        public async Task<bool> LoadAsync(ListAddAsyncCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             var data = await Task.Run(() => KunosApiProvider.TryToGetMinoratingList(), cancellation);
             // if (cancellation.IsCancellationRequested) return false;
 
@@ -76,7 +76,7 @@ namespace AcManager.Tools.Managers.Online {
                 throw new InformativeException(ToolsStrings.Online_CannotLoadData, ToolsStrings.Common_MakeSureInternetWorks);
             }
 
-            callback(data);
+            await callback(data).ConfigureAwait(false);
             return true;
         }
     }

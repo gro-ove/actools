@@ -546,6 +546,7 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges_Drags}" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:drag&amp;Special=1" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges_TimeAttacks}"
             Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:time attack&amp;Special=1" />
+        <mui:Link DisplayName="Rarest to be won" Source="/Pages/Drive/SpecialEvents.xaml?Filter=rare+&amp;Special=1" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges_NotPassedYet}" Source="/Pages/Drive/SpecialEvents.xaml?Filter=passed-&amp;Special=1" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges_SomethingToImprove}"
             Source="/Pages/Drive/SpecialEvents.xaml?Filter=improvable+&amp;Special=1" />

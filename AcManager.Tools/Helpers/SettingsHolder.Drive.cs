@@ -167,12 +167,12 @@ namespace AcManager.Tools.Helpers {
                     ?? (_starterTypes = new[] {
                         AppIdStarterType,
                         OfficialStarterType,
-                        SidePassageStarterType,
+                        // SidePassageStarterType,
                         SteamStarterType,
                         TrickyStarterType,
-                        UiModuleStarterType,
+                        // UiModuleStarterType,
                         // StarterPlusType,
-                        SseStarterType,
+                        // SseStarterType,
                         NaiveStarterType,
                         DeveloperStarterType
                     });

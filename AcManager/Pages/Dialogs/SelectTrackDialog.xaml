@@ -35,8 +35,9 @@
               <Grid.Effect>
                 <BlurEffect Radius="20" KernelType="Box" RenderingBias="Quality" />
               </Grid.Effect>
-              <Image x:Name="BackgroundImage0" RenderOptions.BitmapScalingMode="LowQuality" Stretch="UniformToFill" Margin="-20" />
-              <Image x:Name="BackgroundImage1" RenderOptions.BitmapScalingMode="LowQuality" Opacity="0" Stretch="UniformToFill" Margin="-20">
+              <mui:BetterImage x:Name="BackgroundImage0" RenderOptions.BitmapScalingMode="LowQuality" Stretch="UniformToFill" Margin="-20" DecodeWidth="200" />
+              <mui:BetterImage x:Name="BackgroundImage1" RenderOptions.BitmapScalingMode="LowQuality" Stretch="UniformToFill" Margin="-20" DecodeWidth="200"
+                  Opacity="0">
                 <VisualStateManager.VisualStateGroups>
                   <VisualStateGroup>
                     <VisualState x:Name="State0">
@@ -51,7 +52,7 @@
                     </VisualState>
                   </VisualStateGroup>
                 </VisualStateManager.VisualStateGroups>
-              </Image>
+              </mui:BetterImage>
             </Grid>
           </VisualBrush.Visual>
         </VisualBrush>
@@ -70,8 +71,8 @@
         <c:FavouriteButton DockPanel.Dock="Right" VerticalAlignment="Center" IsChecked="{Binding SelectedTrack.IsFavourite}" Margin="0 0 8 0" />
         <mui:BetterImage Margin="4 4 8 0" Width="28" Height="28" StretchDirection="DownOnly" Filename="{Binding SelectedTrackConfiguration.OutlineImage}"
             CropTransparentAreas="True" />
-        <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding SelectedTrackConfiguration.Name}" FontFamily="{StaticResource DefaultFont}" FontWeight="Light" FontSize="24"
-            TextOptions.TextFormattingMode="Ideal" TextTrimming="CharacterEllipsis" />
+        <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding SelectedTrackConfiguration.Name}" FontFamily="{StaticResource DefaultFont}" FontWeight="Light"
+            FontSize="24" TextOptions.TextFormattingMode="Ideal" TextTrimming="CharacterEllipsis" />
       </DockPanel>
 
       <c:TrackBlock Track="{Binding SelectedTrackConfiguration}">

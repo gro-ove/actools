@@ -13,7 +13,7 @@ namespace AcManager.Pages.Settings {
 
         public class ViewModel : NotifyPropertyChanged {
             public ViewModel() {
-                PluginsManager.Instance.UpdateIfObsolete().Forget();
+                PluginsManager.Instance.UpdateIfObsolete().Ignore();
 
                 View = new BetterListCollectionView(PluginsManager.Instance.List);
                 View.SortDescriptions.Add(new SortDescription(nameof(PluginEntry.Name), ListSortDirection.Ascending));

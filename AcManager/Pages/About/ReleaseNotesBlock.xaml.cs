@@ -30,11 +30,11 @@ namespace AcManager.Pages.About {
 
         private void OnPieceChanged(PieceOfInformation newValue) {
             Root.DataContext = newValue;
-            MarkAsRead(newValue).Forget();
+            MarkAsRead(newValue).Ignore();
         }
 
         private void Handler(object sender, EventArgs eventArgs) {
-            MarkAsRead(Piece).Forget();
+            MarkAsRead(Piece).Ignore();
         }
 
         private async Task MarkAsRead(PieceOfInformation value) {

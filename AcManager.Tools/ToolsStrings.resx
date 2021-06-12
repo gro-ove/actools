@@ -1837,4 +1837,17 @@ Would you like to pack it before starting the server? But don’t forget to shar
   <data name="Shared_TyresGenerationParamsPreset" xml:space="preserve">
       <value>Tyres generation params preset</value>
   </data>
+  <data name="OnlineSource_Loading_Fallback" xml:space="preserve">
+      <value>Fallback to server #{0}</value>
+      <comment>Value is server index starting, from 1</comment>
+  </data>
+  <data name="OnlineSource_Loading_FinalStep" xml:space="preserve">
+      <value>Loading necessary content…</value>
+  </data>
+  <data name="SpecialEvent_StarterWarning" xml:space="preserve">
+      <value>You’re using {0} Starter. With it, you won’t get a Steam achievment, so progress won’t be saved. Are you sure you want to continue?</value>
+  </data>
+  <data name="SpecialEvent_StarterWarning_Solution" xml:space="preserve">
+      <value>Switch to Official Starter</value>
+  </data>
 </root>

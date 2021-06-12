@@ -26,7 +26,7 @@ namespace AcManager.Tools.Managers.InnerHelpers {
             Debug.WriteLine("ACMGR: WatchingTask.Action()");
             if (_actionInProcess) return;
             _actionInProcess = true;
-            AsyncAction().Forget();
+            AsyncAction().Ignore();
         }
 
         private async Task AsyncAction() {
@@ -66,7 +66,7 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                                     _queue.Clear();
                                 } else {
                                     Debug.WriteLine("ACMGR: WatchingTask.AsyncAction() Next");
-                                    AsyncAction().Forget();
+                                    AsyncAction().Ignore();
                                     return;
                                 }
                             }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
@@ -16,7 +17,9 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
     public enum RaceMode {
-        Laps, Timed, TimedExtra
+        Laps,
+        Timed,
+        TimedExtra
     }
 
     public partial class ServerEntry : INotifyDataErrorInfo {
@@ -194,6 +197,17 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private string[] _cspFeaturesList;
+
+        [CanBeNull]
+        public string[] CspFeaturesList {
+            get => _cspFeaturesList;
+            set => Apply(value, ref _cspFeaturesList, () => OnPropertyChanged(nameof(DisplayCspFeatures)));
+        }
+
+        [CanBeNull]
+        public string DisplayCspFeatures => CspFeaturesList?.Length > 0 ? CspFeaturesList.JoinToReadableString() : null;
+
         private int _currentDriversCount;
 
         public int CurrentDriversCount {
@@ -347,24 +361,41 @@ namespace AcManager.Tools.Managers.Online {
                 OnPropertyChanged();
 
                 if (oldCars != null) {
-                    foreach (var car in oldCars) {
-                        var wrapper = car?.CarWrapper;
-                        if (wrapper?.IsLoaded == true) {
+                    for (var i = oldCars.Count - 1; i >= 0; i--) {
+                        var wrapper = oldCars[i]?.CarWrapper;
+                        if (wrapper == null) continue;
+                        if (wrapper.IsLoaded) {
                             wrapper.Value.UnsubscribeWeak(OnContentNameChanged);
+                        }
+                        wrapper.UnsubscribeWeak(OnWrappedValueChanged);
+                    }
+                }
+
+                if (value != null) {
+                    for (var i = value.Count - 1; i >= 0; i--) {
+                        var wrapper = value[i]?.CarWrapper;
+                        if (wrapper?.IsLoaded == false) {
+                            wrapper.SubscribeWeak(OnWrappedValueChanged);
                         }
                     }
                 }
             }
         }
 
-        private void OnContentNameChanged(object sender, PropertyChangedEventArgs args) {
-            if (args.PropertyName == nameof(AcObjectNew.DisplayName)) {
-                ContentNameChanged?.Invoke(this, EventArgs.Empty);
+        private void OnWrappedValueChanged(object sender, PropertyChangedEventArgs args) {
+            if (args.PropertyName == nameof(AcItemWrapper.IsLoaded)) {
+                OnPropertyChanged(EventCarLoaded);
             }
         }
 
-        [UsedImplicitly]
-        public event EventHandler ContentNameChanged;
+        private void OnContentNameChanged(object sender, PropertyChangedEventArgs args) {
+            if (args.PropertyName == nameof(AcObjectNew.DisplayName)) {
+                OnPropertyChanged(EventContentNameChanged);
+            }
+        }
+
+        public const string EventCarLoaded = "EventCarLoadedChanged";
+        public const string EventContentNameChanged = "EventContentNameChanged";
 
         private int _connectedDrivers;
 
@@ -453,6 +484,7 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private bool _errorsReady;
         private IReadOnlyList<string> _errors = new List<string>();
 
         /// <summary>
@@ -460,13 +492,12 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         [NotNull]
         public IReadOnlyList<string> Errors {
-            get => _errors;
-            set {
-                if (Equals(value, _errors)) return;
-                _errors = value;
-                _errorsString = null;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(ErrorsString));
+            get {
+                if (!_errorsReady) {
+                    _errorsReady = true;
+                    _errors = GetErrorsList();
+                }
+                return _errors;
             }
         }
 
@@ -476,8 +507,8 @@ namespace AcManager.Tools.Managers.Online {
         /// Errors, already joined to one string, for optimization purposes.
         /// </summary>
         [CanBeNull]
-        public string ErrorsString => _errors == null ? null : (_errorsString
-                ?? (_errorsString = _errors.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => $@"• {x.Trim()}").JoinToString('\n')));
+        public string ErrorsString => _errorsString
+                ?? (_errorsString = Errors.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => $@"• {x.Trim()}").JoinToString('\n'));
 
         private bool _hasErrors;
 

@@ -248,7 +248,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty AsyncDecodeProperty = DependencyProperty.Register(nameof(AsyncDecode), typeof(bool),
-                typeof(BetterImage), new PropertyMetadata(true, (o, e) => { ((BetterImage)o)._asyncDecode = (bool)e.NewValue; }));
+                typeof(BetterImage), new PropertyMetadata(true,
+                        (o, e) => ((BetterImage)o)._asyncDecode = (bool)e.NewValue));
 
         private bool _asyncDecode = true;
 
@@ -380,7 +381,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static readonly DependencyProperty CropTransparentAreasProperty = DependencyProperty.Register(nameof(CropTransparentAreas), typeof(bool),
                 typeof(BetterImage),
                 new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure,
-                        (o, e) => { ((BetterImage)o)._cropTransparentAreas = (bool)e.NewValue; }));
+                        (o, e) => ((BetterImage)o)._cropTransparentAreas = (bool)e.NewValue));
 
         private bool _cropTransparentAreas;
 
@@ -940,7 +941,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         [Pure]
         private bool IsRemoteImage() {
-            return Filename != null && (Filename.StartsWith("http://") || Filename.StartsWith("https://"));
+            return Filename != null && (Filename.StartsWith(@"http://") || Filename.StartsWith(@"https://"));
         }
 
         /// <summary>
@@ -1229,22 +1230,50 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             var b = (BitmapSource)img;
-            if (FindCropArea(b, out var x0, out var y0, out var x1, out var y1)) return null;
+            FindCropArea(b, out var x0, out var y0, out var x1, out var y1);
 
             _lastCropMaskRef = new WeakReference<ImageSource>(img);
             _lastCropMaskRect = x1 == 0 ? (Rect?)null : new Rect(x0, y0, x1 - x0 + 1, y1 - y0 + 1);
             return _lastCropMaskRect;
         }
 
-        protected virtual unsafe bool FindCropArea(BitmapSource b, out int left, out int top, out int right, out int bottom) {
+        private bool CropAsync(ImageSource img) {
+            if (_lastCropMaskRef != null && _lastCropMaskRef.TryGetTarget(out var v) && ReferenceEquals(v, img)) {
+                return true;
+            }
+
+            ThreadPool.Run(() => {
+                FindCropMask(img);
+                ActionExtension.InvokeInMainThreadAsync(() => {
+                    InvalidateMeasure();
+                    InvalidateVisual();
+                });
+            });
+            return false;
+        }
+
+        public static Rect? FindTransparentCropMask(BitmapSource b) {
+            FindTransparentCropArea("static", b, out var x0, out var y0, out var x1, out var y1);
+            return x1 == 0 ? (Rect?)null : new Rect(x0, y0, x1 - x0 + 1, y1 - y0 + 1);
+        }
+
+        private static ThreadLocal<byte[]> _transparentCropData = new ThreadLocal<byte[]>(() => new byte[800 * 450]);
+
+        private static unsafe bool FindTransparentCropArea(string tag, BitmapSource b, out int left, out int top, out int right, out int bottom) {
             if (b.Format.Masks.Count != 4) {
                 left = top = right = bottom = 0;
                 return true;
             }
 
             int w = b.PixelWidth, h = b.PixelHeight, s = (w * b.Format.BitsPerPixel + 7) / 8;
-            var a = new byte[h * s];
-            b.CopyPixels(a, s, 0);
+            if (w > 800 || h > 450) {
+                Logging.Warning($"Image is too large to crop: {w}×{h}, tag: {tag}");
+                left = top = right = bottom = 0;
+                return true;
+            }
+
+            var data = _transparentCropData.Value;
+            b.CopyPixels(data, s, 0);
 
             var k = b.Format.Masks.ElementAtOrDefault(0).Mask;
             if (k == null) {
@@ -1257,7 +1286,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             left = w;
             top = h;
             bottom = right = 0;
-            fixed (byte* p = a) {
+            fixed (byte* p = data) {
                 var u = (uint*)p;
                 var o = 0;
                 for (var y = 0; y < h; y++) {
@@ -1274,6 +1303,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return false;
         }
 
+        protected virtual bool FindCropArea(BitmapSource b, out int left, out int top, out int right, out int bottom) {
+            return FindTransparentCropArea(Filename, b, out left, out top, out right, out bottom);
+        }
+
         protected override void OnRender(DrawingContext dc) {
             var bi = _current.ImageSource;
             if (bi == null && HideBroken) return;
@@ -1284,11 +1317,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (bi == null) {
                 broken = true;
             } else {
-                var cropNullable = CropTransparentAreas ? FindCropMask(bi) : Crop;
+                var cropTransparent = CropTransparentAreas;
+                if (cropTransparent && !CropAsync(bi)) return;
+
+                var cropNullable = cropTransparent ? _lastCropMaskRect : Crop;
                 if (cropNullable.HasValue) {
                     try {
                         var crop = cropNullable.Value;
-                        var cropped = new CroppedBitmap((BitmapSource)bi, CropTransparentAreas || CropUnits != ImageCropMode.Relative ?
+                        var cropped = new CroppedBitmap((BitmapSource)bi, cropTransparent || CropUnits != ImageCropMode.Relative ?
                                 new Int32Rect((int)crop.Left, (int)crop.Top, (int)crop.Width, (int)crop.Height) :
                                 new Int32Rect(
                                         (int)(crop.Left * _current.Width), (int)(crop.Top * _current.Height),
@@ -1361,11 +1397,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return new Size(double.IsNaN(Width) ? 0d : Width, double.IsNaN(Height) ? 0d : Height);
             }
 
+            var cropTransparent = CropTransparentAreas;
+            if (cropTransparent && !CropAsync(bi)) {
+                return new Size(double.IsNaN(Width) ? 0d : Width, double.IsNaN(Height) ? 0d : Height);
+            }
+
             Size size;
-            var cropNullable = CropTransparentAreas ? FindCropMask(bi) : Crop;
+            var cropNullable = cropTransparent ? _lastCropMaskRect : Crop;
             if (cropNullable.HasValue) {
                 var crop = cropNullable.Value;
-                size = CropTransparentAreas || CropUnits != ImageCropMode.Relative ?
+                size = cropTransparent || CropUnits != ImageCropMode.Relative ?
                         new Size(crop.Width, crop.Height) :
                         new Size(crop.Width * _current.Width, crop.Height * _current.Height);
             } else {

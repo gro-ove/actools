@@ -116,10 +116,10 @@ namespace AcManager.Pages.Selected {
                         break;
                     case nameof(UserChampionshipObject.Drivers):
                         UpdatePointsArray();
-                        LoadRaceGridLaterAsync().Forget();
+                        LoadRaceGridLaterAsync().Ignore();
                         break;
                     case nameof(UserChampionshipObject.SerializedRaceGridData):
-                        LoadRaceGridLaterAsync().Forget();
+                        LoadRaceGridLaterAsync().Ignore();
                         break;
                     case nameof(UserChampionshipObject.MainPlayerCarEntry):
                         // TODO: Several cars
@@ -217,7 +217,7 @@ namespace AcManager.Pages.Selected {
             }
 
             private void OnRaceGridViewModelChanged(object sender, EventArgs e) {
-                UpdateSerializedRaceGridDataLaterAsync().Forget();
+                UpdateSerializedRaceGridDataLaterAsync().Ignore();
             }
 
             private bool _updatingSerializedRaceGridData;

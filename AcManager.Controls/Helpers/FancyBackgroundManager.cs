@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -13,7 +12,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Converters;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.Helpers {
@@ -43,13 +42,13 @@ namespace AcManager.Controls.Helpers {
         public void AddListener(IFancyBackgroundListener listener) {
             _listener.Add(listener);
             if (Enabled) {
-                UpdateBackgroundLater(listener).Forget();
+                UpdateBackgroundLater(listener).Ignore();
             }
         }
 
         public void Recreate(IFancyBackgroundListener listener) {
             if (Enabled) {
-                UpdateBackgroundLater(listener).Forget();
+                UpdateBackgroundLater(listener).Ignore();
             }
         }
 
@@ -64,7 +63,7 @@ namespace AcManager.Controls.Helpers {
 
         private void Dispatch() {
             foreach (var listener in _listener) {
-                UpdateBackgroundLater(listener).Forget();
+                UpdateBackgroundLater(listener).Ignore();
             }
         }
 
@@ -172,12 +171,12 @@ namespace AcManager.Controls.Helpers {
             }
 
             var frameworkElement = (FrameworkElement)visualBrush.Visual;
-            var backgroundImage0 = (Image)LogicalTreeHelper.FindLogicalNode(frameworkElement, @"BackgroundImage0");
-            var backgroundImage1 = (Image)LogicalTreeHelper.FindLogicalNode(frameworkElement, @"BackgroundImage1");
+            var backgroundImage0 = (BetterImage)LogicalTreeHelper.FindLogicalNode(frameworkElement, @"BackgroundImage0");
+            var backgroundImage1 = (BetterImage)LogicalTreeHelper.FindLogicalNode(frameworkElement, @"BackgroundImage1");
             if (backgroundImage0 == null || backgroundImage1 == null) return;
 
             var state = frameworkElement.Tag as int? ?? 0;
-            (state == 0 ? backgroundImage1 : backgroundImage0).Source = UriToCachedImageConverter.Convert(Instance.BackgroundFilename);
+            (state == 0 ? backgroundImage1 : backgroundImage0).Filename = Instance.BackgroundFilename;
             VisualStateManager.GoToElementState(backgroundImage1, @"State" + state, true);
             frameworkElement.Tag = 1 - state;
         }

@@ -99,7 +99,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             if (dirty) {
-                PingEverything(null).Forget();
+                PingEverything(null).Ignore();
             }
         }
 
@@ -112,7 +112,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             if (dirty) {
-                PingEverything(null).Forget();
+                PingEverything(null).Ignore();
             }
         }
 
@@ -125,7 +125,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             if (dirty) {
-                PingEverything(null).Forget();
+                PingEverything(null).Ignore();
             }
         }
 

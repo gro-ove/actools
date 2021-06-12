@@ -73,7 +73,9 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
-        private bool _isLoaded;
+        internal volatile object CurrentlyLoadingTask;
+
+        private  bool _isLoaded;
 
         public bool IsLoaded {
             get => _isLoaded;

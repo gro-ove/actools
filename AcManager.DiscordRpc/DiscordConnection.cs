@@ -220,7 +220,7 @@ namespace AcManager.DiscordRpc {
                             Discriminator = (string)u["discriminator"],
                             UserName = (string)u["username"],
                         }, cancellation.Token, reply => {
-                            // ReplyWith(userId, reply).Forget();
+                            // ReplyWith(userId, reply).Ignore();
                             _reply = Tuple.Create(userId, reply);
                         });
                     }

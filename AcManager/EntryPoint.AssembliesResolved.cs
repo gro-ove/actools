@@ -34,6 +34,11 @@ namespace AcManager {
         private static void MainInner(string[] args) {
             if (AppUpdater.OnStartup(args)) return;
 
+            if (string.Equals(MainExecutingFile.Name, "SteamStatisticsReader.exe", StringComparison.OrdinalIgnoreCase)
+                    && SteamAchievementsReader.Handle(args)) {
+                return;
+            }
+
             if (args.Length == 2 && args[0] == "--run") {
                 Process.Start(args[1]);
                 return;

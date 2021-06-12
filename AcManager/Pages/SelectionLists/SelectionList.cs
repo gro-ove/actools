@@ -92,7 +92,7 @@ namespace AcManager.Pages.SelectionLists {
             _items = new BetterObservableCollection<TItem>(Rebuild());
 
             if (!manager.IsLoaded) {
-                EnsureLoaded(isCacheable).Forget();
+                EnsureLoaded(isCacheable).Ignore();
             }
 
             Loaded += OnLoaded;

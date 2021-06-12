@@ -1,5 +1,4 @@
-﻿using FirstFloor.ModernUI.Helpers;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace AcManager.Tools.Data {
     public class WeatherDescription {
@@ -40,7 +39,6 @@ namespace AcManager.Tools.Data {
             Humidity = humidity;
             Pressure = pressure;
             Icon = icon;
-            Logging.Debug(icon);
         }
     }
 }

@@ -36,6 +36,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Utils.Physics;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -54,7 +55,7 @@ namespace AcManager.Pages.Selected {
 
                 if (!liteMode) {
                     AcContext.Instance.CurrentCar = acObject;
-                    InitializeLater().Forget();
+                    InitializeLater().Ignore();
                 }
 
                 if (acObject.Author != AcCommonObject.AuthorKunos) {
@@ -105,7 +106,7 @@ namespace AcManager.Pages.Selected {
                         }
                         break;
                     case nameof(CarObject.SoundDonorId):
-                        SelectedObject.GetSoundOrigin().Forget();
+                        SelectedObject.GetSoundOrigin().Ignore();
                         break;
                 }
             }
@@ -267,7 +268,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue),
-                            p => { QuickDrive.RunAsync(SelectedObject, SelectedObject.SelectedSkin?.Id, presetFilename: p.VirtualFilename).Forget(); });
+                            p => { QuickDrive.RunAsync(SelectedObject, SelectedObject.SelectedSkin?.Id, presetFilename: p.VirtualFilename).Ignore(); });
                 }
             }
 
@@ -283,13 +284,13 @@ namespace AcManager.Pages.Selected {
 
             private DelegateCommand _manageSkinsCommand;
 
-            public DelegateCommand ManageSkinsCommand
-                => _manageSkinsCommand ?? (_manageSkinsCommand = new DelegateCommand(() => { CarSkinsListPage.Open(SelectedObject); }));
+            public DelegateCommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new DelegateCommand(() =>
+                        CarSkinsListPage.Open(SelectedObject)));
 
             private DelegateCommand _manageSetupsCommand;
 
-            public DelegateCommand ManageSetupsCommand
-                => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() => { CarSetupsListPage.Open(SelectedObject); }));
+            public DelegateCommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() =>
+                        CarSetupsListPage.Open(SelectedObject)));
 
             private string DataDirectory => Path.Combine(SelectedObject.Location, "data");
 
@@ -304,7 +305,15 @@ namespace AcManager.Pages.Selected {
                 } catch (Exception e) {
                     NonfatalError.Notify(ToolsStrings.Common_CannotReadData, e);
                 }
-            }, () => SettingsHolder.Common.DeveloperMode && SelectedObject.AcdData?.IsPacked == true));
+            }, () => {
+                if (!SettingsHolder.Common.DeveloperMode) return false;
+                var task = SelectedObject.GetAcdDataAsync();
+                if (task.IsCompleted) {
+                    return task.Result?.IsPacked == true;
+                }
+                task.ContinueWithInMainThread(r => _readDataCommand?.RaiseCanExecuteChanged());
+                return false;
+            }));
 
             private DelegateCommand _extractSoundCommand;
 
@@ -342,27 +351,23 @@ namespace AcManager.Pages.Selected {
 
             private DelegateCommand _uploadToWorkshopCommand;
 
-            public DelegateCommand UploadToWorkshopCommand
-                =>
-                        _uploadToWorkshopCommand
-                                ?? (_uploadToWorkshopCommand =
-                                        new DelegateCommand(() => { new WorkshopUpload(SelectedObject).ShowDialog(); },
-                                                () => WorkshopClient.OptionCreatorAvailable));
+            public DelegateCommand UploadToWorkshopCommand => _uploadToWorkshopCommand ?? (_uploadToWorkshopCommand = new DelegateCommand(() =>
+                    new WorkshopUpload(SelectedObject).ShowDialog(), () => WorkshopClient.OptionCreatorAvailable));
 
             private AsyncCommand _replaceSoundCommand;
 
-            public AsyncCommand ReplaceSoundCommand => _replaceSoundCommand ??
-                    (_replaceSoundCommand = new AsyncCommand(() => CarSoundReplacer.Replace(SelectedObject)));
+            public AsyncCommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new AsyncCommand(() =>
+                            CarSoundReplacer.Replace(SelectedObject)));
 
             private AsyncCommand _replaceTyresCommand;
 
-            public AsyncCommand ReplaceTyresCommand => _replaceTyresCommand ??
-                    (_replaceTyresCommand = new AsyncCommand(() => CarReplaceTyresDialog.RunAsync(SelectedObject)));
+            public AsyncCommand ReplaceTyresCommand => _replaceTyresCommand ?? (_replaceTyresCommand = new AsyncCommand(() =>
+                            CarReplaceTyresDialog.RunAsync(SelectedObject)));
 
             private DelegateCommand _carAnalyzerCommand;
 
             public DelegateCommand CarAnalyzerCommand
-                => _carAnalyzerCommand ?? (_carAnalyzerCommand = new DelegateCommand(() => { CarAnalyzer.Run(SelectedObject); }));
+                => _carAnalyzerCommand ?? (_carAnalyzerCommand = new DelegateCommand(() => CarAnalyzer.Run(SelectedObject)));
 
             public AsyncCommand ClearStatsCommand => SelectedObject.ClearStatsCommand;
 
@@ -664,7 +669,7 @@ namespace AcManager.Pages.Selected {
             var obj = CarsManager.Instance.GetById(id);
             if (obj == null) return false;
 
-            _object.SkinsManager.EnsureLoadedAsync().Forget();
+            _object.SkinsManager.EnsureLoadedAsync().Ignore();
 
             _id = id;
             _object = obj;
@@ -779,11 +784,11 @@ namespace AcManager.Pages.Selected {
             contextMenu.Items.Add(item);
 
             item = new MenuItem { Header = AppStrings.Toolbar_GenerateLivery, ToolTip = AppStrings.Solution_GenerateLivery_Details };
-            item.Click += (sender, args) => LiveryIconEditor.GenerateAsync(skin).Forget();
+            item.Click += (sender, args) => LiveryIconEditor.GenerateAsync(skin).Ignore();
             contextMenu.Items.Add(item);
 
             item = new MenuItem { Header = AppStrings.Toolbar_GenerateRandomLivery, ToolTip = AppStrings.Solution_RandomLivery_Details };
-            item.Click += (sender, args) => LiveryIconEditor.GenerateRandomAsync(skin).Forget();
+            item.Click += (sender, args) => LiveryIconEditor.GenerateRandomAsync(skin).Ignore();
             contextMenu.Items.Add(item);
 
             contextMenu.Items.Add(new Separator());

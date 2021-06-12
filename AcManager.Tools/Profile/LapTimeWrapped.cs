@@ -29,7 +29,7 @@ namespace AcManager.Tools.Profile {
         [CanBeNull]
         public CarObject Car {
             get {
-                PrepareCar().Forget();
+                PrepareCar().Ignore();
                 return _car;
             }
             set => Apply(value, ref _car);
@@ -49,7 +49,7 @@ namespace AcManager.Tools.Profile {
         [CanBeNull]
         public TrackObjectBase Track {
             get {
-                PrepareTrack().Forget();
+                PrepareTrack().Ignore();
                 return _track;
             }
             set => Apply(value, ref _track);

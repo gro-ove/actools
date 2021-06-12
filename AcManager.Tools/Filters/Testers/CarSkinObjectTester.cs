@@ -60,6 +60,7 @@ namespace AcManager.Tools.Filters.Testers {
                     return value.Test(obj.Priority ?? 0);
             }
 
+            obj.FullDetailsRequired();
             return AcJsonObjectTester.Instance.Test(obj, key, value);
         }
 

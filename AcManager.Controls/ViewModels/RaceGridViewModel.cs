@@ -325,8 +325,8 @@ namespace AcManager.Controls.ViewModels {
                             var carSkinId = data.SkinIds?.ArrayElementAtOrDefault(i);
                             return new RaceGridEntry(x) {
                                 CandidatePriority = data.CandidatePriorities?.ElementAtOr(i, 1) ?? 1,
-                                AiLevel = aiLevel >= 0 ? aiLevel : (int?)null,
-                                AiAggression = aiAggression >= 0 ? aiAggression : (int?)null,
+                                AiLevel = aiLevel >= 0 ? aiLevel : null,
+                                AiAggression = aiAggression >= 0 ? aiAggression : null,
                                 Ballast = data.Ballasts?.ArrayElementAtOrDefault(i) ?? 0,
                                 Restrictor = data.Restrictors?.ArrayElementAtOrDefault(i) ?? 0,
                                 Name = data.Names?.ArrayElementAtOrDefault(i),
@@ -353,7 +353,7 @@ namespace AcManager.Controls.ViewModels {
 
                         return new RaceGridEntry(x) {
                             AiLevel = aiLevel >= 0 ? aiLevel : null,
-                            AiAggression = aiAggression >= 0 ? aiAggression : (int?)null,
+                            AiAggression = aiAggression >= 0 ? aiAggression : null,
                             Ballast = data.Ballasts?.ArrayElementAtOrDefault(i) ?? 0,
                             Restrictor = data.Restrictors?.ArrayElementAtOrDefault(i) ?? 0,
                             Name = data.Names?.ArrayElementAtOrDefault(i),
@@ -398,7 +398,7 @@ namespace AcManager.Controls.ViewModels {
                 UpdateViewFilter();
 
                 if (Mode != BuiltInGridMode.CandidatesManual) {
-                    RebuildGridAsync().Forget();
+                    RebuildGridAsync().Ignore();
                 } else {
                     LoadLaterProperties(NonfilteredList);
                 }
@@ -537,7 +537,7 @@ namespace AcManager.Controls.ViewModels {
                 if (value == BuiltInGridMode.SameCar) {
                     NonfilteredList.ReplaceEverythingBy(_playerCar == null ? new RaceGridEntry[0] : new[] { new RaceGridEntry(_playerCar) });
                 } else if (value != BuiltInGridMode.CandidatesManual && value.CandidatesMode) {
-                    RebuildGridAsync().Forget();
+                    RebuildGridAsync().Ignore();
                 } else if (!value.CandidatesMode == previousMode?.CandidatesMode) {
                     if (previousMode == BuiltInGridMode.SameCar && NonfilteredList.Count == 1) {
                         var opponent = NonfilteredList[0];
@@ -955,7 +955,7 @@ namespace AcManager.Controls.ViewModels {
                 OnPropertyChanged();
 
                 if (Mode.AffectedByCar) {
-                    RebuildGridAsync().Forget();
+                    RebuildGridAsync().Ignore();
                 }
 
                 if (!Mode.CandidatesMode && StartingPosition > 0) {
@@ -981,7 +981,7 @@ namespace AcManager.Controls.ViewModels {
                 OnPropertyChanged();
 
                 if (Mode.AffectedByTrack) {
-                    RebuildGridAsync().Forget();
+                    RebuildGridAsync().Ignore();
                 }
 
                 if (value != null) {

@@ -693,7 +693,7 @@ namespace AcManager.CustomShowroom {
         #endregion
 
         protected void LoadScene(SaveableData o) {
-            LoadShowroom(o.ShowroomId).Forget();
+            LoadShowroom(o.ShowroomId).Ignore();
 
             AmbientDownColor = o.AmbientDownColor;
             AmbientUpColor = o.AmbientUpColor;

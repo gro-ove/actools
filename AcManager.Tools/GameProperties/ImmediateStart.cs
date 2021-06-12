@@ -19,7 +19,7 @@ namespace AcManager.Tools.GameProperties {
                 return SetSharedListener();
             }
 
-            RunDelayed().Forget();
+            RunDelayed().Ignore();
             return new ActionAsDisposable(() => _cancelled = true);
         }
 
@@ -64,7 +64,7 @@ namespace AcManager.Tools.GameProperties {
             }
 
             AcSharedMemory.Instance.Start += Handler;
-            // PeriodicChecks().Forget();
+            // PeriodicChecks().Ignore();
 
             return new ActionAsDisposable(() => {
                 _cancelled = true;

@@ -106,11 +106,19 @@ namespace AcManager.Tools.Objects {
         protected static readonly Dictionary<string, JObject> RecentlyParsed = new Dictionary<string, JObject>();
 
         protected override bool LoadJsonOrThrow() {
-            if (!RecentlyParsed.TryGetValue(JsonFilename, out var jObject)) {
+            bool gotValue;
+            JObject jObject;
+            lock (RecentlyParsed) {
+                gotValue = RecentlyParsed.TryGetValue(JsonFilename, out jObject);
+            }
+
+            if (!gotValue) {
                 return base.LoadJsonOrThrow();
             }
 
-            RecentlyParsed.Remove(JsonFilename);
+            lock (RecentlyParsed) {
+                RecentlyParsed.Remove(JsonFilename);
+            }
             JsonObject = jObject;
             LoadData(jObject);
             return true;

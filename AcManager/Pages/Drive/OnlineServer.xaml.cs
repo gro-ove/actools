@@ -79,7 +79,7 @@ namespace AcManager.Pages.Drive {
         private void Initialize() {
             var entry = _holder.Value;
             if (entry.Status == ServerStatus.Unloaded) {
-                entry.Update(ServerEntry.UpdateMode.Normal).Forget();
+                entry.Update(ServerEntry.UpdateMode.Normal).Ignore();
             }
 
             DataContext = new ViewModel(entry, _discordPresence);
@@ -169,7 +169,7 @@ namespace AcManager.Pages.Drive {
 
             var entry = _holder.Value;
             if (entry.Status == ServerStatus.Unloaded) {
-                entry.Update(ServerEntry.UpdateMode.Normal).Forget();
+                entry.Update(ServerEntry.UpdateMode.Normal).Ignore();
             }
 
             Model.AutoJoinActive = false;
@@ -298,7 +298,7 @@ namespace AcManager.Pages.Drive {
 
             Model.Entry.OnTick();
             if (RequiresUpdate()) {
-                Model.Entry.Update(ServerEntry.UpdateMode.Normal, true).Forget();
+                Model.Entry.Update(ServerEntry.UpdateMode.Normal, true).Ignore();
             }
         }
 
@@ -458,7 +458,7 @@ namespace AcManager.Pages.Drive {
         private void SkinsList_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
             var entry = Model.Entry;
             if (entry.IsBooked && entry.BookingTimeLeft > TimeSpan.FromSeconds(3)) {
-                entry.RebookSkin().Forget();
+                entry.RebookSkin().Ignore();
             }
         }
 

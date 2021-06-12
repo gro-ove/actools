@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Localizable;
@@ -29,15 +30,33 @@ namespace FirstFloor.ModernUI.Helpers {
         public static string JoinToReadableString([CanBeNull] this IEnumerable<string> items) {
             if (items == null) return null;
 
-            var list = items as IReadOnlyList<string> ?? items.ToList();
-            switch (list.Count) {
-                case 0:
-                    return string.Empty;
-                case 1:
-                    return list[0];
-                default:
-                    return $@"{string.Join(@", ", list.Take(list.Count - 1))} {UiStrings.Common_And} {list.Last()}";
+            var builder = new StringBuilder();
+            var lastIndex = -1;
+            foreach (var item in items) {
+                if (lastIndex != -1) {
+                    builder.Append(@", ");
+                }
+                lastIndex = builder.Length;
+                builder.Append(item);
             }
+
+            if (lastIndex == -1) {
+                return string.Empty;
+            }
+
+            if (lastIndex == 0) {
+                return builder.ToString();
+            }
+
+            var totalLength = builder.Length;
+            var result = new StringBuilder();
+            result.EnsureCapacity(totalLength + UiStrings.Common_And.Length);
+            result.Append(builder.ToString(0, lastIndex - 2));
+            result.Append(' ');
+            result.Append(UiStrings.Common_And);
+            result.Append(' ');
+            result.Append(builder.ToString(lastIndex, totalLength - lastIndex));
+            return result.ToString();
         }
 
         public static string ToDisplayWindDirection(this int windDirection, bool randomWindDirection = false) {

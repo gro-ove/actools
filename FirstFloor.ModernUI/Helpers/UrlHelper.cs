@@ -262,6 +262,9 @@ console.log(result);
                     case 'n':
                     case 'N':
                         return Contains(@"ame");
+                    case 'w':
+                    case 'W':
+                        return Contains(@"ork");
                 }
             } else if (length == 5) {
                 switch (s[index]) {

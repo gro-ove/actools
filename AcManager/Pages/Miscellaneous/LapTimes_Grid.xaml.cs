@@ -19,7 +19,7 @@ namespace AcManager.Pages.Miscellaneous {
         public void Load() {
             CarsManager.Instance.EnsureLoaded();
             TracksManager.Instance.EnsureLoaded();
-            LapTimesManager.Instance.UpdateAsync().Forget();
+            LapTimesManager.Instance.UpdateAsync().Ignore();
         }
 
         public void Initialize() {

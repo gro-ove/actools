@@ -1,12 +1,12 @@
-using System;
 using System.Collections;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Media;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public abstract class BaseSwitch : ContentControl {
+    public abstract class BaseSwitch : FrameworkElement {
         public static readonly DependencyProperty ResetElementNameBindingsProperty = DependencyProperty.Register(nameof(ResetElementNameBindings), typeof(bool),
                 typeof(BaseSwitch), new FrameworkPropertyMetadata(false));
 
@@ -19,50 +19,69 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected abstract UIElement GetChild();
 
         private UIElement _child;
-        private bool _reattachChild;
+        private bool _busy;
+
+        protected override IEnumerator LogicalChildren => _child == null ? EmptyEnumerator.Instance : new SingleChildEnumerator(_child);
+
+        protected override int VisualChildrenCount => _child != null ? 1 : 0;
+
+        protected override Visual GetVisualChild(int index) {
+            return _child;
+        }
 
         private void SetActiveChild([CanBeNull] UIElement child) {
             if (ReferenceEquals(_child, child)) return;
 
-            if (_reattachChild) {
-                Content = null;
-                AddLogicalChild(_child);
+            if (_busy) {
+#if DEBUG
+                Logging.Warning("Already updating");
+#endif
+                return;
             }
 
-            _reattachChild = child is FrameworkElement fe && fe.Parent == this;
-            if (_reattachChild) {
-                RemoveLogicalChild(child);
+            _busy = true;
+
+            if (_child != null) {
+                RemoveVisualChild(_child);
+                RemoveLogicalChild(_child);
             }
 
             _child = child;
-            Content = child;
-
-            if (ResetElementNameBindings) {
-                child?.ResetElementNameBindings();
+            if (_child != null) {
+                AddLogicalChild(_child);
+                AddVisualChild(_child);
+                if (ResetElementNameBindings) {
+                    _child.ResetElementNameBindings();
+                }
             }
 
             InvalidateMeasure();
             InvalidateVisual();
+            _busy = false;
         }
 
-        private void UpdateActiveChild() {
-            SetActiveChild(GetChild());
+        protected void UpdateActiveChild() {
+            var newChild = GetChild();
+            if (newChild != _child) {
+                InvalidateMeasure();
+            }
         }
 
         protected static void OnChildDefiningPropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
             if (!(sender is BaseSwitch b)) return;
-            // b.InvalidateMeasure();
             b.UpdateActiveChild();
         }
 
-        public override void OnApplyTemplate() {
-            base.OnApplyTemplate();
-            UpdateActiveChild();
+        protected override Size MeasureOverride(Size constraint) {
+            SetActiveChild(GetChild());
+            if (_child == null) return new Size();
+            _child.Measure(constraint);
+            return _child.DesiredSize;
         }
 
-        protected override Size MeasureOverride(Size constraint) {
-            UpdateActiveChild();
-            return base.MeasureOverride(constraint);
+        protected override Size ArrangeOverride(Size arrangeBounds) {
+            _child?.Arrange(new Rect(arrangeBounds));
+            return arrangeBounds;
         }
 
         protected static void OnWhenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -70,40 +89,5 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 element.GetParent<BaseSwitch>()?.UpdateActiveChild();
             }
         }
-    }
-
-    internal class EmptyEnumerator : IEnumerator {
-        private EmptyEnumerator() { }
-
-        public static IEnumerator Instance => _instance ?? (_instance = new EmptyEnumerator());
-
-        public void Reset() { }
-
-        public bool MoveNext() { return false; }
-
-        public object Current => throw new InvalidOperationException();
-
-        private static IEnumerator _instance;
-    }
-
-    internal class SingleChildEnumerator : IEnumerator {
-        internal SingleChildEnumerator(object child) {
-            _child = child;
-            _count = child == null ? 0 : 1;
-        }
-
-        object IEnumerator.Current => _index == 0 ? _child : null;
-
-        bool IEnumerator.MoveNext() {
-            return ++_index < _count;
-        }
-
-        void IEnumerator.Reset() {
-            _index = -1;
-        }
-
-        private int _index = -1;
-        private readonly int _count;
-        private readonly object _child;
     }
 }

@@ -17,6 +17,7 @@ using AcManager.Tools.Managers.Directories;
 using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -27,11 +28,13 @@ namespace AcManager.Tools.Objects {
         [NotNull]
         public string CarId { get; }
 
+        private string _nameCacheKey;
         private readonly Lazy<string> _nameFromId;
 
         public CarSkinObject([NotNull] string carId, IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             CarId = carId;
+            _nameCacheKey = $@"{carId}:{id}";
             _nameFromId = new Lazy<string>(() => {
                 var cut = Regex.Replace(Id, @"^\d\d?_", "");
                 if (string.IsNullOrEmpty(cut)) cut = Id;
@@ -41,6 +44,33 @@ namespace AcManager.Tools.Objects {
 
         public string NameFromId => _nameFromId.Value;
 
+        private bool _fullDetailsRequired;
+
+        public void FullDetailsRequired() {
+            if (_fullDetailsRequired) return;
+            _fullDetailsRequired = true;
+            Load();
+            PastLoad();
+        }
+
+        public override void Load() {
+            InitializeLocationsOnce();
+            if (!_fullDetailsRequired) {
+                var name = CacheStorage.Get<string>(_nameCacheKey);
+                if (name != null) {
+                    ClearErrors();
+                    ClearData();
+                    Loaded = false;
+                    Name = name;
+                    Changed = false;
+                    Loaded = true;
+                    return;
+                }
+            }
+            base.Load();
+            CacheStorage.Set(_nameCacheKey, Name);
+        }
+
         protected override bool LoadJsonOrThrow() {
             if (!File.Exists(JsonFilename)) {
                 ClearData();
@@ -48,13 +78,15 @@ namespace AcManager.Tools.Objects {
                 Changed = true;
                 return true;
             }
-
             return base.LoadJsonOrThrow();
         }
 
         public override Task SaveAsync() {
+            FullDetailsRequired();
+
             var json = new JObject();
             SaveData(json);
+            CacheStorage.Set(_nameCacheKey, Name);
 
             Changed = false;
             using (CarsManager.Instance.IgnoreChanges()) {
@@ -135,7 +167,10 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string DriverName {
-            get => _driverName;
+            get {
+                FullDetailsRequired();
+                return _driverName;
+            }
             set {
                 if (Equals(value, _driverName)) return;
                 _driverName = value;
@@ -152,7 +187,10 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string Team {
-            get => _team;
+            get {
+                FullDetailsRequired();
+                return _team;
+            }
             set {
                 if (Equals(value, _team)) return;
                 _team = value;
@@ -176,7 +214,10 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string SkinNumber {
-            get => _skinNumber;
+            get {
+                FullDetailsRequired();
+                return _skinNumber;
+            }
             set {
                 if (Equals(value, _skinNumber)) return;
                 _skinNumber = value;
@@ -192,7 +233,10 @@ namespace AcManager.Tools.Objects {
         private int? _priority;
 
         public int? Priority {
-            get => _priority;
+            get {
+                FullDetailsRequired();
+                return _priority;
+            }
             set {
                 if (Equals(value, _priority)) return;
                 _priority = value;
@@ -261,7 +305,7 @@ namespace AcManager.Tools.Objects {
             // We don’t need to add country and author to suggestion lists: one
             // might be very invalid and other is missing here anyway.
 
-            if (!Enabled) return;
+            if (!Enabled || !_fullDetailsRequired) return;
 
             SuggestionLists.CarSkinTeamsList.AddUnique(Team);
             SuggestionLists.CarSkinDriverNamesList.AddUnique(DriverName);
@@ -327,6 +371,7 @@ namespace AcManager.Tools.Objects {
             private static string[] _recentTextures;
 
             protected override IEnumerable PackOverride(CarSkinObject t) {
+                t.FullDetailsRequired();
                 yield return Add("preview.jpg", "livery.png", "ui_skin.json");
 
                 if (Params.CmForFlag) {
@@ -358,14 +403,14 @@ namespace AcManager.Tools.Objects {
 
             protected override PackedDescription GetDescriptionOverride(CarSkinObject t) {
                 return new PackedDescription(t.Id, t.Name,
-                    new Dictionary<string, string> {
-                        ["Made for"] = CarsManager.Instance.GetById(t.CarId)?.DisplayName,
-                        ["Version"] = t.Version,
-                        ["Made by"] = t.Author,
-                        ["Webpage"] = t.Url,
-                    }, CarsManager.Instance.Directories.GetMainDirectory(), true) {
-                        FolderToMove = t.CarId
-                    };
+                        new Dictionary<string, string> {
+                            ["Made for"] = CarsManager.Instance.GetById(t.CarId)?.DisplayName,
+                            ["Version"] = t.Version,
+                            ["Made by"] = t.Author,
+                            ["Webpage"] = t.Url,
+                        }, CarsManager.Instance.Directories.GetMainDirectory(), true) {
+                            FolderToMove = t.CarId
+                        };
             }
         }
 

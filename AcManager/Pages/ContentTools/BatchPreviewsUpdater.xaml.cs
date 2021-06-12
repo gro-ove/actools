@@ -438,9 +438,9 @@ namespace AcManager.Pages.ContentTools {
                                 ? CmPreviewsSettingsValues.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue),
                         p => {
                             if (_runButtonClicked) {
-                                Run(p.VirtualFilename).Forget();
+                                Run(p.VirtualFilename).Ignore();
                             } else {
-                                SelectDifferent(p.VirtualFilename).Forget();
+                                SelectDifferent(p.VirtualFilename).Ignore();
                             }
                         });
             }

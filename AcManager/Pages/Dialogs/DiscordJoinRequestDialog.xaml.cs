@@ -124,7 +124,7 @@ namespace AcManager.Pages.Dialogs {
             _no = new ControlsInput(config["__CM_DISCORD_REQUEST_DENY"], Keys.Back);
 
             try {
-                SetDevices().Forget();
+                SetDevices().Ignore();
                 _yes.SetIcon(YesIcon, this);
                 _no.SetIcon(NoIcon, this);
             } catch (Exception e) {

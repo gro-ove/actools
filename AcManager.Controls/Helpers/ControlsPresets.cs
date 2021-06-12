@@ -77,7 +77,7 @@ namespace AcManager.Controls.Helpers {
 
         private ControlsPresets() {
             Controls.PresetsUpdated += OnPresetsUpdated;
-            RebuildPresetsList().Forget();
+            RebuildPresetsList().Ignore();
         }
 
         private bool _innerReloading;
@@ -98,7 +98,7 @@ namespace AcManager.Controls.Helpers {
 
             try {
                 await Task.Delay(200);
-                ActionExtension.InvokeInMainThread(() => { RebuildPresetsList().Forget(); });
+                ActionExtension.InvokeInMainThread(() => { RebuildPresetsList().Ignore(); });
             } catch (Exception e) {
                 Logging.Warning("OnPresetsUpdated() exception: " + e);
             } finally {

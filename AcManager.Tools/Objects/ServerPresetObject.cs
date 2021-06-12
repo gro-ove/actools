@@ -136,6 +136,7 @@ namespace AcManager.Tools.Objects {
             Password = section.GetNonEmpty("PASSWORD");
             AdminPassword = section.GetNonEmpty("ADMIN_PASSWORD");
             ShowOnLobby = section.GetBool("REGISTER_TO_LOBBY", true);
+            DisableChecksums = cmSection.GetBool("DISABLE_CHECKSUMS", false);
             LoopMode = section.GetBool("LOOP_MODE", true);
             PickupMode = section.GetBool("PICKUP_MODE_ENABLED", true);
             PickupModeLockedEntryList = section.GetBool("LOCKED_ENTRY_LIST", false);
@@ -249,11 +250,13 @@ namespace AcManager.Tools.Objects {
                 session.Save(ini);
             }
 
+            var cmSection = ini["__CM_SERVER"];
             var section = ini["SERVER"];
             section.Set("NAME", Name);
             section.Set("PASSWORD", Password);
             section.Set("ADMIN_PASSWORD", AdminPassword);
             section.Set("REGISTER_TO_LOBBY", ShowOnLobby);
+            cmSection.Set("DISABLE_CHECKSUMS", DisableChecksums);
             section.Set("LOOP_MODE", LoopMode);
             section.Set("PICKUP_MODE_ENABLED", PickupMode);
             section.Set("LOCKED_ENTRY_LIST", PickupModeLockedEntryList);
@@ -340,7 +343,7 @@ namespace AcManager.Tools.Objects {
                 section.Remove("WELCOME_MESSAGE");
             }
 
-            section.Set("__CM_PLUGIN", UseCmPlugin);
+            // section.Set("__CM_PLUGIN", UseCmPlugin); // TODO
             section.Set("UDP_PLUGIN_LOCAL_PORT", PluginUdpPort);
             section.Set("UDP_PLUGIN_ADDRESS", PluginUdpAddress);
             section.Set("AUTH_PLUGIN_ADDRESS", PluginAuthAddress);

@@ -40,7 +40,7 @@ namespace AcManager.Pages.Dialogs {
         public static void Show([NotNull] CarObject car) {
             new CarSkinsDialog(car) {
                 ShowInTaskbar = false
-            }.ShowDialogAsync().Forget();
+            }.ShowDialogAsync().Ignore();
         }
 
         private void OnInitialized(object sender, EventArgs e) {

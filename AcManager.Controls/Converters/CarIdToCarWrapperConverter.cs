@@ -15,7 +15,7 @@ namespace AcManager.Controls.Converters {
             var wrapper = CarsManager.Instance.GetWrapperById(id);
             if (wrapper == null) return null;
 
-            if (!wrapper.IsLoaded) wrapper.LoadedAsync().Forget();
+            if (!wrapper.IsLoaded) wrapper.LoadedAsync().Ignore();
             return wrapper;
         }
 

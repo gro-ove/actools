@@ -51,7 +51,7 @@ namespace AcManager.Pages.Selected {
                 model.Load();
             }
 
-            UpdateBindingsLaterAsync().Forget();
+            UpdateBindingsLaterAsync().Ignore();
         }
 
         private async void ToggleObject() {

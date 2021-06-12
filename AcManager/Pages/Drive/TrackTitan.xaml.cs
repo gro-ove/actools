@@ -49,6 +49,7 @@ namespace AcManager.Pages.Drive {
         public static PluginsRequirement Requirement { get; } = new PluginsRequirement(KnownPlugins.CefSharp);
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
+            await Task.Yield();
             // await CarsManager.Instance.EnsureLoadedAsync();
             // await TracksManager.Instance.EnsureLoadedAsync();
         }

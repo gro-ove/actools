@@ -42,7 +42,7 @@ namespace FirstFloor.ModernUI.Commands {
         }
 
         protected override void ExecuteOverride() {
-            ExecuteAsync().Forget();
+            ExecuteAsync().Ignore();
         }
 
         protected virtual Task ExecuteInner() {
@@ -127,7 +127,7 @@ namespace FirstFloor.ModernUI.Commands {
         }
 
         protected override void ExecuteOverride(T parameter) {
-            ExecuteAsync(parameter).Forget();
+            ExecuteAsync(parameter).Ignore();
         }
     }
 }

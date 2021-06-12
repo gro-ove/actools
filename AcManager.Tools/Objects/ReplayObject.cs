@@ -80,7 +80,7 @@ namespace AcManager.Tools.Objects {
 
         public override Task SaveAsync() {
             if (EditableCategory != Category) {
-                RenameAsync().Forget();
+                RenameAsync().Ignore();
             }
 
             return base.SaveAsync();

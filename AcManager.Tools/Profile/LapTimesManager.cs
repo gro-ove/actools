@@ -205,7 +205,7 @@ namespace AcManager.Tools.Profile {
             }
 
             if (time.HasValue && carId != null && trackId != null) {
-                AddEntry(carId, trackId, DateTime.Now, time.Value).Forget();
+                AddEntry(carId, trackId, DateTime.Now, time.Value).Ignore();
             } else {
                 Logging.Warning($"Can’t save new lap time: time={time}, car={carId}, track={trackId}");
             }

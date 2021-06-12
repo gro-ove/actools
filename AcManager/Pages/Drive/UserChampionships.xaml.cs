@@ -82,7 +82,7 @@ namespace AcManager.Pages.Drive {
             var mainWindow = Application.Current?.MainWindow as MainWindow;
             var group = mainWindow?.MenuLinkGroups.FirstOrDefault(x => x.GroupKey == "drive" && x.DisplayName == AppStrings.Main_Single);
             var links = group?.Links;
-            links?.Remove(links.OfType<CustomLink>().FirstOrDefault(x => x.Source.OriginalString.StartsWith(@"/Pages/Drive/UserChampionships_SelectedPage.xaml")));
+            links?.Remove(links.OfType<CustomLink>().FirstOrDefault(x => x.Source?.OriginalString.StartsWith(@"/Pages/Drive/UserChampionships_SelectedPage.xaml") == true));
 
             if (championship == null) {
                 mainWindow?.NavigateTo(new Uri("/Pages/Drive/UserChampionships.xaml", UriKind.RelativeOrAbsolute));
@@ -100,7 +100,7 @@ namespace AcManager.Pages.Drive {
                 Source = uri
             };
 
-            var index = links.FindIndex(x => x.Source.OriginalString == "/Pages/Drive/UserChampionships.xaml");
+            var index = links.FindIndex(x => x.Source?.OriginalString == "/Pages/Drive/UserChampionships.xaml");
             if (index != -1) {
                 links.Insert(index + 1, link);
             }

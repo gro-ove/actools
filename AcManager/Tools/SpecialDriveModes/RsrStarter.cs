@@ -22,7 +22,7 @@ namespace AcManager.Tools.SpecialDriveModes {
 
         public void StartWithDialog() {
             using (var waiting = new WaitingDialog()) {
-                Start(waiting, waiting.CancellationToken).Forget();
+                Start(waiting, waiting.CancellationToken).Ignore();
             }
         }
     }

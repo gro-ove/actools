@@ -108,7 +108,6 @@ namespace AcManager.Pages.Selected {
             _id = id;
             _object = obj;
             SetModel();
-            RedrawTestText();
             return true;
         }
 
@@ -120,6 +119,15 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(Model.UsingsRescanCommand, new KeyGesture(Key.U, ModifierKeys.Control)),
                 new InputBinding(Model.DisableUnusedCommand, new KeyGesture(Key.D, ModifierKeys.Control | ModifierKeys.Shift))
             });
+            LoadBitmap().Ignore();
+        }
+
+        private FontObjectBitmap _bitmap;
+
+        private async Task LoadBitmap() {
+            _bitmap = null;
+            _bitmap = await Model.SelectedObject.GetFontObjectBitmapAsync();
+            RedrawTestText();
         }
 
         private const string KeyTestText = "SelectedFontPage.TestText";
@@ -136,14 +144,14 @@ namespace AcManager.Pages.Selected {
         }
 
         private void RedrawTestText() {
-            if (Canvas == null || TextBox == null) return;
+            if (Canvas == null || TextBox == null || _bitmap == null) return;
             Canvas.Children.Clear();
 
             var text = TextBox.Text;
             if (string.IsNullOrEmpty(text)) return;
 
             try {
-                Canvas.Children.Add(new FontTestHost(text, Model.SelectedObject));
+                Canvas.Children.Add(new FontTestHost(text, _bitmap));
             } catch (Exception e) {
                 Logging.Warning("Can’t update testing text: " + e);
             }
@@ -172,12 +180,12 @@ namespace AcManager.Pages.Selected {
 
         public double Height { get; }
 
-        public FontTestVisual(string text, FontObject fontObject) {
+        public FontTestVisual(string text, FontObjectBitmap fontObjectBitmap) {
             var totalX = 0d;
             var totalY = 0d;
 
             using (var dc = RenderOpen()) {
-                foreach (var cropped in text.Select(fontObject.FontObjectBitmap.BitmapForChar).Where(cropped => cropped != null)) {
+                foreach (var cropped in text.Select(fontObjectBitmap.BitmapForChar).Where(cropped => cropped != null)) {
                     dc.DrawImage(cropped, new Rect(totalX, 0, cropped.PixelWidth, cropped.PixelHeight));
                     totalX += cropped.PixelWidth;
                     totalY = Math.Max(totalY, cropped.PixelHeight);
@@ -192,8 +200,8 @@ namespace AcManager.Pages.Selected {
     public class FontTestHost : FrameworkElement {
         private readonly FontTestVisual _visual;
 
-        public FontTestHost(string text, FontObject fontObject) {
-            _visual = new FontTestVisual(text, fontObject);
+        public FontTestHost(string text, FontObjectBitmap fontObjectBitmap) {
+            _visual = new FontTestVisual(text, fontObjectBitmap);
             Width = _visual.Width;
             Height = _visual.Height;
             HorizontalAlignment = HorizontalAlignment.Left;

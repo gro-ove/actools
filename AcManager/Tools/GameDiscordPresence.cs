@@ -46,7 +46,7 @@ namespace AcManager.Tools {
                         _presence = new DiscordRichPresence(1000, "WSS", "In a race");
                     } else if (properties.ModeProperties is Game.OnlineProperties online) {
                         _presence = new DiscordRichPresence(1000, "Online", "In a race");
-                        WatchForOnlineDetails(online).Forget();
+                        WatchForOnlineDetails(online).Ignore();
                     } else if (properties.GetAdditional<SpecialEventsManager.EventProperties>()?.EventId is string challengeId) {
                         var challenge = SpecialEventsManager.Instance.GetById(challengeId);
                         _presence = new DiscordRichPresence(1000, "Driving Solo", challenge != null ? $"Challenge | {challenge.DisplayName}" : "Challenge");

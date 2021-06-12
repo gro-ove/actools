@@ -246,6 +246,20 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private bool _disableChecksums;
+
+        public bool DisableChecksums {
+            get => _disableChecksums;
+            set {
+                if (Equals(value, _disableChecksums)) return;
+                _disableChecksums = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
         private static bool IsLocalMessage(string filename) {
             return filename != null && filename.Contains(@"\presets\") && filename.EndsWith(@"\cm_welcome.txt");
         }

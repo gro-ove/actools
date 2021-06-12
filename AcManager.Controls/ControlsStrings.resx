@@ -999,4 +999,49 @@ Depth mode: [b]{4}[/b]</value>
     <data name="Common_Rating" xml:space="preserve">
       <value>Rating:</value>
     </data>
+  <data name="Online_Item_MissingTrackInformation" xml:space="preserve">
+      <value>No information</value>
+  </data>
+  <data name="Online_Source_Favourite" xml:space="preserve">
+      <value>Favourite</value>
+  </data>
+  <data name="Online_Source_Hidden" xml:space="preserve">
+      <value>Hidden</value>
+  </data>
+  <data name="Online_Source_RecentlyUsed" xml:space="preserve">
+      <value>Recently used</value>
+  </data>
+  <data name="Online_Source_Lan" xml:space="preserve">
+      <value>LAN</value>
+  </data>
+  <data name="Online_PingTooltip_Format" xml:space="preserve">
+      <value>Ping: {0}</value>
+  </data>
+  <data name="Online_PingTooltip_Missing" xml:space="preserve">
+      <value>not checked yet</value>
+  </data>
+  <data name="Online_Item_ActualServerName" xml:space="preserve">
+      <value>Actual name: {0}</value>
+  </data>
+  <data name="Online_Item_UnavailableServer" xml:space="preserve">
+      <value>Server is not available</value>
+  </data>
+  <data name="Online_Item_Booked_Tooltip" xml:space="preserve">
+      <value>There is a place booked for you</value>
+  </data>
+  <data name="Online_Item_Friend_Tooltip" xml:space="preserve">
+      <value>Your friend is here</value>
+  </data>
+  <data name="Online_Item_CspForcedOff_Tooltip" xml:space="preserve">
+      <value>Custom Shaders Patch is not available on this server</value>
+  </data>
+  <data name="Online_Item_CspForcedOn_Tooltip" xml:space="preserve">
+      <value>Custom Shaders Patch is required on this server</value>
+  </data>
+  <data name="SelectDialog_RatingTitle" xml:space="preserve">
+      <value>{0} Star</value>
+  </data>
+  <data name="RaceResults_TrackIsMissing" xml:space="preserve">
+      <value>Track is missing</value>
+  </data>
 </root>

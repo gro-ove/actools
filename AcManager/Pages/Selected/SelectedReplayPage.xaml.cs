@@ -261,7 +261,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue),
-                            p => { QuickDrive.RunAsync(Car, CarSkin?.Id, track: Track, presetFilename: p.VirtualFilename).Forget(); });
+                            p => { QuickDrive.RunAsync(Car, CarSkin?.Id, track: Track, presetFilename: p.VirtualFilename).Ignore(); });
                 }
             }
             #endregion

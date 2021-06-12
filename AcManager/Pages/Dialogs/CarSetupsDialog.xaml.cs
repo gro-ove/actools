@@ -52,7 +52,7 @@ namespace AcManager.Pages.Dialogs {
         public static void Show([NotNull] CarObject car, CarSetupsRemoteSource forceRemoteSource = CarSetupsRemoteSource.None) {
             new CarSetupsDialog(car, forceRemoteSource) {
                 ShowInTaskbar = false
-            }.ShowDialogAsync().Forget();
+            }.ShowDialogAsync().Ignore();
         }
 
         private void OnInitialized(object sender, EventArgs e) {

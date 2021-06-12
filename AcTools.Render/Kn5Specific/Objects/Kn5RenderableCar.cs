@@ -23,7 +23,6 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
-using TaskExtension = AcTools.Utils.Helpers.TaskExtension;
 
 namespace AcTools.Render.Kn5Specific.Objects {
     public partial class Kn5RenderableCar : Kn5RenderableFile, INotifyPropertyChanged {
@@ -106,7 +105,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             SuspensionModifiers.PropertyChanged += OnSuspensionModifiersChanged;
 
             if (soundFactory != null) {
-                TaskExtension.Forget(InitializeSoundAsync(soundFactory));
+                InitializeSoundAsync(soundFactory).Ignore();
             }
         }
 

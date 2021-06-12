@@ -24,7 +24,7 @@ namespace AcManager.Controls {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ControlsStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Controls {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -1808,6 +1808,69 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Actual name: {0}.
+        /// </summary>
+        public static string Online_Item_ActualServerName {
+            get {
+                return ResourceManager.GetString("Online_Item_ActualServerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is a place booked for you.
+        /// </summary>
+        public static string Online_Item_Booked_Tooltip {
+            get {
+                return ResourceManager.GetString("Online_Item_Booked_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Shaders Patch is not available on this server.
+        /// </summary>
+        public static string Online_Item_CspForcedOff_Tooltip {
+            get {
+                return ResourceManager.GetString("Online_Item_CspForcedOff_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Shaders Patch is required on this server.
+        /// </summary>
+        public static string Online_Item_CspForcedOn_Tooltip {
+            get {
+                return ResourceManager.GetString("Online_Item_CspForcedOn_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your friend is here.
+        /// </summary>
+        public static string Online_Item_Friend_Tooltip {
+            get {
+                return ResourceManager.GetString("Online_Item_Friend_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No information.
+        /// </summary>
+        public static string Online_Item_MissingTrackInformation {
+            get {
+                return ResourceManager.GetString("Online_Item_MissingTrackInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server is not available.
+        /// </summary>
+        public static string Online_Item_UnavailableServer {
+            get {
+                return ResourceManager.GetString("Online_Item_UnavailableServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Join using {0}.
         /// </summary>
         public static string Online_JoinUsing {
@@ -1822,6 +1885,60 @@ namespace AcManager.Controls {
         public static string Online_PasswordRequired {
             get {
                 return ResourceManager.GetString("Online_PasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ping: {0}.
+        /// </summary>
+        public static string Online_PingTooltip_Format {
+            get {
+                return ResourceManager.GetString("Online_PingTooltip_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to not checked yet.
+        /// </summary>
+        public static string Online_PingTooltip_Missing {
+            get {
+                return ResourceManager.GetString("Online_PingTooltip_Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favourite.
+        /// </summary>
+        public static string Online_Source_Favourite {
+            get {
+                return ResourceManager.GetString("Online_Source_Favourite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hidden.
+        /// </summary>
+        public static string Online_Source_Hidden {
+            get {
+                return ResourceManager.GetString("Online_Source_Hidden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LAN.
+        /// </summary>
+        public static string Online_Source_Lan {
+            get {
+                return ResourceManager.GetString("Online_Source_Lan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recently used.
+        /// </summary>
+        public static string Online_Source_RecentlyUsed {
+            get {
+                return ResourceManager.GetString("Online_Source_RecentlyUsed", resourceCulture);
             }
         }
         
@@ -2213,6 +2330,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Track is missing.
+        /// </summary>
+        public static string RaceResults_TrackIsMissing {
+            get {
+                return ResourceManager.GetString("RaceResults_TrackIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Replay will be overwritten after the next race. Rename it to keep it..
         /// </summary>
         public static string Replay_CrMessage {
@@ -2227,6 +2353,15 @@ namespace AcManager.Controls {
         public static string Replay_CrMessage_Commentary {
             get {
                 return ResourceManager.GetString("Replay_CrMessage_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Star.
+        /// </summary>
+        public static string SelectDialog_RatingTitle {
+            get {
+                return ResourceManager.GetString("SelectDialog_RatingTitle", resourceCulture);
             }
         }
         

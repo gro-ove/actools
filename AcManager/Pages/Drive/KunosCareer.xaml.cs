@@ -93,7 +93,7 @@ namespace AcManager.Pages.Drive {
             var mainWindow = Application.Current?.MainWindow as MainWindow;
             var group = mainWindow?.MenuLinkGroups.FirstOrDefault(x => x.GroupKey == "drive" && x.DisplayName == AppStrings.Main_Single);
             var links = group?.Links;
-            links?.Remove(links.OfType<CustomLink>().FirstOrDefault(x => x.Source.OriginalString.StartsWith(@"/Pages/Drive/KunosCareer_SelectedPage.xaml")));
+            links?.Remove(links.OfType<CustomLink>().FirstOrDefault(x => x.Source?.OriginalString.StartsWith(@"/Pages/Drive/KunosCareer_SelectedPage.xaml") == true));
 
             if (kunosCareer == null) {
                 mainWindow?.NavigateTo(new Uri("/Pages/Drive/KunosCareer.xaml", UriKind.RelativeOrAbsolute));

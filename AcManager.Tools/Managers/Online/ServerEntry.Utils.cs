@@ -28,8 +28,8 @@ namespace AcManager.Tools.Managers.Online {
 
             name = name.Trim();
 
-            var shadyCount = name.TakeWhile(x => x >= 'A' && x <= 'D' || x >= '0' && x <= '4').Count();
-            if (shadyCount > 2 && (char.IsDigit(name[shadyCount - 1]) || name[0] == 'A')) {
+            var shadyCount = name.TakeWhile(IsLikelyToBeCheat).Count();
+            if (shadyCount > 2 && (IsMoreLikelyToBeCheat(name[shadyCount - 1]) || name[0] == 'A')) {
                 name = name.Substring(shadyCount).TrimStart() + @"z";
             }
 
@@ -46,6 +46,14 @@ namespace AcManager.Tools.Managers.Online {
 
             var lettersOnly = LettersOnly(name);
             return lettersOnly.Length > 0 ? lettersOnly : @"zzz:" + name;
+
+            bool IsLikelyToBeCheat(char c) {
+                return c >= 'a' && c <= 'c' || c >= 'A' && c <= 'D' || c >= '0' && c <= '4' || !char.IsLetterOrDigit(c);
+            }
+
+            bool IsMoreLikelyToBeCheat(char c) {
+                return !char.IsLetter(c) || c >= 'A' && c <= 'C' || c >= 'a' && c <= 'b' || c >= '0' && c <= '2';
+            }
 
             bool IsUnlikelyToBeCheat(char c) {
                 return c > 'a' && c <= 'z';
@@ -139,7 +147,7 @@ namespace AcManager.Tools.Managers.Online {
         private void CheckPostUpdate() {
             UpdateMissingContent();
 
-            var missingSomething = _missingCarsError != null || _missingTrackError != null;
+            var missingSomething = _errorMissingCars || _errorMissingTrack;
             if (_missingContentReferences != null) {
                 missingSomething |= UpdateMissingContentExtended(missingSomething) == ServerStatus.MissingContent;
             }

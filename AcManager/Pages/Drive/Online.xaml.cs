@@ -431,11 +431,11 @@ namespace AcManager.Pages.Drive {
                     // In case pack is basically ready, but there is still something loads in background,
                     // we need to use StartLoading() anyway — current loading process will be cancelled,
                     // if there is no “listeners”
-                    StartLoading(false).Forget();
+                    StartLoading(false).Ignore();
                 }
 
                 if (Pack.Status == OnlineManagerStatus.Ready) {
-                    StartPinging().Forget();
+                    StartPinging().Ignore();
                 }
 
                 LoadCurrent();
@@ -461,7 +461,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private void Pack_Ready(object sender, EventArgs e) {
-                StartPinging().Forget();
+                StartPinging().Ignore();
                 LoadCurrent();
             }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AcManager.Tools.AcErrors;
+using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers;
 using JetBrains.Annotations;
 
@@ -24,9 +25,9 @@ namespace AcManager.Tools.Objects {
                 var oldParentId = _parentId;
                 _parentId = value;
 
-                _parent = null;
+                _parentItemWrapper = null;
                 if (_parentId != null) {
-                    _parentGetted = false;
+                    _parentSet = false;
                     var parentExists = CarsManager.Instance.CheckIfIdExists(_parentId);
                     if (parentExists) {
                         RemoveError(AcErrorType.Car_ParentIsMissing);
@@ -38,7 +39,7 @@ namespace AcManager.Tools.Objects {
                         }
                     }
                 } else {
-                    _parentGetted = true;
+                    _parentSet = true;
                     RemoveError(AcErrorType.Car_ParentIsMissing);
                 }
 
@@ -63,18 +64,31 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private bool _parentGetted;
-
-        private CarObject _parent;
+        private bool _parentSet;
+        private AcItemWrapper _parentItemWrapper;
 
         [CanBeNull]
         public CarObject Parent {
             get {
                 if (ParentId == null) return null;
-                if (_parentGetted && _parent?.Outdated != true) return _parent;
-                _parentGetted = true;
-                _parent = CarsManager.Instance.GetById(ParentId);
-                return _parent;
+                var ret = (CarObject)ParentItemWrapper?.Loaded();
+                if (ret?.Outdated == true) {
+                    _parentSet = false;
+                    ret = (CarObject)ParentItemWrapper?.Loaded();
+                }
+                return ret;
+            }
+        }
+
+        [CanBeNull]
+        public AcItemWrapper ParentItemWrapper {
+            get {
+                if (ParentId == null) return null;
+                if (!_parentSet) {
+                    _parentSet = true;
+                    _parentItemWrapper = CarsManager.Instance.GetWrapperById(ParentId);
+                }
+                return _parentItemWrapper;
             }
         }
 

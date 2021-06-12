@@ -35,7 +35,7 @@ namespace AcManager.Pages.Dialogs {
         public static Uri RatingUri(double rating) {
             return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&Filter={0}&Title={1}",
                     $"rating≥{Filter.Encode(rating.FloorToInt().ToInvariantString())} & rating<{Filter.Encode((rating.FloorToInt() + 1).ToInvariantString())}",
-                    PluralizingConverter.PluralizeExt(rating.FloorToInt(), "{0} Star"));
+                    PluralizingConverter.PluralizeExt(rating.FloorToInt(), ControlsStrings.SelectDialog_RatingTitle));
         }
 
         public static Uri TagUri(string tag) {
@@ -61,7 +61,7 @@ namespace AcManager.Pages.Dialogs {
             Buttons = new Control[0];
 
             Model.PropertyChanged += OnModelPropertyChanged;
-            BackgroundImage0.Source = UriToCachedImageConverter.Convert(Model.CurrentPreviewImage);
+            BackgroundImage0.Filename = Model.CurrentPreviewImage;
         }
 
         private DelegateCommand _toggleFavouriteCommand;
@@ -105,7 +105,7 @@ namespace AcManager.Pages.Dialogs {
 
         private void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName != nameof(Model.CurrentPreviewImage)) return;
-            (_state == 0 ? BackgroundImage1 : BackgroundImage0).Source = UriToCachedImageConverter.Convert(Model.CurrentPreviewImage);
+            (_state == 0 ? BackgroundImage1 : BackgroundImage0).Filename = Model.CurrentPreviewImage;
             VisualStateManager.GoToElementState(BackgroundImage1, @"State" + _state, true);
             _state = 1 - _state;
         }
@@ -187,10 +187,8 @@ namespace AcManager.Pages.Dialogs {
             public ViewModel([NotNull] TrackObjectBase selectedTrackConfiguration) {
                 _selectedTrackConfiguration = new DelayedPropertyWrapper<TrackObjectBase>(v => {
                     if (v == null) return;
-
                     v.MainTrackObject.SelectedLayout = v;
                     CurrentPreviewImage = v.PreviewImage;
-
                     OnPropertyChanged(nameof(SelectedTrackConfiguration));
                     OnPropertyChanged(nameof(SelectedTrack));
                 });

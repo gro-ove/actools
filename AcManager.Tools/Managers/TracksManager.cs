@@ -126,8 +126,8 @@ namespace AcManager.Tools.Managers {
 
         /// <summary>
         /// Specially for some damaged entries collected by the old version of PlayerStatsManager. The new
-        /// one is still can record shorten IDs, but now — only when race.ini changed after  the start,
-        /// and how can that happen?
+        /// one is still can record shorten IDs, but now only if race.ini would be changed after the start,
+        /// and why would that happen?
         /// </summary>
         [CanBeNull]
         public TrackObjectBase GetLayoutByShortenId([NotNull] string id) {
@@ -135,6 +135,24 @@ namespace AcManager.Tools.Managers {
 
             var s = id.Split('/');
             var b = base.GetById(s[0]);
+            if (b == null) return null;
+
+            var r = b.GetLayoutById(id);
+            if (r != null) return r;
+
+            if (s[1].Length == AcSharedConsts.LayoutIdSize && b.MultiLayouts != null) {
+                return b.MultiLayouts.FirstOrDefault(l => l.LayoutId?.StartsWith(s[1]) == true);
+            }
+
+            return null;
+        }
+
+        [CanBeNull]
+        public async Task<TrackObjectBase> GetLayoutByShortenIdAsync([NotNull] string id) {
+            if (!id.Contains('/')) return await base.GetByIdAsync(id);
+
+            var s = id.Split('/');
+            var b = await base.GetByIdAsync(s[0]);
             if (b == null) return null;
 
             var r = b.GetLayoutById(id);

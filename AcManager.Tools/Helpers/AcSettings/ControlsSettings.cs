@@ -555,7 +555,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     if (!placeholder.OriginalIniIds.Contains(actualDevice.Index)) {
                         Logging.Warning(
                                 $"{placeholder.DisplayName} index changed: saved as {placeholder.OriginalIniIds.JoinToString("+")}, actual: {actualDevice.Index}");
-                        FixMessedOrderAsync().Forget();
+                        FixMessedOrderAsync().Ignore();
                     }
                 }
 
@@ -647,19 +647,19 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     Logging.Debug($"Axle changed: {axle.Device}, {axle.DisplayName} (ID={axle.Id}; busy={_busy})");
                 }
 
-                AssignInput(axle).Forget();
+                AssignInput(axle).Ignore();
             }
         }
 
         private void DeviceButtonEventHandler(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(DirectInputButton.Value) && sender is DirectInputButton button && button.Value) {
-                AssignInput(button).Forget();
+                AssignInput(button).Ignore();
             }
         }
 
         private void DevicePovEventHandler(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(DirectInputPov.Value) && sender is DirectInputPov pov && pov.Value) {
-                AssignInput<DirectInputButton>(pov).Forget();
+                AssignInput<DirectInputButton>(pov).Ignore();
             }
         }
 
@@ -1394,7 +1394,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
 
             if (GetWaiting() is KeyboardButtonEntry) {
-                AssignInput(GetKeyboardInputButton(KeyInterop.VirtualKeyFromKey(key))).Forget();
+                AssignInput(GetKeyboardInputButton(KeyInterop.VirtualKeyFromKey(key))).Ignore();
                 return true;
             }
 
@@ -1579,7 +1579,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             CurrentPresetChanged = CurrentPresetName != null && section.GetBool("PRESET_CHANGED", true);
 
             if (orderChanged) {
-                FixMessedOrderAsync().Forget();
+                FixMessedOrderAsync().Ignore();
             }
         }
 

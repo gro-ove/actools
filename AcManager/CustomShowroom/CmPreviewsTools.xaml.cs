@@ -138,7 +138,7 @@ namespace AcManager.CustomShowroom {
 
                 Car = carObject;
                 Skin = skinId == null ? Car.SelectedSkin : Car.GetSkinById(skinId);
-                Car.SkinsManager.EnsureLoadedAsync().Forget();
+                Car.SkinsManager.EnsureLoadedAsync().Ignore();
 
                 Saveable = new SaveHelper<SaveableData>("__CmPreviewsTools", () => new SaveableData(), o => { }, () => { Reset(false); });
             }

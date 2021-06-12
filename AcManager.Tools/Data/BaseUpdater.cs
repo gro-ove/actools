@@ -49,7 +49,7 @@ namespace AcManager.Tools.Data {
         }
 
         protected virtual void FirstCheck() {
-            CheckAndUpdateIfNeeded().Forget();
+            CheckAndUpdateIfNeeded().Ignore();
         }
 
         private CancellationTokenSource _periodicCheckCancellation;
@@ -73,12 +73,12 @@ namespace AcManager.Tools.Data {
             UpdatePeriod = GetUpdatePeriod();
 
             if (!IsValidTimeSpan(oldValue) && IsValidTimeSpan(UpdatePeriod)) {
-                CheckAndUpdateIfNeeded().Forget();
+                CheckAndUpdateIfNeeded().Ignore();
             }
 
             if (!IsValidTimeSpan(UpdatePeriod)) return;
             _periodicCheckCancellation = new CancellationTokenSource();
-            PeriodicCheckAsync(_periodicCheckCancellation.Token).Forget();
+            PeriodicCheckAsync(_periodicCheckCancellation.Token).Ignore();
         }
 
         private async Task PeriodicCheckAsync(CancellationToken token) {

@@ -161,11 +161,11 @@ namespace AcManager.Tools {
                 remove { }
             }
 
-            public Task<bool> LoadAsync(ListAddCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+            public async Task<bool> LoadAsync(ListAddAsyncCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
                 // This source will load provided server, but only once — call .ReloadAsync() and server will be nicely removed.
-                callback(new[] { _information }.NonNull());
+                await callback(new[] { _information }.NonNull());
                 _information = null;
-                return Task.FromResult(true);
+                return true;
             }
         }
 

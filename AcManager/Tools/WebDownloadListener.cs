@@ -73,7 +73,7 @@ namespace AcManager.Tools {
                 try {
                     FlexibleLoader.RegisterPriority(this);
                     ContentInstallationManager.Instance.InstallAsync(_url, AddInstallMode.ForceNewTask,
-                            ContentInstallationParams.DefaultWithExecutables).Forget();
+                            ContentInstallationParams.DefaultWithExecutables).Ignore();
                     FlexibleLoader.Unregister(this);
 
                     var destinationCallback = _destinationCallback;

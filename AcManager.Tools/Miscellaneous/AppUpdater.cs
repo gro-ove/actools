@@ -66,7 +66,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                 case nameof(SettingsHolder.Common.UpdateToNontestedVersions):
                     if (!SettingsHolder.Common.UpdateToNontestedVersions || UpdatePeriod == TimeSpan.Zero) return;
-                    CheckAndUpdateIfNeeded().Forget();
+                    CheckAndUpdateIfNeeded().Ignore();
                     break;
             }
         }
@@ -229,7 +229,7 @@ namespace AcManager.Tools.Miscellaneous {
 
         private void RemovePreparedAutoUpdate() {
             ReadyToUpdateVersion = null;
-            CleanUpUpdateExeAsync().Forget();
+            CleanUpUpdateExeAsync().Ignore();
         }
 
         private DelegateCommand _ignoreUpdateCommand;
@@ -352,7 +352,7 @@ namespace AcManager.Tools.Miscellaneous {
                         return true;
                     }
 
-                    CleanUpUpdateExeAsync().Forget();
+                    CleanUpUpdateExeAsync().Ignore();
                 }
 
                 return false;

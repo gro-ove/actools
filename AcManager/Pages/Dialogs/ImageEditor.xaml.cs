@@ -172,7 +172,7 @@ namespace AcManager.Pages.Dialogs {
                 CancelButton
             };
 
-            LoadImage(filename, startRect).Forget();
+            LoadImage(filename, startRect).Ignore();
             UpdateControlsToScale();
         }
 

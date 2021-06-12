@@ -31,6 +31,16 @@ namespace FirstFloor.ModernUI.Tests {
         }
 
         [Test]
+        public void JoinReadable() {
+            Assert.AreEqual("", new string[]{}.JoinToReadableString());
+            Assert.AreEqual("test", new string[]{ "test" }.JoinToReadableString());
+            Assert.AreEqual("A and B", new string[]{ "A", "B" }.JoinToReadableString());
+            Assert.AreEqual("cat and dog", new string[]{ "cat", "dog" }.JoinToReadableString());
+            Assert.AreEqual("cat, dog and human", new string[]{ "cat", "dog", "human" }.JoinToReadableString());
+            Assert.AreEqual("cat,  and human", new string[]{ "cat", "", "human" }.JoinToReadableString());
+        }
+
+        [Test]
         public void PluralizingTest() {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
             Assert.AreEqual("hour", PluralizingConverter.PluralizeExt(1, "hour"));

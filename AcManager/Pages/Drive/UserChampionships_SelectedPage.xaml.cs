@@ -159,7 +159,7 @@ namespace AcManager.Pages.Drive {
 
             public ViewModel(UserChampionshipObject careerObject) {
                 _acObject = careerObject;
-                UpdateConditions(true).Forget();
+                UpdateConditions(true).Ignore();
             }
 
             public AssistsViewModel AssistsViewModel => AssistsViewModel.Instance;
@@ -440,7 +440,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private void OnTimerTick(object sender, EventArgs e) {
-                UpdateConditions(false).Forget();
+                UpdateConditions(false).Ignore();
             }
 
             private void OnAcObjectPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -448,7 +448,7 @@ namespace AcManager.Pages.Drive {
                     case nameof(AcObject.CurrentRound):
                     case nameof(AcObject.RealConditions):
                     case nameof(AcObject.RealConditionsManualTime):
-                        UpdateConditions(true).Forget();
+                        UpdateConditions(true).Ignore();
                         OnPropertyChanged(nameof(CurrentRoundTime));
                         break;
                 }
@@ -466,7 +466,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnResetButtonClick(object sender, MouseButtonEventArgs e) {
-            Model.ResetCommand.ExecuteAsync().Forget();
+            Model.ResetCommand.ExecuteAsync().Ignore();
         }
 
         private void OnCarPreviewClick(object sender, MouseButtonEventArgs e) {

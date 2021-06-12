@@ -104,7 +104,7 @@ namespace AcManager.Tools.Profile {
         public int? EntriesCount {
             get {
                 if (!IsEnabled) return null;
-                EnsureActualAsync(false).Forget();
+                EnsureActualAsync(false).Ignore();
                 return _list?.Count;
             }
         }

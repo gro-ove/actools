@@ -10,7 +10,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.Windows.Threading;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
@@ -45,7 +44,9 @@ namespace AcManager.Controls {
         private static void UpdateAll(Action<OnlineItem> callback) {
             foreach (var item in VisualTreeHelperEx.GetAllOfType<OnlineItem>()) {
                 callback(item);
-                item.Render();
+                item._renderDirty = true;
+                item._renderTimeDirty = true;
+                item.InvalidateVisual();
             }
         }
 
@@ -78,6 +79,7 @@ namespace AcManager.Controls {
 
         private static readonly Dictionary<string, Tuple<FormattedText, bool>> SessionsCache = new Dictionary<string, Tuple<FormattedText, bool>>(8);
         private static readonly Dictionary<string, ObjToRender> CarsCache = new Dictionary<string, ObjToRender>(100);
+        private static readonly Dictionary<string, BitmapSource> TrackIconsCache = new Dictionary<string, BitmapSource>(100);
 
         public static void SetScrolling(bool value) {
             if (value == _scrolling) return;
@@ -216,6 +218,16 @@ namespace AcManager.Controls {
                 referenceIconOffset += iconWidth + ReferenceIconMargin;
             }
 
+            if (new Rect(width - 40, 0, 40, 30).Contains(pos)) {
+                if (_errorFlag) {
+                    ShowToolTip(@"error", () => _server.ErrorsString?.Trim().Or(ControlsStrings.Online_Item_UnavailableServer));
+                } else {
+                    ShowToolTip(@"ping", () => string.Format(ControlsStrings.Online_PingTooltip_Format,
+                            _server.Ping.HasValue ? _server.Ping + ControlsStrings.Common_MillisecondsPostfix : ControlsStrings.Online_PingTooltip_Missing));
+                }
+                return;
+            }
+
             if (!_fullyLoaded) return;
 
             var pieces = (_bookedForPlayer ? 1 : 0) + (_passwordRequired ? 1 : 0) + (_hasFriends ? 1 : 0);
@@ -228,7 +240,7 @@ namespace AcManager.Controls {
                 const double iconMargin = 4d;
                 if (_bookedForPlayer) {
                     if (new Rect(6, iconOffset, 12, iconHeight).Contains(pos)) {
-                        ShowToolTip(@"iconBooked", () => "There is a place booked for you");
+                        ShowToolTip(@"iconBooked", () => ControlsStrings.Online_Item_Booked_Tooltip);
                         return;
                     }
                     iconOffset += iconHeight + iconMargin;
@@ -242,7 +254,7 @@ namespace AcManager.Controls {
                 }
                 if (_hasFriends) {
                     if (new Rect(6, iconOffset, 12, iconHeight).Contains(pos)) {
-                        ShowToolTip(@"iconFriends", () => "Your friend is here");
+                        ShowToolTip(@"iconFriends", () => ControlsStrings.Online_Item_Friend_Tooltip);
                         return;
                     }
                     iconOffset += iconHeight + iconMargin;
@@ -251,8 +263,8 @@ namespace AcManager.Controls {
                 if (_requiresCspAvailable || _requiresCspMissing) {
                     if (new Rect(6, iconOffset, 12, iconHeight).Contains(pos)) {
                         ShowToolTip(@"iconCsp", () => _cspProhibited
-                                ? "Custom Shaders Patch is not available on this server"
-                                : "Custom Shaders Patch is required on this server");
+                                ? ControlsStrings.Online_Item_CspForcedOff_Tooltip
+                                : ControlsStrings.Online_Item_CspForcedOn_Tooltip);
                         return;
                     }
                 }
@@ -263,15 +275,6 @@ namespace AcManager.Controls {
                 return;
             }
 
-            if (new Rect(width - 40, 0, 40, 30).Contains(pos)) {
-                if (_errorFlag) {
-                    ShowToolTip(@"error", () => _server.ErrorsString?.Trim());
-                } else {
-                    ShowToolTip(@"ping", () => $"Ping: {(_server.Ping.HasValue ? _server.Ping + " ms" : "not checked yet")}");
-                }
-                return;
-            }
-
             if (GetCountryRect(width).Contains(pos)) {
                 ShowToolTip(@"country", () => _server.Country);
                 return;
@@ -279,7 +282,13 @@ namespace AcManager.Controls {
 
 #if DEBUG
             if (new Rect(0, 0, width, 30).Contains(pos)) {
-                ShowToolTip(@"name", () => $"Actual name: {BbCodeBlock.Encode(_server.ActualName)}\nSorting name: {_server.SortingName}");
+                ShowToolTip(@"name", () => {
+                    var ret = string.Format(ControlsStrings.Online_Item_ActualServerName, BbCodeBlock.Encode(_server.ActualName));
+#if DEBUG
+                    ret += $"\nSorting name: {_server.SortingName}";
+#endif
+                    return ret;
+                });
                 return;
             }
 #endif
@@ -327,9 +336,9 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty ServerProperty = DependencyProperty.Register(nameof(Server), typeof(ServerEntry),
-                typeof(OnlineItem), new PropertyMetadata(null, (o, e) => ((OnlineItem)o).SetServer((ServerEntry)e.NewValue)));
+                typeof(OnlineItem), new PropertyMetadata(null,
+                        (o, e) => ((OnlineItem)o).SetServer((ServerEntry)e.NewValue)));
 
-        private bool _dirty;
         private ServerEntry _server;
 
         public ServerEntry Server {
@@ -338,11 +347,21 @@ namespace AcManager.Controls {
         }
 
         private void SetServer(ServerEntry server) {
-            OnServerChanged(_server, server);
+            if (_server != null) {
+                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveHandler(_server, nameof(ServerEntry.PropertyChanged),
+                        OnServerPropertyChanged);
+            }
+
             _server = server;
-            _dirty = true;
-            Render();
-            RenderTimeLeft();
+            _renderDirty = true;
+            _renderTimeDirty = true;
+            if (_server != null) {
+                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(_server, nameof(ServerEntry.PropertyChanged),
+                        OnServerPropertyChanged);
+            }
+
+            Update();
+            InvalidateVisual();
         }
 
         private static Style _labelStyle;
@@ -392,9 +411,6 @@ namespace AcManager.Controls {
         }
 
         private void Update() {
-            if (!_dirty) return;
-            _dirty = false;
-
             InitializeResources();
             InitializeStatic();
 
@@ -442,7 +458,7 @@ namespace AcManager.Controls {
         private ImageSource _countryBitmap;
 
         private bool _errorFlag, _fullyLoaded = true, _passwordRequired, _bookedForPlayer, _hasFriends,
-                _requiresCspAvailable, _requiresCspMissing, _cspProhibited;
+                _requiresCspAvailable, _requiresCspMissing, _cspProhibited, _renderDirty = true, _renderTimeDirty = true;
 
         private int _sessionsCount;
 
@@ -456,12 +472,12 @@ namespace AcManager.Controls {
             [CanBeNull]
             public readonly ImageSource TextImage;
 
-            public double Width, TextOffset;
+            public readonly double Width, TextOffset;
 
             public ObjToRender([CanBeNull] ImageSource icon, [CanBeNull] string text, double maxWidth = double.NaN, bool isBlock = false,
-                    bool? isComplex = null) {
+                    bool? isComplex = null, double extraTextOffset = 0d) {
                 Icon = icon;
-                TextOffset = icon?.Width + 4 ?? 0d;
+                TextOffset = (icon?.Width + 4 ?? 0d) + extraTextOffset;
                 if (isComplex ?? IsComplex(text)) {
                     TextImage = ToBitmap(GetTextBlock(text, isBbCode: true, isBlock: true), double.IsNaN(maxWidth) ? 0 : maxWidth.RoundToInt(), 14);
                     Width = TextOffset + (TextImage?.Width ?? 0d);
@@ -525,19 +541,19 @@ namespace AcManager.Controls {
 
             switch (originId) {
                 case FileBasedOnlineSources.FavouritesKey:
-                    toolTip = "Favourite";
+                    toolTip = ControlsStrings.Online_Source_Favourite;
                     return FavouritesIcon.Value;
                 case FileBasedOnlineSources.HiddenKey:
-                    toolTip = "Hidden";
+                    toolTip = ControlsStrings.Online_Source_Hidden;
                     return HiddenIcon.Value;
                 case FileBasedOnlineSources.RecentKey:
-                    toolTip = "Recently used";
+                    toolTip = ControlsStrings.Online_Source_RecentlyUsed;
                     return RecentIcon.Value;
                 case MinoratingOnlineSource.Key:
                     toolTip = "Minorating";
                     return MinoratingIcon.Value;
                 case LanOnlineSource.Key:
-                    toolTip = "LAN";
+                    toolTip = ControlsStrings.Online_Source_Lan;
                     return LanIcon.Value;
                 case KunosOnlineSource.Key:
                     toolTip = null;
@@ -606,7 +622,8 @@ namespace AcManager.Controls {
                 }
 
                 _name.Padding = new Thickness(_iconsCount > 0 ? 4 + totalWidth : 0, 0, 0, 0);
-                Render();
+                _renderDirty = true;
+                InvalidateVisual();
             }
         }
 
@@ -641,15 +658,15 @@ namespace AcManager.Controls {
         }
 
         private void UpdateDisplayClients(ServerEntry server) {
-            _displayClients = GetText(server.DisplayClients, TextAlignment.Center, 32d);
+            _displayClients = TextConfigurationClients.Get(server.DisplayClients);
         }
 
         private void UpdatePing(ServerEntry server) {
-            _pingValue = GetText(server.Ping?.ToString() ?? @"?");
+            _pingValue = TextConfigurationBase.Get(server.Ping?.ToString() ?? @"?");
         }
 
         private void UpdateTimeLeft(ServerEntry server) {
-            _timeLeft = GetText(server.DisplayTimeLeft);
+            _timeLeft = TextConfigurationBase.Get(server.DisplayTimeLeft);
         }
 
         private void UpdateCountryFlag(ServerEntry server) {
@@ -664,25 +681,77 @@ namespace AcManager.Controls {
             _errorFlag = server.HasErrors || !server.IsFullyLoaded;
         }
 
-        private void UpdateTrack(ServerEntry server) {
-            var trackId = server.TrackId;
-            if (ReferenceEquals(_currentTrackId, trackId)) return;
+        private static BitmapSource GetTrackIcon(TrackObjectBase track) {
+            return TrackIconsCache.GetValueOrSet(track.IdWithLayout, () => {
+                var src = BetterImage.LoadBitmapSource(track.OutlineImage, 32, 32).ImageSource;
+                if (src == null) return null;
+                return ToBitmap(new BetterImage {
+                    Source = src,
+                    CropTransparentAreas = true
+                });
+            });
+        }
 
+        private static readonly Dictionary<string, BitmapSource> TrackIconsReadyCache = new Dictionary<string, BitmapSource>(100);
+        private static readonly Dictionary<string, List<OnlineItem>> TrackIconsLoading = new Dictionary<string, List<OnlineItem>>(20);
+
+        private static void GetTrackIconDelayed(TrackObjectBase track, OnlineItem item) {
+            async Task LoadIconAsync(List<OnlineItem> info) {
+                try {
+                    var src = (await BetterImage.LoadBitmapSourceAsync(track.OutlineImage, 32, 32)).ImageSource;
+                    if (src == null) {
+                        TrackIconsReadyCache[track.IdWithLayout] = null;
+                        return;
+                    }
+
+                    var crop = await Task.Run(() => BetterImage.FindTransparentCropMask((BitmapSource)src));
+                    var bitmap = ToBitmap(new BetterImage { Source = src, Crop = crop, CropUnits = ImageCropMode.Absolute });
+                    TrackIconsReadyCache[track.IdWithLayout] = bitmap;
+
+                    ObjToRender obj = null;
+                    for (var i = info.Count - 1; i >= 0; i--) {
+                        var waiting = info[i];
+                        if (waiting._currentTrack == track) {
+                            waiting._track = obj ?? (obj = new ObjToRender(bitmap, track.Name, isBlock: false, maxWidth: 104));
+                            waiting._renderDirty = true;
+                            waiting.InvalidateVisual();
+                        }
+                    }
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                    TrackIconsReadyCache[track.IdWithLayout] = null;
+                }
+                TrackIconsLoading.Remove(track.IdWithLayout);
+            }
+
+            if (TrackIconsLoading.TryGetValue(track.IdWithLayout, out var loading)) {
+                loading.Add(item);
+            } else {
+                var info = new List<OnlineItem> { item };
+                TrackIconsLoading[track.IdWithLayout] = info;
+                LoadIconAsync(info).Ignore();
+            }
+        }
+
+        private void UpdateTrack(ServerEntry server) {
             var track = server.Track;
+            var trackId = server.TrackId;
+            if (ReferenceEquals(_currentTrackId, trackId) && ReferenceEquals(_currentTrack, track)) return;
+
             _currentTrack = track;
             _currentTrackId = trackId;
 
             if (server.TrackId == null) {
-                _track = new ObjToRender(null, "No information", isBlock: false, isComplex: false, maxWidth: 120);
+                _track = new ObjToRender(null, ControlsStrings.Online_Item_MissingTrackInformation, isBlock: false, isComplex: false, maxWidth: 120);
             } else if (track == null) {
                 _track = new ObjToRender(_alertIcon, server.TrackId, isBlock: false, isComplex: false, maxWidth: 104);
             } else {
-                /*var src = BetterImage.LoadBitmapSource(track.OutlineImage, 32, 32).BitmapSource;
-                _track = new ObjToRender(ToBitmap(new BetterImage {
-                    Source = src,
-                    CropTransparentAreas = true
-                }), track.Name, isBlock: false, maxWidth: src == null ? 104 : 120);*/
-                _track = new ObjToRender(null, track.Name, isBlock: false, maxWidth: 120);
+                if (TrackIconsReadyCache.TryGetValue(track.IdWithLayout, out var icon)) {
+                    _track = new ObjToRender(icon, track.Name, isBlock: false, maxWidth: 104);
+                } else {
+                    _track = new ObjToRender(null, track.Name, isBlock: false, maxWidth: 104, extraTextOffset: 16);
+                    GetTrackIconDelayed(track, this);
+                }
             }
         }
 
@@ -721,29 +790,29 @@ namespace AcManager.Controls {
             return false;
         }
 
-        private static ObjToRender GetCarToRender([NotNull] ServerEntry.CarEntry carEntry) {
-            if (CarsCache.TryGetValue(carEntry.Id, out var result)) return result;
+        private static ImageSource GetCarIcon(CarObject car) {
+            var badges = SettingsHolder.Online.ShowBrandBadges;
+            try {
+                return badges ? CarIcon.LoadEntryAsync(car.Brand, 12, car.BrandBadge).Result.ImageSource : null;
+            } catch (Exception e) {
+                Logging.Error(e);
+                return null;
+            }
+        }
 
-            var car = carEntry.CarObject;
-            if (car != null) {
-                var badges = SettingsHolder.Online.ShowBrandBadges;
-
-                ImageSource icon;
-                try {
-                    icon = badges ? CarIcon.GetCached(car.Brand, 12).ImageSource
-                            ?? CarIcon.LoadEntryAsync(car.Brand, 12, car.BrandBadge).Result.ImageSource : null;
-                } catch (Exception e) {
-                    icon = null;
-                    Logging.Error(e);
-                }
-
-                var name = badges ? car.ShortName : car.DisplayName;
-                result = new ObjToRender(icon, name, isBlock: true);
-            } else {
-                result = new ObjToRender(_alertIcon, carEntry.Id, isBlock: true, isComplex: false);
+        private ObjToRender GetCarToRender([NotNull] ServerEntry.CarEntry carEntry) {
+            if (!carEntry.CarExists) {
+                return CarsCache.GetValueOrSet(carEntry.Id + @":0", () => new ObjToRender(_alertIcon, carEntry.Id, isBlock: true, isComplex: false));
             }
 
-            return CarsCache[carEntry.Id] = result;
+            var car = carEntry.TryCarObject;
+            if (car == null) {
+                carEntry.LoadAsync();
+                return CarsCache.GetValueOrSet(carEntry.Id + @":1", () => new ObjToRender(null, carEntry.Id, isBlock: true));
+            }
+
+            var name = SettingsHolder.Online.ShowBrandBadges ? car.ShortName : car.DisplayName;
+            return CarsCache.GetValueOrSet(carEntry.Id, () => new ObjToRender(GetCarIcon(car), name, isBlock: true));
         }
 
         private void UpdateCars(ServerEntry server) {
@@ -763,12 +832,8 @@ namespace AcManager.Controls {
         }
 
         private static Tuple<FormattedText, bool> GetSessionsItem(ServerEntry.Session session) {
-            var key = (session.IsActive ? @"1" : @"0") + session.DisplayTypeShort;
-            if (!SessionsCache.TryGetValue(key, out var result)) {
-                SessionsCache[key] = result = Tuple.Create(GetText(session.DisplayTypeShort,
-                        isBlock: true, isLabel: true, isHint: session.IsActive), session.IsActive);
-            }
-            return result;
+            return SessionsCache.GetValueOrSet((session.IsActive ? @"1" : @"0") + session.DisplayTypeShort,
+                    () => Tuple.Create(GetText(session.DisplayTypeShort, isBlock: true, isLabel: true, isHint: session.IsActive), session.IsActive));
         }
 
         private void UpdateSessions(ServerEntry server) {
@@ -789,6 +854,22 @@ namespace AcManager.Controls {
         }
 
         private static readonly NumberSubstitution NumberSubstitution = new NumberSubstitution();
+
+        private static readonly TextConfiguration TextConfigurationClients = new TextConfiguration { TextAlignment = TextAlignment.Center, MaxWidth = 32d };
+        private static readonly TextConfiguration TextConfigurationBase = new TextConfiguration();
+
+        private class TextConfiguration {
+            private readonly LruCache<string, FormattedText> _cache = new LruCache<string, FormattedText>(50);
+
+            public TextAlignment TextAlignment = TextAlignment.Left;
+            public double MaxWidth = double.NaN;
+
+            [ContractAnnotation(@"text: null => null; text: notnull => notnull")]
+            public FormattedText Get([CanBeNull] string text) {
+                if (text == null) return null;
+                return _cache.Get(text, () => GetText(text, TextAlignment, MaxWidth));
+            }
+        }
 
         [ContractAnnotation(@"text: null => null; text: notnull => notnull")]
         private static FormattedText GetText([CanBeNull] string text, TextAlignment textAlignment = TextAlignment.Left, double maxWidth = double.NaN,
@@ -818,6 +899,8 @@ namespace AcManager.Controls {
                 _onceMeasured = false;
                 _blocks = null;
                 _wideMode = constraint.Width > 600d;
+                _renderDirty = true;
+                _renderTimeDirty = true;
             }
 
             if (!_onceMeasured) {
@@ -829,8 +912,6 @@ namespace AcManager.Controls {
         }
 
         protected override Size ArrangeOverride(Size arrangeBounds) {
-            Update();
-
             var rect = new Rect(arrangeBounds);
             _name.Arrange(rect);
             return arrangeBounds;
@@ -907,160 +988,140 @@ namespace AcManager.Controls {
         private readonly DrawingGroup _backingStore = new DrawingGroup();
         private readonly DrawingGroup _backingTimeLeftStore = new DrawingGroup();
 
-        private void RenderTimeLeft() {
-            if (_wideMode) {
-                if (_renderTimeInProcess) return;
-                _renderTimeInProcess = true;
-                Dispatcher.BeginInvoke((Action)RenderInner, DispatcherPriority.Render);
-            }
-
-            void RenderInner() {
-                _renderTimeInProcess = false;
-
-                var timeLeft = _timeLeft;
-                if (timeLeft == null) return;
-
-                var dc = _backingTimeLeftStore.Open();
-                dc.DrawText(timeLeft, new Point(218 - timeLeft.Width, 29 + _textPadding));
-                dc.Close();
-            }
-        }
-
         private bool _wideMode = true;
-        private bool _renderInProcess, _renderTimeInProcess;
 
         private static Rect GetCountryRect(double width) {
             return new Rect(width - 108, 7, 24, 16);
         }
 
-        private void Render() {
-            if (_renderInProcess) return;
+        private void RenderTimeLayer() {
+            var timeLeft = _timeLeft;
+            if (timeLeft == null) return;
 
-            _renderInProcess = true;
-            Dispatcher.BeginInvoke((Action)RenderInner, DispatcherPriority.Render);
+            var dc = _backingTimeLeftStore.Open();
+            dc.DrawText(timeLeft, new Point(218 - timeLeft.Width, 29 + _textPadding));
+            dc.Close();
+        }
 
-            void RenderInner() {
-                Update();
-                _renderInProcess = false;
+        private void RenderMainLayer() {
+            var dc = _backingStore.Open();
+            var size = _size;
+            var width = size.Width;
 
-                var dc = _backingStore.Open();
+            var referenceIconOffset = 22d;
+            for (var i = 0; i < _icons.Length; i++) {
+                var icon = _icons[i];
+                if (icon == null) break;
 
-                var size = _size;
-                var width = size.Width;
-
-                var referenceIconOffset = 22d;
-                for (var i = 0; i < _icons.Length; i++) {
-                    var icon = _icons[i];
-                    if (icon == null) break;
-
-                    var iconWidth = icon.Width;
-                    dc.DrawImage(icon, new Rect(referenceIconOffset, 5, iconWidth, ReferenceIconSize));
-                    referenceIconOffset += iconWidth + ReferenceIconMargin;
-                }
-
-                if (_errorFlag) {
-                    dc.DrawImage(_alertIcon, new Rect(width - 40 + 14, 9, 12, 12));
-                } else if (_pingValue != null) {
-                    dc.DrawText(_pingValue, new Point(width - 40, _textPadding));
-                    dc.DrawText(_pingPostfix, new Point(width - 40 + _pingValue.Width, _textPadding));
-                }
-
-                dc.DrawRectangle(_areaBrush, null, new Rect(20, 30, width - 18, size.Height - 30));
-
-                if (_track != null) {
-                    Draw(dc, _track, 24);
-                }
-
-                if (!_fullyLoaded) {
-                    // dc.DrawText(_track, new Point(24, 39));
-                } else {
-                    /*if (_currentTrack == null) {
-                        dc.DrawImage(_alertIcon, new Rect(22, 39, 12, 12));
-                        dc.DrawText(_track, new Point(38, 39));
-                    } else {
-                        dc.DrawText(_track, new Point(24, 39));
-                    }*/
-
-                    var pieces = (_bookedForPlayer ? 1 : 0) + (_passwordRequired ? 1 : 0) + (_hasFriends ? 1 : 0);
-                    if (pieces < 3 && (_requiresCspAvailable || _requiresCspMissing)) {
-                        ++pieces;
-                    }
-                    if (pieces > 0) {
-                        var iconOffset = (60d - pieces * ReferenceIconHeight + (pieces - 1d) * ReferenceIconMargin) / 2d;
-                        if (_bookedForPlayer) {
-                            dc.DrawImage(_bookedIcon, new Rect(6, iconOffset, 12, ReferenceIconHeight));
-                            iconOffset += ReferenceIconHeight + ReferenceIconMargin;
-                        }
-                        if (_passwordRequired) {
-                            dc.DrawImage(_passwordIcon, new Rect(6, iconOffset, 12, ReferenceIconHeight));
-                            iconOffset += ReferenceIconHeight + ReferenceIconMargin;
-                        }
-                        if (_hasFriends) {
-                            dc.DrawImage(_friendsIcon, new Rect(6, iconOffset, 12, ReferenceIconHeight));
-                            iconOffset += ReferenceIconHeight + ReferenceIconMargin;
-                        }
-
-                        if (_requiresCspAvailable || _requiresCspMissing) {
-                            dc.DrawImage(_requiresCspAvailable ? _cspIconAvailable : _cspIconMissing, new Rect(6, iconOffset, 12, ReferenceIconHeight));
-                            if (_cspProhibited) {
-                                dc.DrawLine(_cspProhibitedPen, new Point(6, iconOffset), new Point(18, iconOffset + ReferenceIconHeight));
-                            }
-                        }
-                    }
-
-                    dc.DrawImage(_countryBitmap, GetCountryRect(width));
-                    dc.DrawText(_displayClients, new Point(width - 80, _textPadding));
-
-                    var cars = _cars;
-                    var sessions = _sessions;
-
-                    var carsOffset = _wideMode ? 324d : 240d;
-                    var sessionsOffset = _wideMode ? 230d : 146d;
-
-                    if (_blocks == null) {
-                        _blocks = CreateCarsBackgroundsGeometry(cars, _sessionsCount, carsOffset, sessionsOffset, width);
-                    }
-
-                    dc.DrawGeometry(_blockBackground, null, _blocks);
-
-                    for (var i = 0; i < sessions.Length; i++) {
-                        var c = sessions[i];
-                        if (c == null || sessionsOffset > width) break;
-
-                        if (c.Item2) {
-                            dc.DrawRectangle(_blockBackgroundActive, null, new Rect(sessionsOffset, 35, 20, 20));
-                        }
-
-                        dc.DrawText(c.Item1, new Point(sessionsOffset + 7, 28 + _textPadding));
-                        sessionsOffset += 20;
-                    }
-
-                    for (var i = 0; i < cars.Length; i++) {
-                        var c = cars[i];
-                        if (c == null || carsOffset > width) break;
-
-                        Draw(dc, c, carsOffset);
-                        carsOffset += c.Width + 16;
-                    }
-                }
-
-                dc.Close();
+                var iconWidth = icon.Width;
+                dc.DrawImage(icon, new Rect(referenceIconOffset, 5, iconWidth, ReferenceIconSize));
+                referenceIconOffset += iconWidth + ReferenceIconMargin;
             }
 
-            void Draw(DrawingContext dc, ObjToRender obj, double offset) {
+            if (_errorFlag) {
+                dc.DrawImage(_alertIcon, new Rect(width - 40 + 14, 9, 12, 12));
+            } else if (_pingValue != null) {
+                dc.DrawText(_pingValue, new Point(width - 40, _textPadding));
+                dc.DrawText(_pingPostfix, new Point(width - 40 + _pingValue.Width, _textPadding));
+            }
+
+            if (_track != null || _fullyLoaded) {
+                dc.DrawRectangle(_areaBrush, null, new Rect(20, 30, width - 18, size.Height - 30));
+            }
+
+            if (_track != null) {
+                Draw(dc, _track, 24);
+            }
+
+            if (!_fullyLoaded) {
+                // dc.DrawText(_track, new Point(24, 39));
+            } else {
+                /*if (_currentTrack == null) {
+                    dc.DrawImage(_alertIcon, new Rect(22, 39, 12, 12));
+                    dc.DrawText(_track, new Point(38, 39));
+                } else {
+                    dc.DrawText(_track, new Point(24, 39));
+                }*/
+
+                var pieces = (_bookedForPlayer ? 1 : 0) + (_passwordRequired ? 1 : 0) + (_hasFriends ? 1 : 0);
+                if (pieces < 3 && (_requiresCspAvailable || _requiresCspMissing)) {
+                    ++pieces;
+                }
+                if (pieces > 0) {
+                    var iconOffset = (60d - pieces * ReferenceIconHeight + (pieces - 1d) * ReferenceIconMargin) / 2d;
+                    if (_bookedForPlayer) {
+                        dc.DrawImage(_bookedIcon, new Rect(6, iconOffset, 12, ReferenceIconHeight));
+                        iconOffset += ReferenceIconHeight + ReferenceIconMargin;
+                    }
+                    if (_passwordRequired) {
+                        dc.DrawImage(_passwordIcon, new Rect(6, iconOffset, 12, ReferenceIconHeight));
+                        iconOffset += ReferenceIconHeight + ReferenceIconMargin;
+                    }
+                    if (_hasFriends) {
+                        dc.DrawImage(_friendsIcon, new Rect(6, iconOffset, 12, ReferenceIconHeight));
+                        iconOffset += ReferenceIconHeight + ReferenceIconMargin;
+                    }
+
+                    if (_requiresCspAvailable || _requiresCspMissing) {
+                        dc.DrawImage(_requiresCspAvailable ? _cspIconAvailable : _cspIconMissing, new Rect(6, iconOffset, 12, ReferenceIconHeight));
+                        if (_cspProhibited) {
+                            dc.DrawLine(_cspProhibitedPen, new Point(6, iconOffset), new Point(18, iconOffset + ReferenceIconHeight));
+                        }
+                    }
+                }
+
+                dc.DrawImage(_countryBitmap, GetCountryRect(width));
+                dc.DrawText(_displayClients, new Point(width - 80, _textPadding));
+
+                var cars = _cars;
+                var sessions = _sessions;
+
+                var carsOffset = _wideMode ? 324d : 240d;
+                var sessionsOffset = _wideMode ? 230d : 146d;
+
+                if (_blocks == null) {
+                    _blocks = CreateBlocksBackgroundsGeometry(cars, _sessionsCount, carsOffset, sessionsOffset, width);
+                }
+
+                dc.DrawGeometry(_blockBackground, null, _blocks);
+
+                for (var i = 0; i < sessions.Length; i++) {
+                    var c = sessions[i];
+                    if (c == null || sessionsOffset > width) break;
+
+                    if (c.Item2) {
+                        dc.DrawRectangle(_blockBackgroundActive, null, new Rect(sessionsOffset, 35, 20, 20));
+                    }
+
+                    dc.DrawText(c.Item1, new Point(sessionsOffset + 7, 28 + _textPadding));
+                    sessionsOffset += 20;
+                }
+
+                for (var i = 0; i < cars.Length; i++) {
+                    var c = cars[i];
+                    if (c == null || carsOffset > width) break;
+
+                    Draw(dc, c, carsOffset);
+                    carsOffset += c.Width + 16;
+                }
+            }
+
+            dc.Close();
+
+            void Draw(DrawingContext dc0, ObjToRender obj, double offset) {
                 if (obj.Icon != null) {
-                    dc.DrawImage(obj.Icon, new Rect(offset + 4, 39, 12, 12));
+                    dc0.DrawImage(obj.Icon, new Rect(offset + 4, 39, 12, 12));
                 }
 
                 if (obj.TextImage != null) {
-                    dc.DrawImage(obj.TextImage, new Rect(offset + 4 + obj.TextOffset, 38, obj.TextImage.Width, 14));
+                    dc0.DrawImage(obj.TextImage, new Rect(offset + 4 + obj.TextOffset, 38, obj.TextImage.Width, 14));
                 } else if (obj.Text != null) {
-                    dc.DrawText(obj.Text, new Point(offset + 4 + obj.TextOffset, 30 + _textPadding));
+                    dc0.DrawText(obj.Text, new Point(offset + 4 + obj.TextOffset, 30 + _textPadding));
                 }
             }
         }
 
-        private static StreamGeometry CreateCarsBackgroundsGeometry(ObjToRender[] cars, int sessionsCount,
+        private static StreamGeometry CreateBlocksBackgroundsGeometry(ObjToRender[] cars, int sessionsCount,
                 double carsOffset, double sessionsOffset, double width) {
             var streamGeometry = new StreamGeometry();
             using (var gc = streamGeometry.Open()) {
@@ -1090,14 +1151,41 @@ namespace AcManager.Controls {
             return streamGeometry;
         }
 
+        // private bool _renderInProcess;
+
         protected override void OnRender(DrawingContext dc) {
             base.OnRender(dc);
 
-            Render();
-            RenderTimeLeft();
+            if (_renderDirty) {
+                _renderDirty = false;
+                RenderMainLayer();
+            }
+
+            if (_fullyLoaded && _wideMode && _renderTimeDirty) {
+                _renderTimeDirty = false;
+                RenderTimeLayer();
+            }
+
+            /*if (!_renderInProcess && (_renderDirty || _fullyLoaded && _wideMode && _renderTimeDirty)) {
+                _renderInProcess = true;
+                Dispatcher.BeginInvoke((Action)(() => {
+                    if (_renderDirty) {
+                        _renderDirty = false;
+                        RenderMainLayer();
+                    }
+
+                    if (_fullyLoaded && _wideMode && _renderTimeDirty) {
+                        _renderTimeDirty = false;
+                        RenderTimeLayer();
+                    }
+
+                    _renderInProcess = false;
+                    InvalidateVisual();
+                }), DispatcherPriority.Render);
+            }*/
 
             dc.DrawDrawing(_backingStore);
-            if (_wideMode) {
+            if (_wideMode && _fullyLoaded) {
                 dc.DrawDrawing(_backingTimeLeftStore);
             }
         }
@@ -1107,87 +1195,96 @@ namespace AcManager.Controls {
             switch (e.PropertyName) {
                 case nameof(ServerEntry.DisplayName):
                     UpdateName(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.ReferencesString):
                     UpdateReferences(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.PasswordRequired):
                     UpdatePasswordState(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.IsBookedForPlayer):
                     UpdateBookedState(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.HasFriends):
                     UpdateFriendsState(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.CspRequiredAvailable):
                     UpdateCspStateAvailable(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.CspRequiredMissing):
                     UpdateCspStateMissing(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.RequiredCspVersion):
                     UpdateCspStateProhibited(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.HasErrors):
                     UpdateErrorFlag(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.CountryId):
                     UpdateCountryFlag(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.Ping):
                     UpdatePing(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.DisplayClients):
                     UpdateDisplayClients(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.DisplayTimeLeft):
                     UpdateTimeLeft(server);
-                    RenderTimeLeft();
-                    return;
+                    _renderTimeDirty = true;
+                    break;
                 case nameof(ServerEntry.Track):
                 case nameof(ServerEntry.TrackId):
                     UpdateTrack(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.Sessions):
                 case nameof(ServerEntry.CurrentSessionType):
                     UpdateSessions(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.Cars):
                     UpdateCars(server);
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.IsFullyLoaded):
                     UpdateErrorFlag(server);
                     UpdateFullyLoaded(server);
+                    _renderDirty = true;
+                    break;
+                case ServerEntry.EventContentNameChanged:
+                    var track = _currentTrack;
+                    if (track != null) {
+                        _currentTrack = null;
+                        UpdateTrack(_server);
+                    }
+
+                    UpdateCars(_server);
+                    _renderDirty = true;
+                    _blocks = null;
+                    break;
+                case ServerEntry.EventCarLoaded:
+                    UpdateCars(_server);
+                    _renderDirty = true;
+                    _blocks = null;
                     break;
                 default:
                     return;
             }
 
-            Render();
-        }
-
-        private void OnContentNameChanged(object sender, EventArgs e) {
-            var track = _currentTrack;
-            if (track != null) {
-                _currentTrack = null;
-                UpdateTrack(_server);
-            }
-
-            UpdateCars(_server);
-            Render();
-        }
-
-        private void OnServerChanged([CanBeNull] ServerEntry o, [CanBeNull] ServerEntry n) {
-            if (o != null) {
-                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveHandler(o, nameof(ServerEntry.PropertyChanged), OnServerPropertyChanged);
-                WeakEventManager<ServerEntry, EventArgs>.RemoveHandler(o, nameof(ServerEntry.ContentNameChanged), OnContentNameChanged);
-            }
-
-            if (n != null) {
-                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(n, nameof(ServerEntry.PropertyChanged), OnServerPropertyChanged);
-                WeakEventManager<ServerEntry, EventArgs>.AddHandler(n, nameof(ServerEntry.ContentNameChanged), OnContentNameChanged);
-            }
+            InvalidateVisual();
         }
 
         // TODO: Replace warning triangles with download icons if content is available to download

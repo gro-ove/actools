@@ -82,6 +82,7 @@ namespace AcTools.Processes {
             public string DriverName, DriverNationality, DriverNationCode,
                     CarId, CarSkinId, CarSetupId,
                     TrackId, TrackConfigurationId;
+
             public double Ballast, Restrictor;
             public bool UseMph;
 
@@ -116,6 +117,7 @@ namespace AcTools.Processes {
         public class AiCar {
             [CanBeNull]
             public string CarId, SkinId = "", Setup = "", DriverName = "", Nationality = "", NationCode;
+
             public double AiLevel = 100, AiAggression = 0;
             public double Ballast, Restrictor;
         }
@@ -159,28 +161,30 @@ namespace AcTools.Processes {
 
             protected virtual void SetBots(IniFile file, IEnumerable<AiCar> bots) {
                 file.SetSections("CAR", 1, from car in bots
-                                           select new IniFileSection(null) {
-                                               ["MODEL"] = car.CarId?.ToLowerInvariant(),
-                                               ["SKIN"] = car.SkinId?.ToLowerInvariant(),
-                                               ["SETUP"] = car.Setup?.ToLowerInvariant(),
-                                               ["MODEL_CONFIG"] = "",
-                                               ["AI_LEVEL"] = car.AiLevel,
-                                               ["AI_AGGRESSION"] = car.AiAggression,
-                                               ["DRIVER_NAME"] = car.DriverName,
-                                               ["BALLAST"] = car.Ballast,
-                                               ["RESTRICTOR"] = car.Restrictor,
-                                               ["NATION_CODE"] = car.NationCode ?? GetNationCode(car.Nationality),
-                                               ["NATIONALITY"] = car.Nationality
-                                           });
+                    select new IniFileSection(null) {
+                        ["MODEL"] = car.CarId?.ToLowerInvariant(),
+                        ["SKIN"] = car.SkinId?.ToLowerInvariant(),
+                        ["SETUP"] = car.Setup?.ToLowerInvariant(),
+                        ["MODEL_CONFIG"] = "",
+                        ["AI_LEVEL"] = car.AiLevel,
+                        ["AI_AGGRESSION"] = car.AiAggression,
+                        ["DRIVER_NAME"] = car.DriverName,
+                        ["BALLAST"] = car.Ballast,
+                        ["RESTRICTOR"] = car.Restrictor,
+                        ["NATION_CODE"] = car.NationCode ?? GetNationCode(car.Nationality),
+                        ["NATIONALITY"] = car.Nationality
+                    });
             }
         }
 
         public class OnlineProperties : BaseModeProperties {
             [CanBeNull]
             public string ServerName, ServerIp, Guid, Password, RequestedCar, SessionName;
+
             public int ServerPort;
             public int? ServerHttpPort;
             public bool ExtendedMode;
+            public string CspFeaturesList;
 
             public override void Set(IniFile file) {
                 SetGhostCar(file);
@@ -207,6 +211,12 @@ namespace AcTools.Processes {
                     section.Set("PASSWORD", Password);
                     section.Set("ACTIVE", true);
                     section.Set("__CM_EXTENDED", ExtendedMode);
+
+                    if (!string.IsNullOrWhiteSpace(CspFeaturesList)) {
+                        section.Set("__FEATURES", CspFeaturesList);
+                    } else {
+                        section.Remove("__FEATURES");
+                    }
                 }
 
                 {
@@ -239,6 +249,7 @@ namespace AcTools.Processes {
         public class HotlapProperties : BaseModeProperties {
             [CanBeNull]
             public string SessionName = "Hotlap";
+
             public bool GhostCar = true;
             public bool? RecordGhostCar = null;
 
@@ -282,6 +293,7 @@ namespace AcTools.Processes {
         public class DragProperties : BaseModeProperties {
             [CanBeNull]
             public string SessionName = "Drag Race";
+
             public StartType StartType = StartType.RegularStart;
             public double AiLevel = 100;
             public int MatchesCount = 10;
@@ -327,6 +339,7 @@ namespace AcTools.Processes {
         public class DriftProperties : BaseModeProperties {
             [CanBeNull]
             public string SessionName = "Drift Session";
+
             public StartType StartType = StartType.Pit;
 
             public override void Set(IniFile file) {
@@ -617,7 +630,7 @@ namespace AcTools.Processes {
 
         public static TrackPropertiesPreset GetDefaultTrackPropertiesPreset() {
             return DefaultTrackPropertiesPresets.FirstOrDefault(x => x.Name == "Optimum") ??
-                   DefaultTrackPropertiesPresets.FirstOrDefault();
+                    DefaultTrackPropertiesPresets.FirstOrDefault();
         }
 
         // TODO: rework; move everything related to actools?

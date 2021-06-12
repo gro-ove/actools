@@ -249,7 +249,7 @@ namespace AcManager.Controls {
                 list.SetValue(ListBoxHelper.ProperMultiSelectionModeProperty, true);
                 list.SelectionChanged += OnMultiSelectionChanged;
                 SetBatchActions();
-                SetCheckBoxMode(true).Forget();
+                SetCheckBoxMode(true).Ignore();
                 SetValue(SelectedAmountPropertyKey, (DataContext as IAcListPageViewModel)?.GetNumberString(list.SelectedItems.Count));
                 list.Focus();
 
@@ -261,7 +261,7 @@ namespace AcManager.Controls {
                 SetCheckBoxMode(false, () => {
                     list.ItemContainerStyle = _baseItemStyle;
                     list.SetValue(ListBoxHelper.ProperMultiSelectionModeProperty, false);
-                }).Forget();
+                }).Ignore();
             }
 
             BatchMenuVisible = !BatchMenuVisible;
@@ -650,7 +650,7 @@ namespace AcManager.Controls {
                 } catch (Exception e) {
                     NonfatalError.Notify("Batch processing failed", e);
                 }
-            }).Forget();
+            }).Ignore();
         }
 
         private void OnListSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs) {

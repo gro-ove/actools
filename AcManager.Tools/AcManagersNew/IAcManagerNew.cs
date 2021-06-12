@@ -6,6 +6,9 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcManagersNew {
     public interface IAcManagerNew : IEnumerable {
+        [CanBeNull]
+        AcItemWrapper GetWrapperById([NotNull] string id);
+
         [NotNull]
         IAcObjectList WrappersAsIList { get; }
 

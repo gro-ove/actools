@@ -2,12 +2,12 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.RegularExpressions;
+using System.Threading;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -44,8 +44,49 @@ namespace AcManager.Tools.Starters {
             SteamRunningHelper.EnsureSteamIsRunning(SettingsHolder.Drive.RunSteamIfNeeded, false);
             CreateAppIdFile();
 
+            var outputName = "SteamStatisticsReader-out.json";
             var reader = Path.Combine(AcRootDirectory.Instance.RequireValue, "SteamStatisticsReader.exe");
-            var output = new StringBuilder();
+            var readerBackup = FileUtils.EnsureUnique(reader + ".bak");
+            try {
+                if (File.Exists(reader)) {
+                    File.Move(reader, readerBackup);
+                }
+                File.Copy(MainExecutingFile.Location, reader);
+
+                using (var process = new Process {
+                    StartInfo = {
+                        FileName = reader,
+                        WorkingDirectory = AcRootDirectory.Instance.RequireValue,
+                        Arguments = $"--out={outputName}",
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    }
+                }) {
+                    process.Start();
+                    process.WaitForExit(10000);
+                    if (!process.HasExited) {
+                        process.Kill();
+                    }
+                }
+                Thread.Sleep(500);
+                var outputFilename = Path.Combine(AcRootDirectory.Instance.RequireValue, outputName);
+                Logging.Debug("outputFilename=" + outputFilename);
+                Logging.Debug("File.Exists(outputFilename)=" + File.Exists(outputFilename));
+                if (!File.Exists(outputFilename)) {
+                    throw new Exception("Custom Steam statistics reader failed to do its job properly");
+                }
+
+                var result = File.ReadAllText(outputFilename);
+                FileUtils.TryToDelete(outputFilename);
+                return result;
+            } finally {
+                if (File.Exists(readerBackup)) {
+                    File.Delete(reader);
+                    File.Move(readerBackup, reader);
+                }
+            }
+
+            /*var output = new StringBuilder();
             using (var process = new Process {
                 StartInfo = {
                     FileName = reader,
@@ -70,7 +111,7 @@ namespace AcManager.Tools.Starters {
             }
 
             var result = Regex.Replace(output.ToString(), @"\r+|\s+|\n$", "");
-            return string.IsNullOrEmpty(result) ? "{}" : result;
+            return string.IsNullOrEmpty(result) ? "{}" : result;*/
         }
 
         [CanBeNull]

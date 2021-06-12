@@ -128,7 +128,7 @@ namespace AcManager.Pages.Selected {
                 Unloaded += OnUnloaded;
             }
 
-            UpdateBindingsLaterAsync().Forget();
+            UpdateBindingsLaterAsync().Ignore();
         }
 
         private async Task UpdateBindingsLaterAsync() {

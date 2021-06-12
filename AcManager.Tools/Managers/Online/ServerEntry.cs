@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
@@ -27,11 +28,7 @@ namespace AcManager.Tools.Managers.Online {
             Ip = information.Ip;
             PortHttp = information.PortHttp;
             Ping = null;
-
-            PrepareErrorsList();
-            var status = UpdateValues(information, true, true);
-            Status = status == ServerStatus.MissingContent ? ServerStatus.Unloaded : status ?? ServerStatus.Unloaded;
-            UpdateErrorsList();
+            UpdateValuesAsync(information).Ignore();
         }
 
         public override string DisplayName {
@@ -46,10 +43,12 @@ namespace AcManager.Tools.Managers.Online {
         private readonly Lazier<string> _sortingName;
         public string SortingName => _sortingName.Value;
 
-        public void UpdateValues([NotNull] ServerInformation information) {
+        public async Task UpdateValuesAsync([NotNull] ServerInformation information, bool forceStatus = false) {
             PrepareErrorsList();
-            var status = UpdateValues(information, true, false);
-            if (status.HasValue) {
+            var status = await UpdateValuesAsync(information, true, false);
+            if (forceStatus) {
+                Status = status == ServerStatus.MissingContent ? ServerStatus.Unloaded : status ?? ServerStatus.Unloaded;
+            } else if (status.HasValue) {
                 Status = status.Value;
             }
             UpdateErrorsList();
@@ -63,21 +62,23 @@ namespace AcManager.Tools.Managers.Online {
             set => Apply(value, ref _actualName);
         }
 
-        private void UpdateMissingContent() {
-            if (Cars == null) {
-                _missingCarsError = null;
-            } else {
-                var list = Cars.Where(x => !x.CarExists).Select(x => x.Id).ToList();
-                _missingCarsError = list.Any() ? (list.Count == 1
-                        ? string.Format(ToolsStrings.Online_Server_CarIsMissing, IdToBb(list[0]))
-                        : string.Format(ToolsStrings.Online_Server_CarsAreMissing, list.Select(x => IdToBb(x)).JoinToReadableString())) : null;
-            }
+        private string ErrorMessageMissingCars() {
+            if (Cars == null) return null;
 
-            if (TrackId == null || Track != null) {
-                _missingTrackError = null;
-            } else {
-                _missingTrackError = string.Format(ToolsStrings.Online_Server_TrackIsMissing, IdToBb(TrackId, false));
-            }
+            var list = Cars.Where(x => !x.CarExists).Select(x => x.Id).ToList();
+            return list.Any() ? (list.Count == 1
+                    ? string.Format(ToolsStrings.Online_Server_CarIsMissing, IdToBb(list[0]))
+                    : string.Format(ToolsStrings.Online_Server_CarsAreMissing, list.Select(x => IdToBb(x)).JoinToReadableString())) : null;
+        }
+
+        private string ErrorMessageMissingTrack() {
+            if (TrackId == null || Track != null) return null;
+            return string.Format(ToolsStrings.Online_Server_TrackIsMissing, IdToBb(TrackId, false));
+        }
+
+        private void UpdateMissingContent() {
+            _errorMissingCars = Cars != null && Cars.Any(x => !x.CarExists);
+            _errorMissingTrack = TrackId != null && Track == null;
         }
 
         public void CheckCspState() {
@@ -106,7 +107,8 @@ namespace AcManager.Tools.Managers.Online {
         /// <param name="setCurrentDriversCount">Set CurrentDriversCount property.</param>
         /// <param name="forceExtendedDisabling">Set to true if PortExtended should be removed if baseInformation is not extended information.</param>
         /// <returns>Null if everything is OK, ServerStatus.Error/ServerStatus.Unloaded message otherwise.</returns>
-        private ServerStatus? UpdateValues([NotNull] ServerInformation baseInformation, bool setCurrentDriversCount, bool forceExtendedDisabling) {
+        private async Task<ServerStatus?> UpdateValuesAsync([NotNull] ServerInformation baseInformation, bool setCurrentDriversCount,
+                bool forceExtendedDisabling) {
             if (Ip != baseInformation.Ip) {
                 _updateCurrentErrors.Add($"IP changed (from {Ip} to {baseInformation.Ip})");
                 return ServerStatus.Error;
@@ -155,15 +157,11 @@ namespace AcManager.Tools.Managers.Online {
             PortRace = information.PortRace;
             PreviousUpdateTime = DateTime.Now;
 
-            {
-                var country = information.Country?.FirstOrDefault() ?? "";
-                Country = Country != null && country == @"na" ? Country : country;
-            }
+            var country = information.Country?.FirstOrDefault() ?? "";
+            Country = Country != null && country == @"na" ? Country : country;
 
-            {
-                var countryId = information.Country?.ArrayElementAtOrDefault(1) ?? "";
-                CountryId = CountryId != null && countryId == @"na" ? CountryId : countryId;
-            }
+            var countryId = information.Country?.ArrayElementAtOrDefault(1) ?? "";
+            CountryId = CountryId != null && countryId == @"na" ? CountryId : countryId;
 
             if (setCurrentDriversCount) {
                 CurrentDriversCount = information.Clients;
@@ -190,7 +188,7 @@ namespace AcManager.Tools.Managers.Online {
 
                 if (trackIdPieces.Last() != TrackId) {
                     TrackId = trackIdPieces.Last();
-                    Track = TrackId == null ? null : GetTrack(TrackId);
+                    Track = TrackId == null ? null : await GetTrackAsync(TrackId);
                 }
             } else if (TrackId != null) {
                 TrackId = null;
@@ -206,7 +204,7 @@ namespace AcManager.Tools.Managers.Online {
             UpdateMissingContent();
 
             ServerStatus? result;
-            if (_missingCarsError != null || _missingTrackError != null) {
+            if (_errorMissingCars || _errorMissingTrack) {
                 result = SettingsHolder.Online.LoadServersWithMissingContent ? ServerStatus.MissingContent : ServerStatus.Error;
             } else if (Status == ServerStatus.Error) {
                 result = ServerStatus.Unloaded;
@@ -275,6 +273,10 @@ namespace AcManager.Tools.Managers.Online {
 
         private static TrackObjectBase GetTrack([NotNull] string informationId) {
             return TracksManager.Instance.GetLayoutByKunosId(informationId);
+        }
+
+        private static Task<TrackObjectBase> GetTrackAsync([NotNull] string informationId) {
+            return TracksManager.Instance.GetLayoutByKunosIdAsync(informationId);
         }
 
         public void LoadSelectedCar() {

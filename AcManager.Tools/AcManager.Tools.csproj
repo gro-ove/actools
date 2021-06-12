@@ -590,6 +590,7 @@
     <Compile Include="Miscellaneous\OAuth.cs" />
     <Compile Include="Miscellaneous\PatchSettingsModel.cs" />
     <Compile Include="Miscellaneous\ReplayReader.cs" />
+    <Compile Include="Miscellaneous\SteamAchievementsReader.cs" />
     <Compile Include="Objects\CarObject.Controls.cs" />
     <Compile Include="Objects\CarObject.CustomData.cs" />
     <Compile Include="Objects\CarObject.Extra.CmTexturesScript.cs" />

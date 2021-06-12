@@ -18,7 +18,7 @@ namespace AcManager.DiscordRpc {
         public static void Initialize([NotNull] string clientId, IDiscordHandler handler = null) {
             Instance?.Dispose();
             Instance = new DiscordConnector(clientId, handler);
-            Instance.RunAsync().Forget();
+            Instance.RunAsync().Ignore();
         }
 
         [NotNull]

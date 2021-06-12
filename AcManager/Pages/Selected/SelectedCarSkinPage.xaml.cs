@@ -149,7 +149,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
-                        QuickDrive.RunAsync(Car, SelectedObject.Id, presetFilename: p.VirtualFilename).Forget();
+                        QuickDrive.RunAsync(Car, SelectedObject.Id, presetFilename: p.VirtualFilename).Ignore();
                     });
                 }
             }

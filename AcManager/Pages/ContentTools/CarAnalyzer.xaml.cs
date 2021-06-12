@@ -550,7 +550,7 @@ All found similarities:
             public List<RatingEntry> Ratings {
                 get {
                     if (_ratings == null) {
-                        CollectRatings().Forget();
+                        CollectRatings().Ignore();
                     }
 
                     return _ratings;
@@ -683,7 +683,7 @@ All found similarities:
                     _warned = true;
                 }
 
-                aspect.FixCommand.ExecuteAsync().Forget();
+                aspect.FixCommand.ExecuteAsync().Ignore();
             }
         }
 

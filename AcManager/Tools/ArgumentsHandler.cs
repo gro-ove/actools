@@ -189,7 +189,7 @@ namespace AcManager.Tools {
         }
 
         public static bool IsCustomUriScheme(string argument) {
-            return argument.StartsWith(CustomUriSchemeHelper.UriScheme, StringComparison.InvariantCultureIgnoreCase);
+            return argument.StartsWith(CustomUriSchemeHelper.UriScheme, StringComparison.OrdinalIgnoreCase);
         }
 
         private static async Task<ArgumentHandleResult> ProcessArgument(string argument) {

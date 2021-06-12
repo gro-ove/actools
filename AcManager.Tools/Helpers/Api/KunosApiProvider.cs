@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -133,8 +134,15 @@ namespace AcManager.Tools.Helpers.Api {
             if (SettingsHolder.Online.CachingServerAvailable && SettingsHolder.Online.UseCachingServer) {
                 try {
                     var watch = Stopwatch.StartNew();
-                    var ret = LoadList(InternalUtils.GetKunosServerProxyUri(), OptionWebRequestTimeout, cancellation,
-                            ServerInformationComplete.Deserialize);
+                    var ret = LoadList(InternalUtils.GetKunosServerCompressedProxyUri(), OptionWebRequestTimeout, cancellation, stream => {
+                        using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
+                            return ServerInformationComplete.Deserialize(deflateStream);
+                        }
+                    });
+
+                    /*var ret = LoadList(InternalUtils.GetKunosServerProxyUri(), OptionWebRequestTimeout, cancellation,
+                            ServerInformationComplete.Deserialize);*/
+
                     Logging.Write($"Fast loading with proxy lobby server: {watch.Elapsed.TotalMilliseconds:F1} ms");
                     return ret;
                 } catch (Exception e) {
@@ -285,7 +293,8 @@ namespace AcManager.Tools.Helpers.Api {
             return result;
         }
 
-        private static ServerInformationExtended PrepareLoadedDirectly(ServerInformationExtended result, string ip, long serverTime) {
+        [NotNull]
+        private static ServerInformationExtended PrepareLoadedDirectly([NotNull] ServerInformationExtended result, string ip, long serverTime) {
             if (result.Ip != ip) {
                 // because, loaded directly, IP might different from global IP
                 result.Ip = ip;
@@ -345,6 +354,9 @@ namespace AcManager.Tools.Helpers.Api {
             var steamId = SteamIdHelper.Instance.Value ?? @"-1";
             var requestUri = $@"http://{ip}:{portExt}/api/details?guid={steamId}";
             var loaded = await LoadAsync(requestUri, lastModified, OptionDirectRequestTimeout).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(loaded.Data)) {
+                throw new WebException(@"Response is empty");
+            }
             return Tuple.Create(loaded.Data == null ? null :
                     PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformationExtended>(loaded.Data), ip, loaded.ServerTimeStamp),
                     loaded.LastModified);

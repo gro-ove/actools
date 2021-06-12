@@ -79,14 +79,14 @@ namespace AcManager.Tools.Managers {
         }
 
         private void OnSavedDriversCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
-            SaveDriversLater().Forget();
+            SaveDriversLater().Ignore();
         }
 
         private void OnSavedDriversItemPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(ServerSavedDriver.Deleted)) {
                 SavedDrivers.Remove((ServerSavedDriver)sender);
             } else {
-                SaveDriversLater().Forget();
+                SaveDriversLater().Ignore();
             }
         }
 
@@ -138,7 +138,7 @@ namespace AcManager.Tools.Managers {
             var saved = SavedDrivers.FirstOrDefault(x => x.Guid == entry.Guid);
             if (saved != null) {
                 saved.Extend(entry);
-                SaveDriversLater().Forget();
+                SaveDriversLater().Ignore();
                 Toast.Show("Saved driver extended", "Driver with this GUID already saved. New skin ID has been added");
             } else {
                 SavedDrivers.Add(new ServerSavedDriver(entry));

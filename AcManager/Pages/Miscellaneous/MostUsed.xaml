@@ -13,17 +13,20 @@
               Style="{StaticResource Title}" VerticalAlignment="Center" Margin="0 0 8 0" />
           <TextBlock DockPanel.Dock="Left" Text="{Binding Position, StringFormat='{}#{0}'}" Style="{StaticResource Small}" VerticalAlignment="Center"
               Margin="0 2 4 0" Width="36" TextAlignment="Right" />
-          <mui:ReferenceSwitch Value="{Binding Car}" Margin="12 4 8 4">
-            <mui:ReferenceSwitch.Null>
+          <c:LazierSwitch Value="{Binding Car}" Margin="12 4 8 4">
+            <c:LazierSwitch.Loading>
+              <TextBlock Text="{Binding AcObjectId}" Opacity="0.5" VerticalAlignment="Center" />
+            </c:LazierSwitch.Loading>
+            <c:LazierSwitch.NonNull>
+              <DockPanel>
+                <mui:BetterImage Filename="{Binding Car.Value.BrandBadge}" Width="24" Height="24" Margin="0 0 12 0" ClearOnChange="True" />
+                <TextBlock Text="{Binding Car.Value.DisplayName}" FontWeight="Bold" VerticalAlignment="Center" />
+              </DockPanel>
+            </c:LazierSwitch.NonNull>
+            <c:LazierSwitch.Null>
               <TextBlock Text="{Binding AcObjectId, StringFormat='{}Car {0} is missing'}" Opacity="0.5" VerticalAlignment="Center" />
-            </mui:ReferenceSwitch.Null>
-            <mui:ReferenceSwitch.NonNull>
-              <StackPanel Orientation="Horizontal">
-                <mui:BetterImage Filename="{Binding Car.BrandBadge}" Width="24" Height="24" Margin="0 0 12 0" ClearOnChange="True" />
-                <TextBlock Text="{Binding Car.DisplayName}" FontWeight="Bold" VerticalAlignment="Center" />
-              </StackPanel>
-            </mui:ReferenceSwitch.NonNull>
-          </mui:ReferenceSwitch>
+            </c:LazierSwitch.Null>
+          </c:LazierSwitch>
         </DockPanel>
       </DataTemplate>
     </ItemsControl.ItemTemplate>
@@ -43,18 +46,21 @@
                   Style="{StaticResource Title}" VerticalAlignment="Center" Margin="0 0 8 0" />
               <TextBlock DockPanel.Dock="Left" Text="{Binding Position, StringFormat='{}#{0}'}" Style="{StaticResource Small}" VerticalAlignment="Center"
                   Margin="0 2 4 0" Width="36" TextAlignment="Right" />
-              <mui:ReferenceSwitch Value="{Binding Track}" Margin="12 4 8 4">
-                <mui:ReferenceSwitch.Null>
-                  <TextBlock Text="{Binding AcObjectId, StringFormat='{}Track {0} is missing'}" Opacity="0.5" VerticalAlignment="Center" />
-                </mui:ReferenceSwitch.Null>
-                <mui:ReferenceSwitch.NonNull>
-                  <StackPanel Orientation="Horizontal">
-                    <mui:BetterImage Filename="{Binding Track.OutlineImage}" Width="24" Height="24" Margin="0 0 12 0" ClearOnChange="True"
+              <c:LazierSwitch Value="{Binding Track}" Margin="12 4 8 4">
+                <c:LazierSwitch.Loading>
+                  <TextBlock Text="{Binding AcObjectId}" Opacity="0.5" VerticalAlignment="Center" />
+                </c:LazierSwitch.Loading>
+                <c:LazierSwitch.NonNull>
+                  <DockPanel>
+                    <mui:BetterImage Filename="{Binding Track.Value.OutlineImage}" Width="24" Height="24" Margin="0 0 12 0" ClearOnChange="True"
                         CropTransparentAreas="True" Effect="{DynamicResource TrackOutlineAloneEffect}" />
-                    <TextBlock Text="{Binding Track.DisplayName}" FontWeight="Bold" VerticalAlignment="Center" />
-                  </StackPanel>
-                </mui:ReferenceSwitch.NonNull>
-              </mui:ReferenceSwitch>
+                    <TextBlock Text="{Binding Track.Value.DisplayName}" FontWeight="Bold" VerticalAlignment="Center" />
+                  </DockPanel>
+                </c:LazierSwitch.NonNull>
+                <c:LazierSwitch.Null>
+                  <TextBlock Text="{Binding AcObjectId, StringFormat='{}Track {0} is missing'}" Opacity="0.5" VerticalAlignment="Center" />
+                </c:LazierSwitch.Null>
+              </c:LazierSwitch>
             </DockPanel>
           </ToggleButton>
 
@@ -75,18 +81,21 @@
                           Style="{StaticResource Title}" VerticalAlignment="Center" Margin="0 0 8 0" />
                       <TextBlock DockPanel.Dock="Left" Text="{Binding Position, StringFormat='{}#{0}'}" Style="{StaticResource Small}"
                           VerticalAlignment="Center" Margin="0 2 4 0" Width="36" TextAlignment="Right" />
-                      <mui:ReferenceSwitch Value="{Binding Track}" Margin="12 4 8 4">
-                        <mui:ReferenceSwitch.Null>
-                          <TextBlock Text="{Binding AcObjectId, StringFormat='{}Track {0} is missing'}" Opacity="0.5" VerticalAlignment="Center" />
-                        </mui:ReferenceSwitch.Null>
-                        <mui:ReferenceSwitch.NonNull>
-                          <StackPanel Orientation="Horizontal">
-                            <mui:BetterImage Filename="{Binding Track.OutlineImage}" Width="24" Height="24" Margin="0 0 12 0" ClearOnChange="True"
+                      <c:LazierSwitch Value="{Binding Track}" Margin="12 4 8 4">
+                        <c:LazierSwitch.Loading>
+                          <TextBlock Text="{Binding AcObjectId}" Opacity="0.5" VerticalAlignment="Center" />
+                        </c:LazierSwitch.Loading>
+                        <c:LazierSwitch.NonNull>
+                          <DockPanel>
+                            <mui:BetterImage Filename="{Binding Track.Value.OutlineImage}" Width="24" Height="24" Margin="0 0 12 0" ClearOnChange="True"
                                 CropTransparentAreas="True" Effect="{DynamicResource TrackOutlineAloneEffect}" />
-                            <TextBlock Text="{Binding Track.Name}" FontWeight="Bold" VerticalAlignment="Center" />
-                          </StackPanel>
-                        </mui:ReferenceSwitch.NonNull>
-                      </mui:ReferenceSwitch>
+                            <TextBlock Text="{Binding Track.Value.DisplayName}" FontWeight="Bold" VerticalAlignment="Center" />
+                          </DockPanel>
+                        </c:LazierSwitch.NonNull>
+                        <c:LazierSwitch.Null>
+                          <TextBlock Text="{Binding AcObjectId, StringFormat='{}Track {0} is missing'}" Opacity="0.5" VerticalAlignment="Center" />
+                        </c:LazierSwitch.Null>
+                      </c:LazierSwitch>
                     </DockPanel>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>

@@ -100,7 +100,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         _cancellation = null;
                         SetValue(IsProcessingPropertyKey, false);
                     }
-                }).Forget();
+                }).Ignore();
             } else {
                 base.OnClick();
             }

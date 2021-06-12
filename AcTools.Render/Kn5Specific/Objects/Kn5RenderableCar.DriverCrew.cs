@@ -12,7 +12,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
-using TaskExtension = AcTools.Utils.Helpers.TaskExtension;
+
 #pragma warning disable 169
 
 namespace AcTools.Render.Kn5Specific.Objects {
@@ -351,7 +351,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             InitializeCrewMain();
             InitializeCrewTyres();
-            TaskExtension.Forget(InitializeCrewStuff());
+            InitializeCrewStuff().Ignore();
 
             ObjectsChanged?.Invoke(this, EventArgs.Empty);
             UpdateCrewDebugMode();

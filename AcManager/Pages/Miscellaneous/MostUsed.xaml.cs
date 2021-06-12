@@ -8,6 +8,7 @@ using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Profile;
+using AcTools.Utils;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -16,6 +17,7 @@ using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Miscellaneous {
+
     public partial class MostUsed : IParametrizedUriContent, ILoadableContent {
         private IFilter<AcObjectNew> _filter;
         private List<MostUsedCar> _cars;
@@ -57,11 +59,13 @@ namespace AcManager.Pages.Miscellaneous {
                 _tracks = GetTracks().ToList();
             } else {
                 _cars = (from most in GetCars()
-                         where most.Car != null && _filter.Test(most.Car)
-                         select most).ToList();
+                    let car = most.Car.GetValueAsync().Result
+                    where car != null && _filter.Test(car)
+                    select most).ToList();
                 _tracks = (from most in GetTracks()
-                           where most.Track != null && _filter.Test(most.Track)
-                           select most).ToList();
+                    let track = most.Track.GetValueAsync().Result
+                    where track != null && _filter.Test(track)
+                    select most).ToList();
             }
         }
 
@@ -73,10 +77,10 @@ namespace AcManager.Pages.Miscellaneous {
         private static IEnumerable<MostUsedCar> GetCars() {
             var index = 0;
             return from carId in PlayerStatsManager.Instance.GetCarsIds()
-                   let distance = PlayerStatsManager.Instance.GetDistanceDrivenByCar(carId)
-                   where distance > 0d && CarsManager.Instance.GetWrapperById(carId) != null
-                   orderby distance descending
-                   select new MostUsedCar(index++, carId, distance / 1e3);
+                let distance = PlayerStatsManager.Instance.GetDistanceDrivenByCar(carId)
+                where distance > 0d && CarsManager.Instance.GetWrapperById(carId) != null
+                orderby distance descending
+                select new MostUsedCar(index++, carId, distance / 1e3);
         }
 
         private static string GetMainTrackId(string trackWithLayoutId) {
@@ -87,18 +91,18 @@ namespace AcManager.Pages.Miscellaneous {
         private static IEnumerable<MostUsedTrack> GetTracks() {
             var index = 0;
             return from trackId in PlayerStatsManager.Instance.GetTrackLayoutsIds()
-                   let track = new {
-                       Id = trackId,
-                       MainId = GetMainTrackId(trackId),
-                       Distance = PlayerStatsManager.Instance.GetDistanceDrivenAtTrack(trackId) / 1e3
-                   }
-                   where track.Distance > 0d && TracksManager.Instance.GetWrapperById(track.MainId) != null
-                   group track by track.MainId
-                   into layouts
-                   orderby layouts.Sum(x => x.Distance) descending
-                   let item = new MostUsedTrack(index++, layouts.Key, layouts.Sum(x => x.Distance),
-                           layouts.Select((x, i) => new MostUsedTrackLayout(i, x.Id, x.Distance)))
-                   select item;
+                let track = new {
+                    Id = trackId,
+                    MainId = GetMainTrackId(trackId),
+                    Distance = PlayerStatsManager.Instance.GetDistanceDrivenAtTrack(trackId) / 1e3
+                }
+                where track.Distance > 0d && TracksManager.Instance.GetWrapperById(track.MainId) != null
+                group track by track.MainId
+                into layouts
+                orderby layouts.Sum(x => x.Distance) descending
+                let item = new MostUsedTrack(index++, layouts.Key, layouts.Sum(x => x.Distance),
+                        layouts.Select((x, i) => new MostUsedTrackLayout(i, x.Id, x.Distance)))
+                select item;
         }
 
         public class MostUsedObject : NotifyPropertyChanged {
@@ -117,21 +121,11 @@ namespace AcManager.Pages.Miscellaneous {
         }
 
         public class MostUsedCar : MostUsedObject {
-            public MostUsedCar(int index, [NotNull] string acObjectId, double totalDistance) : base(index, acObjectId, totalDistance) { }
-
-            private bool _set;
-            private CarObject _car;
-
-            [CanBeNull]
-            public CarObject Car {
-                get {
-                    if (!_set) {
-                        _set = true;
-                        _car = CarsManager.Instance.GetById(AcObjectId);
-                    }
-                    return _car;
-                }
+            public MostUsedCar(int index, [NotNull] string acObjectId, double totalDistance) : base(index, acObjectId, totalDistance) {
+                Car = Lazier.CreateAsync(() => CarsManager.Instance.GetByIdAsync(AcObjectId));
             }
+
+            public Lazier<CarObject> Car { get; }
         }
 
         public class MostUsedTrack : MostUsedObject {
@@ -139,25 +133,14 @@ namespace AcManager.Pages.Miscellaneous {
 
             public MostUsedTrack(int index, [NotNull] string acObjectId, double totalDistance, IEnumerable<MostUsedTrackLayout> layouts)
                     : base(index, acObjectId, totalDistance) {
+                Track = Lazier.CreateAsync(() => TracksManager.Instance.GetByIdAsync(AcObjectId));
                 Layouts = layouts.ToList();
                 if (Layouts.Count == 1) {
                     Layouts.Clear();
                 }
             }
 
-            private bool _set;
-            private TrackObject _track;
-
-            [CanBeNull]
-            public TrackObject Track {
-                get {
-                    if (!_set) {
-                        _set = true;
-                        _track = TracksManager.Instance.GetById(AcObjectId);
-                    }
-                    return _track;
-                }
-            }
+            public Lazier<TrackObject> Track { get; }
 
             private bool _isExpanded;
 
@@ -168,21 +151,11 @@ namespace AcManager.Pages.Miscellaneous {
         }
 
         public class MostUsedTrackLayout : MostUsedObject {
-            public MostUsedTrackLayout(int index, [NotNull] string acObjectId, double totalDistance) : base(index, acObjectId, totalDistance) { }
-
-            private bool _set;
-            private TrackObjectBase _track;
-
-            [CanBeNull]
-            public TrackObjectBase Track {
-                get {
-                    if (!_set) {
-                        _set = true;
-                        _track = TracksManager.Instance.GetLayoutByShortenId(AcObjectId);
-                    }
-                    return _track;
-                }
+            public MostUsedTrackLayout(int index, [NotNull] string acObjectId, double totalDistance) : base(index, acObjectId, totalDistance) {
+                Track = Lazier.CreateAsync(() => TracksManager.Instance.GetLayoutByShortenIdAsync(AcObjectId));
             }
+
+            public Lazier<TrackObjectBase> Track { get; }
         }
 
         public class ViewModel : NotifyPropertyChanged {

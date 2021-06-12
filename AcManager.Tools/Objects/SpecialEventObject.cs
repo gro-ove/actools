@@ -34,6 +34,13 @@ namespace AcManager.Tools.Objects {
 
             public int AiLevel { get; }
 
+            private double _placeStat;
+
+            public double PlaceStat {
+                get => _placeStat;
+                set => Apply(value, ref _placeStat);
+            }
+
             public int Id => AiLevel;
         }
 
@@ -41,24 +48,24 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string Guid {
-            get { return _guid; }
+            get => _guid;
             set => Apply(value, ref _guid);
         }
 
         public SpecialEventObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {}
+                : base(manager, id, enabled) { }
 
         private AiLevelEntry[] _aiLevels;
 
         public AiLevelEntry[] AiLevels {
-            get { return _aiLevels; }
+            get => _aiLevels;
             set => Apply(value, ref _aiLevels);
         }
 
         private AiLevelEntry _selectedLevel;
 
         public AiLevelEntry SelectedLevel {
-            get { return _selectedLevel; }
+            get => _selectedLevel;
             set {
                 if (Equals(value, _selectedLevel)) return;
                 _selectedLevel = value;
@@ -75,13 +82,20 @@ namespace AcManager.Tools.Objects {
         private string _displayDescription;
 
         public string DisplayDescription {
-            get { return _displayDescription; }
+            get => _displayDescription;
             set => Apply(value, ref _displayDescription);
+        }
+
+        private void UpdateDescription() {
+            DisplayDescription = new [] {
+                string.Format(ToolsStrings.SpecialEvent_Description, CarObject?.DisplayName ?? CarId, TrackObject?.Name ?? TrackId),
+                DisplayPlaceStats
+            }.NonNull().JoinToString(@" ");
         }
 
         protected override void LoadObjects() {
             base.LoadObjects();
-            DisplayDescription = string.Format(ToolsStrings.SpecialEvent_Description, CarObject?.DisplayName ?? CarId, TrackObject?.Name ?? TrackId);
+            UpdateDescription();
         }
 
         protected override void LoadData(IniFile ini) {
@@ -135,13 +149,52 @@ namespace AcManager.Tools.Objects {
             return ini;
         }
 
+        private double[] _placeStats;
+
+        [CanBeNull]
+        public double[] PlaceStats {
+            get => _placeStats;
+            set => Apply(value, ref _placeStats, () => {
+                if (value?.Length == 4) {
+                    for (var i = 0; i < 4; ++i) {
+                        AiLevels[i].PlaceStat = value[3 - i];
+                    }
+                }
+
+                OnPropertyChanged(nameof(DisplayPlaceStats));
+                OnPropertyChanged(nameof(DisplayFirstPlaceStat));
+                OnPropertyChanged(nameof(DisplaySecondPlaceStat));
+                OnPropertyChanged(nameof(DisplayThirdPlaceStat));
+                UpdateDescription();
+            });
+        }
+
+        [CanBeNull]
+        public string DisplayPlaceStats {
+            get {
+                if (PlaceStats != null) {
+                    var postfix = TakenPlace == 1 ? "Congrats!" : TakenPlace == 2 ? "You’re almost there!" : "Good luck!";
+                    if (PlaceStats.Length == 3) {
+                        return $"Only {PlaceStats[2]:F1}% of all players got first place. {postfix}";
+                    }
+                    if (PlaceStats.Length == 4) {
+                        return $"Only {PlaceStats[3]:F1}% of all players won this event at highest difficulty. {postfix}";
+                    }
+                }
+                return null;
+            }
+        }
+
+        public string DisplayFirstPlaceStat => PlaceStats?.Length == 3 ? $"{PlaceStats[2]:F1}% of all AC players got this place" : null;
+        public string DisplaySecondPlaceStat => PlaceStats?.Length == 3 ? $"{PlaceStats[1]:F1}% of all AC players got this place" : null;
+        public string DisplayThirdPlaceStat => PlaceStats?.Length == 3 ? $"{PlaceStats[0]:F1}% of all AC players got this place" : null;
+
         private static bool ShowStarterDoesNotFitMessage() {
             var dlg = new ModernDialog {
                 Title = ToolsStrings.Common_Warning,
                 Content = new ScrollViewer {
                     Content = new SelectableBbCodeBlock {
-                        Text =
-                            $"You’re using {SettingsHolder.Drive.SelectedStarterType.DisplayName} Starter. With it, you won’t get a Steam achievment, so progress won’t be saved. Are you sure you want to continue?",
+                        Text = string.Format(ToolsStrings.SpecialEvent_StarterWarning, SettingsHolder.Drive.SelectedStarterType.DisplayName),
                         Margin = new Thickness(0, 0, 0, 8)
                     },
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -155,7 +208,7 @@ namespace AcManager.Tools.Objects {
 
             dlg.Buttons = new[] {
                 dlg.YesButton,
-                dlg.CreateCloseDialogButton("Switch to Official Starter", false, false, MessageBoxResult.OK),
+                dlg.CreateCloseDialogButton(ToolsStrings.SpecialEvent_StarterWarning_Solution, false, false, MessageBoxResult.OK),
                 dlg.NoButton
             };
 
@@ -180,7 +233,7 @@ namespace AcManager.Tools.Objects {
 
         // TODO: async command
         public AsyncCommand<Game.AssistsProperties> GoCommand => _goCommand ?? (_goCommand = new AsyncCommand<Game.AssistsProperties>(async o => {
-            if (SettingsHolder.Drive.SelectedStarterType.Id == "SSE" && !ShowStarterDoesNotFitMessage()) {
+            if (SettingsHolder.Drive.SelectedStarterType.Id == @"SSE" && !ShowStarterDoesNotFitMessage()) {
                 return;
             }
 

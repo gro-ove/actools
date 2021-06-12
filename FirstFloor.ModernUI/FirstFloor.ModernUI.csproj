@@ -237,6 +237,7 @@
     <Compile Include="Windows\Controls\DpiAwareWindow.Placement.cs" />
     <Compile Include="Windows\Controls\EmojiSpan.cs" />
     <Compile Include="Windows\Controls\EmojiSupport.cs" />
+    <Compile Include="Windows\Controls\EmptyEnumerator.cs" />
     <Compile Include="Windows\Controls\ExceptionDetails.cs" />
     <Compile Include="Windows\Controls\FallbackSwitch.cs" />
     <Compile Include="Windows\Controls\FatalErrorEventArgs.cs" />
@@ -258,6 +259,7 @@
     <Compile Include="Windows\Controls\RoundSlider.cs" />
     <Compile Include="Windows\Controls\FormattedSlider.cs" />
     <Compile Include="Windows\Controls\SelectableBbCodeBlock.cs" />
+    <Compile Include="Windows\Controls\SingleChildEnumerator.cs" />
     <Compile Include="Windows\Controls\SpacingStackPanel.cs" />
     <Compile Include="Windows\Controls\SpecialMode.cs" />
     <Compile Include="Windows\Controls\StretchyWrapPanel.cs" />

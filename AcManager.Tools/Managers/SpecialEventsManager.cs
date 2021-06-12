@@ -43,6 +43,9 @@ namespace AcManager.Tools.Managers {
 
         private async void GameWrapper_Finished(object sender, GameFinishedArgs e) {
             var extra = e.Result?.GetExtraByType<Game.ResultExtraSpecialEvent>();
+            Logging.Debug("extra=" + extra);
+            Logging.Debug("extra.Tier=" + extra?.Tier);
+            Logging.Debug("extra.Guid=" + extra?.Guid);
             if (extra == null || extra.Tier == -1 || string.IsNullOrWhiteSpace(extra.Guid)) return;
 
             await EnsureLoadedAsync();
@@ -111,6 +114,8 @@ namespace AcManager.Tools.Managers {
             var data = await provider(cancellation);
             if (data == null || cancellation.IsCancellationRequested) return;
 
+            Logging.Debug(data);
+
             foreach (var pair in JObject.Parse(data)["achievements"].ToObject<Dictionary<string, string>[]>()) {
                 var eventObject = GetById(pair.GetValueOrDefault("name") ?? "");
                 if (eventObject == null) continue;
@@ -119,16 +124,29 @@ namespace AcManager.Tools.Managers {
             }
         }
 
+        private async Task UpdateProgressDirect(Func<CancellationToken, Task<Dictionary<string, int>>> provider, IProgress<string> progress,
+                CancellationToken cancellation) {
+            progress.Report("Getting data…");
+            var data = await provider(cancellation);
+            if (data == null || cancellation.IsCancellationRequested) return;
+            foreach (var pair in data) {
+                var eventObject = GetById(pair.Key ?? "");
+                if (eventObject == null) continue;
+                eventObject.TakenPlace = Math.Min(eventObject.TakenPlace, (eventObject.ConditionType == null ? 4 : 3) - pair.Value);
+            }
+        }
+
         public Task UpdateProgressViaSidePassage(IProgress<string> progress, CancellationToken cancellation) {
             return UpdateProgressViaSteamStatisticsReader(SidePassageStarter.GetAchievementsAsync, progress, cancellation);
         }
 
         public Task UpdateProgressViaSteamStarter(IProgress<string> progress, CancellationToken cancellation) {
-            return UpdateProgressViaSteamStatisticsReader(c => Task.Run(() => SteamStarter.GetAchievements()), progress, cancellation);
+            return UpdateProgressDirect(c => Task.Run(() => SteamStarter.GetAchievements()), progress, cancellation);
         }
 
         public Task UpdateProgressViaAppIdStarter(IProgress<string> progress, CancellationToken cancellation) {
-            return UpdateProgressViaSteamStatisticsReader(c => Task.Run(() => AppIdStarter.GetAchievements()), progress, cancellation);
+            return UpdateProgressDirect(c => Task.Run(() => JsonConvert.DeserializeObject<Dictionary<string, int>>(AppIdStarter.GetAchievements())),
+                    progress, cancellation);
         }
 
         private static readonly string[] WatchedFiles = {
@@ -142,7 +160,8 @@ namespace AcManager.Tools.Managers {
             return !WatchedFiles.ArrayContains(inner.ToLowerInvariant());
         }
 
-        public override IAcDirectories Directories { get; } = new AcDirectories(Path.Combine(AcRootDirectory.Instance.RequireValue, @"content", @"specialevents"), null);
+        public override IAcDirectories Directories { get; } =
+            new AcDirectories(Path.Combine(AcRootDirectory.Instance.RequireValue, @"content", @"specialevents"), null);
 
         protected override SpecialEventObject CreateAcObject(string id, bool enabled) {
             return new SpecialEventObject(this, id, enabled);

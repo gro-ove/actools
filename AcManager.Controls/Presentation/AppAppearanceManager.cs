@@ -379,7 +379,7 @@ namespace AcManager.Controls.Presentation {
                 _slideshowChangeRate = value;
                 ValuesStorage.Set(KeySlideshowChangeRate, value);
                 OnPropertyChanged();
-                StartSlideshowTimer().Forget();
+                StartSlideshowTimer().Ignore();
             }
         }
 

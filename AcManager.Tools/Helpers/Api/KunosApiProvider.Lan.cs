@@ -99,7 +99,7 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
-        private static void TryToGetLanList(ItemAddCallback<ServerInformation> foundCallback, IEnumerable<int> ports, [CanBeNull] Progress progress,
+        private static void TryToGetLanList(ItemAddAsyncCallback<ServerInformation> foundCallback, IEnumerable<int> ports, [CanBeNull] Progress progress,
                 CancellationToken cancellation) {
             var addresses = GetBroadcastAddresses().ToList();
 
@@ -142,15 +142,15 @@ namespace AcManager.Tools.Helpers.Api {
             } catch (Exception e) when (e.IsCancelled()) {}
         }
 
-        public static void TryToGetLanList(ItemAddCallback<ServerInformation> foundCallback, IEnumerable<int> ports) {
+        public static void TryToGetLanList(ItemAddAsyncCallback<ServerInformation> foundCallback, IEnumerable<int> ports) {
             TryToGetLanList(foundCallback, ports, null, default);
         }
 
-        public static void TryToGetLanList(ItemAddCallback<ServerInformation> foundCallback) {
+        public static void TryToGetLanList(ItemAddAsyncCallback<ServerInformation> foundCallback) {
             TryToGetLanList(foundCallback, PortsDiapason.Create(SettingsHolder.Online.LanPortsEnumeration), null, default);
         }
 
-        public static async Task TryToGetLanListAsync(ItemAddCallback<ServerInformation> foundCallback, IProgress<AsyncProgressEntry> progress = null,
+        public static async Task TryToGetLanListAsync(ItemAddAsyncCallback<ServerInformation> foundCallback, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default) {
             var holder = progress == null ? null : new Progress();
             DispatcherTimer timer = null;

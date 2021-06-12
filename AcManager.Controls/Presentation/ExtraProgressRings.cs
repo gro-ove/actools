@@ -25,7 +25,7 @@ namespace AcManager.Controls.Presentation {
 
         private static void LoadStylesAsync() {
             LoadStylesImmediately();
-            Task.Delay(3000).ContinueWith(t => EnsureStylesUpdated()).Forget();
+            Task.Delay(3000).ContinueWith(t => EnsureStylesUpdated()).Ignore();
         }
 
         private static void LoadStylesImmediately() {

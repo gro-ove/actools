@@ -1,10 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -57,18 +56,18 @@ namespace AcManager.Tools.Starters {
                 Environment.Exit(0);
             }
 
-            RunCallbacks().Forget();
+            RunCallbacks().Ignore();
             SteamUtils.SetOverlayNotificationPosition(ENotificationPosition.k_EPositionBottomLeft);
 
             try {
-                SteamIdHelper.Instance.Value = SteamUser.GetSteamID().ToString();
+                if (SteamIdHelper.Instance != null) {
+                    SteamIdHelper.Instance.Value = SteamUser.GetSteamID().ToString();
+                }
             } catch (Exception e) {
                 Logging.Error(e);
             }
 
-            AppDomain.CurrentDomain.ProcessExit += (sender, args) => {
-                SteamAPI.Shutdown();
-            };
+            AppDomain.CurrentDomain.ProcessExit += (sender, args) => SteamAPI.Shutdown();
         }
 
         private static bool AreFilesSame(string a, string b) {
@@ -102,7 +101,7 @@ namespace AcManager.Tools.Starters {
             AppDomain.CurrentDomain.ProcessExit += OnExit;
         }
 
-        public static bool Initialize(string acRoot) {
+        public static bool Initialize(string acRoot, bool force) {
             if (IsInitialized) {
                 return true;
             }
@@ -110,7 +109,7 @@ namespace AcManager.Tools.Starters {
             _acRoot = acRoot;
             _dllsPath = Path.Combine(_acRoot, "launcher", "support");
 
-            if (!IsAvailable) {
+            if (!force && !IsAvailable) {
                 Logging.Write("Wrong location, SteamStarter won’t work");
                 return false;
             }
@@ -132,40 +131,53 @@ namespace AcManager.Tools.Starters {
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static string GetAchievementsInner() {
-            var reader = Path.Combine(_acRoot, "SteamStatisticsReader.exe");
-            var output = new StringBuilder();
-            using (var process = new Process {
-                StartInfo = {
-                    FileName = reader,
-                    WorkingDirectory = _acRoot,
-                    Arguments = "-c",
-                    CreateNoWindow = true,
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false
-                },
-                EnableRaisingEvents = true
-            }) {
-                process.Start();
-                process.OutputDataReceived += (sender, args) => {
-                    if (args.Data != null) output.Append(args.Data);
-                };
-                process.BeginOutputReadLine();
-                process.WaitForExit(10000);
-                if (!process.HasExited) {
-                    process.Kill();
+        private static Dictionary<string, int> GetAchievementsInner() {
+            var count = SteamUserStats.GetNumAchievements();
+            var tiers = new Dictionary<string, int>();
+            for (var i = 0U; i < count; ++i) {
+                var name = SteamUserStats.GetAchievementName(i);
+                if (SteamUserStats.GetAchievement(name, out var achieved) && achieved && name.StartsWith("SPECIAL_EVENT_")
+                        && name[name.Length - 2] == '_' && char.IsDigit(name[name.Length - 1])) {
+                    var key = name.Substring(0, name.Length - 2);
+                    var value = name[name.Length - 1] - '0';
+                    Logging.Debug("NAME: " + name);
+                    Logging.Debug("BY: " + SteamUserStats.GetAchievementAchievedPercent(name, out var percent));
+                    Logging.Debug("PERCENT: " + percent);
+                    if (!tiers.TryGetValue(key, out var prev) || value > prev) {
+                        tiers[key] = Math.Max(prev, value);
+                    }
                 }
             }
+            return tiers;
+        }
 
-            var result = Regex.Replace(output.ToString(), @"\r+|\s+|\n$", "");
-            return string.IsNullOrEmpty(result) ? "{}" : result;
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static Dictionary<string, double> GetAchievementStatsInner() {
+            var count = SteamUserStats.GetNumAchievements();
+            var tiers = new Dictionary<string, double>();
+            for (var i = 0U; i < count; ++i) {
+                var name = SteamUserStats.GetAchievementName(i);
+                if (SteamUserStats.GetAchievementAchievedPercent(name, out var percent)) {
+                    tiers[name] = percent;
+                }
+            }
+            return tiers;
         }
 
         [CanBeNull]
-        public static string GetAchievements() {
+        public static Dictionary<string, int> GetAchievements() {
             try {
                 return GetAchievementsInner();
+            } catch (Exception e) {
+                Logging.Error(e);
+                return null;
+            }
+        }
+
+        [CanBeNull]
+        public static Dictionary<string, double> GetAchievementStats() {
+            try {
+                return GetAchievementStatsInner();
             } catch (Exception e) {
                 Logging.Error(e);
                 return null;

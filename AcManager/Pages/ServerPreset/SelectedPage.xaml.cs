@@ -417,7 +417,7 @@ namespace AcManager.Pages.ServerPreset {
 
             public AsyncCommand RestartCommand => _restartCommand ?? (_restartCommand = new AsyncCommand(() => {
                 SelectedObject.StopServer();
-                GoCommand.ExecuteAsync().Forget();
+                GoCommand.ExecuteAsync().Ignore();
                 return Task.Delay(0);
             }, () => SelectedObject.RestartServerCommand.IsAbleToExecute).ListenOnWeak(SelectedObject.RestartServerCommand));
 
@@ -432,7 +432,7 @@ namespace AcManager.Pages.ServerPreset {
             public void InitializePackServerPresets() {
                 if (PackServerPresets == null) {
                     PackServerPresets = _helper.Create(new PresetsCategory(PackServerDialog.ViewModel.PresetableKeyValue),
-                            p => { new PackServerDialog.ViewModel(p.ReadData(), SelectedObject).PackCommand.ExecuteAsync().Forget(); });
+                            p => { new PackServerDialog.ViewModel(p.ReadData(), SelectedObject).PackCommand.ExecuteAsync().Ignore(); });
                 }
             }
 

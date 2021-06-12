@@ -197,7 +197,7 @@ namespace AcManager.Tools.Helpers {
 
         public bool SaveLater() {
             if (IsLoading || _savingInProgress) return false;
-            SaveLaterAsync().Forget();
+            SaveLaterAsync().Ignore();
             return true;
         }
 

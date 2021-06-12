@@ -173,7 +173,7 @@ namespace AcManager.Tools.Objects {
 
             if (_oldName != Name || _oldTrackId != TrackId) {
                 // TODO: Await?
-                RenameAsync().Forget();
+                RenameAsync().Ignore();
             }
 
             Changed = false;

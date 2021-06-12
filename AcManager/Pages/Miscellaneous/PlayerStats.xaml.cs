@@ -12,10 +12,13 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Miscellaneous {
     public partial class PlayerStats : ILoadableContent, IParametrizedUriContent {
         private string _filter;
+
+        [CanBeNull]
         private Holder<PlayerStatsManager.OverallStats> _stats;
 
         public void OnUri(Uri uri) {
@@ -33,16 +36,19 @@ namespace AcManager.Pages.Miscellaneous {
 
             _stats = _filter == null
                     ? Holder.CreateNonHolding(PlayerStatsManager.Instance.Overall) : await PlayerStatsManager.Instance.GetFilteredAsync(_filter);
-            this.OnActualUnload(() => _stats.Dispose());
+            this.OnActualUnload(() => _stats?.Dispose());
         }
 
         public void Load() {
             _stats = _filter == null ? Holder.CreateNonHolding(PlayerStatsManager.Instance.Overall) : PlayerStatsManager.Instance.GetFiltered(_filter);
-            this.OnActualUnload(() => _stats.Dispose());
+            this.OnActualUnload(() => _stats?.Dispose());
         }
 
         public void Initialize() {
             InitializeComponent();
+            if (_stats == null) {
+                throw new Exception("Failed to load data");
+            }
             DataContext = new ViewModel(_stats.Value, _filter);
         }
 

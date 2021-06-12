@@ -51,7 +51,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 for (var i = 0; i < 5; i++) {
                     try {
                         return Clipboard.GetText();
-                    } catch (Exception e) {
+                    } catch {
                         Thread.Sleep(10);
                     }
                 }

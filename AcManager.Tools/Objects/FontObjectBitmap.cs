@@ -2,22 +2,23 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using AcManager.Tools.Helpers;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public class FontObjectBitmap {
         public FontObjectBitmap(string bitmapFilename, string fontFilename) :
-                this(UriToCachedImageConverter.Convert(bitmapFilename), File.ReadAllBytes(fontFilename)) {}
+                this((BitmapSource)BetterImage.LoadBitmapSource(bitmapFilename).ImageSource, File.ReadAllBytes(fontFilename)) { }
 
         public FontObjectBitmap(byte[] bitmapData, byte[] fontData) :
-                this((BitmapSource)BetterImage.LoadBitmapSourceFromBytes(bitmapData).ImageSource, fontData) {}
+                this((BitmapSource)BetterImage.LoadBitmapSourceFromBytes(bitmapData).ImageSource, fontData) { }
 
         private FontObjectBitmap(BitmapSource font, byte[] fontData) {
             _fontBitmapImage = font;
@@ -29,7 +30,22 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        [ItemCanBeNull]
+        public static async Task<FontObjectBitmap> CreateAsync(string bitmapFilename, string fontFilename) {
+            try {
+                var image = (await BetterImage.LoadBitmapSourceAsync(bitmapFilename)).ImageSource as BitmapSource;
+                var data = await FileUtils.ReadAllBytesAsync(fontFilename);
+                return new FontObjectBitmap(image, data);
+            } catch (Exception e) {
+                Logging.Warning(e);
+                return null;
+            }
+        }
+
+        [CanBeNull]
         private readonly BitmapSource _fontBitmapImage;
+
+        [CanBeNull]
         private readonly List<double> _fontList;
 
         private const char FirstChar = (char)32;

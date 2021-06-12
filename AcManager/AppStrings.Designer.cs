@@ -7751,6 +7751,186 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Average speed.
+        /// </summary>
+        public static string PlayerStats_AverageSpeed {
+            get {
+                return ResourceManager.GetString("PlayerStats_AverageSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Burnt fuel.
+        /// </summary>
+        public static string PlayerStats_BurntFuel {
+            get {
+                return ResourceManager.GetString("PlayerStats_BurntFuel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:F1} liters.
+        /// </summary>
+        public static string PlayerStats_BurntFuel_ValueFormat {
+            get {
+                return ResourceManager.GetString("PlayerStats_BurntFuel_ValueFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Driven distance.
+        /// </summary>
+        public static string PlayerStats_DrivenDistance {
+            get {
+                return ResourceManager.GetString("PlayerStats_DrivenDistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Driving time.
+        /// </summary>
+        public static string PlayerStats_DrivingTime {
+            get {
+                return ResourceManager.GetString("PlayerStats_DrivingTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favourite track.
+        /// </summary>
+        public static string PlayerStats_FavouriteTrack {
+            get {
+                return ResourceManager.GetString("PlayerStats_FavouriteTrack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fuel consumption.
+        /// </summary>
+        public static string PlayerStats_FuelConsumption {
+            get {
+                return ResourceManager.GetString("PlayerStats_FuelConsumption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gone offroad.
+        /// </summary>
+        public static string PlayerStats_GoneOffroad {
+            get {
+                return ResourceManager.GetString("PlayerStats_GoneOffroad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to time.
+        /// </summary>
+        public static string PlayerStats_GoneOffroad_Unit {
+            get {
+                return ResourceManager.GetString("PlayerStats_GoneOffroad_Unit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Longest jump.
+        /// </summary>
+        public static string PlayerStats_LongestJump {
+            get {
+                return ResourceManager.GetString("PlayerStats_LongestJump", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Longest two wheels.
+        /// </summary>
+        public static string PlayerStats_LongestTwoWheels {
+            get {
+                return ResourceManager.GetString("PlayerStats_LongestTwoWheels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Longest wheelie.
+        /// </summary>
+        public static string PlayerStats_LongestWheelie {
+            get {
+                return ResourceManager.GetString("PlayerStats_LongestWheelie", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum speed.
+        /// </summary>
+        public static string PlayerStats_MaximumSpeed {
+            get {
+                return ResourceManager.GetString("PlayerStats_MaximumSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sessions.
+        /// </summary>
+        public static string PlayerStats_Sessions {
+            get {
+                return ResourceManager.GetString("PlayerStats_Sessions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total crashes.
+        /// </summary>
+        public static string PlayerStats_TotalCrashes {
+            get {
+                return ResourceManager.GetString("PlayerStats_TotalCrashes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to crash.
+        /// </summary>
+        public static string PlayerStats_TotalCrashes_Unit {
+            get {
+                return ResourceManager.GetString("PlayerStats_TotalCrashes_Unit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total driven distance.
+        /// </summary>
+        public static string PlayerStats_TotalDrivenDistance {
+            get {
+                return ResourceManager.GetString("PlayerStats_TotalDrivenDistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total jumps distance.
+        /// </summary>
+        public static string PlayerStats_TotalJumpsDistance {
+            get {
+                return ResourceManager.GetString("PlayerStats_TotalJumpsDistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tyres worn.
+        /// </summary>
+        public static string PlayerStats_TyresWorn {
+            get {
+                return ResourceManager.GetString("PlayerStats_TyresWorn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to tyre.
+        /// </summary>
+        public static string PlayerStats_TyresWorn_Unit {
+            get {
+                return ResourceManager.GetString("PlayerStats_TyresWorn_Unit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Best lap on this track:.
         /// </summary>
         public static string QuickDrive_BestLapOnThisTrack {
@@ -8305,6 +8485,24 @@ namespace AcManager {
         public static string RaceResult_UnsaveReplay {
             get {
                 return ResourceManager.GetString("RaceResult_UnsaveReplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Details.
+        /// </summary>
+        public static string RaceResults_Details {
+            get {
+                return ResourceManager.GetString("RaceResults_Details", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to parse: {0}.
+        /// </summary>
+        public static string RaceResults_FailedToParse {
+            get {
+                return ResourceManager.GetString("RaceResults_FailedToParse", resourceCulture);
             }
         }
         
@@ -12266,6 +12464,15 @@ namespace AcManager {
         public static string SpecialEvents_Difficulty {
             get {
                 return ResourceManager.GetString("SpecialEvents_Difficulty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sync progress.
+        /// </summary>
+        public static string SpecialEvents_SyncProgress {
+            get {
+                return ResourceManager.GetString("SpecialEvents_SyncProgress", resourceCulture);
             }
         }
         

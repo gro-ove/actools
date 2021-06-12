@@ -190,7 +190,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                 }
             });
 
-            UpdateOverridesAsync().Forget();
+            UpdateOverridesAsync().Ignore();
         }
 
         public virtual void SetOverridesDirectory([NotNull] IDeviceContextHolder holder, [NotNull] string directory) {
@@ -354,7 +354,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
             if (Kn5.TexturesData.TryGetValue(key, out var data)) {
                 result.Exists = true;
                 if (AsyncLoading && data.Length > 100000) {
-                    result.LoadAsync(contextHolder, data).Forget();
+                    result.LoadAsync(contextHolder, data).Ignore();
                 } else {
                     result.Load(contextHolder, data);
                 }
@@ -362,7 +362,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
             if (CurrentDirectory != null) {
                 if (_asyncOverride) {
-                    LoadOverrideAsync(contextHolder, result, key).Forget();
+                    LoadOverrideAsync(contextHolder, result, key).Ignore();
                 } else {
                     LoadOverride(contextHolder, result, key);
                 }
@@ -381,7 +381,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private async Task<bool> LoadOverrideAsync(IDeviceContextHolder contextHolder, RenderableTexture texture, string textureName) {
             var overrided = await GetOverridedDataAsync(textureName);
             if (overrided == null) return false;
-            texture.LoadOverrideAsync(contextHolder, overrided).Forget();
+            texture.LoadOverrideAsync(contextHolder, overrided).Ignore();
             return true;
         }
 

@@ -50,7 +50,7 @@ namespace AcManager.Tools.AcObjectsNew {
             Changed = false;
         }
 
-        protected bool Loaded { get; private set; }
+        protected bool Loaded { get; set; }
 
         protected abstract void LoadOrThrow();
 
@@ -58,7 +58,7 @@ namespace AcManager.Tools.AcObjectsNew {
             return File.GetCreationTime(Location);
         }
 
-        public sealed override void Load() {
+        public override void Load() {
             InitializeLocationsOnce();
 
             ClearErrors();
@@ -68,6 +68,7 @@ namespace AcManager.Tools.AcObjectsNew {
             CheckIfNew();
 
             try {
+                Loaded = false;
                 LoadOrThrow();
             } catch (AcErrorException e) {
                 AddError(e.AcError);

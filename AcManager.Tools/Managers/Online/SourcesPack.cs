@@ -125,7 +125,7 @@ namespace AcManager.Tools.Managers.Online {
 
             var filter = nonReadyOnly ? (Func<OnlineSourceWrapper, bool>)(x => x.Status != OnlineManagerStatus.Ready) : x => true;
             foreach (var source in _sources.Where(x => x.IsBackgroundLoadable).Where(filter)) {
-                source.ReloadAsync(false, cancellation).Forget();
+                source.ReloadAsync(false, cancellation).Ignore();
             }
 
             await _sources.Where(x => !x.IsBackgroundLoadable).Where(filter).Select(x => x.ReloadAsync(false, cancellation))

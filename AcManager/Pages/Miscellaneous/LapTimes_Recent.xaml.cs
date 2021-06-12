@@ -26,7 +26,7 @@ namespace AcManager.Pages.Miscellaneous {
         }
 
         public void Load() {
-            LapTimesManager.Instance.UpdateAsync().Forget();
+            LapTimesManager.Instance.UpdateAsync().Ignore();
         }
 
         public void Initialize() {

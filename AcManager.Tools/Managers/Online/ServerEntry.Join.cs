@@ -145,7 +145,7 @@ namespace AcManager.Tools.Managers.Online {
             IsBooked = false;
             await Task.Run(() => KunosApiProvider.TryToUnbookAsync(Ip, PortHttp));
             if (!_updating) {
-                Update(UpdateMode.Lite, true, true).Forget();
+                Update(UpdateMode.Lite, true, true).Ignore();
             }
         }
 
@@ -158,7 +158,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private void ProcessBookingResponse(BookingResult response) {
             if (_ui?.CancellationToken.IsCancellationRequested == true) {
-                CancelBooking().Forget();
+                CancelBooking().Ignore();
                 return;
             }
 
@@ -173,7 +173,7 @@ namespace AcManager.Tools.Managers.Online {
                 IsBooked = response.IsSuccessful;
 
                 if (!_updating) {
-                    Update(UpdateMode.Lite, true, true).Forget();
+                    Update(UpdateMode.Lite, true, true).Ignore();
                 }
             } else {
                 BookingErrorMessage = response.ErrorMessage;
@@ -291,7 +291,8 @@ namespace AcManager.Tools.Managers.Online {
                 ServerHttpPort = PortHttp,
                 Guid = SteamIdHelper.Instance.Value,
                 Password = Password,
-                ExtendedMode = WeatherId != null
+                ExtendedMode = WeatherId != null,
+                CspFeaturesList = CspFeaturesList?.JoinToString(",")
             });
 
             var now = DateTime.Now;
@@ -301,7 +302,7 @@ namespace AcManager.Tools.Managers.Online {
 
             if (whatsGoingOn == null) {
                 LastConnected = now;
-                FileBasedOnlineSources.AddRecent(this).Forget();
+                FileBasedOnlineSources.AddRecent(this).Ignore();
                 UpdateStats();
             }
         }

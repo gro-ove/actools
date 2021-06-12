@@ -221,7 +221,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
-                        QuickDrive.RunAsync(SelectedObject, SelectedObject.SelectedSkin?.Id, presetFilename: p.VirtualFilename).Forget();
+                        QuickDrive.RunAsync(SelectedObject, SelectedObject.SelectedSkin?.Id, presetFilename: p.VirtualFilename).Ignore();
                     });
                 }
             }
@@ -328,7 +328,7 @@ namespace AcManager.Pages.Selected {
             var obj = CarsManager.Instance.GetById(id);
             if (obj == null) return false;
 
-            _object.SkinsManager.EnsureLoadedAsync().Forget();
+            _object.SkinsManager.EnsureLoadedAsync().Ignore();
 
             _id = id;
             _object = obj;
@@ -435,11 +435,11 @@ namespace AcManager.Pages.Selected {
             contextMenu.Items.Add(item);
 
             item = new MenuItem { Header = AppStrings.Toolbar_GenerateLivery, ToolTip = AppStrings.Solution_GenerateLivery_Details };
-            item.Click += (sender, args) => LiveryIconEditor.GenerateAsync(skin).Forget();
+            item.Click += (sender, args) => LiveryIconEditor.GenerateAsync(skin).Ignore();
             contextMenu.Items.Add(item);
 
             item = new MenuItem { Header = AppStrings.Toolbar_GenerateRandomLivery, ToolTip = AppStrings.Solution_RandomLivery_Details };
-            item.Click += (sender, args) => LiveryIconEditor.GenerateRandomAsync(skin).Forget();
+            item.Click += (sender, args) => LiveryIconEditor.GenerateRandomAsync(skin).Ignore();
             contextMenu.Items.Add(item);
 
             contextMenu.Items.Add(new Separator());

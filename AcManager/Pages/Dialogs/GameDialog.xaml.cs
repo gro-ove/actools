@@ -139,7 +139,7 @@ namespace AcManager.Pages.Dialogs {
             _properties = properties;
             _mode = mode;
 
-            ShowDialogAsync().Forget();
+            ShowDialogAsync().Ignore();
             Model.WaitingStatus = AppStrings.Race_Initializing;
 
             if (SettingsHolder.Drive.WatchForSharedMemory
@@ -673,7 +673,7 @@ namespace AcManager.Pages.Dialogs {
 
             var tryAgainButton = CreateExtraDialogButton(AppStrings.RaceResult_TryAgain, () => {
                 CloseWithResult(MessageBoxResult.None);
-                GameWrapper.StartAsync(_properties).Forget();
+                GameWrapper.StartAsync(_properties).Ignore();
             });
 
             Button fixButton = null;
@@ -689,7 +689,7 @@ namespace AcManager.Pages.Dialogs {
                     tryAgainButton = CreateExtraDialogButton($"{solution.DisplayName} and try again", new AsyncCommand(async () => {
                         await solution.ExecuteAsync();
                         CloseWithResult(MessageBoxResult.None);
-                        GameWrapper.StartAsync(_properties).Forget();
+                        GameWrapper.StartAsync(_properties).Ignore();
                     }));
                 }
 

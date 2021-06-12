@@ -179,7 +179,7 @@ namespace AcManager.Tools.Miscellaneous {
 
             if (!data.IsExtendedLoaded) {
                 data.IsExtendedLoaded = true;
-                LoadExtendedInformation(key, data.SourceRegistry).Forget();
+                LoadExtendedInformation(key, data.SourceRegistry).Ignore();
             }
 
             return data;

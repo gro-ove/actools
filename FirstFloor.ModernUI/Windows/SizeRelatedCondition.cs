@@ -263,7 +263,7 @@ namespace FirstFloor.ModernUI.Windows {
                 } catch (Exception e) {
                     Logging.Error(e);
                 }
-            }).Forget();
+            }).Ignore();
         }
 
         // ReSharper disable once CollectionNeverQueried.Local

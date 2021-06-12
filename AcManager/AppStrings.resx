@@ -4901,4 +4901,73 @@ anyway while it’s waiting for disk to get the data, and there will much less d
         <value>Name: [b]{0}[/b]</value>
         <comment>Shown when .cmpreset files are being opened</comment>
     </data>
+    <data name="RaceResults_Details" xml:space="preserve">
+        <value>Details</value>
+    </data>
+    <data name="RaceResults_FailedToParse" xml:space="preserve">
+        <value>Failed to parse: {0}</value>
+    </data>
+    <data name="PlayerStats_Sessions" xml:space="preserve">
+        <value>Sessions</value>
+    </data>
+    <data name="PlayerStats_AverageSpeed" xml:space="preserve">
+        <value>Average speed</value>
+    </data>
+    <data name="PlayerStats_TotalDrivenDistance" xml:space="preserve">
+        <value>Total driven distance</value>
+    </data>
+    <data name="PlayerStats_GoneOffroad" xml:space="preserve">
+        <value>Gone offroad</value>
+    </data>
+    <data name="PlayerStats_DrivingTime" xml:space="preserve">
+        <value>Driving time</value>
+    </data>
+    <data name="PlayerStats_BurntFuel" xml:space="preserve">
+        <value>Burnt fuel</value>
+    </data>
+    <data name="PlayerStats_FuelConsumption" xml:space="preserve">
+        <value>Fuel consumption</value>
+    </data>
+    <data name="PlayerStats_MaximumSpeed" xml:space="preserve">
+        <value>Maximum speed</value>
+    </data>
+    <data name="PlayerStats_DrivenDistance" xml:space="preserve">
+        <value>Driven distance</value>
+    </data>
+    <data name="PlayerStats_FavouriteTrack" xml:space="preserve">
+        <value>Favourite track</value>
+    </data>
+    <data name="PlayerStats_LongestJump" xml:space="preserve">
+        <value>Longest jump</value>
+    </data>
+    <data name="PlayerStats_LongestWheelie" xml:space="preserve">
+        <value>Longest wheelie</value>
+    </data>
+    <data name="PlayerStats_LongestTwoWheels" xml:space="preserve">
+        <value>Longest two wheels</value>
+    </data>
+    <data name="PlayerStats_TotalJumpsDistance" xml:space="preserve">
+        <value>Total jumps distance</value>
+    </data>
+    <data name="PlayerStats_TyresWorn" xml:space="preserve">
+        <value>Tyres worn</value>
+    </data>
+    <data name="PlayerStats_TotalCrashes" xml:space="preserve">
+        <value>Total crashes</value>
+    </data>
+    <data name="PlayerStats_TotalCrashes_Unit" xml:space="preserve">
+        <value>crash</value>
+    </data>
+    <data name="PlayerStats_TyresWorn_Unit" xml:space="preserve">
+        <value>tyre</value>
+    </data>
+    <data name="PlayerStats_GoneOffroad_Unit" xml:space="preserve">
+        <value>time</value>
+    </data>
+    <data name="PlayerStats_BurntFuel_ValueFormat" xml:space="preserve">
+        <value>{0:F1} liters</value>
+    </data>
+    <data name="SpecialEvents_SyncProgress" xml:space="preserve">
+        <value>Sync progress</value>
+    </data>
 </root>

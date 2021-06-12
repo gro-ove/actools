@@ -109,9 +109,9 @@ namespace AcManager.Pages.Miscellaneous {
                     case "mode":
                         return value.Test(obj.ModeSummary);
                     case "track":
-                        return value.Test(obj.Track?.Name ?? obj.Parsed?.TrackId);
+                        return value.Test(obj.Track.GetValueAsync().Result?.Name ?? obj.Parsed?.TrackId);
                     case "playercar":
-                        return value.Test(obj.PlayerCar?.GetValueAsync().Result?.Name);
+                        return value.Test(obj.PlayerCar.GetValueAsync().Result?.Name);
                     case "sessions":
                         return value.Test(obj.SessionNames);
                     case "details":
@@ -128,7 +128,7 @@ namespace AcManager.Pages.Miscellaneous {
                         return obj.Cars.GetValueAsync().Result?.Any(x => value.Test(x.Car.DisplayName)) == true;
                     case null:
                         return obj.Cars.GetValueAsync().Result?.Any(x => value.Test(x.Car.DisplayName)) == true ||
-                                value.Test(obj.Track?.Name ?? obj.Parsed?.TrackId);
+                                value.Test(obj.Track.GetValueAsync().Result?.Name ?? obj.Parsed?.TrackId);
                 }
 
                 return false;
@@ -143,7 +143,8 @@ namespace AcManager.Pages.Miscellaneous {
                         var c = obj.PlayerCar.GetValueAsync().Result;
                         return c != null && filter.Test(CarObjectTester.Instance, c);
                     case "track":
-                        return obj.Track != null && filter.Test(TrackObjectBaseTester.Instance, obj.Track);
+                        var track = obj.Track.GetValueAsync().Result;
+                        return track != null && filter.Test(TrackObjectBaseTester.Instance, track);
                 }
 
                 return false;
@@ -163,6 +164,7 @@ namespace AcManager.Pages.Miscellaneous {
                 Size = fileInfo.Length;
                 DisplayName = fileInfo.Name;
 
+                Track = Lazier.CreateAsync(() => TracksManager.Instance.GetLayoutByKunosIdAsync(Parsed?.TrackId ?? ""));
                 PlayerCar = Lazier.CreateAsync(() => CarsManager.Instance.GetByIdAsync(Parsed?.Players?.FirstOrDefault()?.CarId ?? ""));
                 Cars = Lazier.CreateAsync(async () => (await (Parsed?.Players?.Select(x => x.CarId)
                                                                      .Distinct()
@@ -173,7 +175,11 @@ namespace AcManager.Pages.Miscellaneous {
                 ModeDetails = Lazier.CreateAsync(GetModeDetails);
             }
 
+            [NotNull]
+            public Lazier<TrackObjectBase> Track { get; }
+            [NotNull]
             public Lazier<CarObject> PlayerCar { get; }
+            [NotNull]
             public Lazier<List<WrappedCarObject>> Cars { get; }
 
 #pragma warning disable 649
@@ -193,10 +199,6 @@ namespace AcManager.Pages.Miscellaneous {
             [CanBeNull]
             public Game.Result Parsed => _parsed.Get(() => JObject?.ToObject<Game.Result>());
             private LazierThis<Game.Result> _parsed;
-
-            [CanBeNull]
-            public TrackObjectBase Track => _track.Get(() => TracksManager.Instance.GetLayoutByKunosId(Parsed?.TrackId ?? ""));
-            private LazierThis<TrackObjectBase> _track;
 
             [CanBeNull]
             public string ModeSummary => _modeSummary.Get(() => {
@@ -404,7 +406,7 @@ namespace AcManager.Pages.Miscellaneous {
                         link += $@"&password={OnlineServer.EncryptSharedPassword($@"{ip}:{port}", password)}";
                     }
 
-                    ArgumentsHandler.ProcessArguments(new[] { link }, true).Forget();
+                    ArgumentsHandler.ProcessArguments(new[] { link }, true).Ignore();
                 }
             }, () => RaceIni["REMOTE"].GetBool("ACTIVE", false)));
 
@@ -429,7 +431,7 @@ namespace AcManager.Pages.Miscellaneous {
                 var raceGrid = SetQuickDriveRaceGrid();
                 await QuickDrive.RunAsync(
                         CarsManager.Instance.GetById(players[0].CarId ?? ""), players[0].CarSkinId,
-                        track: Track, mode: GetQuickDriveMode(raceGrid != null), serializedRaceGrid: raceGrid);
+                        track: await Track.GetValueAsync(), mode: GetQuickDriveMode(raceGrid != null), serializedRaceGrid: raceGrid);
             }, () => Parsed != null));
 
             private AsyncCommand _setupRaceCommand;
@@ -458,7 +460,7 @@ namespace AcManager.Pages.Miscellaneous {
                 var raceGrid = SetQuickDriveRaceGrid();
                 QuickDrive.Show(
                         CarsManager.Instance.GetById(players[0].CarId ?? ""), players[0].CarSkinId,
-                        track: Track, mode: GetQuickDriveMode(raceGrid != null), serializedRaceGrid: raceGrid);
+                        track: await Track.GetValueAsync(), mode: GetQuickDriveMode(raceGrid != null), serializedRaceGrid: raceGrid);
             }));
 
             private DelegateCommand _viewInExplorerCommand;

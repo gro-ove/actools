@@ -136,7 +136,7 @@ namespace AcManager.Tools.Managers.Online {
         public string DisplayName => _source.DisplayName;
 
         private void OnSourceObsolete(object sender, EventArgs e) {
-            ReloadAsync(true).Forget();
+            ReloadAsync(true).Ignore();
         }
 
         public void Report(AsyncProgressEntry value) {
@@ -193,7 +193,7 @@ namespace AcManager.Tools.Managers.Online {
         private void RegisterCustomer(CancellationToken cancellation) {
             var customerId = cancellation.GetHashCode();
             _customers.Add(customerId);
-            cancellation.Register(() => { OnCancelled(customerId).Forget(); });
+            cancellation.Register(() => { OnCancelled(customerId).Ignore(); });
         }
 
         private async Task OnCancelled(int customerId) {
@@ -253,7 +253,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private Task<bool> GetSourceLoadTask(CancellationToken cancellation) {
             if (_source is IOnlineListSource list) {
-                return list.LoadAsync(Add, this, cancellation);
+                return list.LoadAsync(AddAsync, this, cancellation);
             }
 
             if (_source is IOnlineBackgroundSource background) {
@@ -263,13 +263,13 @@ namespace AcManager.Tools.Managers.Online {
                     CleanUp();
                 }
 
-                return background.LoadAsync(Add, this, cancellation);
+                return background.LoadAsync(AddAsync, this, cancellation);
             }
 
             throw new NotSupportedException($@"Not supported type: {_source.GetType().Name}");
         }
 
-        private void Add([NotNull] ServerInformation information) {
+        private async Task AddAsync([NotNull] ServerInformation information) {
             var existing = _list.GetByIdOrDefault(information.Id);
             if (existing == null) {
                 var entry = new ServerEntry(information);
@@ -278,15 +278,16 @@ namespace AcManager.Tools.Managers.Online {
                 _list.Add(entry);
             } else {
                 existing.SetOrigin(Key);
-                existing.UpdateValues(information);
+                await existing.UpdateValuesAsync(information);
             }
         }
 
-        private void Add([NotNull] IEnumerable<ServerInformation> informations) {
+        private async Task AddAsync([NotNull] IEnumerable<ServerInformation> informations) {
             if (_first) {
                 _first = false;
 
                 var newEntries = new List<ServerEntry>((informations as IReadOnlyList<ServerInformation>)?.Count ?? 300);
+                var index = 0;
                 foreach (var information in informations) {
                     var existing = _list.GetByIdOrDefault(information.Id);
                     if (existing == null) {
@@ -296,8 +297,12 @@ namespace AcManager.Tools.Managers.Online {
                         newEntries.Add(entry);
                     } else {
                         existing.SetOrigin(Key);
-                        existing.UpdateValues(information);
+                        await existing.UpdateValuesAsync(information);
                         OnlineManager.Instance.AvoidRemoval(existing);
+                    }
+                    if (++index > 5) {
+                        await Task.Yield();
+                        index = 0;
                     }
                 }
 
@@ -320,7 +325,7 @@ namespace AcManager.Tools.Managers.Online {
                         _list.Add(entry);
                     } else {
                         existing.SetOrigin(Key);
-                        existing.UpdateValues(information);
+                        existing.UpdateValuesAsync(information).Ignore();
                         OnlineManager.Instance.AvoidRemoval(existing);
                     }
                 }

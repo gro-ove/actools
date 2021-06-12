@@ -553,8 +553,8 @@
                       Text="{Binding RealWeather.Description, Converter={StaticResource ToTitleConverter}, TargetNullValue='?'}" />
                   <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource Heading1}"
                       Text="{Binding RealWeather.Temperature, StringFormat={x:Static c:ControlsStrings.Common_CelsiusFormat}, TargetNullValue='?'}" Margin="8" />
-                  <Image Grid.Column="1" Grid.RowSpan="2" Grid.Row="1"
-                      Source="{Binding RealWeather.Icon, Converter={StaticResource UriToCachedImageConverter}, IsAsync=True}" MaxWidth="36" Height="36"
+                  <mui:BetterImage Grid.Column="1" Grid.RowSpan="2" Grid.Row="1"
+                      Filename="{Binding RealWeather.Icon}" Width="36" Height="36"
                       Stretch="Uniform" Margin="8 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" />
                 </Grid>
               </ToolTip>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using AcManager.Tools.AcManagersNew;
@@ -107,6 +108,29 @@ namespace AcManager.Tools.Managers.Online {
 
             [CanBeNull]
             public CarObject CarObject => (CarObject)CarWrapper?.Loaded();
+
+            [CanBeNull]
+            public CarObject TryCarObject => CarWrapper?.Value as CarObject;
+
+            private Task<CarObject> _loadedTask;
+
+            public Task<CarObject> LoadAsync() {
+                var wrapper = CarWrapper;
+                if (wrapper == null) return Task.FromResult((CarObject)null);
+                if (wrapper.IsLoaded) return Task.FromResult((CarObject)wrapper.Value);
+
+                if (_loadedTask == null) {
+                    _loadedTask = LoadTaskFactory();
+                    async Task<CarObject> LoadTaskFactory() {
+                        await Task.Yield();
+                        var ret = (CarObject)await wrapper.LoadedAsync();
+                        _loadedTask = null;
+                        return ret;
+                    }
+                }
+
+                return _loadedTask;
+            }
 
             private CarEntry(string carId, AcItemWrapper carWrapper) {
                 Id = carId;

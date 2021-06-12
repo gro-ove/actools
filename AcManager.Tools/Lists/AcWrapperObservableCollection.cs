@@ -35,9 +35,6 @@ namespace AcManager.Tools.Lists {
     public interface IAcObjectList : IBaseAcObjectObservableCollection, IList { }
 
     public class AcWrapperObservableCollection : ChangeableObservableCollection<AcItemWrapper>, IAcWrapperObservableCollection, IAcObjectList {
-        /// <summary>
-        /// TODO: Change everything? For example, use binary search instead? Or just eliminate internal list and use Dictionary only?
-        /// </summary>
         private readonly Dictionary<string, AcItemWrapper> _index = new Dictionary<string, AcItemWrapper>(50);
 
         protected override void Subscribe(AcItemWrapper item) {

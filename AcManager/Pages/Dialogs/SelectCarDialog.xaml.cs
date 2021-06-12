@@ -72,7 +72,7 @@ namespace AcManager.Pages.Dialogs {
 
         private void SelectedCarChanged(CarObject value) {
             if (value != null) {
-                value.SkinsManager.EnsureLoadedAsync().Forget();
+                value.SkinsManager.EnsureLoadedAsync().Ignore();
                 UpdateTunableVersions();
             }
 
@@ -154,7 +154,7 @@ namespace AcManager.Pages.Dialogs {
         public static Uri RatingUri(double rating) {
             return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
                     $"rating≥{Filter.Encode(rating.FloorToInt().ToInvariantString())} & rating<{Filter.Encode((rating.FloorToInt() + 1).ToInvariantString())}",
-                    PluralizingConverter.PluralizeExt(rating.FloorToInt(), "{0} Star"));
+                    PluralizingConverter.PluralizeExt(rating.FloorToInt(), ControlsStrings.SelectDialog_RatingTitle));
         }
 
         public static Uri BrandUri(string brand) {

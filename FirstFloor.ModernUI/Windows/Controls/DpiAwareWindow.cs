@@ -226,7 +226,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 foreach (var binding in toRemove) {
                     InputBindings.Remove(binding);
                 }
-                RestoreBindingsLater(toRemove).Forget();
+                RestoreBindingsLater(toRemove).Ignore();
             }
 
             base.OnPreviewKeyDown(e);

@@ -6,6 +6,10 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Controls {
     public class FontIconImage : BetterImage {
+        public FontIconImage() {
+            ShowBroken = false;
+        }
+
         protected override unsafe bool FindCropArea(BitmapSource b, out int left, out int top, out int right, out int bottom) {
             var channels = b.Format.Masks.Count;
             if (channels != 3 && channels != 4) {

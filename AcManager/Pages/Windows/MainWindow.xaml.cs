@@ -101,7 +101,7 @@ namespace AcManager.Pages.Windows {
             if (_testGameDialog != null) {
                 Logging.Write("Testing mode");
                 var ui = new GameDialog();
-                ui.ShowDialogAsync().Forget();
+                ui.ShowDialogAsync().Ignore();
                 ((IGameUi)ui).OnResult(JsonConvert.DeserializeObject<Game.Result>(FileUtils.ReadAllText(_testGameDialog)), null);
                 _cancelled = true;
             }

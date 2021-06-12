@@ -103,7 +103,7 @@ namespace AcManager.Pages.Selected {
             Tyres = tyres?.GetSections("FRONT", -1).Select((x, i) => new SettingEntry(i, x.GetPossiblyEmpty("NAME"))).ToArray() ?? new SettingEntry[0];
 
             _entries.ItemPropertyChanged += OnEntryChanged;
-            EnsureLoaded().Forget();
+            EnsureLoaded().Ignore();
         }
 
         private bool _isLoaded;

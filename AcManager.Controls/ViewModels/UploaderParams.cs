@@ -49,7 +49,7 @@ namespace AcManager.Controls.ViewModels {
                 UploaderDirectories = null;
 
                 if (previous != null) {
-                    Prepare().Forget();
+                    Prepare().Ignore();
                 }
             }
         }

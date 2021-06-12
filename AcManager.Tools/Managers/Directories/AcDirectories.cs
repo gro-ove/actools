@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using AcManager.Tools.Managers.InnerHelpers;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Directories {
@@ -21,6 +22,7 @@ namespace AcManager.Tools.Managers.Directories {
             var watcher = Watchers.FirstOrDefault(x => x.TargetDirectory.Equals(directory, StringComparison.OrdinalIgnoreCase));
             if (watcher != null) return watcher;
 
+            Logging.Debug($"Creating directory watcher: " + directory);
             watcher = new DirectoryWatcher(directory);
             Watchers.Add(watcher);
             return watcher;

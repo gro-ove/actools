@@ -349,14 +349,13 @@ namespace AcManager.Tools.Managers.Online {
                 information.PropertyChanged += Information_PropertyChanged;
             }
 
-            public Task<bool> LoadAsync(ListAddCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+            public async Task<bool> LoadAsync(ListAddAsyncCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
                 if (_entries != null) {
-                    callback(_entries);
+                    await callback(_entries).ConfigureAwait(false);
                 } else {
-                    callback(new ServerInformation[0]);
+                    await callback(new ServerInformation[0]).ConfigureAwait(false);
                 }
-
-                return Task.FromResult(true);
+                return true;
             }
 
             /// <summary>
@@ -492,7 +491,10 @@ namespace AcManager.Tools.Managers.Online {
             var source = Instance.GetInternalSource(RecentKey);
 
             IReadOnlyList<ServerInformation> entries = null;
-            await source.LoadAsync(x => entries = x.ToIReadOnlyListIfItIsNot(), null, default);
+            await source.LoadAsync(x => {
+                entries = x.ToIReadOnlyListIfItIsNot();
+                return Task.FromResult(true);
+            }, null, default);
 
             if (entries?.Count > OptionRecentSize) {
                 source.Remove(entries[0]);

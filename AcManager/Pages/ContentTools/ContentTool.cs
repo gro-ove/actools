@@ -84,7 +84,7 @@ namespace AcManager.Pages.ContentTools {
                 DisposeOverride();
             });
 
-            Load().Forget();
+            Load().Ignore();
         }
 
         /// <summary>

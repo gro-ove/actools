@@ -490,7 +490,7 @@ namespace AcManager.Pages.Dialogs {
             if (_mode == UpdatePreviewMode.Options) {
                 SelectPhase(Phase.Options);
             } else {
-                RunShootingProcess(_mode == UpdatePreviewMode.StartManual).Forget();
+                RunShootingProcess(_mode == UpdatePreviewMode.StartManual).Ignore();
             }
         }
 
@@ -522,7 +522,7 @@ namespace AcManager.Pages.Dialogs {
             if (CurrentPhase == Phase.Waiting) {
                 _cancellationTokenSource.Cancel(false);
             } else if (CurrentPhase == Phase.Result && IsResultOk) {
-                Apply().Forget();
+                Apply().Ignore();
             }
         }
 

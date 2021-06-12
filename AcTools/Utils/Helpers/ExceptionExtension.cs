@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
@@ -9,6 +10,14 @@ namespace AcTools.Utils.Helpers {
             for (; e != null; e = (e as AggregateException)?.GetBaseException()) {
                 if (e is OperationCanceledException
                         || e is WebException we && we.Status == WebExceptionStatus.RequestCanceled) return true;
+            }
+
+            return false;
+        }
+
+        public static bool IsWebException([CanBeNull] this Exception e) {
+            for (; e != null; e = (e as AggregateException)?.GetBaseException()) {
+                if (e is WebException || e is HttpRequestException) return true;
             }
 
             return false;

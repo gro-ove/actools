@@ -105,7 +105,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue),
-                            p => QuickDrive.RunAsync(track: SelectedTrackConfiguration, presetFilename: p.VirtualFilename).Forget());
+                            p => QuickDrive.RunAsync(track: SelectedTrackConfiguration, presetFilename: p.VirtualFilename).Ignore());
                 }
             }
 

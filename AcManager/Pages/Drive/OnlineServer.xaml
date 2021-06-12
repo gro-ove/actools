@@ -442,7 +442,20 @@
                   <TextBlock Text="{Binding Country}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                 </DockPanel>
                 <TextBlock c:PropertiesGrid.Label="{x:Static g:AppStrings.Online_ClientsLabel}" Text="{Binding DisplayClients}" />
-                <TextBlock c:PropertiesGrid.Label="{x:Static g:AppStrings.Online_TimeLabel}" Text="{Binding Time}" />
+                <TextBlock c:PropertiesGrid.Label="CSP features" Text="{Binding DisplayCspFeatures}" TextTrimming="CharacterEllipsis"
+                    Visibility="{Binding DisplayCspFeatures, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                  <TextBlock.ToolTip>
+                    <ItemsControl ItemsSource="{Binding CspFeaturesList}">
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <TextBlock Text="{Binding}" />
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </TextBlock.ToolTip>
+                </TextBlock>
+                <TextBlock c:PropertiesGrid.Label="{x:Static g:AppStrings.Online_TimeLabel}" Text="{Binding Time}"
+                    Visibility="{Binding DisplayCspFeatures, Converter={StaticResource NullToVisibilityConverter}}" />
                 <TextBlock c:PropertiesGrid.Label="{x:Static g:AppStrings.Online_LeftLabel}" Text="{Binding DisplayTimeLeft}" />
               </c:PropertiesGrid>
 

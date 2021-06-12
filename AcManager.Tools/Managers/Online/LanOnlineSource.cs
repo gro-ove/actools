@@ -20,8 +20,8 @@ namespace AcManager.Tools.Managers.Online {
             remove { }
         }
 
-        public async Task<bool> LoadAsync(ItemAddCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            await KunosApiProvider.TryToGetLanListAsync(callback, progress, cancellation);
+        public async Task<bool> LoadAsync(ItemAddAsyncCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+            await KunosApiProvider.TryToGetLanListAsync(callback, progress, cancellation).ConfigureAwait(false);
             return !cancellation.IsCancellationRequested;
         }
     }

@@ -3562,6 +3562,24 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fallback to server #{0}.
+        /// </summary>
+        public static string OnlineSource_Loading_Fallback {
+            get {
+                return ResourceManager.GetString("OnlineSource_Loading_Fallback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading necessary content….
+        /// </summary>
+        public static string OnlineSource_Loading_FinalStep {
+            get {
+                return ResourceManager.GetString("OnlineSource_Loading_FinalStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to server.
         /// </summary>
         public static string OrdinalizingSubject_Server {
@@ -4514,6 +4532,24 @@ namespace AcManager.Tools {
         public static string SpecialEvent_Description {
             get {
                 return ResourceManager.GetString("SpecialEvent_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You’re using {0} Starter. With it, you won’t get a Steam achievment, so progress won’t be saved. Are you sure you want to continue?.
+        /// </summary>
+        public static string SpecialEvent_StarterWarning {
+            get {
+                return ResourceManager.GetString("SpecialEvent_StarterWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch to Official Starter.
+        /// </summary>
+        public static string SpecialEvent_StarterWarning_Solution {
+            get {
+                return ResourceManager.GetString("SpecialEvent_StarterWarning_Solution", resourceCulture);
             }
         }
         

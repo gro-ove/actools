@@ -14,16 +14,6 @@ namespace FirstFloor.ModernUI {
             return false;
         }
 
-        /// <summary>
-        /// Use .Ignore() instead, it captures exceptions properly.
-        /// </summary>
-        public static void Forget(this Task task) { }
-
-        /// <summary>
-        /// Use .Ignore() instead, it captures exceptions properly.
-        /// </summary>
-        public static void Forget<T>(this Task<T> task) { }
-
         public static void Ignore(this Task task) {
             task.ContinueWith(x => {
                 Logging.Warning(x.Exception?.Flatten());

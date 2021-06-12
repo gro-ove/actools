@@ -40,13 +40,13 @@ namespace AcManager.Tools.Managers.Online {
         private bool _updatePingFailed, _updateDriversMissing;
         private readonly List<string> _updateCurrentErrors = new List<string>();
         private readonly List<string> _updateMissingExtendedErrors = new List<string>();
-        private string _missingCarsError, _missingTrackError;
+        private bool _errorMissingCars, _errorMissingTrack;
 
         private void PrepareErrorsList() {
             _updateException = _updateWebException = null;
             _updatePingFailed = _updateDriversMissing = false;
             _updateCurrentErrors.Clear();
-            _missingCarsError = _missingTrackError = null;
+            _errorMissingCars = _errorMissingTrack = false;
             _updateMissingExtendedErrors.Clear();
         }
 
@@ -54,7 +54,7 @@ namespace AcManager.Tools.Managers.Online {
             return $@"[url={BbCodeBlock.EncodeAttribute(command)}][ico={BbCodeBlock.EncodeAttribute(icon)}]{BbCodeBlock.Encode(hint)}[/ico][/url]";
         }
 
-        private void UpdateErrorsList() {
+        private List<string> GetErrorsList() {
             var errors = new List<string>(_updateCurrentErrors);
 
             const string iconBulb =
@@ -100,19 +100,25 @@ namespace AcManager.Tools.Managers.Online {
                 errors.Add("Data is missing");
             }
 
-            if (_missingCarsError != null) {
-                errors.Add(_missingCarsError);
+            if (_errorMissingCars) {
+                errors.Add(ErrorMessageMissingCars());
             }
 
-            if (_missingTrackError != null) {
-                errors.Add(_missingTrackError);
+            if (_errorMissingTrack) {
+                errors.Add(ErrorMessageMissingTrack());
             }
 
             if (HasDetails) {
                 errors.AddRange(_updateMissingExtendedErrors);
             }
+            return errors;
+        }
 
-            Errors = errors;
+        private void UpdateErrorsList() {
+            _errorsReady = false;
+            _errorsString = null;
+            OnPropertyChanged(nameof(Errors));
+            OnPropertyChanged(nameof(ErrorsString));
         }
 
         public enum UpdateMode {
@@ -164,7 +170,7 @@ namespace AcManager.Tools.Managers.Online {
                         return;
                     }
 
-                    var update = UpdateValues(loaded, false, true);
+                    var update = await UpdateValuesAsync(loaded, false, true);
                     if (update != null) {
                         resultStatus = update.Value;
                         if (update != ServerStatus.MissingContent) {
@@ -187,7 +193,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (DetailsPort != null) {
                     try {
                         var extended = await GetExtendedInformationDirectly();
-                        var update = UpdateValues(extended, false, true);
+                        var update = await UpdateValuesAsync(extended, false, true);
 
                         if (update != null) {
                             resultStatus = update.Value;
@@ -203,7 +209,7 @@ namespace AcManager.Tools.Managers.Online {
                         carsInformation = extended.Players;
                         informationLoadedExtended = true;
                     } catch (Exception e) {
-                        Logging.Warning(e);
+                        Logging.Warning($"<{Ip}:{PortHttp}> {(e.IsWebException() ? e.Message : e.ToString())}");
                         DetailsPort = null;
                         UpdateValuesExtended(null);
                         return;
@@ -218,7 +224,7 @@ namespace AcManager.Tools.Managers.Online {
                         }
                         UpdateValuesExtended(extended);
                     } catch (Exception e) {
-                        Logging.Warning(e);
+                        Logging.Warning($"<{Ip}:{PortHttp}> {(e.IsWebException() ? e.Message : e.ToString())}");
                         UpdateValuesExtended(null);
                         return;
                     }
@@ -248,7 +254,7 @@ namespace AcManager.Tools.Managers.Online {
                             // If loaded information is compatible with existing, use it immediately. Otherwise — apparently,
                             // server changed — we’ll try to load an actual data directly from it later, but only if it wasn’t
                             // loaded just before that and loaded information wasn’t loaded from it.
-                            var update = UpdateValues(loaded, false, true);
+                            var update = await UpdateValuesAsync(loaded, false, true);
                             if (update != null) {
                                 resultStatus = update.Value;
                                 if (update != ServerStatus.MissingContent) return;
@@ -264,7 +270,7 @@ namespace AcManager.Tools.Managers.Online {
                                 return;
                             }
 
-                            var update = UpdateValues(directlyLoaded, false, true);
+                            var update = await UpdateValuesAsync(directlyLoaded, false, true);
                             if (update != null) {
                                 resultStatus = update.Value;
                                 if (update != ServerStatus.MissingContent) return;
@@ -287,6 +293,7 @@ namespace AcManager.Tools.Managers.Online {
                     }
                 }
 
+                CspFeaturesList = carsInformation.Features?.Length > 0 ? carsInformation.Features : null;
                 if (!BookingMode) {
                     CurrentDriversCount = carsInformation.Cars.Count(x => x.IsConnected);
                     driversCount = -1;
@@ -399,9 +406,9 @@ namespace AcManager.Tools.Managers.Online {
                     }
                 }
             } catch (Exception e) {
+                Logging.Warning($"<{Ip}:{PortHttp}> {(e.IsWebException() ? e.Message : e.ToString())}");
                 _updateException = e;
                 resultStatus = ServerStatus.Error;
-                Logging.Error(e);
             } finally {
                 if (driversCount != -1) {
                     CurrentDriversCount = driversCount;

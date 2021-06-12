@@ -122,7 +122,7 @@ namespace AcManager.Pages.Drive {
                     GoCommand.RaiseCanExecuteChanged();
 
                     if (EventId != null) {
-                        LoadData().Forget();
+                        LoadData().Ignore();
                     } else {
                         Car = null;
                         CarSkin = null;

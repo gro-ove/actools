@@ -116,7 +116,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         private void WrappersListListenersChanged(object sender, ListenersChangedEventHandlerArgs args) {
             if (args.OldListenersCount == 0 && !IsLoaded) {
-                EnsureLoadedAsync().Forget();
+                EnsureLoadedAsync().Ignore();
             }
         }
 
@@ -322,8 +322,7 @@ namespace AcManager.Tools.AcManagersNew {
             ResetLoading();
         }
 
-        [CanBeNull]
-        public AcItemWrapper GetWrapperById([NotNull] string id) {
+        public AcItemWrapper GetWrapperById(string id) {
             EnsureScanned();
             return InnerWrappersList.GetByIdOrDefault(id);
 
@@ -355,28 +354,51 @@ namespace AcManager.Tools.AcManagersNew {
         public T EnsureWrapperLoaded([NotNull] AcItemWrapper wrapper) {
             if (wrapper == null) throw new ArgumentNullException(nameof(wrapper));
 
+            if (wrapper.IsLoaded) {
+                return (T)wrapper.Value;
+            }
+
             lock (wrapper) {
                 if (wrapper.IsLoaded) {
                     return (T)wrapper.Value;
                 }
 
                 var value = CreateAndLoadAcObject(wrapper.Id, wrapper.Value.Enabled);
+                if (wrapper.IsLoaded) {
+                    Logging.Warning("Already loaded somewhere else: " + wrapper.Id);
+                }
+
                 wrapper.Value = value;
                 return value;
             }
         }
 
         [NotNull]
-        public async Task<T> EnsureWrapperLoadedAsync([NotNull] AcItemWrapper wrapper) {
+        public Task<T> EnsureWrapperLoadedAsync([NotNull] AcItemWrapper wrapper) {
             if (wrapper == null) throw new ArgumentNullException(nameof(wrapper));
 
             if (wrapper.IsLoaded) {
-                return (T)wrapper.Value;
+                return Task.FromResult((T)wrapper.Value);
             }
 
-            var value = await Task.Run(() => CreateAndLoadAcObject(wrapper.Id, wrapper.Value.Enabled, false));
-            wrapper.Value = value;
-            return value;
+            if (wrapper.CurrentlyLoadingTask != null) {
+                return (Task<T>)wrapper.CurrentlyLoadingTask;
+            }
+
+            async Task<T> LoadInner() {
+                await Task.Yield();
+                var value = await Task.Run(() => CreateAndLoadAcObject(wrapper.Id, wrapper.Value.Enabled, false));
+                if (wrapper.IsLoaded) {
+                    Logging.Warning("Already loaded somewhere else: " + wrapper.Id);
+                }
+                wrapper.Value = value;
+                wrapper.CurrentlyLoadingTask = null;
+                return value;
+            }
+
+            var ret = LoadInner();
+            wrapper.CurrentlyLoadingTask = ret;
+            return ret;
         }
 
         [CanBeNull]

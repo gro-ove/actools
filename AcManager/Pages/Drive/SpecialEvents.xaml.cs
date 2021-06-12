@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,11 +16,13 @@ using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -43,6 +46,11 @@ namespace AcManager.Pages.Drive {
         }
 
         public Task LoadAsync(CancellationToken cancellationToken) {
+            if (_filter.Contains(@"rare+")) {
+                return new[] { LoadStatsAsync(), SpecialEventsManager.Instance.EnsureLoadedAsync() }.WhenAll();
+            }
+
+            LoadStatsAsync().Ignore();
             return SpecialEventsManager.Instance.EnsureLoadedAsync();
         }
 
@@ -59,14 +67,24 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(new DelegateCommand(() => Model.Selected?.ViewInExplorerCommand.Execute(null)), new KeyGesture(Key.F, ModifierKeys.Control))
             });
 
-            this.AddSizeCondition(c => c.ActualHeight > 640).Add(v => { BestLapBlock.Margin = v ? new Thickness(0, 16, 0, 0) : new Thickness(); });
+            this.AddSizeCondition(c => c.ActualHeight > 640).Add(v => BestLapBlock.Margin = v ? new Thickness(0, 16, 0, 0) : new Thickness());
+        }
 
-            /*Dispatcher.InvokeAsync(async () => {
-                await Task.Delay(1000);
-                if (Model.Selected != null) {
-                    ListBox.ScrollIntoView(ListBox.SelectedItem);
+        private static Dictionary<string, double> _achievements;
+
+        private async Task LoadStatsAsync() {
+            try {
+                var data = _achievements ?? (_achievements = await CmApiProvider.GetAsync<Dictionary<string, double>>("achievements/get"));
+                if (data == null) throw new Exception("Failed to load data");
+
+                await SpecialEventsManager.Instance.EnsureLoadedAsync();
+                foreach (var eventObject in SpecialEventsManager.Instance.Loaded) {
+                    eventObject.PlaceStats = data.Where(x => x.Key.StartsWith(eventObject.Id + "_")).OrderBy(x => x.Key)
+                            .Select(x => x.Value).ToArray();
                 }
-            });*/
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
         }
 
         private ViewModel Model => (ViewModel)DataContext;

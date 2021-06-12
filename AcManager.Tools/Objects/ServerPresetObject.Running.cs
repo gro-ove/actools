@@ -239,33 +239,35 @@ namespace AcManager.Tools.Objects {
                     CspRequiredActual));
             result.Add(PackedEntry.FromContent("cfg/entry_list.ini", entryList.Stringify()));
 
-            // Cars
-            var root = AcRootDirectory.Instance.RequireValue;
-            for (var i = 0; i < CarIds.Length; i++) {
-                var carId = CarIds[i];
-                var packedData = Path.Combine(AcPaths.GetCarDirectory(root, carId), "data.acd");
-                if (File.Exists(packedData)) {
-                    result.Add(PackedEntry.FromFile(Path.Combine(@"content", @"cars", carId, @"data.acd"), packedData));
+            if (!DisableChecksums) {
+                // Cars
+                var root = AcRootDirectory.Instance.RequireValue;
+                for (var i = 0; i < CarIds.Length; i++) {
+                    var carId = CarIds[i];
+                    var packedData = Path.Combine(AcPaths.GetCarDirectory(root, carId), "data.acd");
+                    if (File.Exists(packedData)) {
+                        result.Add(PackedEntry.FromFile(Path.Combine(@"content", @"cars", carId, @"data.acd"), packedData));
+                    }
                 }
-            }
 
-            // Track
-            var localPath = TrackLayoutId != null ? Path.Combine(TrackId, TrackLayoutId) : TrackId;
-            foreach (var file in TrackDataToKeep) {
-                var actualData = Path.Combine(AcPaths.GetTracksDirectory(root), localPath, @"data", file);
-                if (!File.Exists(actualData)) continue;
-                if (TrackPreprocess(actualData, out var pathPrefix, out var newContent)) {
-                    result.Add(PackedEntry.FromContent(Path.Combine(@"content", @"tracks", pathPrefix, localPath, @"data", file), newContent));
-                } else {
-                    result.Add(PackedEntry.FromFile(Path.Combine(@"content", @"tracks", localPath, @"data", file), actualData));
+                // Track
+                var localPath = TrackLayoutId != null ? Path.Combine(TrackId, TrackLayoutId) : TrackId;
+                foreach (var file in TrackDataToKeep) {
+                    var actualData = Path.Combine(AcPaths.GetTracksDirectory(root), localPath, @"data", file);
+                    if (!File.Exists(actualData)) continue;
+                    if (TrackPreprocess(actualData, out var pathPrefix, out var newContent)) {
+                        result.Add(PackedEntry.FromContent(Path.Combine(@"content", @"tracks", pathPrefix, localPath, @"data", file), newContent));
+                    } else {
+                        result.Add(PackedEntry.FromFile(Path.Combine(@"content", @"tracks", localPath, @"data", file), actualData));
+                    }
                 }
-            }
 
-            {
-                var modelsFileName = TrackLayoutId == null ? @"models.ini" : $@"models_{TrackLayoutId}.ini";
-                var actualData = Path.Combine(AcPaths.GetTracksDirectory(root), TrackId, modelsFileName);
-                if (File.Exists(actualData)) {
-                    result.Add(PackedEntry.FromFile(Path.Combine(@"content", @"tracks", TrackId, modelsFileName), actualData));
+                {
+                    var modelsFileName = TrackLayoutId == null ? @"models.ini" : $@"models_{TrackLayoutId}.ini";
+                    var actualData = Path.Combine(AcPaths.GetTracksDirectory(root), TrackId, modelsFileName);
+                    if (File.Exists(actualData)) {
+                        result.Add(PackedEntry.FromFile(Path.Combine(@"content", @"tracks", TrackId, modelsFileName), actualData));
+                    }
                 }
             }
 
@@ -422,7 +424,8 @@ namespace AcManager.Tools.Objects {
                 await SaveCommand.ExecuteAsync();
             }
 
-            if (SettingsHolder.Online.ServerPresetsUpdateDataAutomatically) {
+            if (SettingsHolder.Online.ServerPresetsUpdateDataAutomatically
+                    && !DisableChecksums) {
                 await PrepareServer(progress, cancellation);
             }
 
@@ -512,6 +515,52 @@ namespace AcManager.Tools.Objects {
             return (await CmApiProvider.GetStaticDataAsync("ac_server_wrapper-linux-x64", TimeSpan.Zero, cancellation: cancellation))?.Item1;
         }
 
+        private class HideContent : IDisposable {
+            private List<Tuple<string, string>> _moved = new List<Tuple<string, string>>();
+
+            public HideContent(string serverExecutable) {
+                var directory = Path.GetDirectoryName(serverExecutable);
+                if (string.IsNullOrEmpty(directory)) return;
+                Move(Path.Combine(directory, "content"));
+            }
+
+            private void Move(string directory) {
+                var newName = FileUtils.EnsureUnique(directory + "~tmp");
+                try {
+                    Directory.Move(directory, newName);
+                    _moved.Add(Tuple.Create(newName, directory));
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+            }
+
+            public void Dispose() {
+                lock (_moved) {
+                    foreach (var tuple in _moved) {
+                        try {
+                            Directory.Move(tuple.Item1, tuple.Item2);
+                        } catch (Exception e) {
+                            Logging.Warning(e);
+                        }
+                    }
+                    _moved.Clear();
+                }
+            }
+        }
+
+        Process StartServer(string serverExecutable, Func<Process> callback) {
+            if (!DisableChecksums) {
+                return callback();
+            }
+
+            var hidden = new HideContent(serverExecutable);
+            Task.Delay(TimeSpan.FromSeconds(3d)).ContinueWith(r => hidden.Dispose());
+            var ret = callback();
+            ret.Exited += (sender, args) => hidden.Dispose();
+            ret.Disposed += (sender, args) => hidden.Dispose();
+            return ret;
+        }
+
         private async Task RunWrapper(string serverExecutable, Action<LogMessageType, string> log, [CanBeNull] IProgress<AsyncProgressEntry> progress,
                 CancellationToken cancellation) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Loading wrapper…"));
@@ -527,18 +576,18 @@ namespace AcManager.Tools.Objects {
                 var logName = FileUtils.EnsureFileNameIsValid(
                         $"Server_{DisplayName}_{now.Year % 100:D2}{now.Month:D2}{now.Day:D2}_{now.Hour:D2}{now.Minute:D2}{now.Second:D2}.log", true);
                 using (var writer = new StreamWriter(FilesStorage.Instance.GetFilename("Logs", logName), false))
-                using (var process = ProcessExtension.Start(wrapperFilename, new[] {
+                using (var process = StartServer(serverExecutable, () => ProcessExtension.Start(wrapperFilename, new[] {
                     "-e", serverExecutable, $"presets/{Id}"
                 }, new ProcessStartInfo {
                     UseShellExecute = false,
-                    WorkingDirectory = Path.Combine(Path.GetDirectoryName(serverExecutable) ?? "", "system"),
+                    WorkingDirectory = Path.GetDirectoryName(serverExecutable) ?? "",
                     RedirectStandardOutput = true,
                     CreateNoWindow = true,
                     RedirectStandardError = true,
                     StandardOutputEncoding = Encoding.UTF8,
                     StandardErrorEncoding = Encoding.UTF8,
-                })) {
-                    process.Start();
+                }))) {
+                    // process.Start(); // why?
                     SetRunning(process);
                     ChildProcessTracker.AddProcess(process);
 
@@ -586,7 +635,7 @@ namespace AcManager.Tools.Objects {
                 CancellationToken cancellation) {
             Process process = null;
             try {
-                process = new Process {
+                process = StartServer(serverExecutable, () => new Process {
                     StartInfo = {
                         FileName = serverExecutable,
                         Arguments = $"-c \"{IniFilename}\" -e \"{EntryListIniFilename}\"",
@@ -598,7 +647,7 @@ namespace AcManager.Tools.Objects {
                         StandardOutputEncoding = Encoding.UTF8,
                         StandardErrorEncoding = Encoding.UTF8,
                     }
-                };
+                });
 
                 process.Start();
                 SetRunning(process);

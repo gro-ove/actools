@@ -58,7 +58,7 @@ namespace AcManager.Controls.Helpers {
                 if (cup == null) return;
 
                 mouseButtonEventArgs.Handled = true;
-                new CupInformationDialog(cup).ShowDialogAsync().Forget();
+                new CupInformationDialog(cup).ShowDialogAsync().Ignore();
             }
         }
     }

@@ -6,7 +6,6 @@ using AcTools.Render.Base;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
-using TaskExtension = AcTools.Utils.Helpers.TaskExtension;
 
 namespace AcTools.Render.Kn5Specific.Textures {
     public class DirectoryTexturesProvider : TexturesProviderBase {
@@ -208,7 +207,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
             if (File.Exists(filename)) {
                 result.Exists = true;
                 if (_asyncLoading) {
-                    TaskExtension.Forget(result.LoadAsync(contextHolder, filename));
+                    result.LoadAsync(contextHolder, filename).Ignore();
                 } else {
                     result.Load(contextHolder, filename);
                 }

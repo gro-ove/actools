@@ -288,7 +288,7 @@ namespace AcManager.Pages.Lists {
                     } catch (Exception e) {
                         NonfatalError.Notify("Can’t load mod profile", e);
                     }
-                }).Forget();
+                }).Ignore();
             }
             #endregion
         }

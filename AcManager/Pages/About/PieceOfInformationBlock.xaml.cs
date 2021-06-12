@@ -21,8 +21,8 @@ namespace AcManager.Pages.About {
                 typeof(PieceOfInformationBlock), new PropertyMetadata(OnPieceChanged));
 
         public PieceOfInformation Piece {
-            get { return (PieceOfInformation)GetValue(PieceProperty); }
-            set { SetValue(PieceProperty, value); }
+            get => (PieceOfInformation)GetValue(PieceProperty);
+            set => SetValue(PieceProperty, value);
         }
 
         private static void OnPieceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -30,11 +30,11 @@ namespace AcManager.Pages.About {
         }
 
         private void OnPieceChanged(PieceOfInformation newValue) {
-            MarkAsRead(newValue).Forget();
+            MarkAsRead(newValue).Ignore();
         }
 
         private void Handler(object sender, EventArgs eventArgs) {
-            MarkAsRead(Piece).Forget();
+            MarkAsRead(Piece).Ignore();
         }
 
         private async Task MarkAsRead(PieceOfInformation value) {

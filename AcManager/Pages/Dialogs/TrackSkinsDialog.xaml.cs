@@ -39,7 +39,7 @@ namespace AcManager.Pages.Dialogs {
         public static void Show([NotNull] TrackObject track) {
             new TrackSkinsDialog(track) {
                 ShowInTaskbar = false
-            }.ShowDialogAsync().Forget();
+            }.ShowDialogAsync().Ignore();
         }
 
         private void OnInitialized(object sender, EventArgs e) {

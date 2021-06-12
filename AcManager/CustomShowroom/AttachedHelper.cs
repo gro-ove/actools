@@ -463,7 +463,7 @@ namespace AcManager.CustomShowroom {
                 window.Show();
                 window.Activate();
                 window.Topmost = true;
-                UpdateVisibility(window, GetVisibility(), true).Forget();
+                UpdateVisibility(window, GetVisibility(), true).Ignore();
             }
 
             ElementHost.EnableModelessKeyboardInterop(window);
@@ -502,7 +502,7 @@ namespace AcManager.CustomShowroom {
                 window.Show();
                 window.Activate();
                 window.Topmost = true;
-                UpdateVisibility(window, GetVisibility(), true).Forget();
+                UpdateVisibility(window, GetVisibility(), true).Ignore();
             }
 
             ElementHost.EnableModelessKeyboardInterop(window);

@@ -111,7 +111,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 a();
             }
 
-            busy.Delay(millisecondsDelay, force).Forget();
+            busy.Delay(millisecondsDelay, force).Ignore();
         }
 
         public static void Delay([NotNull] this Busy busy, Action a, TimeSpan delay, bool force = false) {
@@ -119,7 +119,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 a();
             }
 
-            busy.Delay(delay, force).Forget();
+            busy.Delay(delay, force).Ignore();
         }
 
         public static async Task Delay([NotNull] this Busy busy, Func<Task> a, int millisecondsDelay, bool force = false) {
@@ -127,7 +127,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 await a();
             }
 
-            busy.Delay(millisecondsDelay, force).Forget();
+            busy.Delay(millisecondsDelay, force).Ignore();
         }
 
         public static async Task Delay([NotNull] this Busy busy, Func<Task> a, TimeSpan delay, bool force = false) {
@@ -135,7 +135,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 await a();
             }
 
-            busy.Delay(delay, force).Forget();
+            busy.Delay(delay, force).Ignore();
         }
 
         public static Task Yield([NotNull] this Busy busy, Action a) {

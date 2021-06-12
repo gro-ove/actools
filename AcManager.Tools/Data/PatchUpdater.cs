@@ -67,7 +67,7 @@ namespace AcManager.Tools.Data {
             Versions.ApartFrom(value).ForEach(x => x.IsInstalled = false);
             if (value != null) {
                 if (isToInstall) {
-                    InstallVersion(value, oldVersion).Forget();
+                    InstallVersion(value, oldVersion).Ignore();
                 }
                 value.IsInstalled = true;
             }

@@ -54,7 +54,7 @@ namespace AcManager.Controls.UserControls {
             var model = Model;
             if (model != null) {
                 model.PropertyChanged += OnPropertyChanged;
-                model.Prepare().Forget();
+                model.Prepare().Ignore();
                 _sizeRelatedCondition.ListenOnProperty(model, nameof(model.SelectedUploader));
             }
         }

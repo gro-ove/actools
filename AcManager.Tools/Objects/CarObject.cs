@@ -222,19 +222,19 @@ namespace AcManager.Tools.Objects {
             return true;
         }
 
-        private static int Compare(CarObject l, CarObject r) {
+        private static int Compare(IAcObjectNew l, IAcObjectNew r) {
             var le = l.Enabled;
             return le != r.Enabled ? (le ? -1 : 1) : l.DisplayName.InvariantCompareTo(r.DisplayName);
         }
 
         public override int CompareTo(AcPlaceholderNew o) {
             if (o is CarObject r) {
-                var tp = Parent;
-                var rp = r.Parent;
-                if (rp == this) return -1;
-                if (tp == r) return 1;
+                var tp = ParentItemWrapper;
+                var rp = r.ParentItemWrapper;
+                if (rp?.Value == this) return -1;
+                if (tp?.Value == r) return 1;
                 if (tp == rp) return Compare(this, r);
-                return Compare(tp ?? this, rp ?? r);
+                return Compare(tp?.Value ?? this, rp?.Value ?? r);
             }
 
             return base.CompareTo(o);

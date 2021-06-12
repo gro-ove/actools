@@ -171,6 +171,7 @@
     <Compile Include="Helpers\ILocalKeyBindings.cs" />
     <Compile Include="Helpers\LocalKeyBindingsController.cs" />
     <Compile Include="Helpers\WeatherPreviewProvider.cs" />
+    <Compile Include="LazierSwitch.cs" />
     <Compile Include="NotesBlock.cs" />
     <Compile Include="OriginIcon.cs" />
     <Compile Include="Presentation\ExtraProgressRings.cs" />

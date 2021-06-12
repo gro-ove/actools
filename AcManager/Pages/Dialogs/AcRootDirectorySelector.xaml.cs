@@ -58,7 +58,7 @@ namespace AcManager.Pages.Dialogs {
             };
 
             EntryPoint.HandleSecondInstanceMessages(this, ProcessArguments);
-            PluginsManager.Instance.UpdateIfObsolete().Forget();
+            PluginsManager.Instance.UpdateIfObsolete().Ignore();
         }
 
         private bool ProcessArguments(IEnumerable<string> arguments) {

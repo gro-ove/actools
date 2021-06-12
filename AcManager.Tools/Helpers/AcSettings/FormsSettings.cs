@@ -93,7 +93,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
 
             if (Ini.Keys.Any(x => x.StartsWith("FORM_"))) {
-                Fix().Forget();
+                Fix().Ignore();
             }
 
             SelectedDesktop = Ini["HEADER"].GetInt("DESKTOP_SELECTED", 1);

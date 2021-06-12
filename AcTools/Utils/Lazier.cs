@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils {
-    public static class Lazier {
+    public abstract class Lazier : INotifyPropertyChanged {
         // TODO: Is it even a solution? Maybe there is a better way?
         public static Action<Action> SyncAction = a => a.Invoke();
 
@@ -23,9 +23,30 @@ namespace AcTools.Utils {
         public static Lazier<T> Static<T>(T obj) {
             return new Lazier<T>(obj);
         }
+
+        public abstract object GenericValue { get; }
+        public abstract void StartSetting();
+
+        private bool _isSet;
+
+        public bool IsSet {
+            get => _isSet;
+            set {
+                if (value == _isSet) return;
+                _isSet = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
-    public class Lazier<T> : INotifyPropertyChanged {
+    public class Lazier<T> : Lazier {
         public Lazier([CanBeNull] Func<T> fn) {
             _fn = fn;
         }
@@ -68,31 +89,36 @@ namespace AcTools.Utils {
         private readonly object _lock = new object();
 
         [CanBeNull]
-        public T Value {
-            get {
-                if (!_isSet) {
-                    if (_fnTask != null) {
-                        if (_settingTask == null) {
-                            _settingTask = SetTask();
-                        }
+        public T Value => GetValue();
 
-                        return _isSet ? _value : _loadingValue;
+        private T GetValue() {
+            if (!IsSet) {
+                if (_fnTask != null) {
+                    if (_settingTask == null) {
+                        _settingTask = SetTask();
                     }
 
-                    lock (_lock) {
-                        // TODO: SHOULD ISSET GO FIRST?
-                        _value = _fn == null ? default : _fn.Invoke();
-                        IsSet = true;
-                    }
+                    return IsSet ? _value : _loadingValue;
                 }
 
-                return _value;
+                lock (_lock) {
+                    // TODO: SHOULD ISSET GO FIRST?
+                    _value = _fn == null ? default : _fn.Invoke();
+                    IsSet = true;
+                }
             }
+            return _value;
         }
+
+        public override void StartSetting() {
+            GetValue();
+        }
+
+        public override object GenericValue => Value;
 
         [ItemCanBeNull]
         public Task<T> GetValueAsync() {
-            if (_isSet || _fnTask == null) return Task.FromResult(Value);
+            if (IsSet || _fnTask == null) return Task.FromResult(Value);
             return _settingTask ?? (_settingTask = SetTask());
         }
 
@@ -107,6 +133,7 @@ namespace AcTools.Utils {
                     IsSet = true;
                     _settingTask = null;
                     OnPropertyChanged(nameof(Value));
+                    OnPropertyChanged(nameof(GenericValue));
                     return _value;
                 }
 
@@ -120,24 +147,14 @@ namespace AcTools.Utils {
                 _value = _loadingValue;
             }
 
-            Lazier.SyncAction(() => {
+            SyncAction(() => {
                 IsSet = true;
                 _settingTask = null;
                 OnPropertyChanged(nameof(Value));
+                OnPropertyChanged(nameof(GenericValue));
             });
 
             return _value;
-        }
-
-        private bool _isSet;
-
-        public bool IsSet {
-            get => _isSet;
-            set {
-                if (value == _isSet) return;
-                _isSet = value;
-                OnPropertyChanged();
-            }
         }
 
         private bool _autoDispose;
@@ -161,18 +178,12 @@ namespace AcTools.Utils {
             _value = default;
             IsSet = false;
             OnPropertyChanged(nameof(Value));
+            OnPropertyChanged(nameof(GenericValue));
 
             if (_settingTask != null) {
                 _isSettingId++;
                 _settingTask = null;
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

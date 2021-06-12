@@ -68,7 +68,7 @@ namespace AcManager.Pages.Selected {
             private DelegateCommand _changeIconCommand;
 
             public DelegateCommand ChangeIconCommand => _changeIconCommand ?? (_changeIconCommand = new DelegateCommand(() => {
-                AppIconEditor.RunAsync(SelectedObject).Forget();
+                AppIconEditor.RunAsync(SelectedObject).Ignore();
             }));
         }
 
@@ -128,11 +128,11 @@ namespace AcManager.Pages.Selected {
         private void OnUnloaded(object sender, RoutedEventArgs e) { }
 
         private void OnIconClick(object sender, MouseButtonEventArgs e) {
-            AppIconEditor.RunAsync(_model.SelectedObject).Forget();
+            AppIconEditor.RunAsync(_model.SelectedObject).Ignore();
         }
 
         private void OnWindowIconClick(object sender, MouseButtonEventArgs e) {
-            AppIconEditor.RunAsync((PythonAppWindow)((FrameworkElement)sender).DataContext).Forget();
+            AppIconEditor.RunAsync((PythonAppWindow)((FrameworkElement)sender).DataContext).Ignore();
         }
 
         public LocalKeyBindingsController KeyBindingsController { get; }

@@ -65,11 +65,17 @@ namespace AcManager.Tools.Objects {
         [CanBeNull]
         private CarSkinObject _selectedSkin;
 
+        private bool _selectedSkinSet;
+
         [CanBeNull]
         public CarSkinObject SelectedSkin {
             get {
-                if (!SkinsManager.IsScanned) {
-                    SkinsManager.Scan();
+                if (!_selectedSkinSet) {
+                    _selectedSkinSet = true;
+                    if (!SkinsManager.IsScanned) {
+                        SkinsManager.Scan();
+                    }
+                    SelectPreviousOrDefaultSkin();
                 }
                 return _selectedSkin;
             }
@@ -90,8 +96,16 @@ namespace AcManager.Tools.Objects {
 
         public CarSkinObject SelectedSkinLazy {
             get {
-                if (!SkinsManager.IsScanned) {
-                    Task.Run(() => SkinsManager.Scan());
+                if (!_selectedSkinSet) {
+                    _selectedSkinSet = true;
+                    if (!SkinsManager.IsScanned) {
+                        Task.Run(() => {
+                            SkinsManager.Scan();
+                            SelectPreviousOrDefaultSkin();
+                        });
+                    } else {
+                        Task.Run(() => SelectPreviousOrDefaultSkin());
+                    }
                 }
                 return _selectedSkin;
             }
@@ -99,7 +113,9 @@ namespace AcManager.Tools.Objects {
 
         private void SelectPreviousOrDefaultSkin() {
             var selectedSkinId = LimitedStorage.Get(LimitedSpace.SelectedSkin, Id);
-            SelectedSkin = (selectedSkinId == null ? null : SkinsManager.GetById(selectedSkinId)) ?? SkinsManager.GetDefault();
+            _selectedSkin = (selectedSkinId == null ? null : SkinsManager.GetById(selectedSkinId)) ?? SkinsManager.GetDefault();
+            OnPropertyChanged(nameof(SelectedSkin));
+            OnPropertyChanged(nameof(SelectedSkinLazy));
         }
 
         void IAcManagerScanWrapper.AcManagerScan() {
@@ -116,8 +132,6 @@ namespace AcManager.Tools.Objects {
             }
 
             m?.Step("Skins are scanned");
-            SelectPreviousOrDefaultSkin();
-            m?.Step("Selected skin is restored");
         }
 
         [CanBeNull]

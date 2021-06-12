@@ -1212,7 +1212,7 @@ window.$KEY = outline.stop.bind(outline);
                 }
 
                 cancellation.Register(Cancel);
-                _resultTask.Task.ContinueWith(t => ActionExtension.InvokeInMainThreadAsync(() => _dialog.Close()), cancellation).Forget();
+                _resultTask.Task.ContinueWith(t => ActionExtension.InvokeInMainThreadAsync(() => _dialog.Close()), cancellation).Ignore();
                 return await _resultTask.Task;
 
                 void AutoDownload() {
@@ -1264,7 +1264,7 @@ window.$KEY = outline.stop.bind(outline);
                         if (!_onDownloadFired) {
                             ActionExtension.InvokeInMainThread(FailSafe);
                         }
-                    }).Forget();
+                    }).Ignore();
                     _dialog.ShowInvisible();
                 }
 

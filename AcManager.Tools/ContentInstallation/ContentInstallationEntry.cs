@@ -685,7 +685,7 @@ namespace AcManager.Tools.ContentInstallation {
                                             _taskbar?.Set(TaskbarState.Indeterminate, 0d);
                                             progress.Report(AsyncProgressEntry.FromStringIndetermitate("Checking password…"));
                                         }
-                                    }).Forget();
+                                    }).Ignore();
                                     await installator.TrySetPasswordAsync(password, cancellation.Token);
                                     if (CheckCancellation()) return false;
                                 } finally {

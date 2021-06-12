@@ -71,7 +71,7 @@ namespace AcManager.Controls {
             if (_loaded) return;
             _loaded = true;
 
-            UpdateHierarchicalWeatherList().Forget();
+            UpdateHierarchicalWeatherList().Ignore();
             WeakEventManager<IBaseAcObjectObservableCollection, EventArgs>.AddHandler(WeatherManager.Instance.WrappersList,
                     nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
         }
@@ -111,7 +111,7 @@ namespace AcManager.Controls {
                 typeof(WeatherComboBox), new PropertyMetadata(false, (o, e) => {
                     var c = (WeatherComboBox)o;
                     c._allowRandomWeather = (bool)e.NewValue;
-                    c.UpdateHierarchicalWeatherList().Forget();
+                    c.UpdateHierarchicalWeatherList().Ignore();
                 }));
 
         private bool _allowRandomWeather;
@@ -125,7 +125,7 @@ namespace AcManager.Controls {
                 typeof(WeatherComboBox), new PropertyMetadata(false, (o, e) => {
                     var c = (WeatherComboBox)o;
                     c._allowWeatherByType = (bool)e.NewValue;
-                    c.UpdateHierarchicalWeatherList().Forget();
+                    c.UpdateHierarchicalWeatherList().Ignore();
                 }));
 
         private bool _allowWeatherByType;
@@ -232,7 +232,7 @@ namespace AcManager.Controls {
         }
 
         private void OnWeatherListUpdated(object sender, EventArgs e) {
-            UpdateHierarchicalWeatherList().Forget();
+            UpdateHierarchicalWeatherList().Ignore();
         }
         #endregion
     }

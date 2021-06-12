@@ -56,7 +56,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         private void Handler(object sender, FileSystemEventArgs e) {
-            ReloadLater().Forget();
+            ReloadLater().Ignore();
         }
 
         private static readonly Regex NameRegex = new Regex(@"(?<=\b[A-Z])[A-Z]+", RegexOptions.Compiled);
