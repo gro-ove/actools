@@ -518,6 +518,10 @@
     <Compile Include="Pages\Miscellaneous\ModsWebBrowser.xaml.cs">
       <DependentUpon>ModsWebBrowser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Miscellaneous\MostSomethingBase.cs" />
+    <Compile Include="Pages\Miscellaneous\MostSpeed.xaml.cs">
+      <DependentUpon>MostSpeed.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Miscellaneous\RaceResults.xaml.cs">
       <DependentUpon>RaceResults.xaml</DependentUpon>
     </Compile>
@@ -1290,6 +1294,8 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Miscellaneous\MostSomethingBase.xaml" />
+    <Page Include="Pages\Miscellaneous\MostSpeed.xaml" />
     <Page Include="Pages\Miscellaneous\RaceResults.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

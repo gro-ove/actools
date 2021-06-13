@@ -44,12 +44,15 @@ namespace AcManager.Tools.Helpers {
         }
 
         private static void ImportIfNeeded(string carId, double appDistance) {
+            // Sanity check
+            if (appDistance / 1e3 > 1e9) return;
+
             var cmDistance = PlayerStatsManager.Instance.GetDistanceDrivenByCar(carId);
             if (cmDistance >= appDistance - 100) return;
 
             PlayerStatsManager.Instance.SetDistanceDrivenByCar(carId, appDistance);
             (CarsManager.Instance.GetWrapperById(carId)?.Value as CarObject)?.RaiseTotalDrivenDistanceChanged();
-            Logging.Debug($"Driven distance for {carId} updated: CM had {cmDistance / 1e3:F1} km, app has {appDistance / 1e3:F1} km, which is more.");
+            Logging.Debug($"Driven distance for {carId} updated: CM had {cmDistance / 1e3:F1} km, Stereo Odometer app has {appDistance / 1e3:F1} km, which is more.");
         }
 
         public static void ImportAll() {

@@ -16,10 +16,6 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
-#if DEBUG
-using System.Diagnostics;
-
-#endif
 
 namespace AcManager.Controls {
     public class UserPresetsControl : Control, IHierarchicalItemPreviewProvider {
@@ -477,17 +473,7 @@ namespace AcManager.Controls {
         private void UpdateSavedPresets() {
             if (_presetable == null) return;
 
-#if DEBUG
-            var s = Stopwatch.StartNew();
-#endif
-
             var presets = new ObservableCollection<ISavedPresetEntry>(PresetsManager.Instance.GetSavedPresets(_presetable.PresetableCategory));
-
-#if DEBUG
-            s.Restart();
-            Logging.Debug($"First step ({_presetable.PresetableCategory.DirectoryName}): {s.Elapsed.TotalMilliseconds} ms");
-#endif
-
             SetValue(SavedPresetsPropertyKey, presets);
             SetValue(SavedPresetsGroupedPropertyKey, new HierarchicalGroup("",
                     GroupPresets(presets, PresetsManager.Instance.GetDirectory(_presetable.PresetableCategory), _presetable as IUserPresetableCustomDisplay,
@@ -498,10 +484,6 @@ namespace AcManager.Controls {
             CurrentUserPreset = presets.FirstOrDefault(x => x.VirtualFilename == SelectedPresetFilename) ??
                     (defaultPreset == null ? null : presets.FirstOrDefault(x => x.DisplayName == defaultPreset));
             _ignoreNext = false;
-
-#if DEBUG
-            Logging.Debug($"Second step ({_presetable.PresetableCategory.DirectoryName}): {s.Elapsed.TotalMilliseconds} ms");
-#endif
         }
 
         private static readonly DependencyPropertyKey ChangedPropertyKey = DependencyProperty.RegisterReadOnly(nameof(Changed),

@@ -24,6 +24,7 @@ namespace AcManager.Tools.Profile {
         private const string KeyDistancePerCarPrefix = "distancePerCar:";
         private const string KeyDistancePerTrackPrefix = "distancePerTrack:";
         private const string KeyMaxSpeedPerCarPrefix = "maxSpeedPerCar:";
+        private const string KeyMaxSpeedPerTrackPrefix = "maxSpeedPerTrack:";
         private const string KeySessionStatsPrefix = "sessionStats:";
 
         public static int OptionRunStatsWebserver = 0;
@@ -485,36 +486,40 @@ Gone offroad: {current.GoneOffroad} time(s)");
             }));
         }
 
-        public IEnumerable<string> GetCarsIds() {
-            return GetMainStorage().Where(x => x.Key.StartsWith(KeyDistancePerCarPrefix))
-                                   .Select(x => x.Key.Substring(KeyDistancePerCarPrefix.Length));
+        public IEnumerable<string> GetCarsIds(IStorage storage = null) {
+            return (storage ?? GetMainStorage()).Where(x => x.Key.StartsWith(KeyDistancePerCarPrefix))
+                    .Select(x => x.Key.Substring(KeyDistancePerCarPrefix.Length));
         }
 
         /// <summary>
         /// Meters!
         /// </summary>
-        public double GetDistanceDrivenByCar(string carId) {
-            return GetMainStorage().Get(KeyDistancePerCarPrefix + carId, 0d);
+        public double GetDistanceDrivenByCar(string carId, IStorage storage = null) {
+            return (storage ?? GetMainStorage()).Get(KeyDistancePerCarPrefix + carId, 0d);
         }
 
         /// <summary>
         /// Meters!
         /// </summary>
-        public void SetDistanceDrivenByCar(string carId, double value) {
-            GetMainStorage().Set(KeyDistancePerCarPrefix + carId, value);
+        public void SetDistanceDrivenByCar(string carId, double value, IStorage storage = null) {
+            (storage ?? GetMainStorage()).Set(KeyDistancePerCarPrefix + carId, value);
         }
 
-        public double GetMaxSpeedByCar(string carId) {
-            return GetMainStorage().Get(KeyMaxSpeedPerCarPrefix + carId, 0d);
+        public double GetMaxSpeedByCar(string carId, IStorage storage = null) {
+            return (storage ?? GetMainStorage()).Get(KeyMaxSpeedPerCarPrefix + carId, 0d);
         }
 
-        public IEnumerable<string> GetTrackLayoutsIds() {
-            return GetMainStorage().Where(x => x.Key.StartsWith(KeyDistancePerTrackPrefix))
-                                   .Select(x => x.Key.Substring(KeyDistancePerTrackPrefix.Length));
+        public double GetMaxSpeedAtTrack(string trackLayoutId, IStorage storage = null) {
+            return (storage ?? GetMainStorage()).Get(KeyMaxSpeedPerTrackPrefix + trackLayoutId, 0d);
         }
 
-        public double GetDistanceDrivenAtTrack(string trackLayoutId) {
-            return GetMainStorage().Get(KeyDistancePerTrackPrefix + trackLayoutId, 0d);
+        public IEnumerable<string> GetTrackLayoutsIds(IStorage storage = null) {
+            return (storage ?? GetMainStorage()).Where(x => x.Key.StartsWith(KeyDistancePerTrackPrefix))
+                    .Select(x => x.Key.Substring(KeyDistancePerTrackPrefix.Length));
+        }
+
+        public double GetDistanceDrivenAtTrack(string trackLayoutId, IStorage storage = null) {
+            return (storage ?? GetMainStorage()).Get(KeyDistancePerTrackPrefix + trackLayoutId, 0d);
         }
 
         private static IEnumerable<string> FixAcTrackId(string acTrackId) {
@@ -528,8 +533,8 @@ Gone offroad: {current.GoneOffroad} time(s)");
             }
         }
 
-        public double GetDistanceDrivenAtTrackAcId(string trackLayoutId) {
-            var storage = GetMainStorage();
+        public double GetDistanceDrivenAtTrackAcId(string trackLayoutId, IStorage storage = null) {
+            storage = storage ?? GetMainStorage();
             foreach (var f in FixAcTrackId(trackLayoutId)) {
                 var k = KeyDistancePerTrackPrefix + f;
                 if (storage.Contains(k)) {

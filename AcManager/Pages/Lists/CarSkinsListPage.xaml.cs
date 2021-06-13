@@ -124,7 +124,7 @@ namespace AcManager.Pages.Lists {
                     || SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 CarSkinsDialog.Show(car);
             } else {
-                main.OpenSubGroup("skins", $"Skins for {car.DisplayName}",
+                main.OpenSubGroup("skins", string.Format(AppStrings.CarSkinsSection_Format, car.DisplayName),
                         UriExtension.Create("/Pages/Lists/CarSkinsListPage.xaml?CarId={0}", car.Id), FilterHints.CarSkins);
             }
         }

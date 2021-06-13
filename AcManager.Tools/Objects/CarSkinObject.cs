@@ -53,22 +53,30 @@ namespace AcManager.Tools.Objects {
             PastLoad();
         }
 
+        protected override void CommonPropertyRequested() {
+            FullDetailsRequired();
+        }
+
         public override void Load() {
-            InitializeLocationsOnce();
-            if (!_fullDetailsRequired) {
-                var name = CacheStorage.Get<string>(_nameCacheKey);
-                if (name != null) {
-                    ClearErrors();
-                    ClearData();
-                    Loaded = false;
-                    Name = name;
-                    Changed = false;
-                    Loaded = true;
-                    return;
+            if (SettingsHolder.Content.SkinsCacheNames) {
+                InitializeLocationsOnce();
+                if (!_fullDetailsRequired) {
+                    var name = CacheStorage.Get<string>(_nameCacheKey);
+                    if (name != null) {
+                        ClearErrors();
+                        ClearData();
+                        Loaded = false;
+                        Name = name;
+                        Changed = false;
+                        Loaded = true;
+                        return;
+                    }
                 }
+                base.Load();
+                CacheStorage.Set(_nameCacheKey, Name);
+            } else {
+                base.Load();
             }
-            base.Load();
-            CacheStorage.Set(_nameCacheKey, Name);
         }
 
         protected override bool LoadJsonOrThrow() {

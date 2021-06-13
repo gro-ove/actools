@@ -342,6 +342,11 @@ namespace AcManager.Tools.Profile {
                     Storage.Set(KeyMaxSpeedPerCarPrefix + session.CarId, session.MaxSpeed);
                 }
 
+                /* max speed per track */
+                if (session.MaxSpeed > Storage.Get(KeyMaxSpeedPerTrackPrefix + session.TrackId, 0d)) {
+                    Storage.Set(KeyMaxSpeedPerTrackPrefix + session.TrackId, session.MaxSpeed);
+                }
+
                 /* extremums */
                 if (session.MaxSpeed > MaxSpeed) {
                     MaxSpeed = session.MaxSpeed;

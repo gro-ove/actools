@@ -1,0 +1,32 @@
+<mi:MostSomethingBase x:Class="AcManager.Pages.Miscellaneous.MostSpeed" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:mi="clr-namespace:AcManager.Pages.Miscellaneous" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance mi:MostSomethingBase+ViewModel}">
+  <mi:MostSomethingBase.Resources>
+    <mui:SharedResourceDictionary Source="MostSomethingBase.xaml" />
+  </mi:MostSomethingBase.Resources>
+  <mui:SpacingUniformGrid Style="{StaticResource MostPageStyle}">
+    <ItemsControl Style="{StaticResource VirtualizingItemsControl}" ItemsSource="{Binding CarEntries}" ItemTemplate="{StaticResource MostCarTemplate}" />
+
+    <mui:BooleanSwitch>
+      <mui:BooleanSwitch.Value>
+        <MultiBinding Converter="{StaticResource AndConverter}">
+          <Binding Path="CarEntries.Count" Converter="{StaticResource EnumToBooleanConverter}" ConverterParameter="≠0" />
+          <Binding Path="TrackEntries.Count" Converter="{StaticResource EnumToBooleanConverter}" ConverterParameter="0" />
+        </MultiBinding>
+      </mui:BooleanSwitch.Value>
+      <mui:BooleanSwitch.True>
+        <StackPanel Margin="0 80 0 0">
+          <TextBlock Text="Entries are missing. Recalculation might help." HorizontalAlignment="Center" />
+          <Button Command="{Binding RebuildOverallCommand}" Content="{x:Static g:AppStrings.CarSpecs_Recalculate}" HorizontalAlignment="Center"
+              Margin="0 8 0 0" />
+        </StackPanel>
+      </mui:BooleanSwitch.True>
+      <mui:BooleanSwitch.False>
+        <ItemsControl Style="{StaticResource VirtualizingItemsControl}" ItemsSource="{Binding TrackEntries}" ItemTemplate="{StaticResource MostTrackTemplate}" />
+      </mui:BooleanSwitch.False>
+    </mui:BooleanSwitch>
+
+  </mui:SpacingUniformGrid>
+</mi:MostSomethingBase>

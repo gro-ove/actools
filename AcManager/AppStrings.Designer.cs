@@ -2902,6 +2902,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Skins for {0}.
+        /// </summary>
+        public static string CarSkinsSection_Format {
+            get {
+                return ResourceManager.GetString("CarSkinsSection_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to … s 0–100.
         /// </summary>
         public static string CarSpecs_Acceleration_FormatTooltip {

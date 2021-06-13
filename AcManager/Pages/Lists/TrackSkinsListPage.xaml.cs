@@ -99,7 +99,7 @@ namespace AcManager.Pages.Lists {
                     || SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 TrackSkinsDialog.Show(track);
             } else {
-                main.OpenSubGroup("track skins", $"Skins for {track.DisplayNameWithoutCount}",
+                main.OpenSubGroup("track skins", string.Format(AppStrings.CarSkinsSection_Format, track.DisplayNameWithoutCount),
                         UriExtension.Create("/Pages/Lists/TrackSkinsListPage.xaml?TrackId={0}", track.Id), FilterHints.TrackSkins, 3);
             }
         }

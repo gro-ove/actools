@@ -46,10 +46,9 @@ namespace AcManager.Pages.Miscellaneous {
 
         public void Initialize() {
             InitializeComponent();
-            if (_stats == null) {
-                throw new Exception("Failed to load data");
+            if (_stats != null) {
+                DataContext = new ViewModel(_stats.Value, _filter);
             }
-            DataContext = new ViewModel(_stats.Value, _filter);
         }
 
         private ViewModel Model => (ViewModel)DataContext;

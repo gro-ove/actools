@@ -323,6 +323,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _skinsCacheNames;
+
+            public bool SkinsCacheNames {
+                get => _skinsCacheNames ?? (_skinsCacheNames = ValuesStorage.Get("Settings.ContentSettings.SkinsCacheNames", true)).Value;
+                set {
+                    if (Equals(value, _skinsCacheNames)) return;
+                    _skinsCacheNames = value;
+                    ValuesStorage.Set("Settings.ContentSettings.SkinsCacheNames", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private DelayEntry[] _periodEntries;
 
             public DelayEntry[] NewContentPeriods => _periodEntries ?? (_periodEntries = new[] {

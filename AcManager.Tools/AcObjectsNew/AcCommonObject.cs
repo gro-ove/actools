@@ -138,10 +138,15 @@ namespace AcManager.Tools.AcObjectsNew {
             return new ActionAsDisposable(() => _ignoreChanges = false);
         }
 
+        protected virtual void CommonPropertyRequested() { }
+
         private int? _year;
 
         public virtual int? Year {
-            get => _year;
+            get {
+                CommonPropertyRequested();
+                return _year;
+            }
             set {
                 if (value == 0) value = null;
                 if (Equals(value, _year)) return;

@@ -240,14 +240,8 @@ namespace AcManager.Tools.Helpers.Api {
         [ItemNotNull]
         public async Task<WeatherDescription> GetWeatherAsync(GeoTagsEntry geoTags) {
             var requestUri = string.Format(RequestWeatherUri, geoTags.LatitudeValue, geoTags.LongitudeValue, InternalUtils.GetOpenWeatherApiCode());
-
-#if DEBUG
-            Logging.Write(requestUri);
-#endif
-
             using (var order = KillerOrder.Create(new WebClient(), 5000)) {
                 var data = await order.Victim.DownloadStringTaskAsync(requestUri);
-                Logging.Debug(data);
 
                 XDocument doc;
                 try {

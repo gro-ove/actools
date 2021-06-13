@@ -599,6 +599,7 @@
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
     <mui:LinkGroupFilterable GroupKey="stats" DisplayName="{x:Static g:AppStrings.Main_Stats_MostUsed}" Source="/Pages/Miscellaneous/MostUsed.xaml" />
+    <mui:LinkGroupFilterable GroupKey="stats" DisplayName="Top Speed" Source="/Pages/Miscellaneous/MostSpeed.xaml" />
 
     <!-- Media -->
     <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Screenshots}" Source="/Pages/Lists/ScreenshotsListPage.xaml"

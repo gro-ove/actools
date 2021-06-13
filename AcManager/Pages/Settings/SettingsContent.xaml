@@ -97,14 +97,16 @@
         <mui:BooleanSwitch Value="{Binding MegaReady}">
           <mui:BooleanSwitch.True>
             <DockPanel>
-              <mui:AsyncButton Content="{x:Static g:AppStrings.Settings_Content_LogOut}" DockPanel.Dock="Right" Margin="8 0 0 0" Command="{Binding MegaLogOutCommand}" />
+              <mui:AsyncButton Content="{x:Static g:AppStrings.Settings_Content_LogOut}" DockPanel.Dock="Right" Margin="8 0 0 0"
+                  Command="{Binding MegaLogOutCommand}" />
               <TextBlock Text="{x:Static g:AppStrings.Settings_Content_SignedAs}" />
               <mui:BetterTextBox Text="{Binding MegaUserEmail}" Style="{StaticResource Borderless}" IsReadOnly="True" VerticalAlignment="Center" />
             </DockPanel>
           </mui:BooleanSwitch.True>
           <mui:BooleanSwitch.False>
             <DockPanel>
-              <mui:AsyncButton Content="{x:Static g:AppStrings.Settings_Content_LogIn}" DockPanel.Dock="Bottom" Margin="0 8 0 0" Command="{Binding MegaLogInCommand}" />
+              <mui:AsyncButton Content="{x:Static g:AppStrings.Settings_Content_LogIn}" DockPanel.Dock="Bottom" Margin="0 8 0 0"
+                  Command="{Binding MegaLogInCommand}" />
               <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8">
                 <mui:BetterTextBox Text="{Binding MegaUserEmail}" Placeholder="{x:Static g:AppStrings.Settings_Content_EMail}" />
                 <mui:ProperPasswordBox Password="{Binding MegaUserPassword}" Placeholder="{x:Static g:AppStrings.Online_FilterPassword_Short}" />
@@ -145,8 +147,8 @@
 
         <DockPanel set:Search.Keywords="cars">
           <Label Content="{x:Static g:AppStrings.Settings_Content_TyresReplacementFilter}" />
-          <mui:HistoricalTextBox Text="{Binding Holder.CarReplaceTyresDonorFilter}" ToolTip="{x:Static g:AppStrings.Settings_Content_TyresReplacementFilter_Tooltip}" Placeholder="*"
-              SaveKey="__CarReplaceTyresDonorFilters" />
+          <mui:HistoricalTextBox Text="{Binding Holder.CarReplaceTyresDonorFilter}"
+              ToolTip="{x:Static g:AppStrings.Settings_Content_TyresReplacementFilter_Tooltip}" Placeholder="*" SaveKey="__CarReplaceTyresDonorFilters" />
         </DockPanel>
 
         <DockPanel set:Search.Keywords="cars;specs">
@@ -154,13 +156,6 @@
           <mui:BetterComboBox ItemsSource="{Binding Holder.CarsDisplayPwRatioFormat}" SelectedItem="{Binding Holder.CarsDisplayPwRatioFormat.SelectedItem}"
               DisplayMemberPath="DisplayName" IsEditable="False" />
         </DockPanel>
-
-        <CheckBox set:Search.Keywords="cars;skins" IsChecked="{Binding Holder.SkinsSkipPriority}">
-          <CheckBox.ToolTip>I hope AC won’t break because of it with some future update</CheckBox.ToolTip>
-          <Label>
-            <Label.Content>Remove skin’s priority field on saving</Label.Content>
-          </Label>
-        </CheckBox>
 
         <CheckBox set:Search.Keywords="cars;specs;display;ui" IsChecked="{Binding Holder.DisplaySteerLock}">
           <Label Content="{x:Static g:AppStrings.Settings_Content_DisplaySteerLock}" />
@@ -171,6 +166,19 @@
 
         <CheckBox set:Search.Keywords="cars;skins" IsChecked="{Binding Holder.CarSkinsDisplayId}">
           <Label Content="{x:Static g:AppStrings.Settings_Content_DisplaySkinIDsInsteadOfNames}" />
+        </CheckBox>
+
+        <CheckBox set:Search.Keywords="cars;skins" IsChecked="{Binding Holder.SkinsSkipPriority}">
+          <Label>
+            <Label.Content>Remove skin’s priority field on saving</Label.Content>
+          </Label>
+        </CheckBox>
+
+        <CheckBox set:Search.Keywords="cars;skins" IsChecked="{Binding Holder.SkinsCacheNames}">
+          <CheckBox.ToolTip>With caching CM wouldn’t need to load skin JSON files later when it would only need a name, speeding things up. Might have side effects if you edit skins outside of CM.</CheckBox.ToolTip>
+          <Label>
+            <Label.Content>Cache skin names</Label.Content>
+          </Label>
         </CheckBox>
 
         <DockPanel set:Search.Keywords="cars;skins">

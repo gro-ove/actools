@@ -4970,4 +4970,7 @@ anyway while it’s waiting for disk to get the data, and there will much less d
     <data name="SpecialEvents_SyncProgress" xml:space="preserve">
         <value>Sync progress</value>
     </data>
+    <data name="CarSkinsSection_Format" xml:space="preserve">
+        <value>Skins for {0}</value>
+    </data>
 </root>

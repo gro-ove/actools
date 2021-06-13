@@ -255,7 +255,10 @@ namespace AcManager.Tools.AcObjectsNew {
 
         [CanBeNull]
         public string Country {
-            get => _country;
+            get {
+                CommonPropertyRequested();
+                return _country;
+            }
             set {
                 if (value == _country) return;
                 _country = value;
@@ -272,7 +275,10 @@ namespace AcManager.Tools.AcObjectsNew {
 
         [CanBeNull]
         public string Description {
-            get => _description;
+            get {
+                CommonPropertyRequested();
+                return _description;
+            }
             set {
                 if (value == _description) return;
                 _description = value;
@@ -289,7 +295,10 @@ namespace AcManager.Tools.AcObjectsNew {
         private string _author;
 
         public string Author {
-            get => _author;
+            get {
+                CommonPropertyRequested();
+                return _author;
+            }
             set {
                 if (value == _author) return;
                 _author = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
@@ -306,7 +315,10 @@ namespace AcManager.Tools.AcObjectsNew {
         private string _version;
 
         public string Version {
-            get => _version;
+            get {
+                CommonPropertyRequested();
+                return _version;
+            }
             set {
                 if (value == _version) return;
                 _version = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
@@ -326,7 +338,10 @@ namespace AcManager.Tools.AcObjectsNew {
         private string _url;
 
         public string Url {
-            get => _url;
+            get {
+                CommonPropertyRequested();
+                return _url;
+            }
             set {
                 if (value == _url) return;
                 _url = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
