@@ -5,7 +5,7 @@ using SystemHalf;
 namespace AcTools {
     public class ExtendedBinaryWriter : BinaryWriter {
         public ExtendedBinaryWriter(string filename) : base(File.Open(filename, FileMode.Create, FileAccess.ReadWrite)) {}
-        public ExtendedBinaryWriter(Stream stream) : base(stream) {}
+        public ExtendedBinaryWriter(Stream stream, bool leaveOpen) : base(stream, Encoding.UTF8, leaveOpen) {}
 
         public void Write(float[] values) {
             for (var i = 0; i < values.Length; i++) {

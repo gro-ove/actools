@@ -44,12 +44,10 @@ namespace AcTools.Kn5File {
 
         public bool IsEditable { get; private set; } = true;
 
-        [CanBeNull]
         Kn5Material IKn5.GetMaterial(uint id) {
             return Materials.Values.ElementAtOrDefault((int)id);
         }
 
-        [CanBeNull]
         public Kn5Node GetNode(string path) {
             var pieces = path.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
             var node = RootNode;
@@ -102,7 +100,6 @@ namespace AcTools.Kn5File {
             }
         }
 
-        [CanBeNull]
         public Kn5Node FirstByName(string name) {
             return Nodes.FirstOrDefault(node => node.Name == name);
         }
@@ -126,7 +123,6 @@ namespace AcTools.Kn5File {
             return RemoveAllByName(RootNode, name);
         }
 
-        [CanBeNull]
         public Kn5Node FirstFiltered(Func<Kn5Node, bool> filter) {
             return Nodes.FirstOrDefault(filter);
         }
@@ -173,7 +169,7 @@ namespace AcTools.Kn5File {
             var outputStringBuilder = new StringBuilder();
 
             try {
-                var arguments = "\"" + Path.GetFileName(colladaFilename) + "\" \"" + Path.GetFileName(fbxFilename) + "\" /sffCOLLADA /dffFBX /l /f201200";
+                var arguments = "\"" + Path.GetFileName(colladaFilename) + "\" \"" + Path.GetFileName(fbxFilename) + "\" /sffCOLLADA /dffFBX /f201300";
                 var colladaLocation = Path.GetDirectoryName(fbxFilename);
                 process.StartInfo.FileName = GetFbxConverterLocation();
                 process.StartInfo.WorkingDirectory = colladaLocation ?? "";
@@ -196,8 +192,8 @@ namespace AcTools.Kn5File {
                     throw new Exception("FbxConverter took too long to finish");
                 }
 
-                Console.WriteLine(@"\nAutodesk FBX Converter:\n    Arguments: {0}\n    Exit code: {1}\n{2}",
-                        arguments, process.ExitCode, outputStringBuilder.ToString().Trim().Replace("\n", "\n    "));
+                // Console.WriteLine("\nAutodesk FBX Converter:\n    Arguments: {0}\n    Exit code: {1}\n{2}",
+                //        arguments, process.ExitCode, outputStringBuilder.ToString().Trim().Replace("\n", "\n    "));
 
                 if (process.ExitCode == 0 && colladaFilename != null) {
                     File.Delete(colladaFilename);
@@ -245,8 +241,10 @@ namespace AcTools.Kn5File {
                 xml.WriteElementStringSafe("author", Environment.UserName);
                 xml.WriteElementStringSafe("authoring_tool", AcToolsInformation.Name);
                 xml.WriteEndElement();
-                xml.WriteElementStringSafe("created", new FileInfo(OriginalFilename).CreationTime.ToString(CultureInfo.InvariantCulture));
-                xml.WriteElementStringSafe("modified", new FileInfo(OriginalFilename).LastWriteTime.ToString(CultureInfo.InvariantCulture));
+                if (!string.IsNullOrEmpty(OriginalFilename)) {
+                    xml.WriteElementStringSafe("created", new FileInfo(OriginalFilename).CreationTime.ToString(CultureInfo.InvariantCulture));
+                    xml.WriteElementStringSafe("modified", new FileInfo(OriginalFilename).LastWriteTime.ToString(CultureInfo.InvariantCulture));
+                }
                 xml.WriteElement("unit",
                         "name", "meter",
                         "meter", 1);
@@ -503,7 +501,7 @@ namespace AcTools.Kn5File {
                     xml.WriteAttributeStringSafe("id", $"{node.UniqueName}Controller-Matrices-array");
                     xml.WriteAttributeString("count", node.Bones.Length * 16);
                     xml.WriteString(node.Bones.Select(x => XmlWriterExtension.MatrixToCollada(x.Transform))
-                                        .JoinToString(" "));
+                            .JoinToString(" "));
                     xml.WriteEndElement(); // float_array
 
                     xml.WriteStartElement("technique_common");
@@ -583,7 +581,7 @@ namespace AcTools.Kn5File {
         }
 
         private void ExportCollada_Mesh(XmlWriter xml, string name, IReadOnlyList<Kn5Node> unsorted) {
-            AcToolsLogging.Write($"{name}: {unsorted.Sum(x => x.Vertices.Length)} vertices, {unsorted.Sum(x => x.Indices.Length / 3d)} triangles");
+            // AcToolsLogging.Write($"{name}: {unsorted.Sum(x => x.Vertices.Length)} vertices, {unsorted.Sum(x => x.Indices.Length / 3d)} triangles");
 
             xml.WriteStartElement("geometry");
             xml.WriteAttributeStringSafe("id", $"{name}-mesh");
@@ -762,9 +760,9 @@ namespace AcTools.Kn5File {
 
         private void ExportCollada_Node(XmlWriter xml, Kn5Node node) {
             var boneNames = node.Children.SelectManyRecursive(x => x.Children)
-                                .Where(x => x.NodeClass == Kn5NodeClass.SkinnedMesh)
-                                .SelectMany(x => x.Bones.Select(y => y.Name))
-                                .ToList();
+                    .Where(x => x.NodeClass == Kn5NodeClass.SkinnedMesh)
+                    .SelectMany(x => x.Bones.Select(y => y.Name))
+                    .ToList();
             foreach (var t in node.Children) {
                 ExportCollada_NodeSub(xml, boneNames, t);
             }
@@ -787,7 +785,8 @@ namespace AcTools.Kn5File {
         private void ExportCollada_NodeSub_Inner(XmlWriter xml, IReadOnlyList<string> boneNames, Kn5Node node) {
             switch (node.NodeClass) {
                 case Kn5NodeClass.Base:
-                    if (node.Children.Count == 1 && node.Children[0].NodeClass != Kn5NodeClass.Base) {
+                    if (node.Children.Count == 1 && node.Children[0].NodeClass != Kn5NodeClass.Base
+                            && node.Children[0].Name == node.Name) {
                         ExportCollada_NodeSub_Inner(xml, boneNames, node.Children[0]);
                     } else {
                         foreach (var t in node.Children) {
@@ -975,23 +974,27 @@ namespace AcTools.Kn5File {
 
         private IKn5TextureLoader _textureLoader;
 
-        private void SaveInner(string filename, IKn5TextureProvider textureProvider = null) {
-            using (var writer = new Kn5Writer(File.Open(filename, FileMode.Create, FileAccess.ReadWrite))) {
+        private void SaveInner(Stream stream, IKn5TextureProvider textureProvider = null) {
+            using (var writer = new Kn5Writer(stream, true)) {
                 writer.Write(Header);
 
-                writer.Write(Textures.Count);
-                foreach (var texture in Textures.Values) {
-                    if (TexturesData.TryGetValue(texture.Name, out var data) && data.Length > 0) {
-                        texture.Length = data.Length;
-                        writer.Write(texture);
-                        writer.Write(data);
-                    } else {
-                        textureProvider?.GetTexture(texture.Name, size => {
-                            texture.Length = size;
+                if (_textureLoader == SkippingTextureLoader.Instance && textureProvider == null) {
+                    writer.Write(new Dictionary<string, Kn5Texture>().Count);
+                } else {
+                    writer.Write(Textures.Count);
+                    foreach (var texture in Textures.Values) {
+                        if (TexturesData.TryGetValue(texture.Name, out var data) && data.Length > 0) {
+                            texture.Length = data.Length;
                             writer.Write(texture);
-                            writer.Flush();
-                            return writer.BaseStream;
-                        });
+                            writer.Write(data);
+                        } else {
+                            textureProvider?.GetTexture(texture.Name, size => {
+                                texture.Length = size;
+                                writer.Write(texture);
+                                writer.Flush();
+                                return writer.BaseStream;
+                            });
+                        }
                     }
                 }
 
@@ -1037,12 +1040,18 @@ namespace AcTools.Kn5File {
             }
         }
 
-        public void Save(string filename) {
-            if (_textureLoader == DefaultKn5TextureLoader.Instance) {
-                SaveInner(filename);
+        public void Save(Stream stream) {
+            if (_textureLoader == DefaultKn5TextureLoader.Instance || string.IsNullOrEmpty(OriginalFilename)) {
+                SaveInner(stream);
             } else {
                 AcToolsLogging.Write("Extra special mode for saving KN5s without textures loaded");
-                SaveInner(filename, new ExistingKn5Textures(OriginalFilename));
+                SaveInner(stream, new ExistingKn5Textures(OriginalFilename));
+            }
+        }
+
+        public void Save(string filename) {
+            using (var stream = File.Open(filename, FileMode.Create, FileAccess.ReadWrite)) {
+                Save(stream);
             }
         }
 

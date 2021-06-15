@@ -63,6 +63,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomTracksBakery", "Custo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcManager.Workshop", "AcManager.Workshop\AcManager.Workshop.csproj", "{ABCD8F3F-5730-4FAC-86BA-8A28086B75F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.ExtraKn5Utils", "AcTools.ExtraKn5Utils\AcTools.ExtraKn5Utils.csproj", "{67729C43-6E5F-482A-8777-1651EA1AA393}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -301,6 +303,14 @@ Global
 		{ABCD8F3F-5730-4FAC-86BA-8A28086B75F8}.Release|x64.Build.0 = Release|x64
 		{ABCD8F3F-5730-4FAC-86BA-8A28086B75F8}.Release|x86.ActiveCfg = Release|x86
 		{ABCD8F3F-5730-4FAC-86BA-8A28086B75F8}.Release|x86.Build.0 = Release|x86
+		{67729C43-6E5F-482A-8777-1651EA1AA393}.Debug|x64.ActiveCfg = Debug|x64
+		{67729C43-6E5F-482A-8777-1651EA1AA393}.Debug|x64.Build.0 = Debug|x64
+		{67729C43-6E5F-482A-8777-1651EA1AA393}.Debug|x86.ActiveCfg = Debug|x86
+		{67729C43-6E5F-482A-8777-1651EA1AA393}.Debug|x86.Build.0 = Debug|x86
+		{67729C43-6E5F-482A-8777-1651EA1AA393}.Release|x64.ActiveCfg = Release|x64
+		{67729C43-6E5F-482A-8777-1651EA1AA393}.Release|x64.Build.0 = Release|x64
+		{67729C43-6E5F-482A-8777-1651EA1AA393}.Release|x86.ActiveCfg = Release|x86
+		{67729C43-6E5F-482A-8777-1651EA1AA393}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

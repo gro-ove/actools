@@ -190,7 +190,8 @@ namespace AcManager.Tools.Helpers {
                             [@"ProcessName"] = m == DBoxMode.CmCompatible ? StarterBase.GetAcsName(Drive.Use32BitVersion) : null,
                         }
                     }.ApplyAsync(m == DBoxMode.CmCompatible ? "Switch D-BOX to CM-compatible mode" : "Switch D-BOX to default settings",
-                            "D-BOX stores its settings in local machine section of Windows Registry, so admin privilegies are required to change them. Would you like for Content Manager to handle everything automatically, or just prepare a .reg-file for you to inspect and import manually?", @"DBoxParams.reg");
+                            "D-BOX stores its settings in local machine section of Windows Registry, so admin privilegies are required to change them. Would you like for Content Manager to handle everything automatically, or just prepare a .reg-file for you to inspect and import manually?",
+                            @"DBoxParams.reg");
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t change D-BOX mode", e);
                 }

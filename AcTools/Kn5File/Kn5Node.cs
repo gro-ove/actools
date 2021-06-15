@@ -31,6 +31,9 @@ namespace AcTools.Kn5File {
         /* For export, guaranteed to be unique */
         public string UniqueName;
 
+        /* For local use if needed */
+        public object Tag;
+
         [StructLayout(LayoutKind.Sequential)]
         public struct Vertex {
             public float[] Position, Normal, TexC, TangentU;

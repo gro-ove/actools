@@ -1,0 +1,171 @@
+<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.CarGenerateLodsDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" Title="Generate LODs" SizeToContent="Manual"
+    Width="920" Height="800" MinWidth="400" MinHeight="240" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
+    MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" LocationAndSizeKey=".carGenerateLodsDialog" ResizeMode="CanResizeWithGrip"
+    d:DataContext="{d:DesignInstance di:CarGenerateLodsDialog+ViewModel}" x:Name="This" DoNotAttachToWaitingDialogs="True">
+  <mui:ModernDialog.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Plugins.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </mui:ModernDialog.Resources>
+
+  <mui:FallbackSwitch>
+
+    <DockPanel mui:FallbackSwitch.Value="{Binding IsReady, Source={x:Static di:CarGenerateLodsDialog.Plugins}}" mui:FallbackSwitch.When="False"
+        Margin="40 0 40 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" DockPanel.Dock="Top" Margin="0 0 0 8" />
+      <mui:Switch Value="{Binding ListView.Count}" DataContext="{Binding Source={x:Static di:CarGenerateLodsDialog.Plugins}}">
+        <DockPanel mui:Switch.When="0">
+          <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" Margin="0 0 8 0" />
+          <TextBlock Text="FbxConverter plugin is required for LOD generator to work." TextWrapping="Wrap" />
+        </DockPanel>
+        <mui:SpacingStackPanel Spacing="4">
+          <DockPanel mui:Switch.When="0">
+            <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" Margin="0 0 8 0" />
+            <TextBlock Text="Plugin is required for LOD generator to work:" TextWrapping="Wrap" />
+          </DockPanel>
+          <ItemsControl ItemsSource="{Binding ListView}" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" Margin="0 8 0 -12" />
+        </mui:SpacingStackPanel>
+      </mui:Switch>
+    </DockPanel>
+
+    <DockPanel mui:FallbackSwitch.Value="{Binding SimplygonAvailable}" mui:FallbackSwitch.When="False" Margin="40 0 40 100" HorizontalAlignment="Center"
+        VerticalAlignment="Center" MaxWidth="400">
+      <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" DockPanel.Dock="Top" Margin="0 0 0 8" />
+      <mui:BbCodeBlock TextWrapping="Wrap" DockPanel.Dock="Top" Margin="0 0 0 8"
+          Text="Couldn’t find Simplygon installation. Please locate its file manually. You can get Simplygon [url=&quot;https://simplygon.com/&quot;]here[/url]." />
+      <DockPanel>
+        <TextBlock Text="Simplygon location:" Style="{StaticResource Label}" Width="120" />
+        <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding SimplygonLocateCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
+        <mui:PathTrimmingTextBlock Text="{Binding SimplygonLocation.Value}" />
+      </DockPanel>
+    </DockPanel>
+
+    <DockPanel mui:FallbackSwitch.Value="{Binding GeneratorFailure}" mui:FallbackSwitch.WhenNot="{x:Null}" Margin="40 0 40 100" HorizontalAlignment="Center"
+        VerticalAlignment="Center" MaxWidth="400">
+      <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" DockPanel.Dock="Top" Margin="0 0 0 8" />
+      <DockPanel mui:Switch.When="0">
+        <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" Margin="0 0 8 0" />
+        <TextBlock Text="{Binding GeneratorFailure, StringFormat='{}LOD generator error: {0}'}" TextWrapping="Wrap" />
+      </DockPanel>
+    </DockPanel>
+
+    <DockPanel Margin="40 0 40 100" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="400">
+      <TextBlock Style="{StaticResource Heading1}" Text="Ready to generate" DockPanel.Dock="Top" Margin="0 0 0 20" />
+
+      <StackPanel Style="{StaticResource SettingsPanel}" DockPanel.Dock="Top" Margin="0 0 0 20">
+
+        <DockPanel>
+          <mui:ContextMenuButton DockPanel.Dock="Right"
+              Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+            <ContextMenu>
+              <MenuItem Header="Merge meshes to reduce draw calls" IsCheckable="True" IsChecked="{Binding PhaseCockpitLr.UseMerge}" />
+              <MenuItem Header="Remove transparent objects" IsCheckable="True" IsChecked="{Binding CockpitLrSkipTransparent}" />
+              <MenuItem Header="Remove meshes mentioned in lights.ini" IsCheckable="True" IsChecked="{Binding CockpitLrRemoveLights}" />
+              <Separator />
+              <MenuItem Header="Edit Simplygon rules" />
+            </ContextMenu>
+          </mui:ContextMenuButton>
+          <Button Visibility="{Binding PhaseCockpitLr.Finished, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}"
+              DockPanel.Dock="Right" Width="80" VerticalAlignment="Stretch" Content="View result" Command="{Binding ViewResultCommand}"
+              CommandParameter="{Binding PhaseCockpitLr}" />
+          <Border IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}">
+            <CheckBox IsChecked="{Binding PhaseCockpitLr.Enabled}" IsEnabled="{Binding CarHasCockpitHr}">
+              <TextBlock Style="{StaticResource Label}" Text="Low-res cockpit for LOD A" />
+            </CheckBox>
+          </Border>
+        </DockPanel>
+        <ProgressBar Height="4" Maximum="1" Margin="20 -8 84 8" Value="{Binding PhaseCockpitLr.Progress}"
+            IsIndeterminate="{Binding PhaseCockpitLr.Progress.HasValue, Converter={StaticResource InvertBooleanConverter}}"
+            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
+
+        <DockPanel>
+          <mui:ContextMenuButton DockPanel.Dock="Right"
+              Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+            <ContextMenu>
+              <MenuItem Header="Merge meshes to reduce draw calls" IsCheckable="True" IsChecked="{Binding PhaseLodB.UseMerge}" />
+              <MenuItem Header="Consider headlights animation" IsCheckable="True" IsChecked="True" />
+              <Separator />
+              <MenuItem Header="Edit Simplygon rules" />
+            </ContextMenu>
+          </mui:ContextMenuButton>
+          <Button Visibility="{Binding PhaseLodB.Finished, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}"
+              DockPanel.Dock="Right" Width="80" VerticalAlignment="Stretch" Content="View result" Command="{Binding ViewResultCommand}"
+              CommandParameter="{Binding PhaseLodB}" />
+          <CheckBox IsChecked="{Binding PhaseLodB.Enabled}" IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}">
+            <TextBlock Style="{StaticResource Label}" Text="LOD B" />
+          </CheckBox>
+        </DockPanel>
+        <ProgressBar Height="4" Maximum="1" Margin="20 -8 84 8" Value="{Binding PhaseLodB.Progress}"
+            IsIndeterminate="{Binding PhaseLodB.Progress.HasValue, Converter={StaticResource InvertBooleanConverter}}"
+            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
+
+        <DockPanel>
+          <mui:ContextMenuButton DockPanel.Dock="Right"
+              Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+            <ContextMenu>
+              <MenuItem Header="Merge meshes to reduce draw calls" IsCheckable="True" IsChecked="{Binding PhaseLodC.UseMerge}" />
+              <MenuItem Header="Consider headlights animation" IsCheckable="True" IsChecked="True" />
+              <Separator />
+              <MenuItem Header="Edit Simplygon rules" />
+            </ContextMenu>
+          </mui:ContextMenuButton>
+          <Button Visibility="{Binding PhaseLodC.Finished, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}"
+              DockPanel.Dock="Right" Width="80" VerticalAlignment="Stretch" Content="View result" Command="{Binding ViewResultCommand}"
+              CommandParameter="{Binding PhaseLodC}" />
+          <CheckBox IsChecked="{Binding PhaseLodC.Enabled}" IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}">
+            <TextBlock Style="{StaticResource Label}" Text="LOD C" />
+          </CheckBox>
+        </DockPanel>
+        <ProgressBar Height="4" Maximum="1" Margin="20 -8 84 8" Value="{Binding PhaseLodC.Progress}"
+            IsIndeterminate="{Binding PhaseLodC.Progress.HasValue, Converter={StaticResource InvertBooleanConverter}}"
+            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
+
+        <DockPanel>
+          <mui:ContextMenuButton DockPanel.Dock="Right"
+              Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+            <ContextMenu>
+              <MenuItem Header="Merge meshes to reduce draw calls" IsCheckable="True" IsChecked="{Binding PhaseLodD.UseMerge}" />
+              <MenuItem Header="Use extreme merge mode" IsEnabled="{Binding }" IsCheckable="True" IsChecked="True"
+                  ToolTip="With this option all meshes apart from car paint are merged together and get painted black." />
+              <MenuItem Header="Remove transparent objects" IsCheckable="True" IsChecked="{Binding CockpitLrSkipTransparent}" />
+              <Separator />
+              <MenuItem Header="Edit Simplygon rules" />
+            </ContextMenu>
+          </mui:ContextMenuButton>
+          <Button Visibility="{Binding PhaseLodD.Finished, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}"
+              DockPanel.Dock="Right" Width="80" VerticalAlignment="Stretch" Content="View result" Command="{Binding ViewResultCommand}"
+              CommandParameter="{Binding PhaseLodD}" />
+          <CheckBox IsChecked="{Binding PhaseLodD.Enabled}" IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}">
+            <TextBlock Style="{StaticResource Label}" Text="LOD D" />
+          </CheckBox>
+        </DockPanel>
+        <ProgressBar Height="4" Maximum="1" Margin="20 -8 84 8" Value="{Binding PhaseLodD.Progress}"
+            IsIndeterminate="{Binding PhaseLodD.Progress.HasValue, Converter={StaticResource InvertBooleanConverter}}"
+            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
+
+      </StackPanel>
+
+      <mui:BooleanSwitch Value="{Binding ReadyToSave}">
+        <mui:BooleanSwitch.False>
+          <Button Style="{StaticResource Go.Button}" Content="Generate LODs" Command="{Binding GenerateCommand}" />
+        </mui:BooleanSwitch.False>
+        <mui:BooleanSwitch.True>
+          <DockPanel>
+            <TextBlock Text="LODs are ready. Save them?" DockPanel.Dock="Top" Margin="0 0 0 8" />
+            <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4">
+              <Button Style="{StaticResource Go.Button}" Content="Save LODs" Command="{Binding FinalSaveCommand}" />
+              <Button Content="Cancel" Command="{Binding FinalCancelCommand}" />
+            </mui:SpacingUniformGrid>
+          </DockPanel>
+        </mui:BooleanSwitch.True>
+      </mui:BooleanSwitch>
+    </DockPanel>
+
+
+  </mui:FallbackSwitch>
+</mui:ModernDialog>

@@ -58,7 +58,7 @@ namespace AcManager.CustomShowroom {
         private readonly bool _verbose;
 
         public LiteShowroomTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, [CanBeNull] string loadPreset, ICustomShowroomShots shots,
-                bool verbose = false) {
+                bool verbose = false, IEnumerable<CustomShowroomLodDefinition> lodDefinitions = null) {
             _loadPreset = loadPreset;
             _verbose = verbose;
 
@@ -66,7 +66,7 @@ namespace AcManager.CustomShowroom {
                 Logging.Here();
             }
 
-            DataContext = new ViewModel(renderer, car, skinId, shots);
+            DataContext = new ViewModel(renderer, car, skinId, shots, lodDefinitions);
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.PreviewSkinCommand, new KeyGesture(Key.PageUp)),
                 new InputBinding(Model.NextSkinCommand, new KeyGesture(Key.PageDown)),
@@ -307,6 +307,19 @@ namespace AcManager.CustomShowroom {
             [NotNull]
             public CarObject Car { get; }
 
+            public ICollection<CustomShowroomLodDefinition> LodDefinitions { get; }
+
+            private CustomShowroomLodDefinition _selectedLodDefinition;
+
+            public CustomShowroomLodDefinition SelectedLodDefinition {
+                get => _selectedLodDefinition;
+                set => Apply(value, ref _selectedLodDefinition, () => {
+                    if (value?.Filename != null) {
+                        Renderer?.CarNode?.SetCustomLod(value.Filename);
+                    }
+                });
+            }
+
             private CarSkinObject _skin;
 
             public CarSkinObject Skin {
@@ -371,9 +384,21 @@ namespace AcManager.CustomShowroom {
 
             private readonly ICustomShowroomShots _shots;
 
-            public ViewModel([NotNull] ToolsKn5ObjectRenderer renderer, [NotNull] CarObject carObject, [CanBeNull] string skinId, ICustomShowroomShots shots) {
+            public ViewModel([NotNull] ToolsKn5ObjectRenderer renderer, [NotNull] CarObject carObject, [CanBeNull] string skinId, ICustomShowroomShots shots,
+                    IEnumerable<CustomShowroomLodDefinition> lodDefinitions = null) {
                 Car = carObject;
                 _shots = shots;
+
+                if (lodDefinitions != null) {
+                    LodDefinitions = lodDefinitions as ICollection<CustomShowroomLodDefinition> ?? lodDefinitions.ToList();
+                    _selectedLodDefinition = LodDefinitions.FirstOrDefault(x => x.Filename == renderer.CarNode?.OriginalFile.OriginalFilename);
+                    renderer.MainSlot.SelectLodPreview += (o, s) => {
+                        SelectedLodDefinition = LodDefinitions.ElementAt(
+                                ((LodDefinitions.IndexOf(SelectedLodDefinition) + s.SelectOffset) % LodDefinitions.Count + LodDefinitions.Count)
+                                        % LodDefinitions.Count);
+                        s.Handled = true;
+                    };
+                }
 
                 Renderer = renderer ?? throw new ArgumentNullException(nameof(renderer));
                 renderer.PropertyChanged += OnRendererPropertyChanged;
@@ -973,7 +998,7 @@ namespace AcManager.CustomShowroom {
                 if (kn5 == null) return;
 
                 try {
-                    Kn5.FbxConverterLocation = PluginsManager.Instance.GetPluginFilename("FbxConverter", "FbxConverter.exe");
+                    Kn5.FbxConverterLocation = PluginsManager.Instance.GetPluginFilename(KnownPlugins.FbxConverter, "FbxConverter.exe");
 
                     var destination = Path.Combine(Car.Location, "unpacked");
                     using (var waiting = new WaitingDialog(ToolsStrings.Common_Exporting)) {
@@ -1007,7 +1032,7 @@ namespace AcManager.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify(string.Format(ToolsStrings.Common_CannotUnpack, ToolsStrings.Common_KN5), e);
                 }
-            }, () => SettingsHolder.Common.DeveloperMode && PluginsManager.Instance.IsPluginEnabled("FbxConverter")
+            }, () => SettingsHolder.Common.DeveloperMode && PluginsManager.Instance.IsPluginEnabled(KnownPlugins.FbxConverter)
                     && Renderer?.MainSlot.Kn5?.IsEditable == true));
             #endregion
 

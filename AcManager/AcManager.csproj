@@ -261,6 +261,7 @@
       <DependentUpon>CmPreviewsTools.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomShowroom\Coordinates.cs" />
+    <Compile Include="CustomShowroom\CustomShowroomLodDefinition.cs" />
     <Compile Include="CustomShowroom\CustomShowroomWrapper.cs" />
     <Compile Include="CustomShowroom\DarkRendererCars.cs" />
     <Compile Include="CustomShowroom\DarkRendererSettings.cs" />
@@ -413,6 +414,9 @@
     <Compile Include="Pages\Dialogs\CarCreateTyresMachineDialog.TrainingParams.cs" />
     <Compile Include="Pages\Dialogs\CarCreateTyresMachineDialog.xaml.cs">
       <DependentUpon>CarCreateTyresMachineDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\CarGenerateLodsDialog.xaml.cs">
+      <DependentUpon>CarGenerateLodsDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dialogs\ControllerDefinitionsDialog.xaml.cs">
       <DependentUpon>ControllerDefinitionsDialog.xaml</DependentUpon>
@@ -1158,6 +1162,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Dialogs\CarGenerateLodsDialog.xaml" />
     <Page Include="Pages\Dialogs\ControllerDefinitionsDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -2010,6 +2015,10 @@
     <ProjectReference Include="..\AcManager.Workshop\AcManager.Workshop.csproj">
       <Project>{abcd8f3f-5730-4fac-86ba-8a28086b75f8}</Project>
       <Name>AcManager.Workshop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AcTools.ExtraKn5Utils\AcTools.ExtraKn5Utils.csproj">
+      <Project>{67729c43-6e5f-482a-8777-1651ea1aa393}</Project>
+      <Name>AcTools.ExtraKn5Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcTools.GenericMods\AcTools.GenericMods.csproj">
       <Project>{11EAD82E-0325-44A8-9785-B02BAACD1D3E}</Project>

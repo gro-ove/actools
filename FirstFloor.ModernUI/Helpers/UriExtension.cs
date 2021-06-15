@@ -74,10 +74,9 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         [Pure]
-        public static bool SamePath([NotNull] this Uri a, [NotNull] Uri b) {
+        public static bool SamePath([NotNull] this Uri a, [CanBeNull] Uri b) {
             if (a == null) throw new ArgumentNullException(nameof(a));
-            if (b == null) throw new ArgumentNullException(nameof(b));
-            return string.Equals(a.ToString().Split('?', '&')[0], b.ToString().Split('?', '&')[0], StringComparison.OrdinalIgnoreCase);
+            return b != null && string.Equals(a.ToString().Split('?', '&')[0], b.ToString().Split('?', '&')[0], StringComparison.OrdinalIgnoreCase);
         }
 
         [Pure]

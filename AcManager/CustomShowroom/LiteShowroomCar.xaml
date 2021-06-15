@@ -64,7 +64,8 @@
         <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
         <TextBlock Text="{Binding Renderer.CarNode.TrianglesCount}" />
       </DockPanel>
-      <DockPanel IsEnabled="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource MoreConverter}}">
+      <DockPanel IsEnabled="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource MoreConverter}}"
+          Visibility="{Binding LodDefinitions, Converter={StaticResource NullToVisibilityConverter}}">
         <DockPanel.ToolTip>
           <TextBlock DataContext="{Binding Renderer.CarNode.CurrentLodInformation}">
             <TextBlock.Text>

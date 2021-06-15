@@ -38,7 +38,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     }
 
     public class HierarchicalGroup : BetterObservableCollection<object> {
-        public HierarchicalGroup() {}
+        public HierarchicalGroup() { }
 
         public HierarchicalGroup(string displayName, List<object> list) : base(list) {
             _displayName = displayName;
@@ -48,9 +48,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _displayName = displayName;
         }
 
-        public HierarchicalGroup(List<object> list) : base(list) {}
+        public HierarchicalGroup(List<object> list) : base(list) { }
 
-        public HierarchicalGroup([NotNull] IEnumerable<object> collection) : base(collection) {}
+        public HierarchicalGroup([NotNull] IEnumerable<object> collection) : base(collection) { }
 
         public HierarchicalGroup(string displayName) {
             _displayName = displayName;
@@ -126,7 +126,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(HierarchicalItem), new FrameworkPropertyMetadata(typeof(HierarchicalItem)));
         }
 
-        public HierarchicalItem() {}
+        public HierarchicalItem() { }
 
         public HierarchicalItem([CanBeNull] HierarchicalItemsView parentView, [CanBeNull] object originalValue) {
             _view = parentView;
@@ -141,8 +141,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_previewInitialized || _view == null) return;
             _previewInitialized = true;
 
-            SetValue(PreviewValuePropertyKey, _view.PreviewProvider?.GetPreview(OriginalValue));
-            SetValue(ToolTipPlacementPropertyKey, _view.PreviewProvider?.GetPlacementMode(OriginalValue));
+            if (_view.PreviewProvider != null) {
+                SetValue(PreviewValuePropertyKey, _view.PreviewProvider.GetPreview(OriginalValue));
+                SetValue(ToolTipPlacementPropertyKey, _view.PreviewProvider.GetPlacementMode(OriginalValue));
+            }
         }
 
         public static readonly DependencyPropertyKey PreviewValuePropertyKey = DependencyProperty.RegisterReadOnly(nameof(PreviewValue), typeof(object),
@@ -153,7 +155,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         [CanBeNull]
         public object PreviewValue => GetValue(PreviewValueProperty);
 
-        public static readonly DependencyPropertyKey ToolTipPlacementPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ToolTipPlacement), typeof(PlacementMode),
+        public static readonly DependencyPropertyKey ToolTipPlacementPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ToolTipPlacement),
+                typeof(PlacementMode),
                 typeof(HierarchicalItem), new PropertyMetadata(PlacementMode.Mouse));
 
         public static readonly DependencyProperty ToolTipPlacementProperty = ToolTipPlacementPropertyKey.DependencyProperty;

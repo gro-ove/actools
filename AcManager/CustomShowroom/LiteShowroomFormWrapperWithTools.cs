@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -26,13 +27,14 @@ namespace AcManager.CustomShowroom {
 
         public new ToolsKn5ObjectRenderer Kn5ObjectRenderer => (ToolsKn5ObjectRenderer)Renderer;
 
-        public LiteShowroomFormWrapperWithTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, string presetFilename)
+        public LiteShowroomFormWrapperWithTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, string presetFilename,
+                IEnumerable<CustomShowroomLodDefinition> lodDefinitions = null)
                 : base(renderer, car.DisplayName) {
             if (OptionAttachedToolsVerboseMode) {
                 Logging.Here();
             }
 
-            _tools = new LiteShowroomTools(renderer, car, skinId, presetFilename, this, OptionAttachedToolsVerboseMode);
+            _tools = new LiteShowroomTools(renderer, car, skinId, presetFilename, this, OptionAttachedToolsVerboseMode, lodDefinitions);
             _helper = new AttachedHelper(this, _tools, limitHeight: false, verbose: OptionAttachedToolsVerboseMode);
             GoToNormalMode();
 

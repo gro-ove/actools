@@ -285,12 +285,12 @@ namespace AcManager.Pages.Selected {
             private DelegateCommand _manageSkinsCommand;
 
             public DelegateCommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new DelegateCommand(() =>
-                        CarSkinsListPage.Open(SelectedObject)));
+                    CarSkinsListPage.Open(SelectedObject)));
 
             private DelegateCommand _manageSetupsCommand;
 
             public DelegateCommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() =>
-                        CarSetupsListPage.Open(SelectedObject)));
+                    CarSetupsListPage.Open(SelectedObject)));
 
             private string DataDirectory => Path.Combine(SelectedObject.Location, "data");
 
@@ -357,12 +357,19 @@ namespace AcManager.Pages.Selected {
             private AsyncCommand _replaceSoundCommand;
 
             public AsyncCommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new AsyncCommand(() =>
-                            CarSoundReplacer.Replace(SelectedObject)));
+                    CarSoundReplacer.Replace(SelectedObject)));
 
             private AsyncCommand _replaceTyresCommand;
 
             public AsyncCommand ReplaceTyresCommand => _replaceTyresCommand ?? (_replaceTyresCommand = new AsyncCommand(() =>
-                            CarReplaceTyresDialog.RunAsync(SelectedObject)));
+                    CarReplaceTyresDialog.RunAsync(SelectedObject)));
+
+            private AsyncCommand _generateLodsCommand;
+
+            public AsyncCommand GenerateLodsCommand => _generateLodsCommand ?? (_generateLodsCommand = new AsyncCommand(() =>
+                    CarGenerateLodsDialog.RunAsync(SelectedObject)));
+
+            public bool CanEditDetails => SettingsHolder.Common.DeveloperMode || SelectedObject.Author != AcCommonObject.AuthorKunos;
 
             private DelegateCommand _carAnalyzerCommand;
 

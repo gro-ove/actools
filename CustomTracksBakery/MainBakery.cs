@@ -878,7 +878,7 @@ namespace CustomTracksBakery {
 
             if (_createPatch) {
                 using (var data = new MemoryStream())
-                using (var writer = new ExtendedBinaryWriter(data)) {
+                using (var writer = new ExtendedBinaryWriter(data, true)) {
                     foreach (var n in _nodesToBake) {
                         if (n.IsToSyncNormals || n.IsToSyncNormalsPartially) {
                             WriteNode(writer, n, true);

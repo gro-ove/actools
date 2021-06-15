@@ -234,34 +234,48 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     throw new Exception($"LOD #{value} not found");
                 }
 
-                var debugMode = _currentLodObject.DebugMode;
-                Remove(_currentLodObject.Renderable);
-                if (!_lodsObjects.TryGetValue(value, out _currentLodObject)) {
-                    var path = Path.GetFullPath(Path.Combine(RootDirectory, lod.FileName));
-                    var kn5 = value == 0 ? _lodA : Kn5.FromFile(path);
-                    _currentLodObject = new LodObject(kn5, _converter);
-                    _lodsObjects[value] = _currentLodObject;
-                    Insert(0, _currentLodObject.Renderable);
-                    RootObject = _currentLodObject.Renderable;
+                SetLodFilename(value, lod.FileName);
+            }
+        }
 
-                    if (OptionRepositionLod) {
-                        AdjustPosition();
-                    } else {
-                        _currentLodObject.Renderable.LocalMatrix = _mainLodObject.Renderable.LocalMatrix;
-                    }
+        private void SetLodFilename(int key, string filename) {
+            var debugMode = _currentLodObject.DebugMode;
+            Remove(_currentLodObject.Renderable);
+            if (!_lodsObjects.TryGetValue(key, out _currentLodObject)) {
+                var path = Path.GetFullPath(Path.Combine(RootDirectory, filename));
+                var kn5 = key == 0 ? _lodA : File.Exists(filename) ? Kn5.FromFile(path) : Kn5.CreateEmpty();
+                _currentLodObject = new LodObject(kn5, _converter);
+                _lodsObjects[key] = _currentLodObject;
+                Insert(0, _currentLodObject.Renderable);
+                RootObject = _currentLodObject.Renderable;
+
+                if (OptionRepositionLod) {
+                    AdjustPosition();
                 } else {
-                    Insert(0, _currentLodObject.Renderable);
-                    RootObject = _currentLodObject.Renderable;
+                    _currentLodObject.Renderable.LocalMatrix = _mainLodObject.Renderable.LocalMatrix;
                 }
+            } else {
+                Insert(0, _currentLodObject.Renderable);
+                RootObject = _currentLodObject.Renderable;
+            }
 
-                OnRootObjectChanged();
-                _currentLodObject.DebugMode = debugMode;
+            OnRootObjectChanged();
+            _currentLodObject.DebugMode = debugMode;
 
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(CurrentLodInformation));
-                ObjectsChanged?.Invoke(this, EventArgs.Empty);
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(CurrentLodInformation));
+            ObjectsChanged?.Invoke(this, EventArgs.Empty);
 
-                InvalidateCount();
+            InvalidateCount();
+        }
+
+        public void SetCustomLod(string filename) {
+            var existing = _lods.FindIndex(x => x.FileName == filename);
+            if (existing != -1) {
+                CurrentLod = existing;
+            } else {
+                _currentLod = -1;
+                SetLodFilename(filename.GetHashCode() | 7, filename);
             }
         }
 
@@ -364,6 +378,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
+        [NotNull]
         private LodObject _currentLodObject;
         private readonly LodObject _mainLodObject;
         private readonly Dictionary<int, LodObject> _lodsObjects = new Dictionary<int, LodObject>(1);

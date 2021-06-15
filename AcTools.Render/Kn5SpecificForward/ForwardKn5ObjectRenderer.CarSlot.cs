@@ -178,23 +178,42 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             public int LodsCount => CarNode?.LodsCount ?? 0;
 
+            public class SelectLodEventArgs {
+                public int SelectOffset;
+                public bool Handled;
+            }
+
+            public event EventHandler<SelectLodEventArgs> SelectLodPreview;
+
             public void SelectPreviousLod() {
                 if (CarNode == null) return;
+                var args = new SelectLodEventArgs { SelectOffset = -1 };
+                SelectLodPreview?.Invoke(this, args);
+                if (args.Handled) return;
                 SelectLod((CarNode.CurrentLod + CarNode.LodsCount - 1) % CarNode.LodsCount);
             }
 
             public void SelectNextLod() {
                 if (CarNode == null) return;
+                var args = new SelectLodEventArgs { SelectOffset = 1 };
+                SelectLodPreview?.Invoke(this, args);
+                if (args.Handled) return;
                 SelectLod((CarNode.CurrentLod + 1) % CarNode.LodsCount);
             }
 
-            public void SelectLod(int lod) {
+            private void SelectLod(int lod) {
                 if (CarNode == null) {
                     _selectLod = lod;
                     return;
                 }
 
-                CarNode.CurrentLod = lod;
+                var oldLod = CarNode.CurrentLod;
+                try {
+                    CarNode.CurrentLod = lod;
+                } catch (Exception e) {
+                    AcToolsLogging.Write(e);
+                    CarNode.CurrentLod = oldLod;
+                }
             }
 
             [NotNull]

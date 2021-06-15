@@ -10,7 +10,7 @@ namespace AcTools.KsAnimFile {
             Write(_version);
         }
 
-        public KsAnimWriter(int version, Stream stream) : base(stream) {
+        public KsAnimWriter(int version, Stream stream, bool leaveOpen) : base(stream, leaveOpen) {
             _version = version;
             Write(_version);
         }

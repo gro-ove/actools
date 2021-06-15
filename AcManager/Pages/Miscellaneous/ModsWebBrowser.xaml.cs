@@ -306,7 +306,7 @@ window.$PAUSEKEY = true;
 var foundCallback = false;
 function downloadCallback(v){ window.external.DownloadFrom(v) }
 try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code)
-                                           .Replace(@"$PAUSEKEY", PauseKey);
+                        .Replace(@"$PAUSEKEY", PauseKey);
             }
 
             public static string GetCheckScript(string rule) {
@@ -356,7 +356,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                         }.IndexOf(x.Attributes[@"rel"]?.Value?.Trim().ToLowerInvariant()),
                         Url = x.Attributes[@"href"]?.Value,
                         Size = Regex.Matches(x.Attributes[@"sizes"]?.Value ?? @"0", @"\d+")
-                                    .Cast<Match>().Select(y => y.Value.As<int>()).MaxOrDefault()
+                                .Cast<Match>().Select(y => y.Value.As<int>()).MaxOrDefault()
                     }).Where(x => x.Role != -1 && x.Url != null).OrderByDescending(x => x.Size).ThenBy(x => x.Role).FirstOrDefault()?.Url;
                     if (!string.IsNullOrWhiteSpace(favicon)) {
                         Favicon = GetFullPath(favicon, url);
@@ -458,10 +458,10 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                 IEnumerable<WebSource> ListSources(WebSource from, ICollection<string> returned) {
                     returned.Add(from.Id);
                     return from.RedirectsTo
-                               .Where(x => !returned.Contains(x))
-                               .Select(x => Instance.WebSources.GetByIdOrDefault(x) ?? VirtualSources.GetByIdOrDefault(x))
-                               .Where(x => x != null && (!safeOnly || IsRuleSafe(x.AutoDownloadRule)))
-                               .SelectMany(x => ListSources(x, returned)).Prepend(from);
+                            .Where(x => !returned.Contains(x))
+                            .Select(x => Instance.WebSources.GetByIdOrDefault(x) ?? VirtualSources.GetByIdOrDefault(x))
+                            .Where(x => x != null && (!safeOnly || IsRuleSafe(x.AutoDownloadRule)))
+                            .SelectMany(x => ListSources(x, returned)).Prepend(from);
                 }
             }
 
@@ -601,15 +601,19 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
         private static readonly Lazier<IReadOnlyCollection<string>> FoundDomains = Lazier.CreateAsync(async () => {
             using (var wc = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromSeconds(10)))
             using (wc.Victim.SetUserAgent(@"Seeker/1.0." + MathUtils.Random(1000, 9999))) {
-                var data = await wc.Victim.DownloadStringTaskAsync(@"https://duckduckgo.com/html/?q=mods+assetto+corsa");
+                var data = await wc.Victim.DownloadStringTaskAsync(@"https://html.duckduckgo.com/html/?q=mods+assetto+corsa");
                 return (IReadOnlyCollection<string>)Regex.Matches(data, @"result__a"" href=""([^""]+)""").OfType<Match>()
-                                                         .Select(GetUrl).Where(SanityCheck).Take(18).ToList();
+                        .Select(GetUrl).Where(SanityCheck).Take(18).ToList();
             }
 
             bool SanityCheck(string v) {
-                return !new[] {
-                    0, -2060675037, 1491093284, 518443847, 1564670876, 110165427, 1919238839
+                var ret = !new[] {
+                    0, 789142499, -413010326
                 }.ArrayContains(-v?.GetHashCode() ?? 0);
+#if DEBUG
+                Logging.Debug("URL: " + v + ", hash: " + (-v?.GetHashCode() ?? 0) + ", passed: " + ret);
+#endif
+                return ret;
             }
 
             string GetUrl(Match x) {
@@ -684,7 +688,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
             public ListViewModel() {
                 _storage = new Storage(FilesStorage.Instance.GetFilename("Websites.data"));
                 WebSources = new ChangeableObservableCollection<WebSource>(_storage.Keys.Where(x => !x.StartsWith(@"."))
-                                                                                   .Select(x => _storage.GetObject<WebSource>(x)).NonNull());
+                        .Select(x => _storage.GetObject<WebSource>(x)).NonNull());
                 AddDefaultSources(WebSources, true);
                 WebSources.ItemPropertyChanged += OnItemPropertyChanged;
                 WebSources.CollectionChanged += OnCollectionChanged;
@@ -710,7 +714,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
 
             public AsyncCommand AddNewSourceCommand => _addNewSourceCommand ?? (_addNewSourceCommand = new AsyncCommand(async () => {
                 var suggestions = new BetterObservableCollection<string>();
-                FoundDomains.GetValueAsync().ContinueWith(t => {
+                FoundDomains.GetValueAsync().ContinueWithInMainThread(t => {
                     if (t.Result != null) {
                         suggestions.ReplaceEverythingBy_Direct(t.Result);
                     }
@@ -977,9 +981,9 @@ outline.start();
 window.$KEY = outline.stop.bind(outline);
 
 ".Replace(@"$ACCENT", AppAppearanceManager.Instance.AccentColor.ToHexString())
- .Replace(@"$NAMESPACE", @"__" + StringExtension.RandomString(20))
- .Replace(@"$KEY", StopKey)
- .Replace(@"$PAUSEKEY", PauseKey), true);
+                        .Replace(@"$NAMESPACE", @"__" + StringExtension.RandomString(20))
+                        .Replace(@"$KEY", StopKey)
+                        .Replace(@"$PAUSEKEY", PauseKey), true);
             }
         }
 

@@ -1,8 +1,6 @@
 using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
 
-// #define LOGGING
-
 namespace AcManager.Controls.UserControls.Cef {
     /// <summary>
     /// Vague attempt to improve poor performance of those Chromium-based engines
@@ -25,7 +23,8 @@ namespace AcManager.Controls.UserControls.Cef {
                     frog\.wix\.com |
                     live\.rezync\.com |
                     mc\.yandex\.ru |
-                    pagead2\.googlesyndication\.com/pagead |
+                    pagead2\.googlesyndication\.com/pcs/activeview |
+                    pagead2\.googlesyndication\.com/pagead(?!/s/cookie_push_onload\.html) |
                     pippio\.com |
                     platform\.twitter\.com/widgets |
                     plus\.google\.com |
@@ -51,10 +50,15 @@ namespace AcManager.Controls.UserControls.Cef {
                         adsnative\.com |
                         acxiom\.com |
                         bluekai\.com |
+                        bumlam\.com |
+                        consensu\.(?:net|org) |
                         crwdcntrl\.net |
                         doubleclick\.net |
                         exelator\.com |
                         narrative\.io |
+                        pub\.network |
+                        quantcount\.com |
+                        quantserve\.com |
                         rlcdn\.com |
                         v12group\.com
                     )/
@@ -64,7 +68,7 @@ namespace AcManager.Controls.UserControls.Cef {
         public static bool ShouldBeBlocked(string url) {
             if (!SettingsHolder.Plugins.CefFilterAds) return false;
 
-#if DEBUG && LOGGING
+#if DEBUG
             if (Regex.IsMatch(url)) {
                 FirstFloor.ModernUI.Helpers.Logging.Warning(url);
                 return true;

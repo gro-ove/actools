@@ -8,5 +8,6 @@ namespace AcManager.Tools.Managers.Plugins {
         public static readonly string Magick = $@"Magick-7.0.4-{BuildInformation.Platform}";
         public static readonly string SevenZip = @"7Zip";
         public static readonly string ImageMontage = @"ImageMontage";
+        public static readonly string FbxConverter = @"FbxConverter";
     }
 }

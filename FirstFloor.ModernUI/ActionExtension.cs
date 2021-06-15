@@ -26,12 +26,12 @@ namespace FirstFloor.ModernUI {
             (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).InvokeAsync(action);
         }
 
-        public static Task ContinueWithInMainThread<T>(this Task<T> task, Action<Task<T>> callback) {
-            return task.ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => callback(r)));
+        public static Task ContinueWithInMainThread<T>(this Task<T> task, Action<Task<T>> callback, TaskContinuationOptions options = TaskContinuationOptions.None) {
+            return task.ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => callback(r)), options);
         }
 
-        public static Task ContinueWithInMainThread(this Task task, Action<Task> callback) {
-            return task.ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => callback(r)));
+        public static Task ContinueWithInMainThread(this Task task, Action<Task> callback, TaskContinuationOptions options = TaskContinuationOptions.None) {
+            return task.ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => callback(r)), options);
         }
 
         [ContractAnnotation("baseFunc:null, extendingFunc:null => null; baseFunc:notnull => notnull; extendingFunc:notnull => notnull")]

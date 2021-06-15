@@ -126,7 +126,8 @@
             CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Car}" />
         <mui:ModernToggleButton IconData="{StaticResource CarsIconData}" MoreCommand="{Binding SelectModeCommand}" ToolTip="Several cars"
             IsChecked="{Binding Mode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static cs:LiteShowroomTools+Mode.Cars}}"
-            CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Cars}" />
+            CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Cars}"
+            Visibility="{Binding LodDefinitions, Converter={StaticResource NullToVisibilityConverter}}" />
       </mui:SpacingStackPanel>
     </mui:Cell>
 
@@ -206,12 +207,31 @@
                     </DataTemplate>
                   </ComboBox.ItemTemplate>
                 </mui:BetterComboBox>
+
+                <StackPanel Margin="0 12 0 0"
+                    Visibility="{Binding LodDefinitions, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                  <TextBlock Text="LODs" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                  <ListBox SelectedItem="{Binding SelectedLodDefinition}" ItemsSource="{Binding LodDefinitions}" Margin="0 4 0 0"
+                      Style="{StaticResource VirtualizingListBox}">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate>
+                        <StackPanel ToolTip="{Binding Filename}">
+                          <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 2" FontWeight="Normal" />
+                          <TextBlock Text="{Binding Details}" FontSize="{StaticResource SmallFontSize}" FontWeight="Normal" />
+                        </StackPanel>
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                </StackPanel>
+
                 <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.MagickOverride}"
-                    ToolTip="{x:Static c:ControlsStrings.CustomShowroom_EditingMode_Tooltip}" IsEnabled="{Binding MagickNetEnabled}">
+                    ToolTip="{x:Static c:ControlsStrings.CustomShowroom_EditingMode_Tooltip}" IsEnabled="{Binding MagickNetEnabled}"
+                    Visibility="{Binding LodDefinitions, Converter={StaticResource NullToVisibilityConverter}}">
                   <Label Content="{x:Static c:ControlsStrings.CustomShowroom_EditingMode}" />
                 </CheckBox>
 
-                <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0">
+                <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0"
+                    Visibility="{Binding LodDefinitions, Converter={StaticResource NullToVisibilityConverter}}">
                   <StackPanel
                       Visibility="{Binding PaintShopRequirement.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                     <mui:Switch Value="{Binding PaintShopRequirement.ListView.Count}">
@@ -242,13 +262,15 @@
                   </mui:AsyncButton>
                 </mui:SpacingStackPanel>
 
-                <TextBlock Text="Tools" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-                <Button Margin="0 4 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
-                    Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
-                <Button Margin="0 4 0 0" Command="{Binding UnpackKn5Command}"
-                    Visibility="{Binding UnpackKn5Command.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
-                  <TextBlock Text="{Binding Source={x:Static t:ToolsStrings.Common_KN5}, StringFormat={x:Static c:ControlsStrings.Common_Unpack}}" />
-                </Button>
+                <StackPanel Margin="0 12 0 0" Visibility="{Binding LodDefinitions, Converter={StaticResource NullToVisibilityConverter}}">
+                  <TextBlock Text="Tools" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
+                  <Button Margin="0 4 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
+                      Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
+                  <Button Margin="0 4 0 0" Command="{Binding UnpackKn5Command}"
+                      Visibility="{Binding UnpackKn5Command.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="{Binding Source={x:Static t:ToolsStrings.Common_KN5}, StringFormat={x:Static c:ControlsStrings.Common_Unpack}}" />
+                  </Button>
+                </StackPanel>
               </StackPanel>
             </ScrollViewer>
 

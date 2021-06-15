@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -16,6 +17,7 @@ using AcTools.Render.Wrapper;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
+using JetBrains.Annotations;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.CustomShowroom {
@@ -51,7 +53,19 @@ namespace AcManager.CustomShowroom {
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static async Task StartAsyncInner(string kn5, string skinId = null, string presetFilename = null) {
+        private static async Task StartAsyncInner(string kn5, string skinId = null, string presetFilename = null, bool forceToolboxMode = false) {
+            var carDirectory = Path.GetDirectoryName(kn5);
+            if (Path.GetFileName(Path.GetDirectoryName(carDirectory)) == @"..") {
+                carDirectory = Path.GetDirectoryName(Path.GetDirectoryName(carDirectory));
+            }
+
+            var carObject = CarsManager.Instance.GetById(Path.GetFileName(carDirectory) ?? "");
+            await StartAsyncInner(carObject, kn5, null, skinId, presetFilename, forceToolboxMode);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static async Task StartAsyncInner([CanBeNull] CarObject carObject, string kn5, IEnumerable<CustomShowroomLodDefinition> lodDefinitions = null,
+                string skinId = null, string presetFilename = null, bool forceToolboxMode = false) {
             if (_starting) return;
             _starting = true;
 
@@ -61,19 +75,14 @@ namespace AcManager.CustomShowroom {
             Logging.Write("Custom Showroom: Magick.NET IsSupported=" + ImageUtils.IsMagickSupported);
 
             try {
-                var carDirectory = Path.GetDirectoryName(kn5);
-                if (Path.GetFileName(Path.GetDirectoryName(carDirectory)) == @"..") {
-                    carDirectory = Path.GetDirectoryName(Path.GetDirectoryName(carDirectory));
-                }
-
-                var carObject = CarsManager.Instance.GetById(Path.GetFileName(carDirectory) ?? "");
-                var toolboxMode = IsSameDirectories(carObject?.Location, carDirectory);
+                var kn5Directory = Path.GetDirectoryName(kn5);
+                var toolboxMode = forceToolboxMode || lodDefinitions != null || IsSameDirectories(carObject?.Location, kn5Directory);
 
                 LiteShowroomFormWrapper formWrapper;
                 using (var waiting = new WaitingDialog()) {
                     waiting.Report(ControlsStrings.CustomShowroom_Loading);
 
-                    var description = new CarDescription(kn5, carDirectory, carObject?.AcdData);
+                    var description = new CarDescription(kn5, carObject?.Location ?? kn5Directory, carObject?.AcdData);
                     if (toolboxMode) {
                         ExtraModelProvider.Initialize();
                         var toolsRenderer = await Task.Run(() => SettingsHolder.CustomShowroom.UseOldLiteShowroom ?
@@ -86,10 +95,10 @@ namespace AcManager.CustomShowroom {
                                 new DarkKn5ObjectRenderer(description) {
                                     SoundFactory = new AcCarSoundFactory()
                                 });
-                        formWrapper = new LiteShowroomFormWrapperWithTools(toolsRenderer, carObject, skinId, presetFilename);
+                        formWrapper = new LiteShowroomFormWrapperWithTools(toolsRenderer, carObject, skinId, presetFilename, lodDefinitions);
                         renderer = toolsRenderer;
                     } else {
-                        Logging.Warning($"Can’t find CarObject for “{carDirectory}”");
+                        Logging.Warning($"Can’t find CarObject for “{kn5Directory}”");
                         Logging.Warning($"Found location: “{carObject?.Location ?? @"NULL"}”");
 
                         renderer = await Task.Run(() => SettingsHolder.CustomShowroom.UseOldLiteShowroom ?
@@ -129,6 +138,11 @@ namespace AcManager.CustomShowroom {
 
         public static Task StartAsync(CarObject car, CarSkinObject skin = null, string presetFilename = null) {
             return StartAsync(AcPaths.GetMainCarFilename(car.Location, car.AcdData, true), skin?.Id, presetFilename);
+        }
+
+        public static Task StartAsync(CarObject car, string customKn5, IEnumerable<CustomShowroomLodDefinition> lodDefinitions = null,
+                CarSkinObject skin = null, string presetFilename = null) {
+            return StartAsyncInner(car, customKn5, lodDefinitions, skin?.Id, presetFilename, true);
         }
 
         Task ICustomShowroomWrapper.StartAsync(CarObject car, CarSkinObject skin, string presetFilename) {

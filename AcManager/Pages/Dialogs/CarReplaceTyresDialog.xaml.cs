@@ -238,7 +238,7 @@ namespace AcManager.Pages.Dialogs {
             private DelegateCommand _saveCommand;
 
             public DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand =
-                    new DelegateCommand(() => { Sets.Save(SetsVersion, Car, OriginalTyresFront, OriginalTyresRear); }, () => Changed));
+                    new DelegateCommand(() => Sets.Save(SetsVersion, Car, OriginalTyresFront, OriginalTyresRear), () => Changed));
 
             private void OnSetsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
                 Changed = true;

@@ -29,6 +29,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return _child;
         }
 
+        private bool _broken;
+
+        private void ForcefullyDisconnect() {
+            _broken = true;
+            SetActiveChild(null);
+        }
+
         private void SetActiveChild([CanBeNull] UIElement child) {
             if (ReferenceEquals(_child, child)) return;
 
@@ -48,10 +55,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             _child = child;
             if (_child != null) {
-                AddLogicalChild(_child);
-                AddVisualChild(_child);
-                if (ResetElementNameBindings) {
-                    _child.ResetElementNameBindings();
+                var parent = LogicalTreeHelper.GetParent(_child);
+                if (parent is BaseSwitch otherSwitch) {
+                    otherSwitch.ForcefullyDisconnect();
+                } else if (parent != null) {
+                    _broken = true;
+                    _child = null;
+                    Logging.Warning("Collision: " + parent);
+                } else {
+                    AddLogicalChild(_child);
+                    AddVisualChild(_child);
+                    if (ResetElementNameBindings) {
+                        _child.ResetElementNameBindings();
+                    }
                 }
             }
 
@@ -61,9 +77,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected void UpdateActiveChild() {
-            var newChild = GetChild();
+            var newChild = _broken ? null : GetChild();
             if (newChild != _child) {
                 InvalidateMeasure();
+            }
+        }
+
+        protected override void OnRender(DrawingContext dc) {
+            if (_broken) {
+                dc.DrawRectangle(new SolidColorBrush(Colors.DarkRed), null, new Rect(new Point(), RenderSize));
             }
         }
 
@@ -73,7 +95,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected override Size MeasureOverride(Size constraint) {
-            SetActiveChild(GetChild());
+            SetActiveChild(_broken ? null : GetChild());
             if (_child == null) return new Size();
             _child.Measure(constraint);
             return _child.DesiredSize;

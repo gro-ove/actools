@@ -1,0 +1,4 @@
+name: UkooLabs.FbxSharpie
+url: https://www.nuget.org/packages/UkooLabs.FbxSharpie/
+content: LICENSE
+sid: 19_-1619837545_468877169

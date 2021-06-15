@@ -469,7 +469,7 @@ namespace AcManager.Pages.Lists {
             public static readonly BatchAction_RecalculateWeight Instance = new BatchAction_RecalculateWeight();
 
             public BatchAction_RecalculateWeight()
-                    : base("Recalculate weight", "Recalculate car weight based on data", "UI", null) {
+                    : base("Recalculate weight", "Set weight to physics value", "UI", null) {
                 DisplayApply = "Recalculate";
             }
 

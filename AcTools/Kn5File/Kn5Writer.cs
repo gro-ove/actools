@@ -6,20 +6,20 @@ namespace AcTools.Kn5File {
             Write("sc6969".ToCharArray());
         }
 
-        public Kn5Writer(Stream output) : base(output) {
+        public Kn5Writer(Stream output, bool leaveOpen) : base(output, leaveOpen) {
             Write("sc6969".ToCharArray());
         }
 
         public void Write(Kn5MaterialBlendMode blendMode) {
-            Write((byte)blendMode);
+            base.Write((byte)blendMode);
         }
 
         public void Write(Kn5MaterialDepthMode depthMode) {
-            Write((int)depthMode);
+            base.Write((int)depthMode);
         }
 
         public void Write(Kn5NodeClass nodeClass) {
-            Write((int)nodeClass);
+            base.Write((int)nodeClass);
         }
 
         public void Write(Kn5Header header) {

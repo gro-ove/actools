@@ -24,6 +24,27 @@ namespace AcTools.Utils.Helpers {
             return new SubrangeProgress(baseProgress, from, range);
         }
 
+        private class SubrangeNullableDoubleProgress : IProgress<double?> {
+            private readonly IProgress<double?> _baseProgress;
+            private readonly double _from;
+            private readonly double _range;
+
+            public SubrangeNullableDoubleProgress(IProgress<double?> baseProgress, double from, double range) {
+                _baseProgress = baseProgress;
+                _from = from;
+                _range = range;
+            }
+
+            public void Report(double? value) {
+                _baseProgress?.Report(_from + value * _range);
+            }
+        }
+
+        [NotNull]
+        public static IProgress<double?> SubrangeDouble([CanBeNull] this IProgress<double?> baseProgress, double from, double range) {
+            return new SubrangeNullableDoubleProgress(baseProgress, from, range);
+        }
+
         [NotNull]
         public static IProgress<double> ToDouble([CanBeNull] this IProgress<Tuple<string, double?>> baseProgress, [CanBeNull] string message) {
             return new Progress<double>(v => {

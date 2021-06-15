@@ -101,7 +101,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void NewTab() {
             if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null || VisualExtension.IsInputFocused()) return;
             var textBox = _subMenuListBox.ItemContainerGenerator
-                                         .ContainerFromIndex(_subMenuListBox.Items.Count - 1)?.FindChild<TextBox>("NameTextBox");
+                    .ContainerFromIndex(_subMenuListBox.Items.Count - 1)?.FindChild<TextBox>("NameTextBox");
             if (textBox == null) return;
             textBox.Focus();
             textBox.SelectAll();
@@ -110,7 +110,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void CloseTab() {
             if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null || VisualExtension.IsInputFocused()) return;
             _subMenuListBox.ItemContainerGenerator
-                           .ContainerFromIndex(_subMenuListBox.SelectedIndex)?.FindChild<Button>("CloseButton")?.Command?.Execute(null);
+                    .ContainerFromIndex(_subMenuListBox.SelectedIndex)?.FindChild<Button>("CloseButton")?.Command?.Execute(null);
             _subMenuListBox.Focus();
         }
 
@@ -123,7 +123,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void FocusCurrentTab() {
             if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null || VisualExtension.IsInputFocused()) return;
             _subMenuListBox.ItemContainerGenerator
-                           .ContainerFromIndex(_subMenuListBox.SelectedIndex)?.FindChild<TextBox>("NameTextBox")?.Focus();
+                    .ContainerFromIndex(_subMenuListBox.SelectedIndex)?.FindChild<TextBox>("NameTextBox")?.Focus();
         }
 
         private void SwitchTab(int index, bool cycle) {
@@ -246,8 +246,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             if (newValue == null || SaveKey == null || newValue.NonSelectable) return;
             var group = (from g in LinkGroups
-                         where g.Links.Contains(newValue)
-                         select g).FirstOrDefault();
+                where g.Links.Contains(newValue)
+                select g).FirstOrDefault();
             if (group != null) {
                 group.SelectedLink = newValue;
                 ValuesStorage.Set($"{SaveKey}__{group.GroupKey}", newValue.Source);
@@ -319,8 +319,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (uri != null) {
                 RaiseEvent(new InitializeEventArgs(InitializeEvent, uri));
                 var selected = LinkGroups.Where(x => groupKey == null || x.GroupKey == groupKey)
-                                         .SelectMany(g => g.Links)
-                                         .FirstOrDefault(t => t.Source?.ToString() == uri.ToString() && t.Tag == tag);
+                        .SelectMany(g => g.Links)
+                        .FirstOrDefault(t => t.Source?.ToString() == uri.ToString() && t.Tag == tag);
                 if (selected != null) {
                     SelectedLink = selected;
                     return true;
@@ -331,14 +331,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private bool SelectUriIfLinkExists(string saveKey, string groupKey) {
-            var saved = ValuesStorage.Get<string>($"{SaveKey}_link")?.Split(new[]{ @"::" }, StringSplitOptions.None);
+            var saved = ValuesStorage.Get<string>($"{SaveKey}_link")?.Split(new[] { @"::" }, StringSplitOptions.None);
             var source = saved?.FirstOrDefault() != null ? new Uri(saved.First(), UriKind.Relative) : null;
 
             if (source != null) {
                 RaiseEvent(new InitializeEventArgs(InitializeEvent, source));
                 var selected = LinkGroups.Where(x => groupKey == null || x.GroupKey == groupKey)
-                                         .SelectMany(g => g.Links)
-                                         .FirstOrDefault(t => t.SaveKey == saveKey);
+                        .SelectMany(g => g.Links)
+                        .FirstOrDefault(t => t.SaveKey == saveKey);
                 if (selected != null) {
                     SelectedLink = selected;
                     return true;
@@ -351,9 +351,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public void SwitchToGroupByKey(string key) {
             if (SaveKey == null || !SelectUriIfLinkExists(ValuesStorage.Get<string>($"{SaveKey}__{key}"), key)) {
                 SelectedLink = (from g in LinkGroups
-                                where g.GroupKey == key
-                                from l in g.Links
-                                select l).FirstOrDefault();
+                    where g.GroupKey == key
+                    from l in g.Links
+                    select l).FirstOrDefault();
             }
         }
 
@@ -364,8 +364,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             if (link == null || SaveKey == null || link.NonSelectable) return;
             var group = (from g in LinkGroups
-                         where g.Links.Contains(link)
-                         select g).FirstOrDefault();
+                where g.Links.Contains(link)
+                select g).FirstOrDefault();
             if (group != null) {
                 ValuesStorage.Set($"{SaveKey}__{group.GroupKey}", link.Source);
             }
@@ -396,6 +396,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             UpdateSelection();
         }
 
+        private Tuple<LinkGroup, Link> FindExistingLink(Uri source) {
+            return (from g in LinkGroups from l in g.Links where l.Source == source select Tuple.Create(g, l)).FirstOrDefault()
+                    ?? (from g in LinkGroups from l in g.Links where l.Source?.SamePath(source) == true select Tuple.Create(g, l)).FirstOrDefault();
+        }
+
         private void UpdateSelection() {
             if (!IsLoaded) return;
 
@@ -404,17 +409,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             if (LinkGroups != null) {
                 // find the current select group and link based on the selected source
-                var linkInfo = (from g in LinkGroups
-                                from l in g.Links
-                                where SelectedSource == null ? l.Source == null : l.Source?.SamePath(SelectedSource) == true
-                                select new {
-                                    Group = g,
-                                    Link = l
-                                }).FirstOrDefault();
-
+                var linkInfo = FindExistingLink(SelectedSource);
                 if (linkInfo != null) {
-                    selectedGroup = linkInfo.Group;
-                    selectedLink = linkInfo.Link;
+                    selectedGroup = linkInfo.Item1;
+                    selectedLink = linkInfo.Item2;
                 } else {
                     // could not find link and group based on selected source, fall back to selected link group
                     selectedGroup = SelectedLinkGroup;
@@ -431,7 +429,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (selectedGroup != null) {
                 // ensure group itself maintains the selected link
                 if (selectedLink == null) {
-                    /* very questionable place */
+                    // very questionable place
                     selectedLink = selectedGroup.SelectedLink;
                 } else {
                     selectedGroup.SelectedLink = selectedLink;

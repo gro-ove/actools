@@ -3,7 +3,7 @@
 namespace AcTools.KnhFile {
     internal sealed class KnhWriter : ExtendedBinaryWriter {
         public KnhWriter(string filename) : base(filename) {}
-        public KnhWriter(Stream output) : base(output) {}
+        public KnhWriter(Stream output, bool leaveOpen) : base(output, leaveOpen) {}
 
         public void Write(KnhEntry node) {
             Write(node.Name);
