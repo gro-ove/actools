@@ -1,0 +1,63 @@
+sid: WJlf81xF
+id: carLodsGeneration
+
+Cars LODs Generator uses [url="https://www.simplygon.com/"]Simplygon[/url] to create less detailed versions of main car model to improve general performance. If you’re making a car and not sure about creating them manually, please consider using it. With such features like merging meshes where possible, removing some unnecessary meshes or applying different optimization rates to different meshes based on their role, hopefully it can produce something decent. Especially if you would help it by adjusting rules a bit to fit the car better.
+
+ [img="https://i.imgur.com/HmZui0l.jpg|320"]Generated LOD C (15000 triangles)[/img]
+ [url="https://imgur.com/a/ljmhmYo"]More examples[/url]
+
+Here is a bit of a troubleshooting guide:
+
+[b]Everything looks too optimized, should number of triangles be increased?[/b]
+
+Before that, check where all those triangles are being spent. Showroom should show you a simple plot with triangles distribution, and if you click on “Details” below that, you’ll see a full description of triangles arrangement. Also, switch to wireframe mode by pressing W two times, to quickly find out extra detailed areas. Find those meshes and add them to list of less important ones, or to “Remove completely” list (using commas as separators). You can also go straight to “Priorities” section of the settings and add a new line there. Keep in mind, LOD Generator will use first line that matched with mesh or node, so put your corrections above the rest.
+
+[b]Everything looks too deformed:[/b]
+
+It might be because of vertex welding. Try turning it off, would that help? Although it could introduce other problems, especially with some models.
+
+[b]Fourth LOD looks like a joke with most materials gone:[/b]
+
+You can disable that feature in “Merge as black” section, but please be wary, it helps to greatly cut down on draw calls for distant cars, and it seems like Kunos themselves use the same approach for their cars.
+
+[b]Interior of my convertible looks too nasty in distance:[/b]
+
+Default priority for interior meshes is set to work well with enclosed cars, but cars without roofs might need something higher. Although the best solution would be to simply add a few visible meshes, like headrests of seats, as first lines in “Priorities” section. Values that I found fitting are 0.5, 0.4 and 0.3 for LODs B, C and D accordingly.
+
+[b]Low-res cockpit needs more details:[/b]
+
+By default LOD Generator would remove transparent meshes, analog instruments and such from interiors. You can stop it from doing so by clearing “To remove” section.
+
+[b]There are still way too many draw calls:[/b]
+
+Maybe some of meshes can be safely removed? You can add them to “To remove” section manually. Or, add some darker meshes to “Merge as black” list for ultimate draw calls reduction.
+
+[b]Nasty stuff can be seen in interior in fourth LOD:[/b]
+
+Usually it’s the result of ceiling mesh getting overly compressed. You can increase its priority manually, but maybe it would work to simply add it to removal list for LOD D? That would save some triangles for the rest of the model too.
+
+[b]Animation is broken with LODs:[/b]
+
+By default LOD Generator tries its hardest to merge meshes and collapse unnecessary LODs, to cut on draw calls and transformation switches as much as possible. It would break animations though, so yeah, simply add nodes that are moving to “Merge parents” list. And if you don’t exactly know which ones are moving, but know the name of the main one, use “parent:first_node_name”. Or, you can, of course, disable whole merging thing by adding “*” there.
+
+[b]Why isn’t there a per-LOD “Generate” button to tweak settings for a specific LOD?[/b]
+
+Considering much time Simplygon can take, LOD Generator caches its output and uses it unless model or configuration would change, so it shouldn’t be a problem.
+
+[b]Windows are gone in LOD B! Or maybe doors lost a lot of their details. Or something similar:[/b]
+
+Make sure your COCKPIT_HR node is set correctly. It shouldn’t contain any exterior windows or doors. Fixing it in model would be a better solution, but if it can’t be done this way, change “Interior meshes” value to something like this, for example: [mono]parent:COCKPIT_HR & !material:exterior_glass & !door_meshes*[/mono].
+
+[b]What are those $-prefixed values?[/b]
+
+Those refer to groups defined in [url="cmd://openCarLodGeneratorDefinitions"]this file[/url]. And since whole thing is located in CM’s data folder, you can override all those configurations to suit your needs too (just make sure to copy those files to “Data (User)/Car LODs Generation” first so they wouldn’t get overwritten when CM data updates).
+
+[b]Extra tips:[/b]
+
+• To quickly prepare a list of meshes, open showroom, select a mesh, click on its name to quickly copy it, switch back to LOD Generator UI and paste it.
+• To save more time, click on material name and add it instead like so: [mono]material:material_name[/mono].
+• All those inputs are using regular CM filtering system, so you can use operands like &, |, ! or brackets for something more complex.
+• If your car doesn’t have proper COCKPIT_HR (containing all interior bits and nothing else), please consider adding it. Not only it would help with performance (by switching to COCKPIT_LR), but also now some people use CSP, and some of its features relies heavily on COCKPIT_HR to determine which meshes are inside and which are outside.
+• Don’t forget to lower number of triangles for low-res interior if your interior in general doesn’t have that many to begin with (like if it’s an open wheeler car).
+• One of key things to consider is shading. Geometry imperfections fade away quickly with distance, but sudden switch in shading, like jumping reflection or specular, can really give it away. In my short experience of making LODs manually this is the hardest part to get right.
+• Current CSP versions have that system where it would only draw a certain amount of cars in higher details, switching to LOD D if there are too many cars in frame. Usually it works somewhat acceptable, but not if you decide to zoom in on a starting grid, for example. This isn’t a problem related to LOD models, so don’t worry about it and maybe for now test those LODs with fewer cars on a track if you want to check if transition is smooth enough. I’ll find a way to fix CSP.

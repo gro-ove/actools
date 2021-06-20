@@ -77,6 +77,9 @@ namespace StringBasedFilter.Parsing {
     public delegate ITestEntry CustomTestEntryFactory(string value);
 
     [CanBeNull]
+    public delegate string CustomValueParser(string data, ref int index);
+
+    [CanBeNull]
     public delegate ITestEntry ExtraTestEntryFactory([CanBeNull] string key);
 
     [NotNull]
@@ -86,7 +89,29 @@ namespace StringBasedFilter.Parsing {
         /// <summary>
         /// Params used by default, changeable.
         /// </summary>
-        public static readonly FilterParams Defaults = new FilterParams();
+        public static readonly FilterParams Default = new FilterParams();
+
+        /// <summary>
+        /// For more strict use.
+        /// </summary>
+        public static readonly FilterParams DefaultStrictNoChildKeys = new FilterParams {
+            ValueSplitter = new ValueSplitter(s => {
+                var match = Regex.Match(s, @"^([a-zA-Z_]+)\s*((?:>=|<=|=>|=<|[:<>≥≤=])\s*|[+\-−]\s*$)");
+                return !match.Success ? null : new FilterPropertyValue(match.Groups[1].Value,
+                        FilterComparingOperations.Parse(match.Groups[2].Value.TrimEnd()), s.Substring(match.Length).TrimStart());
+            }, ':', '<', '>', '≥', '≤', '=', '+', '-', '−'),
+            CaseInvariant = false,
+        };
+
+        /// <summary>
+        /// What it says.
+        /// </summary>
+        public bool CaseInvariant { get; set; } = true;
+
+        /// <summary>
+        /// What it says.
+        /// </summary>
+        public bool TreatSpacesAsAndOperands { get; set; } = true;
 
         /// <summary>
         /// How to compare strings with queries.
@@ -127,6 +152,9 @@ namespace StringBasedFilter.Parsing {
 
         [CanBeNull]
         public CustomTestEntryFactory CustomTestEntryFactory { get; set; }
+
+        [CanBeNull]
+        public CustomValueParser CustomValueParser { get; set; }
     }
 
     internal static class DefaultValueSplitFunc {
@@ -176,7 +204,7 @@ namespace StringBasedFilter.Parsing {
         private List<string> _properties;
 
         public FilterParser([CanBeNull] FilterParams filterParams) {
-            _params = filterParams ?? FilterParams.Defaults;
+            _params = filterParams ?? FilterParams.Default;
         }
 
         internal FilterTreeNode Parse(string filter, out string[] properies) {
@@ -190,6 +218,10 @@ namespace StringBasedFilter.Parsing {
 
         private static bool IsTwoOperandsControlChar(char c) {
             return c == '&' || c == '|' || c == ',' || c == '^';
+        }
+
+        private static bool IsNonValueChar(char c) {
+            return !IsTwoOperandsControlChar(c) && c != ')' && c != 0;
         }
 
         private bool IsKeywordSeparatorChar(char c) {
@@ -280,7 +312,7 @@ namespace StringBasedFilter.Parsing {
                     previousNode = NextNodeNot();
                     nodeKeySet = false;
                     node = new FilterTreeNodeAnd(node, previousNode);
-                } else if (!IsTwoOperandsControlChar(GetNextNonSpace(out _)) && _filter.Length > _pos && _filter[_pos] == ' ') {
+                } else if (_params.TreatSpacesAsAndOperands && IsNonValueChar(GetNextNonSpace(out _)) && _filter.Length > _pos && _filter[_pos] == ' ') {
                     var b = NextNodeNot();
 
                     if (!nodeKeySet) {
@@ -324,7 +356,6 @@ namespace StringBasedFilter.Parsing {
         private FilterTreeNode NextNodeValue() {
             string s = null;
             FilterTreeNode node = null;
-            var buffer = new StringBuilder(_filter.Length - _pos);
 
             SkipSpaces();
 
@@ -332,114 +363,120 @@ namespace StringBasedFilter.Parsing {
             var previousNonSpaceIndex = -1;
             var keywordSeparatorIncluded = false;
 
-            for (; _pos < _filter.Length; _pos++) {
-                var c = _filter[_pos];
-                if (c == '\\') {
-                    _pos++;
-                    if (_pos < _filter.Length) {
-                        var e = _filter[_pos];
-                        if (RegexFromQuery.IsQuerySymbol(e)) {
-                            buffer.Append('\\');
-                        }
-
-                        buffer.Append(e);
-                    }
-                    continue;
-                }
-
-                if (c != ' ') {
-                    previousNonSpace = c;
-                    previousNonSpaceIndex = _pos;
-                } else {
-                    var nextNonSpace = GetNextNonSpace(out var nonSpacePos);
-                    if (IsControlChar(nextNonSpace)) break;
-                    if (IsKeywordSeparatorChar(nextNonSpace) || IsKeywordSeparatorChar(previousNonSpace)) {
-                        _pos = nonSpacePos - 1;
-                        continue;
-                    }
-
-                    // Complex and questionable case: ignore spaces when they separate a number from a word, but only then
-                    if (keywordSeparatorIncluded && previousNonSpaceIndex >= 0 && char.IsDigit(previousNonSpace) && char.IsLetter(nextNonSpace)) {
-                        for (var j = previousNonSpaceIndex - 1; j >= 0; j--) {
-                            var p = _filter[j];
-                            if (char.IsLetter(p)) goto BreakPiece;
-                            if (!char.IsDigit(p)) break;
-                        }
-
-                        for (var j = nonSpacePos + 1; j < _filter.Length; j++) {
-                            var p = _filter[j];
-                            if (char.IsDigit(p)) goto BreakPiece;
-                            if (!char.IsLetter(p)) break;
-                        }
-
-                        _pos = nonSpacePos - 1;
-                        continue;
-                    }
-
-                    BreakPiece:
-                    break;
-                }
-
-                if (IsControlChar(c) || c == ')') {
-                    break;
-                }
-
-                if (IsKeywordSeparatorChar(c)) {
-                    keywordSeparatorIncluded = true;
-                }
-
-                if (c == '`' || c == '"' || c == '\'') {
-                    var i = _pos + 1;
-                    var literal = new StringBuilder(_filter.Length - _pos);
-                    literal.Append(c);
-
-                    for (; i < _filter.Length; i++) {
-                        var n = _filter[i];
-                        if (n == '\\' && (c != '`' || i + 1 < _filter.Length && _filter[i + 1] == '`')) {
-                            i++;
-                            if (i < _filter.Length) {
-                                literal.Append(_filter[i]);
+            var parsed = _params.CustomValueParser?.Invoke(_filter, ref _pos);
+            if (parsed != null) {
+                node = FilterTreeNodeValue.Create(parsed, _params, out s);
+            } else {
+                var buffer = new StringBuilder(_filter.Length - _pos);
+                for (; _pos < _filter.Length; _pos++) {
+                    var c = _filter[_pos];
+                    if (c == '\\') {
+                        _pos++;
+                        if (_pos < _filter.Length) {
+                            var e = _filter[_pos];
+                            if (RegexFromQuery.IsQuerySymbol(e)) {
+                                buffer.Append('\\');
                             }
+
+                            buffer.Append(e);
+                        }
+                        continue;
+                    }
+
+                    if (!_params.TreatSpacesAsAndOperands || c != ' ') {
+                        previousNonSpace = c;
+                        previousNonSpaceIndex = _pos;
+                    } else {
+                        var nextNonSpace = GetNextNonSpace(out var nonSpacePos);
+                        if (IsControlChar(nextNonSpace)) break;
+                        if (IsKeywordSeparatorChar(nextNonSpace) || IsKeywordSeparatorChar(previousNonSpace)) {
+                            _pos = nonSpacePos - 1;
                             continue;
                         }
 
-                        literal.Append(n);
+                        // Complex and questionable case: ignore spaces when they separate a number from a word, but only then
+                        if (keywordSeparatorIncluded && previousNonSpaceIndex >= 0 && char.IsDigit(previousNonSpace) && char.IsLetter(nextNonSpace)) {
+                            for (var j = previousNonSpaceIndex - 1; j >= 0; j--) {
+                                var p = _filter[j];
+                                if (char.IsLetter(p)) goto BreakPiece;
+                                if (!char.IsDigit(p)) break;
+                            }
 
-                        if (n == c) {
-                            // If there is only one quote symbol, it’s not going to get processed as quoted text
-                            buffer.Append(literal);
-                            _pos = i;
-                            break;
+                            for (var j = nonSpacePos + 1; j < _filter.Length; j++) {
+                                var p = _filter[j];
+                                if (char.IsDigit(p)) goto BreakPiece;
+                                if (!char.IsLetter(p)) break;
+                            }
+
+                            _pos = nonSpacePos - 1;
+                            continue;
                         }
+
+                        BreakPiece:
+                        break;
                     }
-                } else if (c == '(') {
-                    var value = buffer.ToString().Trim();
 
-                    if (value.Length > 0) {
-                        var oldProperties = _properties;
-                        _properties = new List<string>();
+                    if (IsControlChar(c) || c == ')') {
+                        break;
+                    }
 
-                        _pos++;
-                        node = NextNode();
-                        _pos++;
+                    if (IsKeywordSeparatorChar(c)) {
+                        keywordSeparatorIncluded = true;
+                    }
 
-                        node = new FilterTreeNodeChild(value, node, _params);
-                        _properties = oldProperties;
-                        s = value;
+                    if (c == '`' || c == '"' || c == '\'') {
+                        var i = _pos + 1;
+                        var literal = new StringBuilder(_filter.Length - _pos);
+                        literal.Append(c);
+
+                        for (; i < _filter.Length; i++) {
+                            var n = _filter[i];
+                            if (n == '\\' && (c != '`' || i + 1 < _filter.Length && _filter[i + 1] == '`')) {
+                                i++;
+                                if (i < _filter.Length) {
+                                    literal.Append(_filter[i]);
+                                }
+                                continue;
+                            }
+
+                            literal.Append(n);
+
+                            if (n == c) {
+                                // If there is only one quote symbol, it’s not going to get processed as quoted text
+                                buffer.Append(literal);
+                                _pos = i;
+                                break;
+                            }
+                        }
+                    } else if (c == '(') {
+                        var value = buffer.ToString().Trim();
+
+                        if (value.Length > 0) {
+                            var oldProperties = _properties;
+                            _properties = new List<string>();
+
+                            _pos++;
+                            node = NextNode();
+                            _pos++;
+
+                            node = new FilterTreeNodeChild(value, node, _params);
+                            _properties = oldProperties;
+                            s = value;
+                        } else {
+                            _pos++;
+                            node = NextNode();
+                            _pos++;
+                        }
+
+                        break;
                     } else {
-                        _pos++;
-                        node = NextNode();
-                        _pos++;
+                        buffer.Append(c);
                     }
-
-                    break;
-                } else {
-                    buffer.Append(c);
                 }
-            }
 
-            if (node == null) {
-                node = FilterTreeNodeValue.Create(buffer.ToString().Trim(), _params, out s);
+                if (node == null) {
+                    node = FilterTreeNodeValue.Create(buffer.ToString().Trim(), _params, out s);
+                }
             }
 
             if (!_properties.Contains(s)) {

@@ -2,10 +2,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:t="http://acstuff.ru/app/tools" xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:system="clr-namespace:System;assembly=mscorlib"
-    mc:Ignorable="d" Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False" Topmost="False" ShowTitle="False"
-    ShowTopBlob="False" Width="250" SizeToContent="Manual" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" Loaded="OnLoaded" Unloaded="OnUnloaded"
-    ResizeMode="CanResizeWithGrip" MinWidth="250" MaxWidth="250" LocationAndSizeKey="__cmls" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}"
-    Padding="24">
+    xmlns:oxy="http://oxyplot.org/wpf" mc:Ignorable="d" Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False" Topmost="False"
+    ShowTitle="False" ShowTopBlob="False" Width="250" SizeToContent="Manual" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" Loaded="OnLoaded"
+    Unloaded="OnUnloaded" ResizeMode="CanResizeWithGrip" MinWidth="250" MaxWidth="250" LocationAndSizeKey="__cmls"
+    d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}" Padding="24">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -111,6 +111,10 @@
             IsChecked="{Binding Mode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static cs:LiteShowroomTools+Mode.Main}}"
             x:Name="HomeButton" MoreCommand="{Binding MainModeCommand}" ToolTip="{x:Static mui:UiStrings.Back}" Tag="{Binding MainModeCommand.IsAbleToExecute}"
             IsHitTestVisible="{Binding MainModeCommand.IsAbleToExecute}" />
+        <mui:ModernToggleButton IconData="{StaticResource ListGearIconData}" MoreCommand="{Binding SelectModeCommand}" ToolTip="Generated LODs"
+            IsChecked="{Binding Mode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static cs:LiteShowroomTools+Mode.GeneratedLods}}"
+            CommandParameter="{x:Static cs:LiteShowroomTools+Mode.GeneratedLods}"
+            Visibility="{Binding LodDefinitions, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
         <mui:ModernToggleButton IconData="{StaticResource GearIconData}" MoreCommand="{Binding SelectModeCommand}" ToolTip="Visual settings"
             IsChecked="{Binding Mode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static cs:LiteShowroomTools+Mode.VisualSettings}}"
             CommandParameter="{x:Static cs:LiteShowroomTools+Mode.VisualSettings}"
@@ -177,15 +181,15 @@
                 <StackPanel>
                   <DockPanel Style="{StaticResource DockPanel}">
                     <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_FpsLabel}" />
-                    <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
+                    <mui:SelectableTextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
                   </DockPanel>
                   <DockPanel Style="{StaticResource DockPanel}">
                     <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_ObjectsLabel}" />
-                    <TextBlock Text="{Binding Renderer.CarNode.ObjectsCount}" />
+                    <mui:SelectableTextBlock Text="{Binding Renderer.CarNode.ObjectsCount}" />
                   </DockPanel>
                   <DockPanel Style="{StaticResource DockPanel}">
                     <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
-                    <TextBlock Text="{Binding Renderer.CarNode.TrianglesCount}" />
+                    <mui:SelectableTextBlock Text="{Binding Renderer.CarNode.TrianglesCount}" />
                   </DockPanel>
 
                   <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_ControlHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
@@ -207,22 +211,6 @@
                     </DataTemplate>
                   </ComboBox.ItemTemplate>
                 </mui:BetterComboBox>
-
-                <StackPanel Margin="0 12 0 0"
-                    Visibility="{Binding LodDefinitions, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                  <TextBlock Text="LODs" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-                  <ListBox SelectedItem="{Binding SelectedLodDefinition}" ItemsSource="{Binding LodDefinitions}" Margin="0 4 0 0"
-                      Style="{StaticResource VirtualizingListBox}">
-                    <ListBox.ItemTemplate>
-                      <DataTemplate>
-                        <StackPanel ToolTip="{Binding Filename}">
-                          <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 2" FontWeight="Normal" />
-                          <TextBlock Text="{Binding Details}" FontSize="{StaticResource SmallFontSize}" FontWeight="Normal" />
-                        </StackPanel>
-                      </DataTemplate>
-                    </ListBox.ItemTemplate>
-                  </ListBox>
-                </StackPanel>
 
                 <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.MagickOverride}"
                     ToolTip="{x:Static c:ControlsStrings.CustomShowroom_EditingMode_Tooltip}" IsEnabled="{Binding MagickNetEnabled}"
@@ -262,7 +250,7 @@
                   </mui:AsyncButton>
                 </mui:SpacingStackPanel>
 
-                <StackPanel Margin="0 12 0 0" Visibility="{Binding LodDefinitions, Converter={StaticResource NullToVisibilityConverter}}">
+                <StackPanel Margin="0 12 0 0">
                   <TextBlock Text="Tools" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
                   <Button Margin="0 4 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
                       Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
@@ -274,21 +262,62 @@
               </StackPanel>
             </ScrollViewer>
 
+            <Border x:Key="GeneratedLods" mui:FancyScroll.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" mui:SaveScroll.Key="__csGeneratedLods">
+              <DockPanel>
+                <Button Content="Details" ToolTip="View detailed triangles distribution to see what you could cut for better result"
+                    Command="{Binding ViewLodDetailsCommand}" Margin="0 8 0 0" DockPanel.Dock="Bottom"
+                    Visibility="{Binding ViewLodDetailsCommand, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                <oxy:PlotView Model="{Binding SelectedLodStats}" Height="200" Margin="0 20 0 0" Background="Transparent" DockPanel.Dock="Bottom"
+                    Foreground="{DynamicResource WindowText}"
+                    Visibility="{Binding SelectedLodStats, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+
+                <ListBox SelectedItem="{Binding SelectedLodDefinition}" ItemsSource="{Binding LodDefinitionsView}" Style="{StaticResource VirtualizingListBox}"
+                    VirtualizingPanel.IsVirtualizingWhenGrouping="True" VirtualizingPanel.IsContainerVirtualizable="False">
+                  <ListBox.GroupStyle>
+                    <GroupStyle>
+                      <GroupStyle.HeaderTemplate>
+                        <DataTemplate DataType="GroupItem">
+                          <TextBlock x:Name="PART_Name" Text="{Binding Name}" Style="{StaticResource Label}" Foreground="{DynamicResource WindowText}"
+                              Margin="0 4" />
+                          <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
+                              <Setter TargetName="PART_Name" Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                          </DataTemplate.Triggers>
+                        </DataTemplate>
+                      </GroupStyle.HeaderTemplate>
+                    </GroupStyle>
+                  </ListBox.GroupStyle>
+                  <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type cs:CustomShowroomLodDefinition}">
+                      <DockPanel>
+                        <TextBlock Text="{Binding Details}" TextTrimming="CharacterEllipsis" FontSize="{StaticResource SmallFontSize}" FontWeight="Normal"
+                            DockPanel.Dock="Bottom" ToolTip="{Binding Details}" />
+                        <RadioButton IsChecked="{Binding IsSelected}" ToolTip="Select the version you want to keep" />
+                        <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 2" FontWeight="Normal" ToolTip="{Binding Filename}" />
+                      </DockPanel>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+
+              </DockPanel>
+            </Border>
+
             <ScrollViewer mui:FancyScroll.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Selected" mui:SaveScroll.Key="__csSelected">
               <StackPanel>
                 <DockPanel Style="{StaticResource DockPanel}">
                   <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewObjectCommand}" CommandParameter="{Binding}" Height="20" Margin="4 0 0 0"
-                      Padding="4 0" Visibility="{Binding ViewObjectCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                      Padding="4 0"
+                      Visibility="{Binding ViewObjectCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
                   <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_NameLabel}" />
-                  <mui:BetterTextBox Text="{Binding Renderer.SelectedName, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" Margin="0 0 4 0" />
+                  <mui:SelectableTextBlock Text="{Binding Renderer.SelectedName, Mode=OneWay}" Margin="0 0 4 0" />
                 </DockPanel>
                 <DockPanel Style="{StaticResource DockPanel}">
                   <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewMaterialCommand}" CommandParameter="{Binding}" Height="20"
                       Margin="4 0 0 0" Padding="4 0"
-                      Visibility="{Binding ViewMaterialCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                      Visibility="{Binding ViewMaterialCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
                   <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_MaterialLabel}" />
-                  <mui:BetterTextBox Text="{Binding Renderer.SelectedMaterial.Name, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True"
-                      Margin="0 0 4 0" />
+                  <mui:SelectableTextBlock Text="{Binding Renderer.SelectedMaterial.Name, Mode=OneWay}" Margin="0 0 4 0" />
                 </DockPanel>
                 <DockPanel Style="{StaticResource DockPanel}">
                   <Label DockPanel.Dock="Top" Margin="0 0 0 4" HorizontalAlignment="Left"
@@ -303,18 +332,32 @@
                           <Label VerticalAlignment="Center" Width="90">
                             <TextBlock Text="{Binding SlotName, StringFormat={x:Static mui:ColonConverter.Format}}" />
                           </Label>
-                          <mui:BetterTextBox Text="{Binding TextureName, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" Margin="0 0 4 0" />
+                          <mui:SelectableTextBlock Text="{Binding TextureName, Mode=OneWay}" Margin="0 0 4 0" />
                         </DockPanel>
                       </DataTemplate>
                     </ItemsControl.ItemTemplate>
                   </ItemsControl>
                 </DockPanel>
 
+                <DockPanel Style="{StaticResource DockPanel}" Margin="0 12 0 0">
+                  <Label Content="Full path:" />
+                  <mui:SelectableTextBlock Text="{Binding SelectedObjectPath}" Placeholder="?" />
+                </DockPanel>
+                <DockPanel Style="{StaticResource DockPanel}">
+                  <Label Content="Transparent:" />
+                  <mui:SelectableTextBlock Text="{Binding SelectedObjectTransparent}" Placeholder="?" />
+                </DockPanel>
+
                 <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
                 <DockPanel Style="{StaticResource DockPanel}">
                   <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
-                  <TextBlock Text="{Binding SelectedObjectTrianglesCount}" />
+                  <mui:SelectableTextBlock Text="{Binding SelectedObjectTrianglesCount}" />
                 </DockPanel>
+
+                <c:MessageBlock CloseKey="showroomSelectionHint" Margin="0 20 0 0">
+                  <mui:BbCodeBlock Style="{StaticResource Small}"
+                      Text="Use Alt+H to hide selected mesh, Alt+Shift+H to un-hide all meshes. Might be helpful for stopping some meshes from casting shadows when baking AO." />
+                </c:MessageBlock>
               </StackPanel>
             </ScrollViewer>
 
@@ -651,6 +694,7 @@
 
         <mui:LazySwitch.Definitions>
           <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.Main}" ResourceKey="Main" />
+          <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.GeneratedLods}" ResourceKey="GeneratedLods" />
           <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.VisualSettings}" ResourceKey="VisualSettings" />
           <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.Selected}" ResourceKey="Selected" />
           <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.Skin}" ResourceKey="Skin" />

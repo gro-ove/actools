@@ -47,7 +47,7 @@ namespace CustomShowroom {
 
         public string GetUsage() {
             var help = new HelpText {
-                Heading = new HeadingInfo("Custom Showroom", FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location ?? "").FileVersion),
+                Heading = new HeadingInfo("Custom Showroom", FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly()?.Location ?? "").FileVersion),
                 Copyright = new CopyrightInfo("AcClub", 2020),
                 AdditionalNewLineAfterOption = false,
                 AddDashesToOption = true

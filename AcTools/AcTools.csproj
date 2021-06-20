@@ -136,6 +136,16 @@
     <Compile Include="KnhFile\KnhWriter.cs" />
     <Compile Include="KsAnimFile\KsAnim.Save.cs" />
     <Compile Include="KsAnimFile\KsAnimWriter.cs" />
+    <Compile Include="Numerics\HashCodeHelper.cs" />
+    <Compile Include="Numerics\Mat4x4.cs" />
+    <Compile Include="Numerics\Plane.cs" />
+    <Compile Include="Numerics\Quat.cs" />
+    <Compile Include="Numerics\Vec2.cs" />
+    <Compile Include="Numerics\Vec2.Intrinsics.cs" />
+    <Compile Include="Numerics\Vec3.cs" />
+    <Compile Include="Numerics\Vec3.Intrinsics.cs" />
+    <Compile Include="Numerics\Vec4.cs" />
+    <Compile Include="Numerics\Vec4.Intrinsics.cs" />
     <Compile Include="Processes\AcsRunEventArgs.cs" />
     <Compile Include="Processes\FakeCarIds.cs" />
     <Compile Include="Utils\AcKunosContent.cs" />
@@ -151,6 +161,9 @@
     <Compile Include="Utils\Helpers\Diapason.cs" />
     <Compile Include="Utils\Helpers\DisposableList.cs" />
     <Compile Include="Utils\Helpers\ExceptionExtension.cs" />
+    <Compile Include="Utils\Helpers\JObjectRestorationScheme.cs" />
+    <Compile Include="Utils\Helpers\JsonBoolToDoubleConverter.cs" />
+    <Compile Include="Utils\Helpers\JsonIgnoreSerializationAttribute.cs" />
     <Compile Include="Utils\Helpers\LruCache.cs" />
     <Compile Include="Utils\Helpers\MainExecutingFile.cs" />
     <Compile Include="Utils\Helpers\ProgressExtension.cs" />

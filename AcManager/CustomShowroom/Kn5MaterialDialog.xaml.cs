@@ -8,6 +8,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools.Kn5File;
+using AcTools.Numerics;
 using AcTools.Render.Base;
 using AcTools.Render.Kn5Specific;
 using AcTools.Render.Kn5SpecificForward;
@@ -160,10 +161,10 @@ namespace AcManager.CustomShowroom {
         }
 
         public sealed class MaterialValue3D : MaterialValueBase {
-            public MaterialValue3D(string name, float[] value) : base(name) {
-                X = OriginalX = value.FirstOrDefault().ToInvariantString();
-                Y = OriginalY = value.ArrayElementAtOrDefault(1).ToInvariantString();
-                Z = OriginalZ = value.ArrayElementAtOrDefault(2).ToInvariantString();
+            public MaterialValue3D(string name, Vec3 value) : base(name) {
+                X = OriginalX = value.X.ToInvariantString();
+                Y = OriginalY = value.Y.ToInvariantString();
+                Z = OriginalZ = value.Z.ToInvariantString();
                 OriginalValue = $"X={X}, Y={Y}, Z={Z}";
             }
 
@@ -456,8 +457,7 @@ namespace AcManager.CustomShowroom {
 
                 if (_renderer is IKn5ObjectRenderer kn5Renderer) {
                     var v = (MaterialValue3D)sender;
-                    kn5Renderer.UpdateMaterialPropertyC(_kn5, _materialId, v.Id,
-                            new[] { v.X.As<float>(), v.Y.As<float>(), v.Z.As<float>() });
+                    kn5Renderer.UpdateMaterialPropertyC(_kn5, _materialId, v.Id, new Vec3(v.X.As<float>(), v.Y.As<float>(), v.Z.As<float>()));
                 }
             }
 
@@ -578,9 +578,9 @@ namespace AcManager.CustomShowroom {
                     ["Properties"] = new JArray(_material.ShaderProperties.Select(x => new JObject {
                         ["PropertyName"] = x.Name,
                         ["A"] = x.ValueA,
-                        ["B"] = new JObject { ["X"] = x.ValueB?[0], ["Y"] = x.ValueB?[1] },
-                        ["C"] = new JObject { ["X"] = x.ValueB?[0], ["Y"] = x.ValueB?[1], ["Z"] = x.ValueB?[1] },
-                        ["D"] = new JObject { ["X"] = x.ValueB?[0], ["Y"] = x.ValueB?[1], ["Z"] = x.ValueB?[1], ["W"] = x.ValueB?[1] },
+                        ["B"] = new JObject { ["X"] = x.ValueB.X, ["Y"] = x.ValueB.Y },
+                        ["C"] = new JObject { ["X"] = x.ValueC.X, ["Y"] = x.ValueC.Y, ["Z"] = x.ValueC.Y },
+                        ["D"] = new JObject { ["X"] = x.ValueD.X, ["Y"] = x.ValueD.Y, ["Z"] = x.ValueD.Z, ["W"] = x.ValueD.W },
                     })),
                     ["Textures"] = new JArray(_material.TextureMappings.Select(x => x.Texture)),
                 }.ToString(Formatting.Indented);

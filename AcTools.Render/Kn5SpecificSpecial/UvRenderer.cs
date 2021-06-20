@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using AcTools.Kn5File;
+using AcTools.Numerics;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
@@ -53,9 +54,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 Y = y;
             }
 
-            public ToDrawAt(float[] texC) {
-                X = (int)Math.Floor(texC[0]);
-                Y = (int)Math.Floor(texC[1]);
+            public ToDrawAt(Vec2 texC) {
+                X = (int)Math.Floor(texC.X);
+                Y = (int)Math.Floor(texC.Y);
             }
 
             private bool Equals(ToDrawAt other) {
@@ -81,7 +82,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 var v = _filteredNodes[i].OriginalNode.Vertices;
                 var w = new List<ToDrawAt>(1);
                 for (var j = v.Length - 1; j >= 0; j--) {
-                    var t = new ToDrawAt(v[j].TexC);
+                    var t = new ToDrawAt(v[j].Tex);
                     if (!w.Contains(t)) {
                         w.Add(t);
                     }

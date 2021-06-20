@@ -53,8 +53,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Buttons = new Control[] { CloseButton };
         }
 
-        protected override void OnKeyUp(KeyEventArgs e) {
-            base.OnKeyUp(e);
+        protected override void OnKeyDown(KeyEventArgs e) {
+            base.OnKeyDown(e);
             if (!e.Handled && (e.Key == Key.Escape || e.Key == Key.W && Keyboard.Modifiers == ModifierKeys.Control)) {
                 CloseWithResult(MessageBoxResult.Cancel);
             }
@@ -68,31 +68,31 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return task.Task;
         }
 
+        private bool? ToDialogResult(MessageBoxResult result) {
+            // ReSharper disable once SwitchStatementMissingSomeCases
+            switch (result) {
+                case MessageBoxResult.OK:
+                case MessageBoxResult.Yes:
+                    return true;
+                case MessageBoxResult.Cancel:
+                case MessageBoxResult.No:
+                    return false;
+                default:
+                    return null;
+            }
+        }
+
         protected void CloseWithResult(MessageBoxResult? result) {
             if (result.HasValue) {
                 MessageBoxResult = result.Value;
-
                 try {
                     // sets the Window.DialogResult as well
-                    // ReSharper disable once SwitchStatementMissingSomeCases
-                    switch (result.Value) {
-                        case MessageBoxResult.OK:
-                        case MessageBoxResult.Yes:
-                            DialogResult = true;
-                            break;
-                        case MessageBoxResult.Cancel:
-                        case MessageBoxResult.No:
-                            DialogResult = false;
-                            break;
-                        default:
-                            DialogResult = null;
-                            break;
+                    if (DialogResult != ToDialogResult(result.Value)) {
+                        DialogResult = ToDialogResult(result.Value);
+                        return;
                     }
-                } catch (InvalidOperationException) {
-                    // TODO: Maybe there is a better way?
-                }
+                } catch (InvalidOperationException) { }
             }
-
             Close();
         }
 

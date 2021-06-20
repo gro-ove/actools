@@ -58,7 +58,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 IKn5ToRenderableConverter converter = null)
                 : base(car.MainModel, matrix, asyncTexturesLoading, converter) {
             CreateSoundEmittersAndSmoothers();
-
             RootDirectory = car.CarDirectory;
 
             _skinsDirectory = AcPaths.GetCarSkinsDirectory(RootDirectory);
@@ -238,12 +237,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        private void SetLodFilename(int key, string filename) {
+        private void SetLodFilename(int key, string fileName) {
             var debugMode = _currentLodObject.DebugMode;
             Remove(_currentLodObject.Renderable);
             if (!_lodsObjects.TryGetValue(key, out _currentLodObject)) {
-                var path = Path.GetFullPath(Path.Combine(RootDirectory, filename));
-                var kn5 = key == 0 ? _lodA : File.Exists(filename) ? Kn5.FromFile(path) : Kn5.CreateEmpty();
+                var path = Path.GetFullPath(Path.Combine(RootDirectory, fileName));
+                var kn5 = key == 0 ? _lodA : File.Exists(path) ? Kn5.FromFile(path) : Kn5.CreateEmpty();
                 _currentLodObject = new LodObject(kn5, _converter);
                 _lodsObjects[key] = _currentLodObject;
                 Insert(0, _currentLodObject.Renderable);
@@ -269,13 +268,16 @@ namespace AcTools.Render.Kn5Specific.Objects {
             InvalidateCount();
         }
 
-        public void SetCustomLod(string filename) {
+        public void SetCustomLod(string filename, bool useCockpitLr) {
             var existing = _lods.FindIndex(x => x.FileName == filename);
             if (existing != -1) {
                 CurrentLod = existing;
             } else {
                 _currentLod = -1;
                 SetLodFilename(filename.GetHashCode() | 7, filename);
+            }
+            if (useCockpitLr && HasCockpitLr) {
+                CockpitLrActive = true;
             }
         }
 
@@ -1386,7 +1388,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _flamesLines.Dispose();
             _wheelsLines.Dispose();
             _wingsLines.Dispose();
-
             _sound?.Dispose();
         }
 

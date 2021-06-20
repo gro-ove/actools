@@ -7,14 +7,14 @@ namespace StringBasedFilter.TestEntries {
         IncludedWithin, StartsWith, CompleteMatch
     }
 
-    internal class StringTestEntry : ITestEntry {
+    public class StringTestEntry : ITestEntry {
         private readonly StringMatchMode _mode;
         private readonly string _str;
         private readonly double? _strAsDouble;
         private readonly bool? _strAsBool;
 
-        public StringTestEntry(string str, StringMatchMode mode) {
-            _str = str.ToLowerInvariant();
+        public StringTestEntry(string str, StringMatchMode mode, bool caseInvariant) {
+            _str = caseInvariant ? str.ToLowerInvariant() : str;
             _mode = mode;
             _strAsDouble = AsDouble(_str);
             _strAsBool = AsBool(_str);

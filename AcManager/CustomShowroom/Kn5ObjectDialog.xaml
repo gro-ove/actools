@@ -24,38 +24,37 @@
       <RowDefinition />
     </Grid.RowDefinitions>
 
-    <mui:BetterTextBox Text="{Binding ObjectName, Mode=OneWay}" Style="{StaticResource Borderless.Heading2}" Grid.Row="0" Margin="0 0 0 12" IsReadOnly="True" />
+    <mui:SelectableTextBlock Text="{Binding ObjectName, Mode=OneWay}" Style="{StaticResource Borderless.Heading2}" Grid.Row="0" Margin="0 0 0 12" />
 
     <Grid Grid.Row="1">
       <StackPanel VerticalAlignment="Top">
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Path:" />
-          <mui:BetterTextBox Text="{Binding ObjectPath, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?"
-              ToolTip="{Binding ObjectPath, Mode=OneWay}" />
+          <mui:SelectableTextBlock Text="{Binding ObjectPath, Mode=OneWay}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Material:" />
-          <mui:BetterTextBox Text="{Binding Material.Name, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
+          <mui:SelectableTextBlock Text="{Binding Material.Name, Mode=OneWay}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Shader:" />
-          <mui:BetterTextBox Text="{Binding Material.ShaderName, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
+          <mui:SelectableTextBlock Text="{Binding Material.ShaderName, Mode=OneWay}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Main texture:" />
-          <mui:BetterTextBox Text="{Binding TextureDimensions, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
+          <mui:SelectableTextBlock Text="{Binding TextureDimensions, Mode=OneWay}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Triangles:" />
-          <mui:BetterTextBox Text="{Binding TrianglesCount, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
+          <mui:SelectableTextBlock Text="{Binding TrianglesCount, Mode=OneWay}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Vertices:" />
-          <mui:BetterTextBox Text="{Binding VerticesCount, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
+          <mui:SelectableTextBlock Text="{Binding VerticesCount, Mode=OneWay}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Flags:" />
-          <mui:BetterTextBox Text="{Binding Flags, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource Borderless}" Placeholder="?" />
+          <mui:SelectableTextBlock Text="{Binding Flags, Mode=OneWay}" Placeholder="?" />
         </DockPanel>
 
         <uc:BakedShadowsSettings Margin="0 20 0 0" DataContext="{Binding BakedShadows}"

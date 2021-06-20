@@ -1,23 +1,20 @@
 using System;
 using System.Runtime.InteropServices;
+using AcTools.Numerics;
 
 namespace AcTools.AiFile {
     [StructLayout(LayoutKind.Sequential, Pack = 4), Serializable]
     public struct AiSplineGrid {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public float[] MaxExtreme;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public float[] MinExtreme;
-
+        public Vec3 MaxExtreme;
+        public Vec3 MinExtreme;
         public int NeighborsConsideredNumber;
         public float SamplingDensity;
 
         public Item[] Items;
 
         public AiSplineGrid(ReadAheadBinaryReader reader) {
-            MaxExtreme = reader.ReadSingle3D();
-            MinExtreme = reader.ReadSingle3D();
+            MaxExtreme = reader.ReadVec3();
+            MinExtreme = reader.ReadVec3();
             NeighborsConsideredNumber = reader.ReadInt32();
             SamplingDensity = reader.ReadSingle();
             Items = new Item[reader.ReadInt32()];

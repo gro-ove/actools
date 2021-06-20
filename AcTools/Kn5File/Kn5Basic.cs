@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using AcTools.DataFile;
+using AcTools.Numerics;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -75,8 +76,34 @@ namespace AcTools.Kn5File {
             return null;
         }
 
-        public string GetObjectPath([NotNull] Kn5Node node) {
+        [CanBeNull]
+        private string GetParentPath([NotNull] Kn5Node parent, [NotNull] Kn5Node child) {
+            if (!TraverseDown(parent, "", out var ret)) {
+                throw new Exception("Failed to traverse down");
+            }
+            return ret;
+
+            bool TraverseDown(Kn5Node node, string s, out string r) {
+                foreach (var c in node.Children) {
+                    if (c == child) {
+                        r = s;
+                        return true;
+                    }
+                    if (c.NodeClass == Kn5NodeClass.Base && TraverseDown(c, $"{s}\\{c.Name}", out r)) {
+                        return true;
+                    }
+                }
+                r = null;
+                return false;
+            }
+        }
+
+        public string GetObjectPath(Kn5Node node) {
             return GetObjectPath(RootNode, node);
+        }
+
+        public string GetParentPath(Kn5Node node) {
+            return GetParentPath(RootNode, node);
         }
 
         public IEnumerable<Kn5Node> Nodes {
@@ -228,7 +255,7 @@ namespace AcTools.Kn5File {
         public void ExportCollada(string filename) {
             EnsureUniqueNamesSet();
 
-            using (var xml = XmlWriter.Create(filename, new XmlWriterSettings {
+            using (var xml = XmlWriter.Create(filename, new XmlWriterSettings{
                 Indent = true,
                 Encoding = Encoding.UTF8
             })) {
@@ -245,9 +272,7 @@ namespace AcTools.Kn5File {
                     xml.WriteElementStringSafe("created", new FileInfo(OriginalFilename).CreationTime.ToString(CultureInfo.InvariantCulture));
                     xml.WriteElementStringSafe("modified", new FileInfo(OriginalFilename).LastWriteTime.ToString(CultureInfo.InvariantCulture));
                 }
-                xml.WriteElement("unit",
-                        "name", "meter",
-                        "meter", 1);
+                xml.WriteElement("unit", "name", "meter", "meter", 1);
                 xml.WriteElementString("up_axis", "Y_UP");
                 xml.WriteEndElement();
 
@@ -285,8 +310,7 @@ namespace AcTools.Kn5File {
                 xml.WriteEndElement();
 
                 xml.WriteStartElement("scene");
-                xml.WriteElement("instance_visual_scene",
-                        "url", "#Scene");
+                xml.WriteElement("instance_visual_scene", "url", "#Scene");
                 xml.WriteEndElement();
 
                 xml.WriteEndElement();
@@ -348,7 +372,7 @@ namespace AcTools.Kn5File {
             xml.WriteAttributeString("sid", "emission");
             var ksEmissive = material.GetPropertyByName("ksEmissive");
             xml.WriteString(ksEmissive == null ? "0 0 0 1" :
-                    $"{ksEmissive.ValueC[0].ToString(CultureInfo.InvariantCulture)} {ksEmissive.ValueC[1].ToString(CultureInfo.InvariantCulture)} {ksEmissive.ValueC[2].ToString(CultureInfo.InvariantCulture)} 1");
+                    $"{ksEmissive.ValueC.X.ToString(CultureInfo.InvariantCulture)} {ksEmissive.ValueC.Y.ToString(CultureInfo.InvariantCulture)} {ksEmissive.ValueC.Z.ToString(CultureInfo.InvariantCulture)} 1");
             xml.WriteEndElement();
             xml.WriteEndElement();
 
@@ -500,8 +524,7 @@ namespace AcTools.Kn5File {
                     xml.WriteStartElement("float_array");
                     xml.WriteAttributeStringSafe("id", $"{node.UniqueName}Controller-Matrices-array");
                     xml.WriteAttributeString("count", node.Bones.Length * 16);
-                    xml.WriteString(node.Bones.Select(x => XmlWriterExtension.MatrixToCollada(x.Transform))
-                            .JoinToString(" "));
+                    xml.WriteString(node.Bones.Select(x => XmlWriterExtension.MatrixToCollada(x.Transform)).JoinToString(" "));
                     xml.WriteEndElement(); // float_array
 
                     xml.WriteStartElement("technique_common");
@@ -524,15 +547,54 @@ namespace AcTools.Kn5File {
                     xml.WriteStartElement("float_array");
                     xml.WriteAttributeStringSafe("id", $"{node.UniqueName}Controller-Weights-array");
 
-                    var weights = node.VerticeWeights.SelectMany(x => x.Weights.Where((y, i) => !Equals(x.Indices[i], -1f))).ToList();
-                    xml.WriteAttributeString("count", weights.Count);
-                    xml.WriteString(weights.JoinToString(" "));
+                    var weights = new StringBuilder();
+                    var weightsVCount = new StringBuilder();
+                    var weightsV = new StringBuilder();
+
+                    var weightsCount = 0;
+                    foreach (var w in node.VerticeWeights) {
+                        AddWeight(w.Indices.X, w.Weights.X);
+                        AddWeight(w.Indices.Y, w.Weights.Y);
+                        AddWeight(w.Indices.Z, w.Weights.Z);
+                        AddWeight(w.Indices.W, w.Weights.W);
+
+                        var vcount = 0;
+                        if (w.Weights.X != 0f) {
+                            ++vcount;
+                        }
+                        if (w.Weights.Y != 0f) {
+                            ++vcount;
+                        }
+                        if (w.Weights.Z != 0f) {
+                            ++vcount;
+                        }
+                        if (w.Weights.W != 0f) {
+                            ++vcount;
+                        }
+                        weightsVCount.Append(vcount);
+                        weightsVCount.Append(' ');
+                    }
+
+                    void AddWeight(float index, float weight) {
+                        if (index != -1f) {
+                            weights.Append(weight);
+                            weights.Append(' ');
+                            weightsV.Append(index);
+                            weightsV.Append(' ');
+                            weightsV.Append(weightsCount);
+                            weightsV.Append(' ');
+                            ++weightsCount;
+                        }
+                    }
+
+                    xml.WriteAttributeString("count", weightsCount);
+                    xml.WriteString(weights.ToString(0, weights.Length > 0 ? weights.Length - 1 : 0));
                     xml.WriteEndElement(); // float_array
 
                     xml.WriteStartElement("technique_common");
                     xml.WriteStartElement("accessor");
                     xml.WriteAttributeStringSafe("source", $"#{node.UniqueName}Controller-Weights-array");
-                    xml.WriteAttributeString("count", weights.Count);
+                    xml.WriteAttributeString("count", weightsCount);
                     xml.WriteAttributeString("stride", 1);
                     xml.WriteStartElement("param");
                     xml.WriteAttributeString("name", "WEIGHT");
@@ -567,10 +629,8 @@ namespace AcTools.Kn5File {
                     xml.WriteAttributeStringSafe("source", $"#{node.UniqueName}Controller-Weights");
                     xml.WriteEndElement(); // input
 
-                    xml.WriteElementString("vcount", node.VerticeWeights.Select(x => x.Weights.Count(y => !Equals(y, 0f))).JoinToString(" "));
-                    var k = 0;
-                    xml.WriteElementString("v", node.VerticeWeights.SelectMany(x =>
-                            x.Indices.Where(y => !Equals(y, -1f)).SelectMany((y, i) => new[] { y, k++ })).JoinToString(" "));
+                    xml.WriteElementString("vcount", weightsVCount.ToString(0, weightsVCount.Length == 0 ? 0 : weightsVCount.Length - 1));
+                    xml.WriteElementString("v", weightsV.ToString(0, weightsV.Length == 0 ? 0 : weightsV.Length - 1));
 
                     xml.WriteEndElement(); // vertex_weights
 
@@ -582,6 +642,34 @@ namespace AcTools.Kn5File {
 
         private void ExportCollada_Mesh(XmlWriter xml, string name, IReadOnlyList<Kn5Node> unsorted) {
             // AcToolsLogging.Write($"{name}: {unsorted.Sum(x => x.Vertices.Length)} vertices, {unsorted.Sum(x => x.Indices.Length / 3d)} triangles");
+
+            string Vec2ToString(IEnumerable<Vec2> vecs) {
+                var s = new StringBuilder();
+                foreach (var vec in vecs) {
+                    if (s.Length > 0) {
+                        s.Append(' ');
+                    }
+                    s.Append(vec.X);
+                    s.Append(' ');
+                    s.Append(vec.Y);
+                }
+                return s.ToString();
+            }
+
+            string Vec3ToString(IEnumerable<Vec3> vecs) {
+                var s = new StringBuilder();
+                foreach (var vec in vecs) {
+                    if (s.Length > 0) {
+                        s.Append(' ');
+                    }
+                    s.Append(vec.X);
+                    s.Append(' ');
+                    s.Append(vec.Y);
+                    s.Append(' ');
+                    s.Append(vec.Z);
+                }
+                return s.ToString();
+            }
 
             xml.WriteStartElement("geometry");
             xml.WriteAttributeStringSafe("id", $"{name}-mesh");
@@ -599,7 +687,7 @@ namespace AcTools.Kn5File {
             xml.WriteStartElement("float_array");
             xml.WriteAttributeStringSafe("id", $"{name}-mesh-positions-array");
             xml.WriteAttributeString("count", vertexCount * 3);
-            xml.WriteString(nodes.SelectMany(x => x.Vertices).SelectMany(x => x.Position).JoinToString(" "));
+            xml.WriteString(Vec3ToString(nodes.SelectMany(x => x.Vertices).Select(x => x.Position)));
             xml.WriteEndElement(); // float_array
 
             xml.WriteStartElement("technique_common");
@@ -608,15 +696,9 @@ namespace AcTools.Kn5File {
             xml.WriteAttributeString("count", vertexCount);
             xml.WriteAttributeString("stride", 3);
 
-            xml.WriteElement("param",
-                    "name", "X",
-                    "type", "float");
-            xml.WriteElement("param",
-                    "name", "Y",
-                    "type", "float");
-            xml.WriteElement("param",
-                    "name", "Z",
-                    "type", "float");
+            xml.WriteElement("param", "name", "X", "type", "float");
+            xml.WriteElement("param", "name", "Y", "type", "float");
+            xml.WriteElement("param", "name", "Z", "type", "float");
 
             xml.WriteEndElement(); // accessor
             xml.WriteEndElement(); // technique_common
@@ -628,7 +710,7 @@ namespace AcTools.Kn5File {
             xml.WriteStartElement("float_array");
             xml.WriteAttributeStringSafe("id", $"{name}-mesh-normals-array");
             xml.WriteAttributeString("count", vertexCount * 3);
-            xml.WriteString(nodes.SelectMany(x => x.Vertices).SelectMany(x => x.Normal).JoinToString(" "));
+            xml.WriteString(Vec3ToString(nodes.SelectMany(x => x.Vertices).Select(x => x.Normal)));
             xml.WriteEndElement(); // float_array
 
             xml.WriteStartElement("technique_common");
@@ -637,15 +719,9 @@ namespace AcTools.Kn5File {
             xml.WriteAttributeString("count", vertexCount);
             xml.WriteAttributeString("stride", "3");
 
-            xml.WriteElement("param",
-                    "name", "X",
-                    "type", "float");
-            xml.WriteElement("param",
-                    "name", "Y",
-                    "type", "float");
-            xml.WriteElement("param",
-                    "name", "Z",
-                    "type", "float");
+            xml.WriteElement("param", "name", "X", "type", "float");
+            xml.WriteElement("param", "name", "Y", "type", "float");
+            xml.WriteElement("param", "name", "Z", "type", "float");
 
             xml.WriteEndElement(); // accessor
             xml.WriteEndElement(); // technique_common
@@ -657,7 +733,7 @@ namespace AcTools.Kn5File {
             xml.WriteStartElement("float_array");
             xml.WriteAttributeStringSafe("id", $"{name}-mesh-map-0-array");
             xml.WriteAttributeString("count", vertexCount * 2);
-            xml.WriteString(nodes.SelectMany(x => x.Vertices).SelectMany(x => new[] { x.TexC[0], -x.TexC[1] }).JoinToString(" "));
+            xml.WriteString(Vec2ToString(nodes.SelectMany(x => x.Vertices).Select(x => new Vec2(x.Tex.X, -x.Tex.Y))));
             xml.WriteEndElement(); // float_array
 
             xml.WriteStartElement("technique_common");
@@ -666,12 +742,8 @@ namespace AcTools.Kn5File {
             xml.WriteAttributeString("count", vertexCount);
             xml.WriteAttributeString("stride", 2);
 
-            xml.WriteElement("param",
-                    "name", "S",
-                    "type", "float");
-            xml.WriteElement("param",
-                    "name", "T",
-                    "type", "float");
+            xml.WriteElement("param", "name", "S", "type", "float");
+            xml.WriteElement("param", "name", "T", "type", "float");
 
             xml.WriteEndElement(); // accessor
             xml.WriteEndElement(); // technique_common
@@ -680,9 +752,7 @@ namespace AcTools.Kn5File {
             /* vertices */
             xml.WriteStartElement("vertices");
             xml.WriteAttributeStringSafe("id", $"{name}-mesh-vertices");
-            xml.WriteElement("input",
-                    "semantic", "POSITION",
-                    "source", $"#{name}-mesh-positions");
+            xml.WriteElement("input", "semantic", "POSITION", "source", $"#{name}-mesh-positions");
             xml.WriteEndElement();
 
             /* triangles */
@@ -690,22 +760,12 @@ namespace AcTools.Kn5File {
             foreach (var node in nodes) {
                 xml.WriteStartElement("triangles");
                 xml.WriteAttributeStringSafe("original_node", $"{node.UniqueName}");
-                xml.WriteAttributeStringSafe("material", $"{Materials.Values.ElementAt((int)node.MaterialId).Name}-material");
+                xml.WriteAttributeStringSafe("material", $"{RequireMaterial(node.MaterialId).Name}-material");
                 xml.WriteAttributeString("count", node.Indices.Length / 3);
 
-                xml.WriteElement("input",
-                        "semantic", "VERTEX",
-                        "source", $"#{name}-mesh-vertices",
-                        "offset", 0);
-                xml.WriteElement("input",
-                        "semantic", "NORMAL",
-                        "source", $"#{name}-mesh-normals",
-                        "offset", 1);
-                xml.WriteElement("input",
-                        "semantic", "TEXCOORD",
-                        "source", $"#{name}-mesh-map-0",
-                        "offset", 2,
-                        "set", 0);
+                xml.WriteElement("input", "semantic", "VERTEX", "source", $"#{name}-mesh-vertices", "offset", 0);
+                xml.WriteElement("input", "semantic", "NORMAL", "source", $"#{name}-mesh-normals", "offset", 1);
+                xml.WriteElement("input", "semantic", "TEXCOORD", "source", $"#{name}-mesh-map-0", "offset", 2, "set", 0);
 
                 var inner = offset;
                 xml.WriteElementString("p", node.Indices.SelectMany(x => new[] { x + inner, x + inner, x + inner }).JoinToString(" "));
@@ -716,6 +776,11 @@ namespace AcTools.Kn5File {
 
             xml.WriteEndElement(); // mesh
             xml.WriteEndElement(); // geometry
+        }
+
+        [NotNull]
+        private Kn5Material RequireMaterial(uint index) {
+            return Materials.Values.ElementAtOrDefault((int)index) ?? throw new Exception($"Material is missing: {index}");
         }
 
         private static bool IsMultiMaterial(Kn5Node node) {
@@ -772,7 +837,7 @@ namespace AcTools.Kn5File {
             xml.WriteStartElement("bind_material");
             xml.WriteStartElement("technique_common");
 
-            foreach (var materialName in materialId.Select(u => Materials.Values.ElementAt((int)u).Name)) {
+            foreach (var materialName in materialId.Select(u => RequireMaterial(u).Name)) {
                 xml.WriteElement("instance_material",
                         "symbol", $"{materialName}-material",
                         "target", $"#{materialName}-material");
@@ -897,9 +962,9 @@ namespace AcTools.Kn5File {
                 for (var i = 0; i < material.ShaderProperties.Length; i++) {
                     section.Set("VAR_" + i + "_NAME", material.ShaderProperties[i].Name);
                     section.Set("VAR_" + i + "_FLOAT1", material.ShaderProperties[i].ValueA);
-                    section.Set("VAR_" + i + "_FLOAT2", material.ShaderProperties[i].ValueB);
-                    section.Set("VAR_" + i + "_FLOAT3", material.ShaderProperties[i].ValueC);
-                    section.Set("VAR_" + i + "_FLOAT4", material.ShaderProperties[i].ValueD);
+                    section.Set("VAR_" + i + "_FLOAT2", material.ShaderProperties[i].ValueB.ToString());
+                    section.Set("VAR_" + i + "_FLOAT3", material.ShaderProperties[i].ValueC.ToString());
+                    section.Set("VAR_" + i + "_FLOAT4", material.ShaderProperties[i].ValueD.ToString());
                 }
 
                 section.Set("RESCOUNT", material.TextureMappings.Length);
@@ -1154,9 +1219,9 @@ namespace AcTools.Kn5File {
                         material.ShaderProperties[i] = new Kn5Material.ShaderProperty {
                             Name = ReadString(),
                             ValueA = ReadSingle(),
-                            ValueB = ReadSingle2D(),
-                            ValueC = ReadSingle3D(),
-                            ValueD = ReadSingle4D()
+                            ValueB = ReadVec2(),
+                            ValueC = ReadVec3(),
+                            ValueD = ReadVec4()
                         };
                     }
 
@@ -1218,10 +1283,10 @@ namespace AcTools.Kn5File {
                             for (var i = 0; i < node.Vertices.Length; i++) {
                                 // 44 bytes per vertex
                                 node.Vertices[i] = new Kn5Node.Vertex {
-                                    Position = ReadSingle3D(),
-                                    Normal = ReadSingle3D(),
-                                    TexC = ReadSingle2D(),
-                                    TangentU = ReadSingle3D()
+                                    Position = ReadVec3(),
+                                    Normal = ReadVec3(),
+                                    Tex = ReadVec2(),
+                                    Tangent = ReadVec3()
                                 };
                             }
 
@@ -1237,7 +1302,7 @@ namespace AcTools.Kn5File {
                             node.LodIn = ReadSingle();
                             node.LodOut = ReadSingle();
 
-                            node.BoundingSphereCenter = ReadSingle3D();
+                            node.BoundingSphereCenter = ReadVec3();
                             node.BoundingSphereRadius = ReadSingle();
 
                             node.IsRenderable = ReadBoolean();
@@ -1261,17 +1326,17 @@ namespace AcTools.Kn5File {
                             for (var i = 0; i < node.Vertices.Length; i++) {
                                 // 76 bytes per vertex
                                 node.Vertices[i] = new Kn5Node.Vertex {
-                                    Position = ReadSingle3D(),
-                                    Normal = ReadSingle3D(),
-                                    TexC = ReadSingle2D(),
-                                    TangentU = ReadSingle3D()
+                                    Position = ReadVec3(),
+                                    Normal = ReadVec3(),
+                                    Tex = ReadVec2(),
+                                    Tangent = ReadVec3()
                                 };
 
                                 node.VerticeWeights[i] = new Kn5Node.VerticeWeight {
-                                    Weights = ReadSingle4D(),
+                                    Weights = ReadVec4(),
 
                                     // Yes! Those are floats!
-                                    Indices = ReadSingle4D()
+                                    Indices = ReadVec4()
                                 };
                             }
 
@@ -1329,7 +1394,7 @@ namespace AcTools.Kn5File {
                             node.LodIn = ReadSingle();
                             node.LodOut = ReadSingle();
 
-                            node.BoundingSphereCenter = ReadSingle3D();
+                            node.BoundingSphereCenter = ReadVec3();
                             node.BoundingSphereRadius = ReadSingle();
 
                             node.IsRenderable = ReadBoolean();

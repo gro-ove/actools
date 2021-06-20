@@ -695,6 +695,23 @@ namespace AcTools.DataFile {
             // TODO: optimization
             return Parse(Stringify(), _iniFileMode);
         }
+
+        public bool Merge(IniFile other) {
+            var ret = false;
+            foreach (var section in other) {
+                var thisSection = this[section.Key];
+                foreach (var pair in section.Value.Where(pair => thisSection[pair.Key] != pair.Value)) {
+                    thisSection[pair.Key] = pair.Value;
+                    ret = true;
+                }
+            }
+            return ret;
+        }
+
+        public void SetFrom(IniFile other) {
+            Clear();
+            Merge(other);
+        }
     }
 
     public class IniCommentariesScheme : Dictionary<string, Dictionary<string, string>> {

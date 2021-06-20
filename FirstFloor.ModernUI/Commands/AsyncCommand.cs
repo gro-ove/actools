@@ -63,6 +63,8 @@ namespace FirstFloor.ModernUI.Commands {
 
                 if (_additionalDelay != TimeSpan.Zero) {
                     await Task.Delay(_additionalDelay);
+                } else {
+                    await Task.Yield();
                 }
             } catch(Exception e) {
                 Logging.Error(e);
@@ -116,6 +118,8 @@ namespace FirstFloor.ModernUI.Commands {
 
                 if (_additionalDelay != 0) {
                     await Task.Delay(_additionalDelay);
+                } else {
+                    await Task.Yield();
                 }
             } catch (Exception e) {
                 Logging.Error(e);

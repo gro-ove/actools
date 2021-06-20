@@ -1,4 +1,5 @@
-﻿using AcTools.Utils.Helpers;
+﻿using AcTools.Numerics;
+using AcTools.Utils.Helpers;
 
 namespace AcTools.KsAnimFile {
     public abstract class KsAnimEntryBase : IWithId {
@@ -8,7 +9,7 @@ namespace AcTools.KsAnimFile {
     }
 
     public class KsAnimEntryV1 : KsAnimEntryBase {
-        public float[][] Matrices;
+        public Mat4x4[] Matrices;
         public override int Size => Matrices.Length;
     }
 
@@ -19,15 +20,15 @@ namespace AcTools.KsAnimFile {
 
     public struct KsAnimKeyframe {
         // Quaternion (four values)
-        public float[] Rotation;
+        public Quat Rotation;
 
         // 3D-vector
-        public float[] Transition;
+        public Vec3 Transition;
 
         // 3D-vector
-        public float[] Scale;
+        public Vec3 Scale;
 
-        public KsAnimKeyframe(float[] rotation, float[] transition, float[] scale) {
+        public KsAnimKeyframe(Quat rotation, Vec3 transition, Vec3 scale) {
             Rotation = rotation;
             Transition = transition;
             Scale = scale;

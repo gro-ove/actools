@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -9,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -23,6 +25,7 @@ using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools.Kn5File;
+using AcTools.Numerics;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
@@ -39,6 +42,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using OxyPlot;
 using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
 using Control = System.Windows.Controls.Control;
@@ -168,6 +172,7 @@ namespace AcManager.CustomShowroom {
 
         public enum Mode {
             Main,
+            GeneratedLods,
             VisualSettings,
             Selected,
             AmbientShadows,
@@ -194,23 +199,19 @@ namespace AcManager.CustomShowroom {
                         renderer.AmbientShadowHighlight = false;
                     }
 
-                    if (value != Mode.Skin) {
+                    if (value != Mode.Skin && _mode == Mode.Skin) {
                         DisposeSkinItems();
                     }
 
-                    if (value == Mode.Skin && SkinItems == null) {
-                        if (!PluginsManager.Instance.IsPluginEnabled(KnownPlugins.Magick)) {
-                            NonfatalError.Notify("Can’t edit skins without Magick.NET plugin", "Please, go to Settings/Plugins and install it first.");
-                            value = Mode.Main;
-                            /*} else {
-                            LoadSkinItems();*/
-                        }
+                    if (value == Mode.Skin && SkinItems == null && !PluginsManager.Instance.IsPluginEnabled(KnownPlugins.Magick)) {
+                        NonfatalError.Notify("Can’t edit skins without Magick.NET plugin", "Please, go to Settings/Plugins and install it first.");
+                        value = Mode.Main;
                     }
 
                     _mode = value;
                     _mainModeCommand?.RaiseCanExecuteChanged();
 
-                    if (renderer?.SelectedObject != null && Mode != Mode.Selected) {
+                    if (renderer?.SelectedObject != null && !IsSelectingMode(value)) {
                         try {
                             _ignoreModeChange = true;
                             renderer.SelectedObject = null;
@@ -223,7 +224,11 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            public bool CanSelectNodes() => Mode == Mode.Main || Mode == Mode.Selected ||
+            private bool IsSelectingMode(Mode mode) {
+                return mode == Mode.Selected || mode == Mode.GeneratedLods;
+            }
+
+            public bool CanSelectNodes() => Mode == Mode.Main || IsSelectingMode(Mode) ||
                     (Renderer as DarkKn5ObjectRenderer)?.Lights.Any(x => x.Tag.IsCarTag && x.AttachedToSelect) == true;
 
             private DelegateCommand<Mode> _selectModeCommand;
@@ -307,7 +312,9 @@ namespace AcManager.CustomShowroom {
             [NotNull]
             public CarObject Car { get; }
 
-            public ICollection<CustomShowroomLodDefinition> LodDefinitions { get; }
+            public IList<CustomShowroomLodDefinition> LodDefinitions { get; }
+
+            public BetterListCollectionView LodDefinitionsView { get; }
 
             private CustomShowroomLodDefinition _selectedLodDefinition;
 
@@ -315,9 +322,33 @@ namespace AcManager.CustomShowroom {
                 get => _selectedLodDefinition;
                 set => Apply(value, ref _selectedLodDefinition, () => {
                     if (value?.Filename != null) {
-                        Renderer?.CarNode?.SetCustomLod(value.Filename);
+                        Renderer?.CarNode?.SetCustomLod(value.Filename, value.UseCockpitLrByDefault);
+                        UpdateSelectedLodStats();
                     }
                 });
+            }
+
+            private PlotModel _selectedLodStats;
+
+            public PlotModel SelectedLodStats {
+                get => _selectedLodStats;
+                set => Apply(value, ref _selectedLodStats);
+            }
+
+            private ICommand _viewLodDetailsCommand;
+
+            public ICommand ViewLodDetailsCommand {
+                get => _viewLodDetailsCommand;
+                set => Apply(value, ref _viewLodDetailsCommand);
+            }
+
+            private readonly Busy _updateLodStatsBusy = new Busy();
+
+            private void UpdateSelectedLodStats() {
+                _updateLodStatsBusy.DoDelay(() => {
+                    SelectedLodStats = SelectedLodDefinition?.StatsFactory?.Invoke(Renderer?.CarNode?.GetCurrentLodKn5());
+                    ViewLodDetailsCommand = SelectedLodDefinition?.ViewDetailsFactory?.Invoke(Renderer?.CarNode?.GetCurrentLodKn5());
+                }, 100);
             }
 
             private CarSkinObject _skin;
@@ -390,8 +421,16 @@ namespace AcManager.CustomShowroom {
                 _shots = shots;
 
                 if (lodDefinitions != null) {
-                    LodDefinitions = lodDefinitions as ICollection<CustomShowroomLodDefinition> ?? lodDefinitions.ToList();
+                    renderer.DisallowMagickOverride = true;
+                    LodDefinitions = lodDefinitions as IList<CustomShowroomLodDefinition> ?? lodDefinitions.ToList();
+                    LodDefinitionsView = new BetterListCollectionView((IList)LodDefinitions) {
+                        GroupDescriptions = { new PropertyGroupDescription(nameof(CustomShowroomLodDefinition.DisplayLodName)) }
+                    };
                     _selectedLodDefinition = LodDefinitions.FirstOrDefault(x => x.Filename == renderer.CarNode?.OriginalFile.OriginalFilename);
+                    if (_selectedLodDefinition?.UseCockpitLrByDefault == true && renderer.CarNode?.HasCockpitLr == true) {
+                        renderer.CarNode.CockpitLrActive = true;
+                    }
+                    UpdateSelectedLodStats();
                     renderer.MainSlot.SelectLodPreview += (o, s) => {
                         SelectedLodDefinition = LodDefinitions.ElementAt(
                                 ((LodDefinitions.IndexOf(SelectedLodDefinition) + s.SelectOffset) % LodDefinitions.Count + LodDefinitions.Count)
@@ -437,6 +476,10 @@ namespace AcManager.CustomShowroom {
 
                 _shots.PreviewScreenshot += OnScreenshot;
                 Car.ChangedFile += OnCarChangedFile;
+
+                if (lodDefinitions != null) {
+                    Mode = Mode.GeneratedLods;
+                }
             }
 
             private void OnCarChangedFile(object sender, AcObjectFileChangedArgs args) {
@@ -893,6 +936,20 @@ namespace AcManager.CustomShowroom {
                 set => Apply(value, ref _selectedObjectTrianglesCount);
             }
 
+            private string _selectedObjectPath;
+
+            public string SelectedObjectPath {
+                get => _selectedObjectPath;
+                set => Apply(value, ref _selectedObjectPath);
+            }
+
+            private string _selectedObjectTransparent;
+
+            public string SelectedObjectTransparent {
+                get => _selectedObjectTransparent;
+                set => Apply(value, ref _selectedObjectTransparent);
+            }
+
             private void OnRendererPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(Renderer.MagickOverride):
@@ -921,8 +978,20 @@ namespace AcManager.CustomShowroom {
 
                     case nameof(Renderer.SelectedObject):
                         ActionExtension.InvokeInMainThread(() => {
-                            Mode = Renderer?.SelectedObject != null ? Mode.Selected : Mode.Main;
+                            if (Renderer?.SelectedObject != null) {
+                                if (Mode != Mode.Selected) {
+                                    _modeBeforeSelection = Mode;
+                                }
+                                Mode = Mode.Selected;
+                            } else {
+                                Mode = _modeBeforeSelection;
+                            }
                             SelectedObjectTrianglesCount = Renderer?.SelectedObject?.TrianglesCount ?? 0;
+
+                            var kn5 = Renderer?.GetKn5(Renderer.SelectedObject);
+                            var kn5Node = Renderer?.SelectedObject?.OriginalNode;
+                            SelectedObjectPath = kn5Node != null ? kn5?.GetParentPath(kn5Node) : null;
+                            SelectedObjectTransparent = (kn5Node?.IsTransparent == true ? UiStrings.Yes : UiStrings.No).ToSentenceMember();
                             _viewObjectCommand?.RaiseCanExecuteChanged();
                         });
                         break;
@@ -932,6 +1001,8 @@ namespace AcManager.CustomShowroom {
                         break;
                 }
             }
+
+            private Mode _modeBeforeSelection = Mode.Main;
 
             private DelegateCommand _toggleAmbientShadowModeCommand;
 
@@ -1081,9 +1152,9 @@ namespace AcManager.CustomShowroom {
             }, () => Renderer?.SelectedObject != null && Renderer?.GetKn5(Renderer.SelectedObject)?.IsEditable == true));
 
             private static string MaterialPropertyToString(Kn5Material.ShaderProperty property) {
-                if (property.ValueD.Any(x => !Equals(x, 0f))) return $"({property.ValueD.JoinToString(@", ")})";
-                if (property.ValueC.Any(x => !Equals(x, 0f))) return $"({property.ValueC.JoinToString(@", ")})";
-                if (property.ValueB.Any(x => !Equals(x, 0f))) return $"({property.ValueB.JoinToString(@", ")})";
+                if (property.ValueD != Vec4.Zero) return $"({property.ValueD.X}, {property.ValueD.Y}, {property.ValueD.Z}, {property.ValueD.W})";
+                if (property.ValueC != Vec3.Zero) return $"({property.ValueC.X}, {property.ValueC.Y}, {property.ValueC.Z})";
+                if (property.ValueB != Vec2.Zero) return $"({property.ValueB.X}, {property.ValueB.Y})";
                 return property.ValueA.ToInvariantString();
             }
 

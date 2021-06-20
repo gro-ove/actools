@@ -111,10 +111,6 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
     <ApplicationManifest>App.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup Condition="'$(UseCosturaToPack)' == 'true'">
@@ -1913,6 +1909,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="About\ImportantTips\Car LODs Generation.txt" />
     <Content Include="About\ImportantTips\Recommended Paid Mods From RSS.txt" />
     <Content Include="About\Licenses\CefSharp\CefSharp.txt" />
     <Content Include="About\Licenses\EmbedIO\EmbedIO.txt" />

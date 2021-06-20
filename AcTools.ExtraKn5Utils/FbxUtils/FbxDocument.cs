@@ -8,7 +8,7 @@ using System.Linq;
 using AcTools.ExtraKn5Utils.FbxUtils.Extensions;
 using AcTools.ExtraKn5Utils.FbxUtils.Tokens;
 using AcTools.ExtraKn5Utils.FbxUtils.Tokens.Value;
-using SlimDX;
+using AcTools.Numerics;
 
 namespace AcTools.ExtraKn5Utils.FbxUtils {
     /// <summary>
@@ -146,14 +146,14 @@ namespace AcTools.ExtraKn5Utils.FbxUtils {
             return string.Equals(value, "ByPolygon", StringComparison.CurrentCultureIgnoreCase);
         }
 
-        public Vector3 ToVector3(float[] values, int index) {
+        public Vec3 ToVector3(float[] values, int index) {
             var id = index * 3;
-            return new Vector3(values[id], values[id + 1], values[id + 2]);
+            return new Vec3(values[id], values[id + 1], values[id + 2]);
         }
 
-        public Vector2 ToVector2(float[] values, int index) {
+        public Vec2 ToVector2(float[] values, int index) {
             var id = index * 2;
-            return new Vector2(values[id], values[id + 1]);
+            return new Vec2(values[id], values[id + 1]);
         }
 
         public int ParseVertexIndex(int[] layerIndices, string mappingNode, string referenceMode, int controlPointIndex, int vertexindex) {
@@ -178,13 +178,13 @@ namespace AcTools.ExtraKn5Utils.FbxUtils {
             throw new NotSupportedException();
         }
 
-        public Vector3 ParseVertexAsVector3(float[] layerValues, int[] layerIndices, string mappingMode, string referenceMode, int controlPointIndex,
+        public Vec3 ParseVertexAsVector3(float[] layerValues, int[] layerIndices, string mappingMode, string referenceMode, int controlPointIndex,
                 int vertexindex) {
             var index = ParseVertexIndex(layerIndices, mappingMode, referenceMode, controlPointIndex, vertexindex);
             return ToVector3(layerValues, index);
         }
 
-        public Vector2 ParseVertexAsVector2(float[] layerValues, int[] layerIndices, string mappingMode, string referenceMode, int controlPointIndex,
+        public Vec2 ParseVertexAsVector2(float[] layerValues, int[] layerIndices, string mappingMode, string referenceMode, int controlPointIndex,
                 int vertexindex) {
             var index = ParseVertexIndex(layerIndices, mappingMode, referenceMode, controlPointIndex, vertexindex);
             return ToVector2(layerValues, index);
@@ -195,7 +195,7 @@ namespace AcTools.ExtraKn5Utils.FbxUtils {
             return layerValues[index];
         }
 
-        public Vector3[] GetPositions(long geometryId, int[] vertexIndices) {
+        public Vec3[] GetPositions(long geometryId, int[] vertexIndices) {
             var geometryNode = GetGeometry(geometryId);
             var verticesNode = geometryNode.GetRelative("Vertices");
 
@@ -206,7 +206,7 @@ namespace AcTools.ExtraKn5Utils.FbxUtils {
                 vertices = verticesNode.PropertiesToFloatArray();
             }
 
-            var result = new List<Vector3>();
+            var result = new List<Vec3>();
             for (var i = 0; i < vertexIndices.Length; i++) {
                 result.Add(ToVector3(vertices, vertexIndices[i]));
             }
@@ -270,8 +270,8 @@ namespace AcTools.ExtraKn5Utils.FbxUtils {
             referenceMode = null;
         }
 
-        public Vector3[] GetNormals(long geometryId, int[] vertexIndices, long layerIndex = 0) {
-            var normals = new List<Vector3>();
+        public Vec3[] GetNormals(long geometryId, int[] vertexIndices, long layerIndex = 0) {
+            var normals = new List<Vec3>();
             if (!GetGeometryHasNormals(geometryId)) {
                 return normals.ToArray();
             }
@@ -332,8 +332,8 @@ namespace AcTools.ExtraKn5Utils.FbxUtils {
             return result.ToArray();
         }
 
-        public Vector3[] GetTangents(long geometryId, int[] vertexIndices, long layerIndex = 0) {
-            var tangents = new List<Vector3>();
+        public Vec3[] GetTangents(long geometryId, int[] vertexIndices, long layerIndex = 0) {
+            var tangents = new List<Vec3>();
             if (!GetGeometryHasTangents(geometryId)) {
                 return tangents.ToArray();
             }
@@ -352,8 +352,8 @@ namespace AcTools.ExtraKn5Utils.FbxUtils {
             return tangents.ToArray();
         }
 
-        public Vector3[] GetBinormals(long geometryId, int[] vertexIndices, long layerIndex = 0) {
-            var binormals = new List<Vector3>();
+        public Vec3[] GetBinormals(long geometryId, int[] vertexIndices, long layerIndex = 0) {
+            var binormals = new List<Vec3>();
             if (!GetGeometryHasTangents(geometryId)) {
                 return binormals.ToArray();
             }
@@ -372,8 +372,8 @@ namespace AcTools.ExtraKn5Utils.FbxUtils {
             return binormals.ToArray();
         }
 
-        public Vector2[] GetTexCoords(long geometryId, int[] vertexIndices, long layerIndex = 0) {
-            var texCoords = new List<Vector2>();
+        public Vec2[] GetTexCoords(long geometryId, int[] vertexIndices, long layerIndex = 0) {
+            var texCoords = new List<Vec2>();
             if (!GetGeometryHasTexCoords(geometryId)) {
                 return texCoords.ToArray();
             }
@@ -446,17 +446,17 @@ namespace AcTools.ExtraKn5Utils.FbxUtils {
             return property.GetAsString().Split(new string[] { "::" }, StringSplitOptions.None)[1];
         }
 
-        public Vector4 GetMaterialDiffuseColor(long materialId) {
+        public Vec4 GetMaterialDiffuseColor(long materialId) {
             var materialNode = GetMaterial(materialId);
             var materialProperties = materialNode.GetRelative(PropertiesName);
             var diffuseProperty = GetNodeWithValue(materialProperties.Nodes, new StringToken("DiffuseColor"));
             if (Version >= FbxVersion.v7_0) {
                 var alpha = diffuseProperty.Properties.Count > 7 ? diffuseProperty.Properties[7].GetAsFloat() : 1.0f;
-                return new Vector4(diffuseProperty.Properties[4].GetAsFloat(), diffuseProperty.Properties[5].GetAsFloat(),
+                return new Vec4(diffuseProperty.Properties[4].GetAsFloat(), diffuseProperty.Properties[5].GetAsFloat(),
                         diffuseProperty.Properties[6].GetAsFloat(), alpha);
             } else {
                 var alpha = diffuseProperty.Properties.Count > 6 ? diffuseProperty.Properties[6].GetAsFloat() : 1.0f;
-                return new Vector4(diffuseProperty.Properties[3].GetAsFloat(), diffuseProperty.Properties[4].GetAsFloat(),
+                return new Vec4(diffuseProperty.Properties[3].GetAsFloat(), diffuseProperty.Properties[4].GetAsFloat(),
                         diffuseProperty.Properties[5].GetAsFloat(), alpha);
             }
         }

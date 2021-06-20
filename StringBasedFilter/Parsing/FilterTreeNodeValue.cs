@@ -10,11 +10,7 @@ namespace StringBasedFilter.Parsing {
         private readonly ITestEntry _testEntry;
 
         public static FilterTreeNode Create(string value, [NotNull] FilterParams filterParams, out string keyName) {
-            var testEntry = filterParams.CustomTestEntryFactory?.Invoke(value);
-            if (testEntry != null) {
-                keyName = null;
-                return new FilterTreeNodeValue("<custom>", testEntry);
-            }
+            ITestEntry testEntry;
 
             if (filterParams.ValueConversion != null) {
                 value = filterParams.ValueConversion(value);
@@ -36,7 +32,7 @@ namespace StringBasedFilter.Parsing {
 
                 switch (splitted.ComparingOperation) {
                     case FilterComparingOperation.IsSame:
-                        testEntry = CreateTestEntry(splitted.PropertyValue, filterParams.RegexFactory, filterParams.StringMatchMode);
+                        testEntry = CreateTestEntry(splitted.PropertyValue, filterParams);
                         break;
                     case FilterComparingOperation.IsTrue:
                         testEntry = filterParams.BooleanTestFactory(true);
@@ -57,7 +53,7 @@ namespace StringBasedFilter.Parsing {
                 }
             } else {
                 keyName = null;
-                testEntry = CreateTestEntry(value, filterParams.RegexFactory, filterParams.StringMatchMode);
+                testEntry = CreateTestEntry(value, filterParams);
             }
 
             return new FilterTreeNodeValue(keyName, testEntry);
@@ -68,19 +64,25 @@ namespace StringBasedFilter.Parsing {
             _testEntry = testEntry;
         }
 
-        private static ITestEntry CreateTestEntry(string value, RegexFactory regexFactory, StringMatchMode mode) {
+        private static ITestEntry CreateTestEntry(string value, [NotNull] FilterParams filterParams) {
+            var customEntry = filterParams.CustomTestEntryFactory?.Invoke(value);
+            if (customEntry != null) {
+                return customEntry;
+            }
+
             if (value.Length > 1) {
                 if (value[0] == '"' && value[value.Length - 1] == '"') {
-                    return new StringTestEntry(value.Substring(1, value.Length - 2), mode);
+                    return new StringTestEntry(value.Substring(1, value.Length - 2), filterParams.StringMatchMode, filterParams.CaseInvariant);
                 }
 
                 if (value[0] == '\'' && value[value.Length - 1] == '\'') {
-                    return new StringTestEntry(value.Substring(1, value.Length - 2), StringMatchMode.CompleteMatch);
+                    return new StringTestEntry(value.Substring(1, value.Length - 2), StringMatchMode.CompleteMatch, filterParams.CaseInvariant);
                 }
 
                 if (value[0] == '`' && value[value.Length - 1] == '`') {
                     try {
-                        var regex = new Regex(value.Substring(1, value.Length - 2), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                        var regex = new Regex(value.Substring(1, value.Length - 2),
+                                filterParams.CaseInvariant ? RegexOptions.Compiled | RegexOptions.IgnoreCase : RegexOptions.Compiled);
                         return new RegexTestEntry(regex);
                     } catch (Exception) {
                         return new ConstTestEntry(false);
@@ -89,10 +91,10 @@ namespace StringBasedFilter.Parsing {
             }
 
             if (RegexFromQuery.IsQuery(value)) {
-                return new RegexTestEntry(regexFactory(value, mode));
+                return new RegexTestEntry(filterParams.RegexFactory(value, filterParams.StringMatchMode));
             }
 
-            return new StringTestEntry(value, mode);
+            return new StringTestEntry(value, filterParams.StringMatchMode, filterParams.CaseInvariant);
         }
 
         public override string ToString() {

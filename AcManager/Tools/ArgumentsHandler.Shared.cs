@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AcManager.Controls;
 using AcManager.Controls.ViewModels;
 using AcManager.CustomShowroom;
+using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
@@ -81,6 +82,12 @@ namespace AcManager.Tools {
                 case SharedEntryType.CspSettings:
                     return ProcessSharedCspSettings(shared, data);
 
+                case SharedEntryType.CarLodsGenerationPreset:
+                    return ProcessSharedCarLodsGenerationPreset(shared, data);
+
+                case SharedEntryType.BakedShadowsPreset:
+                    return ProcessSharedBakedShadowsPreset(shared, data);
+
                 case SharedEntryType.Replay:
                     throw new NotSupportedException();
 
@@ -122,6 +129,7 @@ namespace AcManager.Tools {
                 if (data.Contains("\"DisableWatermark\":")) return SharedEntryType.AcShowroomPreset;
                 if (data.Contains("\"TyresShortName\":")) return SharedEntryType.TyresGenerationExamplesPreset;
                 if (data.Contains("\"SeparateNetworks\":")) return SharedEntryType.TyresGenerationParamsPreset;
+                if (data.Contains("\"UserDefinedValues\":")) return SharedEntryType.CarLodsGenerationPreset;
             } else if (data.StartsWith("<RealHeadMotion>")) {
                 return SharedEntryType.RhmPreset;
             } else if (data.StartsWith(@"[") && Regex.IsMatch(data, @"\[[A-Z_]+:[A-Z_]+\]")) {
@@ -276,6 +284,34 @@ namespace AcManager.Tools {
                     default:
                         return ArgumentHandleResult.Failed;
                 }
+            }
+        }
+
+        private static ArgumentHandleResult ProcessSharedCarLodsGenerationPreset(SharedEntry shared, byte[] data) {
+            var result = ShowDialog(shared, applyable: false);
+            switch (result) {
+                case Choise.Save:
+                    var filename = FileUtils.EnsureUnique(Path.Combine(
+                            PresetsManager.Instance.GetDirectory(CarGenerateLodsDialog.PresetableKey), @"Loaded", shared.GetFileName()));
+                    Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                    File.WriteAllBytes(filename, data);
+                    return ArgumentHandleResult.SuccessfulShow;
+                default:
+                    return ArgumentHandleResult.Failed;
+            }
+        }
+
+        private static ArgumentHandleResult ProcessSharedBakedShadowsPreset(SharedEntry shared, byte[] data) {
+            var result = ShowDialog(shared, applyable: false);
+            switch (result) {
+                case Choise.Save:
+                    var filename = FileUtils.EnsureUnique(Path.Combine(
+                            PresetsManager.Instance.GetDirectory(BakedShadowsRendererViewModel.PresetableKey), @"Loaded", shared.GetFileName()));
+                    Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                    File.WriteAllBytes(filename, data);
+                    return ArgumentHandleResult.SuccessfulShow;
+                default:
+                    return ArgumentHandleResult.Failed;
             }
         }
 

@@ -1,12 +1,11 @@
 using System;
 using System.Runtime.InteropServices;
+using AcTools.Numerics;
 
 namespace AcTools.AiFile {
     [StructLayout(LayoutKind.Sequential, Pack = 4), Serializable]
     public struct AiPoint {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public float[] Position;
-
+        public Vec3 Position;
         public float Length;
         public int Id;
 
@@ -14,7 +13,7 @@ namespace AcTools.AiFile {
         public static readonly byte[] Buffer = new byte[Size];
 
         public void LoadFrom(ReadAheadBinaryReader reader) {
-            Position = reader.ReadSingle3D();
+            Position = reader.ReadVec3();
             Length = reader.ReadSingle();
             Id = reader.ReadInt32();
         }

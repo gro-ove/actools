@@ -48,8 +48,8 @@ namespace AcManager.ContentRepair.Repairs {
             foreach (var name in SuspensionNodes.Where(name => kn5.FirstByName(name) == null)) {
                 var node = Kn5Node.CreateBaseNode(name);
                 var wheel = kn5.FirstByName(name.Replace("SUSP", "WHEEL"))?.Transform;
-                if (wheel != null) {
-                    node.Transform = wheel;
+                if (wheel.HasValue) {
+                    node.Transform = wheel.Value;
                 }
 
                 kn5.RootNode.Children.Add(node);

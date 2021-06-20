@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -17,12 +18,18 @@ namespace FirstFloor.ModernUI {
         public static void Ignore(this Task task) {
             task.ContinueWith(x => {
                 Logging.Warning(x.Exception?.Flatten());
+#if DEBUG
+                MessageBox.Show("IGNORED EXCEPTION:\n" + x.Exception?.Flatten());
+#endif
             }, TaskContinuationOptions.NotOnRanToCompletion);
         }
 
         public static void Ignore<T>(this Task<T> task) {
             task.ContinueWith(x => {
                 Logging.Warning(x.Exception?.Flatten());
+#if DEBUG
+                MessageBox.Show("IGNORED EXCEPTION:\n" + x.Exception?.Flatten());
+#endif
             }, TaskContinuationOptions.OnlyOnFaulted);
         }
 

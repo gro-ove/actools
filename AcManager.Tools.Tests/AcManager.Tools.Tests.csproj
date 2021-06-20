@@ -56,6 +56,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AcTools.AcdEncryption, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Output\x86\Debug\AcTools.AcdEncryption.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Output\x86\Debug\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=3.7.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb">
       <HintPath>..\packages\NUnit.3.7.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
@@ -89,7 +95,7 @@
   <ItemGroup>
     <Compile Include="AcEnabledOnlyCollectionTest.cs" />
     <Compile Include="FlexibleLoaderTest.cs" />
-    <Compile Include="KunosCareerProgressTest.cs" />
+    <Compile Include="CarLodGeneratorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SharedLocaleReaderTest.cs" />
     <Compile Include="TelemetryListenerTest.cs" />
@@ -99,6 +105,10 @@
     <ProjectReference Include="..\AcManager.Tools\AcManager.Tools.csproj">
       <Project>{764AFD18-0755-4596-839C-FEA3F492303B}</Project>
       <Name>AcManager.Tools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AcTools.ExtraKn5Utils\AcTools.ExtraKn5Utils.csproj">
+      <Project>{67729c43-6e5f-482a-8777-1651ea1aa393}</Project>
+      <Name>AcTools.ExtraKn5Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcTools\AcTools.csproj">
       <Project>{55B65FB4-92CB-42EF-B4BF-F287810986E1}</Project>

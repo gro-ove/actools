@@ -1,4 +1,5 @@
 ﻿using System;
+using AcTools.ExtraKn5Utils.Kn5Utils;
 using AcTools.Kn5File;
 using AcTools.KnhFile;
 using AcTools.KsAnimFile;
@@ -93,7 +94,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             foreach (var child in _knh.RootEntry.Children.SelectManyRecursive(x => x?.Children)) {
                 var dummy = GetDummyByName(child.Name);
                 if (dummy != null) {
-                    child.Transformation = dummy.LocalMatrix.ToArray();
+                    child.Transformation = dummy.LocalMatrix.ToMat4x4();
                 } else {
                     AcToolsLogging.Write("Dummy not found: " + child.Name);
                 }

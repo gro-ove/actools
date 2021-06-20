@@ -64,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FilterFactory.cs" />
     <Compile Include="Parsing\FilterParser.cs" />
     <Compile Include="Parsing\FilterTreeNode.cs" />
     <Compile Include="Parsing\FilterTreeNodeAnd.cs" />

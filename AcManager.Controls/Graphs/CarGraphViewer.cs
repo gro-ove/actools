@@ -10,8 +10,7 @@ using FirstFloor.ModernUI;
 using JetBrains.Annotations;
 using OxyPlot;
 using OxyPlot.Axes;
-using LinearAxis = OxyPlot.Axes.LinearAxis;
-using LineSeries = OxyPlot.Series.LineSeries;
+using OxyPlot.Series;
 
 namespace AcManager.Controls.Graphs {
     public class CarGraphViewer : GraphDataViewerBase {

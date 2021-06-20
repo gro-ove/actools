@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Win32;
 
 namespace FirstFloor.ModernUI.Windows {
     public enum TaskbarState {
@@ -88,7 +89,7 @@ namespace FirstFloor.ModernUI.Windows {
         private class TaskbarInstance { }
 
         private static ITaskbarList3 _instance;
-        private static bool _supported = false; // Environment.OSVersion.Version >= new Version(6, 1);
+        private static bool _supported = WindowsVersionHelper.IsWindows10OrGreater;
 
         private static void SetState(IntPtr handle, TaskbarState state) {
             if (!_supported) return;

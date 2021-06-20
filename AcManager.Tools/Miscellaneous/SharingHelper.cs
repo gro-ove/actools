@@ -72,12 +72,15 @@ namespace AcManager.Tools.Miscellaneous {
         [LocalizedDescription(nameof(ToolsStrings.Shared_CspSettings))]
         CspSettings,
 
+        [LocalizedDescription(nameof(ToolsStrings.Shared_BakedShadowsPreset))]
+        BakedShadowsPreset,
+
+        [LocalizedDescription(nameof(ToolsStrings.Shared_CarLodsGenerationPreset))]
+        CarLodsGenerationPreset,
+
         // Non-shareable, for internal use:
         [LocalizedDescription(nameof(ToolsStrings.Shared_AmbientShadowsPreset))]
         AmbientShadowsPreset,
-
-        [LocalizedDescription(nameof(ToolsStrings.Shared_BakedShadowsPreset))]
-        BakedShadowsPreset,
 
         [LocalizedDescription(nameof(ToolsStrings.Shared_InGameAppsPreset))]
         InGameAppsPreset,

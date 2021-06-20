@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms.Integration;
 using AcManager.AcSound;
 using AcManager.Controls;
 using AcManager.Tools.Helpers;
@@ -15,8 +17,11 @@ using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Render.Wrapper;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
@@ -59,9 +64,11 @@ namespace AcManager.CustomShowroom {
                 carDirectory = Path.GetDirectoryName(Path.GetDirectoryName(carDirectory));
             }
 
-            var carObject = CarsManager.Instance.GetById(Path.GetFileName(carDirectory) ?? "");
+            var carObject = await CarsManager.Instance.GetByIdAsync(Path.GetFileName(carDirectory) ?? "");
             await StartAsyncInner(carObject, kn5, null, skinId, presetFilename, forceToolboxMode);
         }
+
+        private static bool _interopSet;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static async Task StartAsyncInner([CanBeNull] CarObject carObject, string kn5, IEnumerable<CustomShowroomLodDefinition> lodDefinitions = null,
@@ -73,6 +80,16 @@ namespace AcManager.CustomShowroom {
 
             ForwardKn5ObjectRenderer renderer = null;
             Logging.Write("Custom Showroom: Magick.NET IsSupported=" + ImageUtils.IsMagickSupported);
+
+            if (!_interopSet) {
+                _interopSet = true;
+                Task.Delay(TimeSpan.FromSeconds(1d)).ContinueWithInMainThread(r => {
+                    DpiAwareWindow.NewWindowCreated += (sender, args) => ElementHost.EnableModelessKeyboardInterop((DpiAwareWindow)sender);
+                    foreach (Window window in Application.Current.Windows) {
+                        ElementHost.EnableModelessKeyboardInterop(window);
+                    }
+                }).Ignore();
+            }
 
             try {
                 var kn5Directory = Path.GetDirectoryName(kn5);

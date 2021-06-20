@@ -170,6 +170,52 @@
         <ContentPresenter DockPanel.Dock="Right" Content="{Binding OkButton}" />
         <mui:ModernButton Click="OnScrollToSelectedButtonClick" HorizontalAlignment="Left" IconData="{StaticResource CollapsedIconData}"
             ToolTip="{x:Static c:ControlsStrings.Common_ScrollToSelected}" Style="{StaticResource NonTransparent}" />
+        <DockPanel DataContext="{x:Static t:CarsManager.Instance}" VerticalAlignment="Center" HorizontalAlignment="Left" MaxWidth="220" Margin="20 0 0 0"
+            Visibility="Collapsed">
+          <DockPanel.RenderTransform>
+            <TranslateTransform Y="60" />
+          </DockPanel.RenderTransform>
+          <DockPanel.Style>
+            <Style>
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding IsLoaded}" Value="False">
+                  <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                      <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Visibility)">
+                          <DiscreteObjectKeyFrame KeyTime="0:0:0.0" Value="{x:Static Visibility.Visible}" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.RenderTransform).(TranslateTransform.Y)" To="0" Duration="0:0:0.3"
+                            EasingFunction="{StaticResource DecelerationEase}" />
+                      </Storyboard>
+                    </BeginStoryboard>
+                  </DataTrigger.EnterActions>
+                  <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                      <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Visibility)">
+                          <DiscreteObjectKeyFrame KeyTime="0:0:0.3" Value="{x:Static Visibility.Collapsed}" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.RenderTransform).(TranslateTransform.Y)" To="40" Duration="0:0:0.3"
+                            EasingFunction="{StaticResource AccelerationEase}" />
+                      </Storyboard>
+                    </BeginStoryboard>
+                  </DataTrigger.ExitActions>
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </DockPanel.Style>
+          <ProgressBar Maximum="{Binding WrappersList.Count}" Value="{Binding LoadedCount}" Height="4" DockPanel.Dock="Bottom" Margin="0 4 0 0"
+              FontSize="{StaticResource SmallFontSize}" />
+          <TextBlock TextAlignment="Center" Style="{StaticResource Small}">
+            <TextBlock.Text>
+              <MultiBinding StringFormat="{x:Static g:AppStrings.RaceGrid_LoadingProgress}">
+                <Binding Path="WrappersList.Count" />
+                <Binding Path="LoadedCount" />
+              </MultiBinding>
+            </TextBlock.Text>
+          </TextBlock>
+        </DockPanel>
       </DockPanel>
 
       <AdornerDecorator>

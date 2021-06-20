@@ -299,9 +299,8 @@ namespace AcManager.Controls.ViewModels {
 
             _testMeLater = null;
 
-            var contains = _mainList.OfType<AcItemWrapper>().Contains(obj);
+            var contains = _mainList.Contains(obj);
             var newValue = FilterTest(obj);
-
             if (contains != newValue) {
                 _list.RefreshFilter(obj);
             }

@@ -1,5 +1,6 @@
 ﻿using AcTools.KsAnimFile;
-using AcTools.Render.Base.Utils;
+using AcTools.ExtraKn5Utils.Kn5Utils;
+using AcTools.Numerics;
 using JetBrains.Annotations;
 using SlimDX;
 
@@ -8,17 +9,17 @@ namespace AcTools.Render.Kn5Specific.Animations {
     public static class KsAnimExtension {
         public static KsAnimKeyframe ToKeyFrame(this Matrix matrix) {
             matrix.Decompose(out var scale, out var rotation, out var translation);
-            return new KsAnimKeyframe(rotation.ToArray(), translation.ToArray(), scale.ToArray());
+            return new KsAnimKeyframe(rotation.ToQuat(), translation.ToVec3(), scale.ToVec3());
         }
 
         [NotNull]
-        private static float[][] ConvertFramesV1(Matrix[] matrices, int? fillLength) {
-            var v = new float[fillLength ?? matrices.Length][];
-            var l = Matrix.Identity.ToArray();
+        private static Mat4x4[] ConvertFramesV1(Matrix[] matrices, int? fillLength) {
+            var v = new Mat4x4[fillLength ?? matrices.Length];
+            var l = Matrix.Identity.ToMat4x4();
 
             var i = 0;
             for (; i < matrices.Length; i++) {
-                v[i] = l = matrices[i].ToArray();
+                v[i] = l = matrices[i].ToMat4x4();
             }
 
             for (; i < v.Length; i++) {
@@ -88,7 +89,7 @@ namespace AcTools.Render.Kn5Specific.Animations {
         }
 
         [NotNull]
-        private static Matrix[] ConvertFrames(float[][] matrices) {
+        private static Matrix[] ConvertFrames(Mat4x4[] matrices) {
             var result = new Matrix[matrices.Length];
             if (result.Length == 0) return result;
 

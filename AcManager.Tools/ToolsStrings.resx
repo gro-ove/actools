@@ -1819,6 +1819,9 @@ Would you like to pack it before starting the server? But don’t forget to shar
   <data name="Shared_BakedShadowsPreset" xml:space="preserve">
       <value>Baked shadows preset</value>
   </data>
+  <data name="Shared_CarLodsGenerationPreset" xml:space="preserve">
+      <value>Car LODs generation preset</value>
+  </data>
   <data name="Shared_InGameAppsPreset" xml:space="preserve">
       <value>In-game apps preset</value>
   </data>
@@ -1842,10 +1845,10 @@ Would you like to pack it before starting the server? But don’t forget to shar
       <comment>Value is server index starting, from 1</comment>
   </data>
   <data name="OnlineSource_Loading_FinalStep" xml:space="preserve">
-      <value>Loading necessary content…</value>
+      <value>Loading tracks…</value>
   </data>
   <data name="SpecialEvent_StarterWarning" xml:space="preserve">
-      <value>You’re using {0} Starter. With it, you won’t get a Steam achievment, so progress won’t be saved. Are you sure you want to continue?</value>
+      <value>You’re using {0} Starter. With it, you won’t get a Steam achievement, so progress won’t be saved. Are you sure you want to continue?</value>
   </data>
   <data name="SpecialEvent_StarterWarning_Solution" xml:space="preserve">
       <value>Switch to Official Starter</value>

@@ -73,6 +73,26 @@ namespace StringBasedFilter.Tests {
         }
 
         [Test]
+        public void ParsingBugTest() {
+            var filter = Filter.Create(new StringTester(), "( A, B )");
+            var s = filter.ToString();
+            Assert.AreEqual(@"{ ""=a"" || ""=b"" }", s);
+            Assert.IsTrue(filter.Test("A B"));
+            Assert.IsTrue(filter.Test("a b"));
+            Assert.IsTrue(filter.Test("A"));
+            Assert.IsTrue(filter.Test("B"));
+            Assert.IsFalse(filter.Test("qwerty"));
+            Assert.IsTrue(filter.Test("AB"));
+            Assert.IsTrue(filter.Test("ab"));
+
+            var filter2 = Filter.Create(new StringTester(), " A, B ");
+            Assert.AreEqual(@"{ ""=a"" || ""=b"" }", filter2.ToString());
+
+            var filter3 = Filter.Create(new StringTester(), " A, B ( C, D )");
+            Assert.AreEqual(@"{ ""=a"" || { ""=b"" && { ""=c"" || ""=d"" } } }", filter3.ToString());
+        }
+
+        [Test]
         public void FilteringTestSpace() {
             var filter = Filter.Create(new StringTester(), "A B");
 

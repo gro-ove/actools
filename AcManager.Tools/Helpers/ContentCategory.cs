@@ -3,6 +3,7 @@
         public static readonly string BrandBadges = "Brand Badges";
         public static readonly string BuiltInPresets = "Built-in Presets";
         public static readonly string CarCategories = "Car Categories";
+        public static readonly string CarLodsGeneration = "Car LODs Generation";
         public static readonly string Controllers = "Controllers";
         public static readonly string CountryFlags = "Country Flags";
         public static readonly string CustomShowroomLights = "Custom Showroom Lights";

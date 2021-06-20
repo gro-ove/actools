@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using AcTools.ExtraKn5Utils.Kn5Utils;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Data;
 using AcTools.Render.Kn5Specific.Animations;
@@ -104,7 +105,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             foreach (var list in _currentLodObject.Renderable.GetAllChildren().OfType<Kn5RenderableList>()) {
                 var node = list.OriginalNode;
-                node.Transform = list.LocalMatrix.ToArray();
+                node.Transform = list.LocalMatrix.ToMat4x4();
                 node.Active = list.IsEnabled;
             }
         }

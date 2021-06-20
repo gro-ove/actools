@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using AcTools.ExtraKn5Utils.Kn5Utils;
 using AcTools.Kn5File;
 using AcTools.Render.Base.Utils;
 using SlimDX;
@@ -93,8 +94,8 @@ namespace AcTools.Render.Base.Structs {
                     result[i].Position.X = x.Position[0];
                     result[i].Position.Y = x.Position[1];
                     result[i].Position.Z = x.Position[2];
-                    result[i].Tex.X = x.TexC[0];
-                    result[i].Tex.Y = x.TexC[1];
+                    result[i].Tex.X = x.Tex[0];
+                    result[i].Tex.Y = x.Tex[1];
                 }
 
                 return result;
@@ -168,8 +169,8 @@ namespace AcTools.Render.Base.Structs {
                     result[i].Normal.X = x.Normal[0];
                     result[i].Normal.Y = x.Normal[1];
                     result[i].Normal.Z = x.Normal[2];
-                    result[i].Tex.X = x.TexC[0];
-                    result[i].Tex.Y = x.TexC[1];
+                    result[i].Tex.X = x.Tex[0];
+                    result[i].Tex.Y = x.Tex[1];
                 }
 
                 return result;
@@ -217,11 +218,11 @@ namespace AcTools.Render.Base.Structs {
                     result[i].Normal.X = x.Normal[0];
                     result[i].Normal.Y = x.Normal[1];
                     result[i].Normal.Z = x.Normal[2];
-                    result[i].Tex.X = x.TexC[0];
-                    result[i].Tex.Y = x.TexC[1];
-                    result[i].Tangent.X = x.TangentU[0];
-                    result[i].Tangent.Y = x.TangentU[1];
-                    result[i].Tangent.Z = x.TangentU[2];
+                    result[i].Tex.X = x.Tex[0];
+                    result[i].Tex.Y = x.Tex[1];
+                    result[i].Tangent.X = x.Tangent[0];
+                    result[i].Tangent.Y = x.Tangent[1];
+                    result[i].Tangent.Z = x.Tangent[2];
                 }
 
                 return result;
@@ -291,26 +292,19 @@ namespace AcTools.Render.Base.Structs {
 
                 for (var i = 0; i < size; i++) {
                     var x = vertices[i];
-                    result[i].Position.X = x.Position[0];
-                    result[i].Position.Y = x.Position[1];
-                    result[i].Position.Z = x.Position[2];
-                    result[i].Normal.X = x.Normal[0];
-                    result[i].Normal.Y = x.Normal[1];
-                    result[i].Normal.Z = x.Normal[2];
-                    result[i].Tex.X = x.TexC[0];
-                    result[i].Tex.Y = x.TexC[1];
-                    result[i].Tangent.X = x.TangentU[0];
-                    result[i].Tangent.Y = x.TangentU[1];
-                    result[i].Tangent.Z = x.TangentU[2];
+                    result[i].Position = x.Position.ToVector3();
+                    result[i].Normal = x.Normal.ToVector3();
+                    result[i].Tangent = x.Tangent.ToVector3();
+                    result[i].Tex = x.Tex.ToVector2();
 
                     var w = weights[i];
-                    result[i].BonesWeights.X = w.Weights[0];
-                    result[i].BonesWeights.Y = w.Weights[1];
-                    result[i].BonesWeights.Z = w.Weights[2];
-                    result[i].BonesIndices.X = w.Indices[0] < 0 ? 0 : w.Indices[0];
-                    result[i].BonesIndices.Y = w.Indices[1] < 0 ? 0 : w.Indices[1];
-                    result[i].BonesIndices.Z = w.Indices[2] < 0 ? 0 : w.Indices[2];
-                    result[i].BonesIndices.W = w.Indices[3] < 0 ? 0 : w.Indices[3];
+                    result[i].BonesWeights.X = w.Weights.X;
+                    result[i].BonesWeights.Y = w.Weights.Y;
+                    result[i].BonesWeights.Z = w.Weights.Z;
+                    result[i].BonesIndices.X = w.Indices.X < 0 ? 0 : w.Indices.X;
+                    result[i].BonesIndices.Y = w.Indices.Y < 0 ? 0 : w.Indices.Y;
+                    result[i].BonesIndices.Z = w.Indices.Z < 0 ? 0 : w.Indices.Z;
+                    result[i].BonesIndices.W = w.Indices.W < 0 ? 0 : w.Indices.W;
                 }
 
                 return result;

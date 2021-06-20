@@ -30,12 +30,14 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
+        public bool DisallowMagickOverride;
+
         private bool? _magickOverideLater;
 
         public bool MagickOverride {
             get => _magickOverideLater ?? CarNode?.MagickOverride ?? false;
             set {
-                if (CarNode == null) {
+                if (CarNode == null || DisallowMagickOverride) {
                     OnPropertyChanged();
                     _magickOverideLater = value;
                     return;
@@ -48,7 +50,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         protected override void CopyValues(Kn5RenderableCar newCar, Kn5RenderableCar oldCar) {
             base.CopyValues(newCar, oldCar);
-            if (_magickOverideLater.HasValue) {
+            if (_magickOverideLater.HasValue && !DisallowMagickOverride) {
                 newCar.MagickOverride = _magickOverideLater.Value;
                 _magickOverideLater = null;
             }

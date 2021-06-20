@@ -2,16 +2,19 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
+using AcTools.Numerics;
 using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
     public class Kn5Node {
+        [NotNull]
         public string Name;
+
         public Kn5NodeClass NodeClass;
         public bool Active;
 
         /* Base */
-        public float[] Transform;
+        public Mat4x4 Transform;
         public List<Kn5Node> Children;
 
         /* Mesh */
@@ -22,7 +25,7 @@ namespace AcTools.Kn5File {
         public ushort[] Indices;
         public uint MaterialId, Layer;
         public float LodIn, LodOut;
-        public float[] BoundingSphereCenter;
+        public Vec3 BoundingSphereCenter;
         public float BoundingSphereRadius;
 
         /* Only for skinned meshes */
@@ -36,61 +39,49 @@ namespace AcTools.Kn5File {
 
         [StructLayout(LayoutKind.Sequential)]
         public struct Vertex {
-            public float[] Position, Normal, TexC, TangentU;
+            public Vec3 Position, Normal, Tangent;
+            public Vec2 Tex;
 
-            public Vertex(float[] position, float[] normal, float[] texC, float[] tangentU) {
+            public Vertex(Vec3 position, Vec3 normal, Vec2 tex, Vec3 tangent) {
                 Position = position;
                 Normal = normal;
-                TexC = texC;
-                TangentU = tangentU;
+                Tex = tex;
+                Tangent = tangent;
             }
         }
 
         [StructLayout(LayoutKind.Sequential)]
         public struct VerticeWeight {
-            public float[] Weights;
+            public Vec4 Weights;
 
             /// <summary>
             /// IDs of bones. "-1" if there is no binding!
             /// </summary>
             /// <remarks>Yes! Those are floats! There is no mistake here!</remarks>
-            public float[] Indices;
+            public Vec4 Indices;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         public struct Bone {
             public string Name;
-            public float[] Transform;
+            public Mat4x4 Transform;
         }
 
-        public Kn5Node() { }
-
-        public int TotalVerticesCount {
-            get {
-                return NodeClass == Kn5NodeClass.Base ? Children.Sum(kn5Node => kn5Node.TotalVerticesCount) :
-                    Vertices.Length;
-            }
+        public Kn5Node() {
+            Name = string.Empty;
         }
 
-        public int TotalTrianglesCount {
-            get {
-                return NodeClass == Kn5NodeClass.Base ? Children.Sum(kn5Node => kn5Node.TotalTrianglesCount) :
-                    (Indices.Length/3);
-            }
-        }
+        public int TotalVerticesCount => NodeClass == Kn5NodeClass.Base ? Children.Sum(n => n.TotalVerticesCount) : Vertices.Length;
 
-        public static Kn5Node CreateBaseNode(string name) {
+        public int TotalTrianglesCount => NodeClass == Kn5NodeClass.Base ? Children.Sum(n => n.TotalTrianglesCount) : Indices.Length / 3;
+
+        public static Kn5Node CreateBaseNode(string name, List<Kn5Node> children = null, bool identityMatrix = false) {
             return new Kn5Node {
                 NodeClass = Kn5NodeClass.Base,
                 Name = name,
                 Active = true,
-                Children = new List<Kn5Node>(),
-                Transform = new [] {
-                    1.0f, 0.0f, 0.0f, 0.0f,
-                    0.0f, 1.0f, 0.0f, 0.0f,
-                    0.0f, 0.0f, 1.0f, 0.0f,
-                    1.0f, 0.0f, 0.0f, 0.0f
-                }
+                Children = children ?? new List<Kn5Node>(),
+                Transform = Mat4x4.Identity
             };
         }
 

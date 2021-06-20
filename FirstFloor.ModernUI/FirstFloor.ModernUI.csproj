@@ -18,10 +18,6 @@
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\Output\x86\Debug\</OutputPath>
@@ -266,6 +262,7 @@
     <Compile Include="Windows\Controls\Switch.cs" />
     <Compile Include="Windows\Controls\SpacingUniformGrid.cs" />
     <Compile Include="Windows\Controls\BorderyViewbox.cs" />
+    <Compile Include="Windows\Controls\SelectableTextBlock.cs" />
     <Compile Include="Windows\Controls\ThumbExt.cs" />
     <Compile Include="Windows\Controls\TimePassedBlock.cs" />
     <Compile Include="Windows\Controls\LimitedViewbox.cs" />
@@ -454,6 +451,7 @@
     <Compile Include="Windows\Converters\ToUpperConverter.cs" />
     <Compile Include="Windows\DefaultContentLoader.cs" />
     <Compile Include="Windows\DragAdorner.cs" />
+    <Compile Include="Windows\FlashWindow.cs" />
     <Compile Include="Windows\ILoadableContent.cs" />
     <Compile Include="Windows\ImmediateContentLoader.cs" />
     <Compile Include="Windows\IParametrizedUriContent.cs" />

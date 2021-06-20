@@ -7,6 +7,7 @@ using System.Linq;
 using AcTools.AiFile;
 using AcTools.DataFile;
 using AcTools.Kn5File;
+using AcTools.Numerics;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
@@ -132,7 +133,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public void ChangeCameraFov(float newFovY) {}
         public void RefreshMaterial(IKn5 kn5, uint materialId) {}
         public void UpdateMaterialPropertyA(IKn5 kn5, uint materialId, string propertyName, float valueA) {}
-        public void UpdateMaterialPropertyC(IKn5 kn5, uint materialId, string propertyName, float[] valueC) {}
+        public void UpdateMaterialPropertyC(IKn5 kn5, uint materialId, string propertyName, Vec3 valueC) {}
 
         protected sealed override void DrawSprites() {
             var sprite = Sprite;

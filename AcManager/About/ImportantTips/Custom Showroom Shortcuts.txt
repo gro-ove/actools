@@ -1,6 +1,9 @@
 sid: 25_285232230_841254338
 Here is a small list of shortcuts available for Custom Showroom in 0.8.808:
 
+[b]Scene controls:[/b]
+ • [b]Alt+H[/b]: hide selected mesh;
+ • [b]Alt+Shift+H[/b]: un-hide all meshes;
 [b]Camera controls:[/b]
  • [b]Mouse wheel[/b]: zoom;
  • [b]Ctrl+Mouse wheel[/b]: adjust FOV while keeping car the same size on the screen;

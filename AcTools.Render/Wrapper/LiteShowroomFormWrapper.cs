@@ -89,23 +89,26 @@ namespace AcTools.Render.Wrapper {
             }
         }
 
+        private Point _normalPos = new Point(int.MaxValue, int.MaxValue);
+        private Point _normalSize = new Point(1600, 900);
+
         protected virtual void GoToNormalMode() {
             Form.FormBorderStyle = FormBorderStyle.Sizable;
-            Form.Width = 1600;
-            Form.Height = 900;
-            Form.Left = (Screen.PrimaryScreen.WorkingArea.Width - Form.Width) / 2;
-            Form.Top = (Screen.PrimaryScreen.WorkingArea.Height - Form.Height) / 2;
+            if (_normalPos.X == int.MaxValue) {
+                _normalPos = new Point((Screen.PrimaryScreen.WorkingArea.Width - _normalSize.X) / 2,
+                        (Screen.PrimaryScreen.WorkingArea.Height - _normalSize.Y) / 2);
+            }
+            Form.SetBounds(_normalPos.X, _normalPos.Y, _normalSize.X, _normalSize.Y);
             Form.TopMost = false;
             Kn5ObjectRenderer.VisibleUi = true;
             UpdateSize();
         }
 
         protected virtual void GoToToolMode() {
+            _normalPos = new Point(Form.Left, Form.Top);
+            _normalSize = new Point(Form.Width, Form.Height);
+            Form.SetBounds(80, Screen.PrimaryScreen.WorkingArea.Height - 300, 400, 240);
             Form.FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            Form.Width = 400;
-            Form.Height = 240;
-            Form.Top = Screen.PrimaryScreen.WorkingArea.Height - 300;
-            Form.Left = 80;
             Form.TopMost = true;
             Kn5ObjectRenderer.VisibleUi = false;
             UpdateSize();

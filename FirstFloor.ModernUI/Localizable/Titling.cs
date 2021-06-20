@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Localizable {
     /// <summary>
@@ -152,7 +153,7 @@ namespace FirstFloor.ModernUI.Localizable {
         }
         #endregion
 
-        public static string Convert(string s, CultureInfo culture) {
+        public static string Convert([NotNull] string s, CultureInfo culture) {
             if (culture.Name.Length < 2) return En(s, culture);
             switch (culture.Name.Substring(0, 2).ToLowerInvariant()) {
                 case "en":
@@ -172,7 +173,7 @@ namespace FirstFloor.ModernUI.Localizable {
             }
         }
 
-        public static string Convert(string s) {
+        public static string Convert([NotNull] string s) {
             return Convert(s, CultureInfo.CurrentUICulture);
         }
     }

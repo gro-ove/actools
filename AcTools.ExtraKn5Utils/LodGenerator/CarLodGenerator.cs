@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,108 +11,56 @@ using AcTools.ExtraKn5Utils.FbxUtils;
 using AcTools.ExtraKn5Utils.FbxUtils.Extensions;
 using AcTools.ExtraKn5Utils.Kn5Utils;
 using AcTools.Kn5File;
+using AcTools.Numerics;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
-using SlimDX;
 
 namespace AcTools.ExtraKn5Utils.LodGenerator {
-    public class CarLodGenerator : IDisposable {
+    public class CarLodGenerator {
+        private static Vec3 MoveAsideDistance(double priority, CarLodGeneratorStageParams stage) {
+            if (priority == 1d || !stage.SeparatePriorityGroups) return Vec3.Zero;
+            return new Vec3((float)(priority - 1f) * 0.5f, (float)((priority - 1f) * 7f % 0.2f - 0.1f), (float)((priority - 1f) * 11f % 0.5f - 0.25f));
+        }
+
         private readonly ICarLodGeneratorService _service;
         private readonly string _carDirectory;
         private readonly string _temporaryDirectory;
+        private readonly DataWrapper _carData;
+        private readonly byte[] _originalKn5Data;
 
-        public bool GenerateCockpitLr { get; set; }
-        public bool GenerateLodB { get; set; }
-        public bool GenerateLodC { get; set; }
-        public bool GenerateLodD { get; set; }
+        public CarLodGeneratorStageParams[] Stages { get; }
 
-        public string[] NewModels { get; }
-        public bool LodsIniNeedsSaving { get; }
-        public bool HasCockpitHr { get; }
-
-        private DataWrapper _carData;
-        private IniFile _lodsIniFile;
-        private byte[] _originalKn5Data;
-
-        [CanBeNull]
-        public List<string> BodyMaterials;
-
-        public CarLodGenerator(ICarLodGeneratorService service, string carDirectory, string temporaryDirectory) {
+        public CarLodGenerator(IEnumerable<CarLodGeneratorStageParams> stages, ICarLodGeneratorService service, string carDirectory, string temporaryDirectory) {
             _service = service;
             _carDirectory = carDirectory;
             _temporaryDirectory = temporaryDirectory;
             _carData = DataWrapper.FromCarDirectory(carDirectory);
-            _lodsIniFile = _carData.GetIniFile("lods.ini");
 
             var modelOriginal = AcPaths.GetMainCarFilename(carDirectory, _carData, false);
-            if (modelOriginal == null) throw new Exception("Failed to find main car model");
-
-            var lodsSections = _lodsIniFile.GetSections("LOD").ToList();
-            if (lodsSections.Count < 4) {
-                var pathPrefix = Path.Combine(carDirectory, Path.GetFileNameWithoutExtension(modelOriginal));
-                LodsIniNeedsSaving = true;
-                _lodsIniFile["COCKPIT_HR"].Set("DISTANCE_SWITCH", 7d);
-                _lodsIniFile["LOD_0"].Set("OUT", 15d);
-                _lodsIniFile["LOD_1"].Set("FILE", _lodsIniFile["LOD_1"].GetNonEmpty("FILE") ?? pathPrefix + "_lod_b.kn5");
-                _lodsIniFile["LOD_1"].Set("IN", 15d);
-                _lodsIniFile["LOD_1"].Set("OUT", 45d);
-                _lodsIniFile["LOD_2"].Set("FILE", _lodsIniFile["LOD_2"].GetNonEmpty("FILE") ?? pathPrefix + "_lod_c.kn5");
-                _lodsIniFile["LOD_2"].Set("IN", 45d);
-                _lodsIniFile["LOD_2"].Set("OUT", 201d);
-                _lodsIniFile["LOD_3"].Set("FILE", _lodsIniFile["LOD_3"].GetNonEmpty("FILE") ?? pathPrefix + "_lod_d.kn5");
-                _lodsIniFile["LOD_3"].Set("IN", 201d);
-                _lodsIniFile["LOD_3"].Set("OUT", 2000d);
-            } else if (lodsSections.Count > 4) {
-                throw new Exception("Unsupported LODs arrangement, 4 is required");
+            if (modelOriginal == null) {
+                throw new Exception("Failed to find main car model");
             }
 
+            Stages = stages.ToArray();
             _originalKn5Data = File.ReadAllBytes(modelOriginal);
-
-            var originalKn5 = Kn5.FromBytes(_originalKn5Data, SkippingTextureLoader.Instance);
-            BodyMaterials = originalKn5.FindBodyMaterials();
-            HasCockpitHr = originalKn5.HasCockpitHr();
-
-            NewModels = new[] {
-                Path.Combine(temporaryDirectory, _lodsIniFile["LOD_0"].GetNonEmpty("FILE") ?? throw new Exception("Unsupported LODs arrangement")),
-                Path.Combine(temporaryDirectory, _lodsIniFile["LOD_1"].GetNonEmpty("FILE") ?? throw new Exception("Unsupported LODs arrangement")),
-                Path.Combine(temporaryDirectory, _lodsIniFile["LOD_2"].GetNonEmpty("FILE") ?? throw new Exception("Unsupported LODs arrangement")),
-                Path.Combine(temporaryDirectory, _lodsIniFile["LOD_3"].GetNonEmpty("FILE") ?? throw new Exception("Unsupported LODs arrangement"))
-            };
         }
 
-        public void ApplyLods() {
-            foreach (var model in NewModels) {
-                var destination = Path.Combine(_carDirectory, Path.GetFileName(model));
-                using (var replacement = FileUtils.RecycleOriginal(destination)) {
-                    FileUtils.Move(model, replacement.Filename);
+        public Task RunAsync([CanBeNull] CarLodGeneratorExceptionCallback exceptionCallback, [CanBeNull] CarLodGeneratorResultCallback resultCallback,
+                IProgress<CarLodGeneratorProgressUpdate> progress = null, CancellationToken cancellationToken = default) {
+            return Stages.Select(async (x, i) => {
+                try {
+                    var generated = await GenerateLodStageAsync(i, x, CreateProgress(x.Id), cancellationToken).ConfigureAwait(false);
+                    if (generated != null) {
+                        resultCallback?.Invoke(x.Id, generated.Item1, generated.Item2);
+                    }
+                } catch (Exception e) when (exceptionCallback != null) {
+                    if (!e.IsCancelled()) {
+                        AcToolsLogging.Write(e);
+                        exceptionCallback.Invoke(x.Id, e);
+                    }
                 }
-            }
-        }
-
-        public void SaveLodsIni(bool saveUnpacked) {
-            if (saveUnpacked) {
-                var destination = Path.Combine(_carDirectory, "data", "lods.ini");
-                FileUtils.EnsureFileDirectoryExists(destination);
-                using (var replacement = FileUtils.RecycleOriginal(destination)) {
-                    _lodsIniFile.Save(replacement.Filename);
-                }
-            } else if (LodsIniNeedsSaving) {
-                _lodsIniFile.Save();
-            }
-        }
-
-        public async Task RunAsync(IProgress<CarLodGeneratorProgressUpdate> progress = null, CancellationToken cancellationToken = default) {
-            await new[] {
-                HasCockpitHr && GenerateCockpitLr ? GenerateLodStageAsync(0, @"CockpitLr", NewModels[0],
-                        CreateProgress("CockpitLr"), cancellationToken) : null,
-                GenerateLodB ? GenerateLodStageAsync(1, @"LodB", NewModels[1],
-                        CreateProgress("LodB"), cancellationToken) : null,
-                GenerateLodC ? GenerateLodStageAsync(2, @"LodC", NewModels[2],
-                        CreateProgress("LodC"), cancellationToken) : null,
-                GenerateLodD ? GenerateLodStageAsync(3, @"LodD", NewModels[3],
-                        CreateProgress("LodD"), cancellationToken) : null
-            }.NonNull().WhenAll();
+            }).WhenAll();
 
             IProgress<double?> CreateProgress(string key) {
                 return progress == null ? null : new Progress<double?>(v => progress.Report(new CarLodGeneratorProgressUpdate {
@@ -121,27 +70,30 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
             }
         }
 
-        public void Dispose() { }
-
-        private static void MergeMeshes(Kn5Node root, List<Tuple<Kn5Node, double, Matrix>> children) {
+        private static void MergeMeshes(Kn5Node root, List<Tuple<Kn5Node, double, Mat4x4>> children, CarLodGeneratorMergeRules mergeRules,
+                CarLodGeneratorStageParams stage) {
             if (children.Count == 0) return;
 
-            var builder = new Kn5MeshBuilder();
             var mesh = children[0].Item1;
             var priority = children[0].Item2;
+            var considerDetails = mesh.MaterialId != uint.MaxValue;
+            var builder = new Kn5MeshBuilder(considerDetails, considerDetails);
+            // AcToolsLogging.Write($"Merging together: {children.Select(x => $"{x.Item1.Name} [{x.Item2}]").JoinToString(", ")}");
 
             var extraCounter = 0;
             foreach (var child in children) {
-                var transform = child.Item3 * Matrix.Scaling(new Vector3((float)priority));
+                var transform = child.Item3 * Mat4x4.CreateScale(new Vec3((float)priority)) * Mat4x4.CreateTranslation(MoveAsideDistance(priority, stage));
+                var offset = mergeRules.GetOffsetAlongNormal(child.Item1);
                 for (var i = 0; i < child.Item1.Indices.Length; ++i) {
-                    builder.AddVertex(child.Item1.Vertices[child.Item1.Indices[i]].Transform(transform));
+                    builder.AddVertex(child.Item1.Vertices[child.Item1.Indices[i]].Transform(transform, offset));
                     if (i % 3 == 2 && builder.IsCloseToLimit) {
                         builder.SetTo(mesh);
                         root.Children.Add(mesh);
-                        mesh.Tag = child.Item2;
+                        mesh.Tag = priority;
 
                         builder.Clear();
                         mesh = Kn5MeshUtils.Create(children[0].Item1.Name + $"___$extra:{extraCounter}", children[0].Item1.MaterialId);
+                        ++extraCounter;
                     }
                 }
             }
@@ -153,67 +105,129 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
             }
         }
 
-        private static IKn5 PrepareForGeneration(CarLodGeneratorMergeRules mergeRules, byte[] kn5Data) {
-            var toMerge = new Dictionary<Kn5Node, List<Tuple<Kn5Node, double, Matrix>>>();
+        private static async Task PrepareForGenerationAsync(Kn5NodeFilterContext filterContext, IKn5 kn5, CarLodGeneratorStageParams stage, bool printNodes) {
+            var mergeRules = new CarLodGeneratorMergeRules(filterContext, stage);
+            var toMerge = new Dictionary<Kn5Node, List<Tuple<Kn5Node, double, Mat4x4>>>();
             var nodeIndices = new Dictionary<Kn5Node, int>();
-            var ret = Kn5.FromBytes(kn5Data, SkippingTextureLoader.Instance);
-            MergeNode(ret.RootNode, ret.RootNode, 1d);
+            MergeNode(kn5.RootNode, kn5.RootNode, 1d);
             foreach (var pair in toMerge) {
-                foreach (var group in pair.Value.GroupBy(x => mergeRules.MergeGroup(ret, x.Item1, x.Item2))
-                        .OrderBy(v => mergeRules.GroupOrder(ret, v, nodeIndices)).Select(v => v.ToList()).ToList()) {
-                    MergeMeshes(pair.Key, group);
+                var mergeData = pair.Value.GroupBy(x => mergeRules.MergeGroup(x.Item1, x.Item2))
+                        .OrderBy(v => mergeRules.GroupOrder(kn5, v, nodeIndices)).Select(v => v.ToList()).ToList();
+                await Task.Run(() => {
+                    foreach (var group in mergeData) {
+                        MergeMeshes(pair.Key, group, mergeRules, stage);
+                    }
+                });
+            }
+            foreach (var node in kn5.Nodes.Where(x => x.Children?.Count > 1).ToList()) {
+                var meshesList = node.Children
+                        .Where(x => x.NodeClass != Kn5NodeClass.Base)
+                        .Select((x, i) => new { x, i = OrderIndex(x, i) })
+                        .OrderBy(x => x.i)
+                        .Select(x => x.x).ToList();
+                if (meshesList.Count > 0) {
+                    if (node.Children.Any(x => x.NodeClass == Kn5NodeClass.Base)) {
+                        node.Children = node.Children.Where(x => x.NodeClass == Kn5NodeClass.Base)
+                                .Prepend(Kn5Node.CreateBaseNode($"__{meshesList[0].Name}_wrap_", meshesList, true))
+                                .Select((x, i) => new { x, i = OrderIndex(x, i) })
+                                .OrderBy(x => x.i)
+                                .Select(x => x.x).ToList();
+                    } else {
+                        node.Children = meshesList;
+                    }
                 }
             }
-            mergeRules.FinalizeKn5(ret);
-            return ret;
+            if (printNodes) {
+                PrintNode(kn5.RootNode, 0, 0);
+            }
+            mergeRules.FinalizeKn5(kn5);
+
+            var duplicateNames = kn5.Nodes.GroupBy(x => $"{x.NodeClass}/{x.Name}")
+                    .Select(x => x.ToList()).Where(x => x.Count > 1).ToList();
+            foreach (var group in duplicateNames) {
+                AcToolsLogging.Write($"Duplicate name: {group[0].Name} ({group[0].NodeClass})");
+                foreach (var toRename in group.Skip(1).Select((x, i) => new { x, i })) {
+                    toRename.x.Name = $"{toRename.x.Name}___$unique:{toRename.i}";
+                }
+            }
+
+            int OrderIndex(Kn5Node node, int index) {
+                return index + (AnyTransparent(node) ? 1 << 10 : 0);
+            }
+
+            void PrintNode(Kn5Node node, int level, int index) {
+                var postfix = node.NodeClass == Kn5NodeClass.Base ? "" :
+                        $"{(node.IsTransparent ? ", transparent" : "")}, material: {kn5.GetMaterial(node.MaterialId)?.Name}";
+                AcToolsLogging.Write(
+                        $"{new string('\t', level)}{node.Name} [{node.NodeClass}{postfix}, index: {OrderIndex(node, index)}, aabb: {filterContext.GetAabb3(node)}]");
+                if (node.NodeClass == Kn5NodeClass.Base) {
+                    for (var i = 0; i < node.Children.Count; i++) {
+                        PrintNode(node.Children[i], level + 1, i);
+                    }
+                }
+            }
+
+            bool AnyTransparent(Kn5Node node) {
+                return node.NodeClass == Kn5NodeClass.Base
+                        ? node.Children.Any(AnyTransparent)
+                        : node.IsTransparent || kn5.GetMaterial(node.MaterialId)?.BlendMode == Kn5MaterialBlendMode.AlphaBlend;
+            }
 
             void ApplyPriority(Kn5Node mesh, double priority) {
-                foreach (var v in mesh.Vertices) {
-                    v.Position[0] *= (float)priority;
-                    v.Position[1] *= (float)priority;
-                    v.Position[2] *= (float)priority;
+                var offset = MoveAsideDistance(priority, stage);
+                for (var i = 0; i < mesh.Vertices.Length; i++) {
+                    Apply(ref mesh.Vertices[i]);
                 }
                 mesh.Tag = priority;
+
+                void Apply(ref Kn5Node.Vertex v) {
+                    v.Position[0] = v.Position[0] * (float)priority + offset.X;
+                    v.Position[1] = v.Position[1] * (float)priority + offset.Y;
+                    v.Position[2] = v.Position[2] * (float)priority + offset.Z;
+                }
             }
 
             bool MergeNode(Kn5Node node, Kn5Node mergeRoot, double priority) {
                 nodeIndices[node] = nodeIndices.Count;
 
-                if (mergeRules.CanSkipNodeCompletely(ret, node)) {
-                    if (node.NodeClass == Kn5NodeClass.Base && !mergeRules.CanRemoveEmptyNode(node)) {
-                        node.Children.Clear();
+                if (node != mergeRoot) {
+                    if (mergeRules.CanSkipNode(node)) {
+                        if (node.NodeClass == Kn5NodeClass.Base && !mergeRules.HasParentWithSameName(node) && !mergeRules.CanRemoveEmptyNode(node)) {
+                            node.Children.Clear();
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    var priorityAdjustment = mergeRules.CalculateReductionPriority(node);
+                    if (priorityAdjustment != 1d && (priorityAdjustment < priority || priority == 1d || node.NodeClass == Kn5NodeClass.Mesh)) {
+                        priority = priorityAdjustment;
+                    }
+
+                    if (node.NodeClass == Kn5NodeClass.Mesh) {
+                        if (mergeRoot != null && mergeRules.CanMerge(node)) {
+                            if (!toMerge.ContainsKey(mergeRoot)) {
+                                toMerge[mergeRoot] = new List<Tuple<Kn5Node, double, Mat4x4>>();
+                            }
+                            toMerge[mergeRoot].Add(Tuple.Create(node, priority, node.CalculateTransformRelativeToParent(mergeRoot)));
+                            return false;
+                        }
+                        if (priority != 1d) {
+                            ApplyPriority(node, priority);
+                        }
                         return true;
                     }
-                    return false;
-                }
 
-                var priorityAdjustment = mergeRules.CalculateReductionPriority(ret, node);
-                if (priorityAdjustment != 1d && (priorityAdjustment < priority || node.NodeClass == Kn5NodeClass.Mesh)) {
-                    priority = priorityAdjustment;
-                }
-
-                if (node.NodeClass == Kn5NodeClass.Mesh) {
-                    if (mergeRoot != null && mergeRules.CanMergeMesh(node)) {
-                        if (!toMerge.ContainsKey(mergeRoot)) {
-                            toMerge[mergeRoot] = new List<Tuple<Kn5Node, double, Matrix>>();
-                        }
-                        toMerge[mergeRoot].Add(Tuple.Create(node, priority, node.CalculateTransformRelativeToParent(mergeRoot)));
-                        return false;
-                    } else if (priority != 1d) {
-                        ApplyPriority(node, priority);
+                    if (node.NodeClass == Kn5NodeClass.SkinnedMesh) {
+                        return true;
                     }
-                    return true;
-                }
 
-                if (node.NodeClass == Kn5NodeClass.SkinnedMesh) {
-                    return true;
-                }
-
-                if (mergeRoot != null) {
-                    if (!mergeRules.CanMergeInsideNode(node)) {
-                        mergeRoot = null;
-                    } else if (mergeRules.IsNodeMergeRoot(node)) {
-                        mergeRoot = node;
+                    if (mergeRoot != null) {
+                        if (!mergeRules.CanMerge(node)) {
+                            mergeRoot = null;
+                        } else if (node.Name != mergeRoot.Name && mergeRules.IsNodeMergeRoot(node)) {
+                            mergeRoot = node;
+                        }
                     }
                 }
 
@@ -228,7 +242,7 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
             }
         }
 
-        private static IKn5 LodFbxToKn5(IKn5 preparedKn5, string fbxFilename) {
+        private static IKn5 LodFbxToKn5(IKn5 preparedKn5, string fbxFilename, CarLodGeneratorStageParams stage) {
             var fbx = FbxIO.Read(fbxFilename);
             var geometries = fbx.GetGeometryIds()
                     .Select(id => new { id, name = fbx.GetNode("Model", fbx.GetConnection(id)).GetName("Model") })
@@ -260,15 +274,16 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
                     var fbxVertices = geometry.Item1.GetRelative("Vertices").Value.GetAsFloatArray();
                     var fbxNormals = geometry.Item1.GetRelative("LayerElementNormal").GetRelative("Normals").Value.GetAsFloatArray();
                     var fbxUvs = geometry.Item1.GetRelative("LayerElementUV").GetRelative("UV").Value.GetAsFloatArray();
-                    var scale = (float)geometry.Item2;
+                    var offset = MoveAsideDistance(geometry.Item2, stage);
+                    var scale = (float)(1d / geometry.Item2);
 
-                    // $"Finalizing: {node.Name}, scale={scale}".Dump();
                     for (var i = 0; i < fbxIndices.Length; ++i) {
                         var index = fbxIndices[i] < 0 ? -fbxIndices[i] - 1 : fbxIndices[i];
                         mesh.AddVertex(new Kn5Node.Vertex {
-                            Position = new[] { fbxVertices[index * 3] * scale, fbxVertices[index * 3 + 1] * scale, fbxVertices[index * 3 + 2] * scale },
-                            Normal = new[] { fbxNormals[i * 3], fbxNormals[i * 3 + 1], fbxNormals[i * 3 + 2] },
-                            TexC = new[] { fbxUvs[i * 2], 1f - fbxUvs[i * 2 + 1] }
+                            Position = new Vec3((fbxVertices[index * 3] - offset.X) * scale, (fbxVertices[index * 3 + 1] - offset.Y) * scale,
+                                    (fbxVertices[index * 3 + 2] - offset.Z) * scale),
+                            Normal = new Vec3(fbxNormals[i * 3], fbxNormals[i * 3 + 1], fbxNormals[i * 3 + 2]),
+                            Tex = new Vec2(fbxUvs[i * 2], 1f - fbxUvs[i * 2 + 1])
                         });
                     }
                 }
@@ -292,7 +307,7 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
                     if (list.Count == 0) return null;
                     var geometryId = list[0];
                     list.RemoveAt(0);
-                    return Tuple.Create(fbx.GetGeometry(geometryId), node.Tag is double priority ? 1d / priority : 1d);
+                    return Tuple.Create(fbx.GetGeometry(geometryId), node.Tag is double priority ? priority : 1d);
                 }
                 return null;
             }
@@ -322,6 +337,10 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
                 if (node.NodeClass == Kn5NodeClass.SkinnedMesh) {
                     return false;
                 }
+                var found = node.Name.IndexOf("___$unique:", StringComparison.Ordinal);
+                if (found != -1) {
+                    node.Name = node.Name.Substring(0, found);
+                }
                 for (var i = 0; i < node.Children.Count; ++i) {
                     if (!RemoveEmpty(node.Children[i])) {
                         node.Children.RemoveAt(i);
@@ -332,70 +351,123 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
             }
         }
 
-        private async Task<IKn5> GenerateLodAsync(string simplygonFbx, IKn5 originalKn5, string rulesKey, string tmpPostfix,
+        private async Task<IKn5> GenerateLodAsync(string preparedFbx, IKn5 originalKn5, CarLodGeneratorStageParams stage, string modelChecksum,
                 IProgress<double?> progress, CancellationToken cancellationToken) {
-            var temporaryOutputFilename = Path.Combine(_temporaryDirectory, $"out_{tmpPostfix}.fbx");
-            await _service.GenerateLodAsync(rulesKey, simplygonFbx, temporaryOutputFilename,
+            var temporaryOutputFilename = await _service.GenerateLodAsync(stage.Id, preparedFbx, modelChecksum,
                     progress.SubrangeDouble(0d, 0.98), cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
-            var result = await Task.Run(() => LodFbxToKn5(originalKn5, temporaryOutputFilename)).ConfigureAwait(false);
+            var result = await Task.Run(() => LodFbxToKn5(originalKn5, temporaryOutputFilename, stage)).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
             progress.Report(0.99);
             return result;
         }
 
-        private async Task<string> PrepareSimplygonFbxAsync(IKn5 kn5, string tmpPostfix) {
-            var temporaryFilename = Path.Combine(_temporaryDirectory, $"in_{tmpPostfix}.fbx");
-            await Task.Run(() => kn5.ExportFbx(temporaryFilename));
-            return temporaryFilename;
+        private static string CalculateChecksum(IKn5 kn5) {
+            using (var sha1 = SHA1.Create()) {
+                return sha1.ComputeHash(kn5.ToArray()).ToHexString();
+            }
         }
 
-        private async Task GenerateLodStageAsync(int lodIndex, string rulesKey, string outputFilename,
+        private static Task<string> CalculateChecksumAsync(IKn5 kn5) {
+            return Task.Run(() => CalculateChecksum(kn5));
+        }
+
+        public async Task SaveInputModelAsync(CarLodGeneratorStageParams stage, string filename) {
+            var kn5 = Kn5.FromBytes(_originalKn5Data, SkippingTextureLoader.Instance);
+            var filterContext = new Kn5NodeFilterContext(stage.DefinitionsData, stage.UserDefined, _carDirectory, _carData, kn5);
+            await PrepareForGenerationAsync(filterContext, kn5, stage, true);
+
+            if (stage.InlineGeneration?.Source != null) {
+                var inlineHr = kn5.Nodes.FirstOrDefault(filterContext.CreateFilter(stage.InlineGeneration.Source).Test);
+                if (inlineHr == null) throw new Exception($"{stage.InlineGeneration.Source} node is missing");
+                kn5.RootNode.Children = new List<Kn5Node> { inlineHr };
+            }
+
+            kn5.Save(filename);
+        }
+
+        [ItemCanBeNull]
+        private async Task<Tuple<string, string>> GenerateLodStageAsync(int index, CarLodGeneratorStageParams stage,
                 IProgress<double?> progress, CancellationToken cancellationToken) {
-            var mergeRules = new CarLodGeneratorMergeRules(_carDirectory, _carData, lodIndex) { MaterialsToIncreasePriority = BodyMaterials };
-            if (lodIndex == 3) {
-                mergeRules.MaterialsToNotJoin = BodyMaterials;
-            }
-
-            var preparedKn5 = await Task.Run(() => PrepareForGeneration(mergeRules, _originalKn5Data))
-                    .ConfigureAwait(false);
+            var kn5 = await Task.Run(() => Kn5.FromBytes(_originalKn5Data, SkippingTextureLoader.Instance));
             progress.Report(0.01);
-            cancellationToken.ThrowIfCancellationRequested();
 
-            if (lodIndex == 0) {
-                var cockpitHr = preparedKn5.FirstByName("COCKPIT_HR");
-                if (cockpitHr == null) throw new Exception("COCKPIT_HR node is missing");
-                preparedKn5.RootNode.Children = new List<Kn5Node> { cockpitHr };
-            }
+            var filterContext = new Kn5NodeFilterContext(stage.DefinitionsData, stage.UserDefined, _carDirectory, _carData, kn5);
+            await PrepareForGenerationAsync(filterContext, kn5, stage, false);
 
-            var preparedSimplygonFbx = await PrepareSimplygonFbxAsync(preparedKn5, $"{lodIndex}")
-                    .ConfigureAwait(false);
             progress.Report(0.02);
             cancellationToken.ThrowIfCancellationRequested();
 
-            var generated = await GenerateLodAsync(preparedSimplygonFbx, preparedKn5, rulesKey, $"{lodIndex}",
-                    progress.SubrangeDouble(0.03, 0.98), cancellationToken).ConfigureAwait(false);
-            cancellationToken.ThrowIfCancellationRequested();
+            if (stage.InlineGeneration?.Source != null) {
+                var inlineHr = kn5.Nodes.FirstOrDefault(filterContext.CreateFilter(stage.InlineGeneration.Source).Test);
+                if (inlineHr == null) throw new Exception($"{stage.InlineGeneration.Source} node is missing");
+                kn5.RootNode.Children = new List<Kn5Node> { inlineHr };
+            }
 
-            await Task.Run(() => {
-                if (lodIndex == 0) {
-                    var cockpitLr = generated.RootNode.Children[0].NodeClass == Kn5NodeClass.Mesh ? generated.RootNode : generated.RootNode.Children[0];
-                    cockpitLr.Active = false;
-                    cockpitLr.Name = "COCKPIT_LR";
+            var temporaryFilenamePrefix = Path.Combine(_temporaryDirectory, $"{Path.GetFileName(_carDirectory)}_{index}");
+            var preparedFbxFilename = FileUtils.EnsureUnique($"{temporaryFilenamePrefix}_in.fbx");
+            try {
+                await Task.Run(() => kn5.ExportFbx(preparedFbxFilename));
+                progress.Report(0.03);
+                cancellationToken.ThrowIfCancellationRequested();
 
-                    generated = Kn5.FromBytes(_originalKn5Data);
-                    foreach (var node in generated.Nodes.ToList()) {
-                        node.Children.Remove(node.Children.FirstOrDefault(c => c.Name == "COCKPIT_LR"));
+                var checksum = await CalculateChecksumAsync(kn5);
+                progress.Report(0.04);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var generated = await GenerateLodAsync(preparedFbxFilename, kn5, stage, checksum,
+                        progress.SubrangeDouble(0.04, 0.98), cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                return await Task.Run(() => {
+                    if (stage.InlineGeneration?.Destination != null) {
+                        var inlineLr = generated.RootNode.Children[0].NodeClass == Kn5NodeClass.Mesh ? generated.RootNode : generated.RootNode.Children[0];
+                        inlineLr.Active = false;
+                        inlineLr.Name = stage.InlineGeneration.Destination;
+
+                        generated = Kn5.FromBytes(_originalKn5Data);
+                        IterateChildren(generated.RootNode);
+                        if (inlineLr != null) {
+                            generated.RootNode.Children.Add(inlineLr);
+                        }
+
+                        void IterateChildren(Kn5Node node) {
+                            if (stage.InlineGeneration == null) return;
+                            for (var i = node.Children.Count - 1; i >= 0; i--) {
+                                var child = node.Children[i];
+                                if (child.Name == stage.InlineGeneration.Destination) {
+                                    node.Children.RemoveAt(i);
+                                } else if (inlineLr != null && child.Name == stage.InlineGeneration.Source) {
+                                    node.Children.Insert(i + 1, inlineLr);
+                                    inlineLr = null;
+                                } else {
+                                    IterateChildren(child);
+                                }
+                            }
+                        }
+
+                        cancellationToken.ThrowIfCancellationRequested();
+                        progress.Report(0.99);
                     }
-                    generated.RootNode.Children.Add(cockpitLr);
-                    cancellationToken.ThrowIfCancellationRequested();
-                    progress.Report(0.99);
-                }
 
-                generated.Save(outputFilename);
-                progress.Report(1d);
-                AcToolsLogging.Write($"Ready: {Path.GetFileName(outputFilename)}");
-            }).ConfigureAwait(false);
+                    // This way it would kind of rename them all at once, allowing to swap names if necessary
+                    stage.Rename?.Where(x => x.OldName != null).Select(x => new {
+                        Nodes = generated.Nodes.Where(filterContext.CreateFilter(x.OldName).Test).ToList(),
+                        x.NewName
+                    }).Where(x => x.NewName != null).ToList()
+                            .ForEach(x => x.Nodes.ForEach(y => y.Name = string.Format(x.NewName, y.Name)));
+
+                    var resultFilename = FileUtils.EnsureUnique($"{temporaryFilenamePrefix}_out.kn5");
+                    generated.Save(resultFilename);
+                    generated.RemoveUnusedMaterials();
+                    progress.Report(1d);
+                    return Tuple.Create(resultFilename, CalculateChecksum(generated));
+                });
+            } finally {
+                if (!stage.KeepTemporaryFiles) {
+                    FileUtils.TryToDelete(preparedFbxFilename);
+                }
+            }
         }
     }
 }

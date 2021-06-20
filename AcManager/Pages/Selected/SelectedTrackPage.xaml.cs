@@ -179,18 +179,11 @@ namespace AcManager.Pages.Selected {
                             Logging.Debug("material: " + material.Name);
                             Logging.Debug("shader: " + material.ShaderName);
 
-                            foreach (var property in material.ShaderProperties) {
-                                if (property.Name == "ksEmissive") {
-                                    Logging.Debug("property: " + property.Name + "=" + property.ValueC.JoinToString(", "));
-                                } else {
-                                    Logging.Debug("property: " + property.Name + "=" + property.ValueA);
-                                }
-                            }
-
                             var baked = $@"{recreated}\include_new\base\cbuffers_baked.fx";
                             File.WriteAllLines(baked, material.ShaderProperties.Select(x => {
                                 if (x.Name == "ksEmissive") {
-                                    return $"#define {x.Name} float3({x.ValueC.JoinToString(", ")})";
+                                    // TODO: Broken here
+                                    return $"#define {x.Name} float3({x.ValueC})";
                                 } else {
                                     return $"#define {x.Name} {x.ValueA}";
                                 }

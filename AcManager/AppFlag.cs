@@ -5,6 +5,13 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Size of cache for cars LOD generator. Default value: 100 MB.
+        /// Example: --car-lod-generator-cache-size=50MB.
+        /// </summary>
+        [FlagDefaultValue("100MB")]
+        CarLodGeneratorCacheSize,
+
+        /// <summary>
         /// For development purposes.
         /// Example: --csp-reports-location.
         /// </summary>

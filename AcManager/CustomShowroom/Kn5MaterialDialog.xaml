@@ -65,15 +65,15 @@
           Visibility="{Binding ChangeMaterialCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Name:" />
-          <mui:BetterTextBox Text="{Binding Material.Name}" Style="{StaticResource Borderless}" IsReadOnly="True" />
+          <mui:SelectableTextBlock Text="{Binding Material.Name}" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Shader:" />
-          <mui:BetterTextBox Text="{Binding Material.ShaderName}" Style="{StaticResource Borderless}" IsReadOnly="True" />
+          <mui:SelectableTextBlock Text="{Binding Material.ShaderName}" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Used for:" />
-          <mui:PlaceholderTextBlock Text="{Binding UsedFor}" TextTrimming="CharacterEllipsis" ToolTip="{Binding UsedFor}" />
+          <mui:SelectableTextBlock Text="{Binding UsedFor}" />
         </DockPanel>
 
         <TextBlock Text="Parameters:" Style="{StaticResource Heading2}" Margin="0 16 0 0" />

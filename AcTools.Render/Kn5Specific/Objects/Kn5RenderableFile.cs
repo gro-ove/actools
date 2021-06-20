@@ -117,6 +117,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         // protected readonly bool AllowSkinnedObjects;
         protected readonly bool AsyncTexturesLoading;
 
+        [NotNull]
         public readonly IKn5 OriginalFile;
 
         private List<Kn5RenderableList> _dummies;
@@ -146,7 +147,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public List<IKn5RenderableObject> Meshes => _meshes ?? (_meshes = RootObject.GetAllChildren().OfType<IKn5RenderableObject>().ToList());
 
-        public Kn5RenderableFile(IKn5 kn5, Matrix matrix, bool asyncTexturesLoading = true, IKn5ToRenderableConverter converter = null) : base(kn5.OriginalFilename, matrix) {
+        public Kn5RenderableFile([NotNull] IKn5 kn5, Matrix matrix, bool asyncTexturesLoading = true, IKn5ToRenderableConverter converter = null) : base(kn5.OriginalFilename, matrix) {
             // AllowSkinnedObjects = allowSkinnedObjects;
             OriginalFile = kn5;
             AsyncTexturesLoading = asyncTexturesLoading;

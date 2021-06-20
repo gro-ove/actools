@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using AcTools.Numerics;
 using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
@@ -38,17 +39,17 @@ namespace AcTools.Kn5File {
         public class ShaderProperty : ICloneable {
             public string Name;
             public float ValueA;
-            public float[] ValueB;
-            public float[] ValueC;
-            public float[] ValueD;
+            public Vec2 ValueB;
+            public Vec3 ValueC;
+            public Vec4 ValueD;
 
             public ShaderProperty Clone() {
                 return new ShaderProperty {
                     Name = Name,
                     ValueA = ValueA,
-                    ValueB = ValueB?.ToArray(),
-                    ValueC = ValueC?.ToArray(),
-                    ValueD = ValueD?.ToArray()
+                    ValueB = ValueB,
+                    ValueC = ValueC,
+                    ValueD = ValueD
                 };
             }
 
@@ -60,9 +61,9 @@ namespace AcTools.Kn5File {
                 if (property == null) return;
                 Name = property.Name;
                 ValueA = property.ValueA;
-                ValueB = property.ValueB?.ToArray();
-                ValueC = property.ValueC?.ToArray();
-                ValueD = property.ValueD?.ToArray();
+                ValueB = property.ValueB;
+                ValueC = property.ValueC;
+                ValueD = property.ValueD;
             }
         }
 

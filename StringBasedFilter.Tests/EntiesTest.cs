@@ -6,8 +6,8 @@ namespace StringBasedFilter.Tests {
     public class EntiesTest {
         [Test]
         public void StringEntryTest() {
-            var a = new StringTestEntry("aBc", StringMatchMode.IncludedWithin);
-            var b = new StringTestEntry("aBc", StringMatchMode.CompleteMatch);
+            var a = new StringTestEntry("aBc", StringMatchMode.IncludedWithin, true);
+            var b = new StringTestEntry("aBc", StringMatchMode.CompleteMatch, true);
 
             Assert.IsTrue(a.Test("abc"));
             Assert.IsTrue(a.Test("qw abc"));

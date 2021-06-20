@@ -4,11 +4,18 @@ using AcTools.Kn5File;
 
 namespace AcTools.ExtraKn5Utils.Kn5Utils {
     public class Kn5MeshBuilder {
+        private readonly bool _considerNormal;
+        private readonly bool _considerTexCoords;
         private readonly List<Kn5Node.Vertex> _vertices = new List<Kn5Node.Vertex>();
         private readonly List<ushort> _indices = new List<ushort>();
         private Dictionary<long, ushort> _knownVertices = new Dictionary<long, ushort>();
 
         public int Count => _vertices.Count;
+
+        public Kn5MeshBuilder(bool considerNormal = true, bool considerTexCoords = true) {
+            _considerNormal = considerNormal;
+            _considerTexCoords = considerTexCoords;
+        }
 
         public void AddVertex(Kn5Node.Vertex v) {
             if (_vertices.Count >= 65536) throw new Exception("Limit exceeded");
@@ -37,15 +44,14 @@ namespace AcTools.ExtraKn5Utils.Kn5Utils {
             _knownVertices.Clear();
         }
 
-        private static long VertexHashCode(Kn5Node.Vertex v) {
-            long r = v.Position[0].GetHashCode();
-            r = (r * 397) ^ v.Position[1].GetHashCode();
-            r = (r * 397) ^ v.Position[2].GetHashCode();
-            r = (r * 397) ^ v.Normal[0].GetHashCode();
-            r = (r * 397) ^ v.Normal[1].GetHashCode();
-            r = (r * 397) ^ v.Normal[2].GetHashCode();
-            r = (r * 397) ^ v.TexC[0].GetHashCode();
-            r = (r * 397) ^ v.TexC[1].GetHashCode();
+        private long VertexHashCode(Kn5Node.Vertex v) {
+            long r = v.Position.GetHashCode();
+            if (_considerNormal) {
+                r = (r * 397) ^ v.Normal.GetHashCode();
+            }
+            if (_considerTexCoords) {
+                r = (r * 397) ^ v.Tex.GetHashCode();
+            }
             return r;
         }
     }

@@ -32,7 +32,7 @@ namespace AcTools.Kn5File {
         Kn5Node GetNode([NotNull] string path);
 
         [CanBeNull]
-        Kn5Node FirstByName(string name);
+        Kn5Node FirstByName([CanBeNull] string name);
 
         int RemoveAllByName(Kn5Node node, string name);
 
@@ -66,6 +66,9 @@ namespace AcTools.Kn5File {
         void SetTexture([Localizable(false)] string textureName, string filename);
 
         [CanBeNull]
-        string GetObjectPath(Kn5Node node);
+        string GetObjectPath([NotNull] Kn5Node node);
+
+        [CanBeNull]
+        string GetParentPath([NotNull] Kn5Node node);
     }
 }

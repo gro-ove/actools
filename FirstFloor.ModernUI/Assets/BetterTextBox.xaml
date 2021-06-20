@@ -163,6 +163,8 @@
     </Style.Triggers>
   </Style>
 
+  <Style TargetType="{x:Type c:SelectableTextBlock}" BasedOn="{StaticResource Borderless}" />
+
   <Style x:Key="Borderless.Label" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">
     <Setter Property="FontFamily" Value="{StaticResource CondensedFont}" />
     <Setter Property="FontWeight" Value="Bold" />

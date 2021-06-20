@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using StringBasedFilter.Utils;
 
 namespace StringBasedFilter.TestEntries {
-    internal class NumberTestEntry : ITestEntry {
+    public class NumberTestEntry : ITestEntry {
         private readonly Operator _op;
         private readonly string _originalValue;
         private readonly double _value;

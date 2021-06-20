@@ -3571,7 +3571,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading necessary content….
+        ///   Looks up a localized string similar to Loading tracks….
         /// </summary>
         public static string OnlineSource_Loading_FinalStep {
             get {
@@ -4248,6 +4248,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Car LODs generation preset.
+        /// </summary>
+        public static string Shared_CarLodsGenerationPreset {
+            get {
+                return ResourceManager.GetString("Shared_CarLodsGenerationPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Car setup.
         /// </summary>
         public static string Shared_CarSetup {
@@ -4536,7 +4545,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You’re using {0} Starter. With it, you won’t get a Steam achievment, so progress won’t be saved. Are you sure you want to continue?.
+        ///   Looks up a localized string similar to You’re using {0} Starter. With it, you won’t get a Steam achievement, so progress won’t be saved. Are you sure you want to continue?.
         /// </summary>
         public static string SpecialEvent_StarterWarning {
             get {

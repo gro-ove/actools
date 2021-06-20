@@ -15,6 +15,8 @@ using JetBrains.Annotations;
 namespace FirstFloor.ModernUI.Dialogs {
     public partial class WaitingDialog : IInvokingNotifyPropertyChanged, IProgress<string>, IProgress<double?>, IProgress<Tuple<string, double?>>,
             IProgress<AsyncProgressEntry>, IDisposable, IProgress<double> {
+        private Window _realOwner;
+
         public static WaitingDialog Create(string reportValue) {
             var w = new WaitingDialog();
             w.Report(reportValue);
@@ -110,7 +112,13 @@ namespace FirstFloor.ModernUI.Dialogs {
             private set => this.Apply(value, ref _isCancelled);
         }
 
+        [CanBeNull]
+        private static Window GetActiveWindow() {
+            return Application.Current?.Windows.OfType<Window>().FirstOrDefault(x => x.IsActive);
+        }
+
         public WaitingDialog(string title = null, string reportValue = null) {
+            _realOwner = GetActiveWindow();
             Title = title;
 
             if (title == null) {
@@ -203,6 +211,12 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         private bool _shown, _closed, _disposed;
 
+        private void ShowWaitingDialog() {
+            DoNotAffectOwner = true;
+            Owner = _realOwner;
+            ShowDialog();
+        }
+
         private async void EnsureShown() {
             if (_disposed) return;
 
@@ -215,10 +229,15 @@ namespace FirstFloor.ModernUI.Dialogs {
             await Task.Delay(FirstAppearDelay);
             if (_closed || _disposed) return;
 
+            while (GetActiveWindow() != _realOwner) {
+                await Task.Delay(100);
+                if (_closed || _disposed) return;
+            }
+
             var app = Application.Current;
             if (app == null) {
                 Logging.Debug("App not found");
-                ShowDialog();
+                ShowWaitingDialog();
                 return;
             }
 
@@ -235,7 +254,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                             }
                         }
                     };
-                    ShowDialog();
+                    ShowWaitingDialog();
                 } catch (InvalidOperationException e) {
                     Logging.Error(e);
                 }

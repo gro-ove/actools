@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using AcManager.Controls.Graphs;
 using AcManager.Tools;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
@@ -289,12 +290,6 @@ namespace AcManager.Pages.ContentTools {
             private set => this.Apply(value, ref _plotModel);
         }
 
-        private OxyColor ToOxyColor(string key) {
-            var r = TryFindResource(key);
-            var v = r as Color? ?? (r as SolidColorBrush)?.Color ?? Colors.Magenta;
-            return v.ToOxyColor();
-        }
-
         private readonly Busy _updateValuesBusy = new Busy();
 
         private PieSlice _savedSlide, _compressedSlice;
@@ -328,14 +323,14 @@ namespace AcManager.Pages.ContentTools {
                 var compressedLabel = string.Format(TotalRatio < 0.9 ? ColonConverter.FormatBoth : "{0}", "Compressed", CompressedSize.ToReadableSize());
 
                 if (_savedSlide == null) {
-                    var color = ToOxyColor("WindowText");
+                    var color = this.ToOxyColor("WindowText");
                     _savedSlide = new PieSlice(savedLabel, TotalSize - CompressedSize) { Fill = Colors.SeaGreen.ToOxyColor() };
                     _compressedSlice = new PieSlice(compressedLabel, CompressedSize) { Fill = Colors.Peru.ToOxyColor() };
                     PlotModel = new PlotModel {
                         TextColor = color,
                         Background = Colors.Transparent.ToOxyColor(),
                         Series = {
-                            new PieSeries {
+                            new PieSeriesExt {
                                 StrokeThickness = 0,
                                 InsideLabelPosition = 0.45,
                                 AngleSpan = 360,

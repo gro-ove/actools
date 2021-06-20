@@ -12,7 +12,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using AcTools;
 using AcTools.DataFile;
+using AcTools.ExtraKn5Utils.Kn5Utils;
 using AcTools.Kn5File;
+using AcTools.Numerics;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
@@ -790,7 +792,7 @@ namespace CustomTracksBakery {
                         var nodeMinLength = float.MaxValue;
                         var nodeMaxLength = float.MinValue;
                         foreach (var vertex in node.Vertices) {
-                            var length = vertex.TangentU.ToVector3().Length();
+                            var length = vertex.Tangent.Length();
                             if (length < nodeMinLength) nodeMinLength = length;
                             else if (length > nodeMaxLength) nodeMaxLength = length;
                             if (length < 0.99f || length > 1.01f) weird++;
@@ -970,16 +972,16 @@ namespace CustomTracksBakery {
                 case StoreMode.TangentLength: {
                     if (!WriteNode_Header(writer, node, PatchEntryType.TangentLength)) return;
                     foreach (var vertex in kn5Node.Vertices) {
-                        writer.WriteHalf(mult.Lerp(1.0f, vertex.TangentU.ToVector3().Length() * 2.0f - 1.0f));
+                        writer.WriteHalf(mult.Lerp(1.0f, vertex.Tangent.Length() * 2.0f - 1.0f));
                     }
                     break;
                 }
                 case StoreMode.Tangent: {
                     if (!WriteNode_Header(writer, node, PatchEntryType.Tangent)) return;
                     foreach (var vertex in kn5Node.Vertices) {
-                        writer.WriteHalf(mult.Lerp(1.0f, vertex.TangentU[0] / 1e5f + 1.0f));
-                        writer.WriteHalf(mult.Lerp(1.0f, vertex.TangentU[1] / 1e5f + 1.0f));
-                        writer.WriteHalf(mult.Lerp(1.0f, vertex.TangentU[2] / 1e5f + 1.0f));
+                        writer.WriteHalf(mult.Lerp(1.0f, vertex.Tangent[0] / 1e5f + 1.0f));
+                        writer.WriteHalf(mult.Lerp(1.0f, vertex.Tangent[1] / 1e5f + 1.0f));
+                        writer.WriteHalf(mult.Lerp(1.0f, vertex.Tangent[2] / 1e5f + 1.0f));
 
                         if (node.IsGrass) {
                             // Trace.WriteLine("Saved: " + vertex.TangentU[0]);
@@ -1104,23 +1106,24 @@ namespace CustomTracksBakery {
             Trace.WriteLine($"Normals synced: {s.Elapsed.ToReadableTime()}");
         }
 
-        private static void AddToVector(float[] destination, ref Vector3 value) {
+        // TODO: VEC3
+        private static void AddToVector(Vec3 destination, ref Vector3 value) {
             value.X += destination[0];
             value.Y += destination[1];
             value.Z += destination[2];
         }
 
-        private static float Dot(float[] a, float[] b) {
+        private static float Dot(Vec3 a, Vec3 b) {
             return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
         }
 
-        private static void SetVector(float[] destination, Vector3 value) {
+        private static void SetVector(Vec3 destination, Vector3 value) {
             destination[0] = value.X;
             destination[1] = value.Y;
             destination[2] = value.Z;
         }
 
-        private static void BlendNormal(float[] destination, Vector3 value, float blend) {
+        private static void BlendNormal(Vec3 destination, Vector3 value, float blend) {
             value.X = destination[0] * (1.0f - blend) + value.X * blend;
             value.Y = destination[1] * (1.0f - blend) + value.Y * blend;
             value.Z = destination[2] * (1.0f - blend) + value.Z * blend;
@@ -1130,7 +1133,8 @@ namespace CustomTracksBakery {
             destination[2] = value.Z;
         }
 
-        private static void SetVector(float[] destination, float x, float y, float z) {
+        // TODO: VEC3
+        private static void SetVector(Vec3 destination, float x, float y, float z) {
             destination[0] = x;
             destination[1] = y;
             destination[2] = z;
@@ -1529,14 +1533,15 @@ namespace CustomTracksBakery {
                             for (var i = ind.Count - 1; i >= 0; i--) {
                                 var avg = (a.X + a.Y + a.Z) / 3.0f;
                                 var g = ind[i];
-                                var v = Vector3.Normalize(kn5Node.Vertices[g].TangentU.ToVector3()) * (0.5f + avg * 0.5f);
-                                SetVector(kn5Node.Vertices[g].TangentU, v);
+                                // TODO: VEC3
+                                var v = Vector3.Normalize(kn5Node.Vertices[g].Tangent.ToVector3()) * (0.5f + avg * 0.5f);
+                                SetVector(kn5Node.Vertices[g].Tangent, v);
                             }
                             break;
                         default:
                             for (var i = ind.Count - 1; i >= 0; i--) {
                                 var g = ind[i];
-                                SetVector(kn5Node.Vertices[g].TangentU,
+                                SetVector(kn5Node.Vertices[g].Tangent,
                                         a.X * 1e5f - 1e5f, a.Y * 1e5f - 1e5f, a.Z * 1e5f - 1e5f);
                             }
                             break;

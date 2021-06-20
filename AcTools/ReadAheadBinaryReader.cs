@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using SystemHalf;
+using AcTools.Numerics;
 using JetBrains.Annotations;
 
 namespace AcTools {
@@ -434,34 +435,36 @@ namespace AcTools {
         }
 
         #region Common stuff
-        public float[] ReadSingle2D() {
+        public Vec2 ReadVec2() {
             var pos = GetPosAndMove(8);
             var buffer = _buffer;
-            return new[] {
-                ToSingle(buffer, pos),
-                ToSingle(buffer, pos + 4)
-            };
+            return new Vec2(ToSingle(buffer, pos), ToSingle(buffer, pos + 4));
         }
 
-        public float[] ReadSingle3D() {
+        public Vec3 ReadVec3() {
             var pos = GetPosAndMove(12);
             var buffer = _buffer;
-            return new[] {
-                ToSingle(buffer, pos),
-                ToSingle(buffer, pos + 4),
-                ToSingle(buffer, pos + 8)
-            };
+            return new Vec3(ToSingle(buffer, pos), ToSingle(buffer, pos + 4), ToSingle(buffer, pos + 8));
         }
 
-        public float[] ReadSingle4D() {
+        public Vec4 ReadVec4() {
             var pos = GetPosAndMove(16);
             var buffer = _buffer;
-            return new[] {
+            return new Vec4(
                 ToSingle(buffer, pos),
                 ToSingle(buffer, pos + 4),
                 ToSingle(buffer, pos + 8),
-                ToSingle(buffer, pos + 12)
-            };
+                ToSingle(buffer, pos + 12));
+        }
+
+        public Quat ReadQuat() {
+            var pos = GetPosAndMove(16);
+            var buffer = _buffer;
+            return new Quat(
+                ToSingle(buffer, pos),
+                ToSingle(buffer, pos + 4),
+                ToSingle(buffer, pos + 8),
+                ToSingle(buffer, pos + 12));
         }
 
         public void ReadSingle4D(out float x, out float y, out float z, out float w) {
@@ -504,15 +507,14 @@ namespace AcTools {
         /// Read 64 bytes as 16 floats.
         /// </summary>
         /// <returns></returns>
-        public float[] ReadMatrix() {
+        public Mat4x4 ReadMatrix() {
             var pos = GetPosAndMove(64);
             var buffer = _buffer;
-            return new[] {
+            return new Mat4x4(
                 ToSingle(buffer, pos), ToSingle(buffer, pos + 4), ToSingle(buffer, pos + 8), ToSingle(buffer, pos + 12),
                 ToSingle(buffer, pos + 16), ToSingle(buffer, pos + 20), ToSingle(buffer, pos + 24), ToSingle(buffer, pos + 28),
                 ToSingle(buffer, pos + 32), ToSingle(buffer, pos + 36), ToSingle(buffer, pos + 40), ToSingle(buffer, pos + 44),
-                ToSingle(buffer, pos + 48), ToSingle(buffer, pos + 52), ToSingle(buffer, pos + 56), ToSingle(buffer, pos + 60)
-            };
+                ToSingle(buffer, pos + 48), ToSingle(buffer, pos + 52), ToSingle(buffer, pos + 56), ToSingle(buffer, pos + 60));
         }
         #endregion
     }

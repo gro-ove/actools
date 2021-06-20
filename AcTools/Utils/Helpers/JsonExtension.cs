@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -9,57 +8,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcTools.Utils.Helpers {
-    public class JObjectRestorationScheme {
-        public class Field {
-            public readonly string Name, ParentName;
-            public readonly FieldType Type;
-
-            public Field([Localizable(false)] string name, FieldType type) {
-                Name = name;
-                Type = type;
-            }
-
-            public Field([Localizable(false)] string name, [Localizable(false)] string parentName, FieldType type) {
-                Name = name;
-                ParentName = parentName;
-                Type = type;
-            }
-
-            public bool IsMultiline => Type == FieldType.StringMultiline || Type == FieldType.StringsArray ||
-                    Type == FieldType.PairsArray;
-        }
-
-        public enum FieldType {
-            String,
-            NonNullString,
-            StringMultiline,
-            Number,
-            Boolean,
-            StringsArray,
-            PairsArray
-        }
-
-        public readonly Field[] Fields;
-
-        public JObjectRestorationScheme(params Field[] fields) {
-            Fields = fields;
-        }
-    }
-
-    public class JsonBoolToDoubleConverter : JsonConverter {
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
-            JToken.FromObject(value, serializer).WriteTo(writer);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
-            return reader.TokenType == JsonToken.Boolean ? ((bool)reader.Value ? 1d : 0d) : FlexibleParser.TryParseDouble(reader.Value?.ToString()) ?? 0d;
-        }
-
-        public override bool CanConvert(Type objectType) {
-            return objectType == typeof(double);
-        }
-    }
-
     public static class JsonExtension {
         public static void Populate([NotNull] this JToken value, [NotNull] object target){
             using (var sr = value.CreateReader()) {
@@ -146,16 +94,17 @@ namespace AcTools.Utils.Helpers {
             return false;
         }
 
-        public static string GetStringValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key) {
-            var value = obj[key];
+        [CanBeNull]
+        public static string GetStringValueOnly([CanBeNull] this JToken obj, [LocalizationRequired(false)] string key) {
+            var value = obj?[key];
             if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer &&
                     value.Type != JTokenType.Float) return null;
             var result = value.ToString();
             return string.IsNullOrEmpty(result) ? null : result;
         }
 
-        public static int? GetIntValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key) {
-            var value = obj[key];
+        public static int? GetIntValueOnly([CanBeNull] this JToken obj, [LocalizationRequired(false)] string key) {
+            var value = obj?[key];
             if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer &&
                     value.Type != JTokenType.Float) return null;
 
@@ -165,12 +114,12 @@ namespace AcTools.Utils.Helpers {
             return !double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var val) ? (int?)null : (int)val;
         }
 
-        public static int GetIntValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key, int defaultValue) {
+        public static int GetIntValueOnly([CanBeNull] this JToken obj, [LocalizationRequired(false)] string key, int defaultValue) {
             return obj.GetIntValueOnly(key) ?? defaultValue;
         }
 
-        public static double? GetDoubleValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key) {
-            var value = obj[key];
+        public static double? GetDoubleValueOnly([CanBeNull] this JToken obj, [LocalizationRequired(false)] string key) {
+            var value = obj?[key];
             if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer &&
                     value.Type != JTokenType.Float) return null;
 
@@ -180,23 +129,23 @@ namespace AcTools.Utils.Helpers {
             return !double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var val) ? (double?)null : val;
         }
 
-        public static double GetDoubleValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key, double defaultValue) {
+        public static double GetDoubleValueOnly([CanBeNull] this JToken obj, [LocalizationRequired(false)] string key, double defaultValue) {
             return obj.GetDoubleValueOnly(key) ?? defaultValue;
         }
 
-        public static bool? GetBoolValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key) {
-            var value = obj[key];
+        public static bool? GetBoolValueOnly([CanBeNull] this JToken obj, [LocalizationRequired(false)] string key) {
+            var value = obj?[key];
             if (value == null || value.Type != JTokenType.Boolean && value.Type != JTokenType.Integer &&
                     value.Type != JTokenType.Float) return null;
             return (bool)value;
         }
 
-        public static bool GetBoolValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key, bool defaultValue) {
+        public static bool GetBoolValueOnly([CanBeNull] this JToken obj, [LocalizationRequired(false)] string key, bool defaultValue) {
             return obj.GetBoolValueOnly(key) ?? defaultValue;
         }
 
-        public static GeoTagsEntry GetGeoTagsValueOnly([NotNull] this JToken obj, [LocalizationRequired(false)] string key) {
-            if (!(obj[key] is JArray value) || value.Count != 2) return null;
+        public static GeoTagsEntry GetGeoTagsValueOnly([CanBeNull] this JToken obj, [LocalizationRequired(false)] string key) {
+            if (!(obj?[key] is JArray value) || value.Count != 2) return null;
             var lat = value[0];
             var lon = value[1];
             if (lat == null || lat.Type != JTokenType.String ||

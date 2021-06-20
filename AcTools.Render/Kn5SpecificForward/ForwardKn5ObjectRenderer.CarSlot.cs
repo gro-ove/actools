@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AcTools.Kn5File;
+using AcTools.Numerics;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
@@ -521,13 +522,11 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        public void UpdateMaterialPropertyC(IKn5 kn5, uint materialId, string propertyName, float[] valueC) {
+        public void UpdateMaterialPropertyC(IKn5 kn5, uint materialId, string propertyName, Vec3 valueC) {
             if (Disposed) return;
             var prop = kn5.GetMaterial(materialId)?.GetPropertyByName(propertyName);
             if (prop != null) {
-                for (var i = 0; i < prop.ValueC.Length && i < valueC.Length; i++) {
-                    prop.ValueC[i] = valueC[i];
-                }
+                prop.ValueC = valueC;
                 RefreshMaterial(kn5, materialId);
             } else {
                 AcToolsLogging.Write("Property not found: " + propertyName);

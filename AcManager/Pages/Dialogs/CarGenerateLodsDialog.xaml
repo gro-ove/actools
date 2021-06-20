@@ -1,171 +1,402 @@
 <mui:ModernDialog x:Class="AcManager.Pages.Dialogs.CarGenerateLodsDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" Title="Generate LODs" SizeToContent="Manual"
-    Width="920" Height="800" MinWidth="400" MinHeight="240" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
-    MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" LocationAndSizeKey=".carGenerateLodsDialog" ResizeMode="CanResizeWithGrip"
-    d:DataContext="{d:DesignInstance di:CarGenerateLodsDialog+ViewModel}" x:Name="This" DoNotAttachToWaitingDialogs="True">
+    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
+    xmlns:g="clr-namespace:AcManager" xmlns:sys="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d"
+    Title="{Binding Car.DisplayName, StringFormat='{}Generate LODs for {0}'}" ShowTitle="True" SizeToContent="Manual" Width="1200" Height="1040"
+    MinWidth="1080" MinHeight="600" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
+    LocationAndSizeKey=".carGenerateLodsDialog.ls" ResizeMode="CanResizeWithGrip" d:DataContext="{d:DesignInstance di:CarGenerateLodsDialog+ViewModel}"
+    x:Name="This" DoNotAttachToWaitingDialogs="True" ButtonsRowContentAlignment="Stretch">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Plugins.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/UserPresets.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/TextEditor.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernTab.xaml" />
       </ResourceDictionary.MergedDictionaries>
+
+      <mui:DirectContentLoader x:Key="SettingsFrameLoader" x:Shared="False" d:DataContext="{d:DesignInstance di:CarGenerateLodsDialog+StageParams}">
+
+        <mui:DirectContentLoaderEntry Key="Base">
+          <mui:DirectContentLoaderEntry.Content>
+            <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
+              <DockPanel>
+                <DockPanel.ToolTip>
+                  <TextBlock Text="{Binding DisplayTrianglesHint}" />
+                </DockPanel.ToolTip>
+                <mui:ValueLabel Value="{Binding TrianglesCount}" mui:BetterTextBox.Minimum="1" Content="Triangles" />
+                <Slider Minimum="0" Maximum="40000" Value="{Binding TrianglesCount}" TickFrequency="4000" TickPlacement="BottomRight"
+                    IsSelectionRangeEnabled="True" SelectionStart="{Binding TrianglesRecommendedCount.Item1, Mode=OneWay}"
+                    SelectionEnd="{Binding TrianglesRecommendedCount.Item2, Mode=OneWay}" />
+              </DockPanel>
+              <CheckBox IsChecked="{Binding ApplyWeldingFix}">
+                <CheckBox.ToolTip>
+                  <TextBlock MaxWidth="480" TextWrapping="Wrap"
+                      Text="Can help with holes and smooth things out in general, but can also slow things down a lot, so it might make sense to disable it when figuring out better settings for priorities and such." />
+                </CheckBox.ToolTip>
+                <Label Content="Apply welding fix" />
+              </CheckBox>
+            </StackPanel>
+          </mui:DirectContentLoaderEntry.Content>
+        </mui:DirectContentLoaderEntry>
+
+        <mui:DirectContentLoaderEntry Key="ElementsToRemove">
+          <mui:DirectContentLoaderEntry.Content>
+            <ae:TextEditor c:AvalonExtension.Text="{Binding ElementsToRemove, UpdateSourceTrigger=PropertyChanged}" ShowLineNumbers="False" />
+          </mui:DirectContentLoaderEntry.Content>
+        </mui:DirectContentLoaderEntry>
+
+        <mui:DirectContentLoaderEntry Key="ElementsPriorities">
+          <mui:DirectContentLoaderEntry.Content>
+            <ae:TextEditor c:AvalonExtension.Text="{Binding ElementsPriorities, UpdateSourceTrigger=PropertyChanged}" ShowLineNumbers="False" />
+          </mui:DirectContentLoaderEntry.Content>
+        </mui:DirectContentLoaderEntry>
+
+        <mui:DirectContentLoaderEntry Key="MergeExceptions">
+          <mui:DirectContentLoaderEntry.Content>
+            <ae:TextEditor c:AvalonExtension.Text="{Binding MergeExceptions, UpdateSourceTrigger=PropertyChanged}" ShowLineNumbers="False" />
+          </mui:DirectContentLoaderEntry.Content>
+        </mui:DirectContentLoaderEntry>
+
+        <mui:DirectContentLoaderEntry Key="MergeParents">
+          <mui:DirectContentLoaderEntry.Content>
+            <ae:TextEditor c:AvalonExtension.Text="{Binding MergeParents, UpdateSourceTrigger=PropertyChanged}" ShowLineNumbers="False" />
+          </mui:DirectContentLoaderEntry.Content>
+        </mui:DirectContentLoaderEntry>
+
+        <mui:DirectContentLoaderEntry Key="MergeAsBlack">
+          <mui:DirectContentLoaderEntry.Content>
+            <ae:TextEditor c:AvalonExtension.Text="{Binding MergeAsBlack, UpdateSourceTrigger=PropertyChanged}" ShowLineNumbers="False" />
+          </mui:DirectContentLoaderEntry.Content>
+        </mui:DirectContentLoaderEntry>
+
+        <mui:DirectContentLoaderEntry Key="OffsetsAlongNormal">
+          <mui:DirectContentLoaderEntry.Content>
+            <ae:TextEditor c:AvalonExtension.Text="{Binding OffsetsAlongNormal, UpdateSourceTrigger=PropertyChanged}" ShowLineNumbers="False" />
+          </mui:DirectContentLoaderEntry.Content>
+        </mui:DirectContentLoaderEntry>
+
+      </mui:DirectContentLoader>
     </ResourceDictionary>
   </mui:ModernDialog.Resources>
 
-  <mui:FallbackSwitch>
+  <mui:ModernDialog.ButtonsRowContent>
+    <DockPanel>
+      <mui:SpacingStackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right" HorizontalAlignment="Right">
+        <mui:BooleanSwitch Value="{Binding IsReady, Source={x:Static di:CarGenerateLodsDialog.Plugins}}"
+            Visibility="{Binding SimplygonAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+          <mui:SpacingStackPanel Orientation="Horizontal" Spacing="8">
+            <Button MinWidth="160" Content="Save LODs" Command="{Binding FinalSaveCommand}"
+                Visibility="{Binding HasDataToSave, Converter={StaticResource BooleanToVisibilityConverter}}">
+              <Button.ToolTip>
+                <TextBlock TextWrapping="Wrap" MaxWidth="480"
+                    Text="Before saving, you can use showroom to check LODs, compare them and pick best ones if you generated several variants. All existing files will be moved to the Recycle Bin just in case." />
+              </Button.ToolTip>
+            </Button>
+            <mui:AsyncButton Style="{StaticResource Go.AsyncButton}" Command="{Binding GenerateCommand}">
+              <mui:AsyncButton.ToolTip>
+                <mui:Switch Value="{Binding PotentialIssues.Count}">
+                  <TextBlock mui:Switch.When="0" Text="You’ll be able to review all changes before saving them once LODs are generated" />
+                  <TextBlock Text="{Binding DisplayPotentialIssues}" />
+                </mui:Switch>
+              </mui:AsyncButton.ToolTip>
+              <DockPanel>
+                <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                    Visibility="{Binding PotentialIssues.Count, Converter={StaticResource MoreToVisibilityConverter}}" Margin="2 2 4 0"
+                    VerticalAlignment="Center" />
+                <TextBlock Text="Generate LODs" />
+              </DockPanel>
+            </mui:AsyncButton>
+          </mui:SpacingStackPanel>
+        </mui:BooleanSwitch>
+        <Button Command="{Binding OpenShowroomCommand}" Content="Showroom" ToolTip="View car and compare LODs in showroom (Alt+H)" />
+        <Button Content="{x:Static mui:UiStrings.Close}" Click="OnCloseClick" />
+      </mui:SpacingStackPanel>
+      <TextBlock MaxWidth="340" FontSize="{StaticResource SmallFontSize}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Left"
+          Text="New LODs are generated, but not saved yet. You can use showroom to verify the geometry before saving."
+          Visibility="{Binding HasDataToSave, Converter={StaticResource BooleanToVisibilityConverter}}" />
+    </DockPanel>
+  </mui:ModernDialog.ButtonsRowContent>
 
-    <DockPanel mui:FallbackSwitch.Value="{Binding IsReady, Source={x:Static di:CarGenerateLodsDialog.Plugins}}" mui:FallbackSwitch.When="False"
-        Margin="40 0 40 100" HorizontalAlignment="Center" VerticalAlignment="Center">
-      <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" DockPanel.Dock="Top" Margin="0 0 0 8" />
-      <mui:Switch Value="{Binding ListView.Count}" DataContext="{Binding Source={x:Static di:CarGenerateLodsDialog.Plugins}}">
-        <DockPanel mui:Switch.When="0">
-          <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" Margin="0 0 8 0" />
-          <TextBlock Text="FbxConverter plugin is required for LOD generator to work." TextWrapping="Wrap" />
-        </DockPanel>
-        <mui:SpacingStackPanel Spacing="4">
+  <DockPanel>
+    <mui:FallbackSwitch>
+
+      <!-- FbxConverter is missing -->
+      <DockPanel mui:FallbackSwitch.Value="{Binding IsReady, Source={x:Static di:CarGenerateLodsDialog.Plugins}}" mui:FallbackSwitch.When="False"
+          Margin="40 0 40 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" DockPanel.Dock="Top" Margin="0 0 0 8" />
+        <mui:Switch Value="{Binding ListView.Count}" DataContext="{Binding Source={x:Static di:CarGenerateLodsDialog.Plugins}}">
           <DockPanel mui:Switch.When="0">
             <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" Margin="0 0 8 0" />
-            <TextBlock Text="Plugin is required for LOD generator to work:" TextWrapping="Wrap" />
+            <TextBlock Text="FbxConverter plugin is required for LOD generator to work." TextWrapping="Wrap" />
           </DockPanel>
-          <ItemsControl ItemsSource="{Binding ListView}" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" Margin="0 8 0 -12" />
-        </mui:SpacingStackPanel>
-      </mui:Switch>
-    </DockPanel>
-
-    <DockPanel mui:FallbackSwitch.Value="{Binding SimplygonAvailable}" mui:FallbackSwitch.When="False" Margin="40 0 40 100" HorizontalAlignment="Center"
-        VerticalAlignment="Center" MaxWidth="400">
-      <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" DockPanel.Dock="Top" Margin="0 0 0 8" />
-      <mui:BbCodeBlock TextWrapping="Wrap" DockPanel.Dock="Top" Margin="0 0 0 8"
-          Text="Couldn’t find Simplygon installation. Please locate its file manually. You can get Simplygon [url=&quot;https://simplygon.com/&quot;]here[/url]." />
-      <DockPanel>
-        <TextBlock Text="Simplygon location:" Style="{StaticResource Label}" Width="120" />
-        <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding SimplygonLocateCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
-        <mui:PathTrimmingTextBlock Text="{Binding SimplygonLocation.Value}" />
+          <mui:SpacingStackPanel Spacing="4">
+            <DockPanel mui:Switch.When="0">
+              <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" Margin="0 0 8 0" />
+              <TextBlock Text="Plugin is required for LOD generator to work:" TextWrapping="Wrap" />
+            </DockPanel>
+            <ItemsControl ItemsSource="{Binding ListView}" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" Margin="0 8 0 -12" />
+          </mui:SpacingStackPanel>
+        </mui:Switch>
       </DockPanel>
-    </DockPanel>
 
-    <DockPanel mui:FallbackSwitch.Value="{Binding GeneratorFailure}" mui:FallbackSwitch.WhenNot="{x:Null}" Margin="40 0 40 100" HorizontalAlignment="Center"
-        VerticalAlignment="Center" MaxWidth="400">
-      <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" DockPanel.Dock="Top" Margin="0 0 0 8" />
-      <DockPanel mui:Switch.When="0">
-        <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" Margin="0 0 8 0" />
-        <TextBlock Text="{Binding GeneratorFailure, StringFormat='{}LOD generator error: {0}'}" TextWrapping="Wrap" />
-      </DockPanel>
-    </DockPanel>
-
-    <DockPanel Margin="40 0 40 100" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="400">
-      <TextBlock Style="{StaticResource Heading1}" Text="Ready to generate" DockPanel.Dock="Top" Margin="0 0 0 20" />
-
-      <StackPanel Style="{StaticResource SettingsPanel}" DockPanel.Dock="Top" Margin="0 0 0 20">
-
+      <!-- Simplygon is missing -->
+      <DockPanel mui:FallbackSwitch.Value="{Binding SimplygonAvailable}" mui:FallbackSwitch.When="False" Margin="40 0 40 100" HorizontalAlignment="Center"
+          VerticalAlignment="Center" MaxWidth="400">
+        <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" DockPanel.Dock="Top" Margin="0 0 0 8" />
+        <mui:BbCodeBlock TextWrapping="Wrap" DockPanel.Dock="Top" Margin="0 0 0 8"
+            Text="Couldn’t find Simplygon installation. Please locate its file manually. You can get Simplygon [url=&quot;https://simplygon.com/&quot;]here[/url]." />
         <DockPanel>
-          <mui:ContextMenuButton DockPanel.Dock="Right"
-              Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-            <ContextMenu>
-              <MenuItem Header="Merge meshes to reduce draw calls" IsCheckable="True" IsChecked="{Binding PhaseCockpitLr.UseMerge}" />
-              <MenuItem Header="Remove transparent objects" IsCheckable="True" IsChecked="{Binding CockpitLrSkipTransparent}" />
-              <MenuItem Header="Remove meshes mentioned in lights.ini" IsCheckable="True" IsChecked="{Binding CockpitLrRemoveLights}" />
-              <Separator />
-              <MenuItem Header="Edit Simplygon rules" />
-            </ContextMenu>
-          </mui:ContextMenuButton>
-          <Button Visibility="{Binding PhaseCockpitLr.Finished, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}"
-              DockPanel.Dock="Right" Width="80" VerticalAlignment="Stretch" Content="View result" Command="{Binding ViewResultCommand}"
-              CommandParameter="{Binding PhaseCockpitLr}" />
-          <Border IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}">
-            <CheckBox IsChecked="{Binding PhaseCockpitLr.Enabled}" IsEnabled="{Binding CarHasCockpitHr}">
-              <TextBlock Style="{StaticResource Label}" Text="Low-res cockpit for LOD A" />
-            </CheckBox>
+          <TextBlock Text="Simplygon location:" Style="{StaticResource Label}" Width="120" />
+          <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding SimplygonLocateCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
+          <mui:PathTrimmingTextBlock Text="{Binding SimplygonLocation.Value}" />
+        </DockPanel>
+      </DockPanel>
+
+      <mui:Cell>
+        <DockPanel>
+
+          <!-- Introduction -->
+          <c:MessageBlock DockPanel.Dock="Top" Margin="0 0 0 20" CloseKey="CarLodsGenHint">
+            <mui:BbCodeBlock
+                Text="Default configuration should generate something generally acceptable for some mods, but to get better results you might want to adjust some settings. For example, remove some extra meshes underneath the car from further LODs, stop low-res cockpit generator from removing transparent meshes or adjust priorities of different kinds of meshes. [url=&quot;cmd://openPage/importantTips?param=carLodsGeneration&quot;]More information[/url]" />
+          </c:MessageBlock>
+
+          <!-- User-defined values -->
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled" MaxHeight="200" Margin="0 0 0 12" DockPanel.Dock="Top">
+            <ItemsControl ItemsSource="{Binding UserDefinedValues}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="20" VerticalSpacing="8" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <StackPanel Style="{StaticResource SettingsPanel}" Margin="0">
+                    <DockPanel ToolTip="{Binding Description}" Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True" Margin="0">
+                      <DockPanel.ContextMenu>
+                        <ContextMenu>
+                          <MenuItem Header="Fill default value" Command="{Binding FillDefaultValueCommand}" />
+                        </ContextMenu>
+                      </DockPanel.ContextMenu>
+                      <Label Content="{Binding DisplayName}" ContentStringFormat="{}{0}:" />
+                      <mui:BetterTextBox Placeholder="{Binding DefaultValue}" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
+                  </StackPanel>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition MinWidth="50" MaxWidth="400" />
+              <ColumnDefinition Width="9" />
+              <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <!-- Configuration navigator on the left side -->
+            <DockPanel Margin="0 0 8 0">
+
+              <!-- Presets -->
+              <mui:SpacingStackPanel Spacing="4" Margin="0 8 0 0" MinWidth="80" DockPanel.Dock="Bottom">
+                <DockPanel Visibility="{Binding CacheInformationReady, Converter={StaticResource BooleanToVisibilityConverter}}" Background="Transparent">
+                  <DockPanel.ToolTip>
+                    <TextBlock Text="{Binding CacheFileLimitMb, StringFormat='{}CM will automatically start clearing out cache once it reaches {0} MB'}" />
+                  </DockPanel.ToolTip>
+                  <!--<DockPanel.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="{Binding CacheLimit, Converter={StaticResource FileSizeConverter}}" HeaderStringFormat="{}Cache size limit: {0}"
+                          StaysOpenOnClick="True" />
+                      <MenuItem Header="Change cache limit" Command="{Binding ChangeCacheLimitCommand}" />
+                    </ContextMenu>
+                  </DockPanel.ContextMenu>-->
+                  <Button DockPanel.Dock="Right" Margin="4 0 0 0" Content="Clear" ToolTip="Clear cached data" Command="{Binding ClearCacheCommand}" />
+                  <TextBlock Text="{Binding CacheFileSize, Converter={StaticResource FileSizeConverter}, StringFormat='{}Cache: {0}'}" DockPanel.Dock="Top"
+                      Margin="0 0 0 2" />
+                  <ProgressBar Value="{Binding CacheFileSize}"
+                      Maximum="{Binding CacheFileLimitMb, Converter={StaticResource MultiplyConverter}, ConverterParameter=1048576}">
+                  </ProgressBar>
+                </DockPanel>
+                <Button Command="{Binding OpenDirectoryCommand}" Content="Open car’s folder" ToolTip="{x:Static g:AppStrings.Toolbar_Folder_CarTooltip}" />
+                <TextBlock Text="Configuration preset:" Style="{StaticResource Label}" Margin="0 16 0 0" />
+                <DockPanel>
+                  <Button DockPanel.Dock="Right" Margin="4 0 0 0" Click="OnApplyPreviousSettingsClick" Padding="4 0"
+                      Visibility="{Binding HasPreviousSettings, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Path Data="{StaticResource InformationIconData}" Fill="{DynamicResource Go}" Width="16" Height="16" Margin="0 8" Stretch="Uniform"
+                        VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Settings used to create current LODs are available, click to apply" />
+                  </Button>
+                  <c:UserPresetsControl Style="{StaticResource UserPresetsControl.Compact}" x:Name="UserPresetsControl" UserPresetable="{Binding}" Margin="0"
+                      Width="{x:Static sys:Double.NaN}" />
+                </DockPanel>
+                <Button Command="{Binding ShareCommand}" Content="{x:Static g:AppStrings.Common_Share}" MinWidth="80"
+                    ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}" />
+              </mui:SpacingStackPanel>
+
+              <!-- Switch between configuration pages -->
+              <ListBox ItemsSource="{Binding SettingsLinks}" SelectedItem="{Binding SelectedSettingsSection}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.Template>
+                  <ControlTemplate TargetType="ListBox">
+                    <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="False"
+                        HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" PanningMode="Both">
+                      <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </ScrollViewer>
+                  </ControlTemplate>
+                </ListBox.Template>
+                <ListBox.ItemContainerStyle>
+                  <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
+                    <Setter Property="Template">
+                      <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem" d:DataContext="{d:DesignInstance mui:Link}">
+                          <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                              BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                          </Border>
+                          <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                              <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                              <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
+                            </Trigger>
+                          </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                      </Setter.Value>
+                    </Setter>
+                  </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                  <DataTemplate DataType="mui:Link">
+                    <Border Background="Transparent">
+                      <Border.ToolTip>
+                        <TextBlock TextWrapping="Wrap" MaxWidth="480" Text="{Binding Tag}" />
+                      </Border.ToolTip>
+                      <TextBlock Text="{Binding DisplayName, Converter={StaticResource ToUpperConverter}}" Margin="10 2 2 2"
+                          FontSize="{DynamicResource SmallFontSize}" />
+                    </Border>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+
+            </DockPanel>
+
+            <!-- Separator -->
+            <mui:ModernTabSplitter Grid.Column="1" SaveKey="CarLodGenerator.TabSplitter" />
+
+            <!-- Cards for LODs -->
+            <ItemsControl x:Name="LodsGrid" Grid.Column="2" ItemsSource="{Binding Stages}" Margin="20 0 0 0">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="40" VerticalSpacing="40" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <DockPanel>
+
+                    <!-- Title and activating checkbox -->
+                    <DockPanel Margin="0 0 0 8" DockPanel.Dock="Top">
+                      <mui:ContextMenuButton DockPanel.Dock="Right">
+                        <ContextMenu>
+                          <MenuItem Header="Keep all temporary files" IsChecked="{Binding KeepTemporaryFiles}" IsCheckable="True"
+                              ToolTip="LODs generator will keep some files for caching, but remove others unless this option is active" />
+                          <Separator />
+                          <MenuItem Header="View prepared model" Click="OnViewPreparedModelClick" />
+                          <MenuItem Header="View Simplygon configuration" Command="{Binding ViewSimplygonConfigurationCommand}"
+                              ToolTip="Currently, Simplygon configuration, as well as all the other files, are not included with presets and sharing URLs" />
+                        </ContextMenu>
+                      </mui:ContextMenuButton>
+                      <CheckBox IsChecked="{Binding IsUserActive}" IsEnabled="{Binding IsAvailable}">
+                        <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
+                      </CheckBox>
+                    </DockPanel>
+
+                    <DockPanel DockPanel.Dock="Top" Margin="0 0 0 8"
+                        Visibility="{Binding GeneratedModels.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1}">
+                      <Button ToolTip="Showroom" Click="OnShowroomClick" Margin="0 0 4 0" Padding="8 0">
+                        <Path Data="{StaticResource CarShowroomIconData}" Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                            Width="20" Height="20" Stretch="Uniform" />
+                      </Button>
+                      <mui:BetterComboBox ItemsSource="{Binding GeneratedModels}" SelectedItem="{Binding SelectedGeneratedModel}" IsEditable="False"
+                          ToolTip="Choose the model to save as final">
+                        <mui:BetterComboBox.ItemTemplate>
+                          <DataTemplate>
+                            <StackPanel ToolTip="{Binding Filename}">
+                              <TextBlock x:Name="PART_DisplayName" Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 2" FontWeight="Normal" />
+                              <TextBlock x:Name="PART_Details" Text="{Binding Details}" TextTrimming="CharacterEllipsis"
+                                  FontSize="{StaticResource SmallFontSize}" FontWeight="Normal" />
+                            </StackPanel>
+                            <DataTemplate.Triggers>
+                              <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                <Setter TargetName="PART_DisplayName" Property="Text" Value="None" />
+                                <Setter TargetName="PART_Details" Property="Text" Value="Model is missing" />
+                              </DataTrigger>
+                            </DataTemplate.Triggers>
+                          </DataTemplate>
+                        </mui:BetterComboBox.ItemTemplate>
+                      </mui:BetterComboBox>
+                    </DockPanel>
+
+                    <mui:Cell IsEnabled="{Binding IsAvailable}">
+
+                      <!-- Frame with editor -->
+                      <mui:ModernFrame ContentLoader="{StaticResource SettingsFrameLoader}"
+                          Source="{Binding DataContext.SelectedSettingsSection.Source, ElementName=This, IsAsync=True}"
+                          IsEnabled="{Binding GeneratingNow, Converter={StaticResource InvertBooleanConverter}}" />
+
+                      <!-- Overlay -->
+                      <mui:FallbackSwitch>
+
+                        <!-- Error message: unavailable or failed generation -->
+                        <Border mui:FallbackSwitch.Value="{Binding ErrorMessage}" mui:FallbackSwitch.WhenNot="{x:Null}"
+                            Background="{DynamicResource OverlayBackground}" VerticalAlignment="Top" HorizontalAlignment="Center" CornerRadius="4"
+                            Padding="40 8" Width="280" MaxHeight="120" ToolTip="{Binding ErrorMessage}" Margin="0 28">
+                          <DockPanel VerticalAlignment="Center">
+                            <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16"
+                                Margin="0 0 8 0" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="{StaticResource SmallFontSize}" />
+                          </DockPanel>
+                        </Border>
+
+                        <!-- Generating progress -->
+                        <Border mui:FallbackSwitch.Value="{Binding GeneratingNow}" mui:FallbackSwitch.When="True"
+                            Background="{DynamicResource OverlayBackground}" VerticalAlignment="Top" HorizontalAlignment="Center" CornerRadius="4"
+                            Padding="40 0" Width="280" Height="60" Margin="0 28">
+                          <DockPanel VerticalAlignment="Center">
+                            <TextBlock Text="Generating…" DockPanel.Dock="Top" Margin="0 0 0 8" FontSize="{StaticResource SmallFontSize}" />
+                            <ProgressBar Height="4" Maximum="1" Value="{Binding GenerationProgress}" />
+                          </DockPanel>
+                        </Border>
+
+                      </mui:FallbackSwitch>
+
+                    </mui:Cell>
+                  </DockPanel>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </Grid>
+        </DockPanel>
+
+        <!-- Global overlay -->
+        <mui:FallbackSwitch>
+
+          <!-- Loading -->
+          <Border mui:FallbackSwitch.Value="{Binding IsInitialCheckComplete}" mui:FallbackSwitch.When="False" Background="{DynamicResource OverlayBackground}"
+              VerticalAlignment="Top" HorizontalAlignment="Center" CornerRadius="4" Padding="120 0" Width="480" Height="60" Margin="0 40">
+            <DockPanel VerticalAlignment="Center">
+              <TextBlock Text="Initializing…" DockPanel.Dock="Top" Margin="0 0 0 8" FontSize="{StaticResource SmallFontSize}" />
+              <ProgressBar Height="4" IsIndeterminate="True" />
+            </DockPanel>
           </Border>
-        </DockPanel>
-        <ProgressBar Height="4" Maximum="1" Margin="20 -8 84 8" Value="{Binding PhaseCockpitLr.Progress}"
-            IsIndeterminate="{Binding PhaseCockpitLr.Progress.HasValue, Converter={StaticResource InvertBooleanConverter}}"
-            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
 
-        <DockPanel>
-          <mui:ContextMenuButton DockPanel.Dock="Right"
-              Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-            <ContextMenu>
-              <MenuItem Header="Merge meshes to reduce draw calls" IsCheckable="True" IsChecked="{Binding PhaseLodB.UseMerge}" />
-              <MenuItem Header="Consider headlights animation" IsCheckable="True" IsChecked="True" />
-              <Separator />
-              <MenuItem Header="Edit Simplygon rules" />
-            </ContextMenu>
-          </mui:ContextMenuButton>
-          <Button Visibility="{Binding PhaseLodB.Finished, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}"
-              DockPanel.Dock="Right" Width="80" VerticalAlignment="Stretch" Content="View result" Command="{Binding ViewResultCommand}"
-              CommandParameter="{Binding PhaseLodB}" />
-          <CheckBox IsChecked="{Binding PhaseLodB.Enabled}" IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}">
-            <TextBlock Style="{StaticResource Label}" Text="LOD B" />
-          </CheckBox>
-        </DockPanel>
-        <ProgressBar Height="4" Maximum="1" Margin="20 -8 84 8" Value="{Binding PhaseLodB.Progress}"
-            IsIndeterminate="{Binding PhaseLodB.Progress.HasValue, Converter={StaticResource InvertBooleanConverter}}"
-            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
+        </mui:FallbackSwitch>
 
-        <DockPanel>
-          <mui:ContextMenuButton DockPanel.Dock="Right"
-              Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-            <ContextMenu>
-              <MenuItem Header="Merge meshes to reduce draw calls" IsCheckable="True" IsChecked="{Binding PhaseLodC.UseMerge}" />
-              <MenuItem Header="Consider headlights animation" IsCheckable="True" IsChecked="True" />
-              <Separator />
-              <MenuItem Header="Edit Simplygon rules" />
-            </ContextMenu>
-          </mui:ContextMenuButton>
-          <Button Visibility="{Binding PhaseLodC.Finished, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}"
-              DockPanel.Dock="Right" Width="80" VerticalAlignment="Stretch" Content="View result" Command="{Binding ViewResultCommand}"
-              CommandParameter="{Binding PhaseLodC}" />
-          <CheckBox IsChecked="{Binding PhaseLodC.Enabled}" IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}">
-            <TextBlock Style="{StaticResource Label}" Text="LOD C" />
-          </CheckBox>
-        </DockPanel>
-        <ProgressBar Height="4" Maximum="1" Margin="20 -8 84 8" Value="{Binding PhaseLodC.Progress}"
-            IsIndeterminate="{Binding PhaseLodC.Progress.HasValue, Converter={StaticResource InvertBooleanConverter}}"
-            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
+      </mui:Cell>
 
-        <DockPanel>
-          <mui:ContextMenuButton DockPanel.Dock="Right"
-              Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-            <ContextMenu>
-              <MenuItem Header="Merge meshes to reduce draw calls" IsCheckable="True" IsChecked="{Binding PhaseLodD.UseMerge}" />
-              <MenuItem Header="Use extreme merge mode" IsEnabled="{Binding }" IsCheckable="True" IsChecked="True"
-                  ToolTip="With this option all meshes apart from car paint are merged together and get painted black." />
-              <MenuItem Header="Remove transparent objects" IsCheckable="True" IsChecked="{Binding CockpitLrSkipTransparent}" />
-              <Separator />
-              <MenuItem Header="Edit Simplygon rules" />
-            </ContextMenu>
-          </mui:ContextMenuButton>
-          <Button Visibility="{Binding PhaseLodD.Finished, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}"
-              DockPanel.Dock="Right" Width="80" VerticalAlignment="Stretch" Content="View result" Command="{Binding ViewResultCommand}"
-              CommandParameter="{Binding PhaseLodD}" />
-          <CheckBox IsChecked="{Binding PhaseLodD.Enabled}" IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}">
-            <TextBlock Style="{StaticResource Label}" Text="LOD D" />
-          </CheckBox>
-        </DockPanel>
-        <ProgressBar Height="4" Maximum="1" Margin="20 -8 84 8" Value="{Binding PhaseLodD.Progress}"
-            IsIndeterminate="{Binding PhaseLodD.Progress.HasValue, Converter={StaticResource InvertBooleanConverter}}"
-            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
-
-      </StackPanel>
-
-      <mui:BooleanSwitch Value="{Binding ReadyToSave}">
-        <mui:BooleanSwitch.False>
-          <Button Style="{StaticResource Go.Button}" Content="Generate LODs" Command="{Binding GenerateCommand}" />
-        </mui:BooleanSwitch.False>
-        <mui:BooleanSwitch.True>
-          <DockPanel>
-            <TextBlock Text="LODs are ready. Save them?" DockPanel.Dock="Top" Margin="0 0 0 8" />
-            <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4">
-              <Button Style="{StaticResource Go.Button}" Content="Save LODs" Command="{Binding FinalSaveCommand}" />
-              <Button Content="Cancel" Command="{Binding FinalCancelCommand}" />
-            </mui:SpacingUniformGrid>
-          </DockPanel>
-        </mui:BooleanSwitch.True>
-      </mui:BooleanSwitch>
-    </DockPanel>
-
-
-  </mui:FallbackSwitch>
+    </mui:FallbackSwitch>
+  </DockPanel>
 </mui:ModernDialog>

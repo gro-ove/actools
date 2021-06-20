@@ -641,6 +641,18 @@ namespace AcTools.Utils.Helpers {
             return source.Where(i => !Equals(i, default(T)));
         }
 
+        [NotNull, Pure]
+        public static IEnumerable<T> TakeUntil<T, TCollection>([NotNull] this IEnumerable<T> source,
+                TCollection startingValue, Func<TCollection, bool> trigger, Func<T, TCollection, TCollection> fn) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            var value = startingValue;
+            foreach (var item in source) {
+                if (trigger(value)) yield break;
+                yield return item;
+                value = fn(item, value);
+            }
+        }
+
         [NotNull, ItemNotNull, Pure]
         public static IEnumerable<TResult> NonNull<TSource, TResult>([ItemCanBeNull, NotNull] this IEnumerable<TSource> source, Func<TSource, TResult> fn) {
             if (source == null) throw new ArgumentNullException(nameof(source));

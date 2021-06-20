@@ -108,11 +108,11 @@ namespace FirstFloor.ModernUI.Helpers {
             return value ? UiStrings.Yes : UiStrings.No;
         }
 
-        public static string ToOrdinal(this int value, string subject, CultureInfo culture = null) {
+        public static string ToOrdinal(this int value, [CanBeNull] string subject, CultureInfo culture = null) {
             return Ordinalizing.ConvertLong(value, subject);
         }
 
-        public static string ToOrdinalShort(this int value, string subject, CultureInfo culture = null) {
+        public static string ToOrdinalShort(this int value, [CanBeNull] string subject, CultureInfo culture = null) {
             return Ordinalizing.ConvertShort(value, subject);
         }
 
@@ -272,11 +272,11 @@ namespace FirstFloor.ModernUI.Helpers {
             return true;
         }
 
-        public static string ToTitle(this string s) {
+        public static string ToTitle([NotNull] this string s) {
             return Titling.Convert(s);
         }
 
-        public static string ToSentenceMember(this string s) {
+        public static string ToSentenceMember([NotNull] this string s) {
             s = s.Trim();
             if (s.Length < 2) return s;
             s = char.IsUpper(s[0]) ? ToSentenceCase(s) : s;
@@ -293,7 +293,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public static string ToTitle(this string s, CultureInfo culture) {
+        public static string ToTitle([NotNull] this string s, CultureInfo culture) {
             return Titling.Convert(s, culture);
         }
 

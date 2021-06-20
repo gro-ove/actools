@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using AcTools.Numerics;
 
 namespace AcTools.AiFile {
     [StructLayout(LayoutKind.Sequential, Pack = 4), Serializable]
@@ -13,15 +14,9 @@ namespace AcTools.AiFile {
         public float SideRight;
         public float Camber;
         public float Direction;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public float[] Normal;
-
+        public Vec3 Normal;
         public float Length;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public float[] ForwardVector;
-
+        public Vec3 ForwardVector;
         public float Tag;
         public float Grade;
 
@@ -40,9 +35,9 @@ namespace AcTools.AiFile {
             SideRight = reader.ReadSingle();
             Camber = reader.ReadSingle();
             Direction = reader.ReadSingle();
-            Normal = reader.ReadSingle3D();
+            Normal = reader.ReadVec3();
             Length = reader.ReadSingle();
-            ForwardVector = reader.ReadSingle3D();
+            ForwardVector = reader.ReadVec3();
             Tag = reader.ReadSingle();
             Grade = reader.ReadSingle();
         }

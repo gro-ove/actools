@@ -10,9 +10,9 @@ using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.ExtraKn5Utils.Kn5Utils;
 using AcTools.Kn5File;
 using AcTools.Processes;
-using AcTools.Render.Base.Utils;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
@@ -38,9 +38,9 @@ namespace AcManager.Pages.Selected {
         }
 
         private static void FixVertice(ref Kn5Node.Vertex v, Vector3 normalToSet) {
-            v.Normal[0] = normalToSet.X;
-            v.Normal[1] = normalToSet.Y;
-            v.Normal[2] = normalToSet.Z;
+            v.Normal.X = normalToSet.X;
+            v.Normal.Y = normalToSet.Y;
+            v.Normal.Z = normalToSet.Z;
         }
 
         public static async Task FixLightingAsync(ShowroomObject showroom) {

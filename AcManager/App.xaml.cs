@@ -64,9 +64,9 @@ using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.GenericMods;
 using AcTools.Kn5File;
-#if !DEBUG
+//#if !DEBUG
 using AcTools.Kn5Tools;
-#endif
+//#endif
 using AcTools.NeuralTyres;
 using AcTools.Processes;
 using AcTools.Render.Kn5SpecificSpecial;
@@ -86,6 +86,7 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
+using FirstFloor.ModernUI.Windows.Navigation;
 using Newtonsoft.Json;
 using StringBasedFilter;
 using ComboBox = System.Windows.Controls.ComboBox;
@@ -257,9 +258,9 @@ namespace AcManager {
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 
             Acd.Factory = new AcdFactory();
-#if !DEBUG
+//#if !DEBUG
             Kn5.Factory = Kn5New.GetFactoryInstance();
-#endif
+//#endif
             Lazier.SyncAction = ActionExtension.InvokeInMainThreadAsync;
             KeyboardListenerFactory.Register<KeyboardListener>();
 
@@ -481,6 +482,12 @@ namespace AcManager {
             BbCodeBlock.AddLinkCommand(new Uri("cmd://createNeutralLut"), new DelegateCommand<string>(id =>
                     NeutralColorGradingLut.CreateNeutralLut(id.As(16))));
 
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://openPage/importantTips"), new DelegateCommand<string>(id =>
+                    LinkCommands.NavigateLinkMainWindow.Execute(new Uri($"/Pages/About/ImportantTipsPage.xaml?Key={id}", UriKind.Relative))));
+
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://openCarLodGeneratorDefinitions"), new DelegateCommand<string>(id =>
+                    WindowsHelper.ViewFile(FilesStorage.Instance.GetContentFile(ContentCategory.CarLodsGeneration, "CommonDefinitions.json").Filename)));
+
             BbCodeBlock.AddLinkCommand(new Uri("cmd://findSrsServers"), new DelegateCommand(() => new ModernDialog {
                 ShowTitle = false,
                 ShowTopBlob = false,
@@ -510,6 +517,7 @@ namespace AcManager {
             WorkshopLinkCommands.Initialize();
 
             AppArguments.SetSize(AppFlag.ImagesCacheLimit, ref BetterImage.OptionCacheTotalSize);
+            AppArguments.SetSize(AppFlag.CarLodGeneratorCacheSize, ref CarGenerateLodsDialog.OptionCacheSize);
             AppArguments.Set(AppFlag.ImagesMarkCached, ref BetterImage.OptionMarkCached);
             BetterImage.RemoteUserAgent = CmApiProvider.UserAgent;
             BetterImage.RemoteCacheDirectory = BbCodeBlock.OptionImageCacheDirectory;

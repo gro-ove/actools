@@ -165,9 +165,11 @@ namespace AcTools.Utils.Helpers {
                 process.EnableRaisingEvents = true;
                 process.Exited += (sender, args) => tcs.TrySetResult(null);
                 if (cancellationToken != default) {
-                    cancellationToken.Register(() => { tcs.TrySetCanceled(); });
+                    cancellationToken.Register(() => tcs.TrySetCanceled());
                 }
-
+                if (process.HasExitedSafe()) {
+                    tcs.TrySetResult(null);
+                }
                 return tcs.Task;
             } catch (Exception e) {
                 AcToolsLogging.Write(e);

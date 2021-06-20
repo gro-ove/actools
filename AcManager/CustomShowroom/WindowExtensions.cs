@@ -11,13 +11,13 @@ namespace AcManager.CustomShowroom {
         #region Win32
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
         /// <summary>
         /// RECT struct for platform invokation.
         /// </summary>
         [StructLayout(LayoutKind.Sequential)]
-        public struct RECT {
+        private struct RECT {
             /// <summary>
             /// Left.
             /// </summary>

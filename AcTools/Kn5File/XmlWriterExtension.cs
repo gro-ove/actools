@@ -2,32 +2,33 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using AcTools.Numerics;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
     public static class XmlWriterExtension {
         private static readonly Regex InvalidXmlChars = new Regex(
-            @"(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\uFEFF\uFFFE\uFFFF]",
-            RegexOptions.Compiled);
+                @"(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\uFEFF\uFFFE\uFFFF]",
+                RegexOptions.Compiled);
 
         public static string RemoveInvalidXmlChars(string text) {
             return string.IsNullOrEmpty(text) ? "" : InvalidXmlChars.Replace(text, "");
         }
 
-        public static void WriteAttributeStringSafe(this XmlWriter xml, string key, string value){
+        public static void WriteAttributeStringSafe(this XmlWriter xml, string key, string value) {
             xml.WriteAttributeString(key, RemoveInvalidXmlChars(value));
         }
 
-        public static void WriteAttributeString(this XmlWriter xml, string key, int value){
+        public static void WriteAttributeString(this XmlWriter xml, string key, int value) {
             xml.WriteAttributeString(key, value.ToString(CultureInfo.InvariantCulture));
         }
 
-        public static void WriteAttributeString(this XmlWriter xml, string key, float value){
+        public static void WriteAttributeString(this XmlWriter xml, string key, float value) {
             xml.WriteAttributeString(key, value.ToString(CultureInfo.InvariantCulture));
         }
 
-        public static void WriteAttributeString(this XmlWriter xml, string key, double value){
+        public static void WriteAttributeString(this XmlWriter xml, string key, double value) {
             xml.WriteAttributeString(key, value.ToString(CultureInfo.InvariantCulture));
         }
 
@@ -58,11 +59,47 @@ namespace AcTools.Kn5File {
             return sb.ToString();
         }
 
-        public static void WriteMatrixAsString(this XmlWriter xml, float[] matrix){
+        public static string MatrixToCollada(Mat4x4 matrix) {
+            var sb = new StringBuilder();
+            sb.Append(matrix.M11);
+            sb.Append(' ');
+            sb.Append(matrix.M21);
+            sb.Append(' ');
+            sb.Append(matrix.M31);
+            sb.Append(' ');
+            sb.Append(matrix.M41);
+            sb.Append(' ');
+            sb.Append(matrix.M12);
+            sb.Append(' ');
+            sb.Append(matrix.M22);
+            sb.Append(' ');
+            sb.Append(matrix.M32);
+            sb.Append(' ');
+            sb.Append(matrix.M42);
+            sb.Append(' ');
+            sb.Append(matrix.M13);
+            sb.Append(' ');
+            sb.Append(matrix.M23);
+            sb.Append(' ');
+            sb.Append(matrix.M33);
+            sb.Append(' ');
+            sb.Append(matrix.M43);
+            sb.Append(' ');
+            sb.Append(matrix.M14);
+            sb.Append(' ');
+            sb.Append(matrix.M24);
+            sb.Append(' ');
+            sb.Append(matrix.M34);
+            sb.Append(' ');
+            sb.Append(matrix.M44);
+            return sb.ToString();
+        }
+
+        public static void WriteMatrixAsString(this XmlWriter xml, float[] matrix) {
             xml.WriteString(MatrixToCollada(matrix));
         }
 
-        public static void WriteElementStringSafe(this XmlWriter xml, string key, string value){
+        public static void WriteElementStringSafe(this XmlWriter xml, string key, string value) {
             xml.WriteElementString(key, RemoveInvalidXmlChars(value));
         }
 

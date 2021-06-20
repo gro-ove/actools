@@ -190,4 +190,31 @@
       </Setter.Value>
     </Setter>
   </Style>
+
+  <Style x:Key="Go.AsyncButton" TargetType="{x:Type c:AsyncButton}" BasedOn="{StaticResource {x:Type c:AsyncButton}}">
+    <Setter Property="Background" Value="{DynamicResource GoButtonBackground}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorder}" />
+    <Setter Property="Foreground" Value="{DynamicResource GoButtonText}" />
+    <Setter Property="FontSize" Value="16" />
+    <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Style.Triggers>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Foreground" Value="{DynamicResource GoButtonTextDisabled}" />
+      </Trigger>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Background" Value="{DynamicResource GoButtonBackgroundHover}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorderHover}" />
+        <Setter Property="Foreground" Value="{DynamicResource GoButtonTextHover}" />
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter Property="Background" Value="{DynamicResource GoButtonBackgroundPressed}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorderPressed}" />
+        <Setter Property="Foreground" Value="{DynamicResource GoButtonTextPressed}" />
+      </Trigger>
+      <Trigger Property="IsFocused" Value="True">
+        <Setter Property="BorderBrush" Value="{DynamicResource Go}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
 </ResourceDictionary>

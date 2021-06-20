@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Localizable {
     /// <summary>
@@ -338,7 +339,7 @@ namespace FirstFloor.ModernUI.Localizable {
         /// <param name="v">Integer.</param>
         /// <param name="s">Subject string (for languages in which result might depend on a gender or something like that).</param>
         /// <returns>Localized string</returns>
-        public static string ConvertLong(int v, string s) {
+        public static string ConvertLong(int v, [CanBeNull] string s) {
             string result;
             var culture = CultureInfo.CurrentUICulture;
             if (culture.Name.Length < 2) return s;

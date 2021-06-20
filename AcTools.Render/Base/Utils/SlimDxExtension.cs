@@ -9,6 +9,8 @@ using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 using Debug = System.Diagnostics.Debug;
 using Device = SlimDX.Direct3D11.Device;
+using Quaternion = SlimDX.Quaternion;
+using Vector4 = SlimDX.Vector4;
 
 namespace AcTools.Render.Base.Utils {
     public static class SlimDxExtension {
@@ -193,28 +195,6 @@ namespace AcTools.Render.Base.Utils {
             return new Vector3(matrix.M41, matrix.M42, matrix.M43);
         }
 
-        // ReSharper disable once InconsistentNaming
-        public static Matrix ToMatrix(this float[] mat4x4) {
-            return new Matrix {
-                M11 = mat4x4[0],
-                M12 = mat4x4[1],
-                M13 = mat4x4[2],
-                M14 = mat4x4[3],
-                M21 = mat4x4[4],
-                M22 = mat4x4[5],
-                M23 = mat4x4[6],
-                M24 = mat4x4[7],
-                M31 = mat4x4[8],
-                M32 = mat4x4[9],
-                M33 = mat4x4[10],
-                M34 = mat4x4[11],
-                M41 = mat4x4[12],
-                M42 = mat4x4[13],
-                M43 = mat4x4[14],
-                M44 = mat4x4[15]
-            };
-        }
-
         public static Matrix LookAtMatrixConsiderUp(this Vector3 o, Vector3 p, Vector3 u) {
             var d = Vector3.Normalize(p - o);
             u.Normalize();
@@ -268,34 +248,6 @@ namespace AcTools.Render.Base.Utils {
                 M43 = m43,
                 M44 = m44
             };
-        }
-
-        public static Matrix ToMatrixFixX(this float[] mat4x4) {
-            var matrix = mat4x4.ToMatrix();
-
-            Vector3 translation, scale;
-            Quaternion rotation;
-            matrix.Decompose(out scale, out rotation, out translation);
-            translation.X *= -1;
-
-            var axis = rotation.Axis;
-            var angle = rotation.Angle;
-
-            if (angle.Abs() < 0.0001f) {
-                return Matrix.Scaling(scale) * Matrix.Translation(translation);
-            }
-
-            axis.Y *= -1;
-            axis.Z *= -1;
-            rotation = Quaternion.RotationAxis(axis, angle);
-
-            var result = Matrix.Scaling(scale) * Matrix.RotationQuaternion(rotation) * Matrix.Translation(translation);
-            if (float.IsNaN(result[0, 0])) {
-                AcToolsLogging.Write("CAN’T FIX MATRIX! PLEASE, SEND THE MODEL TO THE DEVELOPER");
-                return matrix;
-            }
-
-            return result;
         }
 
         public static ushort[] ToIndicesFixX(this ushort[] indices) {

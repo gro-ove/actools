@@ -97,6 +97,10 @@
     <Compile Include="Kn5MaterialToBake.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AcTools.ExtraKn5Utils\AcTools.ExtraKn5Utils.csproj">
+      <Project>{67729c43-6e5f-482a-8777-1651ea1aa393}</Project>
+      <Name>AcTools.ExtraKn5Utils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AcTools.Render\AcTools.Render.csproj">
       <Project>{841dcdf5-07d3-412a-98ae-4615f1dc5dd9}</Project>
       <Name>AcTools.Render</Name>

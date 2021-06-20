@@ -135,11 +135,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public bool ShownAsDialog => (bool)GetValue(ShownAsDialogProperty);
 
+        protected bool DoNotAffectOwner;
+
         public new bool? ShowDialog() {
-            var doNotAttachToWaitingDialogs = DoNotAttachToWaitingDialogs;
-            if (Owner != null && (!Owner.IsVisible || doNotAttachToWaitingDialogs && Owner is WaitingDialog)) {
-                var defaultOwner = GetDefaultOwner(false);
-                Owner = doNotAttachToWaitingDialogs && defaultOwner is WaitingDialog ? null : defaultOwner;
+            if (!DoNotAffectOwner) {
+                var doNotAttachToWaitingDialogs = DoNotAttachToWaitingDialogs;
+                if (Owner != null && (!Owner.IsVisible || doNotAttachToWaitingDialogs && Owner is WaitingDialog)) {
+                    var defaultOwner = GetDefaultOwner(false);
+                    Owner = doNotAttachToWaitingDialogs && defaultOwner is WaitingDialog ? null : defaultOwner;
+                }
             }
 
             Logging.Debug("Show dialog! Owner: " + (Owner == null ? @"none" : $@"W{Owner?.GetHashCode():X8}"));
@@ -174,11 +178,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected sealed override void OnClosing(CancelEventArgs e) {
-            Logging.Debug("Closing… Owner: " + (Owner == null ? @"none" : $@"W{Owner?.GetHashCode():X8}"));
+            if (e.Cancel) return;
+
+            OnClosingOverride(e);
+            if (e.Cancel) return;
+
             base.OnClosing(e);
             if (e.Cancel) return;
-            OnClosingOverride(e);
+
             try {
+                _closed = true;
                 if (!e.Cancel && IsActive) {
                     Owner?.Activate();
                 }
@@ -188,7 +197,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected sealed override void OnClosed(EventArgs e) {
-            Logging.Here();
             _closed = true;
             UndimOwner();
             SystemEvents.DisplaySettingsChanged -= OnSystemEventsDisplaySettingsChanged;
@@ -205,10 +213,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public new void Close() {
-            _closed = true;
-            Logging.Here();
             try {
-                UndimOwner();
                 base.Close();
             } catch (InvalidOperationException e) {
                 Logging.Error(e.Message);

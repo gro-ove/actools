@@ -1,4 +1,5 @@
 using AcTools.Kn5File;
+using AcTools.Numerics;
 using AcTools.Render.Base.Cameras;
 using JetBrains.Annotations;
 
@@ -14,7 +15,7 @@ namespace AcTools.Render.Kn5Specific {
         FpsCamera FpsCamera { get; }
 
         bool AutoRotate { get; set; }
-        
+
         bool LockCamera { get; }
 
         bool AutoAdjustTarget { get; set; }
@@ -41,6 +42,6 @@ namespace AcTools.Render.Kn5Specific {
 
         void UpdateMaterialPropertyA([NotNull] IKn5 kn5, uint materialId, [NotNull] string propertyName, float valueA);
 
-        void UpdateMaterialPropertyC([NotNull] IKn5 kn5, uint materialId, [NotNull] string propertyName, [NotNull] float[] valueC);
+        void UpdateMaterialPropertyC([NotNull] IKn5 kn5, uint materialId, [NotNull] string propertyName, Vec3 valueC);
     }
 }

@@ -29,7 +29,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }*/
 
         public static void SetText(string text) {
-            ActionExtension.InvokeInMainThread(() => {
+            ActionExtension.InvokeInMainThreadAsync(() => {
                 Exception exception = null;
                 for (var i = 0; i < 5; i++) {
                     try {

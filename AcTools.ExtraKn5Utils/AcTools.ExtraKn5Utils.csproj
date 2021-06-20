@@ -60,6 +60,9 @@
     <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
       <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Output\x86\Debug\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="SlimDX, Culture=neutral, processorArchitecture=$(ActualPlatform)">
       <HintPath>..\Libraries\SlimDX-$(ActualPlatform)\SlimDX.dll</HintPath>
       <Private>False</Private>
@@ -71,6 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtraMath\Aabb3.cs" />
     <Compile Include="FbxUtils\ChecksumBinaryReader.cs" />
     <Compile Include="FbxUtils\ChecksumBinaryWriter.cs" />
     <Compile Include="FbxUtils\ErrorLevel.cs" />
@@ -114,15 +118,18 @@
     <Compile Include="Kn5Utils\Kn5MaterialUtils.cs" />
     <Compile Include="Kn5Utils\Kn5MeshBuilder.cs" />
     <Compile Include="Kn5Utils\Kn5MeshUtils.cs" />
+    <Compile Include="Kn5Utils\Kn5NodeFilterContext.cs" />
     <Compile Include="Kn5Utils\Kn5NodeUtils.cs" />
     <Compile Include="Kn5Utils\Kn5Utils.cs" />
     <Compile Include="Kn5Utils\Kn5VectorUtils.cs" />
     <Compile Include="Kn5Utils\Kn5VertexUtils.cs" />
     <Compile Include="KsAnimUtils\KsAnimUtils.cs" />
     <Compile Include="LodGenerator\CarLodGenerator.cs" />
+    <Compile Include="LodGenerator\CarLodGeneratorExceptionCallback.cs" />
     <Compile Include="LodGenerator\CarLodGeneratorMergeRules.cs" />
-    <Compile Include="LodGenerator\CarLodGeneratorParams.cs" />
     <Compile Include="LodGenerator\CarLodGeneratorProgressUpdate.cs" />
+    <Compile Include="LodGenerator\CarLodGeneratorResultCallback.cs" />
+    <Compile Include="LodGenerator\CarLodGeneratorStageParams.cs" />
     <Compile Include="LodGenerator\ICarLodGeneratorService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -130,6 +137,10 @@
     <ProjectReference Include="..\AcTools\AcTools.csproj">
       <Project>{55b65fb4-92cb-42ef-b4bf-f287810986e1}</Project>
       <Name>AcTools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StringBasedFilter\StringBasedFilter.csproj">
+      <Project>{e9586699-505a-4349-9cbf-7e8ae1521207}</Project>
+      <Name>StringBasedFilter</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

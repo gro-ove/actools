@@ -177,6 +177,15 @@ namespace AcTools.Utils {
         public static float Lerp(this float t, float v0, float v1) => (1f - t) * v0 + t * v1;
         public static double Lerp(this double t, double v0, double v1) => (1d - t) * v0 + t * v1;
 
+        public static float LerpInv(this float t, float v0, float v1) => (t - v0) / (v1 - v0);
+        public static double LerpInv(this double t, double v0, double v1) => (t - v0) / (v1 - v0);
+
+        public static float LerpInvSat(this float t, float v0, float v1) => t.LerpInv(v0, v1).Saturate();
+        public static double LerpInvSat(this double t, double v0, double v1) => t.LerpInv(v0, v1).Saturate();
+
+        public static float Remap(this float t, float v0, float v1, float o0, float o1) => (t - v0) / (v1 - v0) * (o1 - o0) + o0;
+        public static double Remap(this double t, double v0, double v1, double o0, double o1) => (t - v0) / (v1 - v0) * (o1 - o0) + o0;
+
         /// <summary>
         /// For normalized and saturated X.
         /// </summary>

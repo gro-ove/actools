@@ -1,12 +1,17 @@
 using AcTools.Kn5File;
-using SlimDX;
+using AcTools.Numerics;
 
 namespace AcTools.ExtraKn5Utils.Kn5Utils {
     public static class Kn5VertexUtils {
-        public static Kn5Node.Vertex Transform(this Kn5Node.Vertex v, Matrix m) {
-            v.Position = Vector3.TransformCoordinate(v.Position.ToVector3(), m).ToFloatArray();
-            v.Normal = Vector3.TransformNormal(v.Normal.ToVector3(), m).ToFloatArray();
-            v.TangentU = Vector3.TransformNormal(v.TangentU.ToVector3(), m).ToFloatArray();
+        public static Kn5Node.Vertex Transform(this Kn5Node.Vertex v, Mat4x4 m, double offsetAlongNormal = 0d) {
+            var posVec = Vec3.Transform(v.Position, m);
+            var normalVec = Vec3.Normalize(Vec3.TransformNormal(v.Normal, m));
+            if (offsetAlongNormal != 0d) {
+                posVec += normalVec * (float)offsetAlongNormal;
+            }
+            v.Position = posVec;
+            v.Normal = normalVec;
+            v.Tangent = Vec3.Normalize(Vec3.TransformNormal(v.Tangent, m));
             return v;
         }
     }

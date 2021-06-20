@@ -352,6 +352,10 @@
     <Compile Include="Wrapper\LiteShowroomFormWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AcTools.ExtraKn5Utils\AcTools.ExtraKn5Utils.csproj">
+      <Project>{67729c43-6e5f-482a-8777-1651ea1aa393}</Project>
+      <Name>AcTools.ExtraKn5Utils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AcTools\AcTools.csproj">
       <Project>{55b65fb4-92cb-42ef-b4bf-f287810986e1}</Project>
       <Name>AcTools</Name>

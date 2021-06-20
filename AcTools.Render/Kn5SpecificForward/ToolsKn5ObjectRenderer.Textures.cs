@@ -1,8 +1,6 @@
 using System;
 using System.Drawing;
-using System.Linq;
 using AcTools.Render.Base.TargetTextures;
-using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -28,9 +26,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                     var rect = Device.ImmediateContext.MapSubresource(copy, 0, MapMode.Read, SlimDX.Direct3D11.MapFlags.None);
                     try {
                         using (var b = new ReadAheadBinaryReader(rect.Data)) {
-                            var c = b.ReadSingle4D();
-                            AcToolsLogging.Write("Values: " + c.JoinToString("; ") + "; format: " + texture.Description.Format);
-                            return c.Any(x => x < 0f || x > 1f);
+                            var c = b.ReadVec4();
+                            return c.X < 0f || c.Y < 0f || c.Z < 0f || c.W < 0f || c.X > 1f || c.Y > 1f || c.Z > 1f || c.W > 1f;
                         }
                     } finally {
                         Device.ImmediateContext.UnmapSubresource(texture, 0);

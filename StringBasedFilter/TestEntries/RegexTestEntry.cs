@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace StringBasedFilter.TestEntries {
-    internal class RegexTestEntry : ITestEntry {
+    public class RegexTestEntry : ITestEntry {
         private readonly Regex _regex;
 
         public RegexTestEntry(Regex regex) {

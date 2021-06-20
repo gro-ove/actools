@@ -112,7 +112,7 @@ namespace FirstFloor.ModernUI.Windows {
         public static TaskbarHolder Create(double priority, Func<Tuple<TaskbarState, double>> periodicCallback = null) {
             var holder = new TaskbarHolder(priority, periodicCallback);
             AddSorted(Holders, holder, TaskbarHolder.PriorityComparer);
-            Task.Delay(600).ContinueWith(t => Update());
+            Task.Delay(200).ContinueWithInMainThread(t => Update());
             return holder;
         }
 

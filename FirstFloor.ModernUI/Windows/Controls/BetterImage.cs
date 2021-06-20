@@ -99,7 +99,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// Summary cache size, in bytes.
         /// </summary>
-        public static long OptionCacheTotalSize = 100 * 1000 * 1000; // 100 MB
+        public static long OptionCacheTotalSize = 100 * 1024 * 1024; // 100 MB
 
         /// <summary>
         /// Cache threshold per image (bigger images won’t be cached), in bytes.

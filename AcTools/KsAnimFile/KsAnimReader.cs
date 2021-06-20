@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using AcTools.Numerics;
 
 namespace AcTools.KsAnimFile {
     internal sealed class KsAnimReader : ReadAheadBinaryReader {
@@ -19,7 +20,7 @@ namespace AcTools.KsAnimFile {
             };
 
             var keyFramesCount = ReadInt32();
-            var matrices = new float[keyFramesCount][];
+            var matrices = new Mat4x4[keyFramesCount];
             for (var i = 0; i < keyFramesCount; i++) {
                 matrices[i] = ReadMatrix();
             }
@@ -36,7 +37,7 @@ namespace AcTools.KsAnimFile {
             var keyFramesCount = ReadInt32();
             var keyFrames = new KsAnimKeyframe[keyFramesCount];
             for (var i = 0; i < keyFramesCount; i++) {
-                keyFrames[i] = new KsAnimKeyframe(ReadSingle4D(), ReadSingle3D(), ReadSingle3D());
+                keyFrames[i] = new KsAnimKeyframe(ReadQuat(), ReadVec3(), ReadVec3());
             }
 
             entry.KeyFrames = keyFrames;

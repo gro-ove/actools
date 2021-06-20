@@ -4,16 +4,27 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class TaskExtension {
         public static void Ignore(this Task task) {
-            task.ContinueWith(x => AcToolsLogging.Write(x.Exception?.Flatten()), TaskContinuationOptions.NotOnRanToCompletion);
+            task.ContinueWith(x => {
+                AcToolsLogging.Write(x.Exception?.Flatten());
+#if DEBUG
+                MessageBox.Show("IGNORED EXCEPTION:\n" + x.Exception?.Flatten());
+#endif
+            }, TaskContinuationOptions.NotOnRanToCompletion);
         }
 
         public static void Ignore<T>(this Task<T> task) {
-            task.ContinueWith(x => AcToolsLogging.Write(x.Exception?.Flatten()), TaskContinuationOptions.OnlyOnFaulted);
+            task.ContinueWith(x => {
+                AcToolsLogging.Write(x.Exception?.Flatten());
+#if DEBUG
+                MessageBox.Show("IGNORED EXCEPTION:\n" + x.Exception?.Flatten());
+#endif
+            }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
         [Pure]

@@ -89,7 +89,7 @@ namespace AcManager.CustomShowroom {
                 TrianglesCount = renderableObject.TrianglesCount;
                 Material = kn5.GetMaterial(renderableObject.OriginalNode.MaterialId);
 
-                ObjectPath = kn5.GetObjectPath(renderableObject.OriginalNode) ?? throw new Exception("Can’t determine object path");
+                ObjectPath = kn5.GetParentPath(renderableObject.OriginalNode) ?? throw new Exception("Can’t determine parent path");
                 BakedShadows = BakedShadowsRendererViewModel.ForObject(renderer, _kn5, ObjectPath, car);
             }
 
