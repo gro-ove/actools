@@ -554,6 +554,7 @@
     </mui:LinkGroupFilterable>
     <mui:LinkGroup x:Name="LiveGroup" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Live}">
       <mui:LinkGroup.Links>
+        <mui:Link x:Name="GridFinderLink" DisplayName="Grid Finder" Source="/Pages/Drive/GridFinder.xaml" />
         <mui:Link x:Name="RsrLink" DisplayName="{x:Static g:AppStrings.Main_Rsr}" Source="/Pages/Drive/Rsr.xaml" />
         <!--<mui:Link x:Name="SrsLink" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs.xaml" />-->
         <!---->

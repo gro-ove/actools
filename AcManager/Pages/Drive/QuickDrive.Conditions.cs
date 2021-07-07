@@ -211,6 +211,7 @@ namespace AcManager.Pages.Drive {
             private WeatherObject GetRandomWeather(int? time, double? temperature) {
                 for (var i = 0;; i++) {
                     var weatherObject = GetRandomObject(WeatherManager.Instance, SelectedWeatherObject?.Id);
+                    if (weatherObject == null) return null;
                     if (weatherObject.Fits(time, temperature) || i == 100) return weatherObject;
                 }
             }

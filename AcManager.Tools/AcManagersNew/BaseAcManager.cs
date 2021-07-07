@@ -386,14 +386,16 @@ namespace AcManager.Tools.AcManagersNew {
             }
 
             async Task<T> LoadInner() {
-                await Task.Yield();
-                var value = await Task.Run(() => CreateAndLoadAcObject(wrapper.Id, wrapper.Value.Enabled, false));
-                if (wrapper.IsLoaded) {
-                    Logging.Warning("Already loaded somewhere else: " + wrapper.Id);
-                }
-                wrapper.Value = value;
-                wrapper.CurrentlyLoadingTask = null;
-                return value;
+                await Task.Yield().ConfigureAwait(false);
+                var value = await Task.Run(() => CreateAndLoadAcObject(wrapper.Id, wrapper.Value.Enabled, false)).ConfigureAwait(false);
+                return await ActionExtension.InvokeInMainThreadAsync(() => {
+                    if (wrapper.IsLoaded) {
+                        Logging.Warning("Already loaded somewhere else: " + wrapper.Id);
+                    }
+                    wrapper.Value = value;
+                    wrapper.CurrentlyLoadingTask = null;
+                    return value;
+                }).ConfigureAwait(false);
             }
 
             var ret = LoadInner();

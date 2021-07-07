@@ -5,8 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -353,6 +351,7 @@ namespace AcManager.Pages.Windows {
         }
 
         private void UpdateLiveTabs() {
+            GridFinderLink.IsShown = SettingsHolder.Live.GridFinderEnabled;
             RsrLink.IsShown = SettingsHolder.Live.RsrEnabled;
             // SrsLink.IsShown = SettingsHolder.Live.SrsEnabled;
             Srs2Link.IsShown = SettingsHolder.Live.SrsEnabled;
@@ -364,12 +363,13 @@ namespace AcManager.Pages.Windows {
             RaceUGroup.IsShown = SettingsHolder.Live.RaceUEnabled && (ValuesStorage.Contains("RaceU.CurrentLocation") || RaceUCheckAb());
 
             bool RaceUCheckAb() {
-                var steamId = SteamIdHelper.Instance.Value;
+                return false;
+                /*var steamId = SteamIdHelper.Instance.Value;
                 if (steamId == null) return false;
 
                 using (var algo = MD5.Create()) {
                     return BitConverter.ToInt32(algo.ComputeHash(Encoding.UTF8.GetBytes(steamId)), 0) % 10 < 4;
-                }
+                }*/
             }
         }
 

@@ -26,24 +26,24 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.Drive {
-    public partial class TrackTitan : ILoadableContent {
-        private static readonly Uri TrackTitanUri = new Uri("/Pages/Drive/TrackTitan.xaml", UriKind.Relative);
+    public partial class GridFinder: ILoadableContent {
+        private static readonly Uri GridFinderUri = new Uri("/Pages/Drive/GridFinder.xaml", UriKind.Relative);
         private static string _loginToken;
 
         public static void NavigateTo(string loginToken = null) {
             _loginToken = loginToken ?? _loginToken;
             switch (Application.Current?.MainWindow) {
                 case MainWindow mainWindow:
-                    mainWindow.NavigateTo(TrackTitanUri);
+                    mainWindow.NavigateTo(GridFinderUri);
                     break;
                 case null:
-                    MainWindow.NavigateOnOpen(TrackTitanUri);
+                    MainWindow.NavigateOnOpen(GridFinderUri);
                     break;
             }
         }
 
-        public TrackTitan() {
-            this.SetCustomAccentColor(Color.FromArgb(255, 241, 134, 13));
+        public GridFinder() {
+            this.SetCustomAccentColor(Color.FromArgb(255, 253, 123, 13));
         }
 
         public static PluginsRequirement Requirement { get; } = new PluginsRequirement(KnownPlugins.CefSharp);
@@ -69,8 +69,8 @@ namespace AcManager.Pages.Drive {
         public class ViewModel : NotifyPropertyChanged { }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class TrackTitanApiProxy : JsProxyBase {
-            public TrackTitanApiProxy(JsBridgeBase bridge) : base(bridge) { }
+        public class GridFinderApiProxy : JsProxyBase {
+            public GridFinderApiProxy(JsBridgeBase bridge) : base(bridge) { }
 
             // WorldSimSeries API, v1
             // ReSharper disable InconsistentNaming
@@ -203,11 +203,10 @@ namespace AcManager.Pages.Drive {
             // ReSharper restore InconsistentNaming
         }
 
-        public class TrackTitanApiBridge : JsBridgeBase {
-            public TrackTitanApiBridge() {
-                AcApiHosts.Add(@"worldsimseries.com");
-                AcApiHosts.Add(@"paddock.worldsimseries.com");
-                AcApiHosts.Add(@"local.wss:8000");
+        public class GridFinderApiBridge : JsBridgeBase {
+            public GridFinderApiBridge() {
+                AcApiHosts.Add(@"grid-finder.com");
+                AcApiHosts.Add(@"www.grid-finder.com");
             }
 
             public override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
@@ -218,19 +217,13 @@ namespace AcManager.Pages.Drive {
             }
 
             protected override JsProxyBase MakeProxy() {
-                return new TrackTitanApiProxy(this);
+                return new GridFinderApiProxy(this);
             }
         }
 
         private void OnWebBlockLoaded(object sender, RoutedEventArgs e) {
             var browser = (WebBlock)sender;
-            /*if (_loginToken != null) {
-                browser.Tabs.Clear();
-                browser.OpenNewTab($@"https://paddock.worldsimseries.com/login-cm?token={_loginToken}");
-                _loginToken = null;
-            }*/
-
-            browser.SetJsBridge<TrackTitanApiBridge>();
+            browser.SetJsBridge<GridFinderApiBridge>();
         }
     }
 }

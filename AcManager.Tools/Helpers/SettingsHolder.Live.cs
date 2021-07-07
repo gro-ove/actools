@@ -103,6 +103,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _gridFinderEnabled;
+
+            public bool GridFinderEnabled {
+                get => _gridFinderEnabled ?? (_gridFinderEnabled = ValuesStorage.Get("Settings.LiveSettings.GridFinderEnabled", true)).Value;
+                set {
+                    if (Equals(value, _gridFinderEnabled)) return;
+                    _gridFinderEnabled = value;
+                    ValuesStorage.Set("Settings.LiveSettings.GridFinderEnabled", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _rsrEnabled;
 
             public bool RsrEnabled {

@@ -13,6 +13,10 @@
 
   <ScrollViewer mui:SaveScroll.Key="SettingsLive">
     <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Live}" x:Name="Panel" Style="{StaticResource SettingsPanel}">
+      <CheckBox IsChecked="{Binding LiveSettings.GridFinderEnabled}">
+        <Label Content="Enable Grid Finder" />
+      </CheckBox>
+
       <CheckBox IsChecked="{Binding LiveSettings.RsrEnabled}">
         <Label Content="{x:Static g:AppStrings.Settings_Live_EnableRsr}" />
       </CheckBox>
@@ -53,11 +57,11 @@
         </DockPanel>-->
       </StackPanel>
 
-      <CheckBox IsChecked="{Binding LiveSettings.TrackTitanEnabled}" Margin="0 20 0 8">
+      <CheckBox IsChecked="{Binding LiveSettings.TrackTitanEnabled}">
         <Label Content="Enable Track Titan" />
       </CheckBox>
 
-      <CheckBox IsChecked="{Binding LiveSettings.WorldSimSeriesEnabled}" Margin="0 20 0 8">
+      <CheckBox IsChecked="{Binding LiveSettings.WorldSimSeriesEnabled}">
         <Label Content="Enable World Sim Series" />
       </CheckBox>
     </StackPanel>

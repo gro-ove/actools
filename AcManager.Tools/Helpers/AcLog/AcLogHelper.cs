@@ -63,6 +63,10 @@ namespace AcManager.Tools.Helpers.AcLog {
                     return new WhatsGoingOn(WhatsGoingOnType.WheelsAreMissing);
                 }
 
+                if (log.Contains(@"ACP_NO_SLOTS_AVAILABLE")) {
+                    return new WhatsGoingOn(WhatsGoingOnType.OnlineNoFreeSlot);
+                }
+
                 if (log.Contains(@"): AnimationBlender::blendAnimations") && log.Contains(@"): DriverModel::animateHShifter")) {
                     return new WhatsGoingOn(WhatsGoingOnType.SteerAnimIsMissing);
                 }

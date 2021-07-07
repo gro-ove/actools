@@ -33,6 +33,9 @@ namespace AcManager.Tools.Helpers.AcLog {
         CloudsMightBeMissing,
 
         // TRANSLATE ME
+        [Description("No free slot on a server")]
+        OnlineNoFreeSlot,
+
         [Description("App “{0}” might be broken")]
         AppMightBeBroken,
 

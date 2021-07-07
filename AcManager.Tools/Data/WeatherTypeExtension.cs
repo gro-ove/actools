@@ -69,18 +69,18 @@ namespace AcManager.Tools.Data {
             }
         }
 
-        private static bool FitsTime(WeatherObject weatherObject, int time) {
+        private static bool FitsTime([NotNull] WeatherObject weatherObject, int time) {
             return weatherObject.GetTimeDiapason()?.Contains(time)
                     ?? PatchHelper.ClampTime(time) == time;
         }
 
-        public static bool Fits(this WeatherObject weatherObject, int? time, double? temperature) {
+        public static bool Fits([NotNull] this WeatherObject weatherObject, int? time, double? temperature) {
             return weatherObject.Enabled
                     && (time == null || FitsTime(weatherObject, time.Value))
                     && (temperature == null || weatherObject.GetTemperatureDiapason()?.Contains(temperature.Value) != false);
         }
 
-        public static bool Fits(this WeatherObject weatherObject, WeatherType type, int? time, double? temperature) {
+        public static bool Fits([NotNull] this WeatherObject weatherObject, WeatherType type, int? time, double? temperature) {
             return weatherObject.Fits(time, temperature) && weatherObject.Type == type;
         }
 

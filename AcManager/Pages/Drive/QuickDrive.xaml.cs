@@ -471,6 +471,7 @@ namespace AcManager.Pages.Drive {
                 }
             }));
 
+            [CanBeNull]
             private static T GetRandomObject<T>(BaseAcManager<T> manager, [CanBeNull] string currentId) where T : AcObjectNew {
                 var id = manager.WrappersList.Where(x => x.Value.Enabled).Select(x => x.Id).ApartFrom(currentId).RandomElementOrDefault()
                         ?? currentId ?? string.Empty;

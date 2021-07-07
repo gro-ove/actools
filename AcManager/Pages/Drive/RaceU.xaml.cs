@@ -101,17 +101,23 @@ namespace AcManager.Pages.Drive {
                     menu.SelectedLink = menu.SelectedLinkGroup?.Links.FirstOrDefault(x => GetRaceUAddress(x.Tag) == Browser.CurrentTab?.LoadedUrl)
                             ?? menu.SelectedLink;
                 }
+                UpdateAddressBarVisible();
             }
+        }
+
+        private void UpdateAddressBarVisible() {
+            Browser.IsAddressBarVisible = Browser.Tabs.Count > 1 || Browser.Tabs.FirstOrDefault()?.LoadedUrl?.StartsWith("https://raceu.net") != true;
         }
 
         private void OnCurrentTabPropertyChanged(object o, PropertyChangedEventArgs a) {
             if (a.PropertyName == nameof(WebTab.LoadedUrl)) {
                 OnAddressChanged();
+                UpdateAddressBarVisible();
             }
         }
 
         private void OnTabsCollectionChanged(object sender, NotifyCollectionChangedEventArgs args) {
-            Browser.IsAddressBarVisible = Browser.Tabs.Count > 1;
+            UpdateAddressBarVisible();
         }
 
         private void OnMainWindowLinkChange(object sender, ModernMenu.SelectedChangeEventArgs args) {

@@ -39,6 +39,7 @@ namespace AcManager.Pages.Drive {
         public static bool OptionScalableTiles = true;
         private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(10, "Preparing to race", "Challenges").Default();
 
+        [CanBeNull]
         private string _filter;
 
         public void OnUri(Uri uri) {
@@ -46,7 +47,7 @@ namespace AcManager.Pages.Drive {
         }
 
         public Task LoadAsync(CancellationToken cancellationToken) {
-            if (_filter.Contains(@"rare+")) {
+            if (_filter?.Contains(@"rare+") == true) {
                 return new[] { LoadStatsAsync(), SpecialEventsManager.Instance.EnsureLoadedAsync() }.WhenAll();
             }
 
