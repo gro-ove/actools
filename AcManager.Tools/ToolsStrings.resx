@@ -1214,6 +1214,9 @@
   <data name="Common_KN5" xml:space="preserve">
     <value>KN5</value>
   <comment>@Invariant</comment></data>
+  <data name="Common_LodKN5" xml:space="preserve">
+    <value>LOD KN5</value>
+  <comment>@Invariant</comment></data>
   <data name="Common_Exporting" xml:space="preserve">
     <value>Exporting…</value>
   </data>

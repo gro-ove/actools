@@ -234,6 +234,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 }
 
                 SetLodFilename(value, lod.FileName);
+                OnPropertyChanged(nameof(CurrentLod));
             }
         }
 

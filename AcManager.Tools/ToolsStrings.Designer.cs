@@ -1780,6 +1780,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to LOD KN5.
+        /// </summary>
+        public static string Common_LodKN5 {
+            get {
+                return ResourceManager.GetString("Common_LodKN5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t initialize Lua.
         /// </summary>
         public static string Common_LuaFailed {

@@ -1065,20 +1065,21 @@ namespace AcManager.CustomShowroom {
             private AsyncCommand _unpackKn5Command;
 
             public AsyncCommand UnpackKn5Command => _unpackKn5Command ?? (_unpackKn5Command = new AsyncCommand(async () => {
-                var kn5 = Renderer?.MainSlot.Kn5;
-                if (kn5 == null) return;
-
                 try {
+                    var kn5FileName = Renderer?.MainSlot.CarNode?.CurrentLodInformation?.FileName;
+                    var kn5 = kn5FileName != null ? await Task.Run(() => Kn5.FromFile(Path.Combine(Car.Location, kn5FileName))) : Renderer?.MainSlot.Kn5;
+                    if (kn5 == null) return;
+
                     Kn5.FbxConverterLocation = PluginsManager.Instance.GetPluginFilename(KnownPlugins.FbxConverter, "FbxConverter.exe");
 
-                    var destination = Path.Combine(Car.Location, "unpacked");
+                    var directoryName = $@"unpacked-{Path.GetFileNameWithoutExtension(kn5.OriginalFilename ?? @"main")}";
+                    var destination = Path.Combine(Car.Location, directoryName);
                     using (var waiting = new WaitingDialog(ToolsStrings.Common_Exporting)) {
                         await Task.Delay(1);
 
                         if (FileUtils.Exists(destination)) {
-                            var response = ModernDialog.ShowMessage(string.Format(ControlsStrings.Common_FolderExists, @"unpacked"),
-                                    ToolsStrings.Common_Destination,
-                                    MessageBoxButton.YesNoCancel);
+                            var response = ModernDialog.ShowMessage(string.Format(ControlsStrings.Common_FolderExists, directoryName),
+                                    ToolsStrings.Common_Destination, MessageBoxButton.YesNoCancel);
                             if (response == MessageBoxResult.Cancel) return;
                             if (response == MessageBoxResult.No) {
                                 var temp = destination;
@@ -1089,8 +1090,7 @@ namespace AcManager.CustomShowroom {
                             }
                         }
 
-                        var name = kn5.RootNode.Name.StartsWith(@"FBX: ") ? kn5.RootNode.Name.Substring(5) :
-                                @"model.fbx";
+                        var name = kn5.RootNode.Name.StartsWith(@"FBX: ") ? kn5.RootNode.Name.Substring(5) : @"model.fbx";
                         Directory.CreateDirectory(destination);
                         await kn5.ExportFbxWithIniAsync(Path.Combine(destination, name), waiting, waiting.CancellationToken);
 

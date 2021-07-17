@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -64,6 +65,9 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
 
         [JsonProperty(PropertyName = "until")]
         public long Until { get; set; }
+
+        [JsonProperty(PropertyName = "features"), CanBeNull]
+        public string[] Features { get; set; }
 
         [JsonIgnore]
         public DateTime UntilLocal { get; set; }

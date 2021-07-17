@@ -256,7 +256,7 @@
                       Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
                   <Button Margin="0 4 0 0" Command="{Binding UnpackKn5Command}"
                       Visibility="{Binding UnpackKn5Command.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBlock Text="{Binding Source={x:Static t:ToolsStrings.Common_KN5}, StringFormat={x:Static c:ControlsStrings.Common_Unpack}}" />
+                    <TextBlock Text="{Binding Source={x:Static t:ToolsStrings.Common_LodKN5}, StringFormat={x:Static c:ControlsStrings.Common_Unpack}}" />
                   </Button>
                 </StackPanel>
               </StackPanel>

@@ -204,6 +204,7 @@ namespace AcManager.Tools.Managers.Online {
                         }
 
                         UpdateValuesExtended(extended);
+                        CspFeaturesList = extended.Features?.Length > 0 ? extended.Features : null;
 
                         driversCount = extended.Clients;
                         carsInformation = extended.Players;
@@ -293,7 +294,10 @@ namespace AcManager.Tools.Managers.Online {
                     }
                 }
 
-                CspFeaturesList = carsInformation.Features?.Length > 0 ? carsInformation.Features : null;
+                if (!informationLoadedExtended) {
+                    CspFeaturesList = carsInformation.Features?.Length > 0 ? carsInformation.Features : null;
+                }
+
                 if (!BookingMode) {
                     CurrentDriversCount = carsInformation.Cars.Count(x => x.IsConnected);
                     driversCount = -1;
