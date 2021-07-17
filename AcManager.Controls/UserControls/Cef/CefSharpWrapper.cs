@@ -15,6 +15,7 @@ using AcManager.Controls.UserControls.Web;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using CefSharp;
+using CefSharp.Structs;
 using CefSharp.Wpf;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
@@ -23,6 +24,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
+using CursorType = CefSharp.Enums.CursorType;
 using Size = CefSharp.Structs.Size;
 using TitleChangedEventArgs = CefSharp.TitleChangedEventArgs;
 
@@ -52,9 +54,11 @@ namespace AcManager.Controls.UserControls.Cef {
                     WindowlessFrameRate = SettingsHolder.Plugins.Cef60Fps ? 60 : 30,
                     WebGl = CefState.Disabled,
                     Plugins = CefState.Disabled,
-
-                    // For SRS to work, because IsCSPBypassing somehow doesn’t work!
-                    WebSecurity = CefState.Disabled,
+                },
+                JavascriptObjectRepository = {
+                    Settings = {
+                        LegacyBindingEnabled = true
+                    }
                 },
                 DisplayHandler = this,
                 DownloadHandler = _downloadHandler,
@@ -190,9 +194,9 @@ namespace AcManager.Controls.UserControls.Cef {
             try {
                 if (_inner != null) {
                     CefSharpHelper.AcApiHandler.Register(_inner, _jsBridge?.AcApiHosts.ToArray(), OnAcApiRequest);
+                    _inner.JavascriptObjectRepository.NameConverter = new CefSharpProperNameConverter();
                     _inner.JavascriptObjectRepository.Register(@"external", _jsBridge?.Proxy, false, new BindingOptions {
-                        Binder = BindingOptions.DefaultBinder.Binder,
-                        CamelCaseJavascriptNames = false
+                        Binder = BindingOptions.DefaultBinder.Binder
                     });
                 }
             } catch (Exception e) {
@@ -312,6 +316,10 @@ namespace AcManager.Controls.UserControls.Cef {
         }
 
         bool IDisplayHandler.OnAutoResize(IWebBrowser browserControl, IBrowser browser, Size newSize) {
+            return false;
+        }
+
+        bool IDisplayHandler.OnCursorChange(IWebBrowser chromiumWebBrowser, IBrowser browser, IntPtr cursor, CursorType type, CursorInfo customCursorInfo) {
             return false;
         }
 

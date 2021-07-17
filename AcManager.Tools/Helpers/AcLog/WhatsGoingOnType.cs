@@ -84,6 +84,9 @@ namespace AcManager.Tools.Helpers.AcLog {
         [Description("GPU failed; might be overclocked too much, or overheated")]
         GpuFailed,
 
+        [Description("Custom Shaders Patch is required for car to work")]
+        CustomShadersPatchRequired,
+
         [Description("{0}")]
         CustomShadersPatchReported,
 

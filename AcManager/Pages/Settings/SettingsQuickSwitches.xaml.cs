@@ -21,9 +21,7 @@ namespace AcManager.Pages.Settings {
 
             var widgets = new Dictionary<string, WidgetEntry>(_widgets.Length);
             foreach (var key in _widgets) {
-                Logging.Debug(key);
                 widgets[key] = new WidgetEntry(key, (FrameworkElement)FindResource(key));
-                Logging.Debug(widgets[key]);
                 await Task.Delay(10, cancellationToken);
                 if (cancellationToken.IsCancellationRequested) return;
             }

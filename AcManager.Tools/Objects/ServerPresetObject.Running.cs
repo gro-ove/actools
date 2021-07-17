@@ -235,8 +235,7 @@ namespace AcManager.Tools.Objects {
 
             // Entry list
             var entryList = EntryListIniObject?.Clone() ?? new IniFile();
-            entryList.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section,
-                    CspRequiredActual));
+            entryList.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section, CspRequiredActual));
             result.Add(PackedEntry.FromContent("cfg/entry_list.ini", entryList.Stringify()));
 
             if (!DisableChecksums) {

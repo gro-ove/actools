@@ -523,7 +523,7 @@ namespace AcManager.Pages.Drive {
 
             public DelegateCommand RandomTrackCommand => _randomTrackCommand ?? (_randomTrackCommand = new DelegateCommand(() => {
                 var track = GetRandomObject(TracksManager.Instance, SelectedTrack?.Id);
-                SelectedTrack = track.MultiLayouts?.RandomElementOrDefault() ?? track;
+                SelectedTrack = track?.MultiLayouts?.RandomElementOrDefault() ?? track;
             }));
 
             public int TimeMultiplerMinimum => 0;

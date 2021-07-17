@@ -111,11 +111,27 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             SetValue(Selector.SelectedItemProperty, newValue ?? NullValue);
         }
 
+        public static readonly DependencyProperty HoldSelectedIfEmptyProperty = DependencyProperty.Register(nameof(HoldSelectedIfEmpty), typeof(bool),
+                typeof(BetterComboBox), new PropertyMetadata(false, (o, e) =>
+                        ((BetterComboBox)o)._holdSelectedIfEmpty = (bool)e.NewValue));
+
+        private bool _holdSelectedIfEmpty;
+
+        public bool HoldSelectedIfEmpty {
+            get => _holdSelectedIfEmpty;
+            set => SetValue(HoldSelectedIfEmptyProperty, value);
+        }
+
         public static bool IgnoreUnloadedChanges = false;
         private bool _updateSelectedItemLater;
 
+        private bool CanUpdateSelected() {
+            return !HoldSelectedIfEmpty || ItemsSource?.OfType<object>().Any() == true;
+        }
+
         protected override void OnSelectionChanged(SelectionChangedEventArgs e) {
             base.OnSelectionChanged(e);
+            if (!CanUpdateSelected()) return;
             if (!IgnoreUnloadedChanges || IsLoaded) {
                 SelectedItem = ReferenceEquals(base.SelectedItem, NullValue) ? null : base.SelectedItem;
             } else {
@@ -126,7 +142,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_updateSelectedItemLater) {
                 _updateSelectedItemLater = false;
-                SelectedItem = ReferenceEquals(base.SelectedItem, NullValue) ? null : base.SelectedItem;
+                if (CanUpdateSelected()) {
+                    SelectedItem = ReferenceEquals(base.SelectedItem, NullValue) ? null : base.SelectedItem;
+                }
             }
         }
 

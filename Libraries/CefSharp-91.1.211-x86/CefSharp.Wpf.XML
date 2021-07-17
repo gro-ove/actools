@@ -1,0 +1,2837 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CefSharp.Wpf</name>
+    </assembly>
+    <members>
+        <member name="T:CefSharp.Wpf.ChromiumWebBrowser">
+            <summary>
+            ChromiumWebBrowser is the WPF web browser control
+            </summary>
+            <seealso cref="T:System.Windows.Controls.Control" />
+            <seealso cref="T:CefSharp.Wpf.IWpfWebBrowser" />
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.canExecuteJavascriptInMainFrameId">
+            <summary>
+            Used as workaround for issue https://github.com/cefsharp/CefSharp/issues/3021
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.browserInitialized">
+            <summary>
+            The browser initialized - boolean represented as 0 (false) and 1(true) as we use Interlocker to increment/reset
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.CanExecuteJavascriptInMainFrame">
+            <summary>
+            A flag that indicates if you can execute javascript in the main frame.
+            Flag is set to true in IRenderProcessMessageHandler.OnContextCreated.
+            and false in IRenderProcessMessageHandler.OnContextReleased
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.DialogHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.IDialogHandler" /> and assign to handle dialog events.
+            </summary>
+            <value>The dialog handler.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.JsDialogHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.IJsDialogHandler" /> and assign to handle events related to JavaScript Dialogs.
+            </summary>
+            <value>The js dialog handler.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.KeyboardHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.IKeyboardHandler" /> and assign to handle events related to key press.
+            </summary>
+            <value>The keyboard handler.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.RequestHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.IRequestHandler" /> and assign to handle events related to browser requests.
+            </summary>
+            <value>The request handler.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.DownloadHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.IDownloadHandler" /> and assign to handle events related to downloading files.
+            </summary>
+            <value>The download handler.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.LoadHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.ILoadHandler" /> and assign to handle events related to browser load status.
+            </summary>
+            <value>The load handler.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.LifeSpanHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.ILifeSpanHandler" /> and assign to handle events related to popups.
+            </summary>
+            <value>The life span handler.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.DisplayHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.IDisplayHandler" /> and assign to handle events related to browser display state.
+            </summary>
+            <value>The display handler.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.MenuHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.IContextMenuHandler" /> and assign to handle events related to the browser context menu
+            </summary>
+            <value>The menu handler.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.RenderProcessMessageHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.IRenderProcessMessageHandler" /> and assign to handle messages from the render process.
+            </summary>
+            <value>The render process message handler.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.FindHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.IFindHandler" /> to handle events related to find results.
+            </summary>
+            <value>The find handler.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.AudioHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.IAudioHandler" /> to handle audio events.
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.FocusHandler">
+            <summary>
+            The <see cref="T:CefSharp.IFocusHandler" /> for this ChromiumWebBrowser.
+            </summary>
+            <value>The focus handler.</value>
+            <remarks>If you need customized focus handling behavior for WinForms, the suggested
+            best practice would be to inherit from DefaultFocusHandler and try to avoid
+            needing to override the logic in OnGotFocus. The implementation in
+            DefaultFocusHandler relies on very detailed behavior of how WinForms and
+            Windows interact during window activation.</remarks>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.DragHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.IDragHandler" /> and assign to handle events related to dragging.
+            </summary>
+            <value>The drag handler.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.ResourceRequestHandlerFactory">
+            <summary>
+            Implement <see cref="T:CefSharp.IResourceRequestHandlerFactory" /> and control the loading of resources
+            </summary>
+            <value>The resource handler factory.</value>
+        </member>
+        <member name="E:CefSharp.Wpf.ChromiumWebBrowser.LoadError">
+            <summary>
+            Event handler that will get called when the resource load for a navigation fails or is canceled.
+            It's important to note this event is fired on a CEF UI thread, which by default is not the same as your application UI
+            thread. It is unwise to block on this thread for any length of time as your browser will become unresponsive and/or hang..
+            To access UI elements you'll need to Invoke/Dispatch onto the UI Thread.
+            </summary>
+        </member>
+        <member name="E:CefSharp.Wpf.ChromiumWebBrowser.FrameLoadStart">
+            <summary>
+            Event handler that will get called when the browser begins loading a frame. Multiple frames may be loading at the same
+            time. Sub-frames may start or continue loading after the main frame load has ended. This method may not be called for a
+            particular frame if the load request for that frame fails. For notification of overall browser load status use
+            OnLoadingStateChange instead.
+            It's important to note this event is fired on a CEF UI thread, which by default is not the same as your application UI
+            thread. It is unwise to block on this thread for any length of time as your browser will become unresponsive and/or hang..
+            To access UI elements you'll need to Invoke/Dispatch onto the UI Thread.
+            </summary>
+            <remarks>Whilst this may seem like a logical place to execute js, it's called before the DOM has been loaded, implement
+            <see cref="M:CefSharp.IRenderProcessMessageHandler.OnContextCreated(CefSharp.IWebBrowser,CefSharp.IBrowser,CefSharp.IFrame)" /> as it's called when the underlying V8Context is created
+            </remarks>
+        </member>
+        <member name="E:CefSharp.Wpf.ChromiumWebBrowser.FrameLoadEnd">
+            <summary>
+            Event handler that will get called when the browser is done loading a frame. Multiple frames may be loading at the same
+            time. Sub-frames may start or continue loading after the main frame load has ended. This method will always be called
+            for all frames irrespective of whether the request completes successfully.
+            It's important to note this event is fired on a CEF UI thread, which by default is not the same as your application UI
+            thread. It is unwise to block on this thread for any length of time as your browser will become unresponsive and/or hang..
+            To access UI elements you'll need to Invoke/Dispatch onto the UI Thread.
+            </summary>
+        </member>
+        <member name="E:CefSharp.Wpf.ChromiumWebBrowser.LoadingStateChanged">
+            <summary>
+            Event handler that will get called when the Loading state has changed.
+            This event will be fired twice. Once when loading is initiated either programmatically or
+            by user action, and once when loading is terminated due to completion, cancellation of failure.
+            It's important to note this event is fired on a CEF UI thread, which by default is not the same as your application UI
+            thread. It is unwise to block on this thread for any length of time as your browser will become unresponsive and/or hang..
+            To access UI elements you'll need to Invoke/Dispatch onto the UI Thread.
+            </summary>
+        </member>
+        <member name="E:CefSharp.Wpf.ChromiumWebBrowser.ConsoleMessage">
+            <summary>
+            Event handler for receiving Javascript console messages being sent from web pages.
+            It's important to note this event is fired on a CEF UI thread, which by default is not the same as your application UI
+            thread. It is unwise to block on this thread for any length of time as your browser will become unresponsive and/or hang..
+            To access UI elements you'll need to Invoke/Dispatch onto the UI Thread.
+            (The exception to this is when you're running with settings.MultiThreadedMessageLoop = false, then they'll be the same thread).
+            </summary>
+        </member>
+        <member name="E:CefSharp.Wpf.ChromiumWebBrowser.StatusMessage">
+            <summary>
+            Event handler for changes to the status message.
+            It's important to note this event is fired on a CEF UI thread, which by default is not the same as your application UI
+            thread. It is unwise to block on this thread for any length of time as your browser will become unresponsive and/or hang.
+            To access UI elements you'll need to Invoke/Dispatch onto the UI Thread.
+            (The exception to this is when you're running with settings.MultiThreadedMessageLoop = false, then they'll be the same thread).
+            </summary>
+        </member>
+        <member name="E:CefSharp.Wpf.ChromiumWebBrowser.JavascriptMessageReceived">
+            <summary>
+            Event handler that will get called when the message that originates from CefSharp.PostMessage
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#IWebBrowser#IsBrowserInitialized">
+            <summary>
+            A flag that indicates whether the WebBrowser is initialized (true) or not (false).
+            </summary>
+            <value><c>true</c> if this instance is browser initialized; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IWebBrowserInternal#OnFrameLoadStart(CefSharp.FrameLoadStartEventArgs)">
+            <summary>
+            Handles the <see cref="E:FrameLoadStart" /> event.
+            </summary>
+            <param name="args">The <see cref="T:CefSharp.FrameLoadStartEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IWebBrowserInternal#OnFrameLoadEnd(CefSharp.FrameLoadEndEventArgs)">
+            <summary>
+            Handles the <see cref="E:FrameLoadEnd" /> event.
+            </summary>
+            <param name="args">The <see cref="T:CefSharp.FrameLoadEndEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IWebBrowserInternal#OnConsoleMessage(CefSharp.ConsoleMessageEventArgs)">
+            <summary>
+            Handles the <see cref="E:ConsoleMessage" /> event.
+            </summary>
+            <param name="args">The <see cref="T:CefSharp.ConsoleMessageEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IWebBrowserInternal#OnStatusMessage(CefSharp.StatusMessageEventArgs)">
+            <summary>
+            Handles the <see cref="E:StatusMessage" /> event.
+            </summary>
+            <param name="args">The <see cref="T:CefSharp.StatusMessageEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IWebBrowserInternal#OnLoadError(CefSharp.LoadErrorEventArgs)">
+            <summary>
+            Handles the <see cref="E:LoadError" /> event.
+            </summary>
+            <param name="args">The <see cref="T:CefSharp.LoadErrorEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IWebBrowserInternal#HasParent">
+            <summary>
+            Gets or sets a value indicating whether this instance has parent.
+            </summary>
+            <value><c>true</c> if this instance has parent; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IWebBrowserInternal#BrowserAdapter">
+            <summary>
+            Gets the browser adapter.
+            </summary>
+            <value>The browser adapter.</value>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.LoadUrlAsync(System.String,System.Threading.SynchronizationContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.FreeHandlersExceptLifeSpan">
+            <summary>
+            Sets the handler references to null.
+            Where required also calls Dispose().
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.InternalIsBrowserInitialized">
+            <summary>
+            Check is browser is initialized
+            </summary>
+            <returns>true if browser is initialized</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.ThrowExceptionIfBrowserNotInitialized">
+            <summary>
+            Throw exception if browser not initialized.
+            </summary>
+            <exception cref="T:System.Exception">Thrown when an exception error condition occurs.</exception>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.ThrowExceptionIfDisposed">
+            <summary>
+            Throw exception if disposed.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">Thrown when a supplied object has been disposed.</exception>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.PartImageName">
+            <summary>
+            TemplatePart Name constant for the Image used to represent the browser
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.PartPopupImageName">
+            <summary>
+            TemplatePart Name constant for the Image used to represent the popup
+            overlayed on the browser
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.viewRect">
+            <summary>
+            View Rectangle used by <see cref="M:CefSharp.Wpf.ChromiumWebBrowser.GetViewRect"/>
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.previousWindowState">
+            <summary>
+            Store the previous window state, used to determine if the
+            Windows was previous <see cref="F:System.Windows.WindowState.Minimized"/>
+            and resume rendering
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.source">
+            <summary>
+            The source
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.sourceWindow">
+            <summary>
+            The HwndSource RootVisual (Window) - We store a reference
+            to unsubscribe event handlers
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.monitorInfo">
+            <summary>
+            The MonitorInfo based on the current hwnd
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.tooltipTimer">
+            <summary>
+            The tooltip timer
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.toolTip">
+            <summary>
+            The tool tip
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.managedCefBrowserAdapter">
+            <summary>
+            The managed cef browser adapter
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.ignoreUriChange">
+            <summary>
+            The ignore URI change
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.initialAddress">
+            <summary>
+            Initial address
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.browserCreated">
+            <summary>
+            Has the underlying Cef Browser been created (slightly different to initialized in that
+            the browser is initialized in an async fashion)
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.image">
+            <summary>
+            The image that represents this browser instances
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.popupImage">
+            <summary>
+            The popup image
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.browser">
+            <summary>
+            The browser
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.browserScreenLocation">
+            <summary>
+            Location of the control on the screen, relative to Top/Left
+            Used to calculate GetScreenPoint
+            We're unable to call PointToScreen directly due to treading restrictions
+            and calling in a sync fashion on the UI thread was problematic.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.browserSettings">
+            <summary>
+            Browser initialization settings
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.requestContext">
+            <summary>
+            The request context (we deliberately use a private variable so we can throw an exception if
+            user attempts to set after browser created)
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.currentDragData">
+            <summary>
+            Keep a short term copy of IDragData, so when calling DoDragDrop, DragEnter is called, 
+            we can reuse the drag data provided from CEF
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.currentDragDropEffects">
+            <summary>
+            Keep the current drag&amp;drop effects to return the appropriate effects on drag over.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.DesignMode">
+            <summary>
+            A flag that indicates whether or not the designer is active
+            NOTE: Needs to be static for OnApplicationExit
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.disposeSignaled">
+            <summary>
+            The value for disposal, if it's 1 (one) then this instance is either disposed
+            or in the process of getting disposed
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.initialFocus">
+            <summary>
+            This flag is set when the browser gets focus before the underlying CEF browser
+            has been initialized.
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.EnableResizeHackForIssue2779">
+            <summary>
+            Hack to work around issue https://github.com/cefsharp/CefSharp/issues/2779
+            Enabled by default
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.ResizeHackForIssue2279DelayInMs">
+            <summary>
+            Number of miliseconds to wait after resizing the browser when it first
+            becomes visible. After the delay the browser will revert to it's
+            original size.
+            Hack to work around issue https://github.com/cefsharp/CefSharp/issues/2779
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.IsDisposed">
+            <summary>
+            Gets a value indicating whether this instance is disposed.
+            </summary>
+            <value><see langword="true" /> if this instance is disposed; otherwise, <see langword="false" />.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.WpfKeyboardHandler">
+            <summary>
+            WPF Keyboard Handled forwards key events to the underlying browser
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.BrowserSettings">
+            <summary>
+            Gets or sets the browser settings.
+            </summary>
+            <value>The browser settings.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.RequestContext">
+            <summary>
+            Gets or sets the request context.
+            </summary>
+            <value>The request context.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.RenderHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.Wpf.IRenderHandler"/> and control how the control is rendered
+            </summary>
+            <value>The render Handler.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.AccessibilityHandler">
+            <summary>
+            Implement <see cref="T:CefSharp.IAccessibilityHandler" /> to handle events related to accessibility.
+            </summary>
+            <value>The accessibility handler.</value>
+        </member>
+        <member name="E:CefSharp.Wpf.ChromiumWebBrowser.Paint">
+            <summary>
+            Raised every time <see cref="M:CefSharp.Internals.IRenderWebBrowser.OnPaint(CefSharp.PaintElementType,CefSharp.Structs.Rect,System.IntPtr,System.Int32,System.Int32)"/> is called. You can access the underlying buffer, though it's
+            preferable to either override <see cref="M:CefSharp.Wpf.ChromiumWebBrowser.OnPaint(System.Boolean,CefSharp.Structs.Rect,System.IntPtr,System.Int32,System.Int32)"/> or implement your own <see cref="T:CefSharp.Wpf.IRenderHandler"/> as there is no outwardly
+            accessible locking (locking is done within the default <see cref="T:CefSharp.Wpf.IRenderHandler"/> implementations).
+            It's important to note this event is fired on a CEF UI thread, which by default is not the same as your application UI thread
+            </summary>
+        </member>
+        <member name="E:CefSharp.Wpf.ChromiumWebBrowser.VirtualKeyboardRequested">
+            <summary>
+            Raised every time <see cref="M:CefSharp.Internals.IRenderWebBrowser.OnVirtualKeyboardRequested(CefSharp.IBrowser,CefSharp.Enums.TextInputMode)"/> is called. 
+            It's important to note this event is fired on a CEF UI thread, which by default is not the same as your application UI thread
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.BackCommand">
+            <summary>
+            Navigates to the previous page in the browser history. Will automatically be enabled/disabled depending on the
+            browser state.
+            </summary>
+            <value>The back command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.ForwardCommand">
+            <summary>
+            Navigates to the next page in the browser history. Will automatically be enabled/disabled depending on the
+            browser state.
+            </summary>
+            <value>The forward command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.ReloadCommand">
+            <summary>
+            Reloads the content of the current page. Will automatically be enabled/disabled depending on the browser state.
+            </summary>
+            <value>The reload command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.PrintCommand">
+            <summary>
+            Prints the current browser contents.
+            </summary>
+            <value>The print command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.ZoomInCommand">
+            <summary>
+            Increases the zoom level.
+            </summary>
+            <value>The zoom in command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.ZoomOutCommand">
+            <summary>
+            Decreases the zoom level.
+            </summary>
+            <value>The zoom out command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.ZoomResetCommand">
+            <summary>
+            Resets the zoom level to the default. (100%)
+            </summary>
+            <value>The zoom reset command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.ViewSourceCommand">
+            <summary>
+            Opens up a new program window (using the default text editor) where the source code of the currently displayed web
+            page is shown.
+            </summary>
+            <value>The view source command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.CleanupCommand">
+            <summary>
+            Command which cleans up the Resources used by the ChromiumWebBrowser
+            </summary>
+            <value>The cleanup command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.StopCommand">
+            <summary>
+            Stops loading the current page.
+            </summary>
+            <value>The stop command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.CutCommand">
+            <summary>
+            Cut selected text to the clipboard.
+            </summary>
+            <value>The cut command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.CopyCommand">
+            <summary>
+            Copy selected text to the clipboard.
+            </summary>
+            <value>The copy command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.PasteCommand">
+            <summary>
+            Paste text from the clipboard.
+            </summary>
+            <value>The paste command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.SelectAllCommand">
+            <summary>
+            Select all text.
+            </summary>
+            <value>The select all command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.UndoCommand">
+            <summary>
+            Undo last action.
+            </summary>
+            <value>The undo command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.RedoCommand">
+            <summary>
+            Redo last action.
+            </summary>
+            <value>The redo command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.DpiScaleFactor">
+            <summary>
+            The dpi scale factor, if the browser has already been initialized
+            you must manually call IBrowserHost.NotifyScreenInfoChanged for the
+            browser to be notified of the change.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.#cctor">
+            <summary>
+            Initializes static members of the <see cref="T:CefSharp.Wpf.ChromiumWebBrowser"/> class.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.DispatcherShutdownStarted(System.Object,System.EventArgs)">
+            <summary>
+            Handles Dispatcher Shutdown
+            </summary>
+            <param name="sender">sender</param>
+            <param name="e">eventargs</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnApplicationExit(System.Object,System.Windows.ExitEventArgs)">
+            <summary>
+            Handles the <see cref="E:ApplicationExit" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.Windows.ExitEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefPreShutdown">
+            <summary>
+            Required for designer support - this method cannot be inlined as the designer
+            will attempt to load libcef.dll and will subsequently throw an exception.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefShutdown">
+            <summary>
+            Required for designer support - this method cannot be inlined as the designer
+            will attempt to load libcef.dll and will subsequently throw an exception.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:CefSharp.Wpf.ChromiumWebBrowser"/> class.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Cef::Initialize() failed</exception>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.#ctor(System.Windows.Interop.HwndSource,System.String,System.Windows.Size)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CefSharp.Wpf.ChromiumWebBrowser"/> class.
+            Use this constructor to load the browser before it's attached to the Visual Tree.
+            The underlying CefBrowser will be created with the specified <paramref name="size"/>.
+            CEF requires positive values for <see cref="P:System.Windows.Size.Width"/> and <see cref="P:System.Windows.Size.Height"/>,
+            if values less than 1 are specified then the default value of 1 will be used instead.
+            You can subscribe to the <see cref="E:CefSharp.Wpf.ChromiumWebBrowser.LoadingStateChanged"/> event and attach the browser
+            to its parent control when Loading is complete (<see cref="P:CefSharp.LoadingStateChangedEventArgs.IsLoading"/> is false).
+            </summary>
+            <param name="parentWindowHwndSource">HwndSource for the Window that will host the browser.</param>
+            <param name="initialAddress">address to be loaded when the browser is created.</param>
+            <param name="size">size</param>
+            <example>
+            <code>
+            //Obtain Hwnd from parent window
+            var hwndSource = (HwndSource)PresentationSource.FromVisual(this);
+            var browser = new ChromiumWebBrowser(hwndSource, "github.com", 1024, 768);
+            browser.LoadingStateChanged += OnBrowserLoadingStateChanged;
+            
+            private void OnBrowserLoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
+            {
+              if (e.IsLoading == false)
+              {
+                var b = (ChromiumWebBrowser)sender;
+                b.LoadingStateChanged -= OnBrowserLoadingStateChanged;
+                Dispatcher.InvokeAsync(() =>
+                {
+                  //Attach to visual tree
+                  ParentControl.Child = b;
+                });
+              }
+            }
+            </code>
+            </example>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CefSharp.Wpf.ChromiumWebBrowser"/> class.
+            The specified <paramref name="initialAddress"/> will be loaded initially.
+            Use this constructor if you are loading a Chrome Extension.
+            </summary>
+            <param name="initialAddress">address to be loaded when the browser is created.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.NoInliningConstructor">
+            <summary>
+            Constructor logic has been moved into this method
+            Required for designer support - this method cannot be inlined as the designer
+            will attempt to load libcef.dll and will subsequently throw an exception.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.Finalize">
+            <summary>
+            Finalizes an instance of the <see cref="T:CefSharp.Wpf.ChromiumWebBrowser"/> class.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.Dispose">
+            <summary>
+            Releases all resources used by the <see cref="T:CefSharp.Wpf.ChromiumWebBrowser"/> object
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.Dispose(System.Boolean)">
+            <summary>
+            If not in design mode; Releases unmanaged and - optionally - managed resources for the <see cref="T:CefSharp.Wpf.ChromiumWebBrowser"/>
+            </summary>
+            <param name="disposing"><see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.InternalDispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources for the <see cref="T:CefSharp.Wpf.ChromiumWebBrowser"/>
+            </summary>
+            <param name="disposing"><see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.</param>
+            <remarks>
+            This method cannot be inlined as the designer will attempt to load libcef.dll and will subsequently throw an exception.
+            </remarks>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IRenderWebBrowser#GetScreenInfo">
+            <summary>
+            Gets the ScreenInfo - currently used to get the DPI scale factor.
+            </summary>
+            <returns>ScreenInfo containing the current DPI scale factor</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.GetScreenInfo">
+            <summary>
+            Gets the ScreenInfo - currently used to get the DPI scale factor.
+            </summary>
+            <returns>ScreenInfo containing the current DPI scale factor</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IRenderWebBrowser#GetViewRect">
+            <summary>
+            Called to retrieve the view rectangle which is relative to screen coordinates.
+            This method must always provide a non-empty rectangle.
+            </summary>
+            <returns>View Rectangle</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.GetViewRect">
+            <summary>
+            Called to retrieve the view rectangle which is relative to screen coordinates.
+            This method must always provide a non-empty rectangle.
+            </summary>
+            <returns>View Rectangle</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IRenderWebBrowser#GetScreenPoint(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <inheritdoc />
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.GetScreenPoint(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>
+            Called to retrieve the translation from view coordinates to actual screen coordinates. 
+            </summary>
+            <param name="viewX">x</param>
+            <param name="viewY">y</param>
+            <param name="screenX">screen x</param>
+            <param name="screenY">screen y</param>
+            <returns>Return true if the screen coordinates were provided.</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IRenderWebBrowser#StartDragging(CefSharp.IDragData,CefSharp.Enums.DragOperationsMask,System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.StartDragging(CefSharp.IDragData,CefSharp.Enums.DragOperationsMask,System.Int32,System.Int32)">
+            <summary>
+            Called when the user starts dragging content in the web view. 
+            OS APIs that run a system message loop may be used within the StartDragging call.
+            Don't call any of IBrowserHost::DragSource*Ended* methods after returning false.
+            Call IBrowserHost.DragSourceEndedAt and DragSourceSystemDragEnded either synchronously or asynchronously to inform the web view that the drag operation has ended. 
+            </summary>
+            <param name="dragData"> Contextual information about the dragged content</param>
+            <param name="allowedOps">allowed operations</param>
+            <param name="x">is the drag start location in screen coordinates</param>
+            <param name="y">is the drag start location in screen coordinates</param>
+            <returns>Return true to handle the drag operation.</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IRenderWebBrowser#UpdateDragCursor(CefSharp.Enums.DragOperationsMask)">
+            <inheritdoc />
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.UpdateDragCursor(CefSharp.Enums.DragOperationsMask)">
+            <summary>
+            Called when the web view wants to update the mouse cursor during a drag &amp; drop operation.
+            </summary>
+            <param name="operation">describes the allowed operation (none, move, copy, link). </param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IRenderWebBrowser#OnAcceleratedPaint(CefSharp.PaintElementType,CefSharp.Structs.Rect,System.IntPtr)">
+            <inheritdoc />
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnAcceleratedPaint(System.Boolean,CefSharp.Structs.Rect,System.IntPtr)">
+            <summary>
+            Called when an element has been rendered to the shared texture handle.
+            This method is only called when <see cref="P:CefSharp.IWindowInfo.SharedTextureEnabled"/> is set to true
+            </summary>
+            <param name="isPopup">indicates whether the element is the view or the popup widget.</param>
+            <param name="dirtyRect">contains the set of rectangles in pixel coordinates that need to be repainted</param>
+            <param name="sharedHandle">is the handle for a D3D11 Texture2D that can be accessed via ID3D11Device using the OpenSharedResource method.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IRenderWebBrowser#OnPaint(CefSharp.PaintElementType,CefSharp.Structs.Rect,System.IntPtr,System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnPaint(System.Boolean,CefSharp.Structs.Rect,System.IntPtr,System.Int32,System.Int32)">
+            <summary>
+            Called when an element should be painted. Pixel values passed to this method are scaled relative to view coordinates based on the
+            value of <see cref="P:CefSharp.Structs.ScreenInfo.DeviceScaleFactor"/> returned from <see cref="M:CefSharp.Internals.IRenderWebBrowser.GetScreenInfo"/>. To override the default behaviour
+            override this method or implement your own <see cref="T:CefSharp.Wpf.IRenderHandler"/> and assign to <see cref="P:CefSharp.Wpf.ChromiumWebBrowser.RenderHandler"/>
+            Called on the CEF UI Thread
+            </summary>
+            <param name="isPopup">indicates whether the element is the view or the popup widget.</param>
+            <param name="dirtyRect">contains the set of rectangles in pixel coordinates that need to be repainted</param>
+            <param name="buffer">The bitmap will be width * height *4 bytes in size and represents a BGRA image with an upper-left origin.
+            The buffer should no be used outside the scope of this method, a copy should be taken. As the buffer is reused
+            internally and potentially even freed.
+            </param>
+            <param name="width">width</param>
+            <param name="height">height</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IRenderWebBrowser#OnPopupSize(CefSharp.Structs.Rect)">
+            <inheritdoc />
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnPopupSize(CefSharp.Structs.Rect)">
+            <summary>
+            Sets the popup size and position.
+            </summary>
+            <param name="rect">The popup rectangle (size and position).</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IRenderWebBrowser#OnPopupShow(System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnPopupShow(System.Boolean)">
+            <summary>
+            Sets the popup is open.
+            </summary>
+            <param name="isOpen">if set to <c>true</c> [is open].</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IRenderWebBrowser#OnCursorChange(System.IntPtr,CefSharp.Enums.CursorType,CefSharp.Structs.CursorInfo)">
+            <inheritdoc />
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnCursorChange(System.IntPtr,CefSharp.Enums.CursorType,CefSharp.Structs.CursorInfo)">
+            <summary>
+            Sets the cursor.
+            </summary>
+            <param name="handle">The handle.</param>
+            <param name="type">The type.</param>
+            <param name="customCursorInfo">custom cursor information</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IRenderWebBrowser#OnImeCompositionRangeChanged(CefSharp.Structs.Range,CefSharp.Structs.Rect[])">
+            <inheritdoc />
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnImeCompositionRangeChanged(CefSharp.Structs.Range,CefSharp.Structs.Rect[])">
+            <summary>
+            Called when the IME composition range has changed.
+            </summary>
+            <param name="selectedRange">is the range of characters that have been selected</param>
+            <param name="characterBounds">is the bounds of each character in view coordinates.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IRenderWebBrowser#OnVirtualKeyboardRequested(CefSharp.IBrowser,CefSharp.Enums.TextInputMode)">
+            <inheritdoc />
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnVirtualKeyboardRequested(CefSharp.IBrowser,CefSharp.Enums.TextInputMode)">
+            <summary>
+            Called when an on-screen keyboard should be shown or hidden for the specified browser. 
+            </summary>
+            <param name="browser">the browser</param>
+            <param name="inputMode">specifies what kind of keyboard should be opened. If <see cref="F:CefSharp.Enums.TextInputMode.None"/>, any existing keyboard for this browser should be hidden.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IWebBrowserInternal#SetAddress(CefSharp.AddressChangedEventArgs)">
+            <summary>
+            Sets the address.
+            </summary>
+            <param name="args">The <see cref="T:CefSharp.AddressChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IWebBrowserInternal#SetLoadingStateChange(CefSharp.LoadingStateChangedEventArgs)">
+            <summary>
+            Sets the loading state change.
+            </summary>
+            <param name="args">The <see cref="T:CefSharp.LoadingStateChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IWebBrowserInternal#SetTitle(CefSharp.TitleChangedEventArgs)">
+            <summary>
+            Sets the title.
+            </summary>
+            <param name="args">The <see cref="T:CefSharp.TitleChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IWebBrowserInternal#SetTooltipText(System.String)">
+            <summary>
+            Sets the tooltip text.
+            </summary>
+            <param name="tooltipText">The tooltip text.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CefSharp#Internals#IWebBrowserInternal#OnAfterBrowserCreated(CefSharp.IBrowser)">
+            <summary>
+            Called when [after browser created].
+            </summary>
+            <param name="browser">The browser.</param>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.CanGoBack">
+            <summary>
+            A flag that indicates whether the state of the control current supports the GoBack action (true) or not (false).
+            </summary>
+            <value><c>true</c> if this instance can go back; otherwise, <c>false</c>.</value>
+            <remarks>In the WPF control, this property is implemented as a Dependency Property and fully supports data
+            binding.</remarks>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.CanGoBackProperty">
+            <summary>
+            The can go back property
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.CanGoForward">
+            <summary>
+            A flag that indicates whether the state of the control currently supports the GoForward action (true) or not (false).
+            </summary>
+            <value><c>true</c> if this instance can go forward; otherwise, <c>false</c>.</value>
+            <remarks>In the WPF control, this property is implemented as a Dependency Property and fully supports data
+            binding.</remarks>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.CanGoForwardProperty">
+            <summary>
+            The can go forward property
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.Address">
+            <summary>
+            The address (URL) which the browser control is currently displaying.
+            Will automatically be updated as the user navigates to another page (e.g. by clicking on a link).
+            </summary>
+            <value>The address.</value>
+            <remarks>In the WPF control, this property is implemented as a Dependency Property and fully supports data
+            binding.</remarks>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.AddressProperty">
+            <summary>
+            The address property
+            </summary>
+        </member>
+        <member name="E:CefSharp.Wpf.ChromiumWebBrowser.AddressChanged">
+            <summary>
+            Event called when the browser address has changed
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnAddressChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Handles the <see cref="E:AddressChanged" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="args">The <see cref="T:System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnAddressChanged(System.String,System.String)">
+            <summary>
+            Called when [address changed].
+            </summary>
+            <param name="oldValue">The old value.</param>
+            <param name="newValue">The new value.</param>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.IsLoading">
+            <summary>
+            A flag that indicates whether the control is currently loading one or more web pages (true) or not (false).
+            </summary>
+            <value><c>true</c> if this instance is loading; otherwise, <c>false</c>.</value>
+            <remarks>In the WPF control, this property is implemented as a Dependency Property and fully supports data
+            binding.</remarks>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.IsLoadingProperty">
+            <summary>
+            The is loading property
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.IsBrowserInitialized">
+            <summary>
+            A flag that indicates whether the WebBrowser is initialized (true) or not (false).
+            </summary>
+            <value><c>true</c> if this instance is browser initialized; otherwise, <c>false</c>.</value>
+            <remarks>In the WPF control, this property is implemented as a Dependency Property and fully supports data
+            binding.</remarks>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.IsBrowserInitializedProperty">
+            <summary>
+            The is browser initialized property
+            </summary>
+        </member>
+        <member name="E:CefSharp.Wpf.ChromiumWebBrowser.IsBrowserInitializedChanged">
+            <summary>
+            Event called after the underlying CEF browser instance has been created. 
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnIsBrowserInitializedChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Handles the <see cref="E:IsBrowserInitializedChanged" /> event.
+            </summary>
+            <param name="d">The d.</param>
+            <param name="e">The <see cref="T:System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnIsBrowserInitializedChanged(System.Boolean,System.Boolean)">
+            <summary>
+            Called when [is browser initialized changed].
+            </summary>
+            <param name="oldValue">if set to <c>true</c> [old value].</param>
+            <param name="newValue">if set to <c>true</c> [new value].</param>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.Title">
+            <summary>
+            The title of the web page being currently displayed.
+            </summary>
+            <value>The title.</value>
+            <remarks>This property is implemented as a Dependency Property and fully supports data binding.</remarks>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.TitleProperty">
+            <summary>
+            The title property
+            </summary>
+        </member>
+        <member name="E:CefSharp.Wpf.ChromiumWebBrowser.TitleChanged">
+            <summary>
+            Event handler that will get called when the browser title changes
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnTitleChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Handles the <see cref="E:TitleChanged" /> event.
+            </summary>
+            <param name="d">The d.</param>
+            <param name="e">The <see cref="T:System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.ZoomLevel">
+            <summary>
+            The zoom level at which the browser control is currently displaying.
+            Can be set to 0 to clear the zoom level (resets to default zoom level).
+            NOTE: For browsers that share the same render process (same origin) this
+            property is only updated when the browser changes its visible state.
+            If you have two browsers visible at the same time that share the same render
+            process then zooming one will not update this property in the other (unless
+            the control is hidden and then shown). You can isolate browser instances
+            using a <see cref="P:CefSharp.Wpf.ChromiumWebBrowser.RequestContext"/>, they will then have their own render process
+            regardless of the process policy. You can manually get the Zoom level using
+            <see cref="M:CefSharp.IBrowserHost.GetZoomLevelAsync"/>
+            </summary>
+            <value>The zoom level.</value>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.ZoomLevelProperty">
+            <summary>
+            The zoom level property
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnZoomLevelChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Handles the <see cref="E:ZoomLevelChanged" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="args">The <see cref="T:System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnZoomLevelChanged(System.Double,System.Double)">
+            <summary>
+            Called when [zoom level changed].
+            </summary>
+            <param name="oldValue">The old value.</param>
+            <param name="newValue">The new value.</param>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.ZoomLevelIncrement">
+            <summary>
+            Specifies the amount used to increase/decrease to ZoomLevel by
+            By Default this value is 0.10
+            </summary>
+            <value>The zoom level increment.</value>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.ZoomLevelIncrementProperty">
+            <summary>
+            The zoom level increment property
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.CleanupElement">
+            <summary>
+            The CleanupElement Controls when the BrowserResources will be cleaned up.
+            The ChromiumWebBrowser will register on Unloaded of the provided Element and dispose all resources when that handler is called.
+            By default the cleanup element is the Window that contains the ChromiumWebBrowser.
+            if you want cleanup to happen earlier provide another FrameworkElement.
+            Be aware that this Control is not usable anymore after cleanup is done.
+            </summary>
+            <value>The cleanup element.</value>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.CleanupElementProperty">
+            <summary>
+            The cleanup element property
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnCleanupElementChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Handles the <see cref="E:CleanupElementChanged" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="args">The <see cref="T:System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnCleanupElementChanged(System.Windows.FrameworkElement,System.Windows.FrameworkElement)">
+            <summary>
+            Called when [cleanup element changed].
+            </summary>
+            <param name="oldValue">The old value.</param>
+            <param name="newValue">The new value.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnCleanupElementUnloaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handles the <see cref="E:CleanupElementUnloaded" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.TooltipText">
+            <summary>
+            The text that will be displayed as a ToolTip
+            </summary>
+            <value>The tooltip text.</value>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.TooltipTextProperty">
+            <summary>
+            The tooltip text property
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnTooltipTextChanged">
+            <summary>
+            Called when [tooltip text changed].
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.WebBrowser">
+            <summary>
+            Gets or sets the WebBrowser.
+            </summary>
+            <value>The WebBrowser.</value>
+        </member>
+        <member name="F:CefSharp.Wpf.ChromiumWebBrowser.WebBrowserProperty">
+            <summary>
+            The WebBrowser property
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnDrop(System.Object,System.Windows.DragEventArgs)">
+            <summary>
+            Handles the <see cref="E:Drop" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.Windows.DragEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnDragLeave(System.Object,System.Windows.DragEventArgs)">
+            <summary>
+            Handles the <see cref="E:DragLeave" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.Windows.DragEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnDragOver(System.Object,System.Windows.DragEventArgs)">
+            <summary>
+            Handles the <see cref="E:DragOver" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.Windows.DragEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnDragEnter(System.Object,System.Windows.DragEventArgs)">
+            <summary>
+            Handles the <see cref="E:DragEnter" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.Windows.DragEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.PresentationSourceChangedHandler(System.Object,System.Windows.SourceChangedEventArgs)">
+            <summary>
+            PresentationSource changed handler.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="args">The <see cref="T:System.Windows.SourceChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.GetBrowserScreenLocation">
+            <summary>
+            Called when the Window Location Changes, the PresentationSource changes
+            and the page loads. We manually track the position as CEF makes calls
+            on a non-UI thread and calling Invoke in IRenderWebBrowser.GetScreenPoint
+            makes it very easy to deadlock the browser.
+            </summary>
+            <returns>Returns screen coordinates of the browsers location</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CreateBrowser(System.Windows.Interop.HwndSource,System.Windows.Size)">
+            <summary>
+            Create the underlying CefBrowser instance with the specified <paramref name="initialSize"/>.
+            This method should only be used in instances where you need the browser
+            to load before it's attached to the Visual Tree. 
+            </summary>
+            <param name="parentWindowHwndSource">HwndSource for the Window that will host the browser.</param>
+            <param name="initialSize">initial size</param>
+            <returns>Returns false if browser already created, otherwise true.</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CreateOffscreenBrowser(System.Windows.Size)">
+            <summary>
+            Create the underlying Browser instance, can be overriden to defer control creation
+            The browser will only be created when size &gt; Size(0,0). If you specify a positive
+            size then the browser will be created, if the ActualWidth and ActualHeight
+            properties are in reality still 0 then you'll likely end up with a browser that
+            won't render.
+            </summary>
+            <param name="size">size of the current control, must be greater than Size(0, 0)</param>
+            <returns>bool to indicate if browser was created. If the browser has already been created then this will return false.</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.CreateOffscreenBrowserWindowInfo(System.IntPtr)">
+            <summary>
+            Override this method to handle creation of WindowInfo. This method can be used to customise aspects of
+            browser creation including configuration of settings such as <see cref="P:CefSharp.IWindowInfo.SharedTextureEnabled"/>
+            (used for D3D11 shared texture rendering).
+            </summary>
+            <param name="handle">Window handle for the HwndSource</param>
+            <returns>Window Info</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.UiThreadRunAsync(System.Action,System.Windows.Threading.DispatcherPriority)">
+            <summary>
+            Runs the specific Action on the Dispatcher in an async fashion
+            </summary>
+            <param name="action">The action.</param>
+            <param name="priority">The priority.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.UiThreadRunSync(System.Action,System.Windows.Threading.DispatcherPriority)">
+            <summary>
+            Runs the specific Action on the Dispatcher in an sync fashion
+            </summary>
+            <param name="action">The action.</param>
+            <param name="priority">The priority.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnActualSizeChanged(System.Object,System.Windows.SizeChangedEventArgs)">
+            <summary>
+            Handles the <see cref="E:ActualSizeChanged" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.Windows.SizeChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnIsVisibleChanged(System.Object,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Handles the <see cref="E:IsVisibleChanged" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="args">The <see cref="T:System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnLoaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handles the <see cref="E:Loaded" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="routedEventArgs">The <see cref="T:System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnApplyTemplate">
+            <summary>
+            When overridden in a derived class, is invoked whenever application code or internal processes call
+            <see cref="M:System.Windows.FrameworkElement.ApplyTemplate" />.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.GetMouseEvent(System.Windows.DragEventArgs)">
+            <summary>
+            Converts a .NET Drag event to a CefSharp MouseEvent
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.DragEventArgs"/> instance containing the event data.</param>
+            <returns>MouseEvent.</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.SetPopupSizeAndPositionImpl(CefSharp.Structs.Rect)">
+            <summary>
+            Sets the popup size and position implementation.
+            </summary>
+            <param name="rect">The popup rectangle (size and position).</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnTooltipTimerTick(System.Object,System.EventArgs)">
+            <summary>
+            Handles the <see cref="E:TooltipTimerTick" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.EventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnTooltipClosed(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handles the <see cref="E:TooltipClosed" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.UpdateTooltip(System.String)">
+            <summary>
+            Updates the tooltip.
+            </summary>
+            <param name="text">The text.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnGotKeyboardFocus(System.Object,System.Windows.Input.KeyboardFocusChangedEventArgs)">
+            <summary>
+            Handles the <see cref="E:GotKeyboardFocus" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.Windows.Input.KeyboardFocusChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnLostKeyboardFocus(System.Object,System.Windows.Input.KeyboardFocusChangedEventArgs)">
+            <summary>
+            Handles the <see cref="E:LostKeyboardFocus" /> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.Windows.Input.KeyboardFocusChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnPreviewKeyDown(System.Windows.Input.KeyEventArgs)">
+            <summary>
+            Invoked when an unhandled <see cref="E:System.Windows.Input.Keyboard.PreviewKeyDown" /> attached event reaches an
+            element in its route that is derived from this class. Implement this method to add class handling for this event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.KeyEventArgs" /> that contains the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnPreviewKeyUp(System.Windows.Input.KeyEventArgs)">
+            <summary>
+            Invoked when an unhandled <see cref="E:System.Windows.Input.Keyboard.PreviewKeyUp" /> attached event reaches an
+            element in its route that is derived from this class. Implement this method to add class handling for this event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.KeyEventArgs" /> that contains the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnPreviewTextInput(System.Windows.Input.TextCompositionEventArgs)">
+            <summary>
+            Handles the <see cref="E:PreviewTextInput" /> event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.TextCompositionEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnMouseMove(System.Windows.Input.MouseEventArgs)">
+            <summary>
+            Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseMove" /> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.MouseEventArgs" /> that contains the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnMouseWheel(System.Windows.Input.MouseWheelEventArgs)">
+            <summary>
+            Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseWheel" /> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.MouseWheelEventArgs" /> that contains the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnMouseDown(System.Windows.Input.MouseButtonEventArgs)">
+            <summary>
+            Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseDown" /> attached event reaches an
+            element in its route that is derived from this class. Implement this method to add class handling for this event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.MouseButtonEventArgs" /> that contains the event data.
+            This event data reports details about the mouse button that was pressed and the handled state.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnMouseUp(System.Windows.Input.MouseButtonEventArgs)">
+            <summary>
+            Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseUp" /> routed event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.MouseButtonEventArgs" /> that contains the event data. The event data reports that the mouse button was released.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnMouseLeave(System.Windows.Input.MouseEventArgs)">
+            <summary>
+            Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseLeave" /> attached event is raised on this element. Implement this method to add class handling for this event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.MouseEventArgs" /> that contains the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnLostMouseCapture(System.Windows.Input.MouseEventArgs)">
+            <summary>
+            Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.LostMouseCapture" /> attached event reaches an element in
+            its route that is derived from this class. Implement this method to add class handling for this event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.MouseEventArgs" /> that contains event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnMouseButton(System.Windows.Input.MouseButtonEventArgs)">
+            <summary>
+            Handles the <see cref="E:MouseButton" /> event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.MouseButtonEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnTouchDown(System.Windows.Input.TouchEventArgs)">
+            <summary>
+            Provides class handling for the <see cref="E:System.Windows.TouchDown" /> routed event that occurs when a touch presses inside this element.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.TouchEventArgs" /> that contains the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnTouchMove(System.Windows.Input.TouchEventArgs)">
+            <summary>
+            Provides class handling for the <see cref="E:System.Windows.TouchMove" /> routed event that occurs when a touch moves while inside this element.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.TouchEventArgs" /> that contains the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnTouchUp(System.Windows.Input.TouchEventArgs)">
+            <summary>
+            Provides class handling for the <see cref="E:System.Windows.TouchUp" /> routed event that occurs when a touch is released inside this element.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.TouchEventArgs" /> that contains the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.OnTouch(System.Windows.Input.TouchEventArgs)">
+            <summary>
+            Handles a <see cref="E:Touch" /> event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.TouchEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.Load(System.String)">
+            <summary>
+            Loads the specified URL.
+            </summary>
+            <param name="url">The URL to be loaded.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.ZoomIn">
+            <summary>
+            Zooms the browser in.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.ZoomOut">
+            <summary>
+            Zooms the browser out.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.ZoomReset">
+            <summary>
+            Reset the browser's zoom level to default.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.NotifyDpiChange(System.Single)">
+            <summary>
+            Manually notify the browser the DPI of the parent window has changed.
+            The tested/expected values for <paramref name="newDpi"/> are 1.0, 1.25, 1.5, 2.0 as these
+            correspond to 96, 120, 144, 192 DPI (referred to as 100%, 125%, 150%, 200% in the Windows GUI).
+            </summary>
+            <param name="newDpi">new DPI</param>
+            <remarks>.Net 4.6.2 adds HwndSource.DpiChanged which could be used to automatically
+            handle DPI change, unfortunately we still target .Net 4.5.2</remarks>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.UseLegacyKeyboardHandler">
+            <summary>
+            Legacy keyboard handler uses WindowProc callback interceptor to forward keypress events
+            the the browser. Use this method to revert to the previous keyboard handling behaviour
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.ChromiumWebBrowser.JavascriptObjectRepository">
+            <summary>
+            The javascript object repository, one repository per ChromiumWebBrowser instance.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.ChromiumWebBrowser.GetBrowser">
+            <summary>
+            Returns the current IBrowser Instance
+            </summary>
+            <returns>browser instance or null</returns>
+        </member>
+        <member name="T:CefSharp.Wpf.CefSettings">
+            <summary>
+            Initialization settings. Many of these and other settings can also configured
+            using command-line switches.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.CefSettings.#ctor">
+            <summary>
+            Intialize with default values
+            </summary>
+        </member>
+        <member name="T:CefSharp.Wpf.Experimental.Accessibility.AccessibilityHandler">
+            <summary>
+            Provides a limited read-only Accessibility Handler implementation.
+            To enable accessibility support use the --force-renderer-accessibility to enable
+            for all browsers or call <see cref="M:CefSharp.IBrowserHost.SetAccessibilityState(CefSharp.CefState)"/>
+            on a per browser basis to enable. By default accessibility is disabled by default.
+            Having accessibility enabled can impact performance until accessibility is disabled.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.Experimental.Accessibility.AccessibilityHandler.OnAccessibilityLocationChange(CefSharp.IValue)">
+            <summary>
+            Called after renderer process sends accessibility location changes to the browser process.
+            </summary>
+            <param name="value">Updated location info.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.Experimental.Accessibility.AccessibilityHandler.OnAccessibilityTreeChange(CefSharp.IValue)">
+            <summary>
+            Called after renderer process sends accessibility tree changes to the browser process.
+            </summary>
+            <param name="value">Updated tree info.</param>
+        </member>
+        <member name="T:CefSharp.Wpf.Experimental.Accessibility.TabControlAutomationPeer">
+            <summary>
+            Default TabControl's AutomationPeer doesn’t know anything about the controls within it, since they’re loaded dynamically.
+            The purpose of this class is to fix this behavior.
+            </summary>
+            <remarks>
+            Taken from https://www.colinsalmcorner.com/post/genericautomationpeer--helping-the-coded-ui-framework-find-your-custom-controls
+            </remarks>
+        </member>
+        <member name="T:CefSharp.Wpf.Experimental.ChromiumWebBrowserWithTouchSupport">
+            <summary>
+            An Experimental ChromiumWebBrowser implementation that includes support for Stylus
+            using the default WPF touch implementation. There are known performance problems with
+            this default implementation, workarounds such as https://github.com/jaytwo/WmTouchDevice
+            may need to be considered. .Net 4.7 supports the newer WM_Pointer implementation which
+            should resolve the issue see https://github.com/dotnet/docs/blob/master/docs/framework/migration-guide/mitigation-pointer-based-touch-and-stylus-support.md
+            Original PR https://github.com/cefsharp/CefSharp/pull/2745
+            Original Author https://github.com/GSonofNun
+            Touch support was merged into ChromiumWebBrowser, only Style support still exists in this class
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.Experimental.ChromiumWebBrowserWithTouchSupport.OnStylusDown(System.Windows.Input.StylusDownEventArgs)">
+            <summary>
+            Invoked when an unhandled <see cref="E:System.Windows.Input.StylusDown" /> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.StylusDownEventArgs" /> that contains the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.Experimental.ChromiumWebBrowserWithTouchSupport.OnStylusMove(System.Windows.Input.StylusEventArgs)">
+            <summary>
+            Invoked when an unhandled <see cref="E:System.Windows.Input.StylusMove" /> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.StylusDownEventArgs" /> that contains the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.Experimental.ChromiumWebBrowserWithTouchSupport.OnStylusUp(System.Windows.Input.StylusEventArgs)">
+            <summary>
+            Invoked when an unhandled <see cref="E:System.Windows.Input.StylusUp" /> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.StylusDownEventArgs" /> that contains the event data.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.Experimental.ChromiumWebBrowserWithTouchSupport.OnStylus(System.Windows.Input.StylusEventArgs,CefSharp.Enums.TouchEventType)">
+            <summary>
+            Handles a <see cref="E:Stylus" /> event.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.StylusEventArgs"/> instance containing the event data.</param>
+            <param name="touchEventType">The <see cref="T:CefSharp.Enums.TouchEventType"/> event type</param>
+        </member>
+        <member name="T:CefSharp.Wpf.Experimental.WpfImeKeyboardHandler">
+            <summary>
+            A WPF Keyboard handler implementation that supports IME
+            </summary>
+            <seealso cref="T:CefSharp.Wpf.Internals.WpfKeyboardHandler"/>
+        </member>
+        <member name="M:CefSharp.Wpf.Experimental.WpfImeKeyboardHandler.#ctor(CefSharp.Wpf.ChromiumWebBrowser)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="owner">The owner.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.Experimental.WpfImeKeyboardHandler.ChangeCompositionRange(CefSharp.Structs.Range,CefSharp.Structs.Rect[])">
+            <summary>
+            Change composition range.
+            </summary>
+            <param name="selectionRange">The selection range.</param>
+            <param name="characterBounds">The character bounds.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.Experimental.WpfImeKeyboardHandler.Setup(System.Windows.Interop.HwndSource)">
+            <summary>
+            Setup the Ime Keyboard Handler specific hooks and events
+            </summary>
+            <param name="source">HwndSource.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.Experimental.WpfImeKeyboardHandler.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.Experimental.WpfImeKeyboardHandler.CancelComposition(System.IntPtr)">
+            <summary>
+            Cancel composition.
+            </summary>
+            <param name="hwnd">The hwnd.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.Internals.DragOperationMaskExtensions.GetDragOperationsMask(System.Windows.DragDropEffects)">
+            <summary>
+            Converts .NET drag drop effects to CEF Drag Operations
+            </summary>
+            <param name="dragDropEffects">The drag drop effects.</param>
+            <returns>DragOperationsMask.</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.Internals.DragOperationMaskExtensions.GetDragEffects(CefSharp.Enums.DragOperationsMask)">
+            <summary>
+            Gets the drag effects.
+            </summary>
+            <param name="mask">The mask.</param>
+            <returns>DragDropEffects.</returns>
+        </member>
+        <member name="T:CefSharp.Wpf.Internals.ImeHandler">
+            <summary>
+            ImeHandler provides implementation when message WM_IME_COMPOSITION is received.
+            </summary>
+        </member>
+        <member name="T:CefSharp.Wpf.Internals.MonitorInfo">
+            <summary>
+            MonitorInfo is a wrapper class around MonitorFromWindow and GetMonitorInfo
+            https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-monitorfromwindow
+            https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-getmonitorinfoa
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.Internals.MonitorInfo.GetMonitorInfoForWindowHandle(System.IntPtr,CefSharp.Wpf.Internals.MonitorInfoEx@)">
+            <summary>
+            Gets monitor information for the provided window handle
+            </summary>
+            <param name="windowHandle">window handle</param>
+            <param name="monitorInfo">monitor info</param>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.MonitorInfoEx.Size">
+            <summary>
+            The size, in bytes, of the structure. Set this member to sizeof(MONITORINFOEX) (72) before calling the GetMonitorInfo function. 
+            Doing so lets the function determine the type of structure you are passing to it.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.MonitorInfoEx.Monitor">
+            <summary>
+            A RECT structure that specifies the display monitor rectangle, expressed in virtual-screen coordinates. 
+            Note that if the monitor is not the primary display monitor, some of the rectangle's coordinates may be negative values.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.MonitorInfoEx.WorkArea">
+            <summary>
+            A RECT structure that specifies the work area rectangle of the display monitor that can be used by applications, 
+            expressed in virtual-screen coordinates. Windows uses this rectangle to maximize an application on the monitor. 
+            The rest of the area in rcMonitor contains system windows such as the task bar and side bars. 
+            Note that if the monitor is not the primary display monitor, some of the rectangle's coordinates may be negative values.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.MonitorInfoEx.Flags">
+            <summary>
+            The attributes of the display monitor.
+            
+            This member can be the following value:
+              1 : MONITORINFOF_PRIMARY
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.MonitorInfoEx.DeviceName">
+            <summary>
+            A string that specifies the device name of the monitor being used. Most applications have no use for a display monitor name, 
+            and so can save some bytes by using a MONITORINFO structure.
+            </summary>
+        </member>
+        <member name="T:CefSharp.Wpf.Internals.RectStruct">
+            <summary>
+            The RECT structure defines the coordinates of the upper-left and lower-right corners of a rectangle.
+            </summary>
+            <see cref="!:https://docs.microsoft.com/en-us/previous-versions/dd162897(v=vs.85)"/>
+            <remarks>
+            By convention, the right and bottom edges of the rectangle are normally considered exclusive. 
+            In other words, the pixel whose coordinates are ( right, bottom ) lies immediately outside of the the rectangle. 
+            For example, when RECT is passed to the FillRect function, the rectangle is filled up to, but not including, 
+            the right column and bottom row of pixels. This structure is identical to the RECTL structure.
+            </remarks>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.RectStruct.Left">
+            <summary>
+            The x-coordinate of the upper-left corner of the rectangle.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.RectStruct.Top">
+            <summary>
+            The y-coordinate of the upper-left corner of the rectangle.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.RectStruct.Right">
+            <summary>
+            The x-coordinate of the lower-right corner of the rectangle.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.RectStruct.Bottom">
+            <summary>
+            The y-coordinate of the lower-right corner of the rectangle.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.WpfKeyboardHandler.owner">
+            <summary>
+            The owner browser instance
+            </summary>
+        </member>
+        <member name="T:CefSharp.Wpf.Internals.VirtualKeys">
+            <summary>
+            Enumeration for virtual keys taken from http://www.pinvoke.net/default.aspx/Enums/VirtualKeys.html
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.LeftButton">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.RightButton">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Cancel">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.MiddleButton">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.ExtraButton1">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.ExtraButton2">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Back">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Tab">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Clear">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Return">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Shift">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Control">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Menu">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Pause">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.CapsLock">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Kana">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Hangeul">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Hangul">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Junja">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Final">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Hanja">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Kanji">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Escape">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Convert">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.NonConvert">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Accept">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.ModeChange">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Space">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Prior">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Next">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.End">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Home">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Left">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Up">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Right">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Down">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Select">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Print">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Execute">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Snapshot">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Insert">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Delete">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Help">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.N0">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.N1">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.N2">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.N3">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.N4">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.N5">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.N6">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.N7">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.N8">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.N9">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.A">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.B">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.C">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.D">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.E">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.G">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.H">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.I">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.J">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.K">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.L">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.M">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.N">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.O">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.P">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Q">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.R">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.S">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.T">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.U">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.V">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.W">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.X">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Y">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Z">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.LeftWindows">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.RightWindows">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Application">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Sleep">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Numpad0">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Numpad1">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Numpad2">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Numpad3">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Numpad4">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Numpad5">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Numpad6">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Numpad7">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Numpad8">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Numpad9">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Multiply">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Add">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Separator">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Subtract">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Decimal">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Divide">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F1">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F2">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F3">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F4">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F5">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F6">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F7">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F8">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F9">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F10">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F11">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F12">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F13">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F14">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F15">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F16">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F17">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F18">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F19">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F20">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F21">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F22">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F23">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.F24">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.NumLock">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.ScrollLock">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.NEC_Equal">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Fujitsu_Jisho">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Fujitsu_Masshou">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Fujitsu_Touroku">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Fujitsu_Loya">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Fujitsu_Roya">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.LeftShift">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.RightShift">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.LeftControl">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.RightControl">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.LeftMenu">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.RightMenu">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.BrowserBack">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.BrowserForward">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.BrowserRefresh">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.BrowserStop">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.BrowserSearch">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.BrowserFavorites">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.BrowserHome">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.VolumeMute">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.VolumeDown">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.VolumeUp">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.MediaNextTrack">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.MediaPrevTrack">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.MediaStop">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.MediaPlayPause">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.LaunchMail">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.LaunchMediaSelect">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.LaunchApplication1">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.LaunchApplication2">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEM1">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMPlus">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMComma">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMMinus">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMPeriod">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEM2">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEM3">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEM4">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEM5">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEM6">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEM7">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEM8">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMAX">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEM102">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.ICOHelp">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.ICO00">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.ProcessKey">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.ICOClear">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Packet">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMReset">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMJump">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMPA1">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMPA2">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMPA3">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMWSCtrl">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMCUSel">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMATTN">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMFinish">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMCopy">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMAuto">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMENLW">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMBackTab">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.ATTN">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.CRSel">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.EXSel">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.EREOF">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Play">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Zoom">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.Noname">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.PA1">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.VirtualKeys.OEMClear">
+            <summary></summary>
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.WpfLegacyKeyboardHandler.sourceHook">
+            <summary>
+            The source hook		
+            </summary>		
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.WpfLegacyKeyboardHandler.source">
+            <summary>
+            The source		
+            </summary>		
+        </member>
+        <member name="F:CefSharp.Wpf.Internals.WpfLegacyKeyboardHandler.owner">
+            <summary>
+            The owner browser instance
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.Internals.WpfLegacyKeyboardHandler.SourceHook(System.IntPtr,System.Int32,System.IntPtr,System.IntPtr,System.Boolean@)">
+            <summary>		
+            WindowProc callback interceptor. Handles Windows messages intended for the source hWnd, and passes them to the		
+            contained browser as needed.		
+            </summary>		
+            <param name="hWnd">The source handle.</param>		
+            <param name="message">The message.</param>		
+            <param name="wParam">Additional message info.</param>		
+            <param name="lParam">Even more message info.</param>		
+            <param name="handled">if set to <c>true</c>, the event has already been handled by someone else.</param>		
+            <returns>IntPtr.</returns>		
+        </member>
+        <member name="T:CefSharp.Wpf.Internals.WpfExtensions">
+            <summary>
+            Internal WpfExtension methods - unlikely you'd need to use these,
+            they're left public on the off chance you do.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.Internals.WpfExtensions.GetModifiers(System.Windows.Input.MouseEventArgs)">
+            <summary>
+            Gets the modifiers.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.MouseEventArgs"/> instance containing the event data.</param>
+            <returns>CefEventFlags.</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.Internals.WpfExtensions.GetModifierKeys(CefSharp.CefEventFlags)">
+            <summary>
+            Gets keyboard modifiers.
+            </summary>
+            <returns>CefEventFlags.</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.Internals.WpfExtensions.GetModifiers(System.Windows.Input.KeyEventArgs)">
+            <summary>
+            Gets the modifiers.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.Input.KeyEventArgs"/> instance containing the event data.</param>
+            <returns>CefEventFlags.</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.Internals.WpfExtensions.GetDragData(System.Windows.DragEventArgs)">
+            <summary>
+            Gets the drag data wrapper.
+            </summary>
+            <param name="e">The <see cref="T:System.Windows.DragEventArgs"/> instance containing the event data.</param>
+            <returns>CefDragDataWrapper.</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.Internals.WpfExtensions.GetLink(System.Windows.IDataObject)">
+            <summary>
+            Gets the link.
+            </summary>
+            <param name="data">The data.</param>
+            <returns>System.String.</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.Internals.WpfExtensions.ReadUrlFromDragDropData(System.Windows.IDataObject,System.String,System.Text.Encoding)">
+            <summary>
+            Reads a URL using a particular text encoding from drag-and-drop data.
+            </summary>
+            <param name="data">The drag-and-drop data.</param>
+            <param name="urlDataFormatName">The data format name of the URL type.</param>
+            <param name="urlEncoding">The text encoding of the URL type.</param>
+            <returns>A URL, or <see langword="null" /> if <paramref name="data" /> does not contain a URL
+            of the correct type.</returns>
+        </member>
+        <member name="T:CefSharp.Wpf.IWpfKeyboardHandler">
+            <summary>
+            Implement this interface to control how keys are forwarded to the browser
+            </summary>
+        </member>
+        <member name="T:CefSharp.Wpf.DelegateCommand">
+            <summary>
+            DelegateCommand
+            </summary>
+            <seealso cref="T:System.Windows.Input.ICommand" />
+        </member>
+        <member name="F:CefSharp.Wpf.DelegateCommand.commandHandler">
+            <summary>
+            The command handler
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.DelegateCommand.canExecuteHandler">
+            <summary>
+            The can execute handler
+            </summary>
+        </member>
+        <member name="E:CefSharp.Wpf.DelegateCommand.CanExecuteChanged">
+            <summary>
+            Occurs when changes occur that affect whether or not the command should execute.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.DelegateCommand.#ctor(System.Action,System.Func{System.Boolean})">
+            <summary>
+            Initializes a new instance of the <see cref="T:CefSharp.Wpf.DelegateCommand"/> class.
+            </summary>
+            <param name="commandHandler">The command handler.</param>
+            <param name="canExecuteHandler">The can execute handler.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.DelegateCommand.Execute(System.Object)">
+            <summary>
+            Defines the method to be called when the command is invoked.
+            </summary>
+            <param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to null.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.DelegateCommand.CanExecute(System.Object)">
+            <summary>
+            Defines the method that determines whether the command can execute in its current state.
+            </summary>
+            <param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to null.</param>
+            <returns>true if this command can be executed; otherwise, false.</returns>
+        </member>
+        <member name="M:CefSharp.Wpf.DelegateCommand.RaiseCanExecuteChanged">
+            <summary>
+            Raises the can execute changed.
+            </summary>
+        </member>
+        <member name="T:CefSharp.Wpf.IRenderHandler">
+            <summary>
+            Implement this interface to handle Offscreen Rendering (OSR).
+            NOTE: Currently only OnPaint is implemented, at some point expand the API to include all
+            of CefRenderHandler methods http://magpcss.org/ceforum/apidocs3/projects/(default)/CefRenderHandler.html
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.IRenderHandler.OnAcceleratedPaint(System.Boolean,CefSharp.Structs.Rect,System.IntPtr)">
+            <summary>
+            Called when an element has been rendered to the shared texture handle.
+            This method is only called when <see cref="P:CefSharp.IWindowInfo.SharedTextureEnabled"/> is set to true
+            </summary>
+            <param name="isPopup">indicates whether the element is the view or the popup widget.</param>
+            <param name="dirtyRect">contains the set of rectangles in pixel coordinates that need to be repainted</param>
+            <param name="sharedHandle">is the handle for a D3D11 Texture2D that can be accessed via ID3D11Device using the OpenSharedResource method.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.IRenderHandler.OnPaint(System.Boolean,CefSharp.Structs.Rect,System.IntPtr,System.Int32,System.Int32,System.Windows.Controls.Image)">
+            <summary>
+            Called when an element should be painted. (Invoked from CefRenderHandler.OnPaint)
+            This method is only called when <see cref="P:CefSharp.IWindowInfo.SharedTextureEnabled"/> is set to false.
+            </summary>
+            <param name="isPopup">indicates whether the element is the view or the popup widget.</param>
+            <param name="dirtyRect">contains the set of rectangles in pixel coordinates that need to be repainted</param>
+            <param name="buffer">The bitmap will be will be  width * height *4 bytes in size and represents a BGRA image with an upper-left origin</param>
+            <param name="width">width</param>
+            <param name="height">height</param>
+            <param name="image">image used as parent for rendered bitmap</param>
+        </member>
+        <member name="T:CefSharp.Wpf.IWpfWebBrowser">
+            <summary>
+            WPF specific implementation, has reference to some of the commands
+            and properties the <see cref="T:CefSharp.Wpf.ChromiumWebBrowser" /> exposes.
+            </summary>
+            <seealso cref="T:CefSharp.IWebBrowser" />
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.BackCommand">
+            <summary>
+            Navigates to the previous page in the browser history. Will automatically be enabled/disabled depending on the
+            browser state.
+            </summary>
+            <value>The back command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.ForwardCommand">
+            <summary>
+            Navigates to the next page in the browser history. Will automatically be enabled/disabled depending on the
+            browser state.
+            </summary>
+            <value>The forward command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.ReloadCommand">
+            <summary>
+            Reloads the content of the current page. Will automatically be enabled/disabled depending on the browser state.
+            </summary>
+            <value>The reload command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.PrintCommand">
+            <summary>
+            Prints the current browser contents.
+            </summary>
+            <value>The print command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.ZoomInCommand">
+            <summary>
+            Increases the zoom level.
+            </summary>
+            <value>The zoom in command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.ZoomOutCommand">
+            <summary>
+            Decreases the zoom level.
+            </summary>
+            <value>The zoom out command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.ZoomResetCommand">
+            <summary>
+            Resets the zoom level to the default. (100%)
+            </summary>
+            <value>The zoom reset command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.ViewSourceCommand">
+            <summary>
+            Opens up a new program window (using the default text editor) where the source code of the currently displayed web
+            page is shown.
+            </summary>
+            <value>The view source command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.CleanupCommand">
+            <summary>
+            Command which cleans up the Resources used by the ChromiumWebBrowser
+            </summary>
+            <value>The cleanup command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.StopCommand">
+            <summary>
+            Stops loading the current page.
+            </summary>
+            <value>The stop command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.CutCommand">
+            <summary>
+            Cut selected text to the clipboard.
+            </summary>
+            <value>The cut command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.CopyCommand">
+            <summary>
+            Copy selected text to the clipboard.
+            </summary>
+            <value>The copy command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.PasteCommand">
+            <summary>
+            Paste text from the clipboard.
+            </summary>
+            <value>The paste command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.SelectAllCommand">
+            <summary>
+            Select all text.
+            </summary>
+            <value>The select all command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.UndoCommand">
+            <summary>
+            Undo last action.
+            </summary>
+            <value>The undo command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.RedoCommand">
+            <summary>
+            Redo last action.
+            </summary>
+            <value>The redo command.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.Dispatcher">
+            <summary>
+            Gets the <see cref="P:CefSharp.Wpf.IWpfWebBrowser.Dispatcher" /> associated with this instance.
+            </summary>
+            <value>The dispatcher.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.ZoomLevel">
+            <summary>
+            The zoom level at which the browser control is currently displaying.
+            Can be set to 0 to clear the zoom level (resets to default zoom level).
+            </summary>
+            <value>The zoom level.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.ZoomLevelIncrement">
+            <summary>
+            The increment at which the <see cref="P:CefSharp.Wpf.IWpfWebBrowser.ZoomLevel" /> property will be incremented/decremented.
+            </summary>
+            <value>The zoom level increment.</value>
+        </member>
+        <member name="P:CefSharp.Wpf.IWpfWebBrowser.Title">
+            <summary>
+            The title of the web page being currently displayed.
+            </summary>
+            <value>The title.</value>
+            <remarks>This property is implemented as a Dependency Property and fully supports data binding.</remarks>
+        </member>
+        <member name="E:CefSharp.Wpf.IWpfWebBrowser.Paint">
+            <summary>
+            Raised every time <see cref="M:CefSharp.Internals.IRenderWebBrowser.OnPaint(CefSharp.PaintElementType,CefSharp.Structs.Rect,System.IntPtr,System.Int32,System.Int32)"/> is called. You can access the underlying buffer, though it's
+            preferable to either override <see cref="M:CefSharp.Wpf.ChromiumWebBrowser.OnPaint(System.Boolean,CefSharp.Structs.Rect,System.IntPtr,System.Int32,System.Int32)"/> or implement your own <see cref="T:CefSharp.Wpf.IRenderHandler"/> as there is no outwardly
+            accessible locking (locking is done within the default <see cref="T:CefSharp.Wpf.IRenderHandler"/> implementations).
+            It's important to note this event is fired on a CEF UI thread, which by default is not the same as your application UI thread
+            </summary>
+        </member>
+        <member name="E:CefSharp.Wpf.IWpfWebBrowser.VirtualKeyboardRequested">
+            <summary>
+            Raised every time <see cref="M:CefSharp.Internals.IRenderWebBrowser.OnVirtualKeyboardRequested(CefSharp.IBrowser,CefSharp.Enums.TextInputMode)"/> is called. 
+            It's important to note this event is fired on a CEF UI thread, which by default is not the same as your application UI thread
+            </summary>
+        </member>
+        <member name="T:CefSharp.Wpf.PaintEventArgs">
+            <summary>
+            Event arguments for the Paint event handler.
+            </summary>
+            <seealso cref="T:System.EventArgs" />
+        </member>
+        <member name="P:CefSharp.Wpf.PaintEventArgs.IsPopup">
+            <summary>
+            Is the OnPaint call for a Popup or the Main View
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.PaintEventArgs.DirtyRect">
+            <summary>
+            contains the set of rectangles in pixel coordinates that need to be repainted
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.PaintEventArgs.Buffer">
+            <summary>
+            Pointer to the unmanaged buffer that holds the bitmap.
+            The buffer shouldn't be accessed outside the scope of <see cref="E:CefSharp.Wpf.ChromiumWebBrowser.Paint"/> event.
+            A copy should be taken as the buffer is reused internally and may potentialy be freed. 
+            </summary>
+            <remarks>The bitmap will be width * height * 4 bytes in size and represents a BGRA image with an upper-left origin</remarks>
+        </member>
+        <member name="P:CefSharp.Wpf.PaintEventArgs.Width">
+            <summary>
+            Width
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.PaintEventArgs.Height">
+            <summary>
+            Height
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.PaintEventArgs.Handled">
+            <summary>
+            Gets or sets a value indicating whether the event is handled.
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.PaintEventArgs.#ctor(System.Boolean,CefSharp.Structs.Rect,System.IntPtr,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CefSharp.Wpf.PaintEventArgs"/> class.
+            </summary>
+            <param name="isPopup">is popup</param>
+            <param name="dirtyRect">direct rectangle</param>
+            <param name="buffer">buffer</param>
+            <param name="width">width</param>
+            <param name="height">height</param>
+        </member>
+        <member name="T:CefSharp.Wpf.Rendering.AbstractRenderHandler">
+            <summary>
+            Implements the basics of a <see cref="T:CefSharp.Wpf.IRenderHandler"/>
+            </summary>
+            <seealso cref="T:CefSharp.Wpf.IRenderHandler" />
+        </member>
+        <member name="F:CefSharp.Wpf.Rendering.AbstractRenderHandler.disposeSignaled">
+            <summary>
+            The value for disposal, if it's 1 (one) then this instance is either disposed
+            or in the process of getting disposed
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.Rendering.AbstractRenderHandler.IsDisposed">
+            <summary>
+            Gets a value indicating whether this instance is disposed.
+            </summary>
+            <value><see langword="true"/> if this instance is disposed; otherwise, <see langword="true"/>.</value>
+        </member>
+        <member name="M:CefSharp.Wpf.Rendering.AbstractRenderHandler.Dispose">
+            <summary>
+            Releases all resources used by the <see cref="T:CefSharp.Wpf.Rendering.AbstractRenderHandler"/> object
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.Rendering.AbstractRenderHandler.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources for the <see cref="T:CefSharp.Wpf.Rendering.AbstractRenderHandler"/>
+            </summary>
+            <param name="disposing"><see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.Rendering.AbstractRenderHandler.OnAcceleratedPaint(System.Boolean,CefSharp.Structs.Rect,System.IntPtr)">
+            <summary>
+            Called when an element has been rendered to the shared texture handle.
+            This method is only called when <see cref="P:CefSharp.IWindowInfo.SharedTextureEnabled"/> is set to true
+            </summary>
+            <param name="isPopup">indicates whether the element is the view or the popup widget.</param>
+            <param name="dirtyRect">contains the set of rectangles in pixel coordinates that need to be repainted</param>
+            <param name="sharedHandle">is the handle for a D3D11 Texture2D that can be accessed via ID3D11Device using the OpenSharedResource method.</param>
+        </member>
+        <member name="M:CefSharp.Wpf.Rendering.AbstractRenderHandler.OnPaint(System.Boolean,CefSharp.Structs.Rect,System.IntPtr,System.Int32,System.Int32,System.Windows.Controls.Image)">
+            <summary>
+            Called when an element should be painted. (Invoked from CefRenderHandler.OnPaint)
+            This method is only called when <see cref="P:CefSharp.IWindowInfo.SharedTextureEnabled"/> is set to false.
+            </summary>
+            <param name="isPopup">indicates whether the element is the view or the popup widget.</param>
+            <param name="dirtyRect">contains the set of rectangles in pixel coordinates that need to be repainted</param>
+            <param name="buffer">The bitmap will be will be  width * height *4 bytes in size and represents a BGRA image with an upper-left origin</param>
+            <param name="width">width</param>
+            <param name="height">height</param>
+            <param name="image">image used as parent for rendered bitmap</param>
+        </member>
+        <member name="T:CefSharp.Wpf.Rendering.AllocHGlobalWritableBitmapRenderHandler">
+            <summary>
+            AllocHGlobalWritableBitmapRenderHandler - creates/updates an WritableBitmap
+            Uses <see cref="M:System.Runtime.InteropServices.Marshal.AllocHGlobal(System.IntPtr)"/> to allocate memory for
+            double buffering when the size matches or creates a new WritableBitmap
+            when required.
+            </summary>
+            <seealso cref="T:CefSharp.Wpf.IRenderHandler" />
+        </member>
+        <member name="F:CefSharp.Wpf.Rendering.AllocHGlobalWritableBitmapRenderHandler.disposeSignaled">
+            <summary>
+            The value for disposal, if it's 1 (one) then this instance is either disposed
+            or in the process of getting disposed
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.Rendering.AllocHGlobalWritableBitmapRenderHandler.#ctor(System.Double,System.Double,System.Boolean,System.Windows.Threading.DispatcherPriority)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CefSharp.Wpf.Rendering.AllocHGlobalWritableBitmapRenderHandler"/> class.
+            </summary>
+            <param name="dpiX">The dpi x.</param>
+            <param name="dpiY">The dpi y.</param>
+            <param name="invalidateDirtyRect">if true then only the direct rectangle will be updated, otherwise the whole bitmap will be redrawn</param>
+            <param name="dispatcherPriority">priority at which the bitmap will be updated on the UI thread</param>
+        </member>
+        <member name="P:CefSharp.Wpf.Rendering.AllocHGlobalWritableBitmapRenderHandler.IsDisposed">
+            <summary>
+            Gets a value indicating whether this instance is disposed.
+            </summary>
+            <value><see langword="true"/> if this instance is disposed; otherwise, <see langword="true"/>.</value>
+        </member>
+        <member name="M:CefSharp.Wpf.Rendering.AllocHGlobalWritableBitmapRenderHandler.Dispose">
+            <summary>
+            Releases all resources used by the <see cref="T:CefSharp.Wpf.Rendering.AbstractRenderHandler"/> object
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.Rendering.AllocHGlobalWritableBitmapRenderHandler.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources for the <see cref="T:CefSharp.Wpf.Rendering.AbstractRenderHandler"/>
+            </summary>
+            <param name="disposing"><see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.</param>
+        </member>
+        <member name="T:CefSharp.Wpf.Rendering.AllocHGlobalWritableBitmapRenderHandler.PaintElement">
+            <summary>
+            Details of the bitmap to be rendered
+            </summary>
+        </member>
+        <member name="T:CefSharp.Wpf.Rendering.Experimental.CompositionTargetRenderHandler">
+            <summary>
+            RenderHandler implemenetation that updates the image/bitmap in the
+            <see cref="E:System.Windows.Media.CompositionTarget.Rendering"/> event.
+            Initially based on https://github.com/cefsharp/CefSharp/issues/2888#issuecomment-528864931
+            </summary>
+        </member>
+        <member name="T:CefSharp.Wpf.Rendering.Experimental.CompositionTargetRenderHandler.PaintElement">
+            <summary>
+            Details of the bitmap to be rendered
+            </summary>
+        </member>
+        <member name="T:CefSharp.Wpf.Rendering.Experimental.ByteArrayWritableBitmapRenderHandler">
+            <summary>
+            ByteArrayWritableBitmapRenderHandler - creates/updates an WritableBitmap
+            For each OnPaint call a new byte[] is created and then updated. No locking is
+            performed and memory is allocated for every OnPaint call, so will be very expensive memory
+            wise.
+            </summary>
+            <seealso cref="T:CefSharp.Wpf.IRenderHandler" />
+        </member>
+        <member name="M:CefSharp.Wpf.Rendering.Experimental.ByteArrayWritableBitmapRenderHandler.#ctor(System.Double,System.Double,System.Boolean,System.Windows.Threading.DispatcherPriority)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CefSharp.Wpf.Rendering.WritableBitmapRenderHandler"/> class.
+            </summary>
+            <param name="dpiX">The dpi x.</param>
+            <param name="dpiY">The dpi y.</param>
+            <param name="invalidateDirtyRect">if true then only the direct rectangle will be updated, otherwise the whole bitmap will be redrawn</param>
+            <param name="dispatcherPriority">priority at which the bitmap will be updated on the UI thread</param>
+        </member>
+        <member name="M:CefSharp.Wpf.Rendering.Experimental.ByteArrayWritableBitmapRenderHandler.CefSharp#Wpf#IRenderHandler#OnAcceleratedPaint(System.Boolean,CefSharp.Structs.Rect,System.IntPtr)">
+            <summary>
+            Called when an element has been rendered to the shared texture handle.
+            This method is only called when <see cref="P:CefSharp.IWindowInfo.SharedTextureEnabled"/> is set to true
+            </summary>
+            <param name="isPopup">indicates whether the element is the view or the popup widget.</param>
+            <param name="dirtyRect">contains the set of rectangles in pixel coordinates that need to be repainted</param>
+            <param name="sharedHandle">is the handle for a D3D11 Texture2D that can be accessed via ID3D11Device using the OpenSharedResource method.</param>
+        </member>
+        <member name="T:CefSharp.Wpf.Rendering.DirectWritableBitmapRenderHandler">
+            <summary>
+            DirectWritableBitmapRenderHandler - directly copyies the buffer
+            into writeableBitmap.BackBuffer. No additional copies or locking are used.
+            Can only be used when CEF UI thread and WPF UI thread are the same (MultiThreadedMessageLoop = false)
+            </summary>
+            <seealso cref="T:CefSharp.Wpf.IRenderHandler" />
+        </member>
+        <member name="M:CefSharp.Wpf.Rendering.DirectWritableBitmapRenderHandler.#ctor(System.Double,System.Double,System.Boolean,System.Windows.Threading.DispatcherPriority)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CefSharp.Wpf.Rendering.WritableBitmapRenderHandler"/> class.
+            </summary>
+            <param name="dpiX">The dpi x.</param>
+            <param name="dpiY">The dpi y.</param>
+            <param name="invalidateDirtyRect">if true then only the direct rectangle will be updated, otherwise the whole bitmap will be redrawn</param>
+            <param name="dispatcherPriority">priority at which the bitmap will be updated on the UI thread</param>
+        </member>
+        <member name="T:CefSharp.Wpf.Rendering.InteropBitmapRenderHandler">
+            <summary>
+            InteropBitmapRenderHandler - creates/updates an InteropBitmap
+            Uses a MemoryMappedFile for double buffering when the size matches
+            or creates a new InteropBitmap when required
+            </summary>
+            <seealso cref="T:CefSharp.Wpf.IRenderHandler" />
+        </member>
+        <member name="M:CefSharp.Wpf.Rendering.InteropBitmapRenderHandler.#ctor(System.Windows.Threading.DispatcherPriority)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CefSharp.Wpf.Rendering.InteropBitmapRenderHandler"/> class.
+            </summary>
+            <param name="dispatcherPriority">priority at which the bitmap will be updated on the UI thread</param>
+        </member>
+        <member name="T:CefSharp.Wpf.Rendering.WritableBitmapRenderHandler">
+            <summary>
+            WritableBitmapRenderHandler - creates/updates an WritableBitmap
+            Uses a MemoryMappedFile for double buffering when the size matches
+            or creates a new WritableBitmap when required
+            </summary>
+            <seealso cref="T:CefSharp.Wpf.IRenderHandler" />
+        </member>
+        <member name="M:CefSharp.Wpf.Rendering.WritableBitmapRenderHandler.#ctor(System.Double,System.Double,System.Boolean,System.Windows.Threading.DispatcherPriority)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CefSharp.Wpf.Rendering.WritableBitmapRenderHandler"/> class.
+            </summary>
+            <param name="dpiX">The dpi x.</param>
+            <param name="dpiY">The dpi y.</param>
+            <param name="invalidateDirtyRect">if true then only the direct rectangle will be updated, otherwise the whole bitmap will be redrawn</param>
+            <param name="dispatcherPriority">priority at which the bitmap will be updated on the UI thread</param>
+        </member>
+        <member name="T:CefSharp.Wpf.VirtualKeyboardRequestedEventArgs">
+            <summary>
+            Event arguments for the VirtualKeyboardRequested Event.
+            </summary>
+            <seealso cref="T:System.EventArgs" />
+        </member>
+        <member name="P:CefSharp.Wpf.VirtualKeyboardRequestedEventArgs.TextInputMode">
+            <summary>
+            Input mode of a virtual keyboard. When <see cref="F:CefSharp.Enums.TextInputMode.None"/>
+            the keyboard should be hidden
+            </summary>
+        </member>
+        <member name="P:CefSharp.Wpf.VirtualKeyboardRequestedEventArgs.Browser">
+            <summary>
+            Browser
+            </summary>
+        </member>
+        <member name="M:CefSharp.Wpf.VirtualKeyboardRequestedEventArgs.#ctor(CefSharp.IBrowser,CefSharp.Enums.TextInputMode)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CefSharp.Wpf.VirtualKeyboardRequestedEventArgs"/> class.
+            </summary>
+            <param name="browser">browser</param>
+            <param name="inputMode">input mode</param>
+        </member>
+        <member name="T:CefSharp.Wpf.WM">
+            <summary>
+            Windows Message Enums
+            Gratiosly based on http://www.pinvoke.net/default.aspx/Enums/WindowsMessages.html
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.WM.KEYDOWN">
+            <summary>
+            The WM_KEYDOWN message is posted to the window with the keyboard focus when a nonsystem key is pressed. A nonsystem
+            key is a key that is pressed when the ALT key is not pressed.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.WM.KEYUP">
+            <summary>
+            The WM_KEYUP message is posted to the window with the keyboard focus when a nonsystem key is released. A nonsystem
+            key is a key that is pressed when the ALT key is not pressed, or a keyboard key that is pressed when a window has the
+            keyboard focus.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.WM.CHAR">
+            <summary>
+            The WM_CHAR message is posted to the window with the keyboard focus when a WM_KEYDOWN message is translated by the
+            TranslateMessage function. The WM_CHAR message contains the character code of the key that was pressed.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.WM.SYSKEYDOWN">
+            <summary>
+            The WM_SYSKEYDOWN message is posted to the window with the keyboard focus when the user presses the F10 key (which
+            activates the menu bar) or holds down the ALT key and then presses another key. It also occurs when no window
+            currently has the keyboard focus; in this case, the WM_SYSKEYDOWN message is sent to the active window. The window
+            that receives the message can distinguish between these two contexts by checking the context code in the lParam
+            parameter.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.WM.SYSKEYUP">
+            <summary>
+            The WM_SYSKEYUP message is posted to the window with the keyboard focus when the user releases a key that was pressed
+            while the ALT key was held down. It also occurs when no window currently has the keyboard focus; in this case, the
+            WM_SYSKEYUP message is sent to the active window. The window that receives the message can distinguish between these
+            two contexts by checking the context code in the lParam parameter.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.WM.SYSCHAR">
+            <summary>
+            The WM_SYSCHAR message is posted to the window with the keyboard focus when a WM_SYSKEYDOWN message is translated by
+            the TranslateMessage function. It specifies the character code of a system character key — that is, a character key
+            that is pressed while the ALT key is down.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.WM.IME_CHAR">
+            <summary>
+            Sent to an application when the IME gets a character of the conversion result. A window receives this message through
+            its WindowProc function. 
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.WM.IME_STARTCOMPOSITION">
+            <summary>
+            Sent immediately before the IME generates the composition string as a result of a keystroke. A window receives this
+            message through its WindowProc function.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.WM.IME_ENDCOMPOSITION">
+            <summary>
+            Sent to an application when the IME ends composition. A window receives this message through its WindowProc function.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.WM.IME_COMPOSITION">
+            <summary>
+            Sent to an application when the IME changes composition status as a result of a keystroke. A window receives this
+            message through its WindowProc function.
+            </summary>
+        </member>
+        <member name="F:CefSharp.Wpf.WM.IME_SETCONTEXT">
+            <summary>
+            Sent to an application when a window is activated. A window receives this message through its WindowProc function.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -23,17 +23,22 @@ namespace AcManager.Controls.UserControls.Cef {
             return RequestsFiltering.ShouldBeBlocked(request.Url);
         }
 
-        bool IRequestHandler.OnOpenUrlFromTab(IWebBrowser browserControl, IBrowser browser, IFrame frame, string targetUrl, WindowOpenDisposition targetDisposition,
+        void IRequestHandler.OnDocumentAvailableInMainFrame(IWebBrowser chromiumWebBrowser, IBrowser browser) { }
+
+        bool IRequestHandler.OnOpenUrlFromTab(IWebBrowser browserControl, IBrowser browser, IFrame frame, string targetUrl,
+                WindowOpenDisposition targetDisposition,
                 bool userGesture) {
             return false;
         }
 
-        IResourceRequestHandler IRequestHandler.GetResourceRequestHandler(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, bool isNavigation,
+        IResourceRequestHandler IRequestHandler.GetResourceRequestHandler(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request,
+                bool isNavigation,
                 bool isDownload, string requestInitiator, ref bool disableDefaultHandling) {
             return this;
         }
 
-        bool IRequestHandler.GetAuthCredentials(IWebBrowser chromiumWebBrowser, IBrowser browser, string originUrl, bool isProxy, string host, int port, string realm, string scheme,
+        bool IRequestHandler.GetAuthCredentials(IWebBrowser chromiumWebBrowser, IBrowser browser, string originUrl, bool isProxy, string host, int port,
+                string realm, string scheme,
                 IAuthCallback callback) {
             return true;
         }
@@ -56,7 +61,8 @@ namespace AcManager.Controls.UserControls.Cef {
             return this;
         }
 
-        CefReturnValue IResourceRequestHandler.OnBeforeResourceLoad(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IRequestCallback callback) {
+        CefReturnValue IResourceRequestHandler.OnBeforeResourceLoad(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request,
+                IRequestCallback callback) {
             if (RequestsFiltering.ShouldBeBlocked(request.Url)) {
                 if (!callback.IsDisposed) {
                     callback.Dispose();
@@ -102,7 +108,8 @@ namespace AcManager.Controls.UserControls.Cef {
             return true;
         }
 
-        void IResourceRequestHandler.OnResourceRedirect(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response, ref string newUrl) { }
+        void IResourceRequestHandler.OnResourceRedirect(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response,
+                ref string newUrl) { }
 
         void IRequestHandler.OnRenderViewReady(IWebBrowser browserControl, IBrowser browser) { }
 
@@ -124,7 +131,8 @@ namespace AcManager.Controls.UserControls.Cef {
         private readonly string _scrollThumbHoverColor = GetColor(@"ScrollBarThumbHover");
         private readonly string _scrollThumbDraggingColor = GetColor(@"ScrollBarThumbDragging");
 
-        IResponseFilter IResourceRequestHandler.GetResourceResponseFilter(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response) {
+        IResponseFilter IResourceRequestHandler.GetResourceResponseFilter(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request,
+                IResponse response) {
             if (response.MimeType == @"text/html") {
                 var css = StyleProvider?.GetStyle(request.Url, browserControl is CefSharp.Wpf.ChromiumWebBrowser);
                 var inject = new WebInjectEventArgs(request.Url);
@@ -155,7 +163,7 @@ namespace AcManager.Controls.UserControls.Cef {
                 return new KeyValuePair<string, string>(@"</head>", $@"{prefix}<style>{css}</style><script>{js}</script></head>");
             }
 
-            public ReplaceResponseFilter(IEnumerable<KeyValuePair<string, string>> replacements) : base(replacements) {}
+            public ReplaceResponseFilter(IEnumerable<KeyValuePair<string, string>> replacements) : base(replacements) { }
 
             bool IResponseFilter.InitFilter() {
                 return true;
@@ -172,8 +180,11 @@ namespace AcManager.Controls.UserControls.Cef {
             return true;
         }
 
-        bool ICookieAccessFilter.CanSaveCookie(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, IResponse response, Cookie cookie) {
+        bool ICookieAccessFilter.CanSaveCookie(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, IResponse response,
+                Cookie cookie) {
             return true;
         }
+
+        void IDisposable.Dispose() { }
     }
 }

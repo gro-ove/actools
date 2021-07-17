@@ -35,6 +35,7 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Pages.Drive {
     public partial class RaceU {
@@ -276,7 +277,9 @@ namespace AcManager.Pages.Drive {
                 return _track != null;
             }
 
-            public void startOnlineRace(string ip, int port, int httpPort, IJavascriptCallback callback = null) {
+            public void _startOnlineRace(string jsonParams, IJavascriptCallback callback = null) {
+                var args = JObject.Parse(jsonParams);
+
                 if (_car == null) {
                     throw new Exception("Car is not set");
                 }
@@ -285,23 +288,30 @@ namespace AcManager.Pages.Drive {
                     throw new Exception("Track is not set");
                 }
 
+                var ip = args.GetStringValueOnly("ip") ?? throw new Exception("“ip” parameter is missing");
+                var port = args.GetIntValueOnly("port") ?? throw new Exception("“port” parameter is missing");
+
+                var properties = new Game.StartProperties {
+                    BasicProperties = new Game.BasicProperties {
+                        CarId = _car.Id,
+                        TrackId = _track.MainTrackObject.Id,
+                        TrackConfigurationId = _track.LayoutId,
+                        CarSkinId = _carSkin?.Id ?? _car.SelectedSkin?.Id ?? ""
+                    },
+                    ModeProperties = new Game.OnlineProperties {
+                        Guid = SteamIdHelper.Instance.Value,
+                        ServerIp = ip,
+                        ServerPort = port,
+                        ServerHttpPort = args.GetIntValueOnly("httpPort") ?? throw new Exception("“httpPort” parameter is missing"),
+                        Password = args.GetStringValueOnly("password") ?? InternalUtils.GetRaceUPassword(_track.IdWithLayout, ip, port),
+                        RequestedCar = _car.Id,
+                        CspFeaturesList = args.GetStringValueOnly("cspFeatures"),
+                        CspReplayClipUploadUrl = args.GetStringValueOnly("cspReplayClipUploadUrl"),
+                    }
+                };
+
                 ActionExtension.InvokeInMainThread(async () => {
-                    var result = await GameWrapper.StartAsync(new Game.StartProperties {
-                        BasicProperties = new Game.BasicProperties {
-                            CarId = _car.Id,
-                            TrackId = _track.MainTrackObject.Id,
-                            TrackConfigurationId = _track.LayoutId,
-                            CarSkinId = _carSkin?.Id ?? _car.SelectedSkin?.Id ?? ""
-                        },
-                        ModeProperties = new Game.OnlineProperties {
-                            Guid = SteamIdHelper.Instance.Value,
-                            ServerIp = ip,
-                            ServerPort = port,
-                            ServerHttpPort = httpPort,
-                            Password = InternalUtils.GetRaceUPassword(_track.IdWithLayout, ip, port),
-                            RequestedCar = _car.Id
-                        }
-                    });
+                    var result = await GameWrapper.StartAsync(properties);
                     callback?.ExecuteAsync(result?.IsNotCancelled);
                 }).Ignore();
             }
@@ -397,6 +407,13 @@ namespace AcManager.Pages.Drive {
                     toInject.Add(@"<script>
 window.AC = window.external;
 window.AC.setLinks = function (links){ return window.AC._setLinks(JSON.stringify(links)); };
+window.AC.startOnlineRace = function (options, callback){
+    if (arguments.length >= 3) {
+        options = { ip: options, port: callback, httpPort: arguments[2] };
+        callback = arguments[3];
+    }
+    window.AC._startOnlineRace(JSON.stringify(options), callback); 
+};
 </script>");
                 }
             }

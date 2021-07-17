@@ -122,6 +122,10 @@ namespace AcManager.Tools.Helpers.AcLog {
                             }
                         }
 
+                        if (crash.Contains(@"std::_Xinvalid_argument") && crash.Contains(@"INIReader::getInt") && crash.Contains(@"CarAvatar::initCommon")) {
+                            return new WhatsGoingOn(WhatsGoingOnType.CustomShadersPatchRequired);
+                        }
+
                         if (crash.Contains(@"SkyBox::updateCloudsGeneration")) {
                             return new WhatsGoingOn(WhatsGoingOnType.CloudsMightBeMissing);
                         }

@@ -60,20 +60,20 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CefSharp, Version=79.1.360.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-79.1.360-$(ActualPlatform)\CefSharp.dll</HintPath>
+    <Reference Include="CefSharp, Version=91.1.211.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-91.1.211-$(ActualPlatform)\CefSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.Core, Version=79.1.360.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-79.1.360-$(ActualPlatform)\CefSharp.Core.dll</HintPath>
+    <Reference Include="CefSharp.Core, Version=91.1.211.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-91.1.211-$(ActualPlatform)\CefSharp.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.Wpf, Version=79.1.360.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-79.1.360-$(ActualPlatform)\CefSharp.Wpf.dll</HintPath>
+    <Reference Include="CefSharp.Wpf, Version=91.1.211.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-91.1.211-$(ActualPlatform)\CefSharp.Wpf.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.WinForms, Version=79.1.360.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-79.1.360-$(ActualPlatform)\CefSharp.WinForms.dll</HintPath>
+    <Reference Include="CefSharp.WinForms, Version=91.1.211.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-91.1.211-$(ActualPlatform)\CefSharp.WinForms.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
@@ -222,6 +222,7 @@
     <Compile Include="UserControls\Cef\AltFilesHandlerFactory.cs" />
     <Compile Include="UserControls\Cef\BrowserProcessHandler.cs" />
     <Compile Include="UserControls\Cef\CefSharpHelper.cs" />
+    <Compile Include="UserControls\Cef\CefSharpProperNameConverter.cs" />
     <Compile Include="UserControls\Cef\CefSharpWrapper.cs" />
     <Compile Include="UserControls\Cef\DownloadHandler.cs" />
     <Compile Include="UserControls\Cef\FormsCefSharpWrapper.cs" />

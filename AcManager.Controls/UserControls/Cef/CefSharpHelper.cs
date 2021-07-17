@@ -4,6 +4,7 @@ using System.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers.Plugins;
+using AcTools.Utils;
 using CefSharp;
 using CefSharp.Wpf;
 using FirstFloor.ModernUI.Helpers;
@@ -18,7 +19,6 @@ namespace AcManager.Controls.UserControls.Cef {
         static CefSharpHelper() {
             DefaultUserAgent = CmApiProvider.CommonUserAgent;
             AcApiHandler = new AcApiHandlerFactory();
-            // CefSharp.Cef.EnableHighDPISupport();
         }
         #endregion
 
@@ -30,8 +30,6 @@ namespace AcManager.Controls.UserControls.Cef {
 
                 Logging.Write($"Initializing CEF (WPF mode: {wpfMode})…");
 
-                // TODO: Try the new way?
-                CefSharpSettings.LegacyJavascriptBindingEnabled = true;
                 CefSharpSettings.WcfEnabled = true;
                 CefSharp.Cef.EnableHighDPISupport();
 
@@ -85,8 +83,14 @@ namespace AcManager.Controls.UserControls.Cef {
                     }
                 };
 
+                var localeFilename = Path.Combine(path, "locales", SettingsHolder.Locale.LocaleName + ".pak");
+                if (!File.Exists(localeFilename)) {
+                    var enLocaleFilename = Path.Combine(path, "locales", "en.pak");
+                    FileUtils.HardLinkOrCopy(enLocaleFilename, localeFilename);
+                }
+
                 CefSharp.Cef.AddCrossOriginWhitelistEntry(@"https://www.simracingsystem.com", @"ac", string.Empty, true);
-                CefSharp.Cef.Initialize(settings, false,
+                CefSharp.Cef.Initialize(settings, true,
                         wpfMode && !OptionMultiThreadedMessageLoop ? new WpfBrowserProcessHandler(Application.Current.Dispatcher) : new BrowserProcessHandler());
                 Logging.Write("CEF is initialized");
             }

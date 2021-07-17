@@ -182,7 +182,7 @@
         <DockPanel x:Name="TrackCellExtra" Margin="0 8 0 0" DockPanel.Dock="Bottom"
             IsEnabled="{Binding SelectedTrack, Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}">
           <mui:ReferenceSwitch Value="{Binding SelectedTrack.MainTrackObject.MultiLayouts}">
-            <mui:BetterComboBox Width="44" Height="24" IsEditable="False" SelectedItem="{Binding SelectedTrack}"
+            <mui:BetterComboBox Width="44" Height="24" IsEditable="False" HoldSelectedIfEmpty="True" SelectedItem="{Binding SelectedTrack}"
                 ItemsSource="{Binding SelectedTrack.MainTrackObject.MultiLayouts}" DockPanel.Dock="Left" Margin="0 0 8 0">
               <mui:BetterComboBox.ItemTemplate>
                 <DataTemplate>

@@ -7,6 +7,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace AcTools.Processes {
     public interface INationCodeProvider {
@@ -185,6 +186,7 @@ namespace AcTools.Processes {
             public int? ServerHttpPort;
             public bool ExtendedMode;
             public string CspFeaturesList;
+            public string CspReplayClipUploadUrl;
 
             public override void Set(IniFile file) {
                 SetGhostCar(file);
@@ -211,12 +213,8 @@ namespace AcTools.Processes {
                     section.Set("PASSWORD", Password);
                     section.Set("ACTIVE", true);
                     section.Set("__CM_EXTENDED", ExtendedMode);
-
-                    if (!string.IsNullOrWhiteSpace(CspFeaturesList)) {
-                        section.Set("__FEATURES", CspFeaturesList);
-                    } else {
-                        section.Remove("__FEATURES");
-                    }
+                    section.SetOrRemove("__FEATURES", CspFeaturesList.Or(null));
+                    section.SetOrRemove("__CLIPS_UPLOAD_URL", string.IsNullOrWhiteSpace(CspReplayClipUploadUrl) ? null : JsonConvert.SerializeObject(CspReplayClipUploadUrl));
                 }
 
                 {

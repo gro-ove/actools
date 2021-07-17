@@ -29,6 +29,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Pages.Drive {
@@ -285,13 +286,27 @@ window.external.SetDriverNames(JSON.stringify([].map.call(document.querySelector
                 toInject.Add(GetSrsFix());
             }
 
-            public void SetDriverNames(string value) {
-                try {
-                    DriverNames?.Invoke(this, new DriverNamesEventArgs {
-                        Names = JsonConvert.DeserializeObject<List<string>>(value).Distinct().ToList()
-                    });
-                } catch (Exception e) {
-                    Logging.Error(e);
+            protected override JsProxyBase MakeProxy() {
+                return new SrsApiProxy(this);
+            }
+
+            [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
+            public class SrsApiProxy : AcCompableApiProxy {
+                private readonly SrsFixAcCompatibleApiBridge _bridge;
+
+                public SrsApiProxy(SrsFixAcCompatibleApiBridge bridge) : base(bridge) {
+                    _bridge = bridge;
+                }
+
+                [UsedImplicitly]
+                public void SetDriverNames(string value) {
+                    try {
+                        _bridge.DriverNames?.Invoke(this, new DriverNamesEventArgs {
+                            Names = JsonConvert.DeserializeObject<List<string>>(value).Distinct().ToList()
+                        });
+                    } catch (Exception e) {
+                        Logging.Error(e);
+                    }
                 }
             }
         }

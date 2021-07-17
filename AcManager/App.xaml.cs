@@ -10,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -713,20 +712,6 @@ namespace AcManager {
             }
         }
 
-        private static void DisableWindowsTransparency(DependencyProperty dp, Type type) {
-            try {
-                var m = dp.GetMetadata(type);
-                var p = m.GetType().GetProperty("Sealed",
-                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                        ?? throw new Exception(@"Sealed property is missing");
-                p.SetValue(m, false);
-                m.CoerceValueCallback = (d, o) => false;
-                p.SetValue(m, true);
-            } catch (Exception e) {
-                Logging.Error(e);
-            }
-        }
-
         private static void PrepareUi() {
             try {
                 ToolTipService.ShowOnDisabledProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(true));
@@ -736,8 +721,7 @@ namespace AcManager {
                 ItemsControl.IsTextSearchCaseSensitiveProperty.OverrideMetadata(typeof(ComboBox), new FrameworkPropertyMetadata(true));
 
                 if (AppAppearanceManager.Instance.DisallowTransparency) {
-                    DisableWindowsTransparency(Window.AllowsTransparencyProperty, typeof(Window));
-                    DisableWindowsTransparency(Popup.AllowsTransparencyProperty, typeof(Popup));
+                    DisableTransparencyHelper.Disable();
                 }
             } catch (Exception e) {
                 Logging.Error(e);

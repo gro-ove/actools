@@ -37,8 +37,8 @@ namespace FirstFloor.ModernUI.Windows {
                 Opacity = 0.7
             };
 
-            AllowsTransparency = true;
             IsHitTestVisible = false;
+            AllowsTransparency = true;
             IsOpen = true;
             StaysOpen = false;
             Placement = PlacementMode.Absolute;
