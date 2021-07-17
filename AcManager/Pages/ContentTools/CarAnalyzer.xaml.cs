@@ -124,9 +124,12 @@ namespace AcManager.Pages.ContentTools {
 
             private DelegateCommand _openInShowroomOptionsCommand;
 
-            public DelegateCommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new DelegateCommand(() => {
-                new CarOpenInShowroomDialog(Car, Car.SelectedSkin?.Id).ShowDialog();
-            }, () => Car.Enabled && Car.SelectedSkin != null));
+            public DelegateCommand OpenInShowroomOptionsCommand
+                =>
+                        _openInShowroomOptionsCommand
+                                ?? (_openInShowroomOptionsCommand =
+                                        new DelegateCommand(() => { new CarOpenInShowroomDialog(Car, Car.SelectedSkin?.Id).ShowDialog(); },
+                                                () => Car.Enabled && Car.SelectedSkin != null));
 
             private AsyncCommand _openInCustomShowroomCommand;
 
@@ -144,9 +147,10 @@ namespace AcManager.Pages.ContentTools {
 
             private DelegateCommand _driveOptionsCommand;
 
-            public DelegateCommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
-                QuickDrive.Show(Car, Car.SelectedSkin?.Id);
-            }, () => Car.Enabled));
+            public DelegateCommand DriveOptionsCommand
+                =>
+                        _driveOptionsCommand
+                                ?? (_driveOptionsCommand = new DelegateCommand(() => { QuickDrive.Show(Car, Car.SelectedSkin?.Id); }, () => Car.Enabled));
             #endregion
 
             #region Rating
@@ -166,7 +170,7 @@ namespace AcManager.Pages.ContentTools {
                     Interest = interest;
                 }
 
-                public HashStorage.Simular Simular {get;}
+                public HashStorage.Simular Simular { get; }
 
                 public CarObject Car { get; }
 
@@ -336,7 +340,8 @@ All found similarities:
 
                 if (similarFront.Count > 0) {
                     result.Add(new RatingEntry(
-                            frontGeometry ? $"Front suspension geometry is similar to {similarFront[0].Car}" : $"Front suspension is similar to {similarFront[0].Car}",
+                            frontGeometry
+                                    ? $"Front suspension geometry is similar to {similarFront[0].Car}" : $"Front suspension is similar to {similarFront[0].Car}",
                             $"{similarFront[0].Simular.Value * 100:F1}% match.", null,
                             () => {
                                 return $@"Of course, it’s not always a bad thing. A lot of cars are built on the same chassis.
@@ -348,7 +353,8 @@ All found similarities:
 
                 if (similarRear.Count > 0) {
                     result.Add(new RatingEntry(
-                            rearGeometry ? $"Rear suspension geometry is similar to {similarRear[0].Car}" : $"Rear suspension is similar to {similarRear[0].Car}",
+                            rearGeometry
+                                    ? $"Rear suspension geometry is similar to {similarRear[0].Car}" : $"Rear suspension is similar to {similarRear[0].Car}",
                             $"{similarRear[0].Simular.Value * 100:F1}% match.", null,
                             () => {
                                 return $@"Of course, it’s not always a bad thing. A lot of cars are built on the same chassis.
@@ -491,6 +497,10 @@ All found similarities:
                     var data = Car.AcdData;
                     if (data != null) {
                         var kn5Filename = AcPaths.GetMainCarFilename(Car.Location, data, false);
+                        if (kn5Filename == null) {
+                            return;
+                        }
+
                         var kn5 = await Task.Run(() => Kn5.FromFile(kn5Filename));
 
                         // triangles count
@@ -500,6 +510,16 @@ All found similarities:
                             var trisRate = trisCount < 160e3 ? 5.5 :
                                     (5d - (trisCount - 350e3) / 100e3).Clamp(1d, 5d).Round(0.5);
                             result.Add(new RatingEntry($"{trisCount / 1000d:F0}K triangles in LOD A", "Recommended amount: 150K–350K.", trisRate));
+                        }
+
+                        // COCKPIT_HR
+                        var cockpitHr = kn5.FirstByName("COCKPIT_HR");
+                        if (cockpitHr == null) {
+                            result.Add(new RatingEntry("COCKPIT_HR is missing", "CSP uses it to apply certain effects to interior.", 1d));
+                        } else if (trisCount > 100e3 && cockpitHr.TotalTrianglesCount < 5000) {
+                            result.Add(new RatingEntry("COCKPIT_HR is suspiciously low on triangles", "CSP uses it to apply certain effects to interior.", 3d));
+                        } else {
+                            result.Add(new RatingEntry("COCKPIT_HR is present", "CSP uses it to apply certain effects to interior.", 5.5));
                         }
 
                         // LODs
@@ -579,9 +599,12 @@ All found similarities:
 
             private DelegateCommand _showInformationCommand;
 
-            public DelegateCommand ShowInformationCommand => _showInformationCommand ?? (_showInformationCommand = new DelegateCommand(() => {
-                ModernDialog.ShowMessage(InformationMsg?.Invoke() ?? "?", Message, MessageBoxButton.OK);
-            }, () => InformationMsg != null));
+            public DelegateCommand ShowInformationCommand
+                =>
+                        _showInformationCommand
+                                ?? (_showInformationCommand =
+                                        new DelegateCommand(() => { ModernDialog.ShowMessage(InformationMsg?.Invoke() ?? "?", Message, MessageBoxButton.OK); },
+                                                () => InformationMsg != null));
 
             public bool HasRate => Rate.HasValue;
         }

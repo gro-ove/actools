@@ -80,17 +80,17 @@ namespace AcManager.Controls.Dialogs {
 
             [CanBeNull]
             public new ImageViewerContextMenuCallback<TModel> ContextMenuCallback {
-                set => base.ContextMenuCallback = i => value(_list.ArrayElementAtOrDefault(i));
+                set => base.ContextMenuCallback = i => value?.Invoke(_list.ArrayElementAtOrDefault(i));
             }
 
             [CanBeNull]
             public new ImageViewerCanBeSavedCallback<TModel> CanBeSavedCallback {
-                set => base.CanBeSavedCallback = i => value(_list.ArrayElementAtOrDefault(i));
+                set => base.CanBeSavedCallback = i => value?.Invoke(_list.ArrayElementAtOrDefault(i)) ?? false;
             }
 
             [CanBeNull]
             public new ImageViewerSaveCallback<TModel> SaveCallback {
-                set => base.SaveCallback = (i, s) => value(_list.ArrayElementAtOrDefault(i), s);
+                set => base.SaveCallback = (i, s) => value?.Invoke(_list.ArrayElementAtOrDefault(i), s) ?? Task.Delay(0);
             }
         }
     }
