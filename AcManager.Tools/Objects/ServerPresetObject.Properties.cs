@@ -1020,6 +1020,15 @@ namespace AcManager.Tools.Objects {
             });
         }
 
+        private bool _realConditions;
+
+        public bool RealConditions {
+            get => _realConditions;
+            set => Apply(value, ref _realConditions, () => {
+                if (Loaded) Changed = true;
+            });
+        }
+
         public class PluginEntry : NotifyPropertyChanged {
             private string _address;
 
@@ -1037,7 +1046,40 @@ namespace AcManager.Tools.Objects {
                     Apply(value, ref _udpPort);
                 }
             }
+
+            private bool _isDeleted;
+
+            public bool IsDeleted {
+                get => _isDeleted;
+                set => Apply(value, ref _isDeleted);
+            }
+
+            private DelegateCommand _deleteCommand;
+
+            public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => { IsDeleted = true; }));
         }
+
+        public ChangeableObservableCollection<PluginEntry> PluginEntries { get; }
+
+        private void OnPluginEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            if (Loaded) {
+                Changed = true;
+                _addPluginEntryCommand?.RaiseCanExecuteChanged();
+            }
+        }
+
+        private void OnPluginEntriesPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(PluginEntry.IsDeleted)) {
+                PluginEntries.Remove((PluginEntry)sender);
+            } else if (Loaded) {
+                Changed = true;
+            }
+        }
+
+        private DelegateCommand _addPluginEntryCommand;
+
+        public DelegateCommand AddPluginEntryCommand => _addPluginEntryCommand ?? (_addPluginEntryCommand = new DelegateCommand(
+                () => PluginEntries.Add(new PluginEntry()), () => PluginEntries.Count < 30));
 
         private int? _pluginUdpPort;
 

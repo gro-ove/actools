@@ -46,7 +46,7 @@ namespace AcManager.Tools.Managers {
         }
 
         protected override TaskbarHolder GetTaskbarProgress() {
-            return TaskbarService.Create(5);
+            return TaskbarService.Create("Loading cars", 5);
         }
 
         private static readonly string[] WatchedFiles = {

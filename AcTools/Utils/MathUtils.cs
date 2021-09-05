@@ -170,6 +170,7 @@ namespace AcTools.Utils {
         public static double Random(double minValue, double maxValue) => Random(maxValue - minValue) + minValue;
         public static float Random(float maxValue) => (float)(RandomInstance.NextDouble() * maxValue);
         public static float Random(float minValue, float maxValue) => Random(maxValue - minValue) + minValue;
+        public static TimeSpan Random(TimeSpan minValue, TimeSpan maxValue) => TimeSpan.FromSeconds(Random(minValue.TotalSeconds, maxValue.TotalSeconds));
 
         public static TimeSpan Max(this TimeSpan a, TimeSpan b) => a > b ? a : b;
         public static TimeSpan Min(this TimeSpan a, TimeSpan b) => a < b ? a : b;

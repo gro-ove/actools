@@ -1044,4 +1044,18 @@ Depth mode: [b]{4}[/b]</value>
   <data name="RaceResults_TrackIsMissing" xml:space="preserve">
       <value>Track is missing</value>
   </data>
+  <data name="Plugin_ObsoleteMessage" xml:space="preserve">
+      <value>Plugin is obsolete and won’t work with this version of CM.</value>
+  </data>
+  <data name="ContentList_CreateNewItem_Tooltip" xml:space="preserve">
+      <value>Create a new one (Ctrl+Shift+N)</value>
+      <comment>Applies to all sorts of content</comment>
+  </data>
+  <data name="ContentList_CreateNewItem" xml:space="preserve">
+      <value>Create a new one</value>
+      <comment>Applies to all sorts of content</comment>
+  </data>
+  <data name="ContentList_NothingToDisplay" xml:space="preserve">
+      <value>Nothing to display</value>
+  </data>
 </root>

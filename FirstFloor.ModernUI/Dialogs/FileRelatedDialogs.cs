@@ -98,6 +98,7 @@ namespace FirstFloor.ModernUI.Dialogs {
     }
 
     public static class FileRelatedDialogs {
+        [CanBeNull]
         private static string OpenFallback([CanBeNull] string key) {
             var dialog = new OpenFileDialog();
 
@@ -112,6 +113,7 @@ namespace FirstFloor.ModernUI.Dialogs {
             return dialog.FileName;
         }
 
+        [CanBeNull]
         private static string SaveFallback([CanBeNull] string key) {
             var dialog = new SaveFileDialog();
             if (dialog.ShowDialog() != true) {
@@ -125,6 +127,7 @@ namespace FirstFloor.ModernUI.Dialogs {
             return dialog.FileName;
         }
 
+        [CanBeNull]
         public static string Open([NotNull] OpenDialogParams p, string currentFilename = null) {
             var key = p.ActualSaveKey;
             var cached = p.ActualSaveKey + @":cached";
@@ -190,6 +193,7 @@ namespace FirstFloor.ModernUI.Dialogs {
             }
         }
 
+        [CanBeNull]
         public static string Save([NotNull] SaveDialogParams p, string currentFilename = null) {
             var key = p.ActualSaveKey;
             try {

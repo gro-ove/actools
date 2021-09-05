@@ -20,12 +20,16 @@ namespace AcManager.Controls.ViewModels {
         ICommand CopyTagsCommand { get; }
         void SetCurrentItem(string id);
         AcWrapperCollectionView GetAcWrapperCollectionView();
+        IAcManagerNew Manager { get; }
     }
 
     public abstract class AcListPageViewModel<T> : AcObjectListCollectionViewWrapper<T>, IAcListPageViewModel where T : AcObjectNew {
         private const string KeyBase = "Content";
 
+        public IAcManagerNew Manager { get; }
+
         protected AcListPageViewModel([NotNull] IAcManagerNew list, IFilter<T> listFilter) : base(list, listFilter, KeyBase, false) {
+            Manager = list;
             CopyIdsCommand = new DelegateCommand(() => ClipboardHelper.SetText(MainList.OfType<AcItemWrapper>().Select(x => x.Id).JoinToString('\n')));
             CopyTagsCommand = new DelegateCommand(() => ClipboardHelper.SetText(MainList.OfType<AcItemWrapper>().Select(x => x.Value)
                     .OfType<AcJsonObjectNew>().SelectMany(x => x.Tags).OrderBy(x => x).Distinct().JoinToString('\n')));

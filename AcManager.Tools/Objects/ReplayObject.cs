@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -8,8 +7,6 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Miscellaneous;
-using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -127,136 +124,33 @@ namespace AcManager.Tools.Objects {
                 IsNew = true;
             }
 
-            if (!SettingsHolder.Drive.TryToLoadReplays) return;
-
-            try {
-                using (var reader = new ReplayReader(Location)) {
-                    var version = reader.ReadInt32();
-                    Version = version;
-
-                    if (version == 16) {
-                        ParseV16(reader);
-                    } else {
-                        ParseGeneric(version, reader);
+            if (SettingsHolder.Drive.TryToLoadReplays) {
+                var details = ReplayDetails.Load(Location);
+                if (details != null && details.ParseError == null) {
+                    ParsedSuccessfully = true;
+                    WeatherId = details.WeatherId;
+                    TrackId = details.TrackId;
+                    CarId = details.CarId;
+                    DriverName = details.DriverName;
+                    NationCode = details.NationCode;
+                    DriverTeam = details.DriverTeam;
+                    CarSkinId = details.CarSkinId;
+                    TrackConfiguration = details.TrackConfiguration;
+                    RaceIniConfig = details.RaceIniConfig;
+                    RecordingIntervalMs = details.RecordingIntervalMs;
+                    SunAngleFrom = details.SunAngleFrom;
+                    SunAngleTo = details.SunAngleTo;
+                    CustomTime = details.CustomTime;
+                    Version = details.Version;
+                    CarsNumber = details.CarsNumber;
+                    NumberOfFrames = details.NumberOfFrames;
+                    AllowToOverrideTime = details.AllowToOverrideTime;
+                } else {
+                    ParsedSuccessfully = false;
+                    if (details?.ParseError != null) {
+                        throw new AcErrorException(this, AcErrorType.Load_Base, details.ParseError);
                     }
                 }
-
-                ParsedSuccessfully = true;
-            } catch (Exception e) {
-                ParsedSuccessfully = false;
-                throw new AcErrorException(this, AcErrorType.Load_Base, e);
-            }
-        }
-
-        private bool ReadExtendedSection(ReplayReader reader, string name, int length) {
-            if (name == @"CONFIG_RACE") {
-                RaceIniConfig = Encoding.ASCII.GetString(reader.ReadBytes(length));
-                CustomTime = Game.ConditionProperties.GetSeconds(
-                        IniFile.Parse(RaceIniConfig)["LIGHTING"].GetDoubleNullable("__CM_UNCLAMPED_SUN_ANGLE")
-                                ?? IniFile.Parse(RaceIniConfig)["LIGHTING"].GetDouble("SUN_ANGLE", 80d)).RoundToInt();
-                return true;
-            }
-
-            return false;
-        }
-
-        private void ParseV16(ReplayReader reader) {
-            RecordingIntervalMs = reader.ReadDouble();
-
-            WeatherId = reader.ReadString();
-            TrackId = reader.ReadString();
-            TrackConfiguration = reader.ReadString();
-
-            CarsNumber = reader.ReadInt32();
-            reader.ReadInt32(); // current recording index
-            var frames = reader.ReadInt32();
-            NumberOfFrames = frames;
-
-            var trackObjectsNumber = reader.ReadInt32();
-            var minSunAngle = default(float?);
-            var maxSunAngle = default(float?);
-            for (var i = 0; i < frames; i++) {
-                float sunAngle = reader.ReadHalf();
-                reader.Skip(2 + trackObjectsNumber * 12);
-                if (!minSunAngle.HasValue) minSunAngle = sunAngle;
-                maxSunAngle = sunAngle;
-            }
-
-            if (minSunAngle.HasValue
-                    && Game.ConditionProperties.GetSeconds(minSunAngle.Value) > Game.ConditionProperties.GetSeconds(maxSunAngle.Value)) {
-                SunAngleFrom = maxSunAngle;
-                SunAngleTo = minSunAngle;
-            } else {
-                SunAngleFrom = minSunAngle;
-                SunAngleTo = maxSunAngle;
-            }
-
-            CarId = reader.ReadString();
-            DriverName = reader.ReadString();
-            NationCode = reader.ReadString();
-            DriverTeam = reader.ReadString();
-            CarSkinId = reader.ReadString();
-
-            const string postfix = "__AC_SHADERS_PATCH_v1__";
-            reader.Seek(-postfix.Length - 8, SeekOrigin.End);
-            if (Encoding.ASCII.GetString(reader.ReadBytes(postfix.Length)) == postfix) {
-                var start = reader.ReadUInt32();
-                var version = reader.ReadUInt32();
-                if (version == 1) {
-                    reader.Seek(start, SeekOrigin.Begin);
-
-                    while (true) {
-                        var nameLength = reader.ReadInt32();
-                        if (nameLength > 255) break;
-
-                        var name = Encoding.ASCII.GetString(reader.ReadBytes(nameLength));
-                        // Logging.Debug("Extra section: " + name);
-
-                        var sectionLength = reader.ReadInt32();
-                        if (!ReadExtendedSection(reader, name, sectionLength)) {
-                            reader.Skip(sectionLength);
-                        }
-                    }
-                }
-            }
-
-            AllowToOverrideTime = CustomTime == null && WeatherManager.Instance.GetById(WeatherId)?.IsWeatherTimeUnusual() == true;
-        }
-
-        private void ParseGeneric(int version, ReplayReader reader) {
-            AllowToOverrideTime = false;
-
-            if (version >= 14) {
-                reader.Skip(8);
-
-                WeatherId = reader.ReadString();
-                /*if (!string.IsNullOrWhiteSpace(WeatherId)) {
-                            ErrorIf(WeatherManager.Instance.GetWrapperById(WeatherId) == null,
-                                    AcErrorType.Replay_WeatherIsMissing, WeatherId);
-                        }*/
-
-                TrackId = reader.ReadString();
-                TrackConfiguration = reader.ReadString();
-            } else {
-                TrackId = reader.ReadString();
-            }
-
-            ErrorIf(TracksManager.Instance.GetWrapperById(TrackId) == null,
-                    AcErrorType.Replay_TrackIsMissing, TrackId);
-
-            CarId = reader.TryToReadNextString();
-
-            if (!string.IsNullOrWhiteSpace(CarId)) {
-                ErrorIf(CarsManager.Instance.GetWrapperById(CarId) == null,
-                        AcErrorType.Replay_CarIsMissing, CarId);
-            }
-
-            try {
-                DriverName = reader.ReadString();
-                reader.ReadInt64();
-                CarSkinId = reader.ReadString();
-            } catch (Exception) {
-                // ignored
             }
         }
 

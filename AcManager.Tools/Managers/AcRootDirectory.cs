@@ -32,7 +32,7 @@ namespace AcManager.Tools.Managers {
             if (!ValuesStorage.Contains(Key)) IsFirstRun = true;
 
             Value = (directory ?? ValuesStorage.Get<string>(Key))?.Trim();
-            if (Value == null || CheckDirectory(Value)) return;
+            if (Value == null || CheckDirectory(Value, true)) return;
 
             Logging.Warning($"AC root directory “{Value}” is not valid anymore");
             Value = null;
@@ -98,7 +98,7 @@ namespace AcManager.Tools.Managers {
                 if (_value == value) return;
 
                 var oldValue = _value;
-                _value = CheckDirectory(value) ? value : null;
+                _value = CheckDirectory(value, true) ? value : null;
 
                 ValuesStorage.Set(Key, _value);
                 UpdateDirectories();
@@ -141,12 +141,11 @@ namespace AcManager.Tools.Managers {
             }
         }
 
-        public static bool CheckDirectory(string directory) {
-            string s;
-            return CheckDirectory(directory, out s);
+        public static bool CheckDirectory(string directory, bool verboseMode) {
+            return CheckDirectory(directory, verboseMode, out _);
         }
 
-        public static bool CheckDirectory(string directory, out string reason) {
+        public static bool CheckDirectory(string directory, bool verboseMode, out string reason) {
             if (directory == null) {
                 reason = ToolsStrings.AcRootDirectory_NotDefined;
                 return false;
@@ -162,9 +161,11 @@ namespace AcManager.Tools.Managers {
 
                 var appsDirectory = Path.Combine(directory, @"apps");
                 if (!Directory.Exists(appsDirectory)) {
-                    Logging.Warning("Apps folder not found: " + appsDirectory);
-                    Logging.Warning("All directories found: " + Directory.GetDirectories(directory).JoinToString(@", "));
-                    Logging.Warning("All files found: " + Directory.GetFiles(directory).JoinToString(@", "));
+                    if (verboseMode) {
+                        Logging.Warning("Apps folder not found: " + appsDirectory);
+                        Logging.Warning("All directories found: " + Directory.GetDirectories(directory).JoinToString(@", "));
+                        Logging.Warning("All files found: " + Directory.GetFiles(directory).JoinToString(@", "));
+                    }
                     reason = File.Exists(Path.Combine(directory, @"acc.exe"))
                             ? "AC Competizione is not supported, original Assetto Corsa only"
                             : string.Format(ToolsStrings.AcRootDirectory_MissingDirectory, @"apps");
@@ -188,24 +189,26 @@ namespace AcManager.Tools.Managers {
             }
 
             var launcher = Path.Combine(directory, "AssettoCorsa.exe");
-            if (!File.Exists(launcher)) {
-                var backup = launcher.ApartFromLast(@".exe", StringComparison.OrdinalIgnoreCase) + @"_backup_ts.exe";
-                if (File.Exists(backup)) {
-                    TryToFix(backup, launcher);
+            if (verboseMode) {
+                if (!File.Exists(launcher)) {
+                    var backup = launcher.ApartFromLast(@".exe", StringComparison.OrdinalIgnoreCase) + @"_backup_ts.exe";
+                    if (File.Exists(backup)) {
+                        TryToFix(backup, launcher);
+                    }
                 }
-            }
 
-            if (!File.Exists(launcher)) {
-                var backup = launcher.ApartFromLast(@".exe", StringComparison.OrdinalIgnoreCase) + @"_backup_sp.exe";
-                if (File.Exists(backup)) {
-                    TryToFix(backup, launcher);
+                if (!File.Exists(launcher)) {
+                    var backup = launcher.ApartFromLast(@".exe", StringComparison.OrdinalIgnoreCase) + @"_backup_sp.exe";
+                    if (File.Exists(backup)) {
+                        TryToFix(backup, launcher);
+                    }
                 }
-            }
 
-            /*if (!File.Exists(launcher)) {
-                reason = string.Format(ToolsStrings.AcRootDirectory_MissingFile, @"AssettoCorsa.exe");
-                return false;
-            }*/
+                /*if (!File.Exists(launcher)) {
+                    reason = string.Format(ToolsStrings.AcRootDirectory_MissingFile, @"AssettoCorsa.exe");
+                    return false;
+                }*/
+            }
 
             reason = null;
             return true;

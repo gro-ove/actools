@@ -16,11 +16,13 @@ namespace AcTools.Processes {
     public partial class Game {
         public static bool OptionEnableRaceIniRestoration = false;
         public static bool OptionRaceIniTestMode = false;
+        public static bool OptionReplaySupportsFullPaths = false;
 
         private static void ClearUpIniFile(IniFile file) {
             file["BENCHMARK"].Set("ACTIVE", false);
             file["REPLAY"].Set("ACTIVE", false);
             file["REMOTE"].Set("ACTIVE", false);
+            file["RESTART"].Set("ACTIVE", false);
 
             file.RemoveSections("CAR", 1); // because CAR_0 is a player’s car
             file.RemoveSections("SESSION");
@@ -122,17 +124,27 @@ namespace AcTools.Processes {
                 await Task.Run(() => properties.Set(), cancellation);
                 if (cancellation.IsCancellationRequested || OptionRaceIniTestMode) return null;
 
-                progress?.Report(ProgressState.Launching);
-                await starter.RunAsync(cancellation);
-                if (cancellation.IsCancellationRequested) return null;
+                while (true) {
+                    progress?.Report(ProgressState.Launching);
+                    await starter.RunAsync(cancellation);
+                    if (cancellation.IsCancellationRequested) return null;
 
-                var process = await starter.WaitUntilGameAsync(cancellation);
-                await Task.Run(() => properties.SetGame(process), cancellation);
-                if (cancellation.IsCancellationRequested) return null;
+                    var process = await starter.WaitUntilGameAsync(cancellation);
+                    await Task.Run(() => properties.SetGame(process), cancellation);
+                    if (cancellation.IsCancellationRequested) return null;
 
-                progress?.Report(ProgressState.Waiting);
-                await starter.WaitGameAsync(cancellation);
-                if (cancellation.IsCancellationRequested) return null;
+                    progress?.Report(ProgressState.Waiting);
+                    await starter.WaitGameAsync(cancellation);
+                    if (cancellation.IsCancellationRequested) return null;
+
+                    var raceIni = new IniFile(AcPaths.GetRaceIniFilename());
+                    if (raceIni["RESTART"].GetBool("ACTIVE", false)) {
+                        raceIni["RESTART"].Set("ACTIVE", false);
+                        raceIni.Save();
+                    } else {
+                        break;
+                    }
+                }
             } finally {
                 _busy = false;
 
@@ -333,8 +345,10 @@ namespace AcTools.Processes {
                     } else if (ReplayProperties != null) {
                         if (ReplayProperties.Name == null && ReplayProperties.Filename != null) {
                             var dir = AcPaths.GetReplaysDirectory();
-                            if (Path.GetDirectoryName(ReplayProperties.Filename)?.Equals(dir, StringComparison.OrdinalIgnoreCase) == true) {
-                                ReplayProperties.Name = Path.GetFileName(ReplayProperties.Filename);
+                            if (FileUtils.IsAffectedBy(ReplayProperties.Filename, dir)) {
+                                ReplayProperties.Name = FileUtils.GetRelativePath(ReplayProperties.Filename, dir);
+                            } else if (OptionReplaySupportsFullPaths) {
+                                ReplayProperties.Name = ReplayProperties.Filename;
                             } else {
                                 var removeLaterFilename = FileUtils.GetTempFileName(dir, ".tmp");
                                 ReplayProperties.Name = Path.GetFileName(removeLaterFilename);
@@ -358,7 +372,7 @@ namespace AcTools.Processes {
                 iniFile.Save(iniFilename);
 
                 _disposeLater.AddRange(AdditionalPropertieses.OfType<AdditionalProperties>().Select(x => x.Set())
-                                                             .Prepend(AssistsProperties?.Set()).NonNull());
+                        .Prepend(AssistsProperties?.Set()).NonNull());
 
                 StartTime = DateTime.Now;
             }
@@ -391,9 +405,9 @@ namespace AcTools.Processes {
             }
 
             public string GetDescription() {
-                return $"(Basic={(BasicProperties != null ? "Race" : ReplayProperties != null ? "Replay" : BenchmarkProperties != null ? "Benchmark" : "Unknown")}, " +
-                        $"Mode={ModeProperties?.GetType().Name}, Additional=[{AdditionalPropertieses.Select(x => x?.GetType().Name).JoinToString(", ")}])";
-
+                return
+                        $"(Basic={(BasicProperties != null ? "Race" : ReplayProperties != null ? "Replay" : BenchmarkProperties != null ? "Benchmark" : "Unknown")}, "
+                                + $"Mode={ModeProperties?.GetType().Name}, Additional=[{AdditionalPropertieses.Select(x => x?.GetType().Name).JoinToString(", ")}])";
             }
         }
     }

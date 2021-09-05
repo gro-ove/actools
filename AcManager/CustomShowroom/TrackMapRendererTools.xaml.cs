@@ -149,8 +149,19 @@ namespace AcManager.CustomShowroom {
 
             public void UpdateFilter(IEnumerable<SurfaceDescription> ofType) {
                 _nonUserChange = true;
-                var surfaces = ofType.ToList();
-                Filter = surfaces.Any() ? $@"\d+({surfaces.Select(x => Regex.Escape(x.Key)).JoinToString('|')})" : _userFilter ?? @"\d+(ROAD|ASPHALT)";
+                var surfaces = ofType.Select(x => x.Key).Where(x => x.Length > 0).ToList();
+                if (surfaces.Count > 0) {
+                    var digitSurfaces = surfaces.Where(x => char.IsDigit(x[0])).Select(Regex.Escape).JoinToString('|');
+                    var digitlessSurfaces = surfaces.Where(x => !char.IsDigit(x[0])).Select(Regex.Escape).JoinToString('|');
+                    if (digitSurfaces.Contains('|')) digitSurfaces = $"({digitSurfaces})";
+                    if (digitlessSurfaces.Contains('|')) digitlessSurfaces = $"({digitlessSurfaces})";
+                    Filter = new[] {
+                        string.IsNullOrEmpty(digitSurfaces) ? null : $@"\d*{digitSurfaces}",
+                        string.IsNullOrEmpty(digitlessSurfaces) ? null : $@"\d+{digitlessSurfaces}"
+                    }.NonNull().JoinToString('|');
+                } else {
+                    Filter = _userFilter ?? @"\d+(ROAD|ASPHALT)";
+                }
                 _nonUserChange = false;
             }
 
@@ -182,7 +193,7 @@ namespace AcManager.CustomShowroom {
             private string _filter;
 
             public string Filter {
-                get { return _filter; }
+                get => _filter;
                 set {
                     if (Equals(value, _filter)) return;
 
@@ -201,7 +212,7 @@ namespace AcManager.CustomShowroom {
             private bool _filterIgnoreCase;
 
             public bool FilterIgnoreCase {
-                get { return _filterIgnoreCase; }
+                get => _filterIgnoreCase;
                 set {
                     if (Equals(value, _filterIgnoreCase)) return;
                     _filterIgnoreCase = value;
@@ -235,7 +246,7 @@ namespace AcManager.CustomShowroom {
             private bool _useFxaa;
 
             public bool UseFxaa {
-                get { return _useFxaa; }
+                get => _useFxaa;
                 set {
                     if (Equals(value, _useFxaa)) return;
                     _useFxaa = value;
@@ -249,7 +260,7 @@ namespace AcManager.CustomShowroom {
             private double _margin;
 
             public double Margin {
-                get { return _margin; }
+                get => _margin;
                 set {
                     value = value.Clamp(0, 200);
                     if (Equals(value, _margin)) return;
@@ -264,7 +275,7 @@ namespace AcManager.CustomShowroom {
             private double _scale;
 
             public double Scale {
-                get { return _scale; }
+                get => _scale;
                 set {
                     value = value.Clamp(0.00001, 100);
                     if (Equals(value, _scale)) return;
@@ -279,7 +290,7 @@ namespace AcManager.CustomShowroom {
             private double _aiLaneWidth;
 
             public double AiLaneWidth {
-                get { return _aiLaneWidth; }
+                get => _aiLaneWidth;
                 set {
                     value = value.Clamp(0, 200);
                     if (Equals(value, _aiLaneWidth)) return;
@@ -293,7 +304,7 @@ namespace AcManager.CustomShowroom {
             private bool _aiLaneActualWidth;
 
             public bool AiLaneActualWidth {
-                get { return _aiLaneActualWidth; }
+                get => _aiLaneActualWidth;
                 set {
                     if (Equals(value, _aiLaneActualWidth)) return;
                     _aiLaneActualWidth = value;
@@ -306,12 +317,12 @@ namespace AcManager.CustomShowroom {
             private DelegateCommand _cameraToStartCommand;
 
             public DelegateCommand CameraToStartCommand
-                => _cameraToStartCommand ?? (_cameraToStartCommand = new DelegateCommand(() => { Renderer.MoveCameraToStart(); }));
+                => _cameraToStartCommand ?? (_cameraToStartCommand = new DelegateCommand(() => Renderer.MoveCameraToStart()));
 
             private DelegateCommand _resetCameraCommand;
 
             public DelegateCommand ResetCameraCommand
-                => _resetCameraCommand ?? (_resetCameraCommand = new DelegateCommand(() => { ((IKn5ObjectRenderer)Renderer).ResetCamera(); }));
+                => _resetCameraCommand ?? (_resetCameraCommand = new DelegateCommand(() => ((IKn5ObjectRenderer)Renderer).ResetCamera()));
 
             private DelegateCommand _saveCommand;
 

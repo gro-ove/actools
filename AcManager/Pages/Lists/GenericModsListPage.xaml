@@ -2,7 +2,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:lists="clr-namespace:AcManager.Pages.Lists" xmlns:genericMods="clr-namespace:AcTools.GenericMods;assembly=AcTools.GenericMods"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:app="clr-namespace:AcManager"
+    mc:Ignorable="d" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance lists:GenericModsListPage+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -76,7 +78,7 @@
         <DockPanel Grid.Column="0" Drop="OnDisabledListDrop" AllowDrop="True" Background="Transparent">
           <TextBlock DockPanel.Dock="Top" Style="{StaticResource Label}" Text="Available mods:" Margin="20 20 0 8" />
           <mui:Switch Value="{Binding Disabled.Count}">
-            <mui:PlaceholderTextBlock Placeholder="Nothing to display" HorizontalAlignment="Center" VerticalAlignment="Center"
+            <mui:PlaceholderTextBlock Placeholder="{x:Static app:AppStrings.GenericMods_NothingToDisplay}" HorizontalAlignment="Center" VerticalAlignment="Center"
                 Style="{StaticResource Heading1}" mui:Switch.When="0" Margin="0 -100 0 100" />
             <ListBox Style="{StaticResource VirtualizingListBox}" ItemTemplate="{StaticResource ItemTemplate}" ItemsSource="{Binding Disabled}"
                 mui:Draggable.Enabled="True" />
@@ -86,7 +88,7 @@
         <DockPanel Grid.Column="4" Drop="OnEnabledListDrop" AllowDrop="True" Background="Transparent">
           <TextBlock DockPanel.Dock="Top" Style="{StaticResource Label}" Text="Installed mods:" Margin="20 20 0 8" />
           <mui:Switch Value="{Binding Enabled.Count}">
-            <mui:PlaceholderTextBlock Placeholder="Nothing to display" HorizontalAlignment="Center" VerticalAlignment="Center"
+            <mui:PlaceholderTextBlock Placeholder="{x:Static app:AppStrings.GenericMods_NothingToDisplay}" HorizontalAlignment="Center" VerticalAlignment="Center"
                 Style="{StaticResource Heading1}" mui:Switch.When="0" Margin="0 -100 0 100" />
             <ListBox Style="{StaticResource VirtualizingListBox}" ItemTemplate="{StaticResource ItemTemplate}" ItemsSource="{Binding Enabled}"
                 mui:Draggable.Enabled="True" />

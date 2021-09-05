@@ -183,11 +183,19 @@
     <Compile Include="AcPlugins\AcServerPlugin.cs" />
     <Compile Include="AcPlugins\AcServerPluginManager.cs" />
     <Compile Include="AcPlugins\AcServerPluginManagerSettings.cs" />
+    <Compile Include="AcPlugins\CspCommands\CommandHandshakeIn.cs" />
+    <Compile Include="AcPlugins\CspCommands\CommandHandshakeOut.cs" />
+    <Compile Include="AcPlugins\CspCommands\CommandWeatherSetV1.cs" />
+    <Compile Include="AcPlugins\CspCommands\CommandWeatherSetV2.cs" />
+    <Compile Include="AcPlugins\CspCommands\CommandWeatherType.cs" />
+    <Compile Include="AcPlugins\CspCommands\CspCommandsUtils.cs" />
+    <Compile Include="AcPlugins\CspCommands\ICspCommand.cs" />
     <Compile Include="AcPlugins\ExternalPluginInfo.cs" />
     <Compile Include="AcPlugins\Extras\AcDriverDetails.cs" />
     <Compile Include="AcPlugins\Extras\AcDriverLeaderboardDetails.cs" />
     <Compile Include="AcPlugins\Extras\AcDriverLocation.cs" />
     <Compile Include="AcPlugins\Extras\AcLeaderboard.cs" />
+    <Compile Include="AcPlugins\Extras\IAcLeaderboardCommandHelper.cs" />
     <Compile Include="AcPlugins\Helpers\AcMessageParser.cs" />
     <Compile Include="AcPlugins\Helpers\DuplexUdpClient.cs" />
     <Compile Include="AcPlugins\Helpers\ISessionReportHandler.cs" />
@@ -422,6 +430,7 @@
     <Compile Include="Helpers\ExtraDataProvider.cs" />
     <Compile Include="Helpers\PackedDescription.cs" />
     <Compile Include="Helpers\RegistryPatch.cs" />
+    <Compile Include="Helpers\ReplayDetails.cs" />
     <Compile Include="Helpers\SettingsHolder.Common.cs" />
     <Compile Include="Helpers\SettingsHolder.Content.cs" />
     <Compile Include="Helpers\ContentUtils.cs" />
@@ -624,7 +633,6 @@
     <Compile Include="Objects\RemoteCarSetupObject.cs" />
     <Compile Include="Objects\ServerDriverCspOptions.cs" />
     <Compile Include="Objects\ServerPresetDetailsMode.cs" />
-    <Compile Include="Objects\ServerPresetObject.CmPlugin.cs" />
     <Compile Include="Objects\ServerPresetObject.Ftp.cs" />
     <Compile Include="Objects\ServerPresetObject.LegalTyres.cs" />
     <Compile Include="Objects\ServerPresetObject.Setups.cs" />
@@ -699,6 +707,11 @@
     <Compile Include="SemiGui\GameStartedArgs.cs" />
     <Compile Include="SemiGui\IBookingUi.cs" />
     <Compile Include="Helpers\SidekickHelper.cs" />
+    <Compile Include="ServerPlugins\CmServerPlugin.cs" />
+    <Compile Include="ServerPlugins\DynamicConditionsV1ServerPlugin.cs" />
+    <Compile Include="ServerPlugins\DynamicConditionsV2ServerPlugin.cs" />
+    <Compile Include="ServerPlugins\RealConditionsServerPlugin.cs" />
+    <Compile Include="ServerPlugins\ServerGuidsStorage.cs" />
     <Compile Include="SharedMemory\AcFlagType.cs" />
     <Compile Include="SharedMemory\AcSharedSessionType.cs" />
     <Compile Include="SharedMemory\AcSharedMemoryStatus.cs" />

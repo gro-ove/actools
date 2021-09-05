@@ -523,6 +523,10 @@
     <Setter Property="DockPanel.Dock" Value="Left" />
   </Style>
 
+  <Style x:Key="PythonAppConfig.ItemContainerStyle" TargetType="ContentPresenter">
+    <Setter Property="Visibility" Value="{Binding IsHidden, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+  </Style>
+
   <DataTemplate x:Key="PythonAppConfig.ItemTemplate" DataType="t:IPythonAppConfigValue">
     <DataTemplate.Triggers>
       <DataTrigger Binding="{Binding IsNonDefault}" Value="True">
@@ -646,7 +650,8 @@
               <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}"
                   Style="{StaticResource PythonAppConfig.PropertyLabel}" />
               <Button DockPanel.Dock="Right" Padding="4 2" Margin="2 0 0 0" Content="…" Command="{Binding ChangeFileCommand}" />
-              <mui:BetterTextBox Text="{Binding Value}" Placeholder="?" mui:NewMarkService.New="{Binding IsNew}" />
+              <mui:PathTrimmingTextBlock Text="{Binding Value}" Placeholder="?" mui:NewMarkService.New="{Binding IsNew}" />
+              <!--<mui:BetterTextBox Text="{Binding Value}" Placeholder="?" mui:NewMarkService.New="{Binding IsNew}" />-->
             </DockPanel>
           </DataTemplate>
 
@@ -716,7 +721,7 @@
         <!--<mui:BbCodeBlock DockPanel.Dock="Bottom" Text="{Binding HintBottom}" Style="{StaticResource Small}" Margin="20 8 0 0"
             Visibility="{Binding HintBottom, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}" />-->
         <ItemsControl x:Name="Items" ItemsSource="{Binding}" Margin="20 0 0 0" ItemTemplate="{StaticResource PythonAppConfig.ItemTemplate}"
-            ItemsPanel="{StaticResource PythonAppConfig.SectionItemsPanel}"
+            ItemContainerStyle="{StaticResource PythonAppConfig.ItemContainerStyle}" ItemsPanel="{StaticResource PythonAppConfig.SectionItemsPanel}"
             Tag="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MoreConverter}, ConverterParameter=800}" />
       </DockPanel>
     </mui:Switch>
@@ -737,7 +742,8 @@
         <Button DockPanel.Dock="Bottom" Margin="0 20 0 0" Content="{x:Static c:ControlsStrings.Common_Reset}" Command="{Binding ResetCommand}"
             Visibility="{Binding IsNonDefault, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <ItemsControl ItemsSource="{Binding Sections[0]}" ItemTemplate="{StaticResource PythonAppConfig.ItemTemplate}"
-            ItemsPanel="{StaticResource PythonAppConfig.SectionItemsPanel}" VerticalAlignment="Top" />
+            ItemContainerStyle="{StaticResource PythonAppConfig.ItemContainerStyle}" ItemsPanel="{StaticResource PythonAppConfig.SectionItemsPanel}"
+            VerticalAlignment="Top" />
       </DockPanel>
     </ScrollViewer>
   </DataTemplate>
@@ -759,7 +765,7 @@
         <TextBlock Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" DockPanel.Dock="Top" Margin="0 0 0 8"
             TextWrapping="Wrap" Style="{StaticResource Label}" ToolTip="{Binding ToolTip}" />
         <ItemsControl ItemsSource="{Binding}" Margin="20 0 0 20" ItemTemplate="{StaticResource PythonAppConfig.ItemTemplate}"
-            ItemsPanel="{StaticResource PythonAppConfig.SectionItemsPanel}" />
+            ItemContainerStyle="{StaticResource PythonAppConfig.ItemContainerStyle}" ItemsPanel="{StaticResource PythonAppConfig.SectionItemsPanel}" />
       </DockPanel>
     </mui:Switch>
   </DataTemplate>

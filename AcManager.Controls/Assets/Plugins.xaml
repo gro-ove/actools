@@ -103,8 +103,8 @@
       <!-- Obsolete message -->
       <DockPanel Visibility="{Binding IsObsolete, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left" />
-        <TextBlock Style="{StaticResource Small}" VerticalAlignment="Center" FontWeight="Bold" Margin="4 4 0 8">
-          <TextBlock.Text>Plugin is obsolete and won’t work with this version of CM.</TextBlock.Text>
+        <TextBlock Style="{StaticResource Small}" VerticalAlignment="Center" FontWeight="Bold" Margin="4 4 0 8"
+            Text="{x:Static c:ControlsStrings.Plugin_ObsoleteMessage}">
         </TextBlock>
       </DockPanel>
 
@@ -161,8 +161,8 @@
       <!-- Obsolete message -->
       <DockPanel Visibility="{Binding IsObsolete, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left" />
-        <TextBlock Style="{StaticResource Small}" VerticalAlignment="Center" FontWeight="Bold" Margin="4 4 0 8">
-          <TextBlock.Text>Plugin is obsolete and won’t work with this version of CM.</TextBlock.Text>
+        <TextBlock Style="{StaticResource Small}" VerticalAlignment="Center" FontWeight="Bold" Margin="4 4 0 8"
+            Text="{x:Static c:ControlsStrings.Plugin_ObsoleteMessage}">
         </TextBlock>
       </DockPanel>
 

@@ -25,7 +25,8 @@ namespace AcManager.Tools.Objects {
         void UpdateReferenced(IPythonAppConfigValueProvider provider);
 
         void Set(string key, string value, [NotNull] string name, [CanBeNull] string toolTip,
-                Func<IPythonAppConfigValueProvider, bool> isEnabledTest, bool isNew, string originalValue);
+                [CanBeNull] Func<IPythonAppConfigValueProvider, bool> isEnabledTest, [CanBeNull] Func<IPythonAppConfigValueProvider, bool> isHiddenTest,
+                bool isNew, [CanBeNull] string originalValue);
 
         void SetFilesRelativeDirectory(string directory);
     }

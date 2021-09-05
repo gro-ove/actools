@@ -10,13 +10,17 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls.Helpers;
+using AcManager.Internal;
 using AcManager.Pages.Dialogs;
+using AcManager.Pages.Drive;
 using AcManager.Pages.Selected;
 using AcManager.Tools.AcPlugins.Extras;
 using AcManager.Tools.Filters.Testers;
+using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
+using AcManager.Tools.ServerPlugins;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -101,7 +105,7 @@ namespace AcManager.Pages.ServerPreset {
             public CarObject Car => Cars.FirstOrDefault();
 
             [CanBeNull]
-            public ServerPresetObject.CmServerPlugin CmPlugin => SelectedObject.CmPlugin;
+            public CmServerPlugin CmPlugin => SelectedObject.CmPlugin;
 
             [CanBeNull]
             public AcLeaderboard Leaderboard => CmPlugin?.Leaderboard;
@@ -471,6 +475,29 @@ namespace AcManager.Pages.ServerPreset {
 
                 SelectedObject.SetupItems.Add(setup);
             }
+
+            public StoredValue<bool> CopyPasswordToInviteLink { get; } = Stored.Get("serverPreset.copyPwToInviteLink", false);
+
+            private AsyncCommand _InviteCommand;
+
+            public AsyncCommand InviteCommand => _InviteCommand ?? (_InviteCommand = new AsyncCommand(async () => {
+                try {
+                    var ipInfo = await IpGeoProvider.GetAsync();
+                    if (ipInfo == null) {
+                        throw new Exception("Failed to get IP address");
+                    }
+
+                    var link = $@"{InternalUtils.MainApiDomain}/s/q:race/online/join?ip={ipInfo.Ip}&httpPort={SelectedObject.HttpPort}";
+                    var serverId = $@"{ipInfo.Ip}:{SelectedObject.HttpPort}";
+                    if (CopyPasswordToInviteLink.Value && !string.IsNullOrWhiteSpace(SelectedObject.Password)) {
+                        link += $@"&password={OnlineServer.EncryptSharedPassword(serverId, SelectedObject.Password)}";
+                    }
+
+                    SharingUiHelper.ShowShared("Inviting link", link, false);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Failed to generate invitational link", e);
+                }
+            }));
         }
 
         private string _id;
@@ -553,7 +580,8 @@ namespace AcManager.Pages.ServerPreset {
                 new InputBinding(_model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.RestartCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.PackCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
-                new InputBinding(_model.PackOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift))
+                new InputBinding(_model.PackOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(_model.InviteCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
             });
 
             foreach (var binding in Enumerable.Range(0, 8).Select(i => new InputBinding(new DelegateCommand(() =>
@@ -573,16 +601,21 @@ namespace AcManager.Pages.ServerPreset {
                     RunningStatusLink.IsShown = _object.CmPlugin != null;
                     _widthCondition?.UpdateAfterRender();
                     break;
+                case nameof(ServerPresetObject.IsRunning):
+                    InviteButton.Visibility = _object.IsRunning ? Visibility.Visible : Visibility.Collapsed;
+                    InviteButtonSeparator.Visibility = _object.IsRunning ? Visibility.Visible : Visibility.Collapsed;
+                    break;
             }
         }
 
         private void OnFrameNavigated(object sender, NavigationEventArgs e) {
             var source = Tab.SelectedSource;
             var runningLogTab = source == TryFindResource(@"RunningLogUri") as Uri;
+            var runningStatusTab = source == TryFindResource(@"RunningStatusUri") as Uri;
             var entryListTab = !runningLogTab && source == TryFindResource(@"EntryListUri") as Uri;
             var wrappedTab = !runningLogTab && !entryListTab && source == TryFindResource(@"WrappedUri") as Uri;
 
-            IsRunningMessage.Visibility = runningLogTab ? Visibility.Collapsed : Visibility.Visible;
+            IsRunningMessage.Visibility = runningLogTab || runningStatusTab ? Visibility.Collapsed : Visibility.Visible;
             RandomizeSkinsButton.Visibility = entryListTab ? Visibility.Visible : Visibility.Collapsed;
             RemoveEntriesButton.Visibility = entryListTab ? Visibility.Visible : Visibility.Collapsed;
             ClearUnusedArchivesButton.Visibility = wrappedTab ? Visibility.Visible : Visibility.Collapsed;

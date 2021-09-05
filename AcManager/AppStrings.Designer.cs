@@ -5697,6 +5697,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nothing to display.
+        /// </summary>
+        public static string GenericMods_NothingToDisplay {
+            get {
+                return ResourceManager.GetString("GenericMods_NothingToDisplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Content Manager is hidden.
         /// </summary>
         public static string Hibernate_TrayText {

@@ -271,7 +271,7 @@ namespace AcManager.Tools.Objects {
                     return false;
             }
 
-            var ext = Path.GetExtension(filename)?.ToLowerInvariant();
+            var ext = Path.GetExtension(filename).ToLowerInvariant();
             switch (ext) {
                 case ".dds":
                 case ".gif":

@@ -36,7 +36,7 @@ namespace AcManager.Tools.Managers {
 
         public string GetLocationByFilename(string filename, out bool inner) {
             inner = false;
-            return FileUtils.ArePathsEqual(Path.GetDirectoryName(Path.GetDirectoryName(filename)), _enabledDirectory) ? filename : null;
+            return FileUtils.ArePathsEqual(Path.GetDirectoryName(Path.GetDirectoryName(filename)) ?? string.Empty, _enabledDirectory) ? filename : null;
         }
 
         public string GetUniqueId(string preferredId, string postfix, bool forcePostfix, int startFrom) {

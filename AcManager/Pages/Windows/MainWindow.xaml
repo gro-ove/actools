@@ -294,7 +294,7 @@
           </ItemsControl.ItemTemplate>
         </ItemsControl>
         <!--<mui:BbCodeBlock Text="{Binding CupUpdateSummary}" DockPanel.Dock="Top" Margin="8 0 8 8" Style="{StaticResource Small}" />-->
-        <mui:SpacingUniformGrid Rows="1" HorizontalAlignment="Right" Margin="8 0" HorizontalSpacing="8">
+        <mui:SpacingUniformGrid Rows="1" HorizontalAlignment="Right" Margin="8 0 8 4" HorizontalSpacing="8">
           <Button Visibility="Hidden">
             <DockPanel>
               <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
@@ -681,6 +681,7 @@
     <!-- Server Source="/Pages/Lists/ServerPresetsListPage.xaml" -->
     <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerPresets}" Source="/Pages/Lists/ServerPresetsListPage.xaml"
         FilterHint="{x:Static c:FilterHints.ServerPresets}" />
+    <mui:LinkGroupFilterable GroupKey="server" DisplayName="Blacklist" Source="/Pages/Lists/ServerBannedListPage.xaml" />
 
     <!-- Settings -->
     <mui:LinkGroupFilterable GroupKey="settings" DisplayName="{x:Static g:AppStrings.Main_Settings}" AddAllLink="False" Source="/Pages/Settings/Search.xaml">

@@ -115,7 +115,7 @@ namespace AcTools.Utils {
         public static IDisposable WatchFile(string filename, Action reloadAction) {
             var reloading = false;
             return SetWatcher(Path.GetDirectoryName(filename), async s => {
-                if (reloading || !FileUtils.ArePathsEqual(s, filename)) return;
+                if (reloading || s == null || !FileUtils.ArePathsEqual(s, filename)) return;
                 reloading = true;
 
                 try {

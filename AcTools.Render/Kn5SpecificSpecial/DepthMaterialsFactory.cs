@@ -231,4 +231,22 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
     }
+
+    public class Kn5DepthOnlyForceVisibleConverter : IKn5ToRenderableConverter {
+        public static Kn5DepthOnlyForceVisibleConverter Instance { get; } = new Kn5DepthOnlyForceVisibleConverter();
+
+        public IRenderableObject Convert(Kn5Node node) {
+            switch (node.NodeClass) {
+                case Kn5NodeClass.Base:
+                    return new Kn5RenderableList(node, this);
+
+                case Kn5NodeClass.Mesh:
+                case Kn5NodeClass.SkinnedMesh:
+                    return new Kn5RenderableDepthOnlyObject(node, true);
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+    }
 }

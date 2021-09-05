@@ -16,10 +16,10 @@
   <ScrollViewer>
     <StackPanel Style="{StaticResource SettingsCompactPanel}">
 
-      <!--<CheckBox IsChecked="{Binding SelectedObject.UseCmPlugin}"
-          ToolTip="Using CM as server plugin allows to connect several other plugins at once and better track server state">
+      <CheckBox IsChecked="{Binding SelectedObject.UseCmPlugin}"
+          ToolTip="Using CM as server plugin allows to track server state and connect several other plugins at once">
         <Label Content="Use Content Manager as server plugin" />
-      </CheckBox>-->
+      </CheckBox>
 
       <TextBlock Text="Server plugin:" Style="{StaticResource SettingsPanel.Heading2}" />
       <DockPanel>

@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Miscellaneous;
 using AcTools;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -31,10 +34,13 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureDynamicShadowResolution = "DYNAMIC_SHADOWS_RESOLUTION";
         public static readonly string FeaturePovForButtons = "POV_FOR_BUTTONS";
         public static readonly string FeatureTrackDaySpeedLimit = "TRACK_DAY_SPEED_LIMIT";
-        public static readonly string FeatureCustomBindingsJoystickModifiers = "CUSTOM_BINDINGS_JOYSTICK_MODIFIERS";
+        public static readonly string FeatureCustomBindingsJoypadModifiers = "CUSTOM_BINDINGS_JOYSTICK_MODIFIERS";
         public static readonly string FeatureKeyboardForcedThrottle = "KEYBOARD_FORCED_THROTTLE";
         public static readonly string FeatureSharedMemoryReduceGForcesWhenSlow = "SHARED_MEMORY_REDUCE_GFORCES_WHEN_SLOW";
         public static readonly string FeatureWindowPosition = "WINDOW_POSITION";
+        public static readonly string FeatureReplayFullPath = "REPLAY_FULL_PATH";
+        public static readonly string FeatureCustomRenderingModes = "CUSTOM_RENDERING_MODES";
+        public static readonly string FeatureJoypadIndexAware = "JOYPAD_INDEX_AWARE";
 
         public class AudioDescription : Displayable {
             public string Id { get; set; }
@@ -46,6 +52,7 @@ namespace AcManager.Tools.Data {
         public static readonly string MainFileName = "dwrite.dll";
 
         public static event EventHandler Reloaded;
+        public static event EventHandler FeaturesInvalidated;
 
         public static string GetMainFilename() {
             return Path.Combine(AcRootDirectory.Instance.RequireValue, MainFileName);
@@ -69,6 +76,24 @@ namespace AcManager.Tools.Data {
 
         public static string GetInstalledLog() {
             return Path.Combine(GetRootDirectory(), "installed.log");
+        }
+
+        private static List<SettingEntry> _customVideoModes;
+
+        public static IEnumerable<SettingEntry> CustomVideoModes {
+            get {
+                if (!IsActive() || !IsFeatureSupported(FeatureCustomRenderingModes)) {
+                    return new SettingEntry[0];
+                }
+
+                if (_customVideoModes == null) {
+                    _customVideoModes = GetManifest()["CUSTOM_RENDER_MODES"]
+                            .Select(x => new { x, p = x.Value.Split(',').AlterArray(y => y.Trim()) })
+                            .Where(x => x.p.Length < 2 || TestQuery(x.p[1]))
+                            .Select(x => new SettingEntry(x.x.Key, x.p[0])).ToList();
+                }
+                return _customVideoModes;
+            }
         }
 
         private static Dictionary<string, IniFile> _configs = new Dictionary<string, IniFile>();
@@ -96,6 +121,17 @@ namespace AcManager.Tools.Data {
                             + TryToRead(GetUserConfigFilename(configName))));
         }
 
+        [CanBeNull]
+        public static string GetActualConfigValue([NotNull] string configName, string section, string key) {
+            var instance = PatchSettingsModel.GetExistingInstance();
+            if (instance != null) {
+                var config = instance.Configs?.FirstOrDefault(x => x.Filename.EndsWith(configName));
+                return config?.Sections.GetByIdOrDefault(section)?.GetByIdOrDefault(key)?.Value;
+            }
+
+            return GetConfig(configName)[section].GetNonEmpty(key);
+        }
+
         private class FeatureTester : ITester<object> {
             public string ParameterFromKey(string key) {
                 return null;
@@ -106,23 +142,57 @@ namespace AcManager.Tools.Data {
             }
         }
 
+        private static List<string> _monitoredValues = new List<string>();
+        private static Busy _featuresInvalidatedBusy = new Busy();
+
+        private static void AddMonitored(string configName, string section, string key) {
+            var keyFull = $@"{configName}/{section}/{key}".ToLowerInvariant();
+            if (!_monitoredValues.Contains(keyFull)) {
+                _monitoredValues.Add(keyFull);
+            }
+        }
+
+        public static void InvalidateFeatures() {
+                _featuresInvalidatedBusy.Delay(() => {
+                    _customVideoModes = null;
+                    FeaturesInvalidated?.Invoke(null, EventArgs.Empty);
+                }, 100);
+
+        }
+
+        public static void OnConfigPropertyChanged(string configName, string section, string key) {
+            var keyFull = $@"{configName}/{section}/{key}".ToLowerInvariant();
+            if (_monitoredValues.Contains(keyFull)) {
+                InvalidateFeatures();
+            }
+        }
+
         private static ITestEntry FeatureTestEntryFactory(string item) {
-            var v = item.As<bool?>(null);
+            var v = item.As<bool?>();
             if (v.HasValue) {
                 return new ConstTestEntry(v.Value);
             }
 
             var split = item.Split(new[] { ':' }, 2);
-            var config = GetConfig(split[0].Trim());
+            string sectionKey;
+            string valueKey;
+            string targetValue = null;
             if (split.Length == 1) {
-                return new ConstTestEntry(config["BASIC"].GetBool("ENABLED", false));
+                sectionKey = "BASIC";
+                valueKey = "ENABLED";
+            } else {
+                var keyValueJoined = split[1].Split(new[] { '=' }, 2);
+                var sectionKeyJoined = keyValueJoined[0].Split(new[] { '/' }, 2);
+                sectionKey = sectionKeyJoined[0].Trim();
+                valueKey = sectionKeyJoined.Length == 2 ? sectionKeyJoined[1].Trim() : @"ENABLED";
+                targetValue = keyValueJoined.Length == 1 ? null : keyValueJoined[1].Trim();
             }
 
-            var keyValue = split[1].Split(new[] { '=' }, 2);
-            var sectionKey = keyValue[0].Split(new[] { '/' }, 2);
-            return new ConstTestEntry(keyValue.Length == 1
-                    ? config[sectionKey[0].Trim()].GetBool(sectionKey.Length == 2 ? sectionKey[1].Trim() : @"ENABLED", false)
-                    : config[sectionKey[0].Trim()].GetPossiblyEmpty(sectionKey.Length == 2 ? sectionKey[1].Trim() : @"ENABLED") == keyValue[1].Trim());
+            AddMonitored(split[0].Trim(), sectionKey, valueKey);
+            var value = GetActualConfigValue(split[0].Trim(), sectionKey, valueKey);
+            return new ConstTestEntry(targetValue == null
+                    ? !string.IsNullOrWhiteSpace(value) && !Regex.IsMatch(value, @"^(?:0|off|false|no|none|disabled)$", RegexOptions.IgnoreCase)
+                    : value == targetValue);
         }
 
         public static string GetWindowPositionConfig() {
@@ -130,7 +200,13 @@ namespace AcManager.Tools.Data {
         }
 
         public static bool IsActive() {
-            return (_active ?? (_active = GetConfig("general.ini")["BASIC"].GetBool("ENABLED", true))).Value;
+            return (_active ?? (_active = GetActualConfigValue("general.ini", "BASIC", "ENABLED").As(false))).Value;
+        }
+
+        private static bool TestQuery(string query, bool emptyFallback = false) {
+            if (string.IsNullOrWhiteSpace(query)) return emptyFallback;
+            var filter = Filter.Create(query, new FilterParams { CustomTestEntryFactory = FeatureTestEntryFactory });
+            return filter.Test(new FeatureTester(), new object());
         }
 
         public static bool IsFeatureSupported([CanBeNull] string featureId) {
@@ -139,9 +215,7 @@ namespace AcManager.Tools.Data {
                 if (GetInstalledVersion() == null || !IsActive()) return false;
                 if (featureId == FeatureWindowPosition) return true;
                 var query = GetManifest()["FEATURES"].GetNonEmpty(featureId);
-                if (string.IsNullOrWhiteSpace(query)) return false;
-                var filter = Filter.Create(query, new FilterParams { CustomTestEntryFactory = FeatureTestEntryFactory });
-                return filter.Test(new FeatureTester(), new object());
+                return TestQuery(query);
             });
         }
 
@@ -231,6 +305,7 @@ namespace AcManager.Tools.Data {
             _audioDescriptionsSet = false;
             ActionExtension.InvokeInMainThreadAsync(() => {
                 Reloaded?.Invoke(null, EventArgs.Empty);
+                InvalidateFeatures();
                 GetExtraAudioLevels();
             });
         }

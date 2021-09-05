@@ -277,6 +277,8 @@ namespace AcManager.Tools.SemiGui {
         private static async Task PrepareReplay(Game.StartProperties properties, IGameUi ui, CancellationToken cancellation) {
             var replayProperties = properties.ReplayProperties;
             if (replayProperties != null) {
+                Game.OptionReplaySupportsFullPaths = PatchHelper.IsFeatureSupported(PatchHelper.FeatureReplayFullPath);
+
                 var replayFilename = replayProperties.Filename ?? Path.Combine(AcPaths.GetReplaysDirectory(), replayProperties.Name);
                 ui.OnProgress("Checking replay for fake cars…");
 
@@ -412,8 +414,6 @@ namespace AcManager.Tools.SemiGui {
             if (mode == GameMode.Race) {
                 StartAsync_PrepareRace(properties);
             }
-
-            Logging.Debug(_uiFactory);
 
             return _uiFactory == null ? StartAsync_NoUi(properties, mode) : StartAsync_Ui(properties, mode);
         }

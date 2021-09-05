@@ -87,7 +87,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     try {
                         SetValue(IsProcessingPropertyKey, true);
                         using (_cancellation = new CancellationTokenSource())
-                        using (_taskbar = TaskbarService.Create(1200)) {
+                        using (_taskbar = TaskbarService.Create("Async operation", 1200)) {
                             await _commandInvoke.Invoke(asyncCommand, this, _cancellation.Token, CommandParameter);
                             if (_commandPercentageProgress) {
                                 // Report(new AsyncProgressEntry(Progress.Message, 1d));

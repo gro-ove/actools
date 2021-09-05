@@ -11,61 +11,150 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
+      <DataTemplate x:Key="DriverToolTipContent" DataType="{x:Type extras:AcDriverLeaderboardDetails}">
+        <mui:SpacingStackPanel Spacing="4">
+          <TextBlock x:Name="PART_DriverMissing" Visibility="Collapsed" Text="Slot is empty" />
+          <TextBlock x:Name="PART_DriverGuid" Text="{Binding Driver.Guid, StringFormat='{}ID: {0}'}" />
+          <TextBlock x:Name="PART_DriverName" Text="{Binding Driver.DriverName, StringFormat='{}Driver: {0}'}" />
+          <TextBlock x:Name="PART_CarName" Text="{Binding Driver.CarName, StringFormat='{}Car: {0}'}" />
+          <TextBlock Text="{Binding DisplayBestLapTime, StringFormat='{}Best lap time: {0}'}" />
+          <TextBlock Text="{Binding DisplayLastLapTime, StringFormat='{}Last lap time: {0}'}" />
+          <TextBlock x:Name="PART_CurrentLap" Text="{Binding DisplayCurrentLapTimeAndProgress, StringFormat='{}Current lap: {0}'}" />
+          <TextBlock x:Name="PART_Collisions" Text="{Binding Collisions, StringFormat='{}Collisions: {0}'}" />
+        </mui:SpacingStackPanel>
+        <DataTemplate.Triggers>
+          <DataTrigger Binding="{Binding Driver}" Value="{x:Null}">
+            <Setter TargetName="PART_DriverGuid" Property="Visibility" Value="Collapsed" />
+            <Setter TargetName="PART_DriverName" Property="Visibility" Value="Collapsed" />
+            <Setter TargetName="PART_CarName" Property="Visibility" Value="Collapsed" />
+            <Setter TargetName="PART_DriverMissing" Property="Visibility" Value="Visible" />
+          </DataTrigger>
+          <DataTrigger Binding="{Binding CurrentLapSpoiled}" Value="True">
+            <Setter TargetName="PART_CurrentLap" Property="Foreground" Value="{DynamicResource ErrorColor}" />
+          </DataTrigger>
+          <DataTrigger Binding="{Binding Collisions, Converter={StaticResource MoreConverter}, ConverterParameter=5}" Value="True">
+            <Setter TargetName="PART_Collisions" Property="Foreground" Value="{DynamicResource ErrorColor}" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
+      </DataTemplate>
+
+      <ToolTip x:Key="DriverToolTip" ContentTemplate="{StaticResource DriverToolTipContent}" Content="{Binding}" />
+      <ContextMenu x:Key="DriverContextMenu" d:DataContext="{d:DesignInstance {x:Type extras:AcDriverLeaderboardDetails}}">
+        <MenuItem Header="Send a message directly" Command="{Binding SendMessageCommand}" />
+        <MenuItem Header="Mention in chat" Command="{Binding MentionCommand}" />
+        <MenuItem Header="Copy GUID" Command="{Binding CopyGuidCommand}" />
+        <Separator />
+        <MenuItem Header="Kick driver" Command="{Binding KickCommand}" />
+        <MenuItem Header="Ban driver" Command="{Binding BanCommand}" />
+      </ContextMenu>
+
       <DataTemplate x:Key="DataGridCell.Name" DataType="{x:Type extras:AcDriverLeaderboardDetails}">
-        <TextBlock Text="{Binding Driver.DriverName}" />
+        <TextBlock Text="{Binding Driver.DriverName}" ToolTip="{StaticResource DriverToolTip}" ContextMenu="{StaticResource DriverContextMenu}" />
       </DataTemplate>
       <DataTemplate x:Key="DataGridCell.CarName" DataType="{x:Type extras:AcDriverLeaderboardDetails}">
-        <TextBlock Text="{Binding Driver.CarName}" />
+        <DockPanel Background="Transparent" c:ToolTips.Car="{Binding Driver.Car}" c:ContextMenus.Car="{Binding Driver.Car}"
+            mui:Draggable.Data="{Binding Driver.Car}">
+          <mui:BetterImage Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding Driver.CarSkin.LiveryImage, FallbackValue={x:Null}}" Width="18" Height="18"
+              CollapseIfMissing="True" CollapseIfNull="True" />
+          <TextBlock Text="{Binding Driver.CarName}" />
+        </DockPanel>
+      </DataTemplate>
+      <DataTemplate x:Key="DataGridCell.Collisions" DataType="{x:Type extras:AcDriverLeaderboardDetails}">
+        <TextBlock x:Name="PART_Collisions" Text="{Binding Collisions}" />
+        <DataTemplate.Triggers>
+          <DataTrigger Binding="{Binding Collisions, Converter={StaticResource MoreConverter}, ConverterParameter=5}" Value="True">
+            <Setter TargetName="PART_Collisions" Property="Foreground" Value="{DynamicResource ErrorColor}" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
       </DataTemplate>
       <DataTemplate x:Key="DataGridCell.Laps" DataType="{x:Type extras:AcDriverLeaderboardDetails}">
         <TextBlock Text="{Binding TotalLaps}" />
+      </DataTemplate>
+      <DataTemplate x:Key="DataGridCell.BestLapTime" DataType="{x:Type extras:AcDriverLeaderboardDetails}">
+        <TextBlock Text="{Binding DisplayBestLapTime}" />
+      </DataTemplate>
+      <DataTemplate x:Key="DataGridCell.LastLapTime" DataType="{x:Type extras:AcDriverLeaderboardDetails}">
+        <TextBlock Text="{Binding DisplayLastLapTime}" />
+      </DataTemplate>
+      <DataTemplate x:Key="DataGridCell.CurrentLap" DataType="{x:Type extras:AcDriverLeaderboardDetails}">
+        <TextBlock x:Name="PART_Text" Text="{Binding DisplayCurrentLapTimeAndProgress}" />
+        <DataTemplate.Triggers>
+          <DataTrigger Binding="{Binding CurrentLapSpoiled}" Value="True">
+            <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource ErrorColor}" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
       </DataTemplate>
 
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <DockPanel>
-    <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="20" DockPanel.Dock="Top" Margin="0 0 0 20">
+  <DockPanel Margin="0 0 0 20">
+    <DockPanel Dock="Bottom" Margin="0 20 0 0">
 
-      <DataGrid ItemsSource="{Binding Leaderboard.Leaderboard}" Style="{StaticResource DataGrid.Lite}">
-        <DataGrid.Columns>
-          <DataGridTemplateColumn Width="90" Header="Name" SortMemberPath="Driver.DriverName" CellTemplate="{StaticResource DataGridCell.Name}" />
-          <DataGridTemplateColumn Width="90" Header="Car" SortMemberPath="Driver.CarName" CellTemplate="{StaticResource DataGridCell.CarName}" />
-          <DataGridTemplateColumn Width="90" Header="Laps" SortMemberPath="TotalLaps" CellTemplate="{StaticResource DataGridCell.Laps}" />
-        </DataGrid.Columns>
-        <DataGrid.RowDetailsTemplate>
-          <DataTemplate DataType="{x:Type extras:AcDriverLeaderboardDetails}">
-            <c:PropertiesGrid Margin="20 4 8 8">
-              <mui:SelectableBbCodeBlock c:PropertiesGrid.Label="GUID" Text="{Binding Driver.Guid}" />
-            </c:PropertiesGrid>
-          </DataTemplate>
-        </DataGrid.RowDetailsTemplate>
-      </DataGrid>
-
-      <mui:Cell>
-        <mui:BetterImage x:Name="TrackMap" Filename="{Binding Track.MapImage}" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#44000000" />
-        <mui:Cell x:Name="TrackMapItems" Width="{Binding ActualWidth, ElementName=TrackMap}" Height="{Binding ActualHeight, ElementName=TrackMap}"
-            HorizontalAlignment="Center" VerticalAlignment="Center" SizeChanged="OnTrackMapSizeChanged" Background="Transparent" />
-      </mui:Cell>
-
-    </mui:SpacingUniformGrid>
-
-    <DockPanel DataContext="{Binding CmPlugin.Chat}">
-      <DockPanel DockPanel.Dock="Bottom" Margin="0 4 0 0">
-        <mui:AsyncButton Command="{Binding SendChatCommand}" Content="Send" DockPanel.Dock="Right" Margin="4 0 0 0" />
-        <mui:BetterTextBox Text="{Binding ChatText, UpdateSourceTrigger=PropertyChanged}" Placeholder="Write chat message…" />
+      <DockPanel Width="360" Height="280">
+        <TextBlock Style="{StaticResource Label.Padding}" Text="Map:" Margin="0 0 0 8" DockPanel.Dock="Top" />
+        <mui:Cell>
+          <mui:BetterImage x:Name="TrackMap" Filename="{Binding Track.MapImage}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+          <mui:Cell x:Name="TrackMapItems" Width="{Binding ActualWidth, ElementName=TrackMap}" Height="{Binding ActualHeight, ElementName=TrackMap}"
+              HorizontalAlignment="Center" VerticalAlignment="Center" SizeChanged="OnTrackMapSizeChanged" Background="Transparent" />
+        </mui:Cell>
       </DockPanel>
-      <ItemsControl ItemsSource="{Binding ChatMessages}" Style="{StaticResource VirtualizingItemsControl}">
-        <ItemsControl.ItemTemplate>
-          <DataTemplate>
-            <DockPanel>
-              <TextBlock Text="{Binding Author}" DockPanel.Dock="Top" Style="{StaticResource Small}" FontWeight="Bold" Margin="0 0 0 2" />
-              <mui:SelectableBbCodeBlock Mode="WithoutBbCodes" Text="{Binding Message}" Margin="0 0 0 8" />
-            </DockPanel>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
-      </ItemsControl>
+
+      <DockPanel DataContext="{Binding CmPlugin}" Margin="20 0 0 0"
+          IsEnabled="{Binding Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}">
+        <TextBlock Style="{StaticResource Label.Padding}" Text="Chat:" Margin="0 0 0 8" DockPanel.Dock="Top" />
+        <DockPanel DockPanel.Dock="Bottom" Margin="0 4 0 0">
+          <mui:AsyncButton Command="{Binding Chat.SendChatCommand}" Content="Send" DockPanel.Dock="Right" Margin="4 0 0 0" />
+          <mui:BetterTextBox Text="{Binding Chat.ChatText, UpdateSourceTrigger=PropertyChanged}" Placeholder="Write chat message…" TextWrapping="NoWrap"
+              AcceptsReturn="True" PreviewKeyDown="OnChatTextKeyDown" PreviewKeyUp="OnChatTextKeyUp" FontSize="{DynamicResource SmallFontSize}"
+              ToolTip="Use “#CAR_ID message” or “#DRIVER_NAME message” to send a message to a single driver instead of broadcasting for all" />
+        </DockPanel>
+        <ItemsControl ItemsSource="{Binding Chat.ChatMessages}" Style="{StaticResource VirtualizingItemsControl}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <DockPanel Margin="0 0 0 4">
+                <mui:ReferenceSwitch Value="{Binding Author}" Width="80" Margin="0 2 6 0" VerticalAlignment="Top" DockPanel.Dock="Left">
+                  <mui:ReferenceSwitch.NonNull>
+                    <TextBlock DataContext="{Binding Author}" Text="{Binding Driver.DriverName, FallbackValue='?'}" Style="{StaticResource Small}"
+                        FontWeight="Bold" ToolTip="{StaticResource DriverToolTip}" ContextMenu="{StaticResource DriverContextMenu}" />
+                  </mui:ReferenceSwitch.NonNull>
+                  <mui:ReferenceSwitch.Null>
+                    <TextBlock Text="Server" Style="{StaticResource Small}" FontWeight="Bold" Foreground="{DynamicResource WindowTextReadOnly}" />
+                  </mui:ReferenceSwitch.Null>
+                </mui:ReferenceSwitch>
+                <mui:SelectableBbCodeBlock x:Name="PART_Message" Mode="WithoutBbCodes" Text="{Binding Message}" />
+              </DockPanel>
+              <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsSystemCommand}">
+                  <Setter TargetName="PART_Message" Property="Foreground" Value="{DynamicResource WindowTextReadOnly}"></Setter>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsDirectAddress}">
+                  <Setter TargetName="PART_Message" Property="Foreground" Value="{DynamicResource AccentColor}"></Setter>
+                </DataTrigger>
+              </DataTemplate.Triggers>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </DockPanel>
     </DockPanel>
 
+    <TextBlock Style="{StaticResource Label.Padding}" Text="Leaderboard:" Margin="0 0 0 8" DockPanel.Dock="Top" />
+    <mui:Switch Value="{Binding Leaderboard.ConnectedOnly.Count}">
+      <TextBlock mui:Switch.When="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Server is empty" Style="{StaticResource Title}"
+          Foreground="{DynamicResource WindowTextReadOnly}" />
+      <DataGrid ItemsSource="{Binding Leaderboard.ConnectedOnly}" Style="{StaticResource DataGrid.Lite}">
+        <DataGrid.Columns>
+          <DataGridTemplateColumn Width="1*" Header="Name" SortMemberPath="Driver.DriverName" CellTemplate="{StaticResource DataGridCell.Name}" />
+          <DataGridTemplateColumn Width="1*" Header="Car" SortMemberPath="Driver.CarName" CellTemplate="{StaticResource DataGridCell.CarName}" />
+          <DataGridTemplateColumn Width="80" Header="Collisions" SortMemberPath="Collisions" CellTemplate="{StaticResource DataGridCell.Collisions}" />
+          <DataGridTemplateColumn Width="60" Header="Laps" SortMemberPath="TotalLaps" CellTemplate="{StaticResource DataGridCell.Laps}" />
+          <DataGridTemplateColumn Width="100" Header="Best lap" SortMemberPath="BestLapTime" CellTemplate="{StaticResource DataGridCell.BestLapTime}" />
+          <DataGridTemplateColumn Width="100" Header="Last lap" SortMemberPath="LastLapTime" CellTemplate="{StaticResource DataGridCell.LastLapTime}" />
+          <DataGridTemplateColumn Width="140" Header="Current lap" SortMemberPath="CurrentLapTime" CellTemplate="{StaticResource DataGridCell.CurrentLap}" />
+        </DataGrid.Columns>
+      </DataGrid>
+    </mui:Switch>
+
   </DockPanel>
+
 </UserControl>

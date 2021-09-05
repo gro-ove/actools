@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Security;
+using AcManager.Tools.Data;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SharedMemory;
@@ -13,6 +14,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -98,16 +100,29 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         internal VideoSettings() : base(@"video") {
-            CustomResolution.PropertyChanged += (sender, args) => { Save(); };
+            CustomResolution.PropertyChanged += (sender, args) => Save();
+            PatchHelper.FeaturesInvalidated += (sender, args) => {
+                if (_cameraModes != null) {
+                    _cameraModes.ReplaceEverythingBy_Direct(GetCameraModes());
+                    CameraMode = _cameraModes.GetByIdOrDefault(CameraMode?.Value) ?? _cameraModes.First();
+                }
+            };
+        }
+
+        private static IEnumerable<SettingEntry> GetCameraModes() {
+            return new[] {
+                new SettingEntry("DEFAULT", ToolsStrings.AcSettings_CameraMode_SingleScreen),
+                new SettingEntry("TRIPLE", ToolsStrings.AcSettings_CameraMode_TripleScreen),
+                new SettingEntry("OCULUS", ToolsStrings.AcSettings_CameraMode_OculusRift),
+                new SettingEntry("OPENVR", ToolsStrings.AcSettings_CameraMode_OpenVr),
+            }.Concat(PatchHelper.CustomVideoModes);
         }
 
         #region Entries lists
-        public SettingEntry[] CameraModes { get; } = {
-            new SettingEntry("DEFAULT", ToolsStrings.AcSettings_CameraMode_SingleScreen),
-            new SettingEntry("TRIPLE", ToolsStrings.AcSettings_CameraMode_TripleScreen),
-            new SettingEntry("OCULUS", ToolsStrings.AcSettings_CameraMode_OculusRift),
-            new SettingEntry("OPENVR", "OpenVR (early support)"),
-        };
+        private BetterObservableCollection<SettingEntry> _cameraModes;
+
+        public BetterObservableCollection<SettingEntry> CameraModes => _cameraModes ?? (_cameraModes =
+                new BetterObservableCollection<SettingEntry>(GetCameraModes()));
 
         public SettingEntry[] AnisotropicLevels { get; } = {
             new SettingEntry("0", ToolsStrings.AcSettings_Off),
@@ -227,9 +242,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             var d = new User32.DEVMODE();
             return LinqExtension.RangeFrom()
-                                .Select(i => User32.EnumDisplaySettings(null, i, ref d)
-                                        ? new ResolutionEntry(i + 1, d.dmPelsWidth, d.dmPelsHeight, d.dmDisplayFrequency) : null)
-                                .TakeWhile(x => x != null).Distinct().ToList();
+                    .Select(i => User32.EnumDisplaySettings(null, i, ref d)
+                            ? new ResolutionEntry(i + 1, d.dmPelsWidth, d.dmPelsHeight, d.dmDisplayFrequency) : null)
+                    .TakeWhile(x => x != null).Distinct().ToList();
         }
 
         private static class AcVideoModes {
@@ -255,10 +270,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
             private static IReadOnlyList<ResolutionEntry> GetResolutionEntriesInner() {
                 var mode = new VideoMode();
                 return Enumerable.Range(0, acInitVideoModes())
-                                 .Select(i => {
-                                     acGetVideoMode(i, ref mode);
-                                     return new ResolutionEntry(mode.Index + 1, mode.Width, mode.Height, Math.Round(mode.Refresh, 2));
-                                 }).Distinct().ToList();
+                        .Select(i => {
+                            acGetVideoMode(i, ref mode);
+                            return new ResolutionEntry(mode.Index + 1, mode.Width, mode.Height, Math.Round(mode.Refresh, 2));
+                        }).Distinct().ToList();
             }
 
             [DllImport(@"acVideoModes.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -310,7 +325,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry CameraMode {
             get => _cameraMode;
             set {
-                if (!CameraModes.ArrayContains(value)) value = CameraModes[0];
+                if (CameraModes.GetByIdOrDefault(value.Id) == null) value = CameraModes[0];
                 if (Equals(value, _cameraMode)) return;
                 _cameraMode = value;
                 OnPropertyChanged();

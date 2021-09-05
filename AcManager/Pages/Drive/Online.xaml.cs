@@ -714,7 +714,7 @@ namespace AcManager.Pages.Drive {
         public void OnNavigatedTo(NavigationEventArgs e) {
             Model.Load();
 
-            _taskbarProgress = TaskbarService.Create(1000d, () => {
+            _taskbarProgress = TaskbarService.Create("Loading online servers", 1000d, () => {
                 switch (Model.Pack.Status) {
                     case OnlineManagerStatus.Ready:
                         return Tuple.Create(TaskbarState.NoProgress, 1d);

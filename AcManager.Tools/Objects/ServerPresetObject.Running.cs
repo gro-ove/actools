@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.AcPlugins;
@@ -13,6 +14,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Online;
+using AcManager.Tools.ServerPlugins;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -20,6 +22,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -447,8 +450,8 @@ namespace AcManager.Tools.Objects {
             var logFilename = GetServerLogFilename();
 
             void LogAction(LogMessageType type, string msg) {
+                if (msg?.Contains("\t\t$CSP0:") != false) return;
                 ActionExtension.InvokeInMainThreadAsync(() => {
-                    if (msg == null) return;
                     if (type == LogMessageType.Message && msg.StartsWith(@"Warning", StringComparison.OrdinalIgnoreCase)) {
                         type = LogMessageType.Warning;
                     }
@@ -637,7 +640,7 @@ namespace AcManager.Tools.Objects {
                 process = StartServer(serverExecutable, () => new Process {
                     StartInfo = {
                         FileName = serverExecutable,
-                        Arguments = $"-c \"{IniFilename}\" -e \"{EntryListIniFilename}\"",
+                        Arguments = $@"-c ""{IniFilename}"" -e ""{EntryListIniFilename}""",
                         UseShellExecute = false,
                         WorkingDirectory = Path.GetDirectoryName(serverExecutable) ?? "",
                         RedirectStandardOutput = true,
@@ -656,7 +659,20 @@ namespace AcManager.Tools.Objects {
                 if (UseCmPlugin) {
                     DisposeHelper.Dispose(ref _pluginManager);
                     _pluginManager = new AcServerPluginManager(new AcServerPluginManagerSettings(this) { LogServerRequests = false });
+                    foreach (var entry in PluginEntries.Where(x => !string.IsNullOrWhiteSpace(x.Address) && x.UdpPort > 0 && x.UdpPort < 65536)) {
+                        var parseAddress = Regex.Match(entry.Address, @"^([^:/\\]+):(\d+)$");
+                        if (parseAddress.Success) {
+                            _pluginManager.AddExternalPlugin(new ExternalPluginInfo(entry.UdpPort ?? 0,
+                                    parseAddress.Groups[1].Value, parseAddress.Groups[2].Value.As(0)));
+                        }
+                    }
                     _pluginManager.AddPlugin(CmPlugin = new CmServerPlugin(log, Capacity));
+                    if (RealConditions) {
+                        var track = TrackId == null ? null : await TracksManager.Instance.GetLayoutByIdAsync(TrackId, TrackLayoutId);
+                        //_pluginManager.AddPlugin(new RealConditionsServerPlugin(track, RequiredCspVersion >= 1643));
+                    }
+
+                    _pluginManager.AddPlugin(new DynamicConditionsV2ServerPlugin());
                 }
 
                 process.BeginOutputReadLine();
@@ -688,6 +704,9 @@ namespace AcManager.Tools.Objects {
             _stopServerCommand?.RaiseCanExecuteChanged();
             _runServerCommand?.RaiseCanExecuteChanged();
             _restartServerCommand?.RaiseCanExecuteChanged();
+
+            DisposeHelper.Dispose(ref _pluginManager);
+            CmPlugin = null;
         }
 
         public override void Reload() {

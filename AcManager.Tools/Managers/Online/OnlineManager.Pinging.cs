@@ -36,7 +36,7 @@ namespace AcManager.Tools.Managers.Online {
             var cancellation = new CancellationTokenSource();
             var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cancellation.Token);
 
-            using (var pinging = TaskbarService.Create(10)) {
+            using (var pinging = TaskbarService.Create("Pinging online servers", 10)) {
                 void SetPinged(int value) {
                     Pinged = value;
                     pinging.Set(TaskbarState.Normal, (double)value / List.Count);

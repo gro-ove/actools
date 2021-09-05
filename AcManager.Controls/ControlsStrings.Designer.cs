@@ -844,6 +844,33 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create a new one.
+        /// </summary>
+        public static string ContentList_CreateNewItem {
+            get {
+                return ResourceManager.GetString("ContentList_CreateNewItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a new one (Ctrl+Shift+N).
+        /// </summary>
+        public static string ContentList_CreateNewItem_Tooltip {
+            get {
+                return ResourceManager.GetString("ContentList_CreateNewItem_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing to display.
+        /// </summary>
+        public static string ContentList_NothingToDisplay {
+            get {
+                return ResourceManager.GetString("ContentList_NothingToDisplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Built-in presets.
         /// </summary>
         public static string Controls_BuiltInPresets {
@@ -1948,6 +1975,15 @@ namespace AcManager.Controls {
         public static string Online_TrackIsMissingLabel {
             get {
                 return ResourceManager.GetString("Online_TrackIsMissingLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Plugin is obsolete and won’t work with this version of CM..
+        /// </summary>
+        public static string Plugin_ObsoleteMessage {
+            get {
+                return ResourceManager.GetString("Plugin_ObsoleteMessage", resourceCulture);
             }
         }
         

@@ -306,7 +306,14 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         private async Task LoadList(string registry) {
-            var list = JObject.Parse(await Cache.GetStringAsync($@"{registry}/list"));
+            var data = await Cache.GetStringAsync($@"{registry}/list");
+            JObject list;
+            try {
+                list = JObject.Parse(data);
+            } catch (Exception e) {
+                Logging.Warning($"Failed to parse: {data}");
+                return;
+            }
             foreach (var p in list) {
                 if (!Enum.TryParse<CupContentType>(p.Key, true, out var type)) {
                     Logging.Warning("Not supported type: " + type);

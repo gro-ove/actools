@@ -198,6 +198,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
+        [NotNull]
         private static string GetAiLaneFastFilename(string mapFilename) {
             return Path.Combine(Path.GetDirectoryName(mapFilename) ?? "", "ai", "fast_lane.ai");
         }

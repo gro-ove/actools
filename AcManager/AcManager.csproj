@@ -495,6 +495,9 @@
     <Compile Include="Pages\Drive\WorldSimSeries.xaml.cs">
       <DependentUpon>WorldSimSeries.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Lists\ServerBannedListPage.xaml.cs">
+      <DependentUpon>ServerBannedListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Lists\ToolFilteringLink.cs" />
     <Compile Include="Pages\Lists\GenericModsListPage.xaml.cs">
       <DependentUpon>GenericModsListPage.xaml</DependentUpon>
@@ -1268,6 +1271,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Lists\ServerBannedListPage.xaml" />
     <Page Include="Pages\Lists\TrackSkinsListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

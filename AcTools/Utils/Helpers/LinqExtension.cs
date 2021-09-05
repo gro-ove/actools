@@ -997,6 +997,13 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
+        public static T[] AlterArray<T>([NotNull] this T[] source, Func<T, T> action) {
+            for (var i = 0; i < source.Length; ++i) {
+                source[i] = action(source[i]);
+            }
+            return source;
+        }
+
         public static void ForEach<T>([NotNull] this IEnumerable<T> source, Action<T> action) {
             using (var enumerator = source.GetEnumerator()) {
                 while (enumerator.MoveNext()) {

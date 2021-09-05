@@ -13,8 +13,12 @@ namespace FirstFloor.ModernUI.Helpers {
 
         private static int _entries;
 
+#if DEBUG
         // just in case
-        private const int EntriesLimit = 2000;
+        private const int EntriesLimit = 100000;
+#else
+        private const int EntriesLimit = 4000;
+#endif
 
         private static string Time() {
             var t = DateTime.Now;
@@ -92,7 +96,6 @@ namespace FirstFloor.ModernUI.Helpers {
                     s = Regex.Replace(s, @"%(?:CALLEE|FROM)%",
                             _ => $"From: [{Path.GetFileName(frame.GetFileName())}:{frame.GetFileLineNumber()}] {frame.GetMethod().Name}");
                 }
-
 
                 if (m != null && (s.Length == 0 || s[0] != '[' || s.Length > 1 && !char.IsLetter(s[1]))) {
                     s = $"[{p}:{l}] {m}(): {s}";

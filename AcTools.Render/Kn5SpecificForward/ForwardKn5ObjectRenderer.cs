@@ -538,11 +538,24 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
+        private bool _reflectionCubemapAtZeroPoint;
+
+        public bool ReflectionCubemapAtZeroPoint {
+            get => _reflectionCubemapAtZeroPoint;
+            set {
+                if (Equals(value, _reflectionCubemapAtZeroPoint)) return;
+                _reflectionCubemapAtZeroPoint = value;
+                IsDirty = true;
+                OnPropertyChanged();
+            }
+        }
+
         protected Vector3 ShadowsPosition => MainSlot.GetCarBoundingBox()?.GetCenter() ?? Vector3.Zero;
 
         protected Vector3 ReflectionCubemapPosition {
             get {
                 if (ReflectionCubemapAtCamera) return Camera.Position;
+                if (ReflectionCubemapAtZeroPoint) return Vector3.Zero;
 
                 var b = MainSlot.GetCarBoundingBox();
                 return b == null ? Vector3.Zero : b.Value.GetCenter() + Vector3.UnitY * b.Value.GetSize().Y * 0.3f;

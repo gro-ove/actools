@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -244,6 +245,25 @@ namespace AcManager.Tools.Data {
         [NotNull]
         public IniFile TrackParams => _trackParams ?? (_trackParams =
                 IniFile.Parse(FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "Track Params.ini") ?? string.Empty));
+        #endregion
+
+        #region Flexible loader params
+        public class UrlUnwrapping {
+            public Regex Test;
+            public string QueryParameter;
+        }
+
+        private List<UrlUnwrapping> _urlUnwrappings;
+
+        [NotNull]
+        public List<UrlUnwrapping> UrlUnwrappings => _urlUnwrappings ?? (_urlUnwrappings =
+                Load<JArray>("UrlUnwrapping.json")()
+                        .Select(x => new { i = x.GetStringValueOnly("urlIncludes"), p = x.GetStringValueOnly("queryParameter") })
+                        .Where(x => !string.IsNullOrEmpty(x.i) && !string.IsNullOrEmpty(x.p))
+                        .Select(x => new UrlUnwrapping {
+                            Test = new Regex(@"\b" + Regex.Escape(x.i), RegexOptions.IgnoreCase),
+                            QueryParameter = x.p
+                        }).ToList());
         #endregion
     }
 }

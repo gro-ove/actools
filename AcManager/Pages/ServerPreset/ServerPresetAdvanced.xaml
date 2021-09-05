@@ -1,7 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.ServerPreset.ServerPresetAdvanced" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:g="clr-namespace:AcManager"
+    mc:Ignorable="d"
     d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}" Background="Transparent">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -92,14 +94,55 @@
         <mui:BetterTextBox Text="{Binding SelectedObject.PluginUdpPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
             Maximum="65535" />
       </DockPanel>
-      <DockPanel>
+      <DockPanel Visibility="{Binding SelectedObject.UseCmPlugin, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
         <Label Content="Auth:" />
         <mui:BetterTextBox Text="{Binding SelectedObject.PluginAuthAddress}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
       </DockPanel>
 
+      <TextBlock Text="CM plugin:" Style="{StaticResource SettingsPanel.Heading2}" />
+      <CheckBox IsChecked="{Binding SelectedObject.UseCmPlugin}">
+        <CheckBox.ToolTip>
+          <TextBlock MaxWidth="400" TextWrapping="Wrap"
+              Text="Using CM as server plugin allows to track server state, use real weather conditions and connect several other plugins at once. With this option active server plugin
+              parameters become parameters for CM plugin. To connect extra plugins, add new address and port combinations in CM plugin settings." />
+        </CheckBox.ToolTip>
+        <Label Content="Use Content Manager as server plugin" />
+      </CheckBox>
+      <CheckBox IsChecked="{Binding SelectedObject.RealConditions}"
+          Visibility="{Binding SelectedObject.UseCmPlugin, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <CheckBox.ToolTip>
+          <TextBlock MaxWidth="400" TextWrapping="Wrap"
+              Text="Works with CSP. Make server into CSP-only server with 1643 as minimum required version and not only weather type, but also physics conditions will be synced as well." />
+        </CheckBox.ToolTip>
+        <Label Content="{x:Static g:AppStrings.Drive_RealConditions}" />
+      </CheckBox>
+      <DockPanel Visibility="{Binding SelectedObject.UseCmPlugin, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Label Content="Extra plugins:" />
+        <Button DockPanel.Dock="Right" Margin="8 0 0 0" Content="Add new plugin" Command="{Binding SelectedObject.AddPluginEntryCommand}" />
+        <mui:Switch Value="{Binding SelectedObject.PluginEntries.Count}">
+          <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="None" />
+          <ItemsControl ItemsSource="{Binding SelectedObject.PluginEntries}" Style="{StaticResource VirtualizingItemsControl}" MaxHeight="200">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Grid Margin="0 0 0 8">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <mui:BetterTextBox Text="{Binding Address}" Placeholder="Address" />
+                  <mui:BetterTextBox Grid.Column="1" Text="{Binding UdpPort}" Placeholder="Local port" Mode="Integer" Minimum="1" Maximum="65535"
+                      Margin="4 0 0 0" />
+                  <Button Grid.Column="2" Content="Remove plugin entry" Command="{Binding DeleteCommand}" Margin="4 0 0 0" VerticalAlignment="Top" />
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </mui:Switch>
+      </DockPanel>
+
       <TextBlock Text="Web link:" Style="{StaticResource SettingsPanel.Heading2}" />
       <DockPanel>
-        <Label Content="Value:" ToolTip="What is web link anyway?" />
         <mui:BetterTextBox Text="{Binding SelectedObject.WebLink}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
       </DockPanel>
 

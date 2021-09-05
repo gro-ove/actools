@@ -10,7 +10,8 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows {
     public class TaskbarHolder : IDisposable {
-        internal TaskbarHolder(double priority, Func<Tuple<TaskbarState, double>> periodicCallback) {
+        internal TaskbarHolder(string name, double priority, Func<Tuple<TaskbarState, double>> periodicCallback) {
+            _name = name;
             _priority = priority;
             _periodicCallback = periodicCallback;
             _created = Stopwatch.StartNew();
@@ -52,10 +53,13 @@ namespace FirstFloor.ModernUI.Windows {
             progress?.Set(_state);
         }
 
+        private readonly string _name;
         private readonly double _priority;
         private readonly Func<Tuple<TaskbarState, double>> _periodicCallback;
         private readonly DispatcherTimer _timer;
         private Stopwatch _created;
+
+        public string Name => _name;
 
         public void Dispose() {
             if (_timer != null) {
@@ -109,8 +113,8 @@ namespace FirstFloor.ModernUI.Windows {
             }
         }
 
-        public static TaskbarHolder Create(double priority, Func<Tuple<TaskbarState, double>> periodicCallback = null) {
-            var holder = new TaskbarHolder(priority, periodicCallback);
+        public static TaskbarHolder Create(string name, double priority, Func<Tuple<TaskbarState, double>> periodicCallback = null) {
+            var holder = new TaskbarHolder(name, priority, periodicCallback);
             AddSorted(Holders, holder, TaskbarHolder.PriorityComparer);
             Task.Delay(200).ContinueWithInMainThread(t => Update());
             return holder;

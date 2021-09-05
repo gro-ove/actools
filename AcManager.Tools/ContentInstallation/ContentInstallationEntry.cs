@@ -71,10 +71,10 @@ namespace AcManager.Tools.ContentInstallation {
 
         public static ContentInstallationEntry Deserialize([NotNull] string data) {
             var j = JObject.Parse(data);
-            return new ContentInstallationEntry(j.GetStringValueOnly("source"),
+            return new ContentInstallationEntry(j.GetStringValueOnly("source") ?? throw new Exception("Key “source” is missing"),
                     j["params"]?.ToObject<ContentInstallationParams>() ?? ContentInstallationParams.DefaultWithoutExecutables) {
                         AddedDateTime = j["added"]?.ToObject<DateTime>() ?? DateTime.Now,
-                        DisplayName = j.GetStringValueOnly("name"),
+                        DisplayName = j.GetStringValueOnly("name") ?? throw new Exception("Key “name” is missing"),
                         InformationUrl = j.GetStringValueOnly("informationUrl"),
                         Version = j.GetStringValueOnly("version"),
                         IsPaused = j.GetBoolValueOnly("paused", false),
@@ -553,7 +553,7 @@ namespace AcManager.Tools.ContentInstallation {
             ContentInstallationManager.Instance.UpdateBusyStates();
 
             try {
-                _taskbar = TaskbarService.Create(10000);
+                _taskbar = TaskbarService.Create("Content installation", 10000);
 
                 using (var cancellation = new CancellationTokenSource()) {
                     CancellationTokenSource = cancellation;
@@ -620,7 +620,7 @@ namespace AcManager.Tools.ContentInstallation {
                         } catch (InformativeException e) {
                             Logging.Warning(e);
                             if (e.Message == ToolsStrings.Common_CannotDownloadFile) {
-                                FailedMessage = $"Can’t download file: {e.SolutionCommentary.ToSentenceMember()}";
+                                FailedMessage = $"Can’t download file: {e.SolutionCommentary?.ToSentenceMember() ?? "unknown error"}";
                             } else {
                                 FailedMessage = e.Message;
                                 FailedCommentary = e.SolutionCommentary;

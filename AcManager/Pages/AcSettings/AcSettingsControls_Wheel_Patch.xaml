@@ -24,8 +24,8 @@
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1.2*" MaxWidth="160" />
             <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="0.75*" MinWidth="80" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoystickModifiers}" />
-            <ColumnDefinition Width="Auto" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoystickModifiers}" />
+            <ColumnDefinition Width="0.75*" MinWidth="80" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoypadModifiers}" />
+            <ColumnDefinition Width="Auto" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoypadModifiers}" />
             <ColumnDefinition Width="1.5*" MinWidth="160" />
           </Grid.ColumnDefinitions>
 
@@ -60,7 +60,7 @@
           <Button Grid.Column="2" ToolTip="Steering wheel button as modifier" Margin="20 0 0 0" Style="{StaticResource WaitingButton}"
               Command="{Binding ToggleWaitingCommand, Source={x:Static acset:AcSettingsHolder.Controls}}" CommandParameter="{Binding WheelButtonModifier}"
               IsEnabled="{Binding WheelButton.Input, Converter={StaticResource NullToBooleanConverter}, ConverterParameter='inverse'}"
-              c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoystickModifiers}">
+              c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoypadModifiers}">
             <Button.ContextMenu>
               <ContextMenu>
                 <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding WheelButtonModifier.ClearCommand}" />
@@ -83,7 +83,7 @@
             </mui:Cell>
           </Button>
 
-          <DockPanel Grid.Column="3" Margin="0 1 0 -1" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoystickModifiers}">
+          <DockPanel Grid.Column="3" Margin="0 1 0 -1" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCustomBindingsJoypadModifiers}">
             <TextBlock Style="{StaticResource Label}" TextAlignment="Left" Text="+" />
           </DockPanel>
 

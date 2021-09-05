@@ -1093,7 +1093,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         throw new Exception($"Unsupported LODs arrangement, {stagesAll.Length} LODs required");
                     }
 
-                    using (var taskbarProgress = TaskbarService.Create(1e5)) {
+                    using (var taskbarProgress = TaskbarService.Create("Generating LODs", 1e5)) {
                         taskbarProgress?.Set(TaskbarState.Normal, 0.001d);
                         var generator = new CarLodGenerator(Stages.Where(x => x.IsAvailableAndActive).Select(x => x.Stage),
                                 new CarLodSimplygonService(SimplygonLocation.Value, Stages), Car.Location,
@@ -1295,7 +1295,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                     _stages = stages;
                 }
 
-                private static async Task RunProcessAsync(string filename, [Localizable(false)] IEnumerable<string> args,
+                private static async Task RunProcessAsync(string filename, [Localizable(false)] IEnumerable<string> args, bool checkErrorCode,
                         IProgress<double?> progress, CancellationToken cancellationToken) {
                     var process = ProcessExtension.Start(filename, args, new ProcessStartInfo {
                         UseShellExecute = false,
@@ -1317,7 +1317,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         }
 
                         await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
-                        if (process.ExitCode != 0) {
+                        if (checkErrorCode && process.ExitCode != 0) {
                             var errorMessage = errorData.ToString().Trim();
                             if (string.IsNullOrEmpty(errorMessage)) {
                                 errorMessage = $@"Failed to run process: {process.ExitCode}";
@@ -1371,7 +1371,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         // convert it once more:
                         intermediateFilename = FileUtils.EnsureUnique($@"{inputFile.ApartFromLast(@".fbx")}_fixed.fbx");
                         await RunProcessAsync(Kn5.FbxConverterLocation, new[] { inputFile, intermediateFilename, "/sffFBX", "/dffFBX", "/f201300" },
-                                null, cancellationToken).ConfigureAwait(false);
+                                true, null, cancellationToken).ConfigureAwait(false);
 
                         cancellationToken.ThrowIfCancellationRequested();
                         progress?.Report(0.01);
@@ -1379,7 +1379,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         var outputFile = FileUtils.EnsureUnique($@"{inputFile.ApartFromLast(@".fbx")}_simplygon.fbx");
                         await RunProcessAsync(_simplygonExecutable, new[] {
                             "-Progress", rulesFilename, intermediateFilename, outputFile
-                        }, progress.SubrangeDouble(0.01, 1d), cancellationToken).ConfigureAwait(false);
+                        }, false, progress.SubrangeDouble(0.01, 1d), cancellationToken).ConfigureAwait(false);
                         if (cacheKey != null) {
                             CacheStorage.Set(cacheKey, outputFile);
                         }

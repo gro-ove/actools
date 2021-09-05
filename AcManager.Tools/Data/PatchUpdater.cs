@@ -216,7 +216,7 @@ namespace AcManager.Tools.Data {
                 return true;
             } catch (InformativeException e) {
                 Logging.Warning(e);
-                LatestError = $"{e.Message}: {e.SolutionCommentary.ToSentenceMember()}".ToSentence();
+                LatestError = e.SolutionCommentary != null ? $"{e.Message}: {e.SolutionCommentary.ToSentenceMember()}".ToSentence() : e.Message.ToSentence();
                 ChangeCurrentVersionWithoutForcing(oldVersion, false);
                 return false;
             } catch (UnauthorizedAccessException e) when (e.Message.Contains(@"dwrite.dll")) {

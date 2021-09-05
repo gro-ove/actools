@@ -188,7 +188,7 @@ namespace AcManager.Tools.Managers {
         }
 
         protected override TaskbarHolder GetTaskbarProgress() {
-            return TaskbarService.Create(4.9);
+            return TaskbarService.Create("Loading tracks", 4.9);
         }
 
         private static readonly string[] WatchedFileNames = {

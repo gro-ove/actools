@@ -84,7 +84,7 @@
               <mui:BooleanSwitch Value="{TemplateBinding IsEmpty}">
                 <Border Background="{DynamicResource DarkStripeBackground}" TextBlock.Foreground="{DynamicResource DarkStripeText}" VerticalAlignment="Center"
                     Padding="20" Margin="0 -40 0 0">
-                  <TextBlock Text="Nothing to display" Style="{StaticResource Title}" TextAlignment="Center" />
+                  <TextBlock Text="{x:Static ac:ControlsStrings.ContentList_NothingToDisplay}" Style="{StaticResource Title}" TextAlignment="Center" />
                 </Border>
               </mui:BooleanSwitch>
             </mui:Cell>

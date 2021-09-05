@@ -25,5 +25,9 @@ namespace AcManager.Tools.AcManagersNew {
         void Reload(string id);
 
         void UpdateList(bool force);
+
+        int LoadedCount { get; }
+
+        bool IsLoaded { get; }
     }
 }

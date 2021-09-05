@@ -1049,6 +1049,13 @@ namespace AcManager.Tools.Helpers.AcSettings {
             set => Apply(value.EnsureFrom(ControllerSticks), ref _controllerSteeringStick);
         }
 
+        private int _controllerDeviceIndex;
+
+        public int ControllerDeviceIndex {
+            get => _controllerDeviceIndex;
+            set => Apply(value, ref _controllerDeviceIndex);
+        }
+
         private double _controllerSteeringGamma;
 
         public double ControllerSteeringGamma {
@@ -1563,6 +1570,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             ControllerSteeringDeadzone = section.GetDouble("STEER_DEADZONE", 0.0);
             ControllerSteeringSpeed = section.GetDouble("STEER_SPEED", 0.2);
             ControllerRumbleIntensity = section.GetDouble("RUMBLE_INTENSITY", 0.8);
+            ControllerDeviceIndex = section.GetInt("JOYPAD_INDEX", 0);
 
             section = Ini["__EXTRA_CM"];
             WheelSteerScaleAutoAdjust = section.GetBool("AUTO_ADJUST_SCALE", false);
@@ -1668,6 +1676,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("STEER_DEADZONE", ControllerSteeringDeadzone);
             section.Set("STEER_SPEED", ControllerSteeringSpeed);
             section.Set("RUMBLE_INTENSITY", ControllerRumbleIntensity);
+            section.Set("JOYPAD_INDEX", ControllerDeviceIndex);
 
             section = Ini["__EXTRA_CM"];
             section.Set("FF_POST_PROCESS", AcSettingsHolder.FfPostProcess.Export().ToCutBase64());

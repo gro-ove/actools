@@ -16,7 +16,7 @@ namespace AcManager.Tools.Helpers {
         private static readonly Dictionary<GeoTagsEntry, CachedEntry> LocalCache = new Dictionary<GeoTagsEntry, CachedEntry>();
 
         private static void CleanUpCache() {
-            var limit = DateTime.Now - TimeSpan.FromMinutes(10);
+            var limit = DateTime.Now - TimeSpan.FromMinutes(20);
             var toRemoval = LocalCache.Where(x => x.Value.Item1 < limit).Select(x => x.Key).ToList();
             foreach (var key in toRemoval) {
                 LocalCache.Remove(key);

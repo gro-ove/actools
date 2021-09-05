@@ -13,6 +13,13 @@
   </UserControl.Resources>
   <ScrollViewer mui:SaveScroll.Key="AcSettingsControls_Controller">
     <StackPanel>
+      <StackPanel Style="{StaticResource SettingsPanel}" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureJoypadIndexAware}">
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding Controls.ControllerDeviceIndex}" mui:BetterTextBox.Mode="Integer" Content="Joypad index" />
+          <Slider Minimum="0" Maximum="3" Ticks="1" TickPlacement="BottomRight" Value="{Binding Controls.ControllerDeviceIndex}" />
+        </DockPanel>
+      </StackPanel>
+
       <CheckBox IsChecked="{Binding Controls.CombineWithKeyboardInput}" Margin="0 0 0 20">
         <Label Content="{x:Static g:AppStrings.Controls_CombineWithKeyboard}" />
       </CheckBox>

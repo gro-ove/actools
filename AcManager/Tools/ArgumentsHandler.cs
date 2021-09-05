@@ -263,7 +263,9 @@ namespace AcManager.Tools {
                 return ArgumentHandleResult.Successful;
             }
 
-            if (!isDirectory && filename.EndsWith(@".cmpreset", StringComparison.OrdinalIgnoreCase)) {
+            if (!isDirectory && (filename.EndsWith(@".cmpreset", StringComparison.OrdinalIgnoreCase)
+                    || filename.EndsWith(@".ini", StringComparison.OrdinalIgnoreCase))) {
+                // TODO: Setups?
                 return await ProcessSharedFile(filename);
             }
 

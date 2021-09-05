@@ -318,15 +318,7 @@ namespace AcManager.Tools.Helpers.Api {
                 var requestUri = $@"http://{ServerUri}/lobby.ashx/single?ip={ip}&port={port}&guid={steamId}";
                 try {
                     var s = (await LoadAsync(requestUri, null, OptionWebRequestTimeout).ConfigureAwait(false)).Data;
-
-                    ServerInformationComplete result;
-                    try {
-                        result = JsonConvert.DeserializeObject<ServerInformationComplete>(s);
-                    } catch (JsonReaderException) {
-                        Logging.Warning(s);
-                        throw;
-                    }
-
+                    var result = ParseJsonOrThrow<ServerInformationComplete>(s);
                     if (result.Ip == string.Empty) {
                         result.Ip = ip;
                     }
@@ -342,11 +334,23 @@ namespace AcManager.Tools.Helpers.Api {
             throw new Exception(@"Out of servers");
         }
 
+        private static T ParseJsonOrThrow<T>(string data) {
+            try {
+                return JsonConvert.DeserializeObject<T>(data);
+            } catch (Exception) {
+                Logging.Warning("Failed to parse: " + data?.Trim());
+                if (data?.StartsWith("{") != true) {
+                    throw new Exception("Server response is in invalid format");
+                }
+                throw;
+            }
+        }
+
         [ItemNotNull]
         public static async Task<ServerInformationComplete> GetInformationDirectAsync(string ip, int portC) {
             var requestUri = $@"http://{ip}:{portC}/INFO";
             var loaded = await LoadAsync(requestUri, null, OptionDirectRequestTimeout).ConfigureAwait(false);
-            return PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformationComplete>(loaded.Data), ip);
+            return PrepareLoadedDirectly(ParseJsonOrThrow<ServerInformationComplete>(loaded.Data), ip);
         }
 
         [ItemNotNull]
@@ -354,11 +358,11 @@ namespace AcManager.Tools.Helpers.Api {
             var steamId = SteamIdHelper.Instance.Value ?? @"-1";
             var requestUri = $@"http://{ip}:{portExt}/api/details?guid={steamId}";
             var loaded = await LoadAsync(requestUri, lastModified, OptionDirectRequestTimeout).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(loaded.Data)) {
-                throw new WebException(@"Response is empty");
+            if (string.IsNullOrEmpty(loaded.Data) && lastModified == null) {
+                throw new WebException($@"Response is empty: {requestUri}");
             }
-            return Tuple.Create(loaded.Data == null ? null :
-                    PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformationExtended>(loaded.Data), ip, loaded.ServerTimeStamp),
+            return Tuple.Create(
+                    loaded.Data == null ? null : PrepareLoadedDirectly(ParseJsonOrThrow<ServerInformationExtended>(loaded.Data), ip, loaded.ServerTimeStamp),
                     loaded.LastModified);
         }
 
@@ -367,12 +371,7 @@ namespace AcManager.Tools.Helpers.Api {
             var steamId = SteamIdHelper.Instance.Value ?? @"-1";
             var requestUri = $@"http://{ip}:{portC}/JSON|{steamId}";
             var loaded = await LoadAsync(requestUri, null, OptionDirectRequestTimeout).ConfigureAwait(false);
-            try {
-                return JsonConvert.DeserializeObject<ServerCarsInformation>(loaded.Data);
-            } catch (Exception) {
-                Logging.Warning(loaded);
-                throw;
-            }
+            return ParseJsonOrThrow<ServerCarsInformation>(loaded.Data);
         }
 
         [CanBeNull]

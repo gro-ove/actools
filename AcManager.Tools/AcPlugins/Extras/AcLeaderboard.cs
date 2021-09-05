@@ -4,33 +4,57 @@ using System.Linq;
 using AcManager.Tools.AcPlugins.Messages;
 using AcTools.Processes;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcPlugins.Extras {
     public sealed class AcLeaderboard : NotifyPropertyChanged {
+        public class ConnectedDriversCollection : WrappedFilteredCollection<AcDriverLeaderboardDetails, AcDriverLeaderboardDetails> {
+            public ConnectedDriversCollection([NotNull] IReadOnlyList<AcDriverLeaderboardDetails> collection) : base(collection) { }
+
+            protected override AcDriverLeaderboardDetails Wrap(AcDriverLeaderboardDetails source) {
+                return source;
+            }
+
+            protected override bool Test(AcDriverLeaderboardDetails source) {
+                return source.Driver != null;
+            }
+        }
+
         private readonly List<AcDriverLeaderboardDetails> _positionHelperList;
 
         public BetterObservableCollection<AcDriverLeaderboardDetails> Leaderboard { get; }
+
+        public ConnectedDriversCollection ConnectedOnly { get; }
 
         public bool ResetBestLapTimeOnNewSession { get; set; } = true;
 
         private bool _inRaceSession;
         private LapProgressComparer _lapProgressComparer;
 
-        public AcLeaderboard(int capacity) {
+        public AcLeaderboard(int capacity, [CanBeNull] IAcLeaderboardCommandHelper commandHelper) {
             Leaderboard = new BetterObservableCollection<AcDriverLeaderboardDetails>(
-                    Enumerable.Range(0, capacity).Select(x => new AcDriverLeaderboardDetails()));
-            OnPropertyChanged(nameof(Leaderboard));
+                    Enumerable.Range(0, capacity).Select((x, i) => new AcDriverLeaderboardDetails(i, commandHelper)));
+            ConnectedOnly = new ConnectedDriversCollection(Leaderboard);
             _positionHelperList = Leaderboard.ToList();
             _lapProgressComparer = new LapProgressComparer(false);
         }
 
+        [CanBeNull]
+        public AcDriverLeaderboardDetails GetDetails(int carId) {
+            return carId < 0 || carId >= Leaderboard.Count ? null : Leaderboard[carId];
+        }
+
         public void OnCarInfo(MsgCarInfo msg) {
-            if (msg.CarId >= Leaderboard.Count
-                    || Leaderboard[msg.CarId].Driver != null && Leaderboard[msg.CarId].Driver.DriverName == msg.DriverName) return;
+            if (msg.CarId >= Leaderboard.Count) return;
+            var item = Leaderboard[msg.CarId];
+            if (item.Driver != null && item.Driver.DriverName == msg.DriverName) return;
             // Logging.Debug("New car: " + msg.CarId + ", car: " + msg.CarModel);
-            Leaderboard[msg.CarId].Driver = new AcDriverDetails(msg.DriverGuid, msg.DriverName, msg.CarModel, msg.CarSkin);
-            Leaderboard[msg.CarId].Reset(true);
+            item.SilentFor = 0;
+            item.Driver = new AcDriverDetails(msg.DriverGuid, msg.DriverName, msg.CarModel, msg.CarSkin);
+            item.Reset(true);
+            ConnectedOnly.Refresh(item);
         }
 
         // Returns true if car just crossed starting line during the race
@@ -41,7 +65,9 @@ namespace AcManager.Tools.AcPlugins.Extras {
             item.CurrentLapProgress = msg.NormalizedSplinePosition;
             _positionHelperList.Sort(_lapProgressComparer);
             item.CurrentRacePosition = _positionHelperList.IndexOf(item) + 1;
-            item.Location = new AcDriverLocation(msg.WorldPosition.X, msg.WorldPosition.Z);
+            item.Location.PositionX = msg.WorldPosition.X;
+            item.Location.PositionZ = msg.WorldPosition.Z;
+            item.SilentFor = 0;
             // Trying to register first lap
             if (!item.CurrentLapValid && _inRaceSession && msg.NormalizedSplinePosition < 0.1d && msg.Velocity.Length() > 0.5f) {
                 item.CurrentLapValid = true;
@@ -64,6 +90,7 @@ namespace AcManager.Tools.AcPlugins.Extras {
             item.CurrentLapStart = DateTime.Now;
             item.LastLapTime = lapTime;
             item.CurrentLapValid = true;
+            item.SilentFor = 0;
             item.TotalLaps++;
             if (item.TotalLaps == totalLaps) {
                 item.FinishedPosition = Leaderboard.Count(x => x.FinishedPosition.HasValue);
@@ -94,8 +121,10 @@ namespace AcManager.Tools.AcPlugins.Extras {
 
         public void OnConnectionClosed(MsgConnectionClosed msg) {
             if (msg.CarId >= Leaderboard.Count) return;
-            Leaderboard[msg.CarId].Driver = null;
-            Leaderboard[msg.CarId].Reset(true);
+            var item = Leaderboard[msg.CarId];
+            item.Driver = null;
+            item.Reset(true);
+            ConnectedOnly.Refresh(item);
         }
 
         public void OnSessionInfo(MsgSessionInfo msg) {
@@ -103,6 +132,26 @@ namespace AcManager.Tools.AcPlugins.Extras {
             _lapProgressComparer = new LapProgressComparer(_inRaceSession);
             foreach (var item in Leaderboard) {
                 item.Reset(ResetBestLapTimeOnNewSession);
+            }
+        }
+
+        public void OnCollision(MsgClientEvent msg) {
+            if (msg.RelativeVelocity > 1 && msg.CarId != msg.OtherCarId) {
+                if (msg.CarId < Leaderboard.Count) ++Leaderboard[msg.CarId].Collisions;
+                if (msg.OtherCarId < Leaderboard.Count) ++Leaderboard[msg.OtherCarId].Collisions;
+            }
+        }
+
+        public void CheckDisconnected() {
+            foreach (var item in Leaderboard) {
+                if (item.Driver != null && ++item.SilentFor > 5) {
+                    Logging.Debug("item.SilentFor=" + item.SilentFor);
+                    ActionExtension.InvokeInMainThread(() => {
+                        item.Driver = null;
+                        item.Reset(true);
+                        ConnectedOnly.Refresh(item);
+                    });
+                }
             }
         }
     }

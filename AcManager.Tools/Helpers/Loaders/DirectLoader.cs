@@ -4,11 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using HtmlAgilityPack;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
@@ -100,7 +102,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         private static bool TryGetFileName(WebHeaderCollection headers, out string filename) {
             try {
                 var contentDisposition = headers["Content-Disposition"]?.Split(';').Select(x => x.Split(new[] { '=' }, 2)).Where(x => x.Length == 2)
-                                                                        .ToDictionary(x => x[0].Trim().ToLowerInvariant(), x => x[1].Trim());
+                        .ToDictionary(x => x[0].Trim().ToLowerInvariant(), x => x[1].Trim());
                 if (contentDisposition != null) {
                     if (contentDisposition.TryGetValue("filename", out var value)) {
                         filename = JsonConvert.DeserializeObject<string>(value);
@@ -181,6 +183,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             // Common variables
             string filename = null, selectedDestination = null, actualFootprint = null;
             Stream remoteData = null;
+            string loadedData = null;
 
             var resumeSupported = ResumeSupported;
 
@@ -208,6 +211,36 @@ namespace AcManager.Tools.Helpers.Loaders {
                 if (client.ResponseHeaders != null) {
                     if (long.TryParse(client.ResponseHeaders[HttpResponseHeader.ContentLength] ?? "",
                             NumberStyles.Any, CultureInfo.InvariantCulture, out var length)) {
+                        if (client.ResponseHeaders[HttpResponseHeader.ContentType]?.StartsWith("text/html") == true
+                                && length < 256 * 1024) {
+                            Logging.Debug("HTML webpage detected, checking for redirect");
+                            if (headRequest) {
+                                Logging.Warning("Re-open request to be GET");
+                                remoteData.Dispose();
+                                remoteData = await client.OpenReadTaskAsync(Url);
+                            }
+
+                            loadedData = remoteData.ReadAsStringAndDispose();
+                            remoteData = null;
+                            var doc = new HtmlDocument();
+                            doc.LoadHtml(loadedData);
+
+                            var link = doc.DocumentNode.SelectSingleNode(@"//meta[contains(@http-equiv, 'refresh')]")?.Attributes[@"content"]?.Value;
+                            if (link == null) {
+                                Logging.Warning("Redirect is missing: " + loadedData);
+                            } else {
+                                var url = Regex.Match(link, @"\bhttp.+");
+                                if (url.Success) {
+                                    Logging.Debug("Redirect to " + url.Value);
+                                    var innerLoader =  await FlexibleLoader.CreateLoaderAsync(url.Value, this, cancellation);
+                                    if (innerLoader != null) {
+                                        return await innerLoader.DownloadAsync(client, getPreferredDestination, reportDestination,
+                                                checkIfPaused, progress, cancellation);
+                                    }
+                                }
+                            }
+                        }
+
                         TotalSize = information.TotalSize = length;
                     }
 
@@ -217,7 +250,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
                     // For example, Google Drive responds with “none” and yet allows to download file partially,
                     // so this header will only be checked if value is not defined.
-                    if (resumeSupported == null) {
+                    if (resumeSupported == null && loadedData == null) {
                         var accept = client.ResponseHeaders[HttpResponseHeader.AcceptRanges] ?? "";
                         if (accept.Contains("bytes")) {
                             resumeSupported = true;
@@ -274,7 +307,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 cancellation.Register(o => client.CancelAsync(), null);
 
                 // Open write stream
-                if (partiallyLoaded != null) {
+                if (partiallyLoaded != null && loadedData == null) {
                     var rangeFrom = partiallyLoaded.Length;
                     using (client.SetRange(new Tuple<long, long>(rangeFrom, -1))) {
                         Logging.Warning($"Trying to resume download from {rangeFrom} bytes…");
@@ -306,12 +339,12 @@ namespace AcManager.Tools.Helpers.Loaders {
                         }
 
                         using (var file = new FileStream(filename, FileMode.Append, FileAccess.Write)) {
-                            await CopyToAsync(remoteData, file, checkIfPaused, new Progress<long>(v => {
-                                progress?.Report(v + rangeFrom);
-                            }), cancellation);
+                            await CopyToAsync(remoteData, file, checkIfPaused, new Progress<long>(v => { progress?.Report(v + rangeFrom); }), cancellation);
                             cancellation.ThrowIfCancellationRequested();
                         }
                     }
+                } else if (loadedData != null) {
+                    File.WriteAllText(filename, loadedData);
                 } else {
                     if (headRequest) {
                         Logging.Warning("Re-open request to be GET");
@@ -342,7 +375,9 @@ namespace AcManager.Tools.Helpers.Loaders {
 
                 throw;
             } finally {
-                remoteData?.Dispose();
+                if (remoteData != null) {
+                    remoteData.Dispose();
+                }
             }
         }
 

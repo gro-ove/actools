@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
+using AcTools.Utils;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -16,11 +20,19 @@ namespace AcManager.Pages.ServerPreset {
         public ServerPresetRunningStatus() {
             InitializeComponent();
 
-            var plugin = Model?.SelectedObject.CmPlugin;
-            if (plugin != null) {
-                plugin.Updated += OnPluginUpdated;
-                this.OnActualUnload(() => plugin.Updated -= OnPluginUpdated);
-            }
+            CompositionTargetEx.Rendering += OnRendering;
+            this.OnActualUnload(() => CompositionTargetEx.Rendering -= OnRendering);
+        }
+
+        private static TimeSpan _last = TimeSpan.Zero;
+
+        private void OnRendering(object sender, EventArgs e) {
+            var args = (RenderingEventArgs)e;
+
+            if (args.RenderingTime == _last) return;
+            _last = args.RenderingTime;
+
+            UpdateMap();
         }
 
         [CanBeNull]
@@ -83,7 +95,9 @@ namespace AcManager.Pages.ServerPreset {
                 Clip = new EllipseGeometry { RadiusX = dotSize / 2, RadiusY = dotSize / 2, Center = new Point(dotSize / 2, dotSize / 2) },
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
-                RenderTransform = new TranslateTransform()
+                RenderTransform = new TranslateTransform(),
+                ToolTip = FindResource(@"DriverToolTip"),
+                ContextMenu = FindResource(@"DriverContextMenu") as ContextMenu
             };
             TrackMapItems.Children.Add(created);
             return created;
@@ -103,16 +117,31 @@ namespace AcManager.Pages.ServerPreset {
                 _mapItemPool.Add(image);
             }
 
-            foreach (var item in leaderboard.Leaderboard) {
+            var mapWidth = TrackMap.ActualWidth;
+            var mapHeight = TrackMap.ActualHeight;
+            foreach (var item in leaderboard.ConnectedOnly) {
                 var driver = item.Driver;
                 var location = item.Location;
-                if (driver == null || location == null) continue;
+                if (driver == null || location.PositionX == 0f && location.PositionZ == 0f) continue;
 
                 var image = MapCreateItem(driver.CarSkin?.LiveryImage);
-                image.Filename = driver.CarSkin?.LiveryImage;
-                image.Visibility = Visibility.Visible;
-                ((TranslateTransform)image.RenderTransform).X = _mapParams.GetRelativeX(location.PositionX) * TrackMap.ActualWidth;
-                ((TranslateTransform)image.RenderTransform).Y = _mapParams.GetRelativeY(location.PositionZ) * TrackMap.ActualHeight;
+                if (image.Filename != driver.CarSkin?.LiveryImage) {
+                    image.Filename = driver.CarSkin?.LiveryImage;
+                    image.DataContext = item;
+                }
+                if (image.Visibility != Visibility.Visible) {
+                    image.Visibility = Visibility.Visible;
+                }
+                var transform = (TranslateTransform)image.RenderTransform;
+                var newX = _mapParams.GetRelativeX(location.PositionX) * mapWidth;
+                var newY = _mapParams.GetRelativeY(location.PositionZ) * mapHeight;
+                if ((newX - transform.X).Abs() > 10 || (newY - transform.Y).Abs() > 10) {
+                    transform.X = newX;
+                    transform.Y = newY;
+                } else {
+                    transform.X += (newX - transform.X) * 0.2;
+                    transform.Y += (newY - transform.Y) * 0.2;
+                }
             }
 
             foreach (var image in _mapItemPool) {
@@ -120,8 +149,17 @@ namespace AcManager.Pages.ServerPreset {
             }
         }
 
-        private void OnPluginUpdated(object sender, EventArgs args) {
-            _mapBusy.Yield(UpdateMap);
+        private void OnChatTextKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
+                e.Handled = true;
+                Model?.CmPlugin?.Chat.SendChatCommand.ExecuteAsync();
+            }
+        }
+
+        private void OnChatTextKeyUp(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
+                e.Handled = true;
+            }
         }
     }
 }

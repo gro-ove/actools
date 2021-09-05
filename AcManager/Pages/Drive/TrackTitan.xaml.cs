@@ -205,9 +205,8 @@ namespace AcManager.Pages.Drive {
 
         public class TrackTitanApiBridge : JsBridgeBase {
             public TrackTitanApiBridge() {
-                AcApiHosts.Add(@"worldsimseries.com");
-                AcApiHosts.Add(@"paddock.worldsimseries.com");
-                AcApiHosts.Add(@"local.wss:8000");
+                AcApiHosts.Add(@"tracktitan.io");
+                AcApiHosts.Add(@"www.tracktitan.io");
             }
 
             public override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {

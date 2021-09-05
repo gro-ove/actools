@@ -4,7 +4,7 @@
   <!-- Special colors -->
   <Color x:Key="AccentColor">#1BA1E2</Color>
   <Color x:Key="AccentOverlayColor">#FFFFFF</Color>
-  <Color x:Key="ErrorColor">#FF8C00</Color>
+  <Color x:Key="ErrorColor">#FF4400</Color>
   <Color x:Key="GoColor">#00FF00</Color>
 
   <!-- Curves -->

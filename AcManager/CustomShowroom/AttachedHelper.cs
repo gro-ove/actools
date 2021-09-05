@@ -356,7 +356,7 @@ namespace AcManager.CustomShowroom {
         }
 
         private Visibility GetVisibility() {
-            return _visible && (OptionInteropMode || IsAnyActive()) ? Visibility.Visible : Visibility.Hidden;
+            return _visible && IsAnyActive() ? Visibility.Visible : Visibility.Hidden;
         }
 
         private async Task UpdateVisibility(Window child, Visibility visibility, bool setFocus) {
@@ -398,7 +398,7 @@ namespace AcManager.CustomShowroom {
                 Logging.Debug($"Update visibility; keep focus: {keepFocus}, is busy: {_busyUpdating.Is}");
             }
 
-            _busyUpdating.DoDelay(async () => {
+            _busyUpdating.TaskDelay(async () => {
                 var visibility = GetVisibility();
                 await UpdateVisibility(_child, visibility, keepFocus);
                 foreach (var window in _attached) {

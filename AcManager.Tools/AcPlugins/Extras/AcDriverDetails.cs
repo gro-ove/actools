@@ -14,7 +14,9 @@ namespace AcManager.Tools.AcPlugins.Extras {
             Guid = guid;
             DriverName = name;
             CarId = carId;
-            CarSkinId = skinId;
+
+            var i = skinId.IndexOf('/');
+            CarSkinId = i != -1 ? skinId.Substring(0, i) : skinId;
         }
 
         [JsonProperty("car")]

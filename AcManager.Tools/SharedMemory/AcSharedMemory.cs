@@ -10,6 +10,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Timer = System.Timers.Timer;
 
 namespace AcManager.Tools.SharedMemory {
     public class AcSharedMemory : NotifyPropertyChanged, IDisposable {
@@ -26,15 +27,13 @@ namespace AcManager.Tools.SharedMemory {
 
         public event EventHandler Tick;
         public event EventHandler Connect;
-
-        private Timer _timer;
+        private Timer _runTimer;
 
         private AcSharedMemory() {
             SettingsHolder.Drive.PropertyChanged += OnDrivePropertyChanged;
 
-            _timer = new Timer { AutoReset = true };
-            _timer.Elapsed += Update;
-
+            _runTimer = new Timer { AutoReset = true };
+            _runTimer.Elapsed += Update;
             Status = SettingsHolder.Drive.WatchForSharedMemory ? AcSharedMemoryStatus.Disconnected :
                     AcSharedMemoryStatus.Disabled;
         }
@@ -44,6 +43,13 @@ namespace AcManager.Tools.SharedMemory {
                 Status = SettingsHolder.Drive.WatchForSharedMemory ? AcSharedMemoryStatus.Disconnected :
                         AcSharedMemoryStatus.Disabled;
             }
+        }
+
+        private void UpdateCollectionParams(bool active, double intervalMs = 0d) {
+            if (intervalMs != 0d) {
+                _runTimer.Interval = intervalMs;
+            }
+            _runTimer.Enabled = active;
         }
 
         private AcSharedMemoryStatus? _statusValue;
@@ -68,26 +74,23 @@ namespace AcManager.Tools.SharedMemory {
 
                 switch (_statusValue) {
                     case AcSharedMemoryStatus.Disabled:
-                        _timer.Enabled = false;
+                        UpdateCollectionParams(false);
                         ResetFpsCounter(false);
                         break;
                     case AcSharedMemoryStatus.Connected:
-                        _timer.Interval = OptionNotLiveReadingInterval;
-                        _timer.Enabled = true;
+                        UpdateCollectionParams(true, OptionNotLiveReadingInterval);
                         ResetFpsCounter(false);
                         break;
                     case AcSharedMemoryStatus.Connecting:
-                        _timer.Enabled = false;
+                        UpdateCollectionParams(false);
                         ResetFpsCounter(false);
                         break;
                     case AcSharedMemoryStatus.Live:
-                        _timer.Interval = OptionLiveReadingInterval;
-                        _timer.Enabled = true;
+                        UpdateCollectionParams(true, OptionLiveReadingInterval);
                         Start?.Invoke(this, EventArgs.Empty);
                         break;
                     case AcSharedMemoryStatus.Disconnected:
-                        _timer.Interval = OptionDisconnectedReadingInterval;
-                        _timer.Enabled = true;
+                        UpdateCollectionParams(true, OptionDisconnectedReadingInterval);
                         _previousPacketId = null;
                         ResetFpsCounter(false);
                         break;
@@ -329,7 +332,7 @@ namespace AcManager.Tools.SharedMemory {
             }
         }
 
-        private void Update(object sender, ElapsedEventArgs e) {
+        private void UpdateInner() {
             try {
                 switch (Status) {
                     case AcSharedMemoryStatus.Disconnected:
@@ -350,10 +353,14 @@ namespace AcManager.Tools.SharedMemory {
                         throw new ArgumentOutOfRangeException();
                 }
             } catch (Exception ex) {
-                #if DEBUG
-                    Logging.Warning("ERROR: " + ex);
-                #endif
+#if DEBUG
+                Logging.Warning("ERROR: " + ex);
+#endif
             }
+        }
+
+        private void Update(object sender, ElapsedEventArgs e) {
+            UpdateInner();
         }
 
         /// <summary>
@@ -382,7 +389,7 @@ namespace AcManager.Tools.SharedMemory {
         public event EventHandler<AcSharedEventArgs> Updated;
 
         public void Dispose() {
-            DisposeHelper.Dispose(ref _timer);
+            DisposeHelper.Dispose(ref _runTimer);
             DisposeHelper.Dispose(ref _gameProcess);
             DisposeHelper.Dispose(ref _physicsFile);
             DisposeHelper.Dispose(ref _graphicsFile);

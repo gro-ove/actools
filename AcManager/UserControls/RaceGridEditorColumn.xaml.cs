@@ -25,7 +25,7 @@ namespace AcManager.UserControls {
         public RaceGridEditorColumn() {
             InputBindings.AddRange(new[] {
                 new InputBinding(new DelegateCommand(() => {
-                    if (SelectCarPopup.IsOpen) {
+                    if (SelectCarPopup?.IsOpen == true) {
                         var model = Model;
                         var selectCar = (SelectCarPopup.Content as DependencyObject)?.FindLogicalChild<SelectCar>();
                         if (model == null || selectCar == null) return;
@@ -43,14 +43,14 @@ namespace AcManager.UserControls {
                         foreach (var entry in dataGrid.SelectedItems.OfType<RaceGridEntry>().ToList()) {
                             entry.DeleteCommand.Execute(null);
                         }
-                    } else {
+                    } else if (ListBox != null) {
                         foreach (var entry in ListBox.SelectedItems.OfType<RaceGridEntry>().ToList()) {
                             entry.DeleteCommand.Execute(null);
                         }
                     }
                 }), new KeyGesture(Key.Delete)),
                 new InputBinding(new DelegateCommand(() => {
-                    if (SelectCarPopup.IsOpen) {
+                    if (SelectCarPopup?.IsOpen == true) {
                         AddOpponentCommand.Execute(null);
                     }
                 }), new KeyGesture(Key.Enter)),

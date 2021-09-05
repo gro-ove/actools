@@ -6,7 +6,7 @@ using AcManager.Internal;
 namespace AcManager.Tools.Helpers.Api {
     public static class HttpClientHolder {
         private static HttpClient _httpClient;
-        
+
         public static HttpClient Get() {
             if (_httpClient == null) {
                 var handler = new HttpClientHandler {

@@ -13,9 +13,9 @@ namespace AcManager.Tools.AcPlugins.Extras {
         }
 
         [JsonProperty("x")]
-        public float PositionX { get; private set; }
+        public float PositionX { get; set; }
 
         [JsonProperty("z")]
-        public float PositionZ { get; private set; }
+        public float PositionZ { get; set; }
     }
 }

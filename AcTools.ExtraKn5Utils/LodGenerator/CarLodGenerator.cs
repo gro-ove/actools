@@ -257,14 +257,15 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
 
                 var mesh = Kn5MeshUtils.Create($"{geometry.Key}__mesh_", parent.Children[0].MaterialId);
                 if (parent.Children.Count != 1) throw new Exception("Unexpected arrangement");
-                MergeMeshWith(mesh, geometry.Value.Select(x => Tuple.Create(fbx.GetGeometry(x), 1d)));
+                MergeMeshWith(parent, mesh, geometry.Value.Select(x => Tuple.Create(fbx.GetGeometry(x), 1d)));
                 parent.Children.Add(mesh);
             }
             RemoveEmpty(preparedKn5.RootNode);
             return preparedKn5;
 
-            void MergeMeshWith(Kn5Node node, IEnumerable<Tuple<FbxNode, double>> geometriesList) {
-                var mesh = new Kn5MeshBuilder();
+            void MergeMeshWith(Kn5Node parent, Kn5Node mesh, IEnumerable<Tuple<FbxNode, double>> geometriesList) {
+                var builder = new Kn5MeshBuilder();
+                var subCounter = 1;
                 foreach (var geometry in geometriesList) {
                     var fbxIndices = geometry?.Item1?.GetRelative("PolygonVertexIndex")?.Value?.GetAsIntArray();
                     if (fbxIndices == null) {
@@ -278,8 +279,23 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
                     var scale = (float)(1d / geometry.Item2);
 
                     for (var i = 0; i < fbxIndices.Length; ++i) {
+                        if (i % 3 == 0 && builder.IsCloseToLimit) {
+                            builder.SetTo(mesh);
+                            mesh.RecalculateTangents();
+
+                            builder.Clear();
+                            var oldIndex = parent.Children.IndexOf(mesh);
+                            mesh = Kn5MeshUtils.Create(mesh.Name + $"___$sub:{subCounter}", mesh.MaterialId);
+                            ++subCounter;
+                            if (oldIndex != -1 && oldIndex < parent.Children.Count - 1) {
+                                parent.Children.Insert(oldIndex + 1, mesh);
+                            } else {
+                                parent.Children.Add(mesh);
+                            }
+                        }
+
                         var index = fbxIndices[i] < 0 ? -fbxIndices[i] - 1 : fbxIndices[i];
-                        mesh.AddVertex(new Kn5Node.Vertex {
+                        builder.AddVertex(new Kn5Node.Vertex {
                             Position = new Vec3((fbxVertices[index * 3] - offset.X) * scale, (fbxVertices[index * 3 + 1] - offset.Y) * scale,
                                     (fbxVertices[index * 3 + 2] - offset.Z) * scale),
                             Normal = new Vec3(fbxNormals[i * 3], fbxNormals[i * 3 + 1], fbxNormals[i * 3 + 2]),
@@ -287,17 +303,17 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
                         });
                     }
                 }
-                mesh.SetTo(node);
-                node.RecalculateTangents();
+                builder.SetTo(mesh);
+                mesh.RecalculateTangents();
             }
 
-            void MergeMesh(Kn5Node node, IEnumerable<Kn5Node> merges) {
+            void MergeMesh(Kn5Node parent, Kn5Node node, IEnumerable<Kn5Node> merges) {
                 if (Regex.IsMatch(node.Name, @"___\$extra:\d+$")) {
                     node.Vertices = new Kn5Node.Vertex[0];
                     return;
                 }
 
-                MergeMeshWith(node, Enumerable.Range(-1, 100).Select(i => GetGeometry(node, i)).TakeWhile(i => i != null)
+                MergeMeshWith(parent, node, Enumerable.Range(-1, 100).Select(i => GetGeometry(node, i)).TakeWhile(i => i != null)
                         .Concat(merges.Select(n => GetGeometry(n))));
             }
 
@@ -313,13 +329,13 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
             }
 
             void MergeNode(Kn5Node node) {
-                foreach (var child in node.Children) {
+                foreach (var child in node.Children.ToList()) {
                     if (child.NodeClass == Kn5NodeClass.Base) {
                         MergeNode(child);
                     } else if (child.NodeClass == Kn5NodeClass.Mesh && child.Vertices.Length > 0) {
                         var mergeKey = MergeKey(child);
                         var merge = node.Children.ApartFrom(child).Where(c => c.NodeClass == Kn5NodeClass.Mesh && MergeKey(c) == mergeKey).ToList();
-                        MergeMesh(child, merge);
+                        MergeMesh(node, child, merge);
                         merge.ForEach(m => m.Vertices = new Kn5Node.Vertex[0]);
                     }
                 }
@@ -452,7 +468,7 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
 
                     // This way it would kind of rename them all at once, allowing to swap names if necessary
                     stage.Rename?.Where(x => x.OldName != null).Select(x => new {
-                        Nodes = generated.Nodes.Where(filterContext.CreateFilter(x.OldName).Test).ToList(),
+                        Nodes = generated.Nodes.Where(filterContext.CreateFilter(x.OldName ?? string.Empty).Test).ToList(),
                         x.NewName
                     }).Where(x => x.NewName != null).ToList()
                             .ForEach(x => x.Nodes.ForEach(y => y.Name = string.Format(x.NewName, y.Name)));

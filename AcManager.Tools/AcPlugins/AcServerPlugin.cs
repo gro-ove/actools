@@ -1,8 +1,9 @@
-﻿using AcManager.Tools.AcPlugins.Info;
+﻿using System;
+using AcManager.Tools.AcPlugins.Info;
 using AcManager.Tools.AcPlugins.Messages;
 
 namespace AcManager.Tools.AcPlugins {
-    public interface IAcServerPlugin {
+    public interface IAcServerPlugin : IDisposable {
         string GetName();
 
         void OnInit(AcServerPluginManager manager);
@@ -123,5 +124,7 @@ namespace AcManager.Tools.AcPlugins {
         public virtual void OnAcServerTimeout() { }
 
         public virtual void OnAcServerAlive() { }
+        
+        public virtual void Dispose() { }
     }
 }

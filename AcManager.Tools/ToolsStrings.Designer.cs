@@ -538,6 +538,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OpenVR.
+        /// </summary>
+        public static string AcSettings_CameraMode_OpenVr {
+            get {
+                return ResourceManager.GetString("AcSettings_CameraMode_OpenVr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Single screen.
         /// </summary>
         public static string AcSettings_CameraMode_SingleScreen {

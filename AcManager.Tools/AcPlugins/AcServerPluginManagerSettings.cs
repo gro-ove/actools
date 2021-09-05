@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -76,8 +75,6 @@ namespace AcManager.Tools.AcPlugins {
         }
 
         public static AcServerPluginManagerSettings Deserialize(string data) {
-            Logging.Debug(data);
-            Logging.Debug("ListeningPort=" + JsonConvert.DeserializeObject<AcServerPluginManagerSettings>(data).ListeningPort);
             return JsonConvert.DeserializeObject<AcServerPluginManagerSettings>(data);
         }
     }

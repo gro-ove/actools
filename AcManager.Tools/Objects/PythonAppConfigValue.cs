@@ -19,7 +19,11 @@ namespace AcManager.Tools.Objects {
 
         string IWithId<string>.Id => OriginalKey;
 
+        [CanBeNull]
         public Func<IPythonAppConfigValueProvider, bool> IsEnabledTest { get; private set; }
+
+        [CanBeNull]
+        public Func<IPythonAppConfigValueProvider, bool> IsHiddenTest { get; private set; }
 
         [CanBeNull]
         public string ToolTip { get; private set; }
@@ -28,6 +32,7 @@ namespace AcManager.Tools.Objects {
 
         private string _value;
 
+        [CanBeNull]
         public string Value {
             get => _value;
             set {
@@ -49,6 +54,13 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _isEnabled);
         }
 
+        private bool _isHidden;
+
+        public bool IsHidden {
+            get => _isHidden;
+            set => Apply(value, ref _isHidden);
+        }
+
         private bool _isNew;
 
         public bool IsNew {
@@ -58,43 +70,64 @@ namespace AcManager.Tools.Objects {
 
         public string FilesRelativeDirectory { get; private set; }
 
-        private static readonly Regex ValueCommentaryRegex = new Regex(@"^([^(;]*)(?:\(([^)]+)\))?(?:;(.*))?", RegexOptions.Compiled);
-
-        private static readonly Regex RangeRegex =
-                new Regex(@"^from\s+(-?\d+(?:\.\d*)?|[_a-zA-Z]\w+)( ?\S+)?\s+to\s+(-?\d+(?:\.\d*)?|[_a-zA-Z]\w+)(,\s*per)?(?:,\s*round\s+to\s+(\d+(?:\.\d*)?))?(,\s*round)?",
-                        RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-        private static readonly Regex NumberRegex = new Regex(@"^(?:number|float)",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-        private static readonly Regex KeyRegex = new Regex(@"^(?:key|button|keyboard|keyboard button)",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-        private static readonly Regex BooleanRegex = new Regex(@"^([\w-]+)\s+or\s+([\w-]+)",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-        private static readonly Regex OptionsRegex = new Regex(@"(?:^|\s*,|\s*\bor\b)\s*(?:[""`'“”](.+?)[""`'“”]|(((?!\bor\b)[^,])+))",
+        private static readonly Regex ValueCommentaryRegex = new Regex(
+                @"^([^(;]*)(?:\(([^)]+)\))?(?:;(.*))?",
                 RegexOptions.Compiled);
 
-        private static readonly Regex OptionValueRegex = new Regex(@"^(.+)(?:\s+is\s+|=)(.+)$",
+        private static readonly Regex RangeRegex = new Regex(
+                @"^from\s+(-?\d+(?:\.\d*)?|[_a-zA-Z]\w+)( ?\S+)?\s+to\s+(-?\d+(?:\.\d*)?|[_a-zA-Z]\w+)(,\s*per)?(?:,\s*round\s+to\s+(\d+(?:\.\d*)?))?(,\s*round)?",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex OptionValueAltRegex = new Regex(@"^(.+)(?:\s+for\s+|=)(.+)$",
+        private static readonly Regex NumberRegex = new Regex(
+                @"^(?:number|float)",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex DependentRegex = new Regex(@"^(?:(.+);)?\s*(?:(not available)|(only)) with (.+)",
+        private static readonly Regex KeyRegex = new Regex(
+                @"^(?:key|button|keyboard|keyboard button)",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex IsNewRegex = new Regex(@"^(?:(.+);)?\s*new\b",
+        private static readonly Regex BooleanRegex = new Regex(
+                @"^([\w-]+)\s+or\s+([\w-]+)",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex DisabledRegex = new Regex(@"^(?:0|off|disabled|false|no|none)$",
+        private static readonly Regex OptionsRegex = new Regex(
+                @"(?:^|\s*,|\s*\bor\b)\s*(?:[""`'“”](.+?)[""`'“”]|(((?!\bor\b)[^,])+))",
+                RegexOptions.Compiled);
+
+        private static readonly Regex OptionValueRegex = new Regex(
+                @"^(.+)(?:\s+is\s+|=)(.+)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex FileRegex = new Regex(@"^(local\s+)?(?:(dir|directory|folder|path)|(?:file|filename)(?:\s+\((.+)\))?$)",
+        private static readonly Regex OptionValueAltRegex = new Regex(
+                @"^(.+)(?:\s+for\s+|=)(.+)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex PluginRegex = new Regex(@"^look for (\S+) in (\S+)$",
+        private static readonly Regex DependentRegex = new Regex(
+                @"^(?:(.+);)?\s*(?:(not available)|(only)) with ([^;]+)",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly Regex HiddenRegex = new Regex(
+                @"^(?:(.+);)?\s*hidden with ([^;]+)",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly Regex VisibleRegex = new Regex(
+                @"^(?:(.+);)?\s*visible with ([^;]+)",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly Regex IsNewRegex = new Regex(
+                @"^(?:(.+);)?\s*new\b",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly Regex DisabledRegex = new Regex(
+                @"^(?:0|off|disabled|false|no|none)$",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly Regex FileRegex = new Regex(
+                @"^((?:local|global)\s+)?(?:(dir|directory|folder|path)|(?:file|filename)(?:\s+\((.+)\))?)(?:,\s*relative\s+to\s+(___sub\w+))?$",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly Regex PluginRegex = new Regex(
+                @"^look for (\S+) in (\S+)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         internal class CustomBooleanTestEntry : ITestEntry {
@@ -129,15 +162,18 @@ namespace AcManager.Tools.Objects {
 
         protected PythonAppConfigValue() { }
 
+        [CanBeNull]
         private string _originalValue;
 
         public void Set(string key, string value, string name, string toolTip,
-                Func<IPythonAppConfigValueProvider, bool> isEnabledTest, bool isNew, string originalValue) {
+                Func<IPythonAppConfigValueProvider, bool> isEnabledTest, Func<IPythonAppConfigValueProvider, bool> isHiddenTest,
+                bool isNew, string originalValue) {
             OriginalKey = key;
             DisplayName = name;
             ToolTip = toolTip ?? key;
             Value = value;
             IsEnabledTest = isEnabledTest;
+            IsHiddenTest = isHiddenTest;
             IsNew = isNew;
             _originalValue = originalValue;
             _resetCommand?.RaiseCanExecuteChanged();
@@ -169,12 +205,13 @@ namespace AcManager.Tools.Objects {
         public ICommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(Reset, () => _originalValue != null));
 
         [CanBeNull]
-        public static IPythonAppConfigValue Create([NotNull] PythonAppConfigParams configParams, KeyValuePair<string, string> pair, [CanBeNull] string commentary,
-                [CanBeNull] string actualValue, bool isResetable) {
+        public static IPythonAppConfigValue Create([NotNull] PythonAppConfigParams configParams, KeyValuePair<string, string> pair,
+                [CanBeNull] string commentary, [CanBeNull] string actualValue, bool isResetable) {
             string name = null, toolTip = null;
             Func<IPythonAppConfigValueProvider, bool> isEnabledTest = null;
+            Func<IPythonAppConfigValueProvider, bool> isHiddenTest = null;
             var isNew = false;
-            var result = CreateInner(pair, commentary, ref name, ref toolTip, ref isEnabledTest, ref isNew);
+            var result = CreateInner(pair, commentary, ref name, ref toolTip, ref isEnabledTest, ref isHiddenTest, ref isNew);
             if (result == null) return null;
 
             if (string.IsNullOrEmpty(name)) {
@@ -182,7 +219,7 @@ namespace AcManager.Tools.Objects {
             }
 
             result.SetFilesRelativeDirectory(configParams.FilesRelativeDirectory);
-            result.Set(pair.Key, actualValue ?? pair.Value, name, toolTip, isEnabledTest, isNew, isResetable ? pair.Value : null);
+            result.Set(pair.Key, actualValue ?? pair.Value, name, toolTip, isEnabledTest, isHiddenTest, isNew, isResetable ? pair.Value : null);
             return result;
         }
 
@@ -202,11 +239,42 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public static Func<IPythonAppConfigValueProvider, bool> CreateDisabledFunc(string query, bool invert, Func<string, string> unwrap) {
-            query = query
-                    .Replace(" and ", " & ")
-                    .Replace(" or ", " | ")
-                    .Replace(" not ", " ! ");
+        private static Func<IPythonAppConfigValueProvider, bool> CreateDisabledFunc(string query, bool invert, Func<string, string> unwrap) {
+            query = Regex.Replace(query, @"\b(and|or|not)\b", m => {
+                switch (m.Value) {
+                    case "and":
+                        return "&";
+                    case "or":
+                        return "|";
+                    case "not":
+                        return "!";
+                }
+                return m.Value;
+            });
+
+            var filter = Filter.Create(new TesterInner(unwrap), query, new FilterParams {
+                StringMatchMode = StringMatchMode.StartsWith,
+                BooleanTestFactory = b => new CustomBooleanTestEntry(b),
+                ValueSplitter = new ValueSplitter(ValueSplitFunc.Custom, ValueSplitFunc.Separators),
+                ValueConversion = null
+            });
+
+            if (invert) return p => !filter.Test(p);
+            return filter.Test;
+        }
+
+        private static Func<IPythonAppConfigValueProvider, bool> CreateHiddenFunc(string query, bool invert, Func<string, string> unwrap) {
+            query = Regex.Replace(query, @"\b(and|or|not)\b", m => {
+                switch (m.Value) {
+                    case "and":
+                        return "&";
+                    case "or":
+                        return "|";
+                    case "not":
+                        return "!";
+                }
+                return m.Value;
+            });
 
             var filter = Filter.Create(new TesterInner(unwrap), query, new FilterParams {
                 StringMatchMode = StringMatchMode.StartsWith,
@@ -240,7 +308,8 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         private static IPythonAppConfigValue CreateInner(KeyValuePair<string, string> pair, [CanBeNull] string commentary, [CanBeNull] ref string name,
-                [CanBeNull] ref string toolTip, [CanBeNull] ref Func<IPythonAppConfigValueProvider, bool> isEnabledTest, ref bool isNew) {
+                [CanBeNull] ref string toolTip, [CanBeNull] ref Func<IPythonAppConfigValueProvider, bool> isEnabledTest,
+                [CanBeNull] ref Func<IPythonAppConfigValueProvider, bool> isHiddenTest, ref bool isNew) {
             var value = pair.Value;
             if (commentary != null) {
                 var match = ValueCommentaryRegex.Match(commentary);
@@ -265,6 +334,18 @@ namespace AcManager.Tools.Objects {
                         if (dependent.Success) {
                             description = dependent.Groups[1].Value;
                             isEnabledTest = CreateDisabledFunc(dependent.Groups[4].Value.Trim(), dependent.Groups[2].Success, unwrap);
+                        }
+
+                        var hidden = HiddenRegex.Match(description);
+                        if (hidden.Success) {
+                            description = hidden.Groups[1].Value;
+                            isHiddenTest = CreateHiddenFunc(hidden.Groups[2].Value.Trim(), false, unwrap);
+                        }
+
+                        var visible = VisibleRegex.Match(description);
+                        if (visible.Success) {
+                            description = visible.Groups[1].Value;
+                            isHiddenTest = CreateHiddenFunc(visible.Groups[2].Value.Trim(), true, unwrap);
                         }
 
                         var isNewMatch = IsNewRegex.Match(description);
@@ -303,8 +384,14 @@ namespace AcManager.Tools.Objects {
 
                         var file = FileRegex.Match(description);
                         if (file.Success) {
-                            return new PythonAppConfigFileValue(file.Groups[2].Success, !file.Groups[1].Success,
-                                    file.Groups[3].Success ? unwrap(file.Groups[3].Value) : null);
+                            return new PythonAppConfigFileValue(file.Groups[2].Success,
+                                    file.Groups[1].Value.Contains("local", StringComparison.OrdinalIgnoreCase)
+                                            ? PythonAppConfigFileValue.AbsoluteMode.Disallow
+                                            : file.Groups[1].Value.Contains("global", StringComparison.OrdinalIgnoreCase)
+                                                    ? PythonAppConfigFileValue.AbsoluteMode.Require
+                                                    : PythonAppConfigFileValue.AbsoluteMode.Allow,
+                                    file.Groups[3].Success ? unwrap(file.Groups[3].Value) : null,
+                                    file.Groups[4].Success ? unwrap(file.Groups[4].Value) : null);
                         }
 
                         var plugin = PluginRegex.Match(description);
@@ -314,7 +401,7 @@ namespace AcManager.Tools.Objects {
 
                         if (description.IndexOf(',') != -1) {
                             var options = OptionsRegex.Matches(description).Cast<Match>()
-                                                      .Select(x => (x.Groups[1].Success ? x.Groups[1].Value : x.Groups[2].Value).Trim()).ToArray();
+                                    .Select(x => (x.Groups[1].Success ? x.Groups[1].Value : x.Groups[2].Value).Trim()).ToArray();
                             if (options.Length > 0) {
                                 return new PythonAppConfigOptionsValue(options.Select(x => {
                                     var m1 = OptionValueAltRegex.Match(x);
@@ -375,6 +462,9 @@ namespace AcManager.Tools.Objects {
         public virtual void UpdateReferenced(IPythonAppConfigValueProvider provider) {
             if (IsEnabledTest != null) {
                 IsEnabled = IsEnabledTest(provider);
+            }
+            if (IsHiddenTest != null) {
+                IsHidden = IsHiddenTest(provider);
             }
         }
     }

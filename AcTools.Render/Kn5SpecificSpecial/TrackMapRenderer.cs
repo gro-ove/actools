@@ -336,8 +336,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 FileUtils.EnsureFileDirectoryExists(filename);
                 new IniFile {
                     ["PARAMETERS"] = {
-                        ["WIDTH"] = Width,
-                        ["HEIGHT"] = Height,
+                        ["WIDTH"] = Width + Margin * 2,
+                        ["HEIGHT"] = Height + Margin * 2,
                         ["X_OFFSET"] = XOffset,
                         ["Z_OFFSET"] = ZOffset,
                         ["MARGIN"] = Margin,
@@ -387,10 +387,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         private void RebuildAiLane() {
+            if (_aiSpline == null) return;
             RootNode.Dispose();
             RootNode = new RenderableList("_root", Matrix.Identity, new[] {
                 AiLaneObject.Create(_aiSpline, AiLaneActualWidth ? (float?)null : AiLaneWidth)
-            });
+            }.NonNull());
             UpdateFiltered();
             _aiLaneDirty = false;
         }
@@ -404,10 +405,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 });
                 _aiLaneDirty = false;
             } else if (_kn5 != null) {
-                RootNode = ToRenderableList(Kn5DepthOnlyConverter.Instance.Convert(_kn5.RootNode));
+                RootNode = ToRenderableList(Kn5DepthOnlyForceVisibleConverter.Instance.Convert(_kn5.RootNode));
             } else if (_description != null) {
                 RootNode = new RenderableList("_root", Matrix.Identity, _description.GetEntries().Select(x => {
-                    var node = ToRenderableList(Kn5DepthOnlyConverter.Instance.Convert(x.Kn5.RootNode));
+                    var node = ToRenderableList(Kn5DepthOnlyForceVisibleConverter.Instance.Convert(x.Kn5.RootNode));
                     node.LocalMatrix = x.Matrix;
                     return node;
                 }));

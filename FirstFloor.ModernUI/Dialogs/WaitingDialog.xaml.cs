@@ -186,8 +186,10 @@ namespace FirstFloor.ModernUI.Dialogs {
         }
 
         private bool _closeWithoutCancellation;
+        private bool _pastClosing;
 
         private void OnClosing(object sender, CancelEventArgs e) {
+            _pastClosing = true;
             if (!_closeWithoutCancellation && _cancellationTokenSource != null) {
                 _cancellationTokenSource.Cancel();
                 IsCancelled = true;
@@ -292,14 +294,15 @@ namespace FirstFloor.ModernUI.Dialogs {
             Progress = value;
             ProgressIndetermitate = Equals(value, 0d);
 
-            if (_taskbarProgress == null) {
-                _taskbarProgress = TaskbarService.Create(1000d);
-            }
-
-            if (_progressIndetermitate) {
-                _taskbarProgress.Set(TaskbarState.Indeterminate, 0.5);
-            } else {
-                _taskbarProgress.Set(TaskbarState.Normal, value);
+            if (!_pastClosing) {
+                if (_taskbarProgress == null) {
+                    _taskbarProgress = TaskbarService.Create($"Waiting: {Title}", 1000d);
+                }
+                if (_progressIndetermitate) {
+                    _taskbarProgress.Set(TaskbarState.Indeterminate, 0.5);
+                } else {
+                    _taskbarProgress.Set(TaskbarState.Normal, value);
+                }
             }
         }
 

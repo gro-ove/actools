@@ -139,7 +139,7 @@ namespace FirstFloor.ModernUI {
                 var oldItem = wrapped[wrappedIndex];
                 wrapped.RemoveAt(wrappedIndex);
                 indexes.RemoveAt(wrappedIndex);
-                OnIndexerChanged();
+                OnCountAndIndexerChanged();
                 OnCollectionChanged(NotifyCollectionChangedAction.Remove, oldItem, wrappedIndex);
             } else {
                 var newItem = Wrap(source);
@@ -148,7 +148,7 @@ namespace FirstFloor.ModernUI {
                     var destination = FindWhereToInsert(sourceIndex - 1);
                     wrapped.Insert(destination, newItem);
                     indexes.Insert(destination, sourceIndex);
-                    OnIndexerChanged();
+                    OnCountAndIndexerChanged();
                     OnCollectionChanged(NotifyCollectionChangedAction.Add, newItem, destination);
                     return;
                 }

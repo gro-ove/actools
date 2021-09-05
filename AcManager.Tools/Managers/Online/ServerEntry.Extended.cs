@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.ContentInstallation;
@@ -213,7 +214,7 @@ namespace AcManager.Tools.Managers.Online {
             PasswordChecksum = extended.PasswordChecksum;
             AssistsInformation = extended.Assists;
             Description = extended.Description;
-            WeatherId = extended.WeatherId;
+            WeatherId = Regex.IsMatch(extended.WeatherId ?? string.Empty, @"^\d+_\w+=\d+") ? "WeatherFX" : extended.WeatherId;
             AmbientTemperature = extended.AmbientTemperature;
             RoadTemperature = extended.RoadTemperature;
             WindDirection = extended.WindDirection;

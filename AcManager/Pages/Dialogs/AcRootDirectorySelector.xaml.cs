@@ -141,7 +141,7 @@ namespace AcManager.Pages.Dialogs {
                     _value = value;
                     OnPropertyChanged();
 
-                    IsValueAcceptable = AcRootDirectory.CheckDirectory(_value, out _previousInacceptanceReason);
+                    IsValueAcceptable = AcRootDirectory.CheckDirectory(_value, true, out _previousInacceptanceReason);
                     OnErrorsChanged();
                     _getSteamIdCommand?.RaiseCanExecuteChanged();
                 }

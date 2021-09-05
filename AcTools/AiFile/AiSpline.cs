@@ -43,6 +43,7 @@ namespace AcTools.AiFile {
             }
         }
 
+        [NotNull]
         public static AiSpline FromFile([NotNull] string filename) {
             if (!File.Exists(filename)) throw new FileNotFoundException(filename);
             return new AiSpline(filename);

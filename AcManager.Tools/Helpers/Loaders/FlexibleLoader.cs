@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
@@ -95,16 +97,34 @@ namespace AcManager.Tools.Helpers.Loaders {
             return CreateLoaderAsync(url, null, cancellation);
         }
 
-        [ItemCanBeNull]
-        public static async Task<ILoader> CreateLoaderAsync([NotNull] string url, [CanBeNull] ILoader parent, CancellationToken cancellation) {
+        private static string UnwrapUrl([NotNull] string url) {
             if (CmRequestHandler?.Test(url) == true) {
                 var unwrapped = CmRequestHandler.UnwrapDownloadUrl(url);
                 if (unwrapped != null) {
-                    url = unwrapped;
                     Logging.Debug($"Unwrapped URL: {unwrapped}");
-                } else {
-                    throw new OperationCanceledException("Link is handled by CM Requests Handler");
+                    return unwrapped;
                 }
+                throw new OperationCanceledException("Link is handled by CM Requests Handler");
+            }
+
+            return (from unwrapping in DataProvider.Instance.UrlUnwrappings
+                where unwrapping.Test.IsMatch(url)
+                select new Uri(url, UriKind.Absolute).GetQueryParam(unwrapping.QueryParameter)).FirstOrDefault();
+        }
+
+        [ItemCanBeNull]
+        public static async Task<ILoader> CreateLoaderAsync([NotNull] string url, [CanBeNull] ILoader parent, CancellationToken cancellation) {
+            for (var i = 0; i < 10; ++i) {
+                try {
+                    var newUrl = UnwrapUrl(url);
+                    if (newUrl != null && newUrl != url) {
+                        url = newUrl;
+                        continue;
+                    }
+                } catch (Exception e) {
+                    Logging.Warning($"URL: {url}, error: {e}");
+                }
+                break;
             }
 
             try {

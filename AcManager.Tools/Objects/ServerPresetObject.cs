@@ -39,6 +39,10 @@ namespace AcManager.Tools.Objects {
             Sessions.ItemPropertyChanged += OnSessionEntryPropertyChanged;
 
             InitSetupsItems();
+
+            PluginEntries = new ChangeableObservableCollection<PluginEntry>();
+            PluginEntries.CollectionChanged += OnPluginEntriesCollectionChanged;
+            PluginEntries.ItemPropertyChanged += OnPluginEntriesPropertyChanged;
         }
 
         protected override IniFileMode IniFileMode => IniFileMode.ValuesWithSemicolons;
@@ -158,7 +162,7 @@ namespace AcManager.Tools.Objects {
                     .Split(new[] { @"/../" }, StringSplitOptions.None);
             if (trackIdPieces.Length == 2) {
                 CspRequired = true;
-                RequiredCspVersion = trackIdPieces[0].As<int?>(null);
+                RequiredCspVersion = trackIdPieces[0].As<int?>();
             } else {
                 CspRequired = false;
                 RequiredCspVersion = null;
@@ -203,10 +207,20 @@ namespace AcManager.Tools.Objects {
             BlacklistMode = section.GetBool("BLACKLIST_MODE", true);
             MaxCollisionsPerKm = section.GetInt("MAX_CONTACTS_PER_KM", -1);
 
-            UseCmPlugin = section.GetBool("__CM_PLUGIN", false);
             PluginUdpPort = section.GetIntNullable("UDP_PLUGIN_LOCAL_PORT");
             PluginUdpAddress = section.GetNonEmpty("UDP_PLUGIN_ADDRESS");
             PluginAuthAddress = section.GetNonEmpty("AUTH_PLUGIN_ADDRESS");
+
+            var cmPluginSection = ini["__CM_PLUGIN"];
+            UseCmPlugin = cmPluginSection.GetBool("ACTIVE", false);
+            RealConditions = cmPluginSection.GetBool("REAL_CONDITIONS", false);
+            for (var i = 0; i < 100; ++i) {
+                var entryAddress = cmPluginSection.GetNonEmpty($"EXTRA_PLUGIN_{i}_ADDRESS");
+                var entryPort = cmPluginSection.GetIntNullable($"EXTRA_PLUGIN_{i}_PORT");
+                if (entryAddress != null && entryPort.HasValue) {
+                    PluginEntries.Add(new PluginEntry { Address = entryAddress, UdpPort = entryPort });
+                }
+            }
 
             // At least one weather entry is needed in order to launch the server
             var weather = new ChangeableObservableCollection<ServerWeatherEntry>(ini.GetSections("WEATHER").Select(x => new ServerWeatherEntry(x)));
@@ -343,10 +357,20 @@ namespace AcManager.Tools.Objects {
                 section.Remove("WELCOME_MESSAGE");
             }
 
-            // section.Set("__CM_PLUGIN", UseCmPlugin); // TODO
             section.Set("UDP_PLUGIN_LOCAL_PORT", PluginUdpPort);
             section.Set("UDP_PLUGIN_ADDRESS", PluginUdpAddress);
             section.Set("AUTH_PLUGIN_ADDRESS", PluginAuthAddress);
+
+            var cmPluginSection = ini["__CM_PLUGIN"];
+            cmPluginSection.Clear();
+            cmPluginSection.Set("ACTIVE", UseCmPlugin);
+            cmPluginSection.Set("REAL_CONDITIONS", RealConditions);
+            var extraPluginIndex = 0;
+            foreach (var entry in PluginEntries.Where(x => !string.IsNullOrWhiteSpace(x.Address) && x.UdpPort.HasValue)) {
+                cmPluginSection.Set($"EXTRA_PLUGIN_{extraPluginIndex}_ADDRESS", entry.Address);
+                cmPluginSection.Set($"EXTRA_PLUGIN_{extraPluginIndex}_PORT", entry.UdpPort ?? 0);
+                ++extraPluginIndex;
+            }
 
             var ftp = ini["FTP"];
             ftp.Set("HOST", FtpHost);

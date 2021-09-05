@@ -630,11 +630,15 @@ namespace AcManager {
             // Check and apply FTH fix if necessary
             CheckFaultTolerantHeap().Ignore();
 
+            // Initializing CSP handler
+            if (PatchHelper.OptionPatchSupport) {
+                PatchUpdater.Initialize();
+            }
+
             // Let’s roll
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             new AppUi(this).Run(() => {
                 if (PatchHelper.OptionPatchSupport) {
-                    PatchUpdater.Initialize();
                     PatchUpdater.Instance.Updated += OnPatchUpdated;
                 }
             });

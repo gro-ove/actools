@@ -160,7 +160,7 @@ namespace AcManager.Pages.Dialogs {
                     Model.WaitingStatus = AppStrings.Race_Preparing;
                     break;
                 case Game.ProgressState.Launching:
-                    if (AcRootDirectory.CheckDirectory(MainExecutingFile.Directory)
+                    if (AcRootDirectory.CheckDirectory(MainExecutingFile.Directory, false)
                             && MainExecutingFile.Name != "AssettoCorsa.exe"
                             && new IniFile(AcPaths.GetCfgVideoFilename())["CAMERA"].GetNonEmpty("MODE") == "OCULUS"
                             && MessageDialog.Show(

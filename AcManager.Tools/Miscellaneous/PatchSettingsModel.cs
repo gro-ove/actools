@@ -45,6 +45,11 @@ namespace AcManager.Tools.Miscellaneous {
             return _instance;
         }
 
+        [CanBeNull]
+        public static PatchSettingsModel GetExistingInstance() {
+            return _instance;
+        }
+
         private readonly bool _isLive;
         private readonly StoredValue _selectedPageId = Stored.Get("/Patch.SettingsPage.Selected");
 
@@ -360,6 +365,7 @@ namespace AcManager.Tools.Miscellaneous {
                         return null;
                     }
 
+                    cfg.ValueChanged += (s, e) => PatchHelper.OnConfigPropertyChanged(Path.GetFileName(e.Source.Filename), e.Section, e.Key);
                     return string.IsNullOrWhiteSpace(cfg.ShortDescription) ? null : cfg;
                 },
                 SaveOnlyNonDefault = true,

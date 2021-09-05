@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.AcPlugins.CspCommands;
 using AcManager.Tools.AcPlugins.Helpers;
 using AcManager.Tools.AcPlugins.Info;
 using AcManager.Tools.AcPlugins.Kunos;
@@ -1083,6 +1085,7 @@ namespace AcManager.Tools.AcPlugins {
             }
         }
 
+        [Localizable(false)]
         public void AdminCommand(string command) {
             var chatRequest = new RequestAdminCommand { Command = command };
             _udp.Send(chatRequest.ToBinary());
@@ -1144,6 +1147,22 @@ namespace AcManager.Tools.AcPlugins {
                 Logging.Debug("Request: " + requestSetSession);
             }
         }
+
+        public void BroadcastCspCommand<T>(T command) where T : struct, ICspCommand {
+            BroadcastChatMessage(command.Serialize());
+        }
+
+        public void SendCspCommand<T>(byte carId, T command) where T : struct, ICspCommand {
+            SendChatMessage(carId, command.Serialize());
+        }
+
+        public void BroadcastCspCommand(string commandSerialized) {
+            BroadcastChatMessage(commandSerialized);
+        }
+
+        public void SendCspCommand(byte carId, string commandSerialized) {
+            SendChatMessage(carId, commandSerialized);
+        }
         #endregion
 
         #region some helper methods
@@ -1165,6 +1184,9 @@ namespace AcManager.Tools.AcPlugins {
         public void Dispose() {
             if (IsConnected) {
                 Disconnect();
+            }
+            foreach (var plugin in _plugins) {
+                plugin.Dispose();
             }
         }
     }
