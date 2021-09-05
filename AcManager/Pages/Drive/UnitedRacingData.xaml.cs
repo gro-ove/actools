@@ -6,8 +6,6 @@ using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
-using AcManager.Controls.Helpers;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.UserControls.Web;
 using AcManager.Pages.Windows;
@@ -16,38 +14,29 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.Drive {
-    public partial class GridFinder: ILoadableContent {
-        private static readonly Uri GridFinderUri = new Uri("/Pages/Drive/GridFinder.xaml", UriKind.Relative);
+    public partial class UnitedRacingData : ILoadableContent {
+        private static readonly Uri UnitedRacingDataUri = new Uri("/Pages/Drive/UnitedRacingData.xaml", UriKind.Relative);
         private static string _loginToken;
 
         public static void NavigateTo(string loginToken = null) {
             _loginToken = loginToken ?? _loginToken;
             switch (Application.Current?.MainWindow) {
                 case MainWindow mainWindow:
-                    mainWindow.NavigateTo(GridFinderUri);
+                    mainWindow.NavigateTo(UnitedRacingDataUri);
                     break;
                 case null:
-                    MainWindow.NavigateOnOpen(GridFinderUri);
+                    MainWindow.NavigateOnOpen(UnitedRacingDataUri);
                     break;
             }
-        }
-
-        public GridFinder() {
-            this.SetCustomAccentColor(Color.FromArgb(255, 253, 123, 13));
         }
 
         public static PluginsRequirement Requirement { get; } = new PluginsRequirement(KnownPlugins.CefSharp);
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
             await Task.Yield();
-            // await CarsManager.Instance.EnsureLoadedAsync();
-            // await TracksManager.Instance.EnsureLoadedAsync();
         }
 
-        public void Load() {
-            // CarsManager.Instance.EnsureLoaded();
-            // TracksManager.Instance.EnsureLoaded();
-        }
+        public void Load() { }
 
         public void Initialize() {
             DataContext = new ViewModel();
@@ -59,14 +48,14 @@ namespace AcManager.Pages.Drive {
         public class ViewModel : NotifyPropertyChanged { }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class GridFinderApiProxy : JsGenericProxy {
-            public GridFinderApiProxy(JsBridgeBase bridge) : base(bridge) { }
+        public class UnitedRacingDataApiProxy : JsGenericProxy {
+            public UnitedRacingDataApiProxy(JsBridgeBase bridge) : base(bridge) { }
         }
 
-        public class GridFinderApiBridge : JsBridgeBase {
-            public GridFinderApiBridge() {
-                AcApiHosts.Add(@"grid-finder.com");
-                AcApiHosts.Add(@"www.grid-finder.com");
+        public class UnitedRacingDataApiBridge : JsBridgeBase {
+            public UnitedRacingDataApiBridge() {
+                AcApiHosts.Add(@"unitedracingdata.com");
+                AcApiHosts.Add(@"www.unitedracingdata.com");
             }
 
             public override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
@@ -77,13 +66,13 @@ namespace AcManager.Pages.Drive {
             }
 
             protected override JsProxyBase MakeProxy() {
-                return new GridFinderApiProxy(this);
+                return new UnitedRacingDataApiProxy(this);
             }
         }
 
         private void OnWebBlockLoaded(object sender, RoutedEventArgs e) {
             var browser = (WebBlock)sender;
-            browser.SetJsBridge<GridFinderApiBridge>();
+            browser.SetJsBridge<UnitedRacingDataApiBridge>();
         }
     }
 }

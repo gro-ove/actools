@@ -104,7 +104,9 @@ namespace AcManager.Tools.Helpers.Loaders {
                     Logging.Debug($"Unwrapped URL: {unwrapped}");
                     return unwrapped;
                 }
-                throw new OperationCanceledException("Link is handled by CM Requests Handler");
+
+                CmRequestHandler.Handle(url);
+                throw new NotSupportedException("Link is handled by CM Requests Handler");
             }
 
             return (from unwrapping in DataProvider.Instance.UrlUnwrappings
@@ -121,6 +123,8 @@ namespace AcManager.Tools.Helpers.Loaders {
                         url = newUrl;
                         continue;
                     }
+                } catch (NotSupportedException) {
+                    return null;
                 } catch (Exception e) {
                     Logging.Warning($"URL: {url}, error: {e}");
                 }

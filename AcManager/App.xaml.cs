@@ -506,8 +506,7 @@ namespace AcManager {
             }.ShowDialog()));
 
             BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += (sender, args) => {
-                if (args.Uri.IsAbsoluteUri && (args.Uri.OriginalString.StartsWith("https://acstuff.ru/s/", StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(args.Uri.Scheme, "acmanager", StringComparison.OrdinalIgnoreCase))) {
+                if (ArgumentsHandler.IsCmCommand(args.Uri)) {
                     ArgumentsHandler.ProcessArguments(new[] { args.Uri.ToString() }, true).Ignore();
                     args.Cancel = true;
                 }

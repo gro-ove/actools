@@ -42,6 +42,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _UnitedRacingDataEnabled;
+
+            public bool UnitedRacingDataEnabled {
+                get => _UnitedRacingDataEnabled ?? (_UnitedRacingDataEnabled = ValuesStorage.Get("Settings.LiveSettings.UnitedRacingDataEnabled", true)).Value;
+                set {
+                    if (Equals(value, _UnitedRacingDataEnabled)) return;
+                    _UnitedRacingDataEnabled = value;
+                    ValuesStorage.Set("Settings.LiveSettings.UnitedRacingDataEnabled", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _raceUEnabled;
 
             public bool RaceUEnabled {

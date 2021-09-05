@@ -30,7 +30,7 @@ namespace AcManager.Tools {
             public string Difficulty { get; set; }
         }
 
-        private static ArgumentHandleResult ProcessSharedUserChampionshipExt(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedUserChampionshipExt(SharedEntry shared, byte[] data, bool justGo) {
             byte[] mainData = null, extraData = null, previewImage = null;
 
             string sharedId = null;
@@ -157,7 +157,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedUserChampionship(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedUserChampionship(SharedEntry shared, byte[] data, bool justGo) {
             string sharedId = null;
             using (var stream = new MemoryStream(data)) {
                 var reader = ReaderFactory.Open(stream);
@@ -186,7 +186,7 @@ namespace AcManager.Tools {
             }
 
             var existing = UserChampionshipsManager.Instance.GetById(sharedId);
-            var result = ShowDialog(shared, applyable: false, additionalButton: existing == null ? null : $"Overwrite “{existing.Name}”");
+            var result = ShowDialog(shared, justGo, applyable: false, additionalButton: existing == null ? null : $"Overwrite “{existing.Name}”");
             switch (result) {
                 case Choise.Save:
                 case Choise.Extra:

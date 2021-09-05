@@ -1,10 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     public static class UrlHelper {
+        [Localizable(false),ContractAnnotation(@"s: null => null; s: notnull => notnull")]
+        public static string AddQueryParameter(this string s, string key, string value = null) {
+            return s == null ? null : $@"{s}{(s.IndexOf('?') == -1 ? "?" : "&")}{key}{(string.IsNullOrWhiteSpace(value) ? "" : Uri.EscapeDataString(value))}";
+        }
+
         [ContractAnnotation(@"s: null => null; s: notnull => notnull")]
         public static string GetWebsiteFromUrl(this string s) {
             return s == null ? null : Regex.Replace(s, @"(?<=\w)/.*$", "", RegexOptions.IgnoreCase);

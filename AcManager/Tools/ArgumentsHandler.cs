@@ -126,9 +126,10 @@ namespace AcManager.Tools {
                 _previousArguments = list;
 
                 using (BringNewWindowsInFront()) {
-                    var contentToInstall = (await list.Where(x => !IsCustomUriScheme(x)).Select(async x => Tuple.Create(x,
-                            ContentInstallationManager.IsRemoteSource(x) || ContentInstallationManager.IsAdditionalContent(x, fullPathsOnly) ? x :
-                                    await ContentInstallationManager.IsRemoteSourceFlexible(x))
+                    var contentToInstall = (await list.Where(x => !IsCustomUriScheme(x))
+                            .Select(async x => Tuple.Create(x,
+                                    ContentInstallationManager.IsRemoteSource(x) || ContentInstallationManager.IsAdditionalContent(x, fullPathsOnly) ? x :
+                                            await ContentInstallationManager.IsRemoteSourceFlexible(x))
                             ).WhenAll()).Where(x => x.Item2 != null).ToList();
                     if (contentToInstall.Any()) {
                         list = list.ApartFrom(contentToInstall.Select(x => x.Item1)).ToList();

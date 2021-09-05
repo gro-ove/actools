@@ -28,65 +28,65 @@ namespace AcManager.Tools {
     public static partial class ArgumentsHandler {
         public static bool OptionUserChampionshipExtMode = true;
 
-        private static async Task<ArgumentHandleResult> ProcessSharedEntry(SharedEntry shared) {
+        private static async Task<ArgumentHandleResult> ProcessSharedEntry(SharedEntry shared, bool justGo) {
             var data = shared?.Data;
             if (data == null) return ArgumentHandleResult.Failed;
 
             switch (shared.EntryType) {
                 case SharedEntryType.PpFilter:
-                    return ProcessSharedPpFilter(shared, data);
+                    return ProcessSharedPpFilter(shared, data, justGo);
 
                 case SharedEntryType.CarSetup:
-                    return ProcessSharedCarSetup(shared, data);
+                    return ProcessSharedCarSetup(shared, data, justGo);
 
                 case SharedEntryType.ControlsPreset:
-                    return ProcessSharedControlsPreset(shared, data);
+                    return ProcessSharedControlsPreset(shared, data, justGo);
 
                 case SharedEntryType.ForceFeedbackPreset:
-                    return ProcessSharedForceFeedbackPreset(shared, data);
+                    return ProcessSharedForceFeedbackPreset(shared, data, justGo);
 
                 case SharedEntryType.VideoSettingsPreset:
-                    return ProcessSharedSettingsPreset(AcSettingsHolder.VideoPresets, shared, data);
+                    return ProcessSharedSettingsPreset(AcSettingsHolder.VideoPresets, shared, data, justGo);
 
                 case SharedEntryType.AudioSettingsPreset:
-                    return ProcessSharedSettingsPreset(AcSettingsHolder.AudioPresets, shared, data);
+                    return ProcessSharedSettingsPreset(AcSettingsHolder.AudioPresets, shared, data, justGo);
 
                 case SharedEntryType.AssistsSetupPreset:
-                    return ProcessSharedAssistsSetupPreset(shared, data);
+                    return ProcessSharedAssistsSetupPreset(shared, data, justGo);
 
                 case SharedEntryType.TrackStatePreset:
-                    return ProcessSharedTrackStatePreset(shared, data);
+                    return ProcessSharedTrackStatePreset(shared, data, justGo);
 
                 case SharedEntryType.QuickDrivePreset:
-                    return await ProcessSharedQuickDrivePreset(shared, data);
+                    return await ProcessSharedQuickDrivePreset(shared, data, justGo);
 
                 case SharedEntryType.RaceGridPreset:
-                    return ProcessSharedRaceGridPreset(shared, data);
+                    return ProcessSharedRaceGridPreset(shared, data, justGo);
 
                 case SharedEntryType.RhmPreset:
-                    return ProcessSharedRhmPreset(shared, data);
+                    return ProcessSharedRhmPreset(shared, data, justGo);
 
                 case SharedEntryType.UserChampionship:
-                    return OptionUserChampionshipExtMode ? ProcessSharedUserChampionshipExt(shared, data) :
-                            ProcessSharedUserChampionship(shared, data);
+                    return OptionUserChampionshipExtMode ? ProcessSharedUserChampionshipExt(shared, data, justGo) :
+                            ProcessSharedUserChampionship(shared, data, justGo);
 
                 case SharedEntryType.Weather:
-                    return ProcessSharedWeather(shared, data);
+                    return ProcessSharedWeather(shared, data, justGo);
 
                 case SharedEntryType.CustomShowroomPreset:
-                    return ProcessSharedCustomShowroomPreset(shared, data);
+                    return ProcessSharedCustomShowroomPreset(shared, data, justGo);
 
                 case SharedEntryType.CustomPreviewsPreset:
-                    return ProcessSharedCustomPreviewsPreset(shared, data);
+                    return ProcessSharedCustomPreviewsPreset(shared, data, justGo);
 
                 case SharedEntryType.CspSettings:
-                    return ProcessSharedCspSettings(shared, data);
+                    return ProcessSharedCspSettings(shared, data, justGo);
 
                 case SharedEntryType.CarLodsGenerationPreset:
-                    return ProcessSharedCarLodsGenerationPreset(shared, data);
+                    return ProcessSharedCarLodsGenerationPreset(shared, data, justGo);
 
                 case SharedEntryType.BakedShadowsPreset:
-                    return ProcessSharedBakedShadowsPreset(shared, data);
+                    return ProcessSharedBakedShadowsPreset(shared, data, justGo);
 
                 case SharedEntryType.Replay:
                     throw new NotSupportedException();
@@ -100,13 +100,13 @@ namespace AcManager.Tools {
             }
         }
 
-        private static async Task<ArgumentHandleResult> ProcessSharedById(string id) {
+        private static async Task<ArgumentHandleResult> ProcessSharedById(string id, bool justGo) {
             SharedEntry shared;
             using (var waiting = new WaitingDialog()) {
                 waiting.Report(ControlsStrings.Common_Loading);
                 shared = await SharingHelper.GetSharedAsync(id, waiting.CancellationToken);
             }
-            return await ProcessSharedEntry(shared);
+            return await ProcessSharedEntry(shared, justGo);
         }
 
         private static SharedEntryType GuessEntryType(string data) {
@@ -147,15 +147,15 @@ namespace AcManager.Tools {
                     Name = Path.GetFileNameWithoutExtension(filename),
                     Data = Encoding.UTF8.GetBytes(data),
                     LocalSource = filename
-                });
+                }, false);
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t load CM preset", e);
                 return ArgumentHandleResult.Failed;
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedWeather(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared, applyable: false);
+        private static ArgumentHandleResult ProcessSharedWeather(SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo, applyable: false);
             switch (result) {
                 case Choise.Save:
                     var directory = WeatherManager.Instance.Directories.GetLocation(WeatherManager.Instance.Directories.GetUniqueId(shared.GetFileName()), true);
@@ -188,8 +188,8 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedCustomShowroomPreset(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared, applyable: false);
+        private static ArgumentHandleResult ProcessSharedCustomShowroomPreset(SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo, applyable: false);
             switch (result) {
                 case Choise.Save:
                     var filename = FileUtils.EnsureUnique(Path.Combine(
@@ -202,8 +202,8 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedCustomPreviewsPreset(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared, applyable: false);
+        private static ArgumentHandleResult ProcessSharedCustomPreviewsPreset(SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo, applyable: false);
             switch (result) {
                 case Choise.Save:
                     var filename = FileUtils.EnsureUnique(Path.Combine(
@@ -216,8 +216,8 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedRaceGridPreset(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared);
+        private static ArgumentHandleResult ProcessSharedRaceGridPreset(SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo);
             switch (result) {
                 case Choise.Save:
                 case Choise.ApplyAndSave:
@@ -239,8 +239,8 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedRhmPreset(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared);
+        private static ArgumentHandleResult ProcessSharedRhmPreset(SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo);
             switch (result) {
                 case Choise.Save:
                 case Choise.ApplyAndSave:
@@ -262,8 +262,8 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedCspSettings(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared);
+        private static ArgumentHandleResult ProcessSharedCspSettings(SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo);
             using (var model = PatchSettingsModel.Create()) {
                 switch (result) {
                     case Choise.Save:
@@ -287,8 +287,8 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedCarLodsGenerationPreset(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared, applyable: false);
+        private static ArgumentHandleResult ProcessSharedCarLodsGenerationPreset(SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo, applyable: false);
             switch (result) {
                 case Choise.Save:
                     var filename = FileUtils.EnsureUnique(Path.Combine(
@@ -301,8 +301,8 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedBakedShadowsPreset(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared, applyable: false);
+        private static ArgumentHandleResult ProcessSharedBakedShadowsPreset(SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo, applyable: false);
             switch (result) {
                 case Choise.Save:
                     var filename = FileUtils.EnsureUnique(Path.Combine(
@@ -315,8 +315,8 @@ namespace AcManager.Tools {
             }
         }
 
-        private static async Task<ArgumentHandleResult> ProcessSharedQuickDrivePreset(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared, AppStrings.Arguments_Shared_JustGo);
+        private static async Task<ArgumentHandleResult> ProcessSharedQuickDrivePreset(SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo, AppStrings.Arguments_Shared_JustGo);
             switch (result) {
                 case Choise.Save:
                 case Choise.ApplyAndSave:
@@ -342,8 +342,8 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedAssistsSetupPreset(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared);
+        private static ArgumentHandleResult ProcessSharedAssistsSetupPreset(SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo);
             switch (result) {
                 case Choise.Save:
                 case Choise.ApplyAndSave:
@@ -363,8 +363,8 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedTrackStatePreset(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared, applyable: false);
+        private static ArgumentHandleResult ProcessSharedTrackStatePreset(SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo, applyable: false);
             switch (result) {
                 case Choise.Save:
                 case Choise.ApplyAndSave:
@@ -384,8 +384,8 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedSettingsPreset(IUserPresetable presetable, SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared);
+        private static ArgumentHandleResult ProcessSharedSettingsPreset(IUserPresetable presetable, SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo);
             switch (result) {
                 case Choise.Save:
                 case Choise.ApplyAndSave:
@@ -405,8 +405,8 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedForceFeedbackPreset(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared, saveable: false);
+        private static ArgumentHandleResult ProcessSharedForceFeedbackPreset(SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo, saveable: false);
             switch (result) {
                 case Choise.Apply:
                     var ini = IniFile.Parse(data.ToUtf8String());
@@ -418,8 +418,8 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedControlsPreset(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared, AppStrings.Arguments_Shared_ApplyFfbOnly);
+        private static ArgumentHandleResult ProcessSharedControlsPreset(SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo, AppStrings.Arguments_Shared_ApplyFfbOnly);
             switch (result) {
                 case Choise.Save:
                 case Choise.ApplyAndSave:
@@ -446,7 +446,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedCarSetup(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedCarSetup(SharedEntry shared, byte[] data, bool justGo) {
             var content = data.ToUtf8String();
             var metadata = SharingHelper.GetMetadata(SharedEntryType.CarSetup, content, out content);
 
@@ -456,7 +456,7 @@ namespace AcManager.Tools {
                 throw new InformativeException(AppStrings.Arguments_CannotInstallCarSetup, AppStrings.Arguments_MetadataIsMissing);
             }
 
-            var result = ShowDialog(shared, applyable: false,
+            var result = ShowDialog(shared, justGo, applyable: false,
                     additionalButton: trackId == CarSetupObject.GenericDirectory ? null : AppStrings.Arguments_SaveAsGeneric);
             switch (result) {
                 case Choise.Save:
@@ -471,8 +471,8 @@ namespace AcManager.Tools {
             }
         }
 
-        private static ArgumentHandleResult ProcessSharedPpFilter(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared, appliableWithoutSaving: false);
+        private static ArgumentHandleResult ProcessSharedPpFilter(SharedEntry shared, byte[] data, bool justGo) {
+            var result = ShowDialog(shared, justGo, appliableWithoutSaving: false);
             switch (result) {
                 case Choise.Save:
                 case Choise.ApplyAndSave:

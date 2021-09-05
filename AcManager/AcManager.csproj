@@ -467,6 +467,7 @@
     <Compile Include="Pages\Drive\GridFinder.xaml.cs">
       <DependentUpon>GridFinder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\JsGenericProxy.cs" />
     <Compile Include="Pages\Drive\Online.QuickFilters.cs" />
     <Compile Include="Pages\Drive\OnlineServer.AutoJoin.cs" />
     <Compile Include="Pages\Drive\RaceU.xaml.cs">
@@ -481,6 +482,9 @@
     </Compile>
     <Compile Include="Pages\Drive\TrackTitan.xaml.cs">
       <DependentUpon>TrackTitan.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Drive\UnitedRacingData.xaml.cs">
+      <DependentUpon>UnitedRacingData.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Drive\UserChampionships_SelectedPage.xaml.cs">
       <DependentUpon>UserChampionships_SelectedPage.xaml</DependentUpon>
@@ -1254,6 +1258,7 @@
     </Page>
     <Page Include="Pages\Drive\TempSurvey.xaml" />
     <Page Include="Pages\Drive\TrackTitan.xaml" />
+    <Page Include="Pages\Drive\UnitedRacingData.xaml" />
     <Page Include="Pages\Drive\UserChampionships_SelectedPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

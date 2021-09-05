@@ -109,8 +109,14 @@
 
         <TextBlock Text="Track Titan:" Style="{StaticResource SettingsPanel.Heading2}" />
 
-        <CheckBox IsChecked="{Binding Live.WorldSimSeriesEnabled}">
+        <CheckBox IsChecked="{Binding Live.TrackTitanEnabled}">
           <Label Content="Enable Track Titan" />
+        </CheckBox>
+
+        <TextBlock Text="United Racing Data:" Style="{StaticResource SettingsPanel.Heading2}" />
+
+        <CheckBox IsChecked="{Binding Live.UnitedRacingDataEnabled}">
+          <Label Content="Enable United Racing Data" />
         </CheckBox>
 
         <TextBlock Text="World Sim Series:" Style="{StaticResource SettingsPanel.Heading2}" />

@@ -30,7 +30,7 @@
       <StackPanel VerticalAlignment="Top">
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Path:" />
-          <mui:SelectableTextBlock Text="{Binding ObjectPath, Mode=OneWay}" Placeholder="?" />
+          <mui:SelectableTextBlock Text="{Binding ParentObjectPath, Mode=OneWay}" Placeholder="?" />
         </DockPanel>
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Material:" />

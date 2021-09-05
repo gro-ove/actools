@@ -22,13 +22,19 @@ namespace AcManager.Tools {
         /// Shows dialog with all information about shared entry and offers a choise to user what to do with it.
         /// </summary>
         /// <param name="shared">Shared entry.</param>
+        /// <param name="justGo">Apply instantaneously</param>
         /// <param name="additionalButton">Label of additional button.</param>
         /// <param name="saveable">Can be saved.</param>
         /// <param name="applyable">Can be applied.</param>
         /// <param name="appliableWithoutSaving">Can be applied without saving.</param>
         /// <returns>User choise.</returns>
-        private static Choise ShowDialog(SharedEntry shared, string additionalButton = null, bool saveable = true, bool applyable = true,
+        private static Choise ShowDialog(SharedEntry shared, bool justGo, string additionalButton = null, bool saveable = true, bool applyable = true,
                 bool appliableWithoutSaving = true) {
+            if (justGo) {
+                if (additionalButton == AppStrings.Arguments_Shared_JustGo) return Choise.Extra;
+                if (applyable) return Choise.Apply;
+            }
+
             if (shared.LocalSource != null && FileUtils.IsAffectedBy(shared.LocalSource, PresetsManager.Instance.RootDirectory)) {
                 saveable = false;
             }

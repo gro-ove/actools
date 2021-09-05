@@ -34,11 +34,9 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
 using AcManager.UserControls;
 using AcManager.Workshop;
-using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
@@ -52,7 +50,6 @@ using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using Application = System.Windows.Application;
 using DragEventArgs = System.Windows.DragEventArgs;
 using DragDropEffects = System.Windows.DragDropEffects;
@@ -84,7 +81,7 @@ namespace AcManager.Pages.Windows {
         public static readonly Uri EnterKeyUrl = new Uri("cmd://enterKey");
 
         private readonly bool _cancelled;
-        private readonly string _testGameDialog = null;
+        // private readonly string _testGameDialog = null;
 
         public MainWindow() {
             Owner = null;
@@ -96,13 +93,13 @@ namespace AcManager.Pages.Windows {
 
             _cancelled = false;
 
-            if (_testGameDialog != null) {
+            /*if (_testGameDialog != null) {
                 Logging.Write("Testing mode");
                 var ui = new GameDialog();
                 ui.ShowDialogAsync().Ignore();
                 ((IGameUi)ui).OnResult(JsonConvert.DeserializeObject<Game.Result>(FileUtils.ReadAllText(_testGameDialog)), null);
                 _cancelled = true;
-            }
+            }*/
 
             if (_cancelled) {
                 Close();
@@ -344,10 +341,7 @@ namespace AcManager.Pages.Windows {
         }
 
         private void OnLiveSettingsPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(SettingsHolder.LiveSettings.RsrEnabled) ||
-                    e.PropertyName == nameof(SettingsHolder.LiveSettings.SrsEnabled)) {
-                UpdateLiveTabs();
-            }
+            UpdateLiveTabs();
         }
 
         private void UpdateLiveTabs() {
@@ -357,7 +351,8 @@ namespace AcManager.Pages.Windows {
             Srs2Link.IsShown = SettingsHolder.Live.SrsEnabled;
             WorldSimSeriesLink.IsShown = SettingsHolder.Live.WorldSimSeriesEnabled;
             TrackTitanLink.IsShown = SettingsHolder.Live.TrackTitanEnabled;
-            LiveGroup.IsShown = LiveGroup.Links.Any(x => x.IsShown);
+            UnitedRacingDataLink.IsShown = SettingsHolder.Live.UnitedRacingDataEnabled;
+            LiveGroup.IsShown = LiveGroup.Links.Any(x => x.IsShown && x.Icon == null);
             // ShortSurveyLink.IsShown = !Stored.Get<bool>("surveyHide").Value;
 
             RaceUGroup.IsShown = SettingsHolder.Live.RaceUEnabled && (ValuesStorage.Contains("RaceU.CurrentLocation") || RaceUCheckAb());

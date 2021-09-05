@@ -11,10 +11,14 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <ScrollViewer mui:SaveScroll.Key="SettingsLive">
+  <ScrollViewer x:Name="ContentRoot" mui:SaveScroll.Key="SettingsLive">
     <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Live}" x:Name="Panel" Style="{StaticResource SettingsPanel}">
       <CheckBox IsChecked="{Binding LiveSettings.GridFinderEnabled}">
         <Label Content="Enable Grid Finder" />
+      </CheckBox>
+
+      <CheckBox IsChecked="{Binding LiveSettings.RaceUEnabled}">
+        <Label Content="Enable RaceU" />
       </CheckBox>
 
       <CheckBox IsChecked="{Binding LiveSettings.RsrEnabled}">
@@ -59,6 +63,10 @@
 
       <CheckBox IsChecked="{Binding LiveSettings.TrackTitanEnabled}">
         <Label Content="Enable Track Titan" />
+      </CheckBox>
+
+      <CheckBox IsChecked="{Binding LiveSettings.UnitedRacingDataEnabled}">
+        <Label Content="Enable United Racing Data" />
       </CheckBox>
 
       <CheckBox IsChecked="{Binding LiveSettings.WorldSimSeriesEnabled}">

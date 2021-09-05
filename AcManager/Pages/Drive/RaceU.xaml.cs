@@ -14,24 +14,18 @@ using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.UserControls.Web;
-using AcManager.CustomShowroom;
 using AcManager.Internal;
 using AcManager.Pages.Windows;
-using AcManager.Tools;
-using AcManager.Tools.ContentInstallation;
-using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
-using AcTools;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using CefSharp;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -222,7 +216,7 @@ namespace AcManager.Pages.Drive {
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class RaceUApiProxy : JsProxyBase {
+        public class RaceUApiProxy : JsGenericProxy {
             public RaceUApiProxy(JsBridgeBase bridge) : base(bridge) { }
 
             [CanBeNull]
@@ -237,33 +231,9 @@ namespace AcManager.Pages.Drive {
             // RaceU API, v1
             // ReSharper disable InconsistentNaming
 
-            public void showToast(string title, string message, IJavascriptCallback callback = null) {
-                if (callback != null) {
-                    Toast.Show(title, message, () => callback.ExecuteAsync());
-                } else {
-                    Toast.Show(title, message);
-                }
-            }
-
             public void _setLinks(string encodedData) {
                 CacheStorage.Set(".raceULinks", encodedData);
                 ActionExtension.InvokeInMainThread(() => SetRaceULinks(encodedData));
-            }
-
-            public string cmVersion() {
-                return BuildInformation.AppVersion;
-            }
-
-            public string getSteamId() {
-                return SteamIdHelper.Instance.Value;
-            }
-
-            public string getCarDataChecksum(string carId) {
-                return GetAcChecksum(CarsManager.Instance.GetById(carId)?.Location, @"data.acd");
-            }
-
-            public string getTrackFileChecksum(string trackId, string layoutId, string fileName) {
-                return GetAcChecksum(TracksManager.Instance.GetLayoutById(trackId, layoutId)?.DataDirectory, fileName);
             }
 
             public bool setCurrentCar(string carId, string skinId = null) {
@@ -314,77 +284,6 @@ namespace AcManager.Pages.Drive {
                     var result = await GameWrapper.StartAsync(properties);
                     callback?.ExecuteAsync(result?.IsNotCancelled);
                 }).Ignore();
-            }
-
-            public bool executeCommand(string command) {
-                if (command.IsAnyUrl()) {
-                    ArgumentsHandler.ProcessArguments(new[] { command }, true).Ignore();
-                    return true;
-                }
-                return false;
-            }
-
-            public bool openWebPage(string url) {
-                if (url.IsWebUrl()) {
-                    WindowsHelper.ViewInBrowser(url);
-                    return true;
-                }
-                return false;
-            }
-
-            public bool openDlcWebPage(string carId) {
-                var car = CarsManager.Instance.GetById(carId);
-                if (car?.Dlc == null) {
-                    return false;
-                }
-
-                WindowsHelper.ViewInBrowser(car.Dlc.Url);
-                return true;
-            }
-
-            public bool isShadersPatchInstalled() {
-                return PatchHelper.IsActive();
-            }
-
-            public bool isWeatherFxActive() {
-                return PatchHelper.IsFeatureSupported(PatchHelper.FeatureFullDay);
-            }
-
-            public bool launchShowroom(string carId, string skinId = null) {
-                var car = CarsManager.Instance.GetById(carId);
-                if (car == null) {
-                    return false;
-                }
-
-                var skin = car.SelectedSkin;
-                if (skinId != null) {
-                    skin = car.GetSkinById(skinId);
-                    if (skin == null) {
-                        return false;
-                    }
-                }
-                CustomShowroomWrapper.StartAsync(car, skin);
-                return true;
-            }
-
-            public void installPiece(string url) {
-                ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false));
-            }
-
-            public bool isCarAvailable(string carId) {
-                return CarsManager.Instance.GetById(carId) != null;
-            }
-
-            public bool isTrackAvailable(string trackId, string layoutId = null) {
-                return TracksManager.Instance.GetLayoutById(trackId, layoutId) != null;
-            }
-
-            public bool isThemeDark() {
-                return ((Color)Application.Current.Resources[@"WindowBackgroundColor"]).GetBrightness() < 0.4;
-            }
-
-            public string getThemeAccentColor() {
-                return ((Color)Application.Current.Resources[@"WindowBackgroundColor"]).ToHexString();
             }
 
             public void setThemeAccentColor(string color) {

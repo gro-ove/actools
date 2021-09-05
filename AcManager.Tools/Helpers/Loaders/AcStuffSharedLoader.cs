@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Helpers.Loaders {
@@ -12,7 +13,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         protected override async Task<string> GetRedirectOverrideAsync(string url, CookieAwareWebClient client, CancellationToken cancellation) {
             using (client.SetAccept("application/json")) {
-                var response = await client.DownloadStringTaskAsync(url);
+                var response = await client.DownloadStringTaskAsync(url.AddQueryParameter("json"));
                 if (cancellation.IsCancellationRequested) return null;
                 return JObject.Parse(response).GetStringValueOnly("request");
             }

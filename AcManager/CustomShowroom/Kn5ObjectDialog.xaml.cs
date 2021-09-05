@@ -52,7 +52,10 @@ namespace AcManager.CustomShowroom {
             public string ObjectName { get; }
 
             [NotNull]
-            public string ObjectPath { get; }
+            public string BaseObjectPath { get; }
+
+            [NotNull]
+            public string ParentObjectPath { get; }
 
             public int VerticesCount { get; }
             public int TrianglesCount { get; }
@@ -89,8 +92,9 @@ namespace AcManager.CustomShowroom {
                 TrianglesCount = renderableObject.TrianglesCount;
                 Material = kn5.GetMaterial(renderableObject.OriginalNode.MaterialId);
 
-                ObjectPath = kn5.GetParentPath(renderableObject.OriginalNode) ?? throw new Exception("Can’t determine parent path");
-                BakedShadows = BakedShadowsRendererViewModel.ForObject(renderer, _kn5, ObjectPath, car);
+                BaseObjectPath = kn5.GetObjectPath(renderableObject.OriginalNode) ?? throw new Exception("Can’t determine object path");
+                ParentObjectPath = kn5.GetParentPath(renderableObject.OriginalNode) ?? throw new Exception("Can’t determine parent path");
+                BakedShadows = BakedShadowsRendererViewModel.ForObject(renderer, _kn5, BaseObjectPath, car);
             }
 
             public async void OnLoaded() {
@@ -151,7 +155,7 @@ namespace AcManager.CustomShowroom {
                     using (var renderer = new UvRenderer(_kn5)) {
                         renderer.Width = width;
                         renderer.Height = height;
-                        renderer.Shot(filename, null, ObjectPath);
+                        renderer.Shot(filename, null, BaseObjectPath);
                     }
                 });
 

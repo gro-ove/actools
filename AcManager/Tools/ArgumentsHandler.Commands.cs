@@ -31,6 +31,12 @@ using SharpCompress.Archives.Zip;
 
 namespace AcManager.Tools {
     public static partial class ArgumentsHandler {
+        public static bool IsCmCommand(Uri uri) {
+            return uri.IsAbsoluteUri && (uri.OriginalString.StartsWith(@"https://acstuff.ru/s/", StringComparison.OrdinalIgnoreCase)
+                    || uri.OriginalString.StartsWith(@"http://acstuff.ru/s/", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(uri.Scheme, @"acmanager", StringComparison.OrdinalIgnoreCase));
+        }
+
         public static string UnwrapDownloadRequest(string request) {
             if (!request.StartsWith($@"{CustomUriSchemeHelper.UriScheme}//", StringComparison.Ordinal)) {
                 var splitted = request.Split(new[] { '/' }, 2);
@@ -205,7 +211,7 @@ namespace AcManager.Tools {
                     case "shared":
                         var result = ArgumentHandleResult.Ignore;
                         foreach (var id in custom.Params.GetValues(@"id") ?? new string[0]) {
-                            result = await ProcessSharedById(id);
+                            result = await ProcessSharedById(id, custom.Params.GetValues(@"go") != null);
                         }
                         return result;
 
@@ -358,7 +364,7 @@ namespace AcManager.Tools {
                 EntryType = SharedEntryType.CarSetup,
                 Id = setupId,
                 Target = car?.DisplayName ?? details.Item1.CarId
-            }, applyable: false, additionalButton: AppStrings.Arguments_SaveAsGeneric);
+            }, false, applyable: false, additionalButton: AppStrings.Arguments_SaveAsGeneric);
 
             switch (result) {
                 case Choise.Save:
@@ -415,7 +421,7 @@ namespace AcManager.Tools {
                 EntryType = SharedEntryType.CarSetup,
                 Id = header,
                 Target = car.DisplayName
-            }, applyable: false, additionalButton: AppStrings.Arguments_SaveAsGeneric);
+            }, false, applyable: false, additionalButton: AppStrings.Arguments_SaveAsGeneric);
 
             switch (result) {
                 case Choise.Save:
