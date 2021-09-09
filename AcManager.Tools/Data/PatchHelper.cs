@@ -54,28 +54,40 @@ namespace AcManager.Tools.Data {
         public static event EventHandler Reloaded;
         public static event EventHandler FeaturesInvalidated;
 
-        public static string GetMainFilename() {
-            return Path.Combine(AcRootDirectory.Instance.RequireValue, MainFileName);
+        [CanBeNull]
+        public static string TryGetMainFilename() {
+            return AcRootDirectory.Instance.Value == null ? null : Path.Combine(AcRootDirectory.Instance.Value, MainFileName);
         }
 
-        public static string GetRootDirectory() {
+        [CanBeNull]
+        public static string TryGetRootDirectory() {
+            return AcRootDirectory.Instance.Value == null ? null : Path.Combine(AcRootDirectory.Instance.Value, "extension");
+        }
+
+        [NotNull]
+        public static string RequireRootDirectory() {
             return Path.Combine(AcRootDirectory.Instance.RequireValue, "extension");
         }
 
-        public static string GetConfigFilename(string configName) {
-            return Path.Combine(GetRootDirectory(), "config", configName);
+        [CanBeNull]
+        public static string TryGetConfigFilename(string configName) {
+            var directory = TryGetRootDirectory();
+            return directory == null ? null : Path.Combine(directory, "config", configName);
         }
 
         public static string GetUserConfigFilename(string configName) {
             return Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "extension", configName);
         }
 
-        public static string GetManifestFilename() {
-            return GetConfigFilename("data_manifest.ini");
+        [CanBeNull]
+        public static string TryGetManifestFilename() {
+            return TryGetConfigFilename("data_manifest.ini");
         }
 
-        public static string GetInstalledLog() {
-            return Path.Combine(GetRootDirectory(), "installed.log");
+        [CanBeNull]
+        public static string TryGetInstalledLog() {
+            var directory = TryGetRootDirectory();
+            return directory == null ? null : Path.Combine(directory, "installed.log");
         }
 
         private static List<SettingEntry> _customVideoModes;
@@ -103,7 +115,8 @@ namespace AcManager.Tools.Data {
         private static bool? _active;
 
         [CanBeNull]
-        private static string TryToRead(string filename) {
+        private static string TryToRead([CanBeNull] string filename) {
+            if (filename == null) return null;
             try {
                 if (File.Exists(filename)) {
                     return FileUtils.ReadAllText(filename);
@@ -114,9 +127,10 @@ namespace AcManager.Tools.Data {
             return null;
         }
 
-        public static IniFile GetConfig([NotNull] string configName) {
+        [CanBeNull]
+        public static IniFile TryGetConfig([NotNull] string configName) {
             return _configs.GetValueOrSet(configName, () => IniFile.Parse(
-                    TryToRead(GetConfigFilename(configName))
+                    TryToRead(TryGetConfigFilename(configName))
                             + Environment.NewLine
                             + TryToRead(GetUserConfigFilename(configName))));
         }
@@ -129,7 +143,7 @@ namespace AcManager.Tools.Data {
                 return config?.Sections.GetByIdOrDefault(section)?.GetByIdOrDefault(key)?.Value;
             }
 
-            return GetConfig(configName)[section].GetNonEmpty(key);
+            return TryGetConfig(configName)?[section].GetNonEmpty(key);
         }
 
         private class FeatureTester : ITester<object> {
@@ -214,7 +228,7 @@ namespace AcManager.Tools.Data {
             return _featureSupported.GetValueOrSet(featureId, () => {
                 if (GetInstalledVersion() == null || !IsActive()) return false;
                 if (featureId == FeatureWindowPosition) return true;
-                var query = GetManifest()["FEATURES"].GetNonEmpty(featureId);
+                var query = GetManifest()?["FEATURES"].GetNonEmpty(featureId);
                 return TestQuery(query);
             });
         }
@@ -223,7 +237,7 @@ namespace AcManager.Tools.Data {
             if (!_audioDescriptionsSet) {
                 _audioDescriptionsSet = true;
                 if (IsActive()) {
-                    _audioDescriptions.ReplaceEverythingBy_Direct(GetManifest()["AUDIO_LEVELS"].Select(p => {
+                    _audioDescriptions.ReplaceEverythingBy_Direct(GetManifest()?["AUDIO_LEVELS"].Select(p => {
                         if (p.Key.EndsWith("_")) return null;
 
                         var value = p.Value.WrapQuoted(out var unwrap)
@@ -235,7 +249,7 @@ namespace AcManager.Tools.Data {
                             DefaultLevel = unwrap(value[1]).As(0.8),
                             DisplayName = unwrap(value[0])
                         };
-                    }).NonNull());
+                    }).NonNull() ?? new AudioDescription[0]);
                 } else {
                     _audioDescriptions.Clear();
                 }
@@ -253,8 +267,8 @@ namespace AcManager.Tools.Data {
 
         static PatchHelper() {
             _installed = Lazier.Create(() => {
-                var installedLogFilename = GetInstalledLog();
-                if (!File.Exists(installedLogFilename)) return Tuple.Create<string, string>(null, null);
+                var installedLogFilename = TryGetInstalledLog();
+                if (installedLogFilename == null || !File.Exists(installedLogFilename)) return Tuple.Create<string, string>(null, null);
 
                 string version = null, build = null;
                 foreach (var line in File.ReadAllLines(installedLogFilename).Select(x => x.Trim()).Where(x => !x.StartsWith(@"#"))) {
@@ -274,18 +288,19 @@ namespace AcManager.Tools.Data {
             });
         }
 
+        [CanBeNull]
         public static IniFile GetManifest() {
-            return GetConfig("data_manifest.ini");
+            return TryGetConfig("data_manifest.ini");
         }
 
         [CanBeNull]
         public static string GetInstalledVersion() {
-            return GetManifest()["VERSION"].GetNonEmpty("SHADERS_PATCH");
+            return GetManifest()?["VERSION"].GetNonEmpty("SHADERS_PATCH");
         }
 
         [CanBeNull]
         public static string GetInstalledBuild() {
-            return GetManifest()["VERSION"].GetNonEmpty("SHADERS_PATCH_BUILD");
+            return GetManifest()?["VERSION"].GetNonEmpty("SHADERS_PATCH_BUILD");
         }
 
         [CanBeNull]

@@ -315,7 +315,7 @@ namespace AcManager.Tools.Data {
 
         public AsyncCommand ReinstallCommand => _reinstallCommand ?? (_reinstallCommand = new AsyncCommand(() => {
             if (InstalledVersionInfo == null) return Task.Delay(0);
-            FileUtils.TryToDelete(PatchHelper.GetInstalledLog());
+            FileUtils.TryToDelete(PatchHelper.TryGetInstalledLog());
             InstalledVersionInfo.IsInstalled = false;
             return InstallVersion(InstalledVersionInfo, InstalledVersionInfo);
         }, () => InstalledVersionInfo != null));
@@ -324,7 +324,7 @@ namespace AcManager.Tools.Data {
 
         public AsyncCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new AsyncCommand(async () => {
             try {
-                File.Delete(PatchHelper.GetMainFilename());
+                File.Delete(PatchHelper.TryGetMainFilename() ?? string.Empty);
                 await PatchVersionInfo.RemovePatch(true);
             } catch (UnauthorizedAccessException e) when (e.Message.Contains(@"dwrite.dll")) {
                 Logging.Warning(e);

@@ -574,11 +574,11 @@ namespace AcTools.Utils {
             }
         }
 
-        public static bool Unblock(string fileName) {
+        public static bool Unblock([NotNull] string fileName) {
             return Kernel32.DeleteFile(fileName + ":Zone.Identifier");
         }
 
-        public static bool IsBlocked(string fileName) {
+        public static bool IsBlocked([NotNull] string fileName) {
             using (var handle = Kernel32.CreateFile(fileName + ":Zone.Identifier",
                     Kernel32.FileAccess.GenericRead, Kernel32.FileShare.Read, IntPtr.Zero, Kernel32.CreationDisposition.OpenExisting,
                     Kernel32.FileAttributes.Normal, IntPtr.Zero)) {

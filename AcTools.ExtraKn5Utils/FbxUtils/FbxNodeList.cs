@@ -3,6 +3,7 @@
 // License: MIT
 
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using AcTools.ExtraKn5Utils.FbxUtils.Tokens.Value;
 
@@ -46,13 +47,14 @@ namespace AcTools.ExtraKn5Utils.FbxUtils {
         /// <returns>The child node, or null</returns>
         public FbxNode GetRelative(string path) {
             var tokens = path.Split('/');
-            FbxNodeList n = this;
+            var n = this;
             foreach (var t in tokens) {
                 if (t == "") {
                     continue;
                 }
 
-                n = n[t].FirstOrDefault();
+                var s = t.IndexOf(':');
+                n = s != -1 ? n[t.Substring(0, s)].ElementAtOrDefault(int.Parse(t.Substring(s + 1), CultureInfo.InvariantCulture)) : n[t].FirstOrDefault();
                 if (n == null) {
                     break;
                 }

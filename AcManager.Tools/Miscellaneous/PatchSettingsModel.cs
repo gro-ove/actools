@@ -78,7 +78,7 @@ namespace AcManager.Tools.Miscellaneous {
             PagesView.GroupDescriptions?.Add(new PropertyGroupDescription(nameof(PatchPage.Group)));
 
             _isLive = false;
-            _dir = FileUtils.NormalizePath(Path.Combine(PatchHelper.GetRootDirectory(), "config"));
+            _dir = FileUtils.NormalizePath(Path.Combine(PatchHelper.RequireRootDirectory(), "config"));
             CreateConfigs();
         }
 
@@ -125,7 +125,7 @@ namespace AcManager.Tools.Miscellaneous {
                     CreateConfigs();
                     RescanPossibleIssues();
                 }, 300);
-                if (FileUtils.ArePathsEqual(filename, PatchHelper.GetManifestFilename())) {
+                if (FileUtils.ArePathsEqual(filename, PatchHelper.TryGetManifestFilename() ?? string.Empty)) {
                     _busyUpdateVersion.DoDelay(PatchHelper.Reload, 300);
                 }
             } else if (Configs != null) {
@@ -216,9 +216,9 @@ namespace AcManager.Tools.Miscellaneous {
                 version = null;
             }
 
-            var mainFile = new FileInfo(PatchHelper.GetMainFilename());
+            var mainFile = new FileInfo(PatchHelper.TryGetMainFilename() ?? string.Empty);
             var pdbFile = new FileInfo(Path.Combine(AcRootDirectory.Instance.RequireValue, "acs.pdb"));
-            var root = PatchHelper.GetRootDirectory();
+            var root = PatchHelper.RequireRootDirectory();
 
             ApplyIssues(new[] {
                 mainFile.Exists ? null
@@ -261,7 +261,7 @@ namespace AcManager.Tools.Miscellaneous {
                     () => PatchUpdater.Instance.ReinstallCommand?.ExecuteAsync(),
                     () => PatchUpdater.Instance.ReinstallCommand?.CanExecute() == true));
             BbCodeBlock.AddLinkCommand(new Uri("cmd://settingsShadersPatch/fixPatch/unblockPatch"), new DelegateCommand(() => {
-                FileUtils.Unblock(PatchHelper.GetMainFilename());
+                FileUtils.Unblock(PatchHelper.TryGetMainFilename() ?? string.Empty);
                 _instance?.RescanPossibleIssues();
             }));
             BbCodeBlock.AddLinkCommand(new Uri("cmd://settingsShadersPatch/fixPatch/switchTo64Bits"), new DelegateCommand(() => {

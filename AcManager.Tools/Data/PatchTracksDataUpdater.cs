@@ -77,7 +77,7 @@ namespace AcManager.Tools.Data {
         }
 
         public override string GetDestinationDirectory() {
-            return Path.Combine(PatchHelper.GetRootDirectory(), "config", "tracks", "loaded");
+            return Path.Combine(PatchHelper.RequireRootDirectory(), "config", "tracks", "loaded");
         }
     }
 }

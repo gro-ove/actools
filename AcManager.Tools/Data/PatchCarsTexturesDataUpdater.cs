@@ -66,7 +66,7 @@ namespace AcManager.Tools.Data {
         }
 
         public override string GetDestinationDirectory() {
-            return Path.Combine(PatchHelper.GetRootDirectory(), "textures", "cars");
+            return Path.Combine(PatchHelper.RequireRootDirectory(), "textures", "cars");
         }
     }
 }

@@ -103,7 +103,7 @@ namespace AcManager.Tools.Data {
                 _stageName = stageName;
                 _modsDirectory = modsDirectory;
                 _forcedFiles = forcedFiles;
-                _patchLocation = PatchHelper.GetRootDirectory();
+                _patchLocation = PatchHelper.RequireRootDirectory();
             }
 
             public void AddDirectoryToRemove(string value) {
@@ -343,8 +343,8 @@ namespace AcManager.Tools.Data {
                 ChunkStage = new InstallStage("chunk", @"Shaders Lights Patch - Data", new string[0]);
                 var fillingStage = PatchStage;
 
-                var location = PatchHelper.GetRootDirectory();
-                var installedLogFilename = PatchHelper.GetInstalledLog();
+                var location = PatchHelper.RequireRootDirectory();
+                var installedLogFilename = PatchHelper.TryGetInstalledLog() ?? string.Empty;
 
                 if (File.Exists(installedLogFilename)) {
                     Logging.Debug($"Found some info on current installation in {installedLogFilename}");
@@ -416,7 +416,7 @@ namespace AcManager.Tools.Data {
                 _installing = true;
 
                 Logging.Debug($"Removing current patch installation");
-                if (!Directory.Exists(PatchHelper.GetRootDirectory())) return;
+                if (!Directory.Exists(PatchHelper.RequireRootDirectory())) return;
 
                 var vars = new InstallVars();
                 vars.LoadValues(ref progress);
@@ -427,23 +427,23 @@ namespace AcManager.Tools.Data {
                     await Task.Run(() => {
                         var toRemove = new List<string>();
 
-                        var configsDirectory = Path.Combine(PatchHelper.GetRootDirectory(), "config");
+                        var configsDirectory = Path.Combine(PatchHelper.RequireRootDirectory(), "config");
                         if (Directory.Exists(configsDirectory)) {
                             toRemove.AddRange(Directory.GetFiles(configsDirectory, "*.ini"));
                             toRemove.AddRange(Directory.GetFiles(configsDirectory, "*.txt"));
                         }
 
-                        var luaDirectory = Path.Combine(PatchHelper.GetRootDirectory(), "lua");
+                        var luaDirectory = Path.Combine(PatchHelper.RequireRootDirectory(), "lua");
                         if (Directory.Exists(luaDirectory)) {
                             toRemove.AddRange(Directory.GetFiles(luaDirectory, "*.lua"));
                         }
 
-                        var shadersDirectory = Path.Combine(PatchHelper.GetRootDirectory(), "shaders");
+                        var shadersDirectory = Path.Combine(PatchHelper.RequireRootDirectory(), "shaders");
                         if (Directory.Exists(shadersDirectory)) {
                             toRemove.Add(shadersDirectory);
                         }
 
-                        var shadersPack = Path.Combine(PatchHelper.GetRootDirectory(), "shaders.zip");
+                        var shadersPack = Path.Combine(PatchHelper.RequireRootDirectory(), "shaders.zip");
                         if (File.Exists(shadersPack)) {
                             toRemove.Add(shadersPack);
                         }
@@ -459,8 +459,8 @@ namespace AcManager.Tools.Data {
                     }).ConfigureAwait(false);
                 }
 
-                FileUtils.TryToDelete(PatchHelper.GetInstalledLog());
-                FileUtils.TryToDelete(Path.Combine(PatchHelper.GetRootDirectory(), "config", "data_manifest.ini"));
+                FileUtils.TryToDelete(PatchHelper.TryGetInstalledLog());
+                FileUtils.TryToDelete(Path.Combine(PatchHelper.RequireRootDirectory(), "config", "data_manifest.ini"));
                 PatchHelper.Reload();
             } finally {
                 _installing = false;
@@ -517,7 +517,7 @@ namespace AcManager.Tools.Data {
 
                 await Task.Run(() => {
                     Logging.Debug("Main folder created");
-                    Directory.CreateDirectory(PatchHelper.GetRootDirectory());
+                    Directory.CreateDirectory(PatchHelper.RequireRootDirectory());
 
                     using (var installedLogStream = new MemoryStream()) {
                         using (var installedLog = new StreamWriter(installedLogStream)) {
@@ -537,7 +537,7 @@ namespace AcManager.Tools.Data {
                                 vars.ChunkStage.Run(dataChunk, installedLog, progress.Subrange(0.75, 0.245), cancellation);
                             }
                         }
-                        File.WriteAllBytes(PatchHelper.GetInstalledLog(), installedLogStream.ToArray());
+                        File.WriteAllBytes(PatchHelper.TryGetInstalledLog() ?? string.Empty, installedLogStream.ToArray());
                     }
 
                     PatchHelper.Reload();

@@ -378,8 +378,8 @@ namespace AcTools.ExtraKn5Utils.FbxUtils {
                 return texCoords.ToArray();
             }
 
-            GetLayerFloatValues(geometryId, "LayerElementUV", layerIndex, "UV", "UVIndex", out var layerValues, out var layerIndices, out string mappingMode,
-                    out string referenceMode);
+            GetLayerFloatValues(geometryId, "LayerElementUV", layerIndex, "UV", "UVIndex", out var layerValues, out var layerIndices,
+                    out string mappingMode, out string referenceMode);
 
             var vertexIndex = 0;
             for (var i = 0; i < 3; i++) {

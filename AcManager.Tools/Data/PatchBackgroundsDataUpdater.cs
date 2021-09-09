@@ -97,7 +97,7 @@ namespace AcManager.Tools.Data {
         }
 
         public override string GetDestinationDirectory() {
-            return Path.Combine(PatchHelper.GetRootDirectory(), "backgrounds");
+            return Path.Combine(PatchHelper.RequireRootDirectory(), "backgrounds");
         }
     }
 }

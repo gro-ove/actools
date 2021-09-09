@@ -77,8 +77,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                         PatchVersionInfo.RemovePatch(false).Wait();
                     }
 
-                    FileUtils.TryToDelete(PatchHelper.GetInstalledLog());
-                    FileUtils.TryToDelete(Path.Combine(PatchHelper.GetRootDirectory(), "config", "data_manifest.ini"));
+                    FileUtils.TryToDelete(PatchHelper.TryGetInstalledLog());
+                    FileUtils.TryToDelete(Path.Combine(PatchHelper.RequireRootDirectory(), "config", "data_manifest.ini"));
                     first = false;
 
                     installedLog.WriteLine(@"# Generated automatically during last patch installation via Content Manager.");
@@ -94,7 +94,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             }, dispose: () => {
                 Logging.Debug("DISPOSE");
                 installedLog.Dispose();
-                File.WriteAllBytes(PatchHelper.GetInstalledLog(), installedLogStream.ToArray());
+                File.WriteAllBytes(PatchHelper.TryGetInstalledLog() ?? string.Empty, installedLogStream.ToArray());
                 installedLogStream.Dispose();
                 InstallationEnd?.Invoke(null, EventArgs.Empty);
                 IsBusy = false;

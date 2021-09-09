@@ -49,7 +49,7 @@ namespace AcManager.Tools.Data {
         }
 
         public override string GetDestinationDirectory() {
-            return Path.Combine(PatchHelper.GetRootDirectory(), "vao-patches-cars");
+            return Path.Combine(PatchHelper.RequireRootDirectory(), "vao-patches-cars");
         }
     }
 }
