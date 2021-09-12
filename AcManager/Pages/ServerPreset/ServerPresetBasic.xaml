@@ -40,9 +40,9 @@
               CommandParameter="/Pages/ServerPreset/ServerPresetEntryList.xaml" c:ToolTips.Car="{Binding Car}" c:ContextMenus.Car="{Binding Car}"
               mui:Draggable.Data="{Binding Car}">
             <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False">
-              <mui:BetterImage Filename="{Binding Cars[0].SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
+              <mui:BetterImage Filename="{Binding Car.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
               <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
-                  Text="{Binding Cars[0].DisplayName}" Foreground="{DynamicResource DarkStripeText}" />
+                  Text="{Binding Car.DisplayName}" Foreground="{DynamicResource DarkStripeText}" />
             </Grid>
           </Button>
         </StackPanel>

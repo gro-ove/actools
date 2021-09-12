@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.AcErrors;
@@ -128,7 +129,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
-        protected override void OnPropertyChanged(string propertyName = null) {
+        protected override void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             if (_ignoreChanges) return;
             base.OnPropertyChanged(propertyName);
         }

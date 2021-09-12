@@ -38,6 +38,9 @@ namespace AcManager.Tools.Helpers {
         public int NumberOfFrames;
         public bool AllowToOverrideTime;
 
+        [JsonConstructor]
+        public ReplayDetails() { }
+
         private ReplayDetails(string filename) {
             try {
                 using (var reader = new ReplayReader(filename)) {

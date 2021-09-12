@@ -132,8 +132,13 @@ namespace AcManager.Tools {
                 if (data.Contains("\"UserDefinedValues\":")) return SharedEntryType.CarLodsGenerationPreset;
             } else if (data.StartsWith("<RealHeadMotion>")) {
                 return SharedEntryType.RhmPreset;
-            } else if (data.StartsWith(@"[") && Regex.IsMatch(data, @"\[[A-Z_]+:[A-Z_]+\]")) {
-                return SharedEntryType.CspSettings;
+            } else if (data.StartsWith(@"[")) {
+                if (data.Contains("STEERING_OPPOSITE_DIRECTION_SPEED=") && data.Contains("COMBINE_WITH_KEYBOARD_CONTROL=")) {
+                    return SharedEntryType.ControlsPreset;
+                }
+                if (Regex.IsMatch(data, @"\[[A-Z_]+:[A-Z_]+\]")) {
+                    return SharedEntryType.CspSettings;
+                }
             }
             Logging.Warning(data);
             throw new Exception("Failed to determine CM preset type");

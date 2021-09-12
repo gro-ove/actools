@@ -25,7 +25,9 @@ namespace AcManager.Pages.Drive {
 
         public class SortingName : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
-                return string.Compare(x.ActualName, y.ActualName, StringComparison.CurrentCultureIgnoreCase);
+                var v = AlphanumComparatorFast.Compare(x.ActualName, y.ActualName);
+                if (v != 0) return v;
+                return AlphanumComparatorFast.Compare(x.Id, y.Id);
             }
 
             public override bool IsAffectedBy(string propertyName) {
@@ -35,8 +37,11 @@ namespace AcManager.Pages.Drive {
 
         public class SortingCleanedName : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
-                // Logging.Debug($"x.SortingName={x.SortingName}, y.SortingName={y.SortingName}");
-                return string.Compare(x.SortingName, y.SortingName, StringComparison.CurrentCultureIgnoreCase);
+                var v = AlphanumComparatorFast.Compare(x.SortingName, y.SortingName);
+                if (v != 0) return v;
+                v = AlphanumComparatorFast.Compare(x.ActualName, y.ActualName);
+                if (v != 0) return v;
+                return AlphanumComparatorFast.Compare(x.Id, y.Id);
             }
 
             public override bool IsAffectedBy(string propertyName) {

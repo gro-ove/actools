@@ -4,7 +4,6 @@ using System.Linq;
 using AcManager.Tools.AcPlugins.Messages;
 using AcTools.Processes;
 using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -145,7 +144,7 @@ namespace AcManager.Tools.AcPlugins.Extras {
         public void CheckDisconnected() {
             foreach (var item in Leaderboard) {
                 if (item.Driver != null && ++item.SilentFor > 5) {
-                    Logging.Debug("item.SilentFor=" + item.SilentFor);
+                    // Logging.Debug("item.SilentFor=" + item.SilentFor);
                     ActionExtension.InvokeInMainThread(() => {
                         item.Driver = null;
                         item.Reset(true);

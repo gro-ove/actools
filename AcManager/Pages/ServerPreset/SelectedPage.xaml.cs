@@ -330,7 +330,7 @@ namespace AcManager.Pages.ServerPreset {
             }
 
             private void OnCarsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
-                _busy.Do(() => { SelectedObject.CarIds = Cars.Select(x => x.Id).ToArray(); });
+                _busy.Do(() => SelectedObject.CarIds = Cars.Select(x => x.Id).ToArray());
             }
 
             private DelegateCommand _changeWelcomeMessagePathCommand;
@@ -350,15 +350,19 @@ namespace AcManager.Pages.ServerPreset {
                 }));
 
             private void OnAcObjectPropertyChanged(object sender, PropertyChangedEventArgs e) {
+                Logging.Debug($"prop={e.PropertyName}, busy={_busy.Is}");
                 switch (e.PropertyName) {
                     case nameof(SelectedObject.TrackId):
                     case nameof(SelectedObject.TrackLayoutId):
-                        _busy.Do(() => { Track = TracksManager.Instance.GetLayoutById(SelectedObject.TrackId, SelectedObject.TrackLayoutId); });
+                        _busy.Do(() => Track = TracksManager.Instance.GetLayoutById(SelectedObject.TrackId, SelectedObject.TrackLayoutId));
                         UpdateWrapperContentTracks();
                         break;
 
                     case nameof(SelectedObject.CarIds):
-                        _busy.Do(() => { Cars.ReplaceEverythingBy(SelectedObject.CarIds.Select(x => CarsManager.Instance.GetById(x))); });
+                        _busy.Do(() => {
+                            Cars.ReplaceEverythingBy(SelectedObject.CarIds.Select(x => CarsManager.Instance.GetById(x)));
+                            OnPropertyChanged(nameof(Car));
+                        });
                         break;
 
                     case nameof(SelectedObject.DriverEntries):

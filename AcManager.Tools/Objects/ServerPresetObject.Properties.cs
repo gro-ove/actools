@@ -761,6 +761,7 @@ namespace AcManager.Tools.Objects {
         }
 
         private void UpdateCarIds() {
+            Logging.Debug("CAR IDS: " + _driverEntries.Select(x => x.CarId).Distinct().ToArray());
             CarIds = _driverEntries.Select(x => x.CarId).Distinct().ToArray();
         }
 
@@ -778,6 +779,7 @@ namespace AcManager.Tools.Objects {
         }
 
         private void OnDriverEntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            Logging.Debug($"PROP CHANGED: {e.PropertyName}");
             switch (e.PropertyName) {
                 case nameof(ServerPresetDriverEntry.CarId):
                     UpdateCarIds();

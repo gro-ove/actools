@@ -75,6 +75,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AlphanumComparatorFastTest.cs" />
     <Compile Include="BusyTest.cs" />
     <Compile Include="CommandsTest.cs" />
     <Compile Include="EmojiTest.cs" />
