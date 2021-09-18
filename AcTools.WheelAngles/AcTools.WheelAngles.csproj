@@ -77,6 +77,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Implementations\FanatecCSLE.cs" />
+    <Compile Include="Implementations\FanatecCSR.cs" />
+    <Compile Include="Implementations\FanatecCSW.cs" />
+    <Compile Include="Implementations\FanatecDD1.cs" />
+    <Compile Include="Implementations\FanatecDD2.cs" />
+    <Compile Include="Implementations\FanatecPorsche.cs" />
     <Compile Include="Implementations\LogitechDFGT.cs" />
     <Compile Include="Implementations\LogitechG25.cs" />
     <Compile Include="Implementations\LogitechG27.cs" />
