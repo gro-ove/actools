@@ -85,6 +85,7 @@
     <Compile Include="Implementations\LogitechG290.cs" />
     <Compile Include="Implementations\LogitechG293.cs" />
     <Compile Include="Implementations\MMos.cs" />
+    <Compile Include="Implementations\OpenFFB.cs" />
     <Compile Include="Implementations\Options\IGameWaitingWheelOptions.cs" />
     <Compile Include="Implementations\Options\LogitechG29Options.cs" />
     <Compile Include="Implementations\Options\LogitechOptions.cs" />
