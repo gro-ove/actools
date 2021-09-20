@@ -47,16 +47,9 @@ namespace AcTools.WheelAngles.Implementations {
 
         public bool Apply(int steerLock, bool isReset, out int appliedValue)
         {
-            
-            if (isReset)
-            {
-                appliedValue = 0; // Reverts back to last set value
-            }
-            else
-            {
-                appliedValue = Math.Min(Math.Max(steerLock, MinimumSteerLock), MaximumSteerLock);
-            }
 
+            appliedValue = Math.Min(Math.Max(steerLock, MinimumSteerLock), MaximumSteerLock);
+    
             var packet = new CommandPacket
             {
                 ReportId    = OFFBReportId.Out,
