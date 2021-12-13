@@ -24,13 +24,26 @@ namespace AcTools.WheelAngles.Implementations {
 
         private enum OFFBReportId : byte
         {
-            Out = 0xAF,
-            Angle = 0x21
+            Out = 0xA1
         }
+        private enum OFFBClsId : UInt16
+        {
+            
+            AxisCls = 0xA01,
+            FxCls = 0xA02
+        }
+
+        private enum OFFBCmdId : UInt32
+        {
+            PowerCmd = 0x00,
+            AngleCmd = 0x01
+        }
+
+        
 
         private enum OFFBHidCmdType : byte
         {
-            write = 0, request = 1, err = 2
+            write = 0, request = 1, info = 2, writeAddr = 3, requestAddr = 4
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1),]
@@ -38,9 +51,11 @@ namespace AcTools.WheelAngles.Implementations {
         {
             public OFFBReportId ReportId;
             public OFFBHidCmdType type;
-            public UInt32 Command;
-            public UInt32 addr;
+            public OFFBClsId cls;
+            public byte inst;
+            public OFFBCmdId Command;
             public UInt64 value;
+            public UInt64 addr;
 
             public static readonly int Size = Marshal.SizeOf(typeof(CommandPacket));
         }
@@ -54,9 +69,11 @@ namespace AcTools.WheelAngles.Implementations {
             {
                 ReportId    = OFFBReportId.Out,
                 type        = OFFBHidCmdType.write,
-                Command     = (UInt32)OFFBReportId.Angle, // set degrees
-                addr        = 0,    // Axis = 0
-                value       = (UInt64)appliedValue
+                cls         = OFFBClsId.AxisCls,
+                inst        = 0, // First axis
+                Command     = OFFBCmdId.AngleCmd, // set degrees
+                value       = (UInt64)appliedValue,
+                addr        = 0
             };
 
             var ptr = Marshal.AllocHGlobal(CommandPacket.Size);
