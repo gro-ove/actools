@@ -340,8 +340,8 @@
     <value>Objekt kann nicht geklont werden</value>
   </data>
   <data name="AcObject_CannotClone_Commentary" xml:space="preserve">
-    <value>Überprüfe ob ausreichend Speicherplatz vorhanden ist.</value>
-  </data>
+    <value>Überprüfen Sie, ob ausreichend Speicherplatz vorhanden ist.</value>
+  <alternative>Überprüfe ob ausreichend Speicherplatz vorhanden ist.</alternative></data>
   <data name="Units_BHP" xml:space="preserve">
     <value>PS</value>
   </data>
@@ -775,8 +775,8 @@
     <value>Statisch</value>
   </data>
   <data name="AcSettings_CustomResolution" xml:space="preserve">
-    <value>Eigene</value>
-  <alternative>Benutzerdefiniert</alternative></data>
+    <value>Benutzerdefiniert</value>
+  <alternative>Eigene</alternative></data>
   <data name="AcSettings_ExperimentalValue" xml:space="preserve">
     <value>{0} (Experimentell)</value>
   </data>
@@ -1374,8 +1374,8 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
     <value>Die ungepatchte Originalversion des Startprogramms konnte nicht wieder hergestellt werden. Bitte [url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk"]ersetze es manuell[/url].</value>
   </data>
   <data name="AcSettings_Cubemap_ThreeFaces" xml:space="preserve">
-    <value>Drei Flächen per Frame</value>
-  </data>
+    <value>Drei Flächen pro Bild</value>
+  <alternative>Drei Flächen per Frame</alternative></data>
   <data name="Online_YouAreOnThisServer" xml:space="preserve">
     <value>Du bist auf diesem Server</value>
   </data>
@@ -1392,8 +1392,8 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
     <value>Eine der schnellsten Starter, um das Rennen zu starten; funktioniert nicht ohne Internetverbindung oder laufender Steam-Anwendung</value>
   </data>
   <data name="AcSettings_Cubemap_OneFace" xml:space="preserve">
-    <value>Eine Fläche per Frame</value>
-  </data>
+    <value>Eine Fläche pro Bild</value>
+  <alternative>Eine Fläche per Frame</alternative></data>
   <data name="DifficultyLevel_Easy" xml:space="preserve">
     <value>Einfach</value>
   </data>
@@ -1416,8 +1416,8 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
     <value>Fügt dem originalen Launcher ein spezielles UI-Modul hinzu, welches Befehle ausführt und Rennen startet; nutze dies, wenn du sowohl Content Manager als auch den originalen Launcher gleichzeitig benutzt</value>
   </data>
   <data name="AcSettings_Cubemap_FiveFaces" xml:space="preserve">
-    <value>Fünf Flächen per Frame</value>
-  </data>
+    <value>Fünf Flächen pro Bild</value>
+  <alternative>Fünf Flächen per Frame</alternative></data>
   <data name="GameCommand_TimeoutExceeded_Commentary" xml:space="preserve">
     <value>Gehe sicher, dass der Befehl nicht mehr als {0:F1} Sekunden benötigt; nutze "start [app.exe]” statt “[app.exe]”, wenn App im Hintergrund laufen soll.</value>
   </data>
@@ -1515,8 +1515,8 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
     <value>Script sollte Sortierfunktion zurückgeben</value>
   </data>
   <data name="AcSettings_Cubemap_SixFaces" xml:space="preserve">
-    <value>Sechs Flächen per Frame</value>
-  </data>
+    <value>Sechs Flächen pro Bild</value>
+  <alternative>Sechs Flächen per Frame</alternative></data>
   <data name="Online_BookingResult_ServerFull" xml:space="preserve">
     <value>Server ist voll</value>
   </data>
@@ -1569,8 +1569,8 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
     <value>Ungültiges Passwort</value>
   </data>
   <data name="AcSettings_Cubemap_FourFaces" xml:space="preserve">
-    <value>Vier Flächen per Frame</value>
-  </data>
+    <value>Vier Flächen pro Bild</value>
+  <alternative>Vier Flächen per Frame</alternative></data>
   <data name="Solving_RestoreFrom" xml:space="preserve">
     <value>Von ...{0} wiederherstellen</value>
   </data>
@@ -1590,8 +1590,8 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
     <value>Zerstreute Wolken</value>
   </data>
   <data name="AcSettings_Cubemap_TwoFaces" xml:space="preserve">
-    <value>Zwei Flächen per Frame</value>
-  </data>
+    <value>Zwei Flächen pro Bild</value>
+  <alternative>Zwei Flächen per Frame</alternative></data>
   <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
     <value>Lackierung {0} fehlt.</value>
   <alternative>Fahrzeuglackierung {0} fehlt.</alternative></data>
@@ -1605,8 +1605,8 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
     <value>Zufall</value>
   </data>
   <data name="Shared_TrackStatePreset" xml:space="preserve">
-    <value>Vorlage des Streckenzustands</value>
-  <alternative>Voreinstellung des Streckenzustands</alternative></data>
+    <value>Vorlage für Streckenzustand</value>
+  <alternative>Voreinstellung des Streckenzustands</alternative><alternative>Vorlage des Streckenzustands</alternative></data>
   <data name="ReplayHelper_CannotUnsaveReplay" xml:space="preserve">
     <value>Wiederholung nicht wiederherstellbar</value>
   </data>
@@ -1624,5 +1624,53 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
   </data>
   <data name="Controls_Steer" xml:space="preserve">
     <value>Lenkung</value>
+  </data>
+  <data name="Common_Restrictor" xml:space="preserve">
+    <value>Begrenzer</value>
+  </data>
+  <data name="BestLapsControl_BestLap" xml:space="preserve">
+    <value>Beste Runde:</value>
+  </data>
+  <data name="BestLapsControl_BestLaps" xml:space="preserve">
+    <value>Beste Runden:</value>
+  </data>
+  <data name="Common_FeetPerSecondPostfix" xml:space="preserve">
+    <value>Fuß/s</value>
+  </data>
+  <data name="Race_OpponentsAggression" xml:space="preserve">
+    <value>Gegneraggression</value>
+  </data>
+  <data name="Common_Unit_Hz" xml:space="preserve">
+    <value>Hz</value>
+  </data>
+  <data name="Common_KilogramsPostfix" xml:space="preserve">
+    <value>kg</value>
+  </data>
+  <data name="Race_ArrangeAIStrengthBasedOnPWRatio" xml:space="preserve">
+    <value>KI-Stärke nach Leistungs-/Gewichtsverhältnis ordnen</value>
+  </data>
+  <data name="Online_LoadingSkins" xml:space="preserve">
+    <value>Lade {0} Skins...</value>
+  </data>
+  <data name="Online_LoadingCars" xml:space="preserve">
+    <value>Lade Fahrzeuge ({0})…</value>
+  </data>
+  <data name="Online_LoadingActualInformation" xml:space="preserve">
+    <value>Lade Serverinformationen...</value>
+  </data>
+  <data name="Online_LoadingPlayersList" xml:space="preserve">
+    <value>Lade Spielerliste...</value>
+  </data>
+  <data name="Common_MetersPerSecondPostfix" xml:space="preserve">
+    <value>m/s</value>
+  </data>
+  <data name="Race_RandomizationTitle" xml:space="preserve">
+    <value>Randomisierung:</value>
+  </data>
+  <data name="Units_WHP" xml:space="preserve">
+    <value>wps</value>
+  </data>
+  <data name="Race_ShowAIAggression" xml:space="preserve">
+    <value>Zeige KI-Aggression im Fahrernamen</value>
   </data>
 </root>

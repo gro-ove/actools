@@ -721,4 +721,91 @@ Forfatter: [b]{3}[/b]</value>
   <data name="Controls_Axis" xml:space="preserve">
     <value>Akser</value>
   </data>
+  <data name="AcObject_TrackLabel" xml:space="preserve">
+    <value>Racerbane:</value>
+  </data>
+  <data name="Drive_Ordinal_Parameter" xml:space="preserve">
+    <value>Fører</value>
+  </data>
+  <data name="KunosCareer_LapsLabel" xml:space="preserve">
+    <value>Runder:</value>
+  </data>
+  <data name="Page_Wip" xml:space="preserve">
+    <value>Denne delen er ikke klar ennå</value>
+  </data>
+  <data name="MainWindow_FoundNModUpdates" xml:space="preserve">
+    <value>Fant {0} {update} for mods:</value>
+  </data>
+  <data name="MainWindow_AddDownload_Message" xml:space="preserve">
+    <value>Skriv inn URL for å laste ned:</value>
+  </data>
+  <data name="MainWindow_AddDownload_Title" xml:space="preserve">
+    <value>Nedlastinger</value>
+  </data>
+  <data name="MainWindow_AddDownload_MenuItem" xml:space="preserve">
+    <value>Last ned noe...</value>
+  </data>
+  <data name="MainWindow_InstallFromAFile_MenuItem" xml:space="preserve">
+    <value>Installer fra fil...</value>
+  </data>
+  <data name="DownloadList_PluginsLoadFailed" xml:space="preserve">
+    <value>Kan ikke laste liste med plugins</value>
+  </data>
+  <data name="DownloadList_7ZipComment" xml:space="preserve">
+    <value>Plugin for 7-zip som pakker ut og installerer automatisk</value>
+  </data>
+  <data name="DownloadList_ViewInExplorer" xml:space="preserve">
+    <value>Se i Explorer</value>
+  </data>
+  <data name="DownloadList_Password" xml:space="preserve">
+    <value>Passord:</value>
+  </data>
+  <data name="DownloadList_DetectionFailed" xml:space="preserve">
+    <value>App fant ingenting å installere her. Vil du installere manuelt?</value>
+  </data>
+  <data name="DownloadList_ShowFile" xml:space="preserve">
+    <value>Vis fil</value>
+  </data>
+  <data name="DownloadList_ScanAgain" xml:space="preserve">
+    <value>Skann igjen</value>
+  </data>
+  <data name="DownloadList_Retry" xml:space="preserve">
+    <value>Prøv igjen</value>
+  </data>
+  <data name="DownloadList_ExtraOptions" xml:space="preserve">
+    <value>Ekstra valg:</value>
+  </data>
+  <data name="DownloadList_Failed" xml:space="preserve">
+    <value>Feilet</value>
+  </data>
+  <data name="DownloadList_NothingFound" xml:space="preserve">
+    <value>Ingen treff</value>
+  </data>
+  <data name="DownloadList_Cancelled" xml:space="preserve">
+    <value>Avbrutt</value>
+  </data>
+  <data name="DownloadList_Cancelling" xml:space="preserve">
+    <value>Avbryter...</value>
+  </data>
+  <data name="DownloadList_Installing" xml:space="preserve">
+    <value>Installerer...</value>
+  </data>
+  <data name="DownloadList_Install" xml:space="preserve">
+    <value>Installer</value>
+  </data>
+  <data name="DownloadList_Resume" xml:space="preserve">
+    <value>Gjenoppta</value>
+  </data>
+  <data name="DownloadList_Restart" xml:space="preserve">
+    <value>Start på nytt</value>
+  </data>
+  <data name="DownloadList_Cancel" xml:space="preserve">
+    <value>Avbryt</value>
+  </data>
+  <data name="DownloadList_From" xml:space="preserve">
+    <value>Fra:</value>
+  </data>
+  <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
+    <value>Ingen aktive nedlastinger</value>
+  </data>
 </root>

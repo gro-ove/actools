@@ -1742,4 +1742,7 @@
   <data name="Online_LoadingActualInformation" xml:space="preserve">
     <value>正在加载实际服务器信息…</value>
   </data>
+  <data name="Units_WHP" xml:space="preserve">
+    <value>轮上马力</value>
+  </data>
 </root>

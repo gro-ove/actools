@@ -4517,8 +4517,8 @@ nada que hacer mientras carga datos de disco, y habrá mucha menos información 
     <value>No recomendaría deshabilitarlo, CM sugerirá arreglar la descripción de la pista si algo va mal. Pero hazlo si no utilizas etiquetas por defecto.</value>
   </data>
   <data name="Settings_Drive_ShowExtraDropDownListsForSkins" xml:space="preserve">
-    <value>Mostrar listas desplegables extra de skins, modificaciones de coches y configuraciones de pistas</value>
-  </data>
+    <value>Mostrar listas extra de skins, modificaciones de coches y configuraciones de pistas</value>
+  <alternative>Mostrar listas desplegables extra de skins, modificaciones de coches y configuraciones de pistas</alternative></data>
   <data name="Settings_Online_AutoRefreshSelected" xml:space="preserve">
     <value>Auto refrescar la selección:</value>
   </data>
@@ -4560,5 +4560,113 @@ nada que hacer mientras carga datos de disco, y habrá mucha menos información 
   </data>
   <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
     <value>Mostrar información extendida si falta contenido</value>
+  </data>
+  <data name="Settings_Drive_RealHeadMotion" xml:space="preserve">
+    <value>Movimiento real de cabeza:</value>
+  </data>
+  <data name="TrackStateEditor_InitialGrip" xml:space="preserve">
+    <value>Agarre inicial</value>
+  </data>
+  <data name="TrackStateEditor_InitialGrip_Tooltip" xml:space="preserve">
+    <value>Cantidad de agarre al inicio de la sesión</value>
+  </data>
+  <data name="TrackStateEditor_GripTransfer" xml:space="preserve">
+    <value>Transferir agarre</value>
+  </data>
+  <data name="TrackStateEditor_GripTransfer_Tooltip" xml:space="preserve">
+    <value>El agarre adicional se transferirá a la próxima sesión</value>
+  </data>
+  <data name="TrackStateEditor_GripRandomization" xml:space="preserve">
+    <value>Agarre aleatorio</value>
+  </data>
+  <data name="TrackStateEditor_LapGain" xml:space="preserve">
+    <value>Aumento de vuelta</value>
+  </data>
+  <data name="Settings_Drive_ShowExtraDropDownListsForSkins_Tooltip" xml:space="preserve">
+    <value>Mostraría la lista ligeramente hacia abajo</value>
+  </data>
+  <data name="Main_Workshop" xml:space="preserve">
+    <value>Taller</value>
+  </data>
+  <data name="MainWindow_FoundNModUpdates" xml:space="preserve">
+    <value>Encontrados {0} {update} para mods:</value>
+  </data>
+  <data name="MainWindow_AddDownload_Message" xml:space="preserve">
+    <value>Ingrese URL para descargar:</value>
+  </data>
+  <data name="MainWindow_AddDownload_Comment" xml:space="preserve">
+    <value>O, copie un enlace o un archivo y presione Ctrl + V en el CM.</value>
+  </data>
+  <data name="MainWindow_AddDownload_Title" xml:space="preserve">
+    <value>Descargar</value>
+  </data>
+  <data name="MainWindow_AddDownload_MenuItem" xml:space="preserve">
+    <value>Descargar algo...</value>
+  </data>
+  <data name="MainWindow_InstallFromAFile_MenuItem" xml:space="preserve">
+    <value>Instalar desde archivo...</value>
+  </data>
+  <data name="DownloadList_PluginsLoadFailed" xml:space="preserve">
+    <value>No se puede cargar lista de plugins.</value>
+  </data>
+  <data name="DownloadList_7ZipComment" xml:space="preserve">
+    <value>Con el plugin 7-Zip, puede mejorar el rendimiento de la instalación y permitir que CM descomprima todo tipo de archivos:</value>
+  </data>
+  <data name="DownloadList_ViewInExplorer" xml:space="preserve">
+    <value>Ver en el explorador</value>
+  </data>
+  <data name="DownloadList_Password" xml:space="preserve">
+    <value>Contraseña:</value>
+  </data>
+  <data name="DownloadList_DetectionFailed" xml:space="preserve">
+    <value>La aplicación no pudo detectar ningún contenido que instalar. ¿Desea instalarlo manualmente?</value>
+  </data>
+  <data name="DownloadList_ShowFile" xml:space="preserve">
+    <value>Mostrar archivo</value>
+  </data>
+  <data name="DownloadList_ScanAgain" xml:space="preserve">
+    <value>Volver a buscar</value>
+  </data>
+  <data name="DownloadList_Retry" xml:space="preserve">
+    <value>Reintentar</value>
+  </data>
+  <data name="DownloadList_ExtraOptions" xml:space="preserve">
+    <value>Opciones extra:</value>
+  </data>
+  <data name="DownloadList_Failed" xml:space="preserve">
+    <value>Fallido</value>
+  </data>
+  <data name="DownloadList_NothingFound" xml:space="preserve">
+    <value>Nada encontrado</value>
+  </data>
+  <data name="DownloadList_Cancelled" xml:space="preserve">
+    <value>Cancelado</value>
+  </data>
+  <data name="DownloadList_Cancelling" xml:space="preserve">
+    <value>Cancelando...</value>
+  </data>
+  <data name="DownloadList_Installing" xml:space="preserve">
+    <value>Instalando...</value>
+  </data>
+  <data name="DownloadList_Install" xml:space="preserve">
+    <value>Instalar</value>
+  </data>
+  <data name="DownloadList_Resume" xml:space="preserve">
+    <value>Reanudar</value>
+  </data>
+  <data name="DownloadList_Pause" xml:space="preserve">
+    <value>Pausar</value>
+  </data>
+  <data name="DownloadList_Restart" xml:space="preserve">
+    <value>Reiniciar</value>
+  </data>
+  <data name="DownloadList_Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="DownloadList_From" xml:space="preserve">
+    <value>Desde:</value>
+  </data>
+  <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
+    <value>Descargas no activas</value>
   </data>
 </root>

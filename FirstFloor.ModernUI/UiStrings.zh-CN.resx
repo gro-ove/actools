@@ -604,6 +604,6 @@
     <value>浏览</value>
   </data>
   <data name="Reload" xml:space="preserve">
-    <value>重新载入</value>
-  </data>
+    <value>刷新</value>
+  <alternative>重新载入</alternative></data>
 </root>

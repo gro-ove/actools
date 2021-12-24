@@ -789,8 +789,8 @@ Materyal: [b]{10}[/b]</alternative></data>
     <value>Yıl ya da açıklamayı seçip Tamam'a basın; açıklamayı değiştirmek yerine genişletmek için CTRL'ye basın.</value>
   </data>
   <data name="KunosCareer_Error" xml:space="preserve">
-    <value>{0} hata</value>
-  </data>
+    <value>{0} hatası</value>
+  <alternative>{0} hata</alternative></data>
   <data name="KunosCareer_RequiredSeries" xml:space="preserve">
     <value>Gerekli seriler: {0}</value>
   </data>

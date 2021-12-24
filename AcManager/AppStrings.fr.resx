@@ -4662,4 +4662,16 @@ de toute façon en attendant que le disque obtienne les données, et il y aura b
   <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
     <value>Pas de téléchargement en cours</value>
   </data>
+  <data name="Settings_Live_SrsJoinFromOnline" xml:space="preserve">
+    <value>Rejoindre une partie en ligne</value>
+  </data>
+  <data name="DownloadList_7ZipComment" xml:space="preserve">
+    <value>Avec le plugin 7zip, vouss permettez d'augmenter la rapiditer d'installer et autoriser CM a extraire tout type d'archive</value>
+  </data>
+  <data name="DownloadList_DetectionFailed" xml:space="preserve">
+    <value>L'application n'a détecter aucun élément installer ici. Voulez vous les installez manuellement ?</value>
+  </data>
+  <data name="DownloadList_ScanAgain" xml:space="preserve">
+    <value>Relancer l'analysse</value>
+  </data>
 </root>

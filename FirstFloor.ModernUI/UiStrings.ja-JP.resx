@@ -537,4 +537,7 @@
   <data name="Common_Browse" xml:space="preserve">
     <value>閲覧</value>
   </data>
+  <data name="Reload" xml:space="preserve">
+    <value>再読み込み</value>
+  </data>
 </root>
