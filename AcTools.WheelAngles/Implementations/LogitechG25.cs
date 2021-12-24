@@ -236,6 +236,10 @@ namespace AcTools.WheelAngles.Implementations {
             }
 
             private void ExtendWithPresets([NotNull] string processFilename) {
+                if (processFilename == null) {
+                    throw new ArgumentNullException(nameof(processFilename));
+                }
+
                 var presets = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Logitech", "Gaming Software");
                 if (!Directory.Exists(presets)) return;
 

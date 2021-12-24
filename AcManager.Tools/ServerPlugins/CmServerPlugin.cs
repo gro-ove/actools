@@ -182,6 +182,7 @@ namespace AcManager.Tools.ServerPlugins {
         }
 
         public override void OnChatMessage(MsgChat msg) {
+            if (msg.Message.StartsWith("\t\t\t\t$CSP0:")) return;
             ActionExtension.InvokeInMainThreadAsync(() => Chat.ChatMessages.Add(new ChatMessage(_leaderboard.GetDetails(msg.CarId), msg)));
             _logFn(ServerPresetObject.LogMessageType.Debug, $"Chat message: {msg.Message}");
         }

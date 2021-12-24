@@ -234,7 +234,9 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         public enum PatchDataType {
-            Manifest, Patch, Chunk
+            Manifest,
+            Patch,
+            Chunk
         }
 
         /// <summary>
@@ -242,7 +244,8 @@ namespace AcManager.Tools.Helpers.Api {
         /// </summary>
         /// <returns>Cached filename and if data is just loaded or not.</returns>
         [ItemCanBeNull]
-        public static async Task<Tuple<string, bool>> GetPatchDataAsync(PatchDataType type, [NotNull] string version, TimeSpan maxAge, IProgress<AsyncProgressEntry> progress = null,
+        public static async Task<Tuple<string, bool>> GetPatchDataAsync(PatchDataType type, [NotNull] string version, TimeSpan maxAge,
+                IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default) {
             var key = GetPatchCacheKey(type, version);
             var file = new FileInfo(FilesStorage.Instance.GetFilename("Temporary", "Patch", key));
@@ -392,13 +395,8 @@ namespace AcManager.Tools.Helpers.Api {
         [ItemCanBeNull]
         public static Task<ServerInformationExtra> GetOnlineDataAsync(string id, CancellationToken cancellation = default) {
             return LazierCached.CreateAsync(@".OnlineData:" + id,
-                    () => InternalUtils.GetOnlineDataAsync(id, UserAgent, cancellation).ContinueWith(
-                            r => {
-                                // Logging.Debug(JsonConvert.SerializeObject(r.Result));
-                                return JsonConvert.DeserializeObject<ServerInformationExtra>(r.Result);
-                            },
-                            TaskContinuationOptions.OnlyOnRanToCompletion)
-                    ).GetValueAsync();
+                    async () => JsonConvert.DeserializeObject<ServerInformationExtra>(await InternalUtils.GetOnlineDataAsync(id, UserAgent, cancellation)))
+                    .GetValueAsync();
         }
     }
 }

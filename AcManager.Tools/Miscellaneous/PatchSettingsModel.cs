@@ -233,14 +233,14 @@ namespace AcManager.Tools.Miscellaneous {
                 File.Exists(Path.Combine(root, "shaders.pak")) || File.Exists(Path.Combine(root, "shaders.zip")) || Directory.Exists(Path.Combine(root, "shaders", "custom")) ? null
                         : new FoundIssue("Custom shaders pack “extension/shaders.pak” are missing", @"reinstallCurrent", "reinstall patch",
                                 "Reinstall currently active patch version to fix the problem automatically"),
-                File.Exists(Path.Combine(root, "lua", "ac_common.lua")) || File.Exists(Path.Combine(root, "lua", "std.zip")) ? null
+                File.Exists(Path.Combine(root, "lua", "ac_common.lua")) || File.Exists(Path.Combine(root, "lua", "std.zip")) || File.Exists(Path.Combine(root, "internal", "lua.zip")) ? null
                         : new FoundIssue("Lua utilities in “extension/lua” are missing", @"reinstallCurrent", "reinstall patch",
                                 "Reinstall currently active patch version to fix the problem automatically"),
-                File.Exists(Path.Combine(root, "tzdata", "europe")) ? null
+                File.Exists(Path.Combine(root, "internal", "tzdata", "europe")) ? null
                         : new FoundIssue("Timezones information in “extension/tzdata” are missing", @"reinstallCurrent", "reinstall patch",
                                 "Reinstall currently active patch version to fix the problem automatically"),
                 version == null || version.CompareAsVersionTo(RequiredAcVersion) >= 0 ? null
-                        : new FoundIssue($"Assetto Corsa is obsolete (v{RequiredAcVersion} is required)"),
+                        : new FoundIssue($"Assetto Corsa is obsolete (v{RequiredAcVersion} is required, yours is {version})"),
                 Environment.Is64BitOperatingSystem ? null
                         : new FoundIssue("64-bit AC and Windows installation is required"),
                 !SettingsHolder.Drive.Use32BitVersion ? null

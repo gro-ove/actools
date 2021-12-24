@@ -44,7 +44,7 @@ namespace AcManager.Pages.ContentTools {
             }
 
             var format = DriveInfo.GetDrives().FirstOrDefault(x => x.RootDirectory.FullName == Path.GetPathRoot(AcRootDirectory.Instance.Value))?.DriveFormat;
-            if (format != @"NTFS") {
+            if (format != @"NTFS" && format != null) {
                 yield return $"Not supported file system: {format}";
             }
         }

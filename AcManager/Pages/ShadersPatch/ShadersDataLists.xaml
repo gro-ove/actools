@@ -60,7 +60,7 @@
               <mui:ContextMenuButton DockPanel.Dock="Right" Margin="0 1 0 -1">
                 <ContextMenu>
                   <MenuItem
-                      Header="{Binding UnavailableCount, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {entry} are not available'}"
+                      Header="{Binding UnavailableCount, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {entry} for missing content'}"
                       Command="{Binding ShowUnavailableEntriesCommand}"
                       Visibility="{Binding UnavailableCount, Converter={StaticResource MoreToVisibilityConverter}}" />
                   <Separator Visibility="{Binding UnavailableCount, Converter={StaticResource MoreToVisibilityConverter}}" />

@@ -353,7 +353,7 @@ console.log(result);
             }
 
             if (index < length - 3 && s[index] == ':' && char.IsDigit(s[index + 1])) {
-                for (index++; char.IsDigit(s[index]); index++) { }
+                for (index++; index < length && char.IsDigit(s[index]); index++) { }
             }
 
             if (index >= length || s[index] != '/') {

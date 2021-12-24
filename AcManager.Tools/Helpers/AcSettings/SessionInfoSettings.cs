@@ -59,8 +59,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Qualify = section.GetBool("QUALIFY_VISIBLE", true);
             Race = section.GetBool("RACE_VISIBLE", true);
 
-            double opacity;
-            BackgroundColor = section.GetColor("BACKGROUND_COLOR", Colors.Black, 0.3, out opacity);
+            BackgroundColor = section.GetColor("BACKGROUND_COLOR", Colors.Black, 0.3, out var opacity);
             BackgroundOpacity = opacity;
 
             ForegroundColor = section.GetColor("FONT_COLOR", Colors.White, 1.0, out opacity);

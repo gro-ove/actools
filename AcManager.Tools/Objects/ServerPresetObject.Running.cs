@@ -669,10 +669,10 @@ namespace AcManager.Tools.Objects {
                     _pluginManager.AddPlugin(CmPlugin = new CmServerPlugin(log, Capacity));
                     if (RealConditions) {
                         var track = TrackId == null ? null : await TracksManager.Instance.GetLayoutByIdAsync(TrackId, TrackLayoutId);
-                        //_pluginManager.AddPlugin(new RealConditionsServerPlugin(track, RequiredCspVersion >= 1643));
+                        _pluginManager.AddPlugin(new RealConditionsServerPlugin(track, RequiredCspVersion >= 1643));
                     }
 
-                    _pluginManager.AddPlugin(new DynamicConditionsV2ServerPlugin());
+                    // _pluginManager.AddPlugin(new DynamicConditionsV2ServerPlugin());
                 }
 
                 process.BeginOutputReadLine();

@@ -245,7 +245,7 @@
         <DockPanel>
           <TextBlock Style="{StaticResource Label}" Text="Set playback time manually" Margin="0 0 0 4" DockPanel.Dock="Top" />
           <TextBlock Margin="0 0 0 4" DockPanel.Dock="Top"
-              Text="Because of that night mode being in development and all that, if you want to run a replay of a night race saved without extended information, you need to remind CM and AC, what time it took place in." />
+              Text="Because of night mode being in development and all that, if you want to run a replay of a night race saved without extended information, you’в need to remind CM and AC what time it took place in." />
           <mui:ValueLabel Value="{Binding DisplayTime}" mui:BetterTextBox.Mode="Time" Margin="0 0 20 0" Content="{x:Static g:AppStrings.Drive_Time}" />
           <Slider Value="{Binding TimeSliderMapper.MappedValue}" Margin="0 0 0 4" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
               Minimum="0" Maximum="{Binding TimeSliderMapper.Size}" SmallChange="900" LargeChange="1800" />

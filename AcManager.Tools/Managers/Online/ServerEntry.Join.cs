@@ -285,7 +285,7 @@ namespace AcManager.Tools.Managers.Online {
                 WeatherName = WeatherId
             }, null, new Game.OnlineProperties {
                 RequestedCar = correctId,
-                ServerIp = Ip,
+                ServerIp = await KunosApiProvider.ResolveIpAddressAsync(Ip),
                 ServerName = DisplayName,
                 ServerPort = PortRace,
                 ServerHttpPort = PortHttp,

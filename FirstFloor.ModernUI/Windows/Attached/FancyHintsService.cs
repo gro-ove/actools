@@ -158,6 +158,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private static Tuple<AdornerLayer, Window> GetAdornerLayer([NotNull] Visual visual) {
+            // return null;
             if (visual == null) throw new ArgumentNullException(nameof(visual));
 
             var window = visual as Window ?? visual.GetParent<Window>();

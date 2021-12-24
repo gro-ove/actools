@@ -8,7 +8,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private Color _color;
 
         public Color Color {
-            get { return _color; }
+            get => _color;
             set => Apply(value, ref _color);
         }
 
@@ -17,7 +17,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _maxMinutesRecording;
 
         public int MaxMinutesRecording {
-            get { return _maxMinutesRecording; }
+            get => _maxMinutesRecording;
             set {
                 value = value.Clamp(0, 240);
                 if (Equals(value, _maxMinutesRecording)) return;
@@ -31,7 +31,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _minDistance;
 
         public int MinDistance {
-            get { return _minDistance; }
+            get => _minDistance;
             set {
                 value = value.Clamp(0, 250);
                 if (Equals(value, _minDistance)) return;
@@ -49,7 +49,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _maxDistance;
 
         public int MaxDistance {
-            get { return _maxDistance; }
+            get => _maxDistance;
             set {
                 value = value.Clamp(0, 500);
                 if (Equals(value, _maxDistance)) return;
@@ -67,7 +67,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _maxOpacity;
 
         public int MaxOpacity {
-            get { return _maxOpacity; }
+            get => _maxOpacity;
             set {
                 value = value.Clamp(0, 300);
                 if (Equals(value, _maxOpacity)) return;
@@ -79,14 +79,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _timeDifferenceEnabled;
 
         public bool TimeDifferenceEnabled {
-            get { return _timeDifferenceEnabled; }
+            get => _timeDifferenceEnabled;
             set => Apply(value, ref _timeDifferenceEnabled);
         }
 
         private bool _playerNameEnabled;
 
         public bool PlayerNameEnabled {
-            get { return _playerNameEnabled; }
+            get => _playerNameEnabled;
             set => Apply(value, ref _playerNameEnabled);
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
@@ -110,9 +111,19 @@ namespace AcManager.Pages.Lists {
                                 (o => o is GenericMod m && _filter.Test(m.DisplayName) && !m.IsEnabled));
             }
 
+            private class SortComparer : IComparer {
+                public int Compare(object x, object y) {
+                    var ix = x as GenericMod;
+                    var iy = y as GenericMod;
+                    if (ix == null) return iy == null ? 0 : 1;
+                    if (iy == null) return -1;
+                    if (ix.AppliedOrder != iy.AppliedOrder) return ix.AppliedOrder - iy.AppliedOrder;
+                    return AlphanumComparatorFast.Compare(ix.DisplayName, iy.DisplayName);
+                }
+            }
+
             private void Prepare(BetterListCollectionView view, string key) {
-                view.SortDescriptions.Add(new SortDescription(nameof(GenericMod.AppliedOrder), ListSortDirection.Ascending));
-                view.SortDescriptions.Add(new SortDescription(nameof(GenericMod.DisplayName), ListSortDirection.Ascending));
+                view.CustomSort = new SortComparer();
 
                 var storageKey = $".genericMods.selected:{key}";
 
@@ -155,8 +166,9 @@ namespace AcManager.Pages.Lists {
                     var conflicts = await _enabler.CheckConflictsAsync(mod);
                     if (conflicts.Length > 0 && ModernDialog.ShowMessage(
                             conflicts.Select(x => $@"• “{Path.GetFileName(x.RelativeName)}” has already been altered by the “{x.ModName}” mod;")
-                                     .JoinToString("\n").ToSentence
-                                    () + $"\n\nEnabling {BbCodeBlock.Encode(mod.DisplayName)} may have adverse effects. Are you sure you want to enable this mod?",
+                                    .JoinToString("\n").ToSentence
+                                    ()
+                                    + $"\n\nEnabling {BbCodeBlock.Encode(mod.DisplayName)} may have adverse effects. Are you sure you want to enable this mod?",
                             "Conflict", MessageBoxButton.YesNo, "genericMods.conflict") != MessageBoxResult.Yes) {
                         return;
                     }
@@ -230,7 +242,6 @@ namespace AcManager.Pages.Lists {
                                 await _enabler.EnableAsync(mod);
                             }
                         }
-
                     }
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t disable all mods", e);
@@ -283,7 +294,6 @@ namespace AcManager.Pages.Lists {
                                     await _enabler.DisableAsync(mod);
                                 }
                             }
-
                         }
                     } catch (Exception e) {
                         NonfatalError.Notify("Can’t load mod profile", e);

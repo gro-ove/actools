@@ -218,7 +218,7 @@ namespace AcManager.Tools {
         /// <returns>Path to loaded file.</returns>
         /// <exception cref="Exception">Thrown if failed or cancelled.</exception>
         [ItemNotNull]
-        private static async Task<string> LoadRemoveFile(string argument, string name = null, string extension = null) {
+        private static async Task<string> LoadRemoteFile(string argument, string name = null, string extension = null) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
                 return await FlexibleLoader.LoadAsyncTo(argument, (url, information) => {
                     var filename = Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue, name + extension);

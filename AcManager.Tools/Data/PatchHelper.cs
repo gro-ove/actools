@@ -99,10 +99,10 @@ namespace AcManager.Tools.Data {
                 }
 
                 if (_customVideoModes == null) {
-                    _customVideoModes = GetManifest()["CUSTOM_RENDER_MODES"]
+                    _customVideoModes = GetManifest()?["CUSTOM_RENDER_MODES"]
                             .Select(x => new { x, p = x.Value.Split(',').AlterArray(y => y.Trim()) })
                             .Where(x => x.p.Length < 2 || TestQuery(x.p[1]))
-                            .Select(x => new SettingEntry(x.x.Key, x.p[0])).ToList();
+                            .Select(x => new SettingEntry(x.x.Key, x.p[0])).ToList() ?? new List<SettingEntry>();
                 }
                 return _customVideoModes;
             }

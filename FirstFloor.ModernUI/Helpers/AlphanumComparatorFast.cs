@@ -19,10 +19,16 @@ namespace FirstFloor.ModernUI.Helpers {
             return c >= '0' && c <= '9';
         }
 
-        private static int CompareBit(char[] a, int al, char[] b, int bl) {
+        private static int CompareBit(char[] a, int al, char[] b, int bl, bool ignoreCase) {
             var l = Math.Min(al, bl);
             for (var i = 0; i < l; ++i) {
-                var d = a[i] - b[i];
+                var ac = a[i];
+                var bc = b[i];
+                if (ignoreCase) {
+                    ac = char.ToLowerInvariant(ac);
+                    bc = char.ToLowerInvariant(bc);
+                }
+                var d = ac - bc;
                 if (d != 0) return d;
             }
             return al - bl;
@@ -37,7 +43,7 @@ namespace FirstFloor.ModernUI.Helpers {
             return 0;
         }
 
-        public static int Compare([CanBeNull] string x, [CanBeNull] string y) {
+        public static int Compare([CanBeNull] string x, [CanBeNull] string y, bool ignoreCase = true) {
             if (x == null) return y == null ? 0 : 1;
             if (y == null) return -1;
 
@@ -88,7 +94,8 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 // If we have collected numbers, compare them numerically.
                 // Otherwise, if we have strings, compare them alphabetically.
-                var result = num1 && num2 ? CompareNumericBit(space1, loc1, space2, loc2) : CompareBit(space1, loc1, space2, loc2);
+                var result = num1 && num2 ? CompareNumericBit(space1, loc1, space2, loc2)
+                        : CompareBit(space1, loc1, space2, loc2, ignoreCase);
                 if (result != 0) {
                     return result;
                 }
@@ -96,18 +103,11 @@ namespace FirstFloor.ModernUI.Helpers {
             return len1 - len2;
         }
 
-        public static int Compare(object x, object y) {
-            var s1 = x as string;
-            if (s1 == null) {
-                return 0;
+        public static int Compare(object x, object y, bool ignoreCase = true) {
+            if (x is string s1 && y is string s2) {
+                return Compare(s1, s2, ignoreCase);
             }
-
-            var s2 = y as string;
-            if (s2 == null) {
-                return 0;
-            }
-
-            return Compare(s1, s2);
+            return 0;
         }
     }
 }

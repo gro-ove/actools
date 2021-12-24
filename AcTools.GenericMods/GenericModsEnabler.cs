@@ -156,10 +156,11 @@ namespace AcTools.GenericMods {
 
         private void ScanMods(bool force, params string[] filenames) {
             void Scan() {
-                var directories = Directory.GetDirectories(ModsDirectory).Where(x => Path.GetFileName(x)?.StartsWith("!") == false).ToList();
+                var directories = Directory.GetDirectories(ModsDirectory).Where(x => Path.GetFileName(x)?.StartsWith("!") == false)
+                        .OrderBy(x => x, AlphanumComparatorFast.Instance).ToList();
                 var replaceMods = force || !directories.SequenceEqual(Mods.Select(x => x.ModDirectory));
                 if (replaceMods) {
-                    Mods.ReplaceEverythingBy_Direct(Directory.GetDirectories(ModsDirectory).Where(x => Path.GetFileName(x)?.StartsWith("!") == false).Select(x => new GenericMod(this, x)));
+                    Mods.ReplaceEverythingBy_Direct(directories.Select(x => new GenericMod(this, x)));
                 } else {
                     foreach (var changed in filenames.Where(x => x?.EndsWith(GenericMod.DescriptionExtension, StringComparison.OrdinalIgnoreCase) == true)) {
                         Mods.FirstOrDefault(x => FileUtils.IsAffectedBy(changed, x.ModDirectory))?.Description.Reset();

@@ -393,6 +393,7 @@
     <Compile Include="Helpers\AcSettings\CameraChaseSettings.cs" />
     <Compile Include="Helpers\AcSettings\CameraOrbitSettings.cs" />
     <Compile Include="Helpers\AcSettings\DamageDisplayerSettings.cs" />
+    <Compile Include="Helpers\AcSettings\DriverNamesSettings.cs" />
     <Compile Include="Helpers\AcSettings\FanatecSettings.cs" />
     <Compile Include="Helpers\AcSettings\LauncherSettings.cs" />
     <Compile Include="Helpers\AcSettings\MessagesSettings.cs" />

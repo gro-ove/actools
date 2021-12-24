@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcTools.DataFile;
@@ -24,20 +25,21 @@ namespace AcManager.Tools {
             private readonly string _acErrors;
             private readonly string _pyLog;
             private readonly string _cspLog;
+
             private readonly IniFile _controls;
             private readonly IniFile _race;
             private readonly IniFile _video;
             private readonly IniFile _python;
 
             public SummaryGenerator(ZipArchive archive) {
-                _log = archive.ReadString(@"log.txt");
-                _acErrors = archive.ReadString(@"errors.txt");
-                _pyLog = archive.ReadString(@"py_log.txt");
-                _cspLog = archive.ReadString(@"custom_shaders_patch.log");
-                _controls = IniFile.Parse(archive.ReadString(@"controls.ini"));
-                _race = IniFile.Parse(archive.ReadString(@"race.ini"));
-                _video = IniFile.Parse(archive.ReadString(@"video.ini"));
-                _python = IniFile.Parse(archive.ReadString(@"python.ini"));
+                _log = archive.TryReadString(@"log.txt") ?? string.Empty;
+                _acErrors = archive.TryReadString(@"errors.txt") ?? string.Empty;
+                _pyLog = archive.TryReadString(@"py_log.txt") ?? string.Empty;
+                _cspLog = archive.TryReadString(@"custom_shaders_patch.log") ?? string.Empty;
+                _controls = IniFile.Parse(archive.TryReadString(@"controls.ini") ?? string.Empty);
+                _race = IniFile.Parse(archive.TryReadString(@"race.ini") ?? string.Empty);
+                _video = IniFile.Parse(archive.TryReadString(@"video.ini") ?? string.Empty);
+                _python = IniFile.Parse(archive.TryReadString(@"python.ini") ?? string.Empty);
             }
 
             public string Run() {
@@ -71,6 +73,12 @@ namespace AcManager.Tools {
             }
 
             private void Collect() {
+                var detectedError = AcLogHelper.DetermineWhatsGoingOn(_log)?.GetDescription();
+                if (detectedError != null) {
+                    Group("Detected issue");
+                    Add("Error", detectedError);
+                }
+
                 Group("Versions");
                 Add("AC", Match(@"AC VERSION : (.*)"));
                 Add("CSP", Match(@"Custom Shaders Patch, (\S*)").TrimEnd('.'));
@@ -128,8 +136,7 @@ namespace AcManager.Tools {
                     File.WriteAllText(AcPaths.GetCfgVideoFilename(), newVideo.ToString());
 
                     // Apply CSP config
-                    PatchSettingsModel.Create().ImportFromPresetData(
-                            (archive.GetEntry("csp.ini") ?? throw new Exception("CSP config is missing")).Open().ReadAsStringAndDispose());
+                    PatchSettingsModel.Create().ImportFromPresetData(archive.GetEntry("csp.ini")?.Open().ReadAsStringAndDispose() ?? string.Empty);
 
                     // Apply race config
                     File.WriteAllText(AcPaths.GetRaceIniFilename(),
@@ -155,6 +162,13 @@ namespace AcManager.Tools {
                 using (var stream = File.OpenRead(filename))
                 using (var archive = new ZipArchive(stream)) {
                     var log = archive.ReadString(@"log.txt");
+                    var detectedError = AcLogHelper.DetermineWhatsGoingOn(log)?.GetDescription();
+                    /*if (detectedError != null) {
+                        if (MessageDialog.Show($"Crash seems familiar: {detectedError.ToSentenceMember()}.\n\nContinue unwrapping?", "Crash report", MessageDialogButton.YesNo) != MessageBoxResult.Yes) {
+                            return;
+                        }
+                    }*/
+
                     var username = Regex.Match(log, @"Steam Name:(\S*)").Groups[1].Value;
                     username = Regex.Replace(username, "[^A-Za-z0-9-]+", "");
 
@@ -174,6 +188,11 @@ namespace AcManager.Tools {
                         File.WriteAllBytes(Path.Combine(destination, crashId + ".dmp"), dump);
                     }
 
+                    if (detectedError != null) {
+                        var name = FileUtils.EnsureFileNameIsValid(detectedError, false);
+                        if (name.Length > 120) name = name.Substring(0, 120);
+                        File.WriteAllText(Path.Combine(destination, name), detectedError);
+                    }
                     File.WriteAllText(Path.Combine(destination, crashId + ".txt"), new SummaryGenerator(archive).Run());
                     File.WriteAllText(Path.Combine(destination, crashId + ".report-launch"), "");
                     File.WriteAllBytes(Path.Combine(destination, crashId + ".zip"), File.ReadAllBytes(filename));

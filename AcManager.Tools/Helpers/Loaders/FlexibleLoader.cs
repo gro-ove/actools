@@ -97,6 +97,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             return CreateLoaderAsync(url, null, cancellation);
         }
 
+        [CanBeNull]
         private static string UnwrapUrl([NotNull] string url) {
             if (CmRequestHandler?.Test(url) == true) {
                 var unwrapped = CmRequestHandler.UnwrapDownloadUrl(url);

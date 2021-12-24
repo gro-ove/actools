@@ -164,6 +164,10 @@
       <HintPath>..\Libraries\CefSharp-91.1.211-$(ActualPlatform)\CefSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="xxHashSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\xxHashSharp.1.0.0\lib\net45\xxHashSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
@@ -473,6 +477,7 @@
     <Compile Include="Pages\Drive\RaceU.xaml.cs">
       <DependentUpon>RaceU.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\RaceUTemporarySkinsHelper.cs" />
     <Compile Include="Pages\Drive\RealConditionsHelper.cs" />
     <Compile Include="Pages\Drive\Srs2.xaml.cs">
       <DependentUpon>Srs2.xaml</DependentUpon>

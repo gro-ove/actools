@@ -136,7 +136,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             #region Constructing custom patch entries
             var manifest = PatchHelper.GetManifest();
             var sectionsList = new List<CustomButtonEntrySection>();
-            for (var i = 0; i < 999; i++) {
+            for (var i = 0; manifest != null && i < 999; i++) {
                 var k = manifest[$@"INPUT_GROUP_{i}"];
                 var n = k.GetNonEmpty("GROUP_NAME");
                 if (string.IsNullOrWhiteSpace(n)) continue;
