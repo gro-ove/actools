@@ -39,11 +39,11 @@ namespace AcManager.Controls.Video {
             string url;
             var extension = Path.GetExtension(filename)?.Replace(@".", "").ToLowerInvariant();
             switch (extension) {
-                case ".ogv":
+                case "ogv":
                     url = @"https://xiph.org/dshow/";
                     break;
 
-                case ".webm":
+                case "webm":
                     url = @"https://tools.google.com/dlpage/webmmf/";
                     break;
 

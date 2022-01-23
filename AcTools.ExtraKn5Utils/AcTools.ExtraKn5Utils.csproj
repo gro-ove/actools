@@ -61,7 +61,7 @@
       <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Output\x86\Debug\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX, Culture=neutral, processorArchitecture=$(ActualPlatform)">
       <HintPath>..\Libraries\SlimDX-$(ActualPlatform)\SlimDX.dll</HintPath>
