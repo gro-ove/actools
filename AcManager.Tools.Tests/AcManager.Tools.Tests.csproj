@@ -57,7 +57,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AcTools.AcdEncryption, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Output\x86\Debug\AcTools.AcdEncryption.dll</HintPath>
+      <HintPath>..\Libraries\AcTools\AcTools.AcdEncryption.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
