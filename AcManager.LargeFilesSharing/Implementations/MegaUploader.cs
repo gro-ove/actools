@@ -75,6 +75,9 @@ namespace AcManager.LargeFilesSharing.Implementations {
             await PrepareAsync(cancellation);
             if (IsReady || cancellation.IsCancellationRequested) return;
 
+            Logging.Debug("UserEmail=" + UserEmail);
+            Logging.Debug("UserPassword=" + UserPassword);
+
             if (string.IsNullOrWhiteSpace(UserEmail) || string.IsNullOrWhiteSpace(UserPassword)) {
                 throw new InformativeException("Nothing to log in with to Mega.nz");
             }

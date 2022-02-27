@@ -44,7 +44,7 @@ namespace AcManager.CustomShowroom {
                 // PaintShopRulesLoader = new PaintShopRulesLoader();
 
                 await Task.Delay(50);
-                if (cancellation.IsCancellationRequested) return null;
+                if (cancellation.IsCancellationRequested || Skin == null) return null;
 
                 var skinItems = (await PaintShop.PaintShop.GetPaintableItemsAsync(Car.Id, Renderer?.MainSlot.Kn5, cancellation))?.ToList();
                 if (skinItems == null || cancellation.IsCancellationRequested) return null;
