@@ -84,7 +84,7 @@ namespace AcManager.Tools.Objects {
         public string CarId {
             get => _carId;
             set {
-                Logging.Debug($"CARID: {value}, {_carId}");
+                // Logging.Debug($"CARID: {value}, {_carId}");
                 if (value == _carId) return;
                 _carId = value;
                 _carSet = false;

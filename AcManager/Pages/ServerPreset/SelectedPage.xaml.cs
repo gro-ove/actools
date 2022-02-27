@@ -350,7 +350,7 @@ namespace AcManager.Pages.ServerPreset {
                 }));
 
             private void OnAcObjectPropertyChanged(object sender, PropertyChangedEventArgs e) {
-                Logging.Debug($"prop={e.PropertyName}, busy={_busy.Is}");
+                // Logging.Debug($"prop={e.PropertyName}, busy={_busy.Is}");
                 switch (e.PropertyName) {
                     case nameof(SelectedObject.TrackId):
                     case nameof(SelectedObject.TrackLayoutId):
