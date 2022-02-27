@@ -504,6 +504,9 @@
     <Compile Include="Pages\Drive\WorldSimSeries.xaml.cs">
       <DependentUpon>WorldSimSeries.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Lists\LuaAppsListPage.xaml.cs">
+      <DependentUpon>LuaAppsListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Lists\ServerBannedListPage.xaml.cs">
       <DependentUpon>ServerBannedListPage.xaml</DependentUpon>
     </Compile>
@@ -557,6 +560,9 @@
     <Compile Include="Pages\Selected\RoundsListDataTemplateSelector.cs" />
     <Compile Include="Pages\Selected\SelectedCarPage_New.xaml.cs">
       <DependentUpon>SelectedCarPage_New.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Selected\SelectedLuaAppPage.xaml.cs">
+      <DependentUpon>SelectedLuaAppPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Selected\SelectedTrackSkinPage.xaml.cs">
       <DependentUpon>SelectedTrackSkinPage.xaml</DependentUpon>
@@ -1281,6 +1287,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Lists\LuaAppsListPage.xaml" />
     <Page Include="Pages\Lists\ServerBannedListPage.xaml" />
     <Page Include="Pages\Lists\TrackSkinsListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1340,6 +1347,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Selected\SelectedLuaAppPage.xaml" />
     <Page Include="Pages\Selected\SelectedTrackSkinPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

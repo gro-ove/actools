@@ -184,7 +184,7 @@ namespace AcManager.Tools.Helpers {
                 var cacheFilename = FilesStorage.Instance.GetTemporaryFilename("Replay Details", cacheKey);
                 if (File.Exists(cacheFilename)) {
                     try {
-                        using (var file = File.OpenRead(cacheFilename)) {
+                        using (var file = File.Open(cacheFilename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
                             return JsonConvert.DeserializeObject<ReplayDetails>(
                                     new DeflateStream(file, CompressionMode.Decompress).ReadAsStringAndDispose());
                         }
@@ -211,7 +211,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         private static async Task RunCacheSavingQueueAsync() {
-            await Task.Delay(TimeSpan.FromSeconds(5d));
+            await Task.Delay(TimeSpan.FromSeconds(30d));
             while (_cache.Count > 0) {
                 Tuple<string, ReplayDetails> itemToSave = null;
                 lock (_cacheToSave) {

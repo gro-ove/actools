@@ -47,7 +47,7 @@ namespace AcManager.Pages.Dialogs {
             return new AcErrorSolutionSelector(acError, solutions);
         }
 
-        private AcErrorSolutionSelector(AcError acError, IReadOnlyList<ISolution> solutions) {
+        private AcErrorSolutionSelector(AcError acError, [CanBeNull] IReadOnlyList<ISolution> solutions) {
             InitializeComponent();
             DataContext = this;
 
@@ -57,7 +57,7 @@ namespace AcManager.Pages.Dialogs {
             if (acError.BaseException != null) {
                 ErrorMessage = string.Format(AppStrings.AcError_StackTrace, acError.BaseException);
             } else {
-                Solutions = solutions;
+                Solutions = solutions ?? new ISolution[0];
                 if (Solutions.Count == 0) {
                     ErrorMessage = AppStrings.AcError_SolutionsNotFound;
                 } else {

@@ -459,6 +459,9 @@ Author: [b]{3}[/b]</value>
   <data name="Main_Apps" xml:space="preserve">
     <value>Apps</value>
   </data>
+  <data name="Main_LuaApps" xml:space="preserve">
+    <value>Lua Apps</value>
+  </data>
   <data name="Main_Fonts" xml:space="preserve">
     <value>Fonts</value>
   </data>
