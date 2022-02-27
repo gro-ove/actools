@@ -16,7 +16,7 @@ namespace AcManager.Tools.Managers.Online {
         private int _pinged;
 
         public int Pinged {
-            get { return _pinged; }
+            get => _pinged;
             set => Apply(value, ref _pinged);
         }
 

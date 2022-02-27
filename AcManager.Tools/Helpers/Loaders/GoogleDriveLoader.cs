@@ -70,7 +70,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             var doc = new HtmlDocument();
             doc.LoadHtml(webPageContent);
 
-            var link = doc.DocumentNode.SelectSingleNode(@"//a[contains(@href, 'export=download')]")?.Attributes[@"href"]?.Value;
+            var link = doc.DocumentNode.SelectSingleNode(@"//form[contains(@action, 'export=download')]")?.Attributes[@"action"]?.Value;
             if (link == null) {
                 if (doc.DocumentNode.SelectSingleNode(@"//head/title/text()")?.InnerText.Contains("Quota exceeded") == true) {
                     throw new InformativeException(ToolsStrings.Common_CannotDownloadFile, "Google Drive quota exceeded");

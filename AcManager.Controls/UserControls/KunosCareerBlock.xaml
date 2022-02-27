@@ -33,7 +33,7 @@
   <DockPanel Height="100" Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse, hidden'}"
       d:DataContext="{d:DesignInstance objects:KunosCareerObject}">
     <!-- previed image -->
-    <Grid DockPanel.Dock="Left" Background="Black" Margin="0 0 24 0" Width="100" Height="100">
+    <Grid DockPanel.Dock="Left" Background="{DynamicResource ThumbnailBackground}" Margin="0 0 24 0" Width="100" Height="100">
       <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" Width="100">
         <mui:BetterImage.Style>
           <Style TargetType="mui:BetterImage">

@@ -327,7 +327,7 @@
                     <DataTemplate>
                       <CheckBox IsChecked="{Binding IsActive}" Margin="0 0 0 8" Background="Transparent">
                         <DockPanel>
-                          <mui:BetterImage Height="32" Width="57" Background="Black" Filename="{Binding PreviewImage}" Stretch="UniformToFill"
+                          <mui:BetterImage Height="32" Width="57" Background="{DynamicResource ThumbnailBackground}" Filename="{Binding PreviewImage}" Stretch="UniformToFill"
                               Margin="2 2 6 -2" VerticalAlignment="Center" />
                           <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
                           <TextBlock Text="{Binding Description}" Style="{StaticResource Small}" Margin="0 0 0 0" />

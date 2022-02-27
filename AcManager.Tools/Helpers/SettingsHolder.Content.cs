@@ -323,6 +323,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _CarSkinsUsePngPreview;
+
+            public bool CarSkinsUsePngPreview {
+                get => _CarSkinsUsePngPreview ?? (_CarSkinsUsePngPreview = ValuesStorage.Get("Settings.ContentSettings.CarSkinsUsePngPreview", false)).Value;
+                set {
+                    if (Equals(value, _CarSkinsUsePngPreview)) return;
+                    _CarSkinsUsePngPreview = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CarSkinsUsePngPreview", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _skinsCacheNames;
 
             public bool SkinsCacheNames {

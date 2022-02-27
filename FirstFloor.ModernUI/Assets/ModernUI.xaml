@@ -60,6 +60,7 @@
   <SolidColorBrush x:Key="AccentOverlay" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="Go" Color="{DynamicResource GoColor}" />
   <SolidColorBrush x:Key="Error" Color="{DynamicResource ErrorColor}" />
+  <SolidColorBrush x:Key="ThumbnailBackground" Color="{DynamicResource ThumbnailBackgroundColor}" />
 
   <!-- Font settings -->
   <sys:Double x:Key="DefaultFontSize">13</sys:Double>

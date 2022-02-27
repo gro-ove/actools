@@ -34,7 +34,8 @@ using Newtonsoft.Json;
 
 namespace AcManager.Pages.Drive {
     public partial class Srs2 : ILoadableContent {
-        public static PluginsRequirement Requirement { get; } = new PluginsRequirement(KnownPlugins.CefSharp);
+        private static PluginsRequirement _requirement;
+        public static PluginsRequirement Requirement => _requirement ?? (_requirement = new PluginsRequirement(KnownPlugins.CefSharp));
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
             await CarsManager.Instance.EnsureLoadedAsync();

@@ -496,7 +496,7 @@
 
         <!-- AcCommonObject -->
         <DataTemplate DataType="{x:Type t:AcCommonObject}">
-          <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="Black" ClipToBounds="True">
+          <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="{DynamicResource ThumbnailBackground}" ClipToBounds="True">
             <Border Background="{DynamicResource CardBackground}" VerticalAlignment="Stretch">
               <TextBlock Style="{StaticResource Heading1}" Text="No preview" Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Margin="0 0 0 20" />
@@ -550,7 +550,7 @@
 
         <!-- TrackObject -->
         <DataTemplate DataType="{x:Type t:TrackObject}">
-          <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="Black" ClipToBounds="True" c:ToolTips.GenericObject="{Binding}"
+          <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="{DynamicResource ThumbnailBackground}" ClipToBounds="True" c:ToolTips.GenericObject="{Binding}"
               c:ContextMenus.GenericObject="{Binding}">
             <mui:Cell>
               <mui:BetterImage Filename="{Binding PreviewImage}" MaxWidth="320" Stretch="UniformToFill" Margin="-8 -10 -8 0" ClearOnChange="True" />
@@ -609,7 +609,7 @@
 
         <!-- CarObject -->
         <DataTemplate DataType="{x:Type t:CarObject}">
-          <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="Black" ClipToBounds="True" c:ToolTips.GenericObject="{Binding}"
+          <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="{DynamicResource ThumbnailBackground}" ClipToBounds="True" c:ToolTips.GenericObject="{Binding}"
               c:ContextMenus.GenericObject="{Binding}">
             <mui:BetterImage Filename="{Binding SelectedSkinLazy.PreviewImage}" AsyncDecode="True" ClearOnChange="True" DecodeWidth="320" Stretch="UniformToFill"
                 Margin="-8 -10 -8 0" CollapseIfNull="True" />

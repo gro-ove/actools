@@ -35,7 +35,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             }
 
             bool PreviewFilter(string x) {
-                return !FileUtils.ArePathsEqual(x, @"preview.jpg");
+                return !FileUtils.ArePathsEqual(x, @"preview.jpg") && !FileUtils.ArePathsEqual(x, @"preview.png");
             }
 
             return base.GetUpdateOptions().Union(new[] {

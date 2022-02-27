@@ -151,7 +151,12 @@ namespace AcManager.Tools.Objects {
             base.InitializeLocations();
             JsonFilename = Path.Combine(Location, "ui_skin.json");
             LiveryImage = Path.Combine(Location, "livery.png");
-            PreviewImage = Path.Combine(Location, "preview.jpg");
+
+            var previewImage = SettingsHolder.Content.CarSkinsUsePngPreview ? Path.Combine(Location, "preview.png") : null;
+            if (previewImage == null || !File.Exists(previewImage)) {
+                previewImage = Path.Combine(Location, "preview.jpg");
+            }
+            PreviewImage = previewImage;
         }
 
         public string LiveryImage { get; private set; }

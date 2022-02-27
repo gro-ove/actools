@@ -7,6 +7,7 @@
   <Color x:Key="AccentOverlayColor">#FFFFFF</Color>
   <Color x:Key="GoColor">#8BC34A</Color>
   <Color x:Key="ErrorColor">#BF360C</Color>
+  <Color x:Key="ThumbnailBackgroundColor">#EEEEEE</Color>
 
   <!-- Curves -->
   <Color x:Key="CarPowerColor">#A20025</Color>
@@ -60,7 +61,7 @@
   </LinearGradientBrush>-->
 
   <!-- Windows -->
-  <Color x:Key="WindowBackgroundColor">#FAFAFA</Color>
+  <Color x:Key="WindowBackgroundColor">#F0F0F0</Color>
   <SolidColorBrush x:Key="WindowBackground" Color="{StaticResource WindowBackgroundColor}" />
   <SolidColorBrush x:Key="WindowBorder" Color="{DynamicResource AccentColor}" Opacity=".5" />
   <SolidColorBrush x:Key="WindowBorderActive" Color="{DynamicResource AccentColor}" />

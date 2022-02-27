@@ -46,7 +46,7 @@
       </DataTemplate>
 
       <DataTemplate x:Key="ItemTemplate" DataType="{x:Type t:UserChampionshipRoundExtended}">
-        <Grid Width="200" Height="100" Background="Black" ClipToBounds="True">
+        <Grid Width="200" Height="100" Background="{DynamicResource ThumbnailBackground}" ClipToBounds="True">
           <mui:BetterImage x:Name="Image" Filename="{Binding Track.PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" ClearOnChange="True" />
           <StackPanel VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}" x:Name="BottomPanel"
               TextBlock.FontSize="{DynamicResource SmallFontSize}" TextBlock.Foreground="White">

@@ -86,10 +86,13 @@ namespace AcManager.Tools.Miscellaneous {
             }
 
             // Check for license plate
-            var textureNames = Kn5.FromFile(AcPaths.GetMainCarFilename(car.Location, car.AcdData, false),
-                    SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToList();
-            if (textureNames.Contains("Plate_D.dds") || textureNames.Contains("plate.dds")){
-                return TryToGuessCarClassResult(car, GuessedCarClass.Street, "license plate");
+            var mainModel = AcPaths.GetMainCarFilename(car.Location, car.AcdData, false);
+            if (mainModel != null) {
+                var textureNames = Kn5.FromFile(mainModel,
+                        SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToList();
+                if (textureNames.Contains("Plate_D.dds") || textureNames.Contains("plate.dds")) {
+                    return TryToGuessCarClassResult(car, GuessedCarClass.Street, "license plate");
+                }
             }
 
             // Drift cars are considered street-legal: for instance, D1 only allows street-legal cars to compete

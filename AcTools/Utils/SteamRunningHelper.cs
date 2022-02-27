@@ -9,12 +9,14 @@ namespace AcTools.Utils {
     public static class SteamRunningHelper {
         private static string GetSteamDirectory() {
             var regKey = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam");
-            return regKey?.GetValue("SteamPath").ToString();
+            var ret = regKey?.GetValue("SteamPath").ToString();
+            regKey?.Close();
+            return ret;
         }
 
-        private static void TryToRunSteam(bool launchAc) {
+        private static void TryToRunSteam(string steamDirectory, bool launchAc) {
             try {
-                Process.Start(Path.Combine(GetSteamDirectory(), "Steam.exe"), launchAc ?
+                Process.Start(Path.Combine(steamDirectory, "Steam.exe"), launchAc ?
                         $"-silent -applaunch {CommonAcConsts.AppId.ToInvariantString()}" : "-silent");
                 Thread.Sleep(2000);
             } catch (Exception e) {
@@ -25,8 +27,11 @@ namespace AcTools.Utils {
         public static void EnsureSteamIsRunning(bool tryToRun, bool launchAc) {
             if (Process.GetProcessesByName("steam").Length > 0) return;
 
+            var steamDirectory = GetSteamDirectory();
+            if (steamDirectory == null) return;
+
             if (tryToRun) {
-                TryToRunSteam(launchAc);
+                TryToRunSteam(steamDirectory, launchAc);
                 if (Process.GetProcessesByName("steam").Length == 0) {
                     throw new Exception("Couldn’t run Steam");
                 }

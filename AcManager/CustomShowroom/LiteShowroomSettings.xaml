@@ -73,11 +73,12 @@
         </mui:BbCodeBlock>
       </c:MessageBlock>
 
-      <DockPanel Style="{StaticResource DockPanel}">
+      <DockPanel Style="{StaticResource DockPanel}" ToolTip="Use “.png” extension to generate previews with transparent backgrounds">
         <Label Content="File name:" />
         <mui:HistoricalTextBox Text="{Binding FileName}" Placeholder="preview.jpg" SaveKey="_customPreviewNames">
           <mui:HistoricalTextBox.DefaultItems>
             <system:String>preview.jpg</system:String>
+            <system:String>preview.png</system:String>
           </mui:HistoricalTextBox.DefaultItems>
         </mui:HistoricalTextBox>
       </DockPanel>

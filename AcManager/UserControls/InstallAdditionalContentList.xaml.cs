@@ -42,7 +42,8 @@ namespace AcManager.UserControls {
             }
         }
 
-        public PluginsRequirement Plugins { get; } = new PluginsRequirement(KnownPlugins.SevenZip);
+        private static PluginsRequirement _requirement;
+        public PluginsRequirement Plugins => _requirement ?? (_requirement = new PluginsRequirement(KnownPlugins.SevenZip));
 
         private void OnPasswordBoxKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.Enter) {

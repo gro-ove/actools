@@ -474,13 +474,19 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
                         if (device.Information.ProductName.Contains(@"FANATEC CSL Elite")) {
                             if (SettingsHolder.Drive.SameControllersKeepFirst) {
-                                newDevices.RemoveAll(y => y.Same(device.Information, i));
-                            } else if (newDevices.Any(y => y.Same(device.Information, i))) {
+                                newDevices.RemoveAll(y => y.Same(device.Information));
+                            } else if (newDevices.Any(y => y.Same(device.Information))) {
                                 continue;
                             }
                         }
 
-                        newDevices.Add(Devices.FirstOrDefault(y => y.Same(device.Information, i)) ?? DirectInputDevice.Create(device, i));
+                        var existing = Devices.FirstOrDefault(y => y.Same(device.Information));
+                        if (existing != null) {
+                            existing.Index = i;
+                            newDevices.Add(existing);
+                        } else {
+                            newDevices.Add(DirectInputDevice.Create(device, i));
+                        }
                     }
                 }
 

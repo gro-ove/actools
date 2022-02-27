@@ -236,9 +236,9 @@ namespace AcManager.Tools.Miscellaneous {
                 File.Exists(Path.Combine(root, "lua", "ac_common.lua")) || File.Exists(Path.Combine(root, "lua", "std.zip")) || File.Exists(Path.Combine(root, "internal", "lua.zip")) ? null
                         : new FoundIssue("Lua utilities in “extension/lua” are missing", @"reinstallCurrent", "reinstall patch",
                                 "Reinstall currently active patch version to fix the problem automatically"),
-                File.Exists(Path.Combine(root, "internal", "tzdata", "europe")) ? null
-                        : new FoundIssue("Timezones information in “extension/tzdata” are missing", @"reinstallCurrent", "reinstall patch",
-                                "Reinstall currently active patch version to fix the problem automatically"),
+                /*File.Exists(Path.Combine(root, "internal", "tzdata", "europe")) ? null
+                        : new FoundIssue("Timezones information in “extension/internal/tzdata” are missing", @"reinstallCurrent", "reinstall patch",
+                                "Reinstall currently active patch version to fix the problem automatically"),*/
                 version == null || version.CompareAsVersionTo(RequiredAcVersion) >= 0 ? null
                         : new FoundIssue($"Assetto Corsa is obsolete (v{RequiredAcVersion} is required, yours is {version})"),
                 Environment.Is64BitOperatingSystem ? null

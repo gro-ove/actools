@@ -74,7 +74,7 @@
         </Grid.ColumnDefinitions>
 
         <mui:Cell Visibility="{Binding Car, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" MaxWidth="355"
-            Background="Black" Margin="0 0 10 0"
+            Background="{DynamicResource ThumbnailBackground}" Margin="0 0 10 0"
             Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5634}"
             c:ToolTips.Car="{Binding Car}" c:ContextMenus.Car="{Binding Car}" c:ContextMenus.CarSkin="{Binding CarSkin}" mui:Draggable.Data="{Binding Car}"
             MouseLeftButtonUp="OnCarPreviewClick">
@@ -94,7 +94,7 @@
         </mui:Cell>
 
         <mui:Cell Grid.Column="1" Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" MaxWidth="355"
-            Background="Black" services:ImageViewerService.Image="{Binding Track.PreviewImage}"
+            Background="{DynamicResource ThumbnailBackground}" services:ImageViewerService.Image="{Binding Track.PreviewImage}"
             Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5634}"
             Margin="10 0 0 0" c:ToolTips.Track="{Binding Track}" c:ContextMenus.Track="{Binding Track}" mui:Draggable.Data="{Binding Track}">
           <c:ContextMenus.AdditionalItems>

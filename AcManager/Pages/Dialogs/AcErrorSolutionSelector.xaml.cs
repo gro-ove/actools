@@ -39,7 +39,7 @@ namespace AcManager.Pages.Dialogs {
         public static async Task<AcErrorSolutionSelector> Create(AcError acError) {
             IReadOnlyList<ISolution> solutions;
             if (acError.BaseException == null) {
-                solutions = (await acError.GetSolutionsAsync()).ToList();
+                solutions = (await acError.GetSolutionsAsync())?.ToList();
             } else {
                 solutions = null;
             }

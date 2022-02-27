@@ -50,7 +50,7 @@
   </mui:ModernDialog.Style>
 
   <mui:Cell d:DataContext="{d:DesignInstance di:KunosCareerIntro}">
-    <mui:Cell VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-100 0 0 0" Background="Black" Width="1240" Height="560">
+    <mui:Cell VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-100 0 0 0" Background="{DynamicResource ThumbnailBackground}" Width="1240" Height="560">
       <mui:BetterImage Filename="{Binding CareerObject.PreviewImage}" Stretch="UniformToFill"
           Visibility="{Binding CareerObject.StartImage, Converter={StaticResource ExistToVisibilityConverter}, ConverterParameter=inverse}">
         <mui:BetterImage.Effect>
