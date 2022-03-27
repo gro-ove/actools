@@ -20,9 +20,13 @@ namespace AcManager.Tools.Managers.Plugins {
         [NotNull]
         public BetterListCollectionView ListView { get; }
 
-        private PluginsRequirement([CanBeNull] Func<PluginEntry, bool> filter, string[] ids) {
+        private PluginsRequirement([CanBeNull] Func<PluginEntry, bool> filter, [CanBeNull] string[] ids) {
+            if (PluginsManager.Instance == null) {
+                throw new Exception("PluginsManager.Instance is not set");
+            }
+
             _required = ids;
-            _filter = filter ?? (p => ids.ArrayContains(p.Id));
+            _filter = filter ?? (p => ids?.ArrayContains(p.Id) != false);
 
             ListView = new BetterListCollectionView(PluginsManager.Instance.List);
             ListView.SortDescriptions.Add(new SortDescription(nameof(PluginEntry.Name), ListSortDirection.Ascending));

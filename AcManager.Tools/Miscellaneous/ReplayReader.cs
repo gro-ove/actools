@@ -88,7 +88,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                             if (i == BytesRead) {
                                 int n;
-                                while ((n = ReadByte()) != -1) {
+                                while ((n = ReadByte()) != 0) {
                                     if (IsStringCharacter(n)) {
                                         sb.Append((char)n);
                                     } else {
@@ -185,7 +185,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                             if (i == BytesRead) {
                                 int n;
-                                while ((n = ReadByte()) != -1) {
+                                while ((n = ReadByte()) != 0) {
                                     if (IsStringCharacter(n)) {
                                         sb.Append((char)n);
                                     } else {

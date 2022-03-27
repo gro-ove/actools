@@ -23,7 +23,7 @@
                 <TextBlock c:PropertiesGrid.Label="Size:" Text="{Binding Size, Converter={StaticResource FileSizeConverter}}" />
               </c:PropertiesGrid>
             </mui:Cell.ToolTip>
-            <mui:BetterImage Filename="{Binding Filename}" Width="192" Background="Black" ClearOnChange="True" />
+            <mui:BetterImage Filename="{Binding Filename}" Width="192" Background="{DynamicResource ThumbnailBackground}" ClearOnChange="True" />
             <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
                 Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource DarkStripeText}"
                 FontSize="{DynamicResource SmallFontSize}" />

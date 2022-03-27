@@ -636,7 +636,7 @@ namespace AcManager.Tools.Helpers {
                 get => _playerNameOnline
                         ?? (_playerNameOnline = ValuesStorage.Get("Settings.DriveSettings.PlayerNameOnline", PlayerName));
                 set {
-                    value = value.Trim();
+                    value = value?.Trim();
                     if (Equals(value, _playerNameOnline)) return;
                     _playerNameOnline = value;
                     ValuesStorage.Set("Settings.DriveSettings.PlayerNameOnline", value);

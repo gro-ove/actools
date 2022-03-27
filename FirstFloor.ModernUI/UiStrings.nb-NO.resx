@@ -330,4 +330,10 @@
   <data name="ValueLabel_Format" xml:space="preserve">
     <value>{0}:</value>
   </data>
+  <data name="PickColor" xml:space="preserve">
+    <value>Velg en farge</value>
+  </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Last inn på nytt</value>
+  </data>
 </root>

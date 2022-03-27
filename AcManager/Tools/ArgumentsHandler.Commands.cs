@@ -108,7 +108,7 @@ namespace AcManager.Tools {
                 case "open":
                     var address = Convert.FromBase64String(param).ToUtf8String();
                     try {
-                        return await ProcessInputFile(await LoadRemoveFile(address, query?.Get(@"name")));
+                        return await ProcessInputFile(await LoadRemoteFile(address, query?.Get(@"name")));
                     } catch (Exception e) when (e.IsCancelled()) {
                         return ArgumentHandleResult.Failed;
                     } catch (Exception e) {
@@ -298,7 +298,7 @@ namespace AcManager.Tools {
         }
 
         private static async Task<ArgumentHandleResult> ProcessReplay(string url, bool compressed) {
-            var path = await LoadRemoveFile(url, extension: compressed ? @".zip" : @".acreplay");
+            var path = await LoadRemoteFile(url, extension: compressed ? @".zip" : @".acreplay");
 
             try {
                 if (!FileUtils.Exists(path)) return ArgumentHandleResult.FailedShow;

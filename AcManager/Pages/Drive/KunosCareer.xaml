@@ -26,7 +26,7 @@
 
             <!--KunosCareerObject-->
             <DataTemplate DataType="{x:Type t:KunosCareerObject}">
-              <Grid Width="{StaticResource TileSize}" Height="{StaticResource TileSize}" Background="Black" ClipToBounds="True">
+              <Grid Width="{StaticResource TileSize}" Height="{StaticResource TileSize}" Background="{DynamicResource ThumbnailBackground}" ClipToBounds="True">
                 <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly"
                     x:Name="Image" ClearOnChange="True" />
 

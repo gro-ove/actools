@@ -19,7 +19,7 @@
 
       <DataTemplate x:Key="ItemTemplate" DataType="{x:Type t:SpecialEventObject}">
         <Border x:Name="PlaceBorder" Margin="-2" BorderThickness="2" BorderBrush="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}">
-          <mui:Cell Background="Black" ClipToBounds="True">
+          <mui:Cell Background="{DynamicResource ThumbnailBackground}" ClipToBounds="True">
             <mui:BetterImage x:Name="PreviewImage" Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" ClearOnChange="True"
                 ForceFill="True" />
             <TextBlock x:Name="TopPanel" Padding="4" VerticalAlignment="Top" Background="{StaticResource DarkenPanel}" Text="{Binding DisplayName}"

@@ -212,6 +212,12 @@ namespace AcManager.Tools.Data {
                 Load<Dictionary<string, string[]>, Dictionary<string, string>>("TagCountries.json", j => j.ManyToDictionaryK(x => x.Value, x => x.Key)));
 
         [NotNull]
+        public IReadOnlyDictionary<string, string[]> KunosCarSkinSets => _kunosCarSkinSets.RequireValue;
+
+        private readonly Lazier<Dictionary<string, string[]>> _kunosCarSkinSets = Lazier.Create(
+                Load<Dictionary<string, string[]>>("KunosCarSkinSets.json"));
+
+        [NotNull]
         public IReadOnlyDictionary<string, string> BrandCountries => _brandCountries.RequireValue;
 
         private readonly Lazier<Dictionary<string, string>> _brandCountries = Lazier.Create(

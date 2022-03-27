@@ -32,7 +32,7 @@
     <DockPanel Height="100" Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse, hidden'}"
             d:DataContext="{d:DesignInstance t:UserChampionshipObject}">
         <!-- previed image -->
-        <mui:Cell DockPanel.Dock="Left" Background="Black" Margin="0 0 24 0" Width="100" Height="100">
+        <mui:Cell DockPanel.Dock="Left" Background="{DynamicResource ThumbnailBackground}" Margin="0 0 24 0" Width="100" Height="100">
             <TextBlock Text="No preview" Style="{StaticResource Heading1}" FontSize="23" TextWrapping="Wrap" HorizontalAlignment="Center"
                     VerticalAlignment="Center" Opacity="0.4" TextAlignment="Center" Margin="0 -4 0 4" />
             <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding PreviewImage}" Crop="{Binding PreviewCrop}" CropUnits="Absolute"

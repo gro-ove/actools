@@ -45,6 +45,7 @@ namespace AcManager.Tools.Managers {
         public AcDirectories PpFiltersDirectories { get; private set; }
         public AcDirectories DriverModelsDirectories { get; private set; }
         public AcDirectories PythonAppsDirectories { get; private set; }
+        public AcDirectories LuaAppsDirectories { get; private set; }
         public AcDirectories FontsDirectories { get; private set; }
         public AcDirectories KunosCareerDirectories { get; private set; }
 
@@ -59,6 +60,7 @@ namespace AcManager.Tools.Managers {
             PpFiltersDirectories?.Obsolete();
             DriverModelsDirectories?.Obsolete();
             PythonAppsDirectories?.Obsolete();
+            LuaAppsDirectories?.Obsolete();
 
             CarsDirectories = Value == null ? null : new AcDirectories(AcPaths.GetCarsDirectory(Value));
             TracksDirectories = Value == null ? null : new AcDirectories(AcPaths.GetTracksDirectory(Value));
@@ -67,6 +69,7 @@ namespace AcManager.Tools.Managers {
             PpFiltersDirectories = Value == null ? null : new AcDirectories(AcPaths.GetPpFiltersDirectory(Value));
             DriverModelsDirectories = Value == null ? null : new AcDirectories(AcPaths.GetDriverModelsDirectory(Value));
             PythonAppsDirectories = Value == null ? null : new AcDirectories(AcPaths.GetPythonAppsDirectory(Value));
+            LuaAppsDirectories = Value == null ? null : new AcDirectories(Path.Combine(Value, "apps", "lua"));
             FontsDirectories = Value == null ? null : new AcDirectories(AcPaths.GetFontsDirectory(Value));
             KunosCareerDirectories = Value == null ? null : new AcDirectories(AcPaths.GetKunosCareerDirectory(Value));
 
@@ -86,6 +89,7 @@ namespace AcManager.Tools.Managers {
             PpFiltersDirectories?.CreateIfMissing();
             DriverModelsDirectories?.CreateIfMissing();
             PythonAppsDirectories?.CreateIfMissing();
+            LuaAppsDirectories?.CreateIfMissing();
             UserChampionshipsDirectories?.CreateIfMissing();
         }
 

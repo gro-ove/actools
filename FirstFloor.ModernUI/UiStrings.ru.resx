@@ -202,8 +202,8 @@
     <value>Требуется UI-поток</value>
   </data>
   <data name="UnknownOS" xml:space="preserve">
-    <value>Неизвестная система</value>
-  </data>
+    <value>Неизвестная операционная система</value>
+  <alternative>Неизвестная система</alternative></data>
   <data name="UpdateAvailable" xml:space="preserve">
     <value>Новая версия {0} готова к установке</value>
   </data>
@@ -514,5 +514,8 @@
   </data>
   <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
     <value>Поделитесь ссылкой на этот сервер чтобы ваши друзья могли быстро присоединиться к вам (Ctrl + Page Up)</value>
+  </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Перезагрузить</value>
   </data>
 </root>

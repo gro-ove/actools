@@ -44,7 +44,7 @@
       <StackPanel Margin="8 8 8 20">
         <TextBlock Text="{x:Static g:AppStrings.AcObject_FontTestLabel}" Style="{StaticResource Label}" Margin="0 0 0 0" />
         <mui:BetterTextBox x:Name="TextBox" Placeholder="?" Margin="0 4 0 0" TextChanged="OnTestTextChanged" />
-        <Grid x:Name="Canvas" Height="120" Background="Black" Margin="0 4 0 0" ClipToBounds="True"
+        <Grid x:Name="Canvas" Height="120" Background="{DynamicResource ThumbnailBackground}" Margin="0 4 0 0" ClipToBounds="True"
             c:ImageViewerService.Image="{Binding SelectedObject.FontBitmap}">
           <Grid.Effect>
             <mui:AsTransparencyMask OverlayColor="{DynamicResource AccentColor}" />

@@ -62,7 +62,7 @@
   </mui:ModernDialog.Style>
 
   <mui:Cell>
-    <mui:Cell VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-100 0 0 0" Background="Black" Width="1022" Height="575">
+    <mui:Cell VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-100 0 0 0" Background="{DynamicResource ThumbnailBackground}" Width="1022" Height="575">
       <TextBlock Text="No preview" Style="{StaticResource Heading1}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="60" Opacity="0.4" />
       <mui:BetterImage Filename="{Binding UserChampionshipObject.PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" Width="1022" Height="575"
           ShowBroken="False" CollapseIfMissing="True" />

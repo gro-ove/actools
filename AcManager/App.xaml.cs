@@ -628,6 +628,7 @@ namespace AcManager {
 
             // Check and apply FTH fix if necessary
             CheckFaultTolerantHeap().Ignore();
+            RaceUTemporarySkinsHelper.Initialize();
 
             // Initializing CSP handler
             if (PatchHelper.OptionPatchSupport) {

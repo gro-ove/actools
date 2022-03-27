@@ -1324,8 +1324,8 @@
     <value>Вы занесены в черный список на этом сервере</value>
   </data>
   <data name="Online_BookingResult_ServerFull" xml:space="preserve">
-    <value>Сервер полный</value>
-  </data>
+    <value>Сервер полон</value>
+  <alternative>Сервер полный</alternative></data>
   <data name="Online_BookingResult_UnsupportedNonOkMessage" xml:space="preserve">
     <value>Сервер ответил: “{0}”</value>
   </data>
@@ -1552,8 +1552,8 @@
     <value>Больше не действует</value>
   </data>
   <data name="Online_Server_NotImplemented" xml:space="preserve">
-    <value>Не реализовать.</value>
-  </data>
+    <value>Не реализовано.</value>
+  <alternative>Не реализовать.</alternative></data>
   <data name="ArchiveInstallator_PasswordIsRequired" xml:space="preserve">
     <value>Требуется пароль</value>
   </data>

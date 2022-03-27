@@ -3037,8 +3037,8 @@
     <value>允许后处理特效</value>
   </data>
   <data name="AcSettings_Video_OverallQualityLabel" xml:space="preserve">
-    <value>整体质量:</value>
-  </data>
+    <value>后处理质量:</value>
+  <alternative>整体质量:</alternative></data>
   <data name="AcSettings_Video_GlareQualityLabel" xml:space="preserve">
     <value>眩光质量:</value>
   </data>
@@ -3100,8 +3100,8 @@
     <value>最大帧延迟,设置为"自动"则会基于显卡设定自动调整</value>
   </data>
   <data name="AcSettings_Video_MipLodBias_Tooltip" xml:space="preserve">
-    <value>设置如-1的负值可使画面更锐利</value>
-  </data>
+    <value>设置负值（如-1）可使画面更锐利</value>
+  <alternative>设置如-1的负值可使画面更锐利</alternative></data>
   <data name="AcSettings_Video_SkyboxReflection_Tooltip" xml:space="preserve">
     <value>天空盒子反射增益</value>
   </data>
@@ -3965,8 +3965,8 @@
     <value>维修站：</value>
   </data>
   <data name="AcSettings_General_ReplaysAutosave" xml:space="preserve">
-    <value>自动保存回放：</value>
-  </data>
+    <value>自动保存回放</value>
+  <alternative>自动保存回放：</alternative></data>
   <data name="AcSettings_PresetsPerMode_Audio" xml:space="preserve">
     <value>音频:</value>
   </data>
@@ -4248,8 +4248,8 @@
     <value>可能提高性能或解决Wine的问题</value>
   </data>
   <data name="Settings_Appearance_DoNotInterfereWithWindows" xml:space="preserve">
-    <value>不影响窗口的位置和大小</value>
-  </data>
+    <value>不要与窗口的位置和大小发生冲突</value>
+  <alternative>不影响窗口的位置和大小</alternative></data>
   <data name="Settings_Appearance_ForceFullscreenMode" xml:space="preserve">
     <value>强制全屏显示</value>
   </data>
@@ -4260,8 +4260,8 @@
     <value>图像浏览器：</value>
   </data>
   <data name="Settings_Appearance_OpenSkinsAndSetupsNewWindow" xml:space="preserve">
-    <value>在新窗口中打开涂装和设置列表</value>
-  </data>
+    <value>在新窗口中打开涂装和调校列表</value>
+  <alternative>在新窗口中打开涂装和设置列表</alternative></data>
   <data name="Settings_Appearance_SemiTransparentToolsInCustomShowroom" xml:space="preserve">
     <value>半透明工具在自定义展示厅和DirectX-特定工具中</value>
   </data>
@@ -4308,8 +4308,8 @@
     <value>你将在此看到相关规则[b]Settings/Assetto Corsa/Video[/b]</value>
   </data>
   <data name="Settings_Drive_RHMLocation" xml:space="preserve">
-    <value>RHM位置:</value>
-  <alternative>RHM 地点:</alternative></data>
+    <value>RHM安装位置:</value>
+  <alternative>RHM 地点:</alternative><alternative>RHM位置:</alternative></data>
   <data name="Settings_General_DontShowAgainInDialogs" xml:space="preserve">
     <value>对话框中的“不再显示”:</value>
   </data>
@@ -4368,11 +4368,11 @@
     <value>描述：</value>
   </data>
   <data name="TrackStateEditor_GripRandomization" xml:space="preserve">
-    <value>控制随机化</value>
-  </data>
+    <value>随机化路面抓地力</value>
+  <alternative>控制随机化</alternative></data>
   <data name="TrackStateEditor_GripTransfer" xml:space="preserve">
-    <value>控制传输</value>
-  </data>
+    <value>延续橡胶堆积</value>
+  <alternative>控制传输</alternative></data>
   <data name="TrackStateEditor_InitialGrip" xml:space="preserve">
     <value>初始抓地力</value>
   </data>
@@ -4449,17 +4449,17 @@
     <value>来自：</value>
   </data>
   <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
-    <value>么有活动下载</value>
-  </data>
+    <value>没有正在下载的内容</value>
+  <alternative>么有活动下载</alternative></data>
   <data name="AcSettings_Controls_Controller_Main_RumbleEffects" xml:space="preserve">
-    <value>引擎声效果</value>
-  </data>
+    <value>振动效果</value>
+  <alternative>引擎声效果</alternative></data>
   <data name="AcSettings_Controls_Controller_Main_SteeringAndFFB" xml:space="preserve">
-    <value>转向反馈调整</value>
-  </data>
+    <value>转向和震动反馈设置</value>
+  <alternative>转向反馈调整</alternative></data>
   <data name="AcSettings_Controls_Wheel_ForceFeedback_EnableFFBPostProcessing" xml:space="preserve">
-    <value>启用FFB后处理</value>
-  </data>
+    <value>启用力回馈后处理</value>
+  <alternative>启用FFB后处理</alternative></data>
   <data name="AcSettings_Controls_Wheel_ForceFeedback_Import_Tooltip" xml:space="preserve">
     <value>如果需要，只需将其拖放即可</value>
   </data>
@@ -4602,8 +4602,8 @@
     <value>结果保存在“…\ AppData \ Local \ AcTools Content Manager \ Progress \ Sessions”中</value>
   </data>
   <data name="Settings_Drive_RealHeadMotion" xml:space="preserve">
-    <value>真实头部运动:</value>
-  </data>
+    <value>真实头部运动插件RHM:</value>
+  <alternative>真实头部运动:</alternative></data>
   <data name="Settings_Drive_ShowExtraDropDownListsForSkins" xml:space="preserve">
     <value>显示皮肤、汽车改装和赛道布局的额外下拉列表</value>
   </data>
@@ -4654,5 +4654,155 @@
   </data>
   <data name="DownloadList_ShowFile" xml:space="preserve">
     <value>显示档案</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringDeadzone" xml:space="preserve">
+    <value>转向死区</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringFilter" xml:space="preserve">
+    <value>转向过滤</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringGamma" xml:space="preserve">
+    <value>转向 Gamma</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteerThumb" xml:space="preserve">
+    <value>转向摇杆</value>
+  </data>
+  <data name="AcSettings_Controls_Scanning_Hint" xml:space="preserve">
+    <value>若扫描输入设备时间过长，你的某个输入设备可能使用了有问题的驱动程序。例如我们已经知道海盗船K55键盘的驱动会和DirectInput8产生这样的问题，参见[url="https://stackoverflow.com/questions/10967795/directinput8-enumdevices-sometimes-painfully-slow"]More information[/url]</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain" xml:space="preserve">
+    <value>中央力回馈增强</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip" xml:space="preserve">
+    <value>使用这个设置增强方向盘中心区域的力回馈强度</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostRange" xml:space="preserve">
+    <value>中央力回馈增强范围</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_LUT" xml:space="preserve">
+    <value>使用的LUT：</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Discord" xml:space="preserve">
+    <value>Discord：</value>
+  </data>
+  <data name="AcSettings_General_PresetsCount" xml:space="preserve">
+    <value>预设数目：</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Apps" xml:space="preserve">
+    <value>Apps：</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_CSP" xml:space="preserve">
+    <value>CSP：</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_CSP_Tooltip" xml:space="preserve">
+    <value>自定义着色器补丁</value>
+  </data>
+  <data name="Dialogs_BookingDialog_BookingIsFinished" xml:space="preserve">
+    <value>完成比赛报名</value>
+  </data>
+  <data name="Dialogs_GameDialog_BestDelta" xml:space="preserve">
+    <value>和最快圈速的差距</value>
+  </data>
+  <data name="Selected_CarPage_New_TSMSetups_Tooltip" xml:space="preserve">
+    <value>The Setup Market上可以装载的调校文件数量</value>
+  </data>
+  <data name="Settings_Appearance_DoNotInterfereWithWindows_Tooltip" xml:space="preserve">
+    <value>如果CM的窗口位置出错，使用这个设置可以解决问题。[br][br]我仍然在寻找解决这个问题的方法。</value>
+  </data>
+  <data name="Settings_Appearance_FastAccessButtons" xml:space="preserve">
+    <value>在快速驾驶页面的车辆和赛道选择框里显示快速设置按钮</value>
+  </data>
+  <data name="Settings_Appearance_OpenNewWindowsOnTheSameScreen" xml:space="preserve">
+    <value>不论设定的显示器是哪一个，都在和CM相同的显示器上打开新窗口</value>
+  </data>
+  <data name="Settings_Appearance_OpenSkinsAndSetupsNewWindow_Tooltip" xml:space="preserve">
+    <value>如此设置关闭，可以在打开车辆皮肤或调校时按住Ctrl键，便可以在新窗口查看</value>
+  </data>
+  <data name="Settings_Appearance_ThemeDefined" xml:space="preserve">
+    <value>由Windows系统主题决定</value>
+  </data>
+  <data name="Settings_Content_DisplaySteerLock" xml:space="preserve">
+    <value>显示转向锁</value>
+  </data>
+  <data name="Settings_Content_FixMissingSpacesInSpecsInDrive" xml:space="preserve">
+    <value>在驾驶页面修复缺少的空格</value>
+  </data>
+  <data name="Settings_Content_FourDigitForYearPostfix" xml:space="preserve">
+    <value>年份后缀用四位数字显示</value>
+  </data>
+  <data name="Settings_Content_MarkObjectsWithNotesWithIcon" xml:space="preserve">
+    <value>用带有特殊图标的提示图标记对象（如车或赛道）</value>
+  </data>
+  <data name="Settings_Content_MegaNzCredentials" xml:space="preserve">
+    <value>Mega.nz的登录信息</value>
+  </data>
+  <data name="Settings_Content_MegaNzCredentials_Tooltip" xml:space="preserve">
+    <value>非必要，但是可以帮助解决下载限额的问题。为保证安全性，CM不会储存你的密码明文，只会储存Mega.nz的登录token</value>
+  </data>
+  <data name="Settings_Content_MentionCMInPacked" xml:space="preserve">
+    <value>在打包时，记得在描述文本中提示打好的包可以直接拖到CM里进行安装</value>
+  </data>
+  <data name="Settings_Content_OriginIcons" xml:space="preserve">
+    <value>原作者图标：</value>
+  </data>
+  <data name="Settings_Content_ShowCarPreviewsInTooltips" xml:space="preserve">
+    <value>在工具提示浮窗里显示车辆预览图</value>
+  </data>
+  <data name="Settings_Content_ShowCurvesInDriveSection" xml:space="preserve">
+    <value>在驾驶页面里显示车辆马力扭矩曲线</value>
+  </data>
+  <data name="Settings_Content_ShowOriginIconsInLists" xml:space="preserve">
+    <value>在列表中显示原作者图标（如Kunos图标或RSS图标）</value>
+  </data>
+  <data name="Settings_CustomShowroom_Controls" xml:space="preserve">
+    <value>控制：</value>
+  </data>
+  <data name="Settings_Drive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+    <value>载入快速驾驶模式里保存的辅助预设</value>
+  </data>
+  <data name="Settings_Drive_RaceResults_Hint" xml:space="preserve">
+    <value>达到设置上限后，最老的比赛结果会在新的比赛结束之后被放入回收站</value>
+  </data>
+  <data name="Settings_Drive_RHMIntegration" xml:space="preserve">
+    <value>RHM功能整合</value>
+  </data>
+  <data name="Settings_General_RecentChangesNotification" xml:space="preserve">
+    <value>最新更新内容通知</value>
+  </data>
+  <data name="Settings_General_ResetOccasionalHits" xml:space="preserve">
+    <value>显示过的小贴士仍然会再次提示</value>
+  </data>
+  <data name="Settings_General_ShowOccasionalHints" xml:space="preserve">
+    <value>偶尔显示小贴士</value>
+  </data>
+  <data name="Settings_General_ShowRecentChangesNotification_Tooltip" xml:space="preserve">
+    <value>在升级后显示最新的更新内容</value>
+  </data>
+  <data name="Settings_General_SteamProfile" xml:space="preserve">
+    <value>Steam用户个人资料页：</value>
+  </data>
+  <data name="Settings_General_SteamProfile_Tooltip" xml:space="preserve">
+    <value>用于在线游戏</value>
+  </data>
+  <data name="Settings_Online_FixNames" xml:space="preserve">
+    <value>修正名字：</value>
+  </data>
+  <data name="Settings_Online_PausePingingDuringTheRace" xml:space="preserve">
+    <value>在比赛期间暂停测试网络延迟</value>
+  </data>
+  <data name="Settings_Online_PingAttempts" xml:space="preserve">
+    <value>测试网络延迟次数</value>
+  </data>
+  <data name="Settings_Online_PingServersOnce" xml:space="preserve">
+    <value>只测试一次网络延迟</value>
+  </data>
+  <data name="TrackStateEditor_GripTransfer_Tooltip" xml:space="preserve">
+    <value>设置有多少橡胶堆积延续到下一赛程</value>
+  </data>
+  <data name="TrackStateEditor_InitialGrip_Tooltip" xml:space="preserve">
+    <value>赛程开始时的抓地力水平</value>
+  </data>
+  <data name="TrackStateEditor_LapGain" xml:space="preserve">
+    <value>每一圈增加的橡胶堆积量</value>
   </data>
 </root>

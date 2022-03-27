@@ -15,7 +15,7 @@
       </ResourceDictionary.MergedDictionaries>
 
       <DataTemplate x:Key="ItemTemplate" DataType="{x:Type t:KunosCareerEventObject}">
-        <Grid Width="200" Height="100" Background="Black" ClipToBounds="True">
+        <Grid Width="200" Height="100" Background="{DynamicResource ThumbnailBackground}" ClipToBounds="True">
           <mui:BetterImage x:Name="Image" Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" ClearOnChange="True" />
           <TextBlock x:Name="TopPanel" Padding="4" VerticalAlignment="Top" Background="{StaticResource DarkenPanel}" Text="{Binding DisplayType}"
               Foreground="White" TextAlignment="Right" FontSize="{DynamicResource SmallFontSize}"

@@ -4613,4 +4613,88 @@
   <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
     <value>コンテンツが不足している場合に拡張情報を表示する</value>
   </data>
+  <data name="Main_Workshop" xml:space="preserve">
+    <value>ワークショップ</value>
+  </data>
+  <data name="MainWindow_FoundNModUpdates" xml:space="preserve">
+    <value>以下のMODのための{0}{update}が見つかりました:</value>
+  </data>
+  <data name="MainWindow_AddDownload_Message" xml:space="preserve">
+    <value>URLを入力してダウンロード</value>
+  </data>
+  <data name="MainWindow_AddDownload_Comment" xml:space="preserve">
+    <value>もしくはリンクをコピーするかファイルをCtrl+VでContent Managerにはりつけてください</value>
+  </data>
+  <data name="MainWindow_AddDownload_Title" xml:space="preserve">
+    <value>ダウンロード</value>
+  </data>
+  <data name="MainWindow_AddDownload_MenuItem" xml:space="preserve">
+    <value>何かをダウンロードする...</value>
+  </data>
+  <data name="MainWindow_InstallFromAFile_MenuItem" xml:space="preserve">
+    <value>ファイルからインストールする...</value>
+  </data>
+  <data name="DownloadList_PluginsLoadFailed" xml:space="preserve">
+    <value>プラグインのリストを読み込めません</value>
+  </data>
+  <data name="DownloadList_7ZipComment" xml:space="preserve">
+    <value>7-Zipプラグインでインストール時のパフォーマンスの向上とCMがすべての圧縮フォルダを解凍できるようになります</value>
+  </data>
+  <data name="DownloadList_ViewInExplorer" xml:space="preserve">
+    <value>エクスプローラで見る</value>
+  </data>
+  <data name="DownloadList_Password" xml:space="preserve">
+    <value>パスワード:</value>
+  </data>
+  <data name="DownloadList_DetectionFailed" xml:space="preserve">
+    <value>アプリはインストールするためのコンテンツを見つけられませんでした 手動でインストールしてみてはどうですか？</value>
+  </data>
+  <data name="DownloadList_ShowFile" xml:space="preserve">
+    <value>ファイルを見る</value>
+  </data>
+  <data name="DownloadList_ScanAgain" xml:space="preserve">
+    <value>もう一度スキャンする</value>
+  </data>
+  <data name="DownloadList_Retry" xml:space="preserve">
+    <value>再試行</value>
+  </data>
+  <data name="DownloadList_ExtraOptions" xml:space="preserve">
+    <value>追加のオプション:</value>
+  </data>
+  <data name="DownloadList_Failed" xml:space="preserve">
+    <value>失敗しました</value>
+  </data>
+  <data name="DownloadList_NothingFound" xml:space="preserve">
+    <value>何も見つかりませんでした</value>
+  </data>
+  <data name="DownloadList_Cancelled" xml:space="preserve">
+    <value>キャンセルされました</value>
+  </data>
+  <data name="DownloadList_Cancelling" xml:space="preserve">
+    <value>キャンセル中...</value>
+  </data>
+  <data name="DownloadList_Installing" xml:space="preserve">
+    <value>インストール中...</value>
+  </data>
+  <data name="DownloadList_Install" xml:space="preserve">
+    <value>インストールする</value>
+  </data>
+  <data name="DownloadList_Resume" xml:space="preserve">
+    <value>再開する</value>
+  </data>
+  <data name="DownloadList_Pause" xml:space="preserve">
+    <value>一時停止</value>
+  </data>
+  <data name="DownloadList_Restart" xml:space="preserve">
+    <value>やり直す</value>
+  </data>
+  <data name="DownloadList_Cancel" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="DownloadList_From" xml:space="preserve">
+    <value>ここより:</value>
+  </data>
+  <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
+    <value>有効なダウンロードがありません</value>
+  </data>
 </root>

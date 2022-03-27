@@ -31,7 +31,7 @@
 
             <!--KunosCareerObject-->
             <DataTemplate DataType="{x:Type t:UserChampionshipObject}">
-              <mui:Cell Width="{StaticResource TileSize}" Height="{StaticResource TileSize}" Background="Black" ClipToBounds="True">
+              <mui:Cell Width="{StaticResource TileSize}" Height="{StaticResource TileSize}" Background="{DynamicResource ThumbnailBackground}" ClipToBounds="True">
                 <TextBlock Text="{x:Static g:AppStrings.UserChampionships_NoPreview}" Style="{StaticResource Heading1}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.4"
                     ToolTip="{Binding DisplayName}" />
                 <mui:BetterImage Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" x:Name="Image" ClearOnChange="True"

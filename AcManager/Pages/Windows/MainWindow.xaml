@@ -651,6 +651,7 @@
     <mui:LinkGroup GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Miscellaneous}">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Apps}" Source="/Pages/Lists/PythonAppsListPage.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_LuaApps}" Source="/Pages/Lists/LuaAppsListPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_DriverModels}" Source="/Pages/Lists/DriverModelsListPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Fonts}" Source="/Pages/Lists/FontsListPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_PpFilters}" Source="/Pages/Lists/PpFiltersListPage.xaml" />

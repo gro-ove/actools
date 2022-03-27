@@ -276,6 +276,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public static SkidmarksSettings Skidmarks => _skidmarks ?? (_skidmarks = new SkidmarksSettings());
 
 
+        private static DriverNamesSettings _driverNames;
+        public static DriverNamesSettings DriverNames => _driverNames ?? (_driverNames = new DriverNamesSettings());
+
+
         private static PitStopSettings _pitStop;
         public static PitStopSettings PitStop => _pitStop ?? (_pitStop = new PitStopSettings());
 

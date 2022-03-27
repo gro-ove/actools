@@ -28,7 +28,7 @@ namespace AcManager.Tools.Managers.Online {
             Ip = information.Ip;
             PortHttp = information.PortHttp;
             Ping = null;
-            UpdateValuesAsync(information).Ignore();
+            UpdateValuesAsync(information, true).Ignore();
         }
 
         public override string DisplayName {

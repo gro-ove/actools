@@ -80,7 +80,7 @@ namespace AcManager.Tools.Helpers.Api {
             ModerateBreeze = 954,
             FreshBreeze = 955,
             StrongBreeze = 956,
-            HighWind, NearGale = 957,
+            HighWind = 957,
             Gale = 958,
             SevereGale = 959,
             Storm = 960,

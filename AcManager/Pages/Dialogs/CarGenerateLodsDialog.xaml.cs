@@ -56,7 +56,8 @@ namespace AcManager.Pages.Dialogs {
         public static readonly PresetsCategory PresetableKeyCategory = new PresetsCategory(PresetableKey);
         public static readonly string PreviousSettingsPresetsName = "Previous car settings";
 
-        public static PluginsRequirement Plugins { get; } = new PluginsRequirement(KnownPlugins.FbxConverter);
+        private static PluginsRequirement _requirement;
+        public static PluginsRequirement Plugins => _requirement ?? (_requirement = new PluginsRequirement(KnownPlugins.FbxConverter));
 
         private ViewModel Model => (ViewModel)DataContext;
 

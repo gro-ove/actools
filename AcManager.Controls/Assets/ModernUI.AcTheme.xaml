@@ -5,6 +5,7 @@
 
   <Color x:Key="ErrorColor">#FF4400</Color>
   <Color x:Key="GoColor">GreenYellow</Color>
+  <Color x:Key="ThumbnailBackgroundColor">Black</Color>
 
   <!--<Color x:Key="WindowBackgroundColor">#262626</Color>-->
   <!--<ImageBrush Opacity=".2" ImageSource="/AcManager.Controls;component/Assets/Background.jpg" Stretch="UniformToFill"

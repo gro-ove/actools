@@ -86,7 +86,7 @@
 
         <!-- Car -->
         <DataTemplate DataType="{x:Type data:WorkshopContentCar}">
-          <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="Black" ClipToBounds="True">
+          <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="{DynamicResource ThumbnailBackground}" ClipToBounds="True">
             <mui:BetterImage Filename="{Binding PreviewImage}" AsyncDecode="True" ClearOnChange="True" DecodeWidth="320" Stretch="UniformToFill"
                 Margin="-8 -10 -8 0" />
             <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom">

@@ -14,6 +14,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
+using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -151,7 +152,12 @@ namespace AcManager.Tools.Objects {
             base.InitializeLocations();
             JsonFilename = Path.Combine(Location, "ui_skin.json");
             LiveryImage = Path.Combine(Location, "livery.png");
-            PreviewImage = Path.Combine(Location, "preview.jpg");
+
+            var previewImage = SettingsHolder.Content.CarSkinsUsePngPreview ? Path.Combine(Location, "preview.png") : null;
+            if (previewImage == null || !File.Exists(previewImage)) {
+                previewImage = Path.Combine(Location, "preview.jpg");
+            }
+            PreviewImage = previewImage;
         }
 
         public string LiveryImage { get; private set; }
@@ -368,6 +374,7 @@ namespace AcManager.Tools.Objects {
         public class CarSkinPackerParams : AcCommonObjectPackerParams {
             public bool CmForFlag { get; set; } = true;
             public bool CmPaintShopValues { get; set; } = true;
+            public bool PackWithSkinIni { get; set; } = false;
         }
 
         private class CarSkinPacker : AcCommonObjectPacker<CarSkinObject, CarSkinPackerParams> {
@@ -392,20 +399,61 @@ namespace AcManager.Tools.Objects {
                     yield return Add("cm_skin.json");
                 }
 
+                if (Params.PackWithSkinIni) {
+                    var filename = Path.Combine(t.Location, "skin.ini");
+                    if (File.Exists(filename)) {
+                        yield return Add("skin.ini");
+
+                        IEnumerable AddReferencedTexture(string textureId, string textureType) {
+                            if (textureId != null) {
+                                textureId = textureId.Trim('\\', '/').Replace(@"\", @"/");
+                                if (DataProvider.Instance.KunosCarSkinSets.TryGetValue(textureType, out var set)) {
+                                    if (set.Contains(textureId.ToLowerInvariant())) {
+                                        yield break;
+                                    }
+                                }
+                                var dir = Path.Combine(AcRootDirectory.Instance.RequireValue, @"content", @"texture", textureType, textureId);
+                                if (Directory.Exists(dir)) {
+                                    foreach (var texture in Directory.GetFiles(dir, "*.*")) {
+                                        yield return AddFile($@"/content/texture/{textureType}/{textureId}/{Path.GetFileName(texture)}", texture);
+                                    }
+                                }
+                            }
+                        }
+
+                        var suit = new IniFile(filename);
+                        yield return AddReferencedTexture(suit["CREW"].GetNonEmpty("SUIT"), @"crew_suit");
+                        yield return AddReferencedTexture(suit["CREW"].GetNonEmpty("HELMET"), @"crew_helmet");
+                        yield return AddReferencedTexture(suit["CREW"].GetNonEmpty("BRAND"), @"crew_brand");
+
+                        foreach (var i in suit.Where(x => x.Key != @"CREW")) {
+                            yield return AddReferencedTexture(i.Value.GetNonEmpty("SUIT"), @"driver_suit");
+                            yield return AddReferencedTexture(i.Value.GetNonEmpty("GLOVES"), @"driver_gloves");
+                            yield return AddReferencedTexture(i.Value.GetNonEmpty("HELMET"), @"driver_helmet");
+                        }
+                    }
+                }
+
                 yield return Add("ext_config.ini");
 
-                if (t.CarId == _recentCarId && _recentTextures != null) {
-                    yield return Add(_recentTextures);
-                } else {
+                if (_recentCarId != t.CarId) {
+                    _recentCarId = t.CarId;
+                    _recentTextures = null;
                     var car = CarsManager.Instance.GetById(t.CarId);
                     if (car != null) {
-                        _recentCarId = t.CarId;
-                        _recentTextures = Kn5.FromFile(AcPaths.GetMainCarFilename(car.Location, car.AcdData, false) ?? throw new Exception(),
-                                SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToArray();
-                        yield return Add(_recentTextures);
-                    } else {
-                        yield return Add("*.dds", "*.png", "*.jpg", "*.jpeg", "*.gif");
+                        try {
+                            _recentTextures = Kn5.FromFile(AcPaths.GetMainCarFilename(car.Location, car.AcdData, false) ?? throw new Exception(),
+                                    SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToArray();
+                        } catch (Exception e) {
+                            Logging.Warning(e);
+                        }
                     }
+                }
+
+                if (_recentTextures == null) {
+                    yield return Add("*.dds", "*.png", "*.jpg", "*.jpeg", "*.gif");
+                } else {
+                    yield return Add(_recentTextures);
                 }
             }
 

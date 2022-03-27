@@ -1706,4 +1706,7 @@ Voulez-vous l'emballer avant de démarrer le serveur? Mais n'oubliez pas de part
   <data name="Online_LoadingActualInformation" xml:space="preserve">
     <value>Chargement des informations du server actuel...</value>
   </data>
+  <data name="Units_WHP" xml:space="preserve">
+    <value>Puissance au roue</value>
+  </data>
 </root>

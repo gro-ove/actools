@@ -198,7 +198,7 @@ namespace AcManager.Tools.Objects {
             return base.HandleChangedFile(filename);
         }
 
-        public CupContentType CupContentType => CupContentType.App;
+        public CupContentType CupContentType => CupContentType.PythonApp;
 
         public bool IsCupUpdateAvailable => CupClient.Instance?.ContainsAnUpdate(CupContentType, Id.ToLowerInvariant(), Version) ?? false;
 

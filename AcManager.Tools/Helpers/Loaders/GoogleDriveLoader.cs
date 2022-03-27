@@ -11,7 +11,7 @@ using HtmlAgilityPack;
 
 namespace AcManager.Tools.Helpers.Loaders {
     public class GoogleDriveLoader : DirectLoader {
-        public static bool OptionManualRedirect = true;
+        public static bool OptionManualRedirect = false;
         public static bool OptionDebugMode = false;
 
         public static bool Test(string url) => Regex.IsMatch(url, @"^https?://drive\.google\.com/", RegexOptions.IgnoreCase);
@@ -23,6 +23,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             }
 
             var dMatch = Regex.Match(url, @"://drive\.google\.com/file/d/([\w-]+)", RegexOptions.IgnoreCase);
+            Logging.Debug("dMatch.Groups[1].Value=" + dMatch.Groups[1].Value);
             return dMatch.Success ? "https://drive.google.com/uc?export=download&id=" + dMatch.Groups[1].Value : url;
         }
 
@@ -70,7 +71,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             var doc = new HtmlDocument();
             doc.LoadHtml(webPageContent);
 
-            var link = doc.DocumentNode.SelectSingleNode(@"//a[contains(@href, 'export=download')]")?.Attributes[@"href"]?.Value;
+            var link = doc.DocumentNode.SelectSingleNode(@"//form[contains(@action, 'export=download')]")?.Attributes[@"action"]?.Value;
             if (link == null) {
                 if (doc.DocumentNode.SelectSingleNode(@"//head/title/text()")?.InnerText.Contains("Quota exceeded") == true) {
                     throw new InformativeException(ToolsStrings.Common_CannotDownloadFile, "Google Drive quota exceeded");
@@ -80,7 +81,11 @@ namespace AcManager.Tools.Helpers.Loaders {
                 throw new InformativeException(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_GoogleDriveChanged);
             }
 
-            Url = @"https://drive.google.com" + HttpUtility.HtmlDecode(link);
+            Url = HttpUtility.HtmlDecode(link);
+            if (Url.StartsWith("/")) {
+                Url = @"https://drive.google.com" + Url;
+            }
+
             FileName = HttpUtility.HtmlDecode(doc.DocumentNode.SelectSingleNode(@"//span[@class='uc-name-size']/a")?.InnerText?.Trim());
             Logging.Write($"Google Drive download link: {Url}");
 

@@ -24,13 +24,13 @@ namespace AcManager.Tools.ServerPlugins {
         }
 
         private static readonly Dictionary<CommandWeatherType, WeatherInfo> WeatherInfos = new Dictionary<CommandWeatherType, WeatherInfo> {
-            /*{ CommandWeatherType.LightDrizzle, new WeatherInfo { RainIntensity = 0.1 } },
+            { CommandWeatherType.LightDrizzle, new WeatherInfo { RainIntensity = 0.1 } },
             { CommandWeatherType.Drizzle, new WeatherInfo { RainIntensity = 0.2 } },
-            { CommandWeatherType.HeavyDrizzle, new WeatherInfo { RainIntensity = 0.3 } },*/
+            { CommandWeatherType.HeavyDrizzle, new WeatherInfo { RainIntensity = 0.3 } },
             { CommandWeatherType.LightRain, new WeatherInfo { RainIntensity = 0.3 } },
-            //{ CommandWeatherType.Rain, new WeatherInfo { RainIntensity = 0.5 } },
+            { CommandWeatherType.Rain, new WeatherInfo { RainIntensity = 0.5 } },
             { CommandWeatherType.HeavyRain, new WeatherInfo { RainIntensity = 0.6 } },
-            /*{ CommandWeatherType.LightSleet, new WeatherInfo { RainIntensity = 0.3 } },
+            { CommandWeatherType.LightSleet, new WeatherInfo { RainIntensity = 0.3 } },
             { CommandWeatherType.Sleet, new WeatherInfo { RainIntensity = 0.4 } },
             { CommandWeatherType.HeavySleet, new WeatherInfo { RainIntensity = 0.5 } },
             { CommandWeatherType.Clear, new WeatherInfo { RainIntensity = 0d } },
@@ -43,7 +43,7 @@ namespace AcManager.Tools.ServerPlugins {
             { CommandWeatherType.Cold, new WeatherInfo { RainIntensity = 0d } },
             { CommandWeatherType.Hot, new WeatherInfo { RainIntensity = 0d } },
             { CommandWeatherType.Windy, new WeatherInfo { RainIntensity = 0d } },
-            { CommandWeatherType.Hail, new WeatherInfo { RainIntensity = 0.4 } }*/
+            { CommandWeatherType.Hail, new WeatherInfo { RainIntensity = 0.4 } }
         };
 
         private bool _disposed;

@@ -45,6 +45,9 @@
           <CheckBox IsChecked="{Binding PackSeparately}">
             <Label Content="Pack separately" />
           </CheckBox>
+          <CheckBox IsChecked="{Binding PackWithSkinIni}">
+            <Label Content="Include “skin.ini” and non-standard referenced textures" />
+          </CheckBox>
           <!--<CheckBox IsChecked="{Binding SortTags}">
             <Label Content="Sort tags" />
           </CheckBox>-->

@@ -151,8 +151,8 @@
     <value>İsim bulunamadı</value>
   </data>
   <data name="AcError_NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
-    <value>“[” or “]” gibi semboller isimde kullanılmamalı</value>
-  </data>
+    <value>İsim "[" veya "]" gibi sembolleri barındırmamalı</value>
+  <alternative>“[” or “]” gibi semboller isimde kullanılmamalı</alternative></data>
   <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
     <value>Gerekli içerik bulunamadı</value>
   </data>
@@ -988,8 +988,8 @@
     <value>İstediğin zaman online ayarlardan geri açabilirsin</value>
   </data>
   <data name="AcError_ModelKn5FileIsMissing" xml:space="preserve">
-    <value>Model (KN5 dosyası bulunamadı</value>
-  </data>
+    <value>Model (KN5 dosyası) bulunamadı</value>
+  <alternative>Model (KN5 dosyası bulunamadı</alternative></data>
   <data name="AcError_RequiredCarIsMissing" xml:space="preserve">
     <value>Gerekli araba “{0}” bulunamadı</value>
   </data>
@@ -1565,5 +1565,17 @@
   </data>
   <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
     <value>Arayüz modülü "CM Helper" yüklendi ve etkinleştirildi. Yarıştan önce AssettoCorsa.exe'yi yeniden başlatmayı unutmayın!</value>
+  </data>
+  <data name="AcError_EventConditionsAreNotSupported" xml:space="preserve">
+    <value>Olay koşulu "{0}" henüz desteklenmiyor</value>
+  </data>
+  <data name="AcError_EventsOfAreMissing" xml:space="preserve">
+    <value>"{0}" olayları bulunamadı</value>
+  </data>
+  <data name="AcError_LoadingUnhandledError" xml:space="preserve">
+    <value>İşlenmeyen yükleme hatası: {0}</value>
+  </data>
+  <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
+    <value>Yazı alt pikseli</value>
   </data>
 </root>

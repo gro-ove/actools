@@ -253,6 +253,7 @@
     <Compile Include="ContentInstallation\Entries\CrewHelmetEntry.cs" />
     <Compile Include="ContentInstallation\Entries\CustomFolderEntry.cs" />
     <Compile Include="ContentInstallation\Entries\FontContentEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\LuaAppContentEntry.cs" />
     <Compile Include="ContentInstallation\Entries\PpFilterContentEntry.cs" />
     <Compile Include="ContentInstallation\Entries\PythonAppContentEntry.cs" />
     <Compile Include="ContentInstallation\Entries\ShowroomContentEntry.cs" />
@@ -393,6 +394,7 @@
     <Compile Include="Helpers\AcSettings\CameraChaseSettings.cs" />
     <Compile Include="Helpers\AcSettings\CameraOrbitSettings.cs" />
     <Compile Include="Helpers\AcSettings\DamageDisplayerSettings.cs" />
+    <Compile Include="Helpers\AcSettings\DriverNamesSettings.cs" />
     <Compile Include="Helpers\AcSettings\FanatecSettings.cs" />
     <Compile Include="Helpers\AcSettings\LauncherSettings.cs" />
     <Compile Include="Helpers\AcSettings\MessagesSettings.cs" />
@@ -558,6 +560,7 @@
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
     <Compile Include="Helpers\WindowsHelper.cs" />
     <Compile Include="Managers\DriverModelsManager.cs" />
+    <Compile Include="Managers\LuaAppsManager.cs" />
     <Compile Include="Managers\Online\FileBasedOnlineSources.cs" />
     <Compile Include="Managers\Online\LanOnlineSource.cs" />
     <Compile Include="Managers\Online\OnlineManager.Sources.cs" />
@@ -614,6 +617,7 @@
     <Compile Include="Objects\ICarSetupObject.cs" />
     <Compile Include="Objects\IPythonAppConfigValue.cs" />
     <Compile Include="Objects\IPythonAppConfigValueProvider.cs" />
+    <Compile Include="Objects\LuaAppObject.cs" />
     <Compile Include="Objects\PythonAppConfig.cs" />
     <Compile Include="Objects\PythonAppConfigBoolValue.cs" />
     <Compile Include="Objects\PythonAppConfigFileValue.cs" />

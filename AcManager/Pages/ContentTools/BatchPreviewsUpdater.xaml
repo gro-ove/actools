@@ -188,7 +188,7 @@
           </ListBox.ItemsPanel>
           <ListBox.ItemTemplate>
             <DataTemplate>
-              <mui:Cell Width="160" Height="90" Background="Black">
+              <mui:Cell Width="160" Height="90" Background="{DynamicResource ThumbnailBackground}">
                 <mui:BetterImage Filename="{Binding PreviewImage}" MaxWidth="200" Stretch="UniformToFill" />
                 <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
                     Text="{Binding DisplayName}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />

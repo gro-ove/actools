@@ -1,7 +1,7 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="NativePointer.cs" company="Microsoft">
 //   Copyright (c) 2022 Microsoft Corporation
-//   Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance 
+//   Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance
 //   with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0. Unless
 //   required by applicable law or agreed to in writing, software distributed under the License is distributed on
 //   an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.See the License for
@@ -12,7 +12,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
@@ -67,7 +66,6 @@ namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
 
         public IntPtr Diff(Ptr<T> p2) {
             var diff = (long)((ulong)_addr - (ulong)p2._addr);
-            Debug.Assert(diff % SizeofT == 0);
             return (IntPtr)(diff / SizeofT);
         }
 

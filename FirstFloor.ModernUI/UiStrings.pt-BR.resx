@@ -118,8 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Back" xml:space="preserve">
-    <value>Retroceder</value>
-  </data>
+    <value>Voltar</value>
+  <alternative>Retroceder</alternative></data>
   <data name="Forward" xml:space="preserve">
     <value>Avançar</value>
   </data>
@@ -127,8 +127,8 @@
     <value>Cancelar</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>Encerrar</value>
-  </data>
+    <value>Fechar</value>
+  <alternative>Encerrar</alternative></data>
   <data name="Go" xml:space="preserve">
     <value>Lançar</value>
   </data>
@@ -530,5 +530,11 @@
   </data>
   <data name="Progress_Short_KnownTotal" xml:space="preserve">
     <value>{0} de {1}</value>
+  </data>
+  <data name="Common_Browse" xml:space="preserve">
+    <value>Navegar</value>
+  </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Recarregar</value>
   </data>
 </root>

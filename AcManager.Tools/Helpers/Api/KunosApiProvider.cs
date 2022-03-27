@@ -431,6 +431,23 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
+        private static Regex _ipRegex = new Regex(@"^\d+\.\d+\.\d+\.\d+", RegexOptions.Compiled);
+
+        private static IPAddress ParseIPAddress(string address) {
+            if (address.IndexOf(':') != -1 || _ipRegex.IsMatch(address)) return IPAddress.Parse(address);
+            return Dns.GetHostEntry(address).AddressList.First();
+        }
+
+        private static Task<IPAddress> ParseIPAddressAsync(string address) {
+            if (address.IndexOf(':') != -1 || _ipRegex.IsMatch(address)) return Task.FromResult(IPAddress.Parse(address));
+            return Dns.GetHostEntryAsync(address).ContinueWith(r => r.Result.AddressList.First(), TaskContinuationOptions.OnlyOnRanToCompletion);
+        }
+
+        public static Task<string> ResolveIpAddressAsync(string address) {
+            if (address.IndexOf(':') != -1 || _ipRegex.IsMatch(address)) return Task.FromResult(address);
+            return Dns.GetHostEntryAsync(address).ContinueWith(r => r.Result.AddressList.First().ToString(), TaskContinuationOptions.OnlyOnRanToCompletion);
+        }
+
         [ItemCanBeNull]
         public static async Task<Tuple<int, TimeSpan>> TryToPingServerAsync(string ip, int port, int timeout, bool logging = false) {
             using (var order = KillerOrder.Create(new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp) {
@@ -443,7 +460,7 @@ namespace AcManager.Tools.Helpers.Api {
 
                 try {
                     var bytes = BitConverter.GetBytes(200);
-                    var endpoint = new IPEndPoint(IPAddress.Parse(ip), port);
+                    var endpoint = new IPEndPoint(await ParseIPAddressAsync(ip), port);
                     if (logging) Logging.Debug("Sending bytes to: " + endpoint);
 
                     await Task.Factory.FromAsync(socket.BeginSendTo(bytes, 0, bytes.Length, SocketFlags.None, endpoint, null, socket),
@@ -504,7 +521,7 @@ namespace AcManager.Tools.Helpers.Api {
 
             try {
                 var bytes = BitConverter.GetBytes(200);
-                var endpoint = new IPEndPoint(IPAddress.Parse(ip), port);
+                var endpoint = new IPEndPoint(await ParseIPAddressAsync(ip), port);
                 if (logging) Logging.Debug("Sending bytes to: " + endpoint);
 
                 var e = new SocketAsyncEventArgs { RemoteEndPoint = endpoint };
@@ -565,7 +582,7 @@ namespace AcManager.Tools.Helpers.Api {
 
                 try {
                     var bytes = BitConverter.GetBytes(200);
-                    var endpoint = new IPEndPoint(IPAddress.Parse(ip), port);
+                    var endpoint = new IPEndPoint(ParseIPAddress(ip), port);
                     if (logging) Logging.Debug("Sending bytes to: " + endpoint);
 
                     socket.SendTo(bytes, endpoint);

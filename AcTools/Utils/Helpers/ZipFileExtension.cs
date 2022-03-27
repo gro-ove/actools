@@ -11,6 +11,11 @@ namespace AcTools.Utils.Helpers {
             return archive.ReadBytes(entryName).ToUtf8String();
         }
 
+        [CanBeNull]
+        public static string TryReadString([NotNull] this ZipArchive archive, [NotNull] string entryName) {
+            return archive.TryReadBytes(entryName)?.ToUtf8String();
+        }
+
         public static bool ZipContains([NotNull] this ZipArchive archive, [NotNull] string entryName) {
             return archive.Entries.Any(x => FileUtils.ArePathsEqual(x.FullName, entryName));
         }
@@ -18,6 +23,11 @@ namespace AcTools.Utils.Helpers {
         public static byte[] ReadBytes([NotNull] this ZipArchive archive, [NotNull] string entryName) {
             return archive.Entries.FirstOrDefault(x => FileUtils.ArePathsEqual(x.FullName, entryName))?.Open().ReadAsBytesAndDispose()
                     ?? throw new InvalidOperationException("Entry not found: " + entryName);
+        }
+
+        [CanBeNull]
+        public static byte[] TryReadBytes([NotNull] this ZipArchive archive, [NotNull] string entryName) {
+            return archive.Entries.FirstOrDefault(x => FileUtils.ArePathsEqual(x.FullName, entryName))?.Open().ReadAsBytesAndDispose();
         }
 
         public static ZipArchiveEntry AddString([NotNull] this ZipArchive destination, [NotNull] string entryName, string str) {

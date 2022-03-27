@@ -36,7 +36,8 @@ namespace AcManager.Pages.Drive {
             this.SetCustomAccentColor(Color.FromArgb(255, 241, 134, 13));
         }
 
-        public static PluginsRequirement Requirement { get; } = new PluginsRequirement(KnownPlugins.CefSharp);
+        private static PluginsRequirement _requirement;
+        public static PluginsRequirement Requirement=> _requirement ?? (_requirement = new PluginsRequirement(KnownPlugins.CefSharp));
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
             await Task.Yield();

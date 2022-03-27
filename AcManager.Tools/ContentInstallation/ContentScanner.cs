@@ -480,6 +480,33 @@ namespace AcManager.Tools.ContentInstallation {
                         name ?? id, version, icon, icons?.Select(x => x.Key));
             }
 
+            if (directory.Parent?.NameLowerCase == "lua" && directory.Parent.Parent?.NameLowerCase == "apps" ||
+                    directory.HasSubFile(directory.Name + ".lua")) {
+                var id = directory.Name;
+                if (id == null) {
+                    return null;
+                }
+
+                // Collecting values…
+                string version = null, name = null;
+                var uiApp = directory.GetSubFile("manifest.ini");
+                if (uiApp != null) {
+                    var data = await uiApp.Info.ReadAsync();
+                    cancellation.ThrowIfCancellationRequested();
+
+                    if (data != null) {
+                        var parsed = IniFile.Parse(data.ToUtf8String());
+                        name = parsed["ABOUT"].GetNonEmpty("NAME");
+                        version = parsed["ABOUT"].GetNonEmpty("VERSION");
+                    }
+                }
+
+                var icon = await (directory.GetSubFile("icon.png")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
+                cancellation.ThrowIfCancellationRequested();
+
+                return new LuaAppContentEntry(directory.Key ?? "", id, name ?? id, version, icon);
+            }
+
             var ui = directory.GetSubDirectory("ui");
             if (ui != null) {
                 // Is it a car?

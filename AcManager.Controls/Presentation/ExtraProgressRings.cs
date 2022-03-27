@@ -43,7 +43,7 @@ namespace AcManager.Controls.Presentation {
 
         private static async Task EnsureStylesUpdated() {
             try {
-                var data = await CmApiProvider.GetStaticDataBytesIfUpdatedAsync(DataId, TimeSpan.FromDays(3));
+                var data = await CmApiProvider.GetStaticDataBytesIfUpdatedAsync(DataId, TimeSpan.FromDays(30));
                 if (data != null) {
                     using (var stream = new MemoryStream(data, false)) {
                         SetStylesFromArchive(stream);

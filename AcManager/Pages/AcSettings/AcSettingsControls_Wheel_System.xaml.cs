@@ -101,7 +101,7 @@ namespace AcManager.Pages.AcSettings {
             }
         }
 
-        private readonly Busy _overlayAppsBusy = new Busy();
+        private readonly Busy _overlayAppsBusy = new Busy(true);
 
         private void OnOverlayAppsListSelectionChanged(object sender, SelectionChangedEventArgs e) {
             _overlayAppsBusy.Do(() => {

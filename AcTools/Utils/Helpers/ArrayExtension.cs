@@ -85,6 +85,18 @@ namespace AcTools.Utils.Helpers {
             return new string(c, 0, c.Length);
         }
 
+        public static string ToLowerCaseHexString([NotNull] this byte[] data) {
+            const string lookup = "0123456789abcdef";
+            int i = -1, p = -1, l = data.Length;
+            var c = new char[l-- * 2];
+            while (i < l) {
+                var d = data[++i];
+                c[++p] = lookup[d >> 4];
+                c[++p] = lookup[d & 0xF];
+            }
+            return new string(c, 0, c.Length);
+        }
+
         [Pure, CanBeNull]
         public static byte[] FromCutBase64([CanBeNull] this string encoded) {
             if (!string.IsNullOrWhiteSpace(encoded)) {

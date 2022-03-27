@@ -730,11 +730,16 @@ namespace AcManager.Pages.Dialogs {
                 ResultPreviewComparisons = new ObservableCollection<ResultPreviewComparison>(
                         Directory.GetFiles(_resultDirectory, "*.*").Select(x => {
                             var id = Path.GetFileNameWithoutExtension(x).ToLower();
+                            var preview = SettingsHolder.Content.CarSkinsUsePngPreview ? Path.Combine(toUpdate.Car.Location, @"skins", id, @"preview.png")
+                                    : null;
+                            if (preview == null || !File.Exists(preview)) {
+                                preview = Path.Combine(toUpdate.Car.Location, @"skins", id, @"preview.jpg");
+                            }
                             return new ResultPreviewComparison {
                                 Name = toUpdate.Car.GetSkinById(id)?.DisplayName ?? id,
                                 /* custom paths, because theoretically skin might no longer exist at this point */
                                 LiveryImage = Path.Combine(toUpdate.Car.Location, @"skins", id, @"livery.png"),
-                                OriginalImage = Path.Combine(toUpdate.Car.Location, @"skins", id, @"preview.jpg"),
+                                OriginalImage = preview,
                                 UpdatedImage = x
                             };
                         }));

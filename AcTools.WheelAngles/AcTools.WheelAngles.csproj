@@ -53,8 +53,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HidLibrary, Version=3.2.46.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\hidlibrary.3.2.46.0\lib\HidLibrary.dll</HintPath>
+    <Reference Include="HidLibrary">
+      <HintPath>..\Libraries\HidLibrary\HidLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
@@ -77,6 +77,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Implementations\InnerTesting1.cs" />
     <Compile Include="Implementations\LogitechDFGT.cs" />
     <Compile Include="Implementations\LogitechG25.cs" />
     <Compile Include="Implementations\LogitechG27.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Implementations\ThrustmasterF1.cs" />
     <Compile Include="Implementations\ThrustmasterFerrariF1Advanced2.cs" />
     <Compile Include="Implementations\ThrustmasterFerrariF1Advanced1.cs" />
+    <Compile Include="Implementations\ThrustmasterFerrariF1TSPC.cs" />
     <Compile Include="Implementations\ThrustmasterT300.cs" />
     <Compile Include="Implementations\ThrustmasterT500.cs" />
     <Compile Include="Implementations\ThrustmasterTGT.cs" />

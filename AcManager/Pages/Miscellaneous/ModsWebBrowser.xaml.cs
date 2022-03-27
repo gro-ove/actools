@@ -625,7 +625,8 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
         });
 
         public class ListViewModel : NotifyPropertyChanged, IComparer<WebSource>, ILoaderFactory {
-            public static PluginsRequirement Requirement { get; } = new PluginsRequirement(KnownPlugins.CefSharp);
+            private static PluginsRequirement _requirement;
+            public static PluginsRequirement Requirement => _requirement ?? (_requirement = new PluginsRequirement(KnownPlugins.CefSharp));
 
             public ChangeableObservableCollection<WebSource> WebSources { get; }
             public BetterListCollectionView WebSourcesView { get; }

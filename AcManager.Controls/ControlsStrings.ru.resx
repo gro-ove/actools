@@ -195,8 +195,8 @@
     <value>Открыть в пользовательском шоуруме</value>
   <alternative>Открыть в пользовательском демонстрационном зале</alternative><alternative>Открыть в кастомном шоуруме</alternative><alternative>Открыть в пользовательском выставочном зале</alternative></data>
   <data name="Video_CannotPlay" xml:space="preserve">
-    <value>Не получится проиграть видео</value>
-  </data>
+    <value>Невозможно проиграть видео</value>
+  <alternative>Не получится проиграть видео</alternative></data>
   <data name="Video_CannotPlay_Commentary" xml:space="preserve">
     <value>Пожалуйста, зайдите в настройки и включите VLC-плагин</value>
   </data>
@@ -495,8 +495,8 @@
     <value>Вы можете перейти в настройки и включить опцию "Сохранять повторы автоматически", чтобы не потерять что-то ценное.</value>
   </data>
   <data name="VideoViewer_CannotPlay" xml:space="preserve">
-    <value>Не получится проиграть видео</value>
-  </data>
+    <value>Невозможно проиграть видео</value>
+  <alternative>Не получится проиграть видео</alternative></data>
   <data name="CustomShowroom_TextureSizeLabel" xml:space="preserve">
     <value>Размер:</value>
   </data>
@@ -749,8 +749,8 @@
     <value>Не удалось сохранить изображение</value>
   </data>
   <data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
-    <value>Убедитесь, что дополнение VLC установлено правильно.</value>
-  </data>
+    <value>Убедитесь, что VLC плагин установлен правильно.</value>
+  <alternative>Убедитесь, что дополнение VLC установлено правильно.</alternative></data>
   <data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
     <value>Текстура отсутствует!</value>
   </data>
@@ -958,5 +958,11 @@ LOD в: [b]{9}[/b]
   </data>
   <data name="Common_Rating" xml:space="preserve">
     <value>Рейтинг:</value>
+  </data>
+  <data name="CarParent_ChildrenWillBeMoved" xml:space="preserve">
+    <value>Дети переедут к новым родителям!</value>
+  </data>
+  <data name="Common_PsiPostfix" xml:space="preserve">
+    <value>psi</value>
   </data>
 </root>

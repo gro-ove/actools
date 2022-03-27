@@ -963,4 +963,7 @@
   <data name="Common_WhatIsIt" xml:space="preserve">
     <value>这是什么？</value>
   </data>
+  <data name="Common_Rating" xml:space="preserve">
+    <value>评分：</value>
+  </data>
 </root>

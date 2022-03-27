@@ -3,6 +3,7 @@ using System.Linq;
 using AcManager.Tools.Filters.TestEntries;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
+using AcTools.DataFile;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Filters.Testers {
@@ -134,6 +135,9 @@ namespace AcManager.Tools.Filters.Testers {
                 case "pwratio":
                     return value.Test(obj.SpecsPwRatioDisplay);
 
+                case "datalods":
+                    return value.Test(obj.AcdData?.GetIniFile("lods.ini").GetSections("LOD").Count() ?? 0);
+
                 case "skins":
                     return value.Test(obj.SkinsManager.WrappersList.Count);
 
@@ -176,6 +180,7 @@ namespace AcManager.Tools.Filters.Testers {
                 new KeywordDescription("pwratio", "P/W ratio", KeywordType.Number, KeywordPriority.Normal, "pw"),
                 new KeywordDescription("skins", "Skins count", KeywordType.Number, KeywordPriority.Normal),
                 new KeywordDescription("skin", "Skin", KeywordType.Child, KeywordPriority.Normal),
+                new KeywordDescription("datalods", "Number of LODs (very slow)", KeywordType.Number, KeywordPriority.Obscured),
             }.Concat(AcJsonObjectTester.Instance.GetDescriptions());
         }
     }

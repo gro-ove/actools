@@ -342,4 +342,7 @@
   <data name="TableHeader_Nationality" xml:space="preserve">
     <value>Nasjonalitet</value>
   </data>
+  <data name="Common_LapsPostfix" xml:space="preserve">
+    <value>runde</value>
+  </data>
 </root>

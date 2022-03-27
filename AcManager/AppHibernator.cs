@@ -127,7 +127,7 @@ namespace AcManager {
                 if (Equals(value, _hibernated)) return;
                 _hibernated = value;
 
-                ActionExtension.InvokeInMainThread(() => {
+                ActionExtension.InvokeInMainThreadAsync(() => {
                     try {
                         if (value) {
                             /* add an icon to the tray for manual restoration just in case */
