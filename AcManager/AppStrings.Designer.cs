@@ -79,11 +79,11 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copyright © 2016–2020 AcClub..
+        ///   Looks up a localized string similar to Copyright © 2016–{0:yyyy} AcClub..
         /// </summary>
-        public static string About_Copyright {
+        public static string About_CopyrightFormat {
             get {
-                return ResourceManager.GetString("About_Copyright", resourceCulture);
+                return ResourceManager.GetString("About_CopyrightFormat", resourceCulture);
             }
         }
         
