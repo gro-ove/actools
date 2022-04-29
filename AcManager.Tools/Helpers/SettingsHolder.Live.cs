@@ -1,5 +1,12 @@
-﻿using FirstFloor.ModernUI.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Media;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Helpers {
     public static partial class SettingsHolder {
@@ -186,6 +193,62 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _rsrPlayerName)) return;
                     _rsrPlayerName = value;
                     ValuesStorage.Set("Settings.LiveTimingSettings.RsrPlayerName", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public sealed class LiveServiceEntry : Displayable, IWithId {
+                private string _url;
+
+                public string Url {
+                    get => _url;
+                    set => Apply(value, ref _url);
+                }
+
+                public Color? HighlightColor { get; set; }
+
+                public LiveServiceEntry(string s) {
+                    var obj = JObject.Parse(s);
+                    DisplayName = obj.GetStringValueOnly("name") ?? throw new Exception("Missing: name");
+                    Url = obj.GetStringValueOnly("url") ?? throw new Exception("Missing: URL");
+                    HighlightColor = obj.GetStringValueOnly("color")?.ToColor();
+                }
+
+                public LiveServiceEntry(string url, string name, string color) {
+                    DisplayName = name ?? throw new Exception("Missing: name");
+                    Url = url ?? throw new Exception("Missing: URL");
+                    HighlightColor = color?.ToColor();
+                }
+
+                public string Serialize() {
+                    return new JObject {
+                        ["url"] = Url,
+                        ["name"] = DisplayName,
+                        ["color"] = HighlightColor?.ToHexString()
+                    }.ToString(Formatting.None);
+                }
+
+                public string Id => _url;
+            }
+
+            private IReadOnlyList<LiveServiceEntry> _userEntries;
+
+            public IReadOnlyList<LiveServiceEntry> UserEntries {
+                get => _userEntries ?? (_userEntries = ValuesStorage.Get("Settings.LiveSettings.UserEntries", "").Split('\n')
+                        .Select(x => {
+                            if (string.IsNullOrWhiteSpace(x)) return null;
+                            try {
+                                return new LiveServiceEntry(x);
+                            } catch (Exception e) {
+                                Logging.Warning(e);
+                                return null;
+                            }
+                        }).NonNull().ToList());
+                set {
+                    value = value?.NonNull().OrderBy(x => x.DisplayName).ToList() ?? new List<LiveServiceEntry>();
+                    if (Equals(value, _userEntries)) return;
+                    _userEntries = value;
+                    ValuesStorage.Set("Settings.LiveSettings.UserEntries", value.Select(x => x.Serialize()).JoinToString('\n'));
                     OnPropertyChanged();
                 }
             }

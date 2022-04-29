@@ -67,6 +67,24 @@
         <!-- TODO -->
         <Button Content="{x:Static g:AppStrings.Drive_OnlineServer_JoinTSServer}" Command="{Binding JoinTsCommand}"
             Visibility="{Binding JoinTsCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Separator/>
+        <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" Command="{Binding QuickDriveButton.DriveCommand}"
+            PreviewMouseDown="OnDriveButtonMouseDown" Style="{StaticResource ToolBarButtonWithComboBox}">
+          <mui:ButtonWithComboBox.Resources>
+            <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDriveButton.Presets}" />
+          </mui:ButtonWithComboBox.Resources>
+          <mui:ButtonWithComboBox.ButtonToolTip>
+            <StackPanel>
+              <TextBlock Text="{x:Static g:AppStrings.Toolbar_QuickDrive_FirstLine}" />
+              <TextBlock Text="{x:Static g:AppStrings.Toolbar_QuickDrive_SecondLine}" />
+            </StackPanel>
+          </mui:ButtonWithComboBox.ButtonToolTip>
+          <mui:ButtonWithComboBox.MenuItems>
+            <CompositeCollection>
+              <CollectionContainer Collection="{Binding Source={StaticResource QuickDrivePresetsItems}}" />
+            </CompositeCollection>
+          </mui:ButtonWithComboBox.MenuItems>
+        </mui:ButtonWithComboBox>
       </ToolBar>
       <ToolBar ToolBarTray.IsLocked="True" Band="1" BandIndex="1">
         <mui:AsyncButton Command="{Binding Entry.InstallMissingContentCommand}"

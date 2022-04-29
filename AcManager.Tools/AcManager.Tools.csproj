@@ -431,6 +431,7 @@
     <Compile Include="Helpers\Loaders\YouTubeDescriptionLoader.cs" />
     <Compile Include="Helpers\ExtraDataProvider.cs" />
     <Compile Include="Helpers\PackedDescription.cs" />
+    <Compile Include="Helpers\PageTitleFinder.cs" />
     <Compile Include="Helpers\RegistryPatch.cs" />
     <Compile Include="Helpers\ReplayDetails.cs" />
     <Compile Include="Helpers\SettingsHolder.Common.cs" />
@@ -558,6 +559,7 @@
     <Compile Include="Helpers\VisualCppTool.cs" />
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
+    <Compile Include="Helpers\WebExceptionExtensions.cs" />
     <Compile Include="Helpers\WindowsHelper.cs" />
     <Compile Include="Managers\DriverModelsManager.cs" />
     <Compile Include="Managers\LuaAppsManager.cs" />

@@ -84,6 +84,9 @@ namespace AcTools.Processes {
                     CarId, CarSkinId, CarSetupId,
                     TrackId, TrackConfigurationId;
 
+            [CanBeNull]
+            public string CarSetupFilename;
+
             public double Ballast, Restrictor;
             public bool UseMph;
 
@@ -110,6 +113,10 @@ namespace AcTools.Processes {
                     ["NATION_CODE"] = DriverNationCode ?? GetNationCode(DriverNationality),
                     ["NATIONALITY"] = DriverNationality
                 };
+
+                if (!string.IsNullOrWhiteSpace(CarSetupFilename)) {
+                    file["CAR_0"].Set("_EXT_SETUP_FILENAME", CarSetupFilename);
+                }
 
                 file["OPTIONS"].Set("USE_MPH", UseMph);
             }

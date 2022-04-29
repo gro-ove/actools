@@ -49,7 +49,8 @@
 
   <!--either ring or bar-->
   <mui:Cell Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
-    <mui:ModernProgressRing IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center"
+    <mui:ModernProgressRing Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center"
+        IsActive="{Binding IsLoaded, Converter={StaticResource InvertBooleanConverter}, Source={x:Static t:CarsManager.Instance}}"
         Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibilityConverter}, Source={x:Static t:CarsManager.Instance}}" />
     <StackPanel DataContext="{x:Static t:CarsManager.Instance}" VerticalAlignment="Center"
         Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">

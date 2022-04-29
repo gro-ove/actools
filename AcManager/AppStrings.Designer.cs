@@ -24,7 +24,7 @@ namespace AcManager {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -13265,6 +13265,24 @@ namespace AcManager {
         public static string Toolbar_Play_Tooltip {
             get {
                 return ResourceManager.GetString("Toolbar_Play_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use car and track in a Quick Drive session (Ctrl+Alt+G).
+        /// </summary>
+        public static string Toolbar_QuickDrive_FirstLine {
+            get {
+                return ResourceManager.GetString("Toolbar_QuickDrive_FirstLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hold Shift and click to configure Quick Drive session.
+        /// </summary>
+        public static string Toolbar_QuickDrive_SecondLine {
+            get {
+                return ResourceManager.GetString("Toolbar_QuickDrive_SecondLine", resourceCulture);
             }
         }
         

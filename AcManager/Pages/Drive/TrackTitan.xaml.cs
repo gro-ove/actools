@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
@@ -10,28 +9,12 @@ using System.Windows.Media;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.UserControls.Web;
-using AcManager.Pages.Windows;
 using AcManager.Tools.Managers.Plugins;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.Drive {
     public partial class TrackTitan : ILoadableContent {
-        private static readonly Uri TrackTitanUri = new Uri("/Pages/Drive/TrackTitan.xaml", UriKind.Relative);
-        private static string _loginToken;
-
-        public static void NavigateTo(string loginToken = null) {
-            _loginToken = loginToken ?? _loginToken;
-            switch (Application.Current?.MainWindow) {
-                case MainWindow mainWindow:
-                    mainWindow.NavigateTo(TrackTitanUri);
-                    break;
-                case null:
-                    MainWindow.NavigateOnOpen(TrackTitanUri);
-                    break;
-            }
-        }
-
         public TrackTitan() {
             this.SetCustomAccentColor(Color.FromArgb(255, 241, 134, 13));
         }

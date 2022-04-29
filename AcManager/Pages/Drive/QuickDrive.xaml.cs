@@ -59,6 +59,7 @@ namespace AcManager.Pages.Drive {
         private const string ModeWeekendPath = "/Pages/Drive/QuickDrive_Weekend.xaml";
         private const string ModeTimeAttackPath = "/Pages/Drive/QuickDrive_TimeAttack.xaml";
         private const string ModeDragPath = "/Pages/Drive/QuickDrive_Drag.xaml";
+
         public static readonly Uri ModeDrift = new Uri(ModeDriftPath, UriKind.Relative);
         public static readonly Uri ModeHotlap = new Uri(ModeHotlapPath, UriKind.Relative);
         public static readonly Uri ModePractice = new Uri(ModePracticePath, UriKind.Relative);
@@ -90,7 +91,7 @@ namespace AcManager.Pages.Drive {
             DataContext = new ViewModel(_selectNextSerializedPreset, true,
                     _selectNextCar, null, //_selectNextCarSkinId,
                     track: _selectNextTrack, trackSkin: _selectNextTrackSkin,
-                    weatherId: _selectNextWeather?.Id,
+                    weatherId: _selectNextWeather?.Id, time: _selectNextTime,
                     mode: _selectNextMode, serializedRaceGrid: _selectNextSerializedRaceGrid,
                     presence: _discordPresence, forceAssistsLoading: _selectNextForceAssistsLoading);
 
@@ -151,6 +152,7 @@ namespace AcManager.Pages.Drive {
             _selectNextMode = null;
             _selectNextSerializedRaceGrid = null;
             _selectNextForceAssistsLoading = false;
+            _selectNextTime = null;
 
             this.AddSizeCondition(x => x.ActualHeight > 600 && SettingsHolder.Drive.ShowExtraComboBoxes).Add(CarCellExtra).Add(TrackCellExtra);
             this.AddSizeCondition(x => 180 + ((x.ActualWidth - 800) / 2d).Clamp(0, 60).Round()).Add(x => LeftPanel.Width = x);
@@ -551,7 +553,7 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private readonly string _carSkinId, _carSetupId, _weatherId;
+            private readonly string _carSkinId, _carSetupFilename, _weatherId;
             private readonly int? _forceTime;
 
             [CanBeNull]
@@ -563,7 +565,7 @@ namespace AcManager.Pages.Drive {
 
             public bool CustomDateSupported { get; }
 
-            internal ViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null, string carSetupId = null,
+            internal ViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null, string carSetupFilename = null,
                     TrackObjectBase track = null, TrackSkinObject trackSkin = null, string weatherId = null, int? time = null, bool savePreset = false,
                     Uri mode = null, string serializedRaceGrid = null, DiscordRichPresence presence = null, bool forceAssistsLoading = false) {
                 if (uiMode && SettingsHolder.Drive.ShowExtraComboBoxes) {
@@ -576,7 +578,7 @@ namespace AcManager.Pages.Drive {
 
                 _uiMode = uiMode;
                 _carSkinId = carSkinId;
-                _carSetupId = carSetupId;
+                _carSetupFilename = carSetupFilename;
                 _weatherId = weatherId;
                 // _serializedRaceGrid = serializedRaceGrid;
                 _forceTime = time;
@@ -784,6 +786,10 @@ namespace AcManager.Pages.Drive {
                     SelectedMode = mode;
                 }
 
+                if (time.HasValue) {
+                    Time = time.Value;
+                }
+
                 if (serializedRaceGrid != null) {
                     (SelectedModeViewModel as IRaceGridModeViewModel)?.SetRaceGridData(serializedRaceGrid);
                 }
@@ -957,7 +963,7 @@ namespace AcManager.Pages.Drive {
                     await selectedMode.Drive(new Game.BasicProperties {
                         CarId = selectedCar.Id,
                         CarSkinId = _carSkinId ?? selectedCar.SelectedSkin?.Id,
-                        CarSetupId = _carSetupId,
+                        CarSetupFilename = _carSetupFilename,
                         TrackId = track.Id,
                         TrackConfigurationId = track.LayoutId
                     }, AssistsViewModel.ToGameProperties(), new Game.ConditionProperties {
@@ -1072,9 +1078,23 @@ namespace AcManager.Pages.Drive {
         private static Uri _selectNextMode;
         private static string _selectNextSerializedRaceGrid;
         private static bool _selectNextForceAssistsLoading;
+        private static int? _selectNextTime;
+
+        public static async Task Activate(bool setupRace,
+                CarObject car = null, string carSkinId = null, string carSetupFilename = null,
+                TrackObjectBase track = null, TrackSkinObject trackSkin = null,
+                string weatherId = null, int? time = null,
+                string serializedPreset = null, string presetFilename = null,
+                Uri mode = null, string serializedRaceGrid = null,
+                bool forceAssistsLoading = false) {
+            if (setupRace || Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)
+                || !await RunAsync(car, carSkinId, carSetupFilename, track, trackSkin, weatherId, time, serializedPreset, presetFilename, mode, serializedRaceGrid, forceAssistsLoading)) {
+                Show(car, carSkinId, carSetupFilename, track, trackSkin, weatherId, time, serializedPreset, presetFilename, mode, serializedRaceGrid, forceAssistsLoading);
+            }
+        }
 
         public static void Show(
-                CarObject car = null, string carSkinId = null, string carSetupId = null,
+                CarObject car = null, string carSkinId = null, string carSetupFilename = null,
                 TrackObjectBase track = null, TrackSkinObject trackSkin = null,
                 string weatherId = null, int? time = null,
                 string serializedPreset = null, string presetFilename = null,
@@ -1090,6 +1110,11 @@ namespace AcManager.Pages.Drive {
                 }
 
                 vm.SelectedTrack = track ?? vm.SelectedTrack;
+                if (time.HasValue) {
+                    vm.RandomTime = false;
+                    vm.IdealConditions = false;
+                    vm.Time = time.Value;
+                }
 
                 if (weather != null) {
                     vm.SelectedWeather = weather;
@@ -1110,13 +1135,14 @@ namespace AcManager.Pages.Drive {
                 _selectNextWeather = weather;
                 _selectNextMode = mode;
                 _selectNextSerializedRaceGrid = serializedRaceGrid;
+                _selectNextTime = time;
 
                 NavigateToPage();
             }
         }
 
         public static async Task<bool> RunAsync(
-                CarObject car = null, string carSkinId = null, string carSetupId = null,
+                CarObject car = null, string carSkinId = null, string carSetupFilename = null,
                 TrackObjectBase track = null, TrackSkinObject trackSkin = null,
                 string weatherId = null, int? time = null,
                 string serializedPreset = null, string presetFilename = null,
@@ -1126,7 +1152,7 @@ namespace AcManager.Pages.Drive {
                 serializedPreset = presetFilename != null ? File.ReadAllText(presetFilename) : string.Empty;
             }
 
-            var model = new ViewModel(serializedPreset, false, car, carSkinId, carSetupId, track, trackSkin, weatherId, time,
+            var model = new ViewModel(serializedPreset, false, car, carSkinId, carSetupFilename, track, trackSkin, weatherId, time,
                     mode: mode, serializedRaceGrid: serializedRaceGrid, forceAssistsLoading: forceAssistsLoading);
             if (!model.GoCommand.CanExecute(null)) {
                 Logging.Warning(AppStrings.Drive_Quick_CantStartTheRace);

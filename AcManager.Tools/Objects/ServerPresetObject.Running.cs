@@ -110,6 +110,29 @@ namespace AcManager.Tools.Objects {
             return false;
         }
 
+        private async Task<IniFile> GetBaseMainConfigAsync() {
+            var serverCfg = IniObject?.Clone() ?? new IniFile(IniFileMode.ValuesWithSemicolons);
+            SaveData(serverCfg);
+
+            foreach (var sectionKey in serverCfg.Keys.Where(x => x.StartsWith("__CM_")).ToList()) {
+                serverCfg.Remove(sectionKey);
+            }
+            foreach (var section in serverCfg.Values) {
+                foreach (var key in section.Keys.Where(x => x.StartsWith("__CM_")).ToList()) {
+                    section.Remove(key);
+                }
+            }
+
+            if (ProvideDetails) {
+                if (DetailsMode == ServerPresetDetailsMode.ViaWrapper) {
+                    serverCfg["SERVER"].Set("NAME", $"{Name} {ServerEntry.ExtendedSeparator}{WrapperPort}");
+                } else {
+                    await EnsureDetailsNameIsActualAsync(serverCfg);
+                }
+            }
+            return serverCfg;
+        }
+
         [ItemCanBeNull]
         public async Task<List<PackedEntry>> PackServerData(bool saveExecutable, ServerPresetPackMode mode, bool evbMode, CancellationToken cancellation) {
             var result = new List<PackedEntry>();
@@ -201,27 +224,18 @@ namespace AcManager.Tools.Objects {
             }
 
             // Main config file
-            var serverCfg = IniObject?.Clone() ?? new IniFile(IniFileMode.ValuesWithSemicolons);
-            var dataSection = serverCfg["DATA"];
-            SaveData(serverCfg);
-
-            if (ProvideDetails) {
-                if (DetailsMode == ServerPresetDetailsMode.ViaWrapper) {
-                    serverCfg["SERVER"].Set("NAME", $"{Name} {ServerEntry.ExtendedSeparator}{WrapperPort}");
-                } else {
-                    await EnsureDetailsNameIsActualAsync(serverCfg);
-                }
-            }
+            var serverCfg = await GetBaseMainConfigAsync();
 
             // Welcome message
             var welcomeMessage = BuildWelcomeMessage();
             if (welcomeMessage != null) {
                 result.Add(PackedEntry.FromContent("cfg/welcome.txt", welcomeMessage));
                 serverCfg["SERVER"].Set("WELCOME_MESSAGE", "cfg/welcome.txt");
-                dataSection.Set("WELCOME_PATH", "cfg/welcome.txt");
+                serverCfg["DATA"].Set("WELCOME_PATH", "cfg/welcome.txt");
             }
 
             // Setups
+            var dataSection = serverCfg["DATA"];
             var setupIndex = 0;
             foreach (var key in dataSection.Keys.Where(x => x.StartsWith(@"FIXED_SETUP_")).ToList()) {
                 dataSection.Remove(key);
@@ -429,6 +443,28 @@ namespace AcManager.Tools.Objects {
             if (SettingsHolder.Online.ServerPresetsUpdateDataAutomatically
                     && !DisableChecksums) {
                 await PrepareServer(progress, cancellation);
+            }
+
+            if (SettingsHolder.Online.ServerCopyConfigsToCfgFolder) {
+                var root = AcRootDirectory.Instance.RequireValue;
+                FileUtils.EnsureDirectoryExists(Path.Combine(root, @"server", @"cfg"));
+
+                // Main config file
+                var serverCfg = await GetBaseMainConfigAsync();
+
+                // Welcome message
+                var welcomeMessage = BuildWelcomeMessage();
+                if (welcomeMessage != null) {
+                    File.WriteAllText(Path.Combine(root, @"server", @"cfg", @"welcome.txt"), welcomeMessage);
+                    serverCfg["SERVER"].Set("WELCOME_MESSAGE", "cfg/welcome.txt");
+                    serverCfg["DATA"].Set("WELCOME_PATH", "cfg/welcome.txt");
+                }
+
+                File.WriteAllText(Path.Combine(root, @"server", @"cfg", @"server_cfg.ini"), serverCfg.Stringify());
+
+                var entryList = EntryListIniObject?.Clone() ?? new IniFile();
+                entryList.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section, CspRequiredActual));
+                File.WriteAllText(Path.Combine(root, @"server", @"cfg", @"entry_list.ini"), entryList.Stringify());
             }
 
             var welcomeMessageLocal = IniObject?["SERVER"].GetNonEmpty("WELCOME_MESSAGE");

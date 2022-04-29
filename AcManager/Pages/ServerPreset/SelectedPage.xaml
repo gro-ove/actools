@@ -79,6 +79,24 @@
         <Button x:Name="RepackAllArchivesButton" Content="Repack all" Command="{Binding WrapperRepackAllCommand}" />
         <Button x:Name="ClearUnusedArchivesButton" Content="Remove unused archives" Command="{Binding WrapperRemoveUnusedCommand}"
             ToolTip="Unused files from content subfolder will be moved to the Recycle Bin" />
+        <Separator />
+        <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" Command="{Binding QuickDriveButton.DriveCommand}"
+            PreviewMouseDown="OnDriveButtonMouseDown" Style="{StaticResource ToolBarButtonWithComboBox}">
+          <mui:ButtonWithComboBox.Resources>
+            <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDriveButton.Presets}" />
+          </mui:ButtonWithComboBox.Resources>
+          <mui:ButtonWithComboBox.ButtonToolTip>
+            <StackPanel>
+              <TextBlock Text="{x:Static g:AppStrings.Toolbar_QuickDrive_FirstLine}" />
+              <TextBlock Text="{x:Static g:AppStrings.Toolbar_QuickDrive_SecondLine}" />
+            </StackPanel>
+          </mui:ButtonWithComboBox.ButtonToolTip>
+          <mui:ButtonWithComboBox.MenuItems>
+            <CompositeCollection>
+              <CollectionContainer Collection="{Binding Source={StaticResource QuickDrivePresetsItems}}" />
+            </CompositeCollection>
+          </mui:ButtonWithComboBox.MenuItems>
+        </mui:ButtonWithComboBox>
       </ToolBar>
     </c:AcObjectBase.ToolBars>
 

@@ -214,7 +214,9 @@ namespace AcTools {
 
         public string ReadString() {
             var length = ReadInt32();
-            return Encoding.GetString(_buffer, GetPosAndMove(length), length);
+            return length > _buffer.Length
+                    ? Encoding.GetString(ReadBytes(length), 0, length)
+                    : Encoding.GetString(_buffer, GetPosAndMove(length), length);
         }
 
         public void SkipString() {
@@ -451,20 +453,20 @@ namespace AcTools {
             var pos = GetPosAndMove(16);
             var buffer = _buffer;
             return new Vec4(
-                ToSingle(buffer, pos),
-                ToSingle(buffer, pos + 4),
-                ToSingle(buffer, pos + 8),
-                ToSingle(buffer, pos + 12));
+                    ToSingle(buffer, pos),
+                    ToSingle(buffer, pos + 4),
+                    ToSingle(buffer, pos + 8),
+                    ToSingle(buffer, pos + 12));
         }
 
         public Quat ReadQuat() {
             var pos = GetPosAndMove(16);
             var buffer = _buffer;
             return new Quat(
-                ToSingle(buffer, pos),
-                ToSingle(buffer, pos + 4),
-                ToSingle(buffer, pos + 8),
-                ToSingle(buffer, pos + 12));
+                    ToSingle(buffer, pos),
+                    ToSingle(buffer, pos + 4),
+                    ToSingle(buffer, pos + 8),
+                    ToSingle(buffer, pos + 12));
         }
 
         public void ReadSingle4D(out float x, out float y, out float z, out float w) {
@@ -511,16 +513,16 @@ namespace AcTools {
             var pos = GetPosAndMove(64);
             var buffer = _buffer;
             return new Mat4x4(
-                ToSingle(buffer, pos), ToSingle(buffer, pos + 4), ToSingle(buffer, pos + 8), ToSingle(buffer, pos + 12),
-                ToSingle(buffer, pos + 16), ToSingle(buffer, pos + 20), ToSingle(buffer, pos + 24), ToSingle(buffer, pos + 28),
-                ToSingle(buffer, pos + 32), ToSingle(buffer, pos + 36), ToSingle(buffer, pos + 40), ToSingle(buffer, pos + 44),
-                ToSingle(buffer, pos + 48), ToSingle(buffer, pos + 52), ToSingle(buffer, pos + 56), ToSingle(buffer, pos + 60));
+                    ToSingle(buffer, pos), ToSingle(buffer, pos + 4), ToSingle(buffer, pos + 8), ToSingle(buffer, pos + 12),
+                    ToSingle(buffer, pos + 16), ToSingle(buffer, pos + 20), ToSingle(buffer, pos + 24), ToSingle(buffer, pos + 28),
+                    ToSingle(buffer, pos + 32), ToSingle(buffer, pos + 36), ToSingle(buffer, pos + 40), ToSingle(buffer, pos + 44),
+                    ToSingle(buffer, pos + 48), ToSingle(buffer, pos + 52), ToSingle(buffer, pos + 56), ToSingle(buffer, pos + 60));
         }
         #endregion
     }
 
     internal class UsualBinaryReader : BinaryReader {
-        public UsualBinaryReader([NotNull] string filename) : base(File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) { }
+        public UsualBinaryReader([NotNull] string filename) : base(File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) { }
 
         public UsualBinaryReader([NotNull] Stream input) : base(input) { }
 

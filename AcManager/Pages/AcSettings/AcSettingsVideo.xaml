@@ -321,6 +321,9 @@
             <Slider Minimum="1" Maximum="2.5" Value="{Binding Oculus.PixelPerDisplay}" TickFrequency="0.1" IsSnapToTickEnabled="True"
                 TickPlacement="BottomRight" />
           </DockPanel>
+          <CheckBox IsChecked="{Binding Oculus.MirrorTexture}">
+            <Label Content="Mirror texture" />
+          </CheckBox>
 
           <!-- System -->
           <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Video_SystemHeader}" />

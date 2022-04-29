@@ -2,9 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:g="clr-namespace:AcManager"
-    mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}" Background="Transparent">
+    xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}" Background="Transparent">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -41,11 +39,10 @@
           <TextBlock Text="Fixed setups:" Style="{StaticResource SettingsPanel.Heading2.First}" />
           <TextBlock Margin="20 0 0 0" Text="No fixed setups set" FontStyle="Italic"
               Visibility="{Binding SelectedObject.SetupItems.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter='0,inverse'}" />
-          <ListBox x:Name="SetupItems" DataContext="{Binding SelectedObject}" ItemsSource="{Binding SetupItems}" SelectedItem="{Binding DefaultSetupItem}"
-              mui:Draggable.Enabled="True" mui:ListBoxHelper.ProperMultiSelectionMode="True" Margin="20 0 0 8"
-              ItemContainerStyle="{StaticResource CheckBoxListBoxItem}" mui:Draggable.DestinationConverter="{Binding SetupsDraggableConverterInstance}"
-              SelectionChanged="FixedSetups_OnSelectionChanged" DataContextChanged="FixedSetups_OnDataContextChanged">
-            <ListBox.ItemTemplate>
+          <ItemsControl x:Name="SetupItems" DataContext="{Binding SelectedObject}" ItemsSource="{Binding SetupItems}" mui:Draggable.Enabled="True"
+              mui:ListBoxHelper.ProperMultiSelectionMode="True" Margin="20 0 0 8" Style="{StaticResource VirtualizingItemsControl}"
+              mui:Draggable.DestinationConverter="{Binding SetupsDraggableConverterInstance}">
+            <ItemsControl.ItemTemplate>
               <DataTemplate DataType="{x:Type t:ServerPresetObject+SetupItem}">
                 <!--<TextBlock Text="{Binding DisplayName}" Margin="2 -4 0 4" />-->
                 <Border Background="Transparent" ToolTip="{Binding Filename}">
@@ -54,10 +51,13 @@
                       <MenuItem Header="View in folder" Command="{Binding ViewInDirectoryCommand}" />
                       <MenuItem Header="Use as default" IsCheckable="True" IsChecked="{Binding IsDefault}" />
                       <Separator />
+                      <MenuItem Header="Test setup" Click="OnTestSetupClick" />
+                      <Separator />
                       <MenuItem Header="Delete setup" Command="{Binding DeleteCommand}" />
                     </ContextMenu>
                   </Border.ContextMenu>
                   <DockPanel Margin="0 0 4 2">
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsDefault}" Margin="0 0 8 0" />
                     <Button Margin="0 -2 0 0" Style="{StaticResource DeleteButton}" Command="{Binding DeleteCommand}"
                         Visibility="{Binding DeleteCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 2" />
@@ -68,8 +68,8 @@
                   </DockPanel>
                 </Border>
               </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
           <Button Command="{Binding AddSetupCommand}" Margin="0 0 0 8">
             <DockPanel IsHitTestVisible="False" Margin="0">
               <Path Data="{StaticResource AddIconData}" Width="10" Height="10"

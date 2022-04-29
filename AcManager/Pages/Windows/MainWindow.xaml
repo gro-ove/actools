@@ -556,8 +556,6 @@
       <mui:LinkGroup.Links>
         <mui:Link x:Name="GridFinderLink" DisplayName="Grid Finder" Source="/Pages/Drive/GridFinder.xaml" />
         <mui:Link x:Name="RsrLink" DisplayName="{x:Static g:AppStrings.Main_Rsr}" Source="/Pages/Drive/Rsr.xaml" />
-        <!--<mui:Link x:Name="SrsLink" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs.xaml" />-->
-        <!---->
         <mui:Link x:Name="Srs2Link" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs2.xaml" />
         <mui:Link x:Name="TrackTitanLink" DisplayName="Track Titan" Source="/Pages/Drive/TrackTitan.xaml" />
         <mui:Link x:Name="UnitedRacingDataLink" DisplayName="United Racing Data" Source="/Pages/Drive/UnitedRacingData.xaml" />
@@ -567,7 +565,11 @@
             <Path Width="8" Height="8" Stretch="Uniform" Data="{StaticResource GearIconData}" Fill="{DynamicResource WindowText}" />
           </mui:Link.Icon>
         </mui:Link>
-        <!--<mui:Link x:Name="ShortSurveyLink" DisplayName="Short survey" Source="/Pages/Drive/TempSurvey.xaml" />-->
+      </mui:LinkGroup.Links>
+    </mui:LinkGroup>
+    <mui:LinkGroup x:Name="RaceUGroup" GroupKey="drive" DisplayName="RaceU" IsShown="False">
+      <mui:LinkGroup.Links>
+        <mui:Link DisplayName="Main" Source="/Pages/Drive/RaceU.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
     <mui:LinkGroupFilterable x:Name="OnlineGroup" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Online}" AddAllLink="False"
@@ -578,11 +580,6 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Online_LAN}" Source="/Pages/Drive/Online.xaml?Filter=@lan&amp;Special=1" />
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
-    <mui:LinkGroup x:Name="RaceUGroup" GroupKey="drive" DisplayName="RaceU" IsShown="False">
-      <mui:LinkGroup.Links>
-        <mui:Link DisplayName="Main" Source="/Pages/Drive/RaceU.xaml" />
-      </mui:LinkGroup.Links>
-    </mui:LinkGroup>
 
     <!-- Lap times -->
     <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="{x:Static g:AppStrings.Main_RecentLapTimes}" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml"

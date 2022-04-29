@@ -230,6 +230,13 @@ namespace AcManager.Tools.Managers.Online {
             set => Apply(value, ref _time);
         }
 
+        private int _TimeSeconds;
+
+        public int TimeSeconds {
+            get => _TimeSeconds;
+            set => Apply(value, ref _TimeSeconds);
+        }
+
         private RaceMode _raceMode;
 
         public RaceMode RaceMode {

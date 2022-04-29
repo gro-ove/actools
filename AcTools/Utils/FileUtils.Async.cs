@@ -18,7 +18,7 @@ namespace AcTools.Utils {
         [ItemNotNull]
         public static async Task<string[]> ReadAllLinesAsync(string filename, CancellationToken cancellation = default) {
             var lines = new List<string>();
-            using (var sr = new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true), Encoding.UTF8)) {
+            using (var sr = new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, true), Encoding.UTF8)) {
                 string line;
                 while ((line = await sr.ReadLineAsync()) != null) {
                     if (cancellation.IsCancellationRequested) return new string[0];
@@ -31,7 +31,7 @@ namespace AcTools.Utils {
 
         [ItemNotNull]
         public static async Task<byte[]> ReadAllBytesAsync(string filename, CancellationToken cancellation = default) {
-            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true)) {
+            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, true)) {
                 var result = new byte[stream.Length];
                 await stream.ReadAsync(result, 0, (int)stream.Length, cancellation);
                 return result;

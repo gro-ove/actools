@@ -31,7 +31,7 @@ namespace AcManager.Tools.Helpers.Api {
         static CmApiProvider() {
             var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";
             UserAgent = $"ContentManager/{BuildInformation.AppVersion} ({windows})";
-            CommonUserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36";
+            CommonUserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36";
         }
         #endregion
 
@@ -126,6 +126,7 @@ namespace AcManager.Tools.Helpers.Api {
             }
 
             Logging.Write($"Cached {id} used");
+            file.LastWriteTime = DateTime.Now;
             JustLoadedStaticData.Add(id);
             return Tuple.Create(file.FullName, false);
         }

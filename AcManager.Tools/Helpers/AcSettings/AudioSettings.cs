@@ -6,6 +6,8 @@ using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class AudioSettings : IniPresetableSettings {
+        public static string DefaultDeviceName => "System Default";
+
         internal AudioSettings() : base("audio") { }
 
         private int _skidsEntryPoint;
@@ -113,7 +115,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         protected override void LoadFromIni() {
-            EndPointName = Ini["SETTINGS"].GetNonEmpty("DRIVER_NAME");
+            EndPointName = Ini["SETTINGS"].GetNonEmpty("DRIVER_NAME").Or(DefaultDeviceName);
 
             var levels = Ini["LEVELS"];
             LevelMaster = levels.GetDouble("MASTER", 1.0) * 100d;
@@ -137,7 +139,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         protected override void SetToIni(IniFile ini) {
-            ini["SETTINGS"].SetOrRemove("DRIVER_NAME", EndPointName);
+            ini["SETTINGS"].SetOrRemove("DRIVER_NAME", EndPointName == DefaultDeviceName ? null : EndPointName);
 
             var levels = ini["LEVELS"];
             levels.Set("MASTER", LevelMaster / 100d);

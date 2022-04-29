@@ -388,13 +388,25 @@ namespace AcManager.Tools.Helpers {
             private bool? _serverPresetsUpdateDataAutomatically;
 
             public bool ServerPresetsUpdateDataAutomatically {
-                get => _serverPresetsUpdateDataAutomatically ??
-                        (_serverPresetsUpdateDataAutomatically = ValuesStorage.Get("Settings.OnlineSettings.ServerPresetsUpdateDataAutomatically", true))
-                                .Value;
+                get => _serverPresetsUpdateDataAutomatically ?? (_serverPresetsUpdateDataAutomatically
+                                = ValuesStorage.Get("Settings.OnlineSettings.ServerPresetsUpdateDataAutomatically", true)).Value;
                 set {
                     if (Equals(value, _serverPresetsUpdateDataAutomatically)) return;
                     _serverPresetsUpdateDataAutomatically = value;
                     ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsUpdateDataAutomatically", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _ServerCopyConfigsToCfgFolder;
+
+            public bool ServerCopyConfigsToCfgFolder {
+                get => _ServerCopyConfigsToCfgFolder ?? (_ServerCopyConfigsToCfgFolder
+                        = ValuesStorage.Get("Settings.OnlineSettings.ServerCopyConfigsToCfgFolder", false)).Value;
+                set {
+                    if (Equals(value, _ServerCopyConfigsToCfgFolder)) return;
+                    _ServerCopyConfigsToCfgFolder = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerCopyConfigsToCfgFolder", value);
                     OnPropertyChanged();
                 }
             }

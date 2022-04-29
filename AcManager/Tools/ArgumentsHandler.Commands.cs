@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -11,6 +12,7 @@ using AcManager.Internal;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.ContentInstallation;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.TheSetupMarket;
 using AcManager.Tools.Managers;
@@ -22,7 +24,9 @@ using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
@@ -148,6 +152,11 @@ namespace AcManager.Tools {
 
             try {
                 switch (custom.Path.ToLowerInvariant()) {
+                    case "batch":
+                        var commands = Encoding.UTF8.GetString(custom.Params.Get(@"cmds").FromCutBase64() ?? new byte[0]);
+                        Logging.Debug("Batch command: " + commands);
+                        return (await commands.Split('\n').Select(ProcessUriRequest).WhenAll()).Max();
+
                     case "launch":
                         return ArgumentHandleResult.SuccessfulShow;
 
@@ -195,6 +204,12 @@ namespace AcManager.Tools {
 
                     case "cup/registry":
                         return await ProcessCupRegistry(custom.Params.Get(@"url"));
+
+                    case "live":
+                        return await ProcessLiveService(custom.Params.Get(@"url"), custom.Params.Get(@"name"), custom.Params.Get(@"color"));
+
+                    case "csp/install":
+                        return await ProcessCspInstall(custom.Params.Get(@"version"));
 
                     case "replay":
                         return await ProcessReplay(custom.Params.Get(@"url"), custom.Params.Get(@"uncompressed") == null);
@@ -295,6 +310,62 @@ namespace AcManager.Tools {
             }
 
             return ArgumentHandleResult.Failed;
+        }
+
+        private static async Task<ArgumentHandleResult> ProcessLiveService(string url, string name, string color) {
+            await Task.Delay(0);
+
+            if (SettingsHolder.Live.UserEntries.Any(x => x.Url == url)) {
+                Toast.Show("Nothing to import", "This CUP registry is already added");
+                return ArgumentHandleResult.Successful;
+            }
+
+            if (ModernDialog.ShowMessage(
+                    $"Do you want to add “{url}” as a new live service? When used, it would get access to your Steam ID and list of installed content.",
+                    "New live service", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                SettingsHolder.Live.UserEntries =
+                        SettingsHolder.Live.UserEntries.Append(new SettingsHolder.LiveSettings.LiveServiceEntry(url, name, color)).ToList();
+                Toast.Show("New live service", "New live service has been added");
+                return ArgumentHandleResult.Successful;
+            }
+
+            return ArgumentHandleResult.Failed;
+        }
+
+        private static async Task<ArgumentHandleResult> ProcessCspInstall(string versionString) {
+            using (var waiting = new WaitingDialog("Installing CSP…")) {
+                var versions = await PatchVersionInfo.GetPatchManifestAsync(null, waiting.CancellationToken);
+                if (waiting.CancellationToken.IsCancellationRequested) return ArgumentHandleResult.Failed;
+
+                PatchVersionInfo info;
+                if (versionString == @"latest") {
+                    info = versions.MaxEntry(x => x.Build);
+                } else if (versionString == @"recommended") {
+                    info = versions.Where(x => x.Tags?.Contains("recommended") == true).MaxEntry(x => x.Build);
+                } else {
+                    var version = versionString.As(0);
+                    if (version == 0) {
+                        throw new Exception($"Wrong parameter: version={versionString}, number expected");
+                    }
+                    info = versions.FirstOrDefault(x => x.Build == version);
+                }
+
+                if (info == null) {
+                    throw new Exception($"Wrong parameter: version={versionString}, no such version");
+                }
+
+                await PatchUpdater.Instance.InstallAsync(info, waiting.CancellationToken);
+
+                using (var model = PatchSettingsModel.Create()) {
+                    var item = model.Configs?
+                            .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.Sections.GetByIdOrDefault("BASIC")?
+                            .GetByIdOrDefault("ENABLED");
+                    if (item != null) {
+                        item.Value = @"1";
+                    }
+                }
+            }
+            return ArgumentHandleResult.Successful;
         }
 
         private static async Task<ArgumentHandleResult> ProcessReplay(string url, bool compressed) {

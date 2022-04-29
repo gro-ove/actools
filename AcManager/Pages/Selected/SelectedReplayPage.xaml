@@ -9,7 +9,6 @@
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
-      <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDrivePresets}" />
     </ResourceDictionary>
   </UserControl.Resources>
 
@@ -21,8 +20,17 @@
         <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
             Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
         <Separator />
-        <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" ButtonToolTip="Use car and track in a Quick Drive session (Ctrl+Alt+G)"
-            Command="{Binding DriveCommand}" PreviewMouseDown="OnDriveButtonMouseDown" Style="{StaticResource Go.ToolBarButtonWithComboBox}">
+        <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" Command="{Binding QuickDriveButton.DriveCommand}" PreviewMouseDown="OnDriveButtonMouseDown"
+            Style="{StaticResource Go.ToolBarButtonWithComboBox}">
+          <mui:ButtonWithComboBox.Resources>
+            <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDriveButton.Presets}" />
+          </mui:ButtonWithComboBox.Resources>
+          <mui:ButtonWithComboBox.ButtonToolTip>
+            <StackPanel>
+              <TextBlock Text="{x:Static g:AppStrings.Toolbar_QuickDrive_FirstLine}" />
+              <TextBlock Text="{x:Static g:AppStrings.Toolbar_QuickDrive_SecondLine}" />
+            </StackPanel>
+          </mui:ButtonWithComboBox.ButtonToolTip>
           <mui:ButtonWithComboBox.MenuItems>
             <CompositeCollection>
               <CollectionContainer Collection="{Binding Source={StaticResource QuickDrivePresetsItems}}" />

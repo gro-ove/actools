@@ -214,6 +214,7 @@ namespace AcManager.Tools.Managers.Online {
 
             var seconds = (int)Game.ConditionProperties.GetSeconds(information.Time);
             Time = seconds.ToDisplayTime();
+            TimeSeconds = seconds;
             SessionEnd = DateTime.Now + TimeSpan.FromSeconds(information.TimeLeft - Math.Round(information.Timestamp / 1000d));
             RaceMode = information.Timed ? information.Extra ? RaceMode.TimedExtra : RaceMode.Timed : RaceMode.Laps;
 

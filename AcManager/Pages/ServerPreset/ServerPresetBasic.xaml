@@ -154,6 +154,20 @@
           <CheckBox IsChecked="{Binding SelectedObject.CspRequired}" ToolTip="If CSP is not installed, track would be shown as not available">
             <Label Content="Require CSP to join" />
           </CheckBox>
+          <CheckBox IsChecked="{Binding SelectedObject.CspExtendedCarsPhysics}" ToolTip="Available starting with build 2000"
+              ToolTipService.ShowOnDisabled="True"
+              IsEnabled="{Binding SelectedObject.RequiredCspVersion, Converter={StaticResource MoreConverter}, ConverterParameter=1999}">
+            <Label Content="Use extended physics for cars" />
+          </CheckBox>
+          <CheckBox IsChecked="{Binding SelectedObject.CspExtendedTrackPhysics}" ToolTip="Available starting with build 2000"
+              ToolTipService.ShowOnDisabled="True"
+              IsEnabled="{Binding SelectedObject.RequiredCspVersion, Converter={StaticResource MoreConverter}, ConverterParameter=1999}">
+            <Label Content="Use extended physics for tracks" />
+          </CheckBox>
+          <CheckBox IsChecked="{Binding SelectedObject.CspHidePitCrew}" ToolTip="Available starting with build 2000" ToolTipService.ShowOnDisabled="True"
+              IsEnabled="{Binding SelectedObject.RequiredCspVersion, Converter={StaticResource MoreConverter}, ConverterParameter=1999}">
+            <Label Content="Hide pit crew (speeds up loading)" />
+          </CheckBox>
           <DockPanel Margin="0 0 0 8"
               ToolTip="{Binding Source={x:Static t:PatchHelper.MinimumTestOnlineVersion}, StringFormat='{}Version ID is a single number, minimum version is {0} (previous builds do not support this filtering system)'}">
             <Label Content="Minimum version:" />
@@ -164,6 +178,8 @@
                 Minimum="{Binding Source={x:Static t:PatchHelper.MinimumTestOnlineVersion}}" Maximum="65535" />
           </DockPanel>
           <Button Click="CspExtendedConfigClick" Content="Extra options" Margin="0 0 0 8"
+              IsEnabled="{Binding SelectedObject.RequiredCspVersion, Converter={StaticResource MoreConverter}, ConverterParameter=1265}"
+              ToolTipService.ShowOnDisabled="True"
               ToolTip="Here you can define some extra options for Custom Shaders Patch, available starting with build 1266 (v0.1.69)" />
         </StackPanel>
       </Grid>

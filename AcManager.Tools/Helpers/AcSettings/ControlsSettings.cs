@@ -301,6 +301,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 entry.PropertyChanged += EntryPropertyChanged;
             }
 
+            foreach (var entry in CustomButtonEntries) {
+                if (entry.CanBeHeld) {
+                    entry.PropertyChanged += EntryPropertyChanged;
+                }
+            }
+
             UpdateWheelHShifterDevice();
         }
 
@@ -1551,6 +1557,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 entry.Load(Ini, devices);
             }
 
+            foreach (var entry in CustomButtonEntries) {
+                if (entry.CanBeHeld) {
+                    entry.HoldMode = Ini[entry.Id].GetBool("HOLD_MODE", false);
+                }
+            }
+
             LoadFfbFromIni(Ini);
 
             var section = Ini["KEYBOARD"];
@@ -1655,6 +1667,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             foreach (var entry in Entries) {
                 entry.Save(Ini);
+            }
+
+            foreach (var entry in CustomButtonEntries) {
+                if (entry.CanBeHeld) {
+                    Ini[entry.Id].Set("HOLD_MODE", entry.HoldMode);
+                }
             }
 
             SaveFfbToIni(Ini);

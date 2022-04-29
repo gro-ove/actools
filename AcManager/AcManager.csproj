@@ -501,6 +501,9 @@
     <Compile Include="Pages\Drive\QuickDrive_Drag.xaml.cs">
       <DependentUpon>QuickDrive_Drag.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\UserLiveService.xaml.cs">
+      <DependentUpon>UserLiveService.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\WorldSimSeries.xaml.cs">
       <DependentUpon>WorldSimSeries.xaml</DependentUpon>
     </Compile>
@@ -867,6 +870,7 @@
     <Compile Include="Tools\LiveryIconEditor.cs" />
     <Compile Include="Tools\NeutralColorGradingLut.cs" />
     <Compile Include="Tools\KeyboardListener.cs" />
+    <Compile Include="Tools\QuickDriveButtonModel.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Pages\Selected\ISelectedAcObjectViewModel.cs" />
     <Compile Include="Pages\Selected\SelectedAcJsonObjectPage.cs" />
@@ -1282,6 +1286,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Drive\UserLiveService.xaml" />
     <Page Include="Pages\Drive\WorldSimSeries.xaml" />
     <Page Include="Pages\Lists\GenericModsListPage.xaml">
       <Generator>MSBuild:Compile</Generator>

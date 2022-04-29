@@ -7,7 +7,7 @@ namespace AcTools.AcdFile {
         [NotNull]
         private readonly IAcdEncryption _enc;
 
-        public AcdReader(string filename) : this(filename, File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {}
+        public AcdReader(string filename) : this(filename, File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {}
 
         public AcdReader(string filename, Stream input) : base(input) {
             _enc = AcdEncryption.FromAcdFilename(filename);

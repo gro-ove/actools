@@ -836,6 +836,15 @@ namespace AcManager {
                         f.Delete();
                     }
                 });
+
+                await Task.Delay(5000);
+                await Task.Run(() => {
+                    foreach (var f in new DirectoryInfo(FilesStorage.Instance.GetTemporaryDirectory()).GetFiles("*", SearchOption.AllDirectories)
+                            .Where(x => x.LastAccessTime < DateTime.Now - TimeSpan.FromDays(10))) {
+                        Logging.Debug($"Delete old temporary file: {f.FullName}");
+                        f.Delete();
+                    }
+                });
             } catch (Exception e) {
                 Logging.Error(e);
             }

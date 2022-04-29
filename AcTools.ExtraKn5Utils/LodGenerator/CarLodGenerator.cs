@@ -273,8 +273,31 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
                     }
 
                     var fbxVertices = geometry.Item1.GetRelative("Vertices").Value.GetAsFloatArray();
-                    var fbxNormals = geometry.Item1.GetRelative("LayerElementNormal").GetRelative("Normals").Value.GetAsFloatArray();
-                    var fbxUvs = geometry.Item1.GetRelative("LayerElementUV").GetRelative("UV").Value.GetAsFloatArray();
+
+                    var layerNormal = geometry.Item1.GetRelative("LayerElementNormal");
+                    var fbxNormals = layerNormal.GetRelative("Normals").Value.GetAsFloatArray();
+                    var fbxNormalsMappingType = layerNormal.GetRelative("MappingInformationType").Value.GetAsString();
+                    var fbxNormalsReferenceType = layerNormal.GetRelative("ReferenceInformationType").Value.GetAsString();
+                    var fbxNormalsIndex = fbxNormalsReferenceType == "IndexToDirect" ? layerNormal.GetRelative("NormalsIndex").Value.GetAsIntArray() : null;
+
+                    Vec3 GetNormal(int i, int j) {
+                        if (fbxNormalsMappingType == "ByVertex") i = j;
+                        if (fbxNormalsIndex != null) i = fbxNormalsIndex[i];
+                        return new Vec3(fbxNormals[i * 3], fbxNormals[i * 3 + 1], fbxNormals[i * 3 + 2]);
+                    }
+
+                    var layerUV = geometry.Item1.GetRelative("LayerElementUV");
+                    var fbxUvs = layerUV.GetRelative("UV").Value.GetAsFloatArray();
+                    var fbxUvsMappingType = layerUV.GetRelative("MappingInformationType").Value.GetAsString();
+                    var fbxUvsReferenceType = layerUV.GetRelative("ReferenceInformationType").Value.GetAsString();
+                    var fbxUvIndex = fbxUvsReferenceType == "IndexToDirect" ? layerUV.GetRelative("UVIndex").Value.GetAsIntArray() : null;
+
+                    Vec2 GetUV(int i, int j) {
+                        if (fbxUvsMappingType == "ByVertex") i = j;
+                        if (fbxUvIndex != null) i = fbxUvIndex[i];
+                        return new Vec2(fbxUvs[i * 2], 1f - fbxUvs[i * 2 + 1]);
+                    }
+
                     var offset = MoveAsideDistance(geometry.Item2, stage);
                     var scale = (float)(1d / geometry.Item2);
 
@@ -296,10 +319,12 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
 
                         var index = fbxIndices[i] < 0 ? -fbxIndices[i] - 1 : fbxIndices[i];
                         builder.AddVertex(new Kn5Node.Vertex {
-                            Position = new Vec3((fbxVertices[index * 3] - offset.X) * scale, (fbxVertices[index * 3 + 1] - offset.Y) * scale,
+                            Position = new Vec3(
+                                    (fbxVertices[index * 3] - offset.X) * scale,
+                                    (fbxVertices[index * 3 + 1] - offset.Y) * scale,
                                     (fbxVertices[index * 3 + 2] - offset.Z) * scale),
-                            Normal = new Vec3(fbxNormals[i * 3], fbxNormals[i * 3 + 1], fbxNormals[i * 3 + 2]),
-                            Tex = new Vec2(fbxUvs[i * 2], 1f - fbxUvs[i * 2 + 1])
+                            Normal = GetNormal(i, index),
+                            Tex = GetUV(i, index)
                         });
                     }
                 }

@@ -90,6 +90,7 @@
     <Compile Include="Implementations\Options\LogitechOptions.cs" />
     <Compile Include="Implementations\Options\WheelAnglesSettingEntry.cs" />
     <Compile Include="Implementations\SimuCube.cs" />
+    <Compile Include="Implementations\ThrustmasterAdvancedModeRacer.cs" />
     <Compile Include="Implementations\ThrustmasterF1.cs" />
     <Compile Include="Implementations\ThrustmasterFerrariF1Advanced2.cs" />
     <Compile Include="Implementations\ThrustmasterFerrariF1Advanced1.cs" />

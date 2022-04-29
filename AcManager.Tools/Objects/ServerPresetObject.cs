@@ -126,6 +126,8 @@ namespace AcManager.Tools.Objects {
                     .ToString().GetChecksum();
         }
 
+        private const string EncodeSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+
         protected override void LoadData(IniFile ini) {
             foreach (var session in Sessions) {
                 session.Load(ini);
@@ -163,6 +165,13 @@ namespace AcManager.Tools.Objects {
             if (trackIdPieces.Length == 2) {
                 CspRequired = true;
                 RequiredCspVersion = trackIdPieces[0].As<int?>();
+            } else if (trackIdPieces.Length == 3) {
+                CspRequired = true;
+                RequiredCspVersion = trackIdPieces[0].As<int?>();
+                var value = EncodeSymbols.IndexOf(trackIdPieces[1].FirstOrDefault());
+                CspExtendedCarsPhysics = (value & 1) == 1;
+                CspExtendedTrackPhysics = (value & 2) == 2;
+                CspHidePitCrew = (value & 4) == 4;
             } else {
                 CspRequired = false;
                 RequiredCspVersion = null;
@@ -251,7 +260,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private void LoadEntryListData(IniFile ini) {
-            DriverEntries = new ChangeableObservableCollection<ServerPresetDriverEntry>(ini.GetSections("CAR").Select(x => new ServerPresetDriverEntry(x)));
+            DriverEntries = new ChangeableObservableCollection<ServerPresetDriverEntry>(ini.GetSections("CAR")
+                    .Select(x => new ServerPresetDriverEntry(x)));
         }
 
         private void ResetEntryListData() {
@@ -283,8 +293,13 @@ namespace AcManager.Tools.Objects {
             section.Set("CLIENT_SEND_INTERVAL_HZ", SendIntervalHz);
             section.Set("NUM_THREADS", Threads);
 
+            var extraTweaks = "";
+            if ((CspExtendedCarsPhysics || CspExtendedTrackPhysics || CspHidePitCrew) && RequiredCspVersion >= 2000) {
+                extraTweaks = $@"{EncodeSymbols[(CspExtendedCarsPhysics ? 1 : 0) | (CspExtendedTrackPhysics ? 2 : 0) | (CspHidePitCrew ? 4 : 0)]}/../";
+            }
+
             section.Set("TRACK",
-                    (CspRequired ? (RequiredCspVersion == PatchHelper.NonExistentVersion ? "" : @"csp/") + (RequiredCspVersion ?? 0) + @"/../" : "") + TrackId);
+                    (CspRequired ? (RequiredCspVersion == PatchHelper.NonExistentVersion ? "" : @"csp/") + (RequiredCspVersion ?? 0) + @"/../" + extraTweaks : "") + TrackId);
 
             section.Set("CONFIG_TRACK", TrackLayoutId ?? "");
             section.Set("CARS", CarIds, ';');

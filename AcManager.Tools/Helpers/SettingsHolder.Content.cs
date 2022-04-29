@@ -13,6 +13,7 @@ namespace AcManager.Tools.Helpers {
     public static partial class SettingsHolder {
         public class ContentSettings : NotifyPropertyChanged {
             internal ContentSettings() { }
+            
             private string _cupRegistries;
 
             public string CupRegistries {

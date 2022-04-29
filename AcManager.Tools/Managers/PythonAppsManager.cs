@@ -12,7 +12,7 @@ namespace AcManager.Tools.Managers {
         public static PythonAppsManager Instance => _instance ?? (_instance = new PythonAppsManager());
 
         private PythonAppsManager() {
-            CupClient.Instance?.Register(this, CupContentType.PythonApp);
+            CupClient.Instance?.Register(this, CupContentType.App);
         }
 
         protected override bool Filter(string id, string filename) {

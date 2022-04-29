@@ -83,7 +83,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Before loading cached entity, check if according file exists and was not updated.
         /// </summary>
         // public static bool OptionEnsureCacheIsFresh = true;
-                public static bool OptionEnsureCacheIsFresh = false;
+        public static bool OptionEnsureCacheIsFresh = false;
 
         /// <summary>
         /// Do not set it to zero if OptionReadFileSync is true and OptionDecodeImageSync is true!
@@ -541,6 +541,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             } catch (WebException) { }
 
             if (cacheFile == null) return Image.Empty;
+            cacheFile.LastWriteTime = DateTime.Now; // this way, checking with web request will be skipped for the next day
             var cacheBytes = await ReadBytesAsync(cache);
             return cacheBytes == null ? Image.Empty : LoadBitmapSourceFromBytes(cacheBytes, decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
         }
@@ -644,13 +645,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                 // Regular loading
                 var tcs = new TaskCompletionSource<byte[]>();
+
+                // We need it this way: file opening is done in thread pool, but subsequent reading uses async I/O API
+                // ReSharper disable once AsyncVoidLambda
                 ThreadPool.Run(async () => {
                     if (origin != null && origin.Filename != filename) {
                         tcs.SetResult(null);
                         return;
                     }
                     try {
-                        using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true)) {
+                        using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, true)) {
                             if (stream.Length > 40 * 1024 * 1024) {
                                 throw new Exception($"Image “{filename}” is way too big to display: {stream.Length.ToReadableSize()}");
                             }

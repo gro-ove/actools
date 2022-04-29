@@ -64,6 +64,10 @@
           </mui:BetterComboBox>
         </DockPanel>
 
+        <CheckBox IsChecked="{Binding Oculus.AutoselectRiftAudioDisplay}">
+          <Label Content="Automatically select Oculus audio device" />
+        </CheckBox>
+
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Audio_LevelsHeader}" />
         <DockPanel>
           <mui:ValueLabel Value="{Binding Audio.LevelMaster, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"

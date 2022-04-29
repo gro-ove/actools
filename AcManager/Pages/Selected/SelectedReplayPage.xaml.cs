@@ -17,7 +17,6 @@ using AcManager.Tools;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -30,7 +29,6 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
-using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using SharpCompress.Common;
 using SharpCompress.Writers;
@@ -73,7 +71,7 @@ namespace AcManager.Pages.Selected {
 
                     using (var memory = new MemoryStream()) {
                         await Task.Run(() => {
-                            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
                                 using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
                                     var readMe = string.Format(AppStrings.Replay_SharedReadMe, GetDescription(car, track),
                                             Path.GetFileName(filename));
@@ -126,6 +124,8 @@ namespace AcManager.Pages.Selected {
         }
 
         public class ViewModel : SelectedAcObjectViewModel<ReplayObject> {
+            public QuickDriveButtonModel QuickDriveButton { get; }
+
             public ViewModel([NotNull] ReplayObject acObject) : base(acObject) {
                 UpdateAlreadyShared();
 
@@ -140,6 +140,9 @@ namespace AcManager.Pages.Selected {
                                 ActualValue = Time
                             };
                 }
+
+                QuickDriveButton = new QuickDriveButtonModel((setupRace, preset)
+                        => QuickDrive.Activate(setupRace, Car, CarSkin?.Id, track: Track, presetFilename: preset));
             }
 
             public void UpdateAlreadyShared() {
@@ -244,50 +247,16 @@ namespace AcManager.Pages.Selected {
                 SelectedObject.EditableCategory = FileUtils.EnsureFileNameIsValid(newCategory, false);
             }));
 
-            #region Presets
             public override void Unload() {
                 base.Unload();
-                _helper.Dispose();
+                QuickDriveButton.Dispose();
             }
-
-            public HierarchicalItemsView QuickDrivePresets {
-                get => _quickDrivePresets;
-                set => Apply(value, ref _quickDrivePresets);
-            }
-
-            private HierarchicalItemsView _quickDrivePresets;
-            private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
-
-            public void InitializeQuickDrivePresets() {
-                if (QuickDrivePresets == null) {
-                    QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue),
-                            p => { QuickDrive.RunAsync(Car, CarSkin?.Id, track: Track, presetFilename: p.VirtualFilename).Ignore(); });
-                }
-            }
-            #endregion
-
-            private AsyncCommand _driveCommand;
-
-            public AsyncCommand DriveCommand => _driveCommand ?? (_driveCommand = new AsyncCommand(async () => {
-                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
-                        !await QuickDrive.RunAsync(Car, CarSkin?.Id, track: Track)) {
-                    DriveOptionsCommand.Execute();
-                }
-            }));
-
-            private DelegateCommand _driveOptionsCommand;
-
-            public DelegateCommand DriveOptionsCommand
-                => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => { QuickDrive.Show(Car, CarSkin?.Id, track: Track); }));
 
             private DelegateCommand _clearCategoryCommand;
 
-            public DelegateCommand ClearCategoryCommand
-                =>
-                        _clearCategoryCommand
-                                ?? (_clearCategoryCommand =
-                                        new DelegateCommand(() => { SelectedObject.EditableCategory = null; }, () => SelectedObject.EditableCategory != null))
-                                        .ListenOnWeak(SelectedObject, nameof(SelectedObject.EditableCategory));
+            public DelegateCommand ClearCategoryCommand => _clearCategoryCommand ?? (_clearCategoryCommand =
+                    new DelegateCommand(() => { SelectedObject.EditableCategory = null; }, () => SelectedObject.EditableCategory != null))
+                    .ListenOnWeak(SelectedObject, nameof(SelectedObject.EditableCategory));
 
             private AsyncCommand _keepReplayCommand;
 
@@ -503,13 +472,12 @@ namespace AcManager.Pages.Selected {
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.PlayCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
-                new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Alt)),
-                new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift)),
             });
+            InputBindings.AddRange(_model.QuickDriveButton.GetInputBindingCommands());
         }
 
         private void OnDriveButtonMouseDown(object sender, MouseButtonEventArgs e) {
-            _model.InitializeQuickDrivePresets();
+            _model.QuickDriveButton.Initialize();
         }
 
         private void OnCarPreviewClick(object sender, MouseButtonEventArgs e) {

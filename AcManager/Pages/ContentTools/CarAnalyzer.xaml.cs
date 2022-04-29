@@ -501,59 +501,65 @@ All found similarities:
                             return;
                         }
 
-                        var kn5 = await Task.Run(() => Kn5.FromFile(kn5Filename));
+                        try {
+                            var kn5 = await Task.Run(() => Kn5.FromFile(kn5Filename));
 
-                        // triangles count
-                        var trisCount = kn5.RootNode.TotalTrianglesCount;
+                            // triangles count
+                            var trisCount = kn5.RootNode.TotalTrianglesCount;
 
-                        {
-                            var trisRate = trisCount < 160e3 ? 5.5 :
-                                    (5d - (trisCount - 350e3) / 100e3).Clamp(1d, 5d).Round(0.5);
-                            result.Add(new RatingEntry($"{trisCount / 1000d:F0}K triangles in LOD A", "Recommended amount: 150K–350K.", trisRate));
-                        }
+                            {
+                                var trisRate = trisCount < 160e3 ? 5.5 :
+                                        (5d - (trisCount - 350e3) / 100e3).Clamp(1d, 5d).Round(0.5);
+                                result.Add(new RatingEntry($"{trisCount / 1000d:F0}K triangles in LOD A", "Recommended amount: 150K–350K.", trisRate));
+                            }
 
-                        // COCKPIT_HR
-                        var cockpitHr = kn5.FirstByName("COCKPIT_HR");
-                        if (cockpitHr == null) {
-                            result.Add(new RatingEntry("COCKPIT_HR is missing", "CSP uses it to apply certain effects to interior.", 1d));
-                        } else if (trisCount > 100e3 && cockpitHr.TotalTrianglesCount < 5000) {
-                            result.Add(new RatingEntry("COCKPIT_HR is suspiciously low on triangles", "CSP uses it to apply certain effects to interior.", 3d));
-                        } else {
-                            result.Add(new RatingEntry("COCKPIT_HR is present", "CSP uses it to apply certain effects to interior.", 5.5));
-                        }
+                            // COCKPIT_HR
+                            var cockpitHr = kn5.FirstByName("COCKPIT_HR");
+                            if (cockpitHr == null) {
+                                result.Add(new RatingEntry("COCKPIT_HR is missing", "CSP uses it to apply certain effects to interior.", 1d));
+                            } else if (trisCount > 100e3 && cockpitHr.TotalTrianglesCount < 5000) {
+                                result.Add(new RatingEntry("COCKPIT_HR is suspiciously low on triangles", "CSP uses it to apply certain effects to interior.",
+                                        3d));
+                            } else {
+                                result.Add(new RatingEntry("COCKPIT_HR is present", "CSP uses it to apply certain effects to interior.", 5.5));
+                            }
 
-                        // LODs
-                        if (trisCount > 100e3) {
-                            result.AddRange(await AnalyzeLods(Car, data, kn5, trisCount));
-                        }
+                            // LODs
+                            if (trisCount > 100e3) {
+                                result.AddRange(await AnalyzeLods(Car, data, kn5, trisCount));
+                            }
 
-                        // KN5 textures
-                        var wrongFormat = kn5.TexturesData.Any(x => x.Value.Length > 320e3 &&
-                                Regex.IsMatch(x.Key, @"\.(?:jpe?g|png|bmp|gif)$", RegexOptions.IgnoreCase));
-                        var texturesWeight = kn5.TexturesData.Values.Sum(x => x.Length);
+                            // KN5 textures
+                            var wrongFormat = kn5.TexturesData.Any(x => x.Value.Length > 320e3 &&
+                                    Regex.IsMatch(x.Key, @"\.(?:jpe?g|png|bmp|gif)$", RegexOptions.IgnoreCase));
+                            var texturesWeight = kn5.TexturesData.Values.Sum(x => x.Length);
 
-                        {
-                            var texturesRate = texturesWeight < 30e6 ? 5.5 :
-                                    ((5d - (texturesWeight - 50e6) / 20e6) * (wrongFormat ? 0.5 : 1d)).Clamp(1d, 5d).Round(0.5);
-                            result.Add(new RatingEntry(
-                                    wrongFormat ?
-                                            $"{texturesWeight / 1e6:F0} MB of textures, probably not properly compressed" :
-                                            $"{texturesWeight / 1e6:F0} MB of textures, properly compressed",
-                                    wrongFormat
-                                            ? "Recommended amount: 20–50 MB. As for format, for anything big, please, use only DDS."
-                                            : "Recommended amount: 20–50 MB.",
-                                    texturesRate));
-                        }
+                            {
+                                var texturesRate = texturesWeight < 30e6 ? 5.5 :
+                                        ((5d - (texturesWeight - 50e6) / 20e6) * (wrongFormat ? 0.5 : 1d)).Clamp(1d, 5d).Round(0.5);
+                                result.Add(new RatingEntry(
+                                        wrongFormat ?
+                                                $"{texturesWeight / 1e6:F0} MB of textures, probably not properly compressed" :
+                                                $"{texturesWeight / 1e6:F0} MB of textures, properly compressed",
+                                        wrongFormat
+                                                ? "Recommended amount: 20–50 MB. As for format, for anything big, please, use only DDS."
+                                                : "Recommended amount: 20–50 MB.",
+                                        texturesRate));
+                            }
 
-                        // skins textures
-                        var skinSize = await FindAverageLargeSkinSize(Car, kn5);
-                        {
-                            var skinSizeRate = skinSize < 2e6 ? 5.5 :
-                                    (5d - (skinSize - 20e6) / 20e6).Clamp(1d, 5d).Round(0.5);
-                            result.Add(new RatingEntry(
-                                    $"Avg. skin size: {skinSize / 1e6:F0} MB",
-                                    "Recommended size: up to 20 MB.",
-                                    skinSizeRate));
+                            // skins textures
+                            var skinSize = await FindAverageLargeSkinSize(Car, kn5);
+                            {
+                                var skinSizeRate = skinSize < 2e6 ? 5.5 :
+                                        (5d - (skinSize - 20e6) / 20e6).Clamp(1d, 5d).Round(0.5);
+                                result.Add(new RatingEntry(
+                                        $"Avg. skin size: {skinSize / 1e6:F0} MB",
+                                        "Recommended size: up to 20 MB.",
+                                        skinSizeRate));
+                            }
+                        } catch (Exception e) {
+                            result.Add(new RatingEntry("Failed to read car model",
+                                    "It might be due to encryption. If possible, consider not using it.", 3.5));
                         }
 
                         Ratings = result;

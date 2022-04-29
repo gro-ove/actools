@@ -163,14 +163,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnWebBlockLoaded(object sender, RoutedEventArgs e) {
-            var browser = (WebBlock)sender;
-            if (_loginToken != null) {
-                browser.Tabs.Clear();
-                browser.OpenNewTab($@"https://paddock.worldsimseries.com/login-cm?token={_loginToken}");
-                _loginToken = null;
-            }
-
-            browser.SetJsBridge<WorldSimSeriesApiBridge>();
+            ((WebBlock)sender).SetJsBridge<WorldSimSeriesApiBridge>();
         }
     }
 }

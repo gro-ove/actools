@@ -143,33 +143,34 @@ namespace FirstFloor.ModernUI.Helpers {
             return encoded?.Split('\n').Where(x => !string.IsNullOrEmpty(x)).Select(Decode) ?? new string[0];
         }
 
-        public static string Encode([NotNull] string s) {
+        public static void EncodeTo([NotNull] StringBuilder dst, [NotNull] string s) {
             if (s == null) throw new ArgumentNullException(nameof(s));
-            var result = new StringBuilder(s.Length + 5);
-            foreach (var c in s) {
+            for (var i = 0; i < s.Length; i++) {
+                var c = s[i];
                 switch (c) {
                     case '\\':
-                        result.Append(@"\\");
+                        dst.Append(@"\\");
                         break;
-
                     case '\n':
-                        result.Append(@"\n");
+                        dst.Append(@"\n");
                         break;
-
                     case '\t':
-                        result.Append(@"\t");
+                        dst.Append(@"\t");
                         break;
-
                     case '\b':
                     case '\r':
                         break;
-
                     default:
-                        result.Append(c);
+                        dst.Append(c);
                         break;
                 }
             }
+        }
 
+        public static string Encode([NotNull] string s) {
+            if (s == null) throw new ArgumentNullException(nameof(s));
+            var result = new StringBuilder(s.Length + 5);
+            EncodeTo(result, s);
             return result.ToString();
         }
 
@@ -297,9 +298,18 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public string GetData() {
             lock (_storage) {
-                return "version: " + ActualVersion + "\n" + string.Join("\n", from x in _storage
-                    where x.Key != null && x.Value != null
-                    select Encode(x.Key) + '\t' + Encode(x.Value));
+                var ret = new StringBuilder();
+                ret.Append("version: ");
+                ret.Append(ActualVersion);
+                foreach (var p in _storage) {
+                    if (p.Key != null && p.Value != null) {
+                        ret.Append('\n');
+                        EncodeTo(ret, p.Key);
+                        ret.Append('\t');
+                        EncodeTo(ret, p.Value);
+                    }
+                }
+                return ret.ToString();
             }
         }
 
@@ -337,7 +347,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 if (_disableCompression) {
                     File.WriteAllBytes(newFilename, bytes);
                 } else {
-                    using (var output = new FileStream(newFilename, FileMode.Create, FileAccess.Write, FileShare.Read)) {
+                    using (var output = new FileStream(newFilename, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)) {
                         if (_useDeflate) {
                             output.WriteByte(DeflateFlag);
                             using (var gzip = new DeflateStream(output, CompressionLevel.Fastest)) {

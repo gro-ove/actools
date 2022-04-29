@@ -35,13 +35,20 @@ namespace AcManager.Tools.Objects {
                 set => Apply(value, ref _isValidCar);
             }
 
+            private bool _isDefault;
+
+            public bool IsDefault {
+                get => _isDefault;
+                set => Apply(value, ref _isDefault);
+            }
+
             private SetupItem([NotNull] string filename, [NotNull] string carId, bool isDefault) {
                 Filename = filename ?? throw new ArgumentNullException(nameof(filename));
                 CarId = carId;
                 IsDefault = isDefault;
 
                 try {
-                    DisplayName = Path.GetFileNameWithoutExtension(filename);
+                    DisplayName = Path.GetFileName(filename);
                 } catch (Exception e) {
                     Logging.Error(e);
                     DisplayName = filename;
@@ -60,13 +67,6 @@ namespace AcManager.Tools.Objects {
 
             public string DisplayName { get; }
 
-            private bool _isDefault;
-
-            public bool IsDefault {
-                get => _isDefault;
-                set => Apply(value, ref _isDefault);
-            }
-
             private bool _isDeleted;
 
             public bool IsDeleted {
@@ -76,14 +76,13 @@ namespace AcManager.Tools.Objects {
 
             private DelegateCommand _viewInDirectoryCommand;
 
-            public DelegateCommand ViewInDirectoryCommand
-                => _viewInDirectoryCommand ?? (_viewInDirectoryCommand = new DelegateCommand(() => WindowsHelper.ViewFile(Filename)));
+            public DelegateCommand ViewInDirectoryCommand => _viewInDirectoryCommand ?? (_viewInDirectoryCommand
+                        = new DelegateCommand(() => WindowsHelper.ViewFile(Filename)));
 
             private DelegateCommand _deleteCommand;
 
-            public DelegateCommand DeleteCommand
-                => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => IsDeleted = true,
-                        () => !IsDeleted)).ListenOnWeak(this, nameof(IsDeleted));
+            public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand
+                        = new DelegateCommand(() => IsDeleted = true, () => !IsDeleted)).ListenOnWeak(this, nameof(IsDeleted));
         }
 
         private class SetupsDraggableConverter : IDraggableDestinationConverter  {
@@ -105,23 +104,6 @@ namespace AcManager.Tools.Objects {
 
         public ChangeableObservableCollection<SetupItem> SetupItems { get; } = new ChangeableObservableCollection<SetupItem>();
 
-        private SetupItem _defaultSetupItem;
-
-        public SetupItem DefaultSetupItem {
-            get => _defaultSetupItem;
-            set {
-                var oldValue = _defaultSetupItem;
-                if (Apply(value, ref _defaultSetupItem)) {
-                    if (oldValue != null) oldValue.IsDefault = false;
-                    if (value != null) value.IsDefault = true;
-
-                    if (Loaded) {
-                        Changed = true;
-                    }
-                }
-            }
-        }
-
         private void InitSetupsItems() {
             SetupItems.ItemPropertyChanged += OnSetupItemPropertyChanged;
             SetupItems.CollectionChanged += OnSetupItemsCollectionChanged;
@@ -133,19 +115,21 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private void OnSetupItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-            if (!SetupItems.Contains(DefaultSetupItem)) DefaultSetupItem = null;
-            if (e.Action == NotifyCollectionChangedAction.Reset || e.Action == NotifyCollectionChangedAction.Add) {
-                var defaultFound = false;
-                foreach (var setupItem in SetupItems) {
-                    if (!setupItem.IsDefault) continue;
-                    if (defaultFound) {
-                        setupItem.IsDefault = false;
-                    } else {
-                        DefaultSetupItem = setupItem;
-                        defaultFound = true;
+        private void SetDefaultSetupItems(SetupItem keepInCurrentState = null) {
+            foreach (var group in SetupItems.GroupBy(x => x.CarId)) {
+                var seenDefault = group.Key == keepInCurrentState?.CarId;
+                foreach (var item in group) {
+                    if (item.IsDefault && item != keepInCurrentState) {
+                        if (seenDefault) item.IsDefault = false;
+                        else seenDefault = true;
                     }
                 }
+            }
+        }
+
+        private void OnSetupItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            if (e.Action == NotifyCollectionChangedAction.Reset || e.Action == NotifyCollectionChangedAction.Add) {
+                SetDefaultSetupItems(e.NewItems?.OfType<SetupItem>().FirstOrDefault());
             }
 
             if (Loaded) {
@@ -153,6 +137,11 @@ namespace AcManager.Tools.Objects {
             }
 
             RefreshSetupCarsValidity();
+            if (Loaded && DriverEntries != null) {
+                foreach (var entry in DriverEntries) {
+                    entry.RefreshFilteredSetupList();
+                }
+            }
         }
 
         private void OnSetupItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -160,13 +149,9 @@ namespace AcManager.Tools.Objects {
             if (e.PropertyName == nameof(item.IsDeleted) && item.IsDeleted) {
                 SetupItems.Remove(item);
             } else if (e.PropertyName == nameof(item.IsDefault) && item.IsDefault) {
-                foreach (var setupItem in SetupItems) {
-                    if (setupItem != item) {
-                        setupItem.IsDefault = false;
-                    }
-                }
-                DefaultSetupItem = item;
+                SetDefaultSetupItems(item);
             }
+            Changed = true;
         }
     }
 }

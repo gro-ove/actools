@@ -344,6 +344,18 @@ namespace AcManager.Pages.Windows {
             UpdateLiveTabs();
         }
 
+        private class LinkComparer : IComparer<Link> {
+            public static LinkComparer Instance = new LinkComparer();
+
+            public int Compare(Link x, Link y) {
+                if (x == null) return y == null ? 0 : 1;
+                if (y == null) return -1;
+                if (x.Icon != null) return y.Icon != null ? 0 : 1;
+                if (y.Icon != null) return -1;
+                return string.Compare(x.DisplayName ?? string.Empty, y.DisplayName ?? string.Empty, StringComparison.Ordinal);
+            }
+        }
+
         private void UpdateLiveTabs() {
             GridFinderLink.IsShown = SettingsHolder.Live.GridFinderEnabled;
             RsrLink.IsShown = SettingsHolder.Live.RsrEnabled;
@@ -352,13 +364,23 @@ namespace AcManager.Pages.Windows {
             WorldSimSeriesLink.IsShown = SettingsHolder.Live.WorldSimSeriesEnabled;
             TrackTitanLink.IsShown = SettingsHolder.Live.TrackTitanEnabled;
             UnitedRacingDataLink.IsShown = SettingsHolder.Live.UnitedRacingDataEnabled;
+            foreach (var entry in LiveGroup.Links.Where(x => x.Tag == "user").ToList()) {
+                LiveGroup.Links.Remove(entry);
+            }
+            foreach (var entry in SettingsHolder.Live.UserEntries) {
+                LiveGroup.Links.AddSorted(new Link {
+                    DisplayName = entry.DisplayName,
+                    Source = new Uri("/Pages/Drive/UserLiveService.xaml", UriKind.Relative).AddQueryParam("url", entry.Url),
+                    Tag = "user"
+                }, LinkComparer.Instance);
+            }
             LiveGroup.IsShown = LiveGroup.Links.Any(x => x.IsShown && x.Icon == null);
             // ShortSurveyLink.IsShown = !Stored.Get<bool>("surveyHide").Value;
 
             RaceUGroup.IsShown = SettingsHolder.Live.RaceUEnabled && (ValuesStorage.Contains("RaceU.CurrentLocation") || RaceUCheckAb());
 
             bool RaceUCheckAb() {
-                return false;
+                return true;
                 /*var steamId = SteamIdHelper.Instance.Value;
                 if (steamId == null) return false;
 

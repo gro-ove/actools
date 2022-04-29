@@ -475,7 +475,7 @@ namespace AcManager.Tools.ContentInstallation {
         }
         #endregion
 
-        private static readonly Regex ExecutablesRegex = new Regex(@"\.(?:exe|bat|cmd|py|vbs|js|ps1|sh|zsh|bash|pl|hta)$",
+        private static readonly Regex ExecutablesRegex = new Regex(@"\.(?:exe|dll|bat|cmd|com|py|lnk|vbs|js|ps1|sh|zsh|bash|pl|hta)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private DelegateCommand _copySourceToClipboardCommand;
@@ -639,7 +639,7 @@ namespace AcManager.Tools.ContentInstallation {
                     LocalFilename = localFilename;
 
                     if (InstallationParams.Checksum != null) {
-                        using (var fs = new FileStream(localFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        using (var fs = new FileStream(localFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         using (var sha1 = SHA1.Create()) {
                             if (!string.Equals(sha1.ComputeHash(fs).ToHexString(), InstallationParams.Checksum, StringComparison.OrdinalIgnoreCase)) {
                                 FailedMessage = "Checksum failed";

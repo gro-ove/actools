@@ -96,6 +96,39 @@ namespace AcManager.Tools.Objects {
             });
         }
 
+        private bool _cspExtendedCarsPhysics;
+
+        public bool CspExtendedCarsPhysics {
+            get => _cspExtendedCarsPhysics;
+            set => Apply(value, ref _cspExtendedCarsPhysics, () => {
+                if (Loaded) {
+                    Changed = true;
+                }
+            });
+        }
+
+        private bool _cspExtendedTrackPhysics;
+
+        public bool CspExtendedTrackPhysics {
+            get => _cspExtendedTrackPhysics;
+            set => Apply(value, ref _cspExtendedTrackPhysics, () => {
+                if (Loaded) {
+                    Changed = true;
+                }
+            });
+        }
+
+        private bool _cspHidePitCrew;
+
+        public bool CspHidePitCrew {
+            get => _cspHidePitCrew;
+            set => Apply(value, ref _cspHidePitCrew, () => {
+                if (Loaded) {
+                    Changed = true;
+                }
+            });
+        }
+
         private string _cspExtraConfig;
 
         public string CspExtraConfig {
@@ -757,6 +790,7 @@ namespace AcManager.Tools.Objects {
             if (_driverEntries == null) return;
             for (var i = 0; i < _driverEntries.Count; i++) {
                 _driverEntries[i].Index = i + 1;
+                _driverEntries[i].Parent = this;
             }
         }
 
@@ -871,7 +905,15 @@ namespace AcManager.Tools.Objects {
 
         public Game.TrackProperties TrackProperties {
             get => _trackProperties;
-            set => Apply(value, ref _trackProperties);
+            set {
+                if (_trackProperties == value) return;
+                _trackProperties?.UnsubscribeWeak(OnTrackPropertiesChanged);
+                Apply(value, ref _trackProperties, () => value?.SubscribeWeak(OnTrackPropertiesChanged));
+            }
+        }
+
+        private void OnTrackPropertiesChanged(object s, PropertyChangedEventArgs e) {
+            Changed = true;
         }
 
         private ChangeableObservableCollection<ServerWeatherEntry> _weather;
