@@ -24,9 +24,11 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
+using Microsoft.IO;
 #if WEBP_SUPPORT
 using System.Drawing.Imaging;
 using Noesis.Drawing.Imaging.WebP;
@@ -53,6 +55,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     }
 
     public partial class BetterImage : Control {
+        private static readonly RecyclableMemoryStreamManager Manager = new RecyclableMemoryStreamManager(
+                64 * 1024, 4 * 1024 * 1024, 128 * 1024 * 1024) {
+                    AggressiveBufferReturn = true,
+                    MaximumFreeSmallPoolBytes = 64 * 1024 * 1024,
+                    MaximumFreeLargePoolBytes = 64 * 1024 * 1024,
+#if DEBUG
+                    ThrowExceptionOnToArray = true,
+#endif
+                };
+
+        private const int FileBufferSize = 4096;
+        private const int MemoryBufferSize = 81920;
+
         /// <summary>
         /// Set true to read files in UI thread without using async IO API.
         /// </summary>
@@ -83,7 +98,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Before loading cached entity, check if according file exists and was not updated.
         /// </summary>
         // public static bool OptionEnsureCacheIsFresh = true;
-        public static bool OptionEnsureCacheIsFresh = false;
+                public static bool OptionEnsureCacheIsFresh = false;
 
         /// <summary>
         /// Do not set it to zero if OptionReadFileSync is true and OptionDecodeImageSync is true!
@@ -324,7 +339,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 } else if (e.NewValue is byte[] by) {
                     b.ImageSource = null;
                     b.Filename = null;
-                    b.SetBitmapEntryDirectly(LoadBitmapSourceFromBytes(by, b.InnerDecodeWidth, sourceDebug: "bytes array"));
+                    using (var data = Manager.GetStream(by)) {
+                        b.SetBitmapEntryDirectly(LoadBitmapSourceFromMemoryStream(data, b.InnerDecodeWidth, sourceDebug: "bytes array"));
+                    }
+                } else if (e.NewValue is MemoryStream) {
+#if DEBUG
+                    MessageDialog.Show("USING STREAMS FOR SOURCE OF BETTERIMAGE IS NOT SUPPORTED");
+#endif
+                    Logging.Warning("Not supported to set source to stream");
                 } else {
                     var source = (ImageSource)e.NewValue;
                     b.ImageSource = source;
@@ -506,35 +528,42 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var lastWriteTime = cacheFile.LastWriteTime;
                 if ((DateTime.Now - lastWriteTime).TotalDays < 1d) {
                     // Because barely any servers respect If-Modified-Since header
-                    return LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
+                    using (var data = ReadFileAsStream(cache)) {
+                        return LoadBitmapSourceFromMemoryStream(data, decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
+                    }
                 }
 
                 httpRequest.IfModifiedSince = lastWriteTime;
             }
 
             try {
-                using (var memory = new MemoryStream())
-                using (var response = (HttpWebResponse)await httpRequest.GetResponseAsync()) {
-                    using (var stream = response.GetResponseStream()) {
-                        if (stream == null) {
-                            return cacheFile == null ? Image.Empty
-                                    : LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
+                using (var memory = Manager.GetStream(uri.OriginalString)) {
+                    using (var response = (HttpWebResponse)await httpRequest.GetResponseAsync()) {
+                        using (var stream = response.GetResponseStream()) {
+                            if (stream == null) {
+                                if (cacheFile == null) {
+                                    return Image.Empty;
+                                }
+
+                                using (var data = ReadFileAsStream(cache)) {
+                                    return LoadBitmapSourceFromMemoryStream(data, decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
+                                }
+                            }
+                            await stream.CopyToAsync(memory);
                         }
-
-                        await stream.CopyToAsync(memory);
+                        if (cache != null) {
+                            await Task.Run(() => {
+                                try {
+                                    using (var stream = new FileStream(cache, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)) {
+                                        memory.Seek(0, SeekOrigin.Begin);
+                                        memory.CopyTo(stream);
+                                    }
+                                    cacheFile.LastWriteTime = response.LastModified;
+                                } catch (IOException) { }
+                            });
+                        }
                     }
-
-                    var bytes = memory.ToArray();
-                    if (cache != null) {
-                        await Task.Run(() => {
-                            try {
-                                File.WriteAllBytes(cache, bytes);
-                                cacheFile.LastWriteTime = response.LastModified;
-                            } catch (IOException) { }
-                        });
-                    }
-
-                    return LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
+                    return LoadBitmapSourceFromMemoryStream(memory, decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
                 }
             } catch (WebException e) when ((e.Response as HttpWebResponse)?.StatusCode != HttpStatusCode.NotModified) {
                 Logging.Error(e.Message);
@@ -542,8 +571,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             if (cacheFile == null) return Image.Empty;
             cacheFile.LastWriteTime = DateTime.Now; // this way, checking with web request will be skipped for the next day
-            var cacheBytes = await ReadBytesAsync(cache);
-            return cacheBytes == null ? Image.Empty : LoadBitmapSourceFromBytes(cacheBytes, decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
+            using (var cacheBytes = await ReadBytesAsync(cache)) {
+                return cacheBytes == null
+                        ? Image.Empty : LoadBitmapSourceFromMemoryStream(cacheBytes, decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
+            }
         }
 
         public static Image LoadBitmapSource(string filename, int decodeWidth = -1, int decodeHeight = -1) {
@@ -554,11 +585,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return LoadBitmapSourceAsync(filename, decodeWidth, decodeHeight).Result;
         }
 
+        public static MemoryStream ReadFileAsStream(string filename) {
+            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                var result = Manager.GetStream(filename, (int)stream.Length);
+                stream.CopyTo(result);
+                return result;
+            }
+        }
+
         /// <summary>
         /// Safe (handles all exceptions inside).
         /// </summary>
         [CanBeNull]
-        private static byte[] ReadBytes([CanBeNull] string filename) {
+        private static MemoryStream ReadBytes([CanBeNull] string filename) {
             if (filename == null) return null;
 
             try {
@@ -567,15 +606,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     var stream = Application.GetResourceStream(new Uri(filename, UriKind.Relative))?.Stream;
                     if (stream != null) {
                         using (stream) {
-                            var result = new byte[stream.Length];
-                            stream.Read(result, 0, (int)stream.Length);
+                            var result = Manager.GetStream(filename, (int)stream.Length);
+                            stream.CopyTo(result);
                             return result;
                         }
                     }
                 }
 
                 // Regular loading
-                return File.ReadAllBytes(filename);
+                return ReadFileAsStream(filename);
             } catch (FileNotFoundException) {
                 return null;
             } catch (DirectoryNotFoundException) {
@@ -586,7 +625,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private static byte[] ConvertSpecial(byte[] input) {
+        private static MemoryStream ConvertSpecial(MemoryStream input) {
 #if WEBP_SUPPORT
             if (IsWebPImage(input)) {
                 return ConvertWebPImage(input);
@@ -596,7 +635,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return input;
         }
 
-        private static Task<byte[]> ConvertSpecialAsync(byte[] input) {
+        private static Task<MemoryStream> ConvertSpecialAsync(MemoryStream input) {
 #if WEBP_SUPPORT
             if (IsWebPImage(input)) {
                 return Task.Run(() => ConvertWebPImage(input));
@@ -627,7 +666,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Safe (handles all exceptions inside).
         /// </summary>
         [ItemCanBeNull]
-        private static async Task<byte[]> ReadBytesAsync([CanBeNull] string filename, CancellationToken cancellation = default, BetterImage origin = null) {
+        private static async Task<MemoryStream> ReadBytesAsync([CanBeNull] string filename, CancellationToken cancellation = default, BetterImage origin = null) {
             if (filename == null) return null;
 
             try {
@@ -636,15 +675,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     var stream = Application.GetResourceStream(new Uri(filename, UriKind.Relative))?.Stream;
                     if (stream != null) {
                         using (stream) {
-                            var result = new byte[stream.Length];
-                            await stream.ReadAsync(result, 0, (int)stream.Length, cancellation).ConfigureAwait(false);
+                            var result = Manager.GetStream(filename, (int)stream.Length);
+                            await stream.CopyToAsync(result, MemoryBufferSize, cancellation).ConfigureAwait(false);
                             return await ConvertSpecialAsync(result).ConfigureAwait(false);
                         }
                     }
                 }
 
                 // Regular loading
-                var tcs = new TaskCompletionSource<byte[]>();
+                var tcs = new TaskCompletionSource<MemoryStream>();
 
                 // We need it this way: file opening is done in thread pool, but subsequent reading uses async I/O API
                 // ReSharper disable once AsyncVoidLambda
@@ -654,12 +693,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         return;
                     }
                     try {
-                        using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, true)) {
+                        using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, FileBufferSize, true)) {
                             if (stream.Length > 40 * 1024 * 1024) {
                                 throw new Exception($"Image “{filename}” is way too big to display: {stream.Length.ToReadableSize()}");
                             }
-                            var result = new byte[stream.Length];
-                            await stream.ReadAsync(result, 0, result.Length, cancellation).ConfigureAwait(false);
+                            var result = Manager.GetStream(filename, (int)stream.Length);
+                            await stream.CopyToAsync(result, MemoryBufferSize, cancellation).ConfigureAwait(false);
                             tcs.SetResult(await ConvertSpecialAsync(result).ConfigureAwait(false));
                         }
                     } catch (Exception e) {
@@ -679,20 +718,32 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static int _successes, _fails;
 #endif
 
+        public static Image LoadBitmapSourceFromBytes([NotNull] byte[] data, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0,
+                [Localizable(false)] string sourceDebug = null) {
+            return LoadBitmapSourceFromMemoryStream(Manager.GetStream(data), decodeWidth, decodeHeight, 0, sourceDebug);
+        }
+
+        public static Image LoadBitmapSourceFromFilename([NotNull] string filename, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0,
+                [Localizable(false)] string sourceDebug = null) {
+            using (var stream = ReadBytes(filename)) {
+                return stream == null ? Image.Empty : LoadBitmapSourceFromMemoryStream(stream, decodeWidth, decodeHeight, 0, sourceDebug);
+            }
+        }
+
         /// <summary>
         /// Safe (handles all exceptions inside).
         /// </summary>
-        public static Image LoadBitmapSourceFromBytes([NotNull] byte[] data, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0,
+        public static Image LoadBitmapSourceFromMemoryStream([NotNull] MemoryStream data, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0,
                 [Localizable(false)] string sourceDebug = null) {
             PrepareDecodeLimits(data, ref decodeWidth, ref decodeHeight, sourceDebug);
 
             try {
                 data = ConvertSpecial(data);
+                data.Seek(0, SeekOrigin.Begin);
 
                 // WrappingSteam here helps to avoid memory leaks. For more information:
                 // https://code.logos.com/blog/2008/04/memory_leak_with_bitmapimage_and_memorystream.html
-                using (var memory = new MemoryStream(data))
-                using (var stream = new WrappingStream(memory)) {
+                using (var stream = new WrappingStream(data)) {
                     int width = 0, height = 0;
                     var downsized = false;
 
@@ -752,7 +803,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
 #endif
 
-                return LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, attempt, sourceDebug);
+                return LoadBitmapSourceFromMemoryStream(data, decodeWidth, decodeHeight, attempt, sourceDebug);
             } catch (NotSupportedException e) when (e.ToString().Contains(@"0x88982F50")) {
                 Logging.Warning(e.Message);
                 return Image.Empty;
@@ -762,7 +813,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private static void PrepareDecodeLimits(byte[] data, ref int decodeWidth, ref int decodeHeight,
+        private static void PrepareDecodeLimits(MemoryStream data, ref int decodeWidth, ref int decodeHeight,
                 [Localizable(false)] string sourceDebug) {
             if (decodeWidth <= 0 && decodeHeight <= 0) return;
 
@@ -792,8 +843,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return await LoadRemoteBitmapAsync(uri).ConfigureAwait(false);
             }
 
-            var bytes = await ConvertSpecialAsync(await ReadBytesAsync(filename).ConfigureAwait(false)).ConfigureAwait(false);
-            return bytes == null ? Image.Empty : LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight, sourceDebug: filename);
+            using (var bytes = await ConvertSpecialAsync(await ReadBytesAsync(filename).ConfigureAwait(false)).ConfigureAwait(false)) {
+                return bytes == null ? Image.Empty : LoadBitmapSourceFromMemoryStream(bytes, decodeWidth, decodeHeight, sourceDebug: filename);
+            }
         }
         #endregion
 
@@ -1078,7 +1130,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return false;
         }
 
-        private void ApplyReloadImage(string filename, int loading, byte[] data) {
+        // Obtains ownership of MemoryStream!
+        private void ApplyReloadImage2(string filename, int loading, MemoryStream data) {
             if (loading != _loading || Filename != filename) return;
 
             if (data == null) {
@@ -1090,13 +1143,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var decodeHeight = InnerDecodeHeight;
 
             if (data.Length < OptionDecodeImageSyncThreshold && UpdateLoaded()) {
-                SetCurrent(LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, sourceDebug: filename));
+                using (data) {
+                    SetCurrent(LoadBitmapSourceFromMemoryStream(data, decodeWidth, decodeHeight, sourceDebug: filename));
+                }
                 return;
             }
 
             if (AsyncDecode) {
                 _currentTask = ThreadPool.Run(() => {
-                    var current = LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, sourceDebug: filename);
+                    Image current;
+                    using (data) {
+                        current = LoadBitmapSourceFromMemoryStream(data, decodeWidth, decodeHeight, sourceDebug: filename);
+                    }
 
                     var result = (Action)(() => {
                         _currentTask = null;
@@ -1112,7 +1170,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     }
                 });
             } else {
-                SetCurrent(LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, sourceDebug: filename));
+                using (data) {
+                    SetCurrent(LoadBitmapSourceFromMemoryStream(data, decodeWidth, decodeHeight, sourceDebug: filename));
+                }
             }
         }
 
@@ -1128,9 +1188,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             if (OptionReadFileSync) {
-                ApplyReloadImage(filename, loading, ReadBytes(filename));
+                ApplyReloadImage2(filename, loading, ReadBytes(filename));
             } else {
-                ApplyReloadImage(filename, loading, await ReadBytesAsync(filename, default, this));
+                ApplyReloadImage2(filename, loading, await ReadBytesAsync(filename, default, this));
                 /*ThreadPool.Run(() => {
                     ApplyReloadImage(filename, loading, ReadBytes(filename));
                 });*/

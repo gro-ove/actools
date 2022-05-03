@@ -249,12 +249,12 @@ namespace AcManager.Tools.SemiGui {
         }
 
         [NotNull]
-        private static IAcsStarter CreateStarter(Game.StartProperties properties) {
+        public static IAcsStarter CreateStarter([CanBeNull] Game.StartProperties properties = null) {
             var starter = AcsStarterFactory.Create();
 
             if (SettingsHolder.Drive.PatchAcToDisableShadows && !PatchHelper.IsFeatureSupported(PatchHelper.FeatureDynamicShadowResolution)
                     && AcShadowsPatcher.IsSupposedToWork()) {
-                properties.SetAdditional(new AcShadowsPatcher(starter));
+                properties?.SetAdditional(new AcShadowsPatcher(starter));
             }
 
             return starter;

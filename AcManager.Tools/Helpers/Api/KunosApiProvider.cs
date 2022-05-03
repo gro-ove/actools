@@ -435,17 +435,19 @@ namespace AcManager.Tools.Helpers.Api {
 
         private static IPAddress ParseIPAddress(string address) {
             if (address.IndexOf(':') != -1 || _ipRegex.IsMatch(address)) return IPAddress.Parse(address);
-            return Dns.GetHostEntry(address).AddressList.First();
+            return Dns.GetHostEntry(address).AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork);
         }
 
         private static Task<IPAddress> ParseIPAddressAsync(string address) {
             if (address.IndexOf(':') != -1 || _ipRegex.IsMatch(address)) return Task.FromResult(IPAddress.Parse(address));
-            return Dns.GetHostEntryAsync(address).ContinueWith(r => r.Result.AddressList.First(), TaskContinuationOptions.OnlyOnRanToCompletion);
+            return Dns.GetHostEntryAsync(address).ContinueWith(r => r.Result.AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork),
+                    TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
         public static Task<string> ResolveIpAddressAsync(string address) {
             if (address.IndexOf(':') != -1 || _ipRegex.IsMatch(address)) return Task.FromResult(address);
-            return Dns.GetHostEntryAsync(address).ContinueWith(r => r.Result.AddressList.First().ToString(), TaskContinuationOptions.OnlyOnRanToCompletion);
+            return Dns.GetHostEntryAsync(address).ContinueWith(r => r.Result.AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString(),
+                    TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
         [ItemCanBeNull]
@@ -497,7 +499,10 @@ namespace AcManager.Tools.Helpers.Api {
 
                     if (logging) Logging.Write("Pinging is a success");
                     return new Tuple<int, TimeSpan>(BitConverter.ToInt16(buffer, 1), elapsed);
-                } catch (Exception) {
+                } catch (Exception e) {
+#if DEBUG
+                    Logging.Warning(e);
+#endif
                     return null;
                 }
             }

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
+  <Costura CreateTemporaryAssemblies="False" IncludeDebugSymbols="False" DisableCompression="False" DisableCleanup="False" LoadAtModuleInit="False">
+    <Unmanaged32Assemblies>
+      SlimDX
+      Nvidia.TextureTools.Compress
+      Interop.D3DImageEx
+    </Unmanaged32Assemblies>
+    <ExcludeAssemblies>
+      JetBrains.Annotations
+      Steamworks.NET
+      AcTools.CookerHood
+      AcTools.SoundbankPlayer
+      LUTLibrary
+      FANNCSharp.Double
+      system.windows.interactivity
+    </ExcludeAssemblies>
+  </Costura>
+</Weavers>

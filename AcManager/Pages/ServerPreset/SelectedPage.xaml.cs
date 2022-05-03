@@ -495,6 +495,7 @@ namespace AcManager.Pages.ServerPreset {
                 if (filenames == null) return;
 
                 foreach (var filename in filenames) {
+                    if (SelectedObject.SetupItems.Any(x => FileUtils.ArePathsEqual(x.Filename, filename))) continue;
                     var setup = ServerPresetObject.SetupItem.Create(filename, false);
                     if (setup == null) {
                         var carId = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(filename)));

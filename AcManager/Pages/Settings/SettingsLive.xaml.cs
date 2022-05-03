@@ -37,16 +37,16 @@ namespace AcManager.Pages.Settings {
                 set => Apply(value, ref _selectedLiveService);
             }
 
-            private DelegateCommand _DeleteSelectedServiceCommand;
+            private DelegateCommand _deleteSelectedServiceCommand;
 
-            public DelegateCommand DeleteSelectedServiceCommand => _DeleteSelectedServiceCommand ?? (_DeleteSelectedServiceCommand = new DelegateCommand(
+            public DelegateCommand DeleteSelectedServiceCommand => _deleteSelectedServiceCommand ?? (_deleteSelectedServiceCommand = new DelegateCommand(
                     () => Live.UserEntries = Live.UserEntries.ApartFrom(SelectedLiveService).ToList()));
 
-            private AsyncCommand _AddLiveServiceCommand;
+            private AsyncCommand _addLiveServiceCommand;
 
-            public AsyncCommand AddLiveServiceCommand => _AddLiveServiceCommand ?? (_AddLiveServiceCommand = new AsyncCommand(async () => {
+            public AsyncCommand AddLiveServiceCommand => _addLiveServiceCommand ?? (_addLiveServiceCommand = new AsyncCommand(async () => {
                 var url = await Prompt.ShowAsync("Live service URL:", "Add new live service",
-                        comment: "Choose an URL which will open by default when you visit the service");
+                        comment: "Choose an URL which will open by default when you visit the service.");
                 if (url == null) return;
 
                 if (Live.UserEntries.Any(x => x.Url == url)) {
@@ -60,7 +60,7 @@ namespace AcManager.Pages.Settings {
                 }
 
                 var name = await Prompt.ShowAsync("Live service name:", "Add new live service", title,
-                        comment: "Pick a name for its link in Live Services section");
+                        comment: "Pick a name for its link in Live Services section.");
                 if (name != null) {
                     Live.UserEntries = Live.UserEntries.Append(new SettingsHolder.LiveSettings.LiveServiceEntry(title)).ToList();
                 }

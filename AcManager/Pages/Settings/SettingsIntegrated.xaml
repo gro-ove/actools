@@ -136,7 +136,7 @@
 
         <DockPanel>
           <Label Content="Services:" />
-          <ListBox SelectedItem="{Binding SelectedLiveService}" ItemsSource="{Binding Live.UserEntries}" DockPanel.Dock="Top"
+          <ListBox SelectedItem="{Binding LiveModel.SelectedLiveService}" ItemsSource="{Binding Live.UserEntries}" DockPanel.Dock="Top"
               ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}">
             <ListBox.ItemTemplate>
               <DataTemplate>
@@ -148,9 +148,9 @@
             </ListBox.ItemTemplate>
           </ListBox>
           <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" Margin="0 8 0 0">
-            <Button Content="Add service" Command="{Binding AddLiveServiceCommand}" />
-            <Button Content="Delete service" Command="{Binding DeleteSelectedServiceCommand}"
-                IsEnabled="{Binding SelectedLiveService, Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}" />
+            <Button Content="Add service" Command="{Binding LiveModel.AddLiveServiceCommand}" />
+            <Button Content="Delete service" Command="{Binding LiveModel.DeleteSelectedServiceCommand}"
+                IsEnabled="{Binding LiveModel.SelectedLiveService, Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}" />
           </mui:SpacingUniformGrid>
         </DockPanel>
 

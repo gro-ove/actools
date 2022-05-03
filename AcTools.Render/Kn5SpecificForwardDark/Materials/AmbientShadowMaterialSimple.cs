@@ -66,6 +66,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public bool IsBlending => false;
 
+        public string Name => null;
+
         public void Dispose() {
             Debug.WriteLine("AMBIENT SHADOW MATERIAL DISPOSED");
             DisposeHelper.Dispose(ref _txDiffuse);

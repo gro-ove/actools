@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
@@ -41,12 +42,16 @@ namespace AcTools.Render.Base.Objects {
         public LinesRenderableObject([CanBeNull] string name, T[] vertices) : this(name, vertices, GetIndices(vertices.Length)) {}
 
         public override bool IsEnabled {
-            get { return !IsEmpty && base.IsEnabled; }
-            set { base.IsEnabled = value; }
+            get => !IsEmpty && base.IsEnabled;
+            set => base.IsEnabled = value;
         }
 
         public override int GetTrianglesCount() {
             return IndicesCount / 2;
+        }
+
+        public override IEnumerable<int> GetMaterialIds() {
+            return new int[0];
         }
 
         public override void UpdateBoundingBox() {

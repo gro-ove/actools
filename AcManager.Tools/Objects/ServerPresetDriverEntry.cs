@@ -27,17 +27,14 @@ namespace AcManager.Tools.Objects {
                         CarSetup = value.SetupItems.FirstOrDefault(x => x.CarId == CarId &&
                                 string.Equals(Path.GetFileName(x.Filename), setupFileName, StringComparison.OrdinalIgnoreCase));
                     }
-                    FittingSetups = new BetterListCollectionView(value.SetupItems) {
-                        Filter = x => (x as ServerPresetObject.SetupItem)?.CarId == CarId
-                    };
-                } else {
-                    FittingSetups = null;
                 }
+                _fittingSetupsSet = false;
+                OnPropertyChanged(nameof(FittingSetups));
             });
         }
 
         public void RefreshFilteredSetupList() {
-            FittingSetups?.Refresh();
+            _fittingSetups?.Refresh();
         }
 
         private string _fixedSetup;
@@ -105,7 +102,12 @@ namespace AcManager.Tools.Objects {
             section.Set("GUID", Guid ?? "");
             section.Set("BALLAST", Ballast);
             section.Set("RESTRICTOR", Restrictor);
-            section.SetOrRemove("FIXED_SETUP", _fixedSetup);
+
+            var setup = _fixedSetup;
+            if (string.IsNullOrWhiteSpace(setup)) {
+                setup = Path.GetFileName(Parent?.SetupItems.FirstOrDefault(x => x.IsDefault && x.CarId == CarId)?.Filename);
+            }
+            section.SetOrRemove("FIXED_SETUP", setup);
         }
 
         private string _carId;
@@ -241,10 +243,18 @@ namespace AcManager.Tools.Objects {
         }
 
         private BetterListCollectionView _fittingSetups;
+        private bool _fittingSetupsSet;
 
         public BetterListCollectionView FittingSetups {
-            get => _fittingSetups;
-            set => Apply(value, ref _fittingSetups);
+            get {
+                if (!_fittingSetupsSet) {
+                    _fittingSetupsSet = true;
+                    _fittingSetups = Parent != null ? new BetterListCollectionView(Parent.SetupItems) {
+                        Filter = x => (x as ServerPresetObject.SetupItem)?.CarId == CarId
+                    } : null;
+                }
+                return _fittingSetups;
+            }
         }
 
         private int _index;

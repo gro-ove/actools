@@ -38,11 +38,10 @@ namespace AcManager.Tools.Objects {
             Sessions = new ChangeableObservableCollection<ServerSessionEntry>(SimpleSessions.Append(RaceSession));
             Sessions.ItemPropertyChanged += OnSessionEntryPropertyChanged;
 
-            InitSetupsItems();
-
             PluginEntries = new ChangeableObservableCollection<PluginEntry>();
             PluginEntries.CollectionChanged += OnPluginEntriesCollectionChanged;
             PluginEntries.ItemPropertyChanged += OnPluginEntriesPropertyChanged;
+            CmPluginLiveConditionsParams.PropertyChanged += (sender, args) => Changed = true;
         }
 
         protected override IniFileMode IniFileMode => IniFileMode.ValuesWithSemicolons;
@@ -222,7 +221,8 @@ namespace AcManager.Tools.Objects {
 
             var cmPluginSection = ini["__CM_PLUGIN"];
             UseCmPlugin = cmPluginSection.GetBool("ACTIVE", false);
-            RealConditions = cmPluginSection.GetBool("REAL_CONDITIONS", false);
+            CmPluginLiveConditions = cmPluginSection.GetBool("REAL_CONDITIONS", false);
+            CmPluginLiveConditionsParams.Deserialize(cmPluginSection.GetNonEmpty("REAL_CONDITIONS_PARAMS"));
             for (var i = 0; i < 100; ++i) {
                 var entryAddress = cmPluginSection.GetNonEmpty($"EXTRA_PLUGIN_{i}_ADDRESS");
                 var entryPort = cmPluginSection.GetIntNullable($"EXTRA_PLUGIN_{i}_PORT");
@@ -379,7 +379,8 @@ namespace AcManager.Tools.Objects {
             var cmPluginSection = ini["__CM_PLUGIN"];
             cmPluginSection.Clear();
             cmPluginSection.Set("ACTIVE", UseCmPlugin);
-            cmPluginSection.Set("REAL_CONDITIONS", RealConditions);
+            cmPluginSection.Set("REAL_CONDITIONS", CmPluginLiveConditions);
+            cmPluginSection.Set("REAL_CONDITIONS_PARAMS", CmPluginLiveConditionsParams.Serialize());
             var extraPluginIndex = 0;
             foreach (var entry in PluginEntries.Where(x => !string.IsNullOrWhiteSpace(x.Address) && x.UdpPort.HasValue)) {
                 cmPluginSection.Set($"EXTRA_PLUGIN_{extraPluginIndex}_ADDRESS", entry.Address);

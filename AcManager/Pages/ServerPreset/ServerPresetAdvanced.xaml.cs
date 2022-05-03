@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using AcManager.Pages.Drive;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -22,6 +24,14 @@ namespace AcManager.Pages.ServerPreset {
 
         [CanBeNull]
         private ServerPresetObject _lastSubscribedTo;
+
+        private void AllowedTyres_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
+            _legalTyresBusy.Do(() => {
+                var server = Model?.SelectedObject;
+                if (server == null) return;
+                server.LegalTyres = AllowedTyres.SelectedItems.OfType<ServerPresetObject.TyresItem>().ToList();
+            });
+        }
 
         private void AllowedTyres_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e) {
             if (_lastSubscribedTo != Model?.SelectedObject) {

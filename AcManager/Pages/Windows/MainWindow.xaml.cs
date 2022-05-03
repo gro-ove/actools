@@ -204,6 +204,9 @@ namespace AcManager.Pages.Windows {
             ContentInstallationManager.Instance.TaskAdded += OnContentInstallationTaskAdded;
             UpdateDiscordRichPresence();
 
+            Task.Delay(TimeSpan.FromMinutes(0.5)).ContinueWith(r =>
+                    ActionExtension.InvokeInMainThreadAsync(() => OnDownloadsButtonClick(null, null)));
+
 #if DEBUG
             // LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
 #endif
@@ -967,6 +970,12 @@ namespace AcManager.Pages.Windows {
             if (s.Contains("/Pages/AcSettings/") && !s.Contains("/Pages/AcSettings/AcSettingsPage.xaml")) {
                 CurrentGroupKey = "settings";
                 NavigateTo(UriExtension.Create("/Pages/AcSettings/AcSettingsPage.xaml?Uri={0}", uri));
+                return true;
+            }
+
+            if (s.Contains("/Pages/Settings/SettingsLive.xaml?Separate=True")) {
+                CurrentGroupKey = "drive";
+                NavigateTo(uri);
                 return true;
             }
 

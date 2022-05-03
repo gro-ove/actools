@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using AcManager.Pages.Settings;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
@@ -76,6 +78,16 @@ namespace AcManager {
 
             _trayIcon.DoubleClick += OnTrayIconDoubleClick;
 
+            var patchSettings = SettingsShadersPatch.IsCustomShadersPatchInstalled() ? new MenuItem { Text = "Custom Shaders Patch settings" } : null;
+            if (patchSettings != null) {
+                patchSettings.Click += (sender, args) => SettingsShadersPatch.GetShowSettingsCommand().Execute(null);
+            }
+
+            var rhm = RhmService.Instance.Active ? new MenuItem { Text = "RHM settings" } : null;
+            if (rhm != null) {
+                rhm.Click += (sender, args) => RhmService.Instance.ShowSettingsCommand.ExecuteAsync().Ignore();
+            }
+
             var restoreMenuItem = new MenuItem { Text = UiStrings.Restore };
             restoreMenuItem.Click += OnRestoreMenuItemClick;
 
@@ -83,9 +95,12 @@ namespace AcManager {
             closeMenuItem.Click += OnCloseMenuItemClick;
 
             _trayIcon.ContextMenu = new ContextMenu(new[] {
+                patchSettings,
+                rhm,
+                new MenuItem(@"-"),
                 restoreMenuItem,
                 closeMenuItem
-            });
+            }.NonNull().ToArray());
 
             _trayIcon.Visible = true;
         }
@@ -133,7 +148,6 @@ namespace AcManager {
                             /* add an icon to the tray for manual restoration just in case */
                             AddTrayIcon();
                             // AddTrayIconWpf();
-                            /* TODO: Why I added WPF icon? And why it can’t close sometimes? Switching back. */
 
                             /* hide windows */
                             _hiddenWindows = Application.Current?.Windows.OfType<Window>().Where(x => x.Visibility == Visibility.Visible

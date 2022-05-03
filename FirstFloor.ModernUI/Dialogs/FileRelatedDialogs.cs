@@ -219,7 +219,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                 if (p.UseCachedIfAny) {
                     ValuesStorage.Set(cached, dialog.FileNames);
                 }
-                return dialog.FileNames;
+                return dialog.FileNames.Distinct().ToArray();
             } catch (Exception e) {
                 NonfatalError.NotifyBackground("Can’t use Open File Dialog properly", e);
                 return new[]{ OpenFallback(key) };

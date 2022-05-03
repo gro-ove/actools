@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Data;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -17,6 +19,12 @@ namespace FirstFloor.ModernUI {
                 changed.CollectionChanged -= OnCollectionChanged;
                 CollectionChangedEventManager.AddListener(changed, this);
             }
+
+            if (Dispatcher != Application.Current.Dispatcher) {
+#if DEBUG
+                MessageDialog.Show(@"Incorrectly created BetterListCollectionView. Use debugger to trace where it comes from.");
+#endif
+            }
         }
 
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e) {
@@ -28,7 +36,11 @@ namespace FirstFloor.ModernUI {
             }
 
             try {
-                Dispatcher.Invoke(() => OnCollectionChanged(sender, notify));
+                if (Dispatcher.Thread == Thread.CurrentThread) {
+                    OnCollectionChanged(sender, notify);
+                } else {
+                    Dispatcher.Invoke(() => OnCollectionChanged(sender, notify));
+                }
             } catch (ArgumentOutOfRangeException ex) {
                 _compatible = true;
 

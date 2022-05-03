@@ -108,7 +108,7 @@ namespace AcManager.CustomShowroom {
 
             private class SaveableData {
                 public string Filter;
-                public bool IgnoreCase, UseFxaa = true, AiLaneActualWidth = false;
+                public bool IgnoreCase, UseFxaa = true, AiLaneActualWidth, ShowPitlane, ShowSpecialMarks;
                 public double Scale = 1.0, Margin = 10d, AiLaneWidth = 10d;
             }
 
@@ -127,6 +127,8 @@ namespace AcManager.CustomShowroom {
                     Margin = Margin,
                     AiLaneWidth = AiLaneWidth,
                     AiLaneActualWidth = AiLaneActualWidth,
+                    ShowPitlane = ShowPitlane,
+                    ShowSpecialMarks = ShowSpecialMarks,
                 }, o => {
                     if (o.Filter == null) {
                         UpdateFilter(Surfaces.Where(x => x.ShouldBeVisibleOnMap()));
@@ -140,6 +142,8 @@ namespace AcManager.CustomShowroom {
                     Margin = o.Margin;
                     AiLaneWidth = o.AiLaneWidth;
                     AiLaneActualWidth = o.AiLaneActualWidth;
+                    ShowPitlane = o.ShowPitlane;
+                    ShowSpecialMarks = o.ShowSpecialMarks;
                 }, storage: CacheStorage.Storage);
                 _save.Initialize();
             }
@@ -312,6 +316,26 @@ namespace AcManager.CustomShowroom {
                     Renderer.AiLaneActualWidth = value;
                     _save?.SaveLater();
                 }
+            }
+
+            private bool _showPitlane;
+
+            public bool ShowPitlane {
+                get => _showPitlane;
+                set => Apply(value, ref _showPitlane, () => {
+                    Renderer.ShowPitlane = value;
+                    _save?.SaveLater();
+                });
+            }
+
+            private bool _showSpecialMarks;
+
+            public bool ShowSpecialMarks {
+                get => _showSpecialMarks;
+                set => Apply(value, ref _showSpecialMarks, () => {
+                    Renderer.ShowSpecialMarks = value;
+                    _save?.SaveLater();
+                });
             }
 
             private DelegateCommand _cameraToStartCommand;

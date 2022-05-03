@@ -577,6 +577,7 @@ namespace AcManager.Tools.ContentInstallation {
                         }
 
                         try {
+                            Logging.Debug("Loading: " + Source);
                             var properDisplayNameSet = false;
                             localFilename = await FlexibleLoader.LoadAsyncTo(Source,
                                     (url, information) => new FlexibleLoaderDestination(Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue,
@@ -611,8 +612,8 @@ namespace AcManager.Tools.ContentInstallation {
                         } catch (Exception e) when (e.IsCancelled()) {
                             CheckCancellation(true);
                             return false;
-                        } catch (WebException e) when (e.Response is HttpWebResponse) {
-                            FailedMessage = $"Can’t download file: {((HttpWebResponse)e.Response).StatusDescription.ToLower()}";
+                        } catch (WebException e) when (e.Response is HttpWebResponse webResponse) {
+                            FailedMessage = $"Can’t download file: {webResponse.StatusDescription.ToLower()}";
                             return false;
                         } catch (WebException) when (cancellation.IsCancellationRequested) {
                             CheckCancellation(true);

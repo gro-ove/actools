@@ -790,6 +790,24 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Don’t ask again.
+        /// </summary>
+        public static string MessageDialog_DontAskAgain {
+            get {
+                return ResourceManager.GetString("MessageDialog_DontAskAgain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don’t show again.
+        /// </summary>
+        public static string MessageDialog_DontShowAgain {
+            get {
+                return ResourceManager.GetString("MessageDialog_DontShowAgain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Minimize.
         /// </summary>
         public static string Minimize {

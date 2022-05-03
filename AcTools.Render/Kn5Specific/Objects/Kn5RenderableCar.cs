@@ -186,16 +186,21 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private int? _trianglesCount;
         private int? _objectsCount;
+        private int? _materialsCount;
 
         public int TrianglesCount => _trianglesCount ?? (_trianglesCount = RootObject.GetTrianglesCount()).Value;
 
         public int ObjectsCount => _objectsCount ?? (_objectsCount = RootObject.GetObjectsCount()).Value;
 
+        public int MaterialsCount => _materialsCount ?? (_materialsCount = RootObject.GetMaterialIds().NonNull().Distinct().Count()).Value;
+
         private void InvalidateCount() {
             _trianglesCount = null;
             _objectsCount = null;
+            _materialsCount = null;
             OnPropertyChanged(nameof(TrianglesCount));
             OnPropertyChanged(nameof(ObjectsCount));
+            OnPropertyChanged(nameof(MaterialsCount));
         }
 
         public event EventHandler ObjectsChanged;

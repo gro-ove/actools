@@ -10,6 +10,8 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
     public class Kn5MaterialSimpleMirror : IRenderableMaterial, IAcDynamicMaterial {
         public bool IsBlending => false;
 
+        public string Name => "!__mirror__";
+
         private EffectSimpleMaterial _effect;
 
         internal Kn5MaterialSimpleMirror() {}

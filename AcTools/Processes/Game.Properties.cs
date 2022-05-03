@@ -235,6 +235,9 @@ namespace AcTools.Processes {
         }
 
         public class PracticeProperties : BaseModeProperties {
+            [CanBeNull]
+            public string SessionName = "Practice";
+
             public StartType StartType = StartType.Pit;
 
             public override void Set(IniFile file) {
@@ -244,7 +247,7 @@ namespace AcTools.Processes {
                 base.Set(file);
 
                 var section = file["SESSION_0"];
-                section.Set("NAME", "Practice");
+                section.Set("NAME", SessionName);
                 section.Set("TYPE", SessionType.Practice);
                 section.Set("DURATION_MINUTES", Duration);
                 section.Set("SPAWN_SET", StartType.Id);

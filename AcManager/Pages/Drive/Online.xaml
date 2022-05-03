@@ -331,7 +331,7 @@
           </mui:BooleanSwitch.False>
         </mui:BooleanSwitch>
 
-        <ProgressBar IsIndeterminate="True" Margin="20" Width="320" Height="4" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+        <ProgressBar IsIndeterminate="{Binding Pack.BackgroundLoading}" Margin="20" Width="320" Height="4" HorizontalAlignment="Center" VerticalAlignment="Bottom"
             Visibility="{Binding Pack.BackgroundLoading, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="False" />
       </mui:Cell>
     </mui:Switch>

@@ -109,6 +109,11 @@ namespace AcManager.Pages.Drive {
         private int _timerTick;
 
         private void OnTimerTick(object sender, EventArgs e) {
+            if (Application.Current?.MainWindow?.IsActive != true) {
+                _timerTick = 5;
+                return;
+            }
+
             if (++_timerTick > 5) {
                 _timerTick = 0;
 

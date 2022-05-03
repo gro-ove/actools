@@ -674,4 +674,10 @@
   <data name="Reload" xml:space="preserve">
       <value>Reload</value>
   </data>
+  <data name="MessageDialog_DontAskAgain" xml:space="preserve">
+      <value>Don’t ask again</value>
+  </data>
+  <data name="MessageDialog_DontShowAgain" xml:space="preserve">
+      <value>Don’t show again</value>
+  </data>
 </root>

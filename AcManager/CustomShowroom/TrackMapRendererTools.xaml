@@ -79,6 +79,14 @@
               Content="Width" />
           <Slider Minimum="1" Maximum="50" Value="{Binding AiLaneWidth}" TickFrequency="4.9" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
         </DockPanel>
+
+        <CheckBox Margin="0 4 0 0" IsChecked="{Binding ShowPitlane}">
+          <Label Content="Show pitlane" />
+        </CheckBox>
+
+        <CheckBox Margin="0 4 0 0" IsChecked="{Binding ShowSpecialMarks}">
+          <Label Content="Show special marks" />
+        </CheckBox>
       </StackPanel>
     </mui:Switch>
 

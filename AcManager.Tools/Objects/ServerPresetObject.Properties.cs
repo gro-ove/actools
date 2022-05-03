@@ -1064,15 +1064,6 @@ namespace AcManager.Tools.Objects {
             });
         }
 
-        private bool _realConditions;
-
-        public bool RealConditions {
-            get => _realConditions;
-            set => Apply(value, ref _realConditions, () => {
-                if (Loaded) Changed = true;
-            });
-        }
-
         public class PluginEntry : NotifyPropertyChanged {
             private string _address;
 

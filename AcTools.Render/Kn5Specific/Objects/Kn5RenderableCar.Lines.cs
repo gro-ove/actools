@@ -543,6 +543,28 @@ namespace AcTools.Render.Kn5Specific.Objects {
         });
         #endregion
 
+        #region Inertia box
+        private bool _isInertiaBoxVisible;
+
+        public bool IsInertiaBoxVisible {
+            get => _isInertiaBoxVisible;
+            set {
+                if (Equals(value, _isInertiaBoxVisible)) return;
+                _isInertiaBoxVisible = value;
+                _skinsWatcherHolder?.RaiseSceneUpdated();
+                _inertiaBoxLines.Reset();
+                OnPropertyChanged();
+            }
+        }
+
+        private readonly CarDebugLinesWrapper _inertiaBoxLines = new CarDebugLinesWrapper((car, data) => {
+            var size = data.GetInertiaBox();
+            return new CarDebugLinesObject("Inertia box",
+                    DebugLinesObject.GetLinesBox(Matrix.Translation(new Vector3(0f, size.Y / 2f, 0f)),
+                            size, new Color4(1f, 0f, 0.7f, 1f))) { AllowScaling = false };
+        });
+        #endregion
+
         #region Flames position
         private bool _areFlamesVisible;
 
@@ -629,6 +651,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             if (IsFuelTankVisible) {
                 _fuelTankLines.DrawLines(this, holder, camera);
+            }
+
+            if (IsInertiaBoxVisible) {
+                _inertiaBoxLines.DrawLines(this, holder, camera);
             }
 
             if (AreFlamesVisible) {

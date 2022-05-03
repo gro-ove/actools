@@ -41,6 +41,7 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureReplayFullPath = "REPLAY_FULL_PATH";
         public static readonly string FeatureCustomRenderingModes = "CUSTOM_RENDERING_MODES";
         public static readonly string FeatureJoypadIndexAware = "JOYPAD_INDEX_AWARE";
+        public static readonly string FeatureHasShowroomMode = "RACEINI_SETUP_SUPPORT";
 
         public class AudioDescription : Displayable {
             public string Id { get; set; }

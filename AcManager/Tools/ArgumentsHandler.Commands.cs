@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
+using AcManager.CustomShowroom;
 using AcManager.Internal;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Miscellaneous;
@@ -222,6 +223,12 @@ namespace AcManager.Tools {
 
                     case "thesetupmarket/setup":
                         return await ProcessTheSetupMarketSetup(custom.Params.Get(@"id"));
+
+                    case "tool/update-car-preview":
+                        var car = await CarsManager.Instance.GetByIdAsync(custom.Params.Get(@"car"));
+                        if (car == null) return ArgumentHandleResult.Failed;
+                        await new ToUpdatePreview(car, custom.Params.GetValues(@"skin")).Run(presetFilename: custom.Params.Get(@"preset"));
+                        return ArgumentHandleResult.Successful;
 
                     case "shared":
                         var result = ArgumentHandleResult.Ignore;

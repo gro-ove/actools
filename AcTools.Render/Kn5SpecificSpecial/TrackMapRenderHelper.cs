@@ -13,17 +13,18 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public void OnResize(DeviceContextHolder holder) { }
 
-        public void Draw(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target) {
+        public void Draw(DeviceContextHolder holder, ShaderResourceView view, ShaderResourceView viewBlurred, RenderTargetView target) {
             holder.DeviceContext.OutputMerger.SetTargets(target);
             holder.PrepareQuad(_effect.LayoutPT);
             _effect.FxInputMap.SetResource(view);
+            _effect.FxBlurredMap.SetResource(viewBlurred);
             _effect.TechPp.DrawAllPasses(holder.DeviceContext, 6);
         }
 
         public void Final(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target, bool checkedBackground) {
             holder.DeviceContext.OutputMerger.SetTargets(target);
             holder.PrepareQuad(_effect.LayoutPT);
-            _effect.FxInputMap.SetResource(view);
+            _effect.FxPreprocessedMap.SetResource(view);
             (checkedBackground ? _effect.TechFinalCheckers : _effect.TechFinal).DrawAllPasses(holder.DeviceContext, 6);
         }
 

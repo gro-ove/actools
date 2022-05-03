@@ -512,7 +512,7 @@ Entry type: [b]{2}[/b]</value>
   <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
     <value>Name:</value>
   </data>
-  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
+  <data name="CustomShowroom_Stats_MaterialLabel" xml:space="preserve">
     <value>Material:</value>
   </data>
   <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
@@ -1057,5 +1057,8 @@ Depth mode: [b]{4}[/b]</value>
   </data>
   <data name="ContentList_NothingToDisplay" xml:space="preserve">
       <value>Nothing to display</value>
+  </data>
+  <data name="CustomShowroom_Stats_MaterialsLabel" xml:space="preserve">
+      <value>Materials:</value>
   </data>
 </root>

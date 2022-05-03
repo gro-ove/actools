@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
@@ -100,7 +101,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
             IsTransparent = isTransparent ?? OriginalNode.IsTransparent;
         }
 
+        [CanBeNull]
         private IRenderableMaterial _material;
+
+        public override IEnumerable<int> GetMaterialIds() {
+            return new []{ (int)OriginalNode.MaterialId };
+        }
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
@@ -115,7 +121,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             var node = OriginalNode;
             if (node.Name.EndsWith(" Light") && !node.IsTransparent && !node.CastShadows && Material.IsBlending) {
-                // shameless fix for some of cars I made 🙃
+                // shameless fix for some of the cars I made 🙃
                 _renderModes &= ~SpecialRenderMode.GBuffer;
             }
         }

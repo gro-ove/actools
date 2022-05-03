@@ -478,7 +478,6 @@
       <DependentUpon>RaceU.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Drive\RaceUTemporarySkinsHelper.cs" />
-    <Compile Include="Pages\Drive\RealConditionsHelper.cs" />
     <Compile Include="Pages\Drive\Srs2.xaml.cs">
       <DependentUpon>Srs2.xaml</DependentUpon>
     </Compile>

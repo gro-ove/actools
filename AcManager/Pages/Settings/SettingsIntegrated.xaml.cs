@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using AcManager.Tools.Helpers;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
@@ -35,12 +34,7 @@ namespace AcManager.Pages.Settings {
             public SettingsHolder.LiveSettings Live => SettingsHolder.Live;
             public SettingsHolder.DriveSettings Drive => SettingsHolder.Drive;
 
-            private SettingsHolder.LiveSettings.LiveServiceEntry _selectedLiveService;
-
-            public SettingsHolder.LiveSettings.LiveServiceEntry SelectedLiveService {
-                get => _selectedLiveService;
-                set => Apply(value, ref _selectedLiveService);
-            }
+            public SettingsLive.ViewModel LiveModel { get; } = new SettingsLive.ViewModel();
 
             public ViewModel() {
                 _discordOriginal = Integrated.DiscordIntegration;
@@ -52,35 +46,6 @@ namespace AcManager.Pages.Settings {
                     DiscordRestartRequired = Integrated.DiscordIntegration != _discordOriginal;
                 }
             }
-
-            private DelegateCommand _DeleteSelectedServiceCommand;
-
-            public DelegateCommand DeleteSelectedServiceCommand => _DeleteSelectedServiceCommand ?? (_DeleteSelectedServiceCommand = new DelegateCommand(
-                    () => Live.UserEntries = Live.UserEntries.ApartFrom(SelectedLiveService).ToList()));
-
-            private AsyncCommand _AddLiveServiceCommand;
-
-            public AsyncCommand AddLiveServiceCommand => _AddLiveServiceCommand ?? (_AddLiveServiceCommand = new AsyncCommand(async () => {
-                var url = await Prompt.ShowAsync("Live service URL:", "Add new live service",
-                        comment: "Choose an URL which will open by default when you visit the service");
-                if (url == null) return;
-
-                if (Live.UserEntries.Any(x => x.Url == url)) {
-                    MessageDialog.Show("Service with this URL is already added", "Can’t add new service", MessageDialogButton.OK);
-                    return;
-                }
-
-                string title;
-                using (WaitingDialog.Create("Checking URL…")) {
-                    title = await PageTitleFinder.GetPageTitle(url);
-                }
-
-                var name = await Prompt.ShowAsync("Live service name:", "Add new live service", title,
-                        comment: "Pick a name for its link in Live Services section");
-                if (name != null) {
-                    Live.UserEntries = Live.UserEntries.Append(new SettingsHolder.LiveSettings.LiveServiceEntry(title)).ToList();
-                }
-            }));
 
             private AsyncCommand _importStereoOdometerCommand;
 

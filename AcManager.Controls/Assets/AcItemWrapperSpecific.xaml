@@ -210,6 +210,9 @@
               <Setter Property="Visibility" Value="Collapsed" TargetName="PART_OriginIcon" />
               <Setter Property="Visibility" Value="Visible" TargetName="PART_ErrorIcon" />
             </DataTrigger>
+            <DataTrigger Binding="{Binding ExtraListMargin, Source={x:Static mui:AppearanceManager.Instance}}" Value="True">
+              <Setter Property="Margin" Value="0 0 8 0" TargetName="PART_OriginIcon" />
+            </DataTrigger>
 
             <DataTrigger Binding="{Binding IsFavourite}" Value="True">
               <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
@@ -341,6 +344,9 @@
               <Setter Property="Visibility" Value="Collapsed" TargetName="PART_OriginIcon" />
               <Setter Property="Visibility" Value="Visible" TargetName="PART_ErrorIcon" />
             </DataTrigger>
+            <DataTrigger Binding="{Binding ExtraListMargin, Source={x:Static mui:AppearanceManager.Instance}}" Value="True">
+              <Setter Property="Margin" Value="0 0 8 0" TargetName="PART_OriginIcon" />
+            </DataTrigger>
 
             <DataTrigger Binding="{Binding IsFavourite}" Value="True">
               <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
@@ -409,6 +415,9 @@
               <Setter Property="FontWeight" Value="Bold" TargetName="PART_DisplayNameText" />
               <Setter Property="Visibility" Value="Collapsed" TargetName="PART_OriginIcon" />
               <Setter Property="Visibility" Value="Visible" TargetName="PART_ErrorIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ExtraListMargin, Source={x:Static mui:AppearanceManager.Instance}}" Value="True">
+              <Setter Property="Margin" Value="0 0 8 0" TargetName="PART_OriginIcon" />
             </DataTrigger>
             <DataTrigger Binding="{Binding IsFavourite}" Value="True">
               <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />

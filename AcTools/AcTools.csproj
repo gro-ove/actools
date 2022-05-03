@@ -194,7 +194,6 @@
     <Compile Include="Processes\ShotingCancelledException.cs" />
     <Compile Include="Processes\TrickyStarter.cs" />
     <Compile Include="Processes\IAcsStarter.cs" />
-    <Compile Include="Processes\Showroom_Obsolete.cs" />
     <Compile Include="Processes\Showroom_KunosShooter.cs" />
     <Compile Include="Processes\Showroom_ClassicShooter.cs" />
     <Compile Include="Processes\Showroom_BaseShooter.cs" />

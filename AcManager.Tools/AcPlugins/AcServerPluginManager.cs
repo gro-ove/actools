@@ -525,9 +525,13 @@ namespace AcManager.Tools.AcPlugins {
             try {
                 // If we do not receive the session Info in the next 3 seconds request info (async).
                 ThreadPool.QueueUserWorkItem(o => {
-                    Thread.Sleep(3000);
-                    if (ProtocolVersion == -1) {
-                        RequestSessionInfo(-1);
+                    try {
+                        Thread.Sleep(3000);
+                        if (ProtocolVersion == -1) {
+                            RequestSessionInfo(-1);
+                        }
+                    } catch (Exception e) {
+                        Logging.Warning(e);
                     }
                 });
 
@@ -709,6 +713,7 @@ namespace AcManager.Tools.AcPlugins {
             try {
                 var newConnection = new DriverInfo {
                     ConnectionId = _currentSession.Drivers.Count,
+                    ConnectedTimestamp = DateTime.UtcNow.Ticks,
                     DriverGuid = msg.DriverGuid,
                     DriverName = msg.DriverName,
                     DriverTeam = string.Empty, // missing in msg

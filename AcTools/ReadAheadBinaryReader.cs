@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using SystemHalf;
 using AcTools.Numerics;
 using JetBrains.Annotations;
+using StreamExtension = AcTools.Utils.Helpers.StreamExtension;
 
 namespace AcTools {
     /// <inheritdoc />
@@ -346,6 +347,25 @@ namespace AcTools {
             var result = new byte[count];
             ReadBytesTo(result, 0, count);
             return result;
+        }
+
+        /// <summary>
+        /// Require a specific amount of bytes, throw exception if not enough.
+        /// </summary>
+        /// <exception cref="EndOfStreamException">Not enough bytes!</exception>
+        public void ReadBytesTo(Stream stream, int count) {
+            if (_left >= count) {
+                var bufferOffset = GetPosAndMove(count);
+                stream.Write(_buffer, bufferOffset, count);
+            } else {
+                stream.Write(_buffer, _total - _left, _left);
+                count -= _left;
+
+                var read =  StreamExtension.CopyTo(_stream, stream, count);
+                if (read != count) throw new EndOfStreamException("Unexpected end");
+
+                _left = _total = 0;
+            }
         }
 
         /// <summary>

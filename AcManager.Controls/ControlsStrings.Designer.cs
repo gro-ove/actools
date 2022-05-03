@@ -1475,15 +1475,6 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Material:.
-        /// </summary>
-        public static string CustomShowroom_Selected_MaterialLabel {
-            get {
-                return ResourceManager.GetString("CustomShowroom_Selected_MaterialLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Name:.
         /// </summary>
         public static string CustomShowroom_Selected_NameLabel {
@@ -1534,6 +1525,24 @@ namespace AcManager.Controls {
         public static string CustomShowroom_Stats_FpsLabel {
             get {
                 return ResourceManager.GetString("CustomShowroom_Stats_FpsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Material:.
+        /// </summary>
+        public static string CustomShowroom_Stats_MaterialLabel {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Stats_MaterialLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Materials:.
+        /// </summary>
+        public static string CustomShowroom_Stats_MaterialsLabel {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Stats_MaterialsLabel", resourceCulture);
             }
         }
         

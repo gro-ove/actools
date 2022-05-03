@@ -7,9 +7,13 @@ using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificSpecial {
     public class Kn5MaterialTrackMap : IRenderableMaterial {
+        private readonly Vector3 _color;
         private EffectSpecialTrackMap _effect;
 
-        internal Kn5MaterialTrackMap() { }
+        internal Kn5MaterialTrackMap(Vector3 color) {
+            AcToolsLogging.Write("COLOR:" + color);
+            _color = color;
+        }
 
         public void EnsureInitialized(IDeviceContextHolder contextHolder) {
             if (_effect != null) return;
@@ -22,6 +26,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             if (mode != SpecialRenderMode.Simple) return false;
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutP;
             contextHolder.DeviceContext.OutputMerger.BlendState = null;
+            _effect.FxColor.Set(new Vector4(_color, 1f));
             return true;
         }
 
@@ -34,6 +39,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public bool IsBlending => false;
+
+        public string Name => null;
 
         public void Dispose() { }
     }

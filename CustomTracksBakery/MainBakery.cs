@@ -340,6 +340,11 @@ namespace CustomTracksBakery {
         }
 
         int IRenderableObject.GetObjectsCount() => 1;
+
+        public IEnumerable<int> GetMaterialIds() {
+            return new int[0];
+        }
+
         Matrix IRenderableObject.ParentMatrix { get; set; }
         bool IRenderableObject.IsEnabled { get; set; }
         bool IRenderableObject.IsReflectable { get; set; }

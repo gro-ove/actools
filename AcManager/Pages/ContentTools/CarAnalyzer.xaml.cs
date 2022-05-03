@@ -557,7 +557,7 @@ All found similarities:
                                         "Recommended size: up to 20 MB.",
                                         skinSizeRate));
                             }
-                        } catch (Exception e) {
+                        } catch {
                             result.Add(new RatingEntry("Failed to read car model",
                                     "It might be due to encryption. If possible, consider not using it.", 3.5));
                         }

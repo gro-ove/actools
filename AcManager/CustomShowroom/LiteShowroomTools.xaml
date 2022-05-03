@@ -191,6 +191,10 @@
                     <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
                     <mui:SelectableTextBlock Text="{Binding Renderer.CarNode.TrianglesCount}" />
                   </DockPanel>
+                  <DockPanel Style="{StaticResource DockPanel}">
+                    <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_MaterialLabel}" />
+                    <mui:SelectableTextBlock Text="{Binding Renderer.CarNode.MaterialsCount}" />
+                  </DockPanel>
 
                   <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_ControlHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
                   <DockPanel Margin="0 4 0 0">
@@ -316,7 +320,7 @@
                   <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewMaterialCommand}" CommandParameter="{Binding}" Height="20"
                       Margin="4 0 0 0" Padding="4 0"
                       Visibility="{Binding ViewMaterialCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
-                  <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_MaterialLabel}" />
+                  <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_MaterialLabel}" />
                   <mui:SelectableTextBlock Text="{Binding Renderer.SelectedMaterial.Name, Mode=OneWay}" Margin="0 0 4 0" />
                 </DockPanel>
                 <DockPanel Style="{StaticResource DockPanel}">
@@ -344,6 +348,12 @@
                   <mui:SelectableTextBlock Text="{Binding SelectedObjectPath}" Placeholder="?" />
                 </DockPanel>
                 <DockPanel Style="{StaticResource DockPanel}">
+                  <mui:ContextMenuButton DockPanel.Dock="Right" CommandParameter="{Binding}" Height="20" Margin="4 0 0 0" Padding="4 0"
+                      Visibility="{Binding ToggleMeshTransparencyCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}">
+                    <ContextMenu>
+                      <MenuItem Header="Toggle transparency and update KN5" Command="{Binding ToggleMeshTransparencyCommand}" />
+                    </ContextMenu>
+                  </mui:ContextMenuButton>
                   <Label Content="Transparent:" />
                   <mui:SelectableTextBlock Text="{Binding SelectedObjectTransparent}" Placeholder="?" />
                 </DockPanel>

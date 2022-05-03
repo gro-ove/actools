@@ -6,6 +6,7 @@ struct VS_IN {
 
 cbuffer cbPerObject : register(b0) {
 	matrix gWorldViewProj;
+	float4 gColor;
 }
 
 struct PS_IN {
@@ -19,7 +20,7 @@ PS_IN vs_main(VS_IN vin) {
 }
 
 float4 ps_main(PS_IN pin) : SV_Target {
-	return float4(1, 1, 1, 1);
+	return gColor;
 }
 
 technique10 Main {
@@ -33,6 +34,8 @@ technique10 Main {
 /* pp area */
 
 Texture2D gInputMap;
+Texture2D gPreprocessedMap;
+Texture2D gBlurredMap;
 
 SamplerState samInputImage {
 	Filter = MIN_MAG_LINEAR_MIP_POINT;
@@ -63,17 +66,18 @@ Pp_PS_IN vs_pp(Pp_VS_IN vin) {
 
 float4 ps_pp(Pp_PS_IN pin) : SV_Target{
 	float4 base = gInputMap.SampleLevel(samInputImage, pin.Tex, 0.0);
-	float orig = base.g * (base.r * 0.7 + 0.3);
+	float4 baseBlurred = gBlurredMap.SampleLevel(samInputImage, pin.Tex, 0.0);
 
 	float edge = 0;
-	for (int x = -1; x <= 1; x++)
+	for (int x = -1; x <= 1; x++) {
 		for (int y = -1; y <= 1; y++) {
-			if (gInputMap.SampleLevel(samInputImage, pin.Tex + float2(gScreenSize.z * x, gScreenSize.w * y), 0.0).g > 0.1) {
-				edge += 1.0;
+			if (gInputMap.SampleLevel(samInputImage, pin.Tex + float2(gScreenSize.z * x, gScreenSize.w * y), 0.0).w > 0.1) {
+				edge += 1;
 			}
 		}
+    }
 
-	return float4(orig, saturate(edge), orig, 1.0);
+	return float4(base.rgb * base.w, max(saturate(edge) * 0.6, max(base.w, baseBlurred.w)));
 }
 
 technique10 Pp {
@@ -85,8 +89,8 @@ technique10 Pp {
 }
 
 float4 ps_final(Pp_PS_IN pin) : SV_Target{
-	float4 base = gInputMap.SampleLevel(samInputImage, pin.Tex, 0.0);
-	return float4(base.r, base.r, base.r, base.g);
+	float4 base = gPreprocessedMap.SampleLevel(samInputImage, pin.Tex, 0.0);
+	return float4(base.rgb, base.w);
 }
 
 technique10 Final {
@@ -98,13 +102,13 @@ technique10 Final {
 }
 
 float4 ps_final_checkers(Pp_PS_IN pin) : SV_Target{
-	float4 base = gInputMap.SampleLevel(samInputImage, pin.Tex, 0.0);
+	float4 base = gPreprocessedMap.SampleLevel(samInputImage, pin.Tex, 0.0);
 
 	float x = saturate((pin.Tex.x * (gScreenSize.x / 16) % 2 - 1.0) * 1e6);
 	float y = saturate((pin.Tex.y * (gScreenSize.y / 16) % 2 - 1.0) * 1e6);
 	float background = ((x + y) % 2) * 0.15 + 0.15;
 
-	return background * (1 - base.g) + float4(base.r, base.r, base.r, 1.0) * base.g;
+	return background * (1 - base.w) + float4(base.rgb, 1.0) * base.w;
 }
 
 technique10 FinalCheckers {
@@ -134,20 +138,17 @@ float4 ps_blur(Pp_PS_IN pin, uniform bool gHorizontalBlur) : SV_Target{
 		texOffset = float2(0.0f, gScreenSize.w);
 	}
 
-	float4 base = gInputMap.SampleLevel(samInputImage, pin.Tex, 0.0);
-
-	float color = 0;
+	float4 color = 0;
 	float totalWeight = 0;
 
-	[flatten]
+	[unroll]
 	for (float i = -gBlurRadius; i <= gBlurRadius; ++i) {
 		float weight = gWeights[i + gBlurRadius];
-		color += weight * gInputMap.SampleLevel(samInputImage, pin.Tex + i * texOffset, 0.0).r;
+		color += weight * gInputMap.SampleLevel(samInputImage, pin.Tex + i * texOffset, 0.0);
 		totalWeight += weight;
 	}
 
-	base.r = color / totalWeight;
-	return base;
+	return color / totalWeight;
 }
 
 technique11 PpHorizontalBlur {

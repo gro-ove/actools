@@ -2,14 +2,29 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Data;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using TimeZoneConverter;
 
-namespace AcManager.Pages.Drive {
+namespace AcManager.Tools.Helpers {
     public static class RealConditionsHelper {
+        public static async Task<TimeSpan> GetTimezoneOffsetAsync(TrackObjectBase track, CancellationToken cancellation) {
+            var trackGeoTags = track.GeoTags;
+            if (trackGeoTags == null || trackGeoTags.IsEmptyOrInvalid) {
+                trackGeoTags = await TracksLocator.TryToLocateAsync(track);
+                if (cancellation.IsCancellationRequested) return TimeSpan.Zero;
+            }
+
+            var data = DataProvider.Instance.TrackParams[track.MainTrackObject.Id];
+            var timeZone = data.ContainsKey(@"TIMEZONE")
+                    ? TZConvert.GetTimeZoneInfo(data.GetNonEmpty("TIMEZONE"))
+                    : await TimeZoneDeterminer.TryToDetermineAsync(trackGeoTags);
+            if (cancellation.IsCancellationRequested) return TimeSpan.Zero;
+            var utcOffset = new DateTimeOffset(DateTime.UtcNow, TimeSpan.Zero);
+            return timeZone == null ? TimeSpan.Zero : timeZone.GetUtcOffset(utcOffset) - TimeZoneInfo.Local.GetUtcOffset(utcOffset);
+        }
+
         /// <summary>
         /// Complex method, but it’s the best I can think of for now. Due to async nature,
         /// all results will be returned in callbacks. There is no guarantee in which order callbacks
@@ -22,7 +37,7 @@ namespace AcManager.Pages.Drive {
         /// <param name="weatherCallback">Set to null if you don’t need weather.</param>
         /// <param name="cancellation">Cancellation token.</param>
         /// <returns>Task.</returns>
-        public static async Task UpdateConditions(TrackObjectBase track, bool localWeather, bool considerTimezones,
+        public static async Task UpdateConditionsAsync(TrackObjectBase track, bool localWeather, bool considerTimezones,
                 [CanBeNull] Action<DateTime> dateTimeCallback, [CanBeNull] Action<WeatherDescription> weatherCallback, CancellationToken cancellation) {
             GeoTagsEntry trackGeoTags = null, localGeoTags = null;
 
@@ -51,7 +66,8 @@ namespace AcManager.Pages.Drive {
                             : await TimeZoneDeterminer.TryToDetermineAsync(trackGeoTags);
                     if (cancellation.IsCancellationRequested) return;
 
-                    var offsetInSeconds = (int)(timeZone == null ? 0 : timeZone.BaseUtcOffset.TotalSeconds - TimeZoneInfo.Local.BaseUtcOffset.TotalSeconds);
+                    var utcOffset = new DateTimeOffset(DateTime.UtcNow, TimeSpan.Zero);
+                    var offsetInSeconds = (int)(timeZone == null ? 0 : timeZone.GetUtcOffset(utcOffset).TotalSeconds - TimeZoneInfo.Local.GetUtcOffset(utcOffset).TotalSeconds);
                     dateTimeCallback.Invoke(now + TimeSpan.FromSeconds(offsetInSeconds));
                 }
             }

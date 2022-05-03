@@ -4985,4 +4985,7 @@ anyway while it’s waiting for disk to get the data, and there will much less d
     <data name="Toolbar_QuickDrive_SecondLine" xml:space="preserve">
         <value>Hold Shift and click to configure Quick Drive session</value>
     </data>
+    <data name="Common.SliderPostfix.Hours" xml:space="preserve">
+        <value> hour</value>
+    </data>
 </root>

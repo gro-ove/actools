@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using AcManager.Tools.AcPlugins;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -271,11 +272,9 @@ namespace AcManager.Tools.Objects {
                 foreach (var file in TrackDataToKeep) {
                     var actualData = Path.Combine(AcPaths.GetTracksDirectory(root), localPath, @"data", file);
                     if (!File.Exists(actualData)) continue;
-                    if (TrackPreprocess(actualData, out var pathPrefix, out var newContent)) {
-                        result.Add(PackedEntry.FromContent(Path.Combine(@"content", @"tracks", pathPrefix, localPath, @"data", file), newContent));
-                    } else {
-                        result.Add(PackedEntry.FromFile(Path.Combine(@"content", @"tracks", localPath, @"data", file), actualData));
-                    }
+                    result.Add(TrackPreprocess(actualData, out var pathPrefix, out var newContent)
+                            ? PackedEntry.FromContent(Path.Combine(@"content", @"tracks", pathPrefix, localPath, @"data", file), newContent)
+                            : PackedEntry.FromFile(Path.Combine(@"content", @"tracks", localPath, @"data", file), actualData));
                 }
 
                 {
@@ -483,25 +482,30 @@ namespace AcManager.Tools.Objects {
             }
 
             var log = new BetterObservableCollection<string>();
-            var logFilename = GetServerLogFilename();
+            _logFilename = GetServerLogFilename();
+            _logDroppingFastRate = false;
+            _logDroppingCount = false;
+            if (_localQueue == null) _localQueue = new List<Tuple<LogMessageType, string>>();
+            else _localQueue.Clear();
 
             void LogAction(LogMessageType type, string msg) {
-                if (msg?.Contains("\t\t$CSP0:") != false) return;
-                ActionExtension.InvokeInMainThreadAsync(() => {
-                    if (type == LogMessageType.Message && msg.StartsWith(@"Warning", StringComparison.OrdinalIgnoreCase)) {
-                        type = LogMessageType.Warning;
-                    }
-
-                    var t = DateTime.Now;
-                    var prepared = $@"{t.Hour:D2}:{t.Minute:D2}:{t.Second:D2}.{t.Millisecond:D3}: {(char)type} {msg.Replace("\n", "\n  ")}";
-                    log.Add(prepared);
-
-                    if (logFilename != null) {
-                        using (var writer = new StreamWriter(logFilename, true)) {
-                            writer.WriteLine(SettingsHolder.Online.ServerLogsCmFormat ? prepared : msg);
+                if (msg?.Contains("\t\t$CSP0:") != false) {
+                    return;
+                }
+                if (_localQueue.Count > 200) {
+                    if (!_logDroppingFastRate) {
+                        _logDroppingFastRate = true;
+                        _localQueue.Add(Tuple.Create(LogMessageType.Error, "Too many messages at once, some messages are dropped"));
+                        if (_localQueue.Any(x => x.Item2.EndsWith(@"Error listening %!e(syscall.Errno=536870951)"))) {
+                            _localQueue.Add(Tuple.Create(LogMessageType.Error, "HTTP port is busy"));
+                            _running?.Kill();
                         }
                     }
-                });
+                    return;
+                }
+                lock (_localQueue) {
+                    _localQueue.Add(Tuple.Create(type, msg));
+                }
             }
 
             RunningLog = log;
@@ -510,6 +514,139 @@ namespace AcManager.Tools.Objects {
                 await RunWrapper(serverExecutable, LogAction, progress, cancellation);
             } else {
                 await RunAcServer(serverExecutable, LogAction, progress, cancellation);
+            }
+        }
+
+        private string _logFilename;
+        private List<Tuple<LogMessageType, string>> _localQueue;
+        private bool _logDroppingFastRate;
+        private bool _logDroppingCount;
+
+        private async Task LaunchRunningUpdateAsync(Process process) {
+            while (process == _running) {
+                await Task.Delay(50);
+                if (_localQueue.Count > 0) {
+                    if (_logDroppingCount) {
+                        lock (_localQueue) {
+                            _localQueue.Clear();
+                        }
+                        continue;
+                    }
+                    using (var stream = _logFilename != null ? new FileStream(_logFilename, FileMode.Append, FileAccess.Write, FileShare.ReadWrite) : null)
+                    using (var writer = stream != null ? new StreamWriter(stream, Encoding.UTF8, 1024, false) : null) {
+                        List<Tuple<LogMessageType, string>> items;
+                        lock (_localQueue) {
+                            items = _localQueue.ToList();
+                            _localQueue.Clear();
+                        }
+
+                        if (RunningLog?.Count > 100000) {
+                            if (!_logDroppingCount) {
+                                _logDroppingCount = true;
+                                items.Add(Tuple.Create(LogMessageType.Error, "Too many messages, subsequent messages are dropped"));
+                            }
+                            return;
+                        }
+
+                        foreach (var item in items) {
+                            var type = item.Item1;
+                            var msg = item.Item2;
+
+                            if (type == LogMessageType.Message
+                                    && (msg.StartsWith(@"Warning", StringComparison.OrdinalIgnoreCase)
+                                            || msg.StartsWith(@"RESPONSE: ERROR", StringComparison.OrdinalIgnoreCase))) {
+                                type = LogMessageType.Warning;
+                            }
+
+                            var t = DateTime.Now;
+                            var prepared = $@"{t.Hour:D2}:{t.Minute:D2}:{t.Second:D2}.{t.Millisecond:D3}: {(char)type} {msg.Replace("\n", "\n  ")}";
+                            RunningLog?.Add(prepared);
+                            if (writer != null) {
+                                await writer.WriteLineAsync(SettingsHolder.Online.ServerLogsCmFormat ? prepared : msg);
+                            }
+                        }
+                    }
+                }
+            }
+
+            var log = RunningLog;
+            if (log == null) return;
+
+            if (log.Any(x => x.EndsWith(@"LOBBY COULD NOT BE RACHED, SHUTTING SERVER DOWN")) && log.Any(x => x.EndsWith(@"CHECK YOUR PORT FORWARDING SETTINGS"))) {
+                MessageDialog.Show("It seems like the lobby couldn’t reach your server to verify if it’s accessible or not. Possible solutions:\n"
+                        + "• Make sure you have a public IP address (some ISPs sell it as an extra option);\n"
+                        + "• Verify ports forwarding parameters in your router settings (usually you can find them [url=\"http://192.168.1.1\"]here[/url]);\n"
+                        + $"• Add TCP ({HttpPort}, {TcpPort}) and UDP ({UdpPort}) ports in Windows Firewall exceptions.\n\n"
+                        + "Alternatively, for a private server you can try services like Hamachi or Radmin to set a LAN Assetto Corsa server "
+                        + "(make sure to uncheck “Make server public (show on lobby)” option for it to work).",
+                        "Failed to register server to the lobby", MessageDialogButton.OK, @".serverFailure.lobby");
+            } else if (log.Any(x => x.EndsWith(@"invalid memory address or nil pointer dereference")) && log.Any(x => x.Contains(@".ReadFromUDP("))
+                    || log.Any(x => x.EndsWith(@"HTTP port is busy"))) {
+                try {
+                    var conflicting = GetOpenPorts().Where(port => port.Item1 ? port.Item2 == TcpPort || port.Item2 == HttpPort : port.Item2 == UdpPort)
+                            .Select(x => x.Item3).Distinct().ToList();
+                    if (conflicting.Count > 0) {
+                        var takenBy = conflicting.Count == 1
+                                ? $"a different process ({GetProcessName(conflicting[0])})"
+                                : $"different processes ({conflicting.Select(GetProcessName).JoinToReadableString()})";
+                        if (MessageDialog.Show($"Selected ports are already taken by {takenBy}. Kill those processes and try again?",
+                                "Failed to start a server", MessageDialogButton.YesNo, @".serverFailure.port") == MessageBoxResult.Yes) {
+                            await conflicting.Select(x => ProcessExtension.Start("taskkill", new[] { "/F", "/PID", x.ToInvariantString() }).WaitForExitAsync())
+                                    .WhenAll();
+                            await Task.Delay(500);
+                            RunServerCommand.ExecuteAsync().Ignore();
+                        }
+                    }
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+            }
+        }
+
+        private static string GetProcessName(int pid) {
+            try {
+                using (var p = Process.GetProcessById(pid)) {
+                    return Path.GetFileName(p.GetFilenameSafe() ?? $@"{p.ProcessName}.exe");
+                }
+            } catch {
+                return @"unknown";
+            }
+        }
+
+        private static IEnumerable<Tuple<bool, int, int>> GetOpenPorts() {
+            using (var proc = new Process {
+                StartInfo = new ProcessStartInfo {
+                    FileName = "netstat.exe",
+                    Arguments = "-a -n -o",
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    UseShellExecute = false,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                }
+            }) {
+                proc.Start();
+
+                var ret = proc.StandardOutput.ReadToEnd();
+                proc.WaitForExit();
+
+                if (proc.ExitCode != 0) {
+                    throw new Exception("Failed to start netstart.exe");
+                }
+
+                int protoIndex = -1, addressIndex = -1, pidIndex = -1;
+                foreach (var tokens in ret.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(x => Regex.Split(x.Trim(), "\\s{2,}")).Where(x => x.Length > 2)) {
+                    if (protoIndex == -1 || addressIndex == -1 || pidIndex == -1) {
+                        protoIndex = tokens.FindIndex(t => t.IndexOf(@"proto", StringComparison.OrdinalIgnoreCase) != -1);
+                        addressIndex = tokens.FindIndex(t => t.IndexOf(@"local", StringComparison.OrdinalIgnoreCase) != -1);
+                        pidIndex = tokens.FindIndex(t => t.IndexOf(@"pid", StringComparison.OrdinalIgnoreCase) != -1);
+                    } else {
+                        yield return Tuple.Create(tokens[protoIndex] == @"TCP",
+                                tokens[addressIndex].Substring(tokens[addressIndex].LastIndexOf(':') + 1).As(0),
+                                tokens[Math.Min(pidIndex, tokens.Length - 1)].As(0));
+                    }
+                }
             }
         }
 
@@ -703,9 +840,9 @@ namespace AcManager.Tools.Objects {
                         }
                     }
                     _pluginManager.AddPlugin(CmPlugin = new CmServerPlugin(log, Capacity));
-                    if (RealConditions) {
+                    if (CmPluginLiveConditions) {
                         var track = TrackId == null ? null : await TracksManager.Instance.GetLayoutByIdAsync(TrackId, TrackLayoutId);
-                        _pluginManager.AddPlugin(new RealConditionsServerPlugin(track, RequiredCspVersion >= 1643));
+                        _pluginManager.AddPlugin(new LiveConditionsServerPlugin(track, RequiredCspVersion >= 1643, CmPluginLiveConditionsParams.Clone()));
                     }
 
                     // _pluginManager.AddPlugin(new DynamicConditionsV2ServerPlugin());
@@ -743,12 +880,14 @@ namespace AcManager.Tools.Objects {
 
             DisposeHelper.Dispose(ref _pluginManager);
             CmPlugin = null;
+            LaunchRunningUpdateAsync(running).Ignore();
         }
 
         public override void Reload() {
             if (IsRunning) {
                 try {
                     _running.Kill();
+                    _running = null;
                 } catch (Exception e) {
                     Logging.Warning(e);
                 }

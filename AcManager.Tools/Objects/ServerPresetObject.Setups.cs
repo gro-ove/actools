@@ -77,15 +77,15 @@ namespace AcManager.Tools.Objects {
             private DelegateCommand _viewInDirectoryCommand;
 
             public DelegateCommand ViewInDirectoryCommand => _viewInDirectoryCommand ?? (_viewInDirectoryCommand
-                        = new DelegateCommand(() => WindowsHelper.ViewFile(Filename)));
+                    = new DelegateCommand(() => WindowsHelper.ViewFile(Filename)));
 
             private DelegateCommand _deleteCommand;
 
             public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand
-                        = new DelegateCommand(() => IsDeleted = true, () => !IsDeleted)).ListenOnWeak(this, nameof(IsDeleted));
+                    = new DelegateCommand(() => IsDeleted = true, () => !IsDeleted)).ListenOnWeak(this, nameof(IsDeleted));
         }
 
-        private class SetupsDraggableConverter : IDraggableDestinationConverter  {
+        private class SetupsDraggableConverter : IDraggableDestinationConverter {
             public object Convert(IDataObject data) {
                 if (data.GetData(SetupItem.DraggableFormat) is SetupItem set) {
                     return set;
@@ -102,11 +102,17 @@ namespace AcManager.Tools.Objects {
 
         public IDraggableDestinationConverter SetupsDraggableConverterInstance { get; } = new SetupsDraggableConverter();
 
-        public ChangeableObservableCollection<SetupItem> SetupItems { get; } = new ChangeableObservableCollection<SetupItem>();
+        private ChangeableObservableCollection<SetupItem> _setupItems;
 
-        private void InitSetupsItems() {
-            SetupItems.ItemPropertyChanged += OnSetupItemPropertyChanged;
-            SetupItems.CollectionChanged += OnSetupItemsCollectionChanged;
+        public ChangeableObservableCollection<SetupItem> SetupItems {
+            get {
+                if (_setupItems == null) {
+                    _setupItems = new ChangeableObservableCollection<SetupItem>();
+                    _setupItems.ItemPropertyChanged += OnSetupItemPropertyChanged;
+                    _setupItems.CollectionChanged += OnSetupItemsCollectionChanged;
+                }
+                return _setupItems;
+            }
         }
 
         private void RefreshSetupCarsValidity() {

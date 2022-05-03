@@ -639,7 +639,7 @@ namespace AcManager.Pages.Drive {
                         _updateCancellationTokenSource = cancellation;
 
                         try {
-                            await RealConditionsHelper.UpdateConditions(SelectedTrack, RealConditionsLocalWeather, RealConditionsTimezones,
+                            await RealConditionsHelper.UpdateConditionsAsync(SelectedTrack, RealConditionsLocalWeather, RealConditionsTimezones,
                                     RealConditionsManualTime ? default(Action<DateTime>) : TryToSetTime, weather => {
                                         RealWeather = weather;
                                         TryToSetTemperature(weather.Temperature);

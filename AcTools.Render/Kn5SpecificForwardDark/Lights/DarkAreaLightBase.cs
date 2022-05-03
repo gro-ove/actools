@@ -144,6 +144,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         public bool IsBlending => true;
 
+        public string Name => null;
+
         public void Dispose() { }
     }
 

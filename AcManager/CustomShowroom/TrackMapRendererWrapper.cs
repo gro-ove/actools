@@ -101,7 +101,15 @@ namespace AcManager.CustomShowroom {
                             modelsFilename == null ?
                                     new TrackMapPreparationRenderer(await Task.Run(() => Kn5.FromFile(kn5Filename ?? throw new Exception("KN5 filename is not set")))) :
                                     new TrackMapPreparationRenderer(await Task.Run(() => TrackComplexModelDescription.CreateLoaded(modelsFilename))) :
-                            new TrackMapPreparationRenderer(await Task.Run(() => AiSpline.FromFile(aiLaneFilename)));
+                            new TrackMapPreparationRenderer(await Task.Run(() => AiSpline.FromFile(aiLaneFilename)),
+                                    await Task.Run(() => {
+                                        try {
+                                            return AiSpline.FromFile(Path.Combine(Path.GetDirectoryName(aiLaneFilename) ?? "", "pit_lane.ai"));
+                                        } catch (Exception e) {
+                                            Logging.Warning(e);
+                                            return null;
+                                        }
+                                    }), track.DataDirectory);
                 }
 
                 var wrapper = new TrackMapRendererWrapper(track, renderer);

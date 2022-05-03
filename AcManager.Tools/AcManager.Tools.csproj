@@ -432,6 +432,7 @@
     <Compile Include="Helpers\ExtraDataProvider.cs" />
     <Compile Include="Helpers\PackedDescription.cs" />
     <Compile Include="Helpers\PageTitleFinder.cs" />
+    <Compile Include="Helpers\RealConditionsHelper.cs" />
     <Compile Include="Helpers\RegistryPatch.cs" />
     <Compile Include="Helpers\ReplayDetails.cs" />
     <Compile Include="Helpers\SettingsHolder.Common.cs" />
@@ -641,6 +642,7 @@
     <Compile Include="Objects\ServerPresetDetailsMode.cs" />
     <Compile Include="Objects\ServerPresetObject.Ftp.cs" />
     <Compile Include="Objects\ServerPresetObject.LegalTyres.cs" />
+    <Compile Include="Objects\ServerPresetObject.LiveConditions.cs" />
     <Compile Include="Objects\ServerPresetObject.Setups.cs" />
     <Compile Include="Objects\TrackObject.Extra.cs" />
     <Compile Include="Objects\TrackObject.Skins.cs" />
@@ -716,7 +718,7 @@
     <Compile Include="ServerPlugins\CmServerPlugin.cs" />
     <Compile Include="ServerPlugins\DynamicConditionsV1ServerPlugin.cs" />
     <Compile Include="ServerPlugins\DynamicConditionsV2ServerPlugin.cs" />
-    <Compile Include="ServerPlugins\RealConditionsServerPlugin.cs" />
+    <Compile Include="ServerPlugins\LiveConditionsServerPlugin.cs" />
     <Compile Include="ServerPlugins\ServerGuidsStorage.cs" />
     <Compile Include="SharedMemory\AcFlagType.cs" />
     <Compile Include="SharedMemory\AcSharedSessionType.cs" />
