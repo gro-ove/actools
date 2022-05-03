@@ -55,7 +55,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     }
 
     public partial class BetterImage : Control {
-        private static readonly RecyclableMemoryStreamManager Manager = new RecyclableMemoryStreamManager(
+        internal static readonly RecyclableMemoryStreamManager Manager = new RecyclableMemoryStreamManager(
                 64 * 1024, 4 * 1024 * 1024, 128 * 1024 * 1024) {
                     AggressiveBufferReturn = true,
                     MaximumFreeSmallPoolBytes = 64 * 1024 * 1024,

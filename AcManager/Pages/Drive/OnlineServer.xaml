@@ -303,7 +303,6 @@
                   <Path Data="{StaticResource LockIconData}" Width="16" Height="16" Fill="{DynamicResource WindowText}" Stretch="Uniform" Margin="0 0 6 0" />
                   <TextBlock DockPanel.Dock="Left" Text="{x:Static g:AppStrings.Online_PasswordLabel}"
                       Style="{StaticResource Heading2}" Margin="0 0 16 0" />
-                  <TextBlock Text="FUCKING WPF" />
                   <mui:ProperPasswordBox FontSize="16"
                       Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                       Style="{StaticResource ProperPasswordBox.Borderless}" Margin="0 0 4 0" />

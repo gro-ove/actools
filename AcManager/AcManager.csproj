@@ -2,7 +2,7 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- There is also a custom packer made for this app, that’s why there is an option. -->
-    <UseCosturaToPack>true</UseCosturaToPack>
+    <UseCosturaToPack>false</UseCosturaToPack>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>

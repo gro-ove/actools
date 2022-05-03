@@ -549,7 +549,6 @@ namespace AcManager {
 
             InitializeUpdatableStuff();
             BackgroundInitialization();
-            ExtraProgressRings.Initialize();
 
             FatalErrorMessage.Register(new AppRestartHelper());
             ImageUtils.SafeMagickWrapper = fn => {
@@ -826,7 +825,10 @@ namespace AcManager {
                 CupClient.Instance?.LoadRegistries().Ignore();
 #endif
 
-                await Task.Delay(5000);
+                await Task.Delay(1500);
+                ExtraProgressRings.Initialize();
+
+                await Task.Delay(3500);
                 await Task.Run(() => {
                     foreach (var f in from file in Directory.GetFiles(FilesStorage.Instance.GetDirectory("Logs"))
                         where file.EndsWith(@".txt") || file.EndsWith(@".log") || file.EndsWith(@".json")

@@ -7,57 +7,77 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Controls {
     [ContentProperty(nameof(NonNull))]
-    public class LazierSwitch : BaseLazySwitch {
+    public class LazierSwitch : BaseSwitch {
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(Lazier),
                 typeof(LazierSwitch), new FrameworkPropertyMetadata(null, OnValuePropertyChanged));
 
         protected static void OnValuePropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
             if (!(sender is LazierSwitch b)) return;
+            var nv = e.NewValue as Lazier;
+            b._value = nv;
             (e.OldValue as Lazier)?.UnsubscribeWeak(b.OnValueContentChanged);
-            (e.NewValue as Lazier)?.SubscribeWeak(b.OnValueContentChanged);
-            (e.NewValue as Lazier)?.StartSetting();
-            OnChildDefiningPropertyChanged(sender, e);
+            nv?.SubscribeWeak(b.OnValueContentChanged);
+            nv?.StartSetting();
+            OnChildSelectingPropertyChanged(sender, e);
         }
 
         private void OnValueContentChanged(object sender, PropertyChangedEventArgs args) {
             if (args.PropertyName == nameof(Lazier.IsSet) || args.PropertyName == nameof(Lazier.GenericValue)) {
-                UpdateActiveChild();
+                RefreshActiveChild();
             }
         }
 
+        private Lazier _value;
+
         public Lazier Value {
-            get => GetValue(ValueProperty) as Lazier;
+            get => _value;
             set => SetValue(ValueProperty, value);
         }
 
         public static readonly DependencyProperty NullProperty = DependencyProperty.Register(nameof(Null), typeof(UIElement),
-                typeof(LazierSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
+                typeof(LazierSwitch), new PropertyMetadata(null, (o, e) => {
+                    ((LazierSwitch)o)._null = (UIElement)e.NewValue;
+                    OnChildRegisteringPropertyChanged(o, e);
+                }));
+
+        private UIElement _null;
 
         public UIElement Null {
-            get => (UIElement)GetValue(NullProperty);
+            get => _null;
             set => SetValue(NullProperty, value);
         }
 
         public static readonly DependencyProperty NonNullProperty = DependencyProperty.Register(nameof(NonNull), typeof(UIElement),
-                typeof(LazierSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
+                typeof(LazierSwitch), new PropertyMetadata(null, (o, e) => {
+                    ((LazierSwitch)o)._nonNull = (UIElement)e.NewValue;
+                    OnChildRegisteringPropertyChanged(o, e);
+                }));
+
+        private UIElement _nonNull;
 
         public UIElement NonNull {
-            get => (UIElement)GetValue(NonNullProperty);
+            get => _nonNull;
             set => SetValue(NonNullProperty, value);
         }
 
         public static readonly DependencyProperty LoadingProperty = DependencyProperty.Register(nameof(Loading), typeof(UIElement),
-                typeof(LazierSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
+                typeof(LazierSwitch), new PropertyMetadata(null, (o, e) => {
+                    ((LazierSwitch)o)._loading = (UIElement)e.NewValue;
+                    OnChildRegisteringPropertyChanged(o, e);
+                }));
+
+        private UIElement _loading;
 
         public UIElement Loading {
-            get => (UIElement)GetValue(LoadingProperty);
+            get => _loading;
             set => SetValue(LoadingProperty, value);
         }
 
         protected override UIElement GetChild() {
-            if (Value == null) return NonNull;
-            if (Value.IsSet) return Value.GenericValue == null ? Null : NonNull;
-            return Loading;
+            var v = _value;
+            if (v == null) return _nonNull;
+            if (v.IsSet) return v.GenericValue == null ? _null : _nonNull;
+            return _loading;
         }
     }
 }

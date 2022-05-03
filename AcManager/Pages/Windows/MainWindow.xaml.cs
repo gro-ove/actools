@@ -141,7 +141,6 @@ namespace AcManager.Pages.Windows {
             }.NonNull().ToList());
 
             InitializeComponent();
-            RaceU.InitializeRaceULinks();
             ModsWebBrowser.Instance.RebuildLinksNow();
             ArgumentsHandler.HandlePasteEvent(this);
 
@@ -204,8 +203,8 @@ namespace AcManager.Pages.Windows {
             ContentInstallationManager.Instance.TaskAdded += OnContentInstallationTaskAdded;
             UpdateDiscordRichPresence();
 
-            Task.Delay(TimeSpan.FromMinutes(0.5)).ContinueWith(r =>
-                    ActionExtension.InvokeInMainThreadAsync(() => OnDownloadsButtonClick(null, null)));
+            Task.Delay(5000).ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => RaceU.InitializeRaceULinks()));
+            Task.Delay(TimeSpan.FromMinutes(0.5)).ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => OnDownloadsButtonClick(null, null)));
 
 #if DEBUG
             // LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);

@@ -224,6 +224,7 @@
     <Compile Include="Windows\Controls\BetterImage.ThreadPools.cs" />
     <Compile Include="Windows\Controls\BetterScrollBar.cs" />
     <Compile Include="Windows\Controls\BetterTextBox.cs" />
+    <Compile Include="Windows\Controls\BooleanLazySwitch.cs" />
     <Compile Include="Windows\Controls\BooleanSwitch.cs" />
     <Compile Include="Windows\Controls\Cell.cs" />
     <Compile Include="Windows\Controls\ContextMenuButton.cs" />

@@ -1,82 +1,94 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
-using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public abstract class BaseSwitch : FrameworkElement {
-        private readonly UIElementCollection _uiElementCollection;
-
         [CanBeNull]
         protected abstract UIElement GetChild();
 
+        private readonly List<UIElement> _registeredElements = new List<UIElement>(2);
         private UIElement _child;
         private bool _busy;
 
-        protected override IEnumerator LogicalChildren => _uiElementCollection.GetEnumerator();
+        protected IReadOnlyList<UIElement> RegisteredElements => _registeredElements;
 
-        protected override int VisualChildrenCount => _uiElementCollection.Count;
-
-        protected override Visual GetVisualChild(int index) {
-            return _uiElementCollection[index];
+        protected int IndexOf(UIElement child) {
+            return _registeredElements.IndexOf(child);
         }
 
-        protected BaseSwitch() {
-            _uiElementCollection = new UIElementCollection(this, this);
+        protected override IEnumerator LogicalChildren => ((IEnumerable)_registeredElements).GetEnumerator();
+
+        protected override int VisualChildrenCount => _child == null ? 0 : 1;
+
+        protected override Visual GetVisualChild(int index) {
+            if (index != 0 || _child == null) throw new ArgumentOutOfRangeException();
+            return _child;
         }
 
         protected void ClearRegisteredChildren() {
-            _uiElementCollection.Clear();
+            foreach (var element in _registeredElements) {
+                RemoveLogicalChild(element);
+            }
+            _registeredElements.Clear();
         }
 
         protected void RegisterChild(UIElement oldChild, UIElement newChild) {
             if (oldChild == newChild) return;
-            if (oldChild != null) _uiElementCollection.Remove(oldChild);
-            if (newChild != null) _uiElementCollection.Add(newChild);
+            Debug.Assert(oldChild == null || oldChild != _child);
+
+            if (oldChild != null) {
+                var i = _registeredElements.IndexOf(oldChild);
+                if (i != -1) {
+                    RemoveLogicalChild(oldChild);
+                    _registeredElements.RemoveAt(i);
+                }
+            }
+
+            if (newChild != null) {
+                AddLogicalChild(newChild);
+                _registeredElements.Add(newChild);
+            }
+
+            RefreshActiveChild();
         }
 
         private void SetActiveChild([CanBeNull] UIElement child) {
             if (ReferenceEquals(_child, child) || _busy) return;
             try {
                 _busy = true;
+                RemoveVisualChild(_child);
+                AddVisualChild(child);
                 _child = child;
-                foreach (UIElement element in _uiElementCollection) {
-                    element.Visibility = element == child ? Visibility.Visible : Visibility.Collapsed;
-                }
             } finally {
                 _busy = false;
             }
         }
 
-        private void UpdateActiveChild() {
-            SetActiveChild(GetChild());
-        }
-
-        protected static void OnChildSettingPropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
-            if (!(sender is BaseSwitch b)) return;
-            b.RegisterChild((UIElement)e.OldValue, (UIElement)e.NewValue);
-            b.UpdateActiveChild();
-        }
-
-        protected static void OnChildDefiningPropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
-            if (!(sender is BaseSwitch b)) return;
-            b.UpdateActiveChild();
-        }
-
-        public override void OnApplyTemplate() {
-            base.OnApplyTemplate();
-            UpdateActiveChild();
-        }
-
-        protected static void OnWhenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            if (d is UIElement element) {
-                element.GetParent<BaseSwitch>()?.UpdateActiveChild();
+        public void RefreshActiveChild() {
+            if (GetChild() != _child) {
+                InvalidateMeasure();
             }
         }
 
+        protected static void OnChildRegisteringPropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
+            if (!(sender is BaseSwitch b)) return;
+            b.RegisterChild((UIElement)e.OldValue, (UIElement)e.NewValue);
+            b.RefreshActiveChild();
+        }
+
+        protected static void OnChildSelectingPropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
+            if (!(sender is BaseSwitch b)) return;
+            b.RefreshActiveChild();
+        }
+
         protected override Size MeasureOverride(Size constraint) {
+            SetActiveChild(GetChild());
+
             var child = _child;
             if (child == null) return new Size();
             child.Measure(constraint);

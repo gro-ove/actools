@@ -6,115 +6,39 @@ using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public class BooleanLazySwitch : BaseLazySwitch {
-        private UIElement _lastChild;
-        private object _lashChildKey;
-
-        [CanBeNull]
-        private UIElement GetChildByKey([CanBeNull] object key) {
-            if (key != _lashChildKey) {
-                _lashChildKey = key;
-                _lastChild = key == null ? null : TryFindResource(key) as UIElement;
-            }
-
-            return _lastChild;
-        }
-
-        protected override UIElement GetChild() {
-            var v = Value;
-            var key = v ? TrueResourceKey : FalseResourceKey;
-            var format = v ? TrueResourceKeyStringFormat : FalseResourceKeyStringFormat;
-
-            if (format != null) {
-                key = string.Format(format, key);
-            }
-
-            var result = GetChildByKey(key);
-            if (CollapseIfMissing) {
-                Visibility = result == null ? Visibility.Collapsed : Visibility.Visible;
-            }
-
-            return result;
-        }
-
-        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(bool),
-                typeof(BooleanLazySwitch), new FrameworkPropertyMetadata(false, OnChildDefiningPropertyChanged));
-
-        public bool Value {
-            get => GetValue(ValueProperty) as bool? == true;
-            set => SetValue(ValueProperty, value);
-        }
-
-        public static readonly DependencyProperty TrueResourceKeyProperty = DependencyProperty.Register(nameof(TrueResourceKey), typeof(object),
-                typeof(BooleanLazySwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
-
-        public object TrueResourceKey {
-            get => GetValue(TrueResourceKeyProperty);
-            set => SetValue(TrueResourceKeyProperty, value);
-        }
-
-        public static readonly DependencyProperty FalseResourceKeyProperty = DependencyProperty.Register(nameof(FalseResourceKey), typeof(object),
-                typeof(BooleanLazySwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
-
-        public object FalseResourceKey {
-            get => GetValue(FalseResourceKeyProperty);
-            set => SetValue(FalseResourceKeyProperty, value);
-        }
-
-        public static readonly DependencyProperty TrueResourceKeyStringFormatProperty = DependencyProperty.Register(nameof(TrueResourceKeyStringFormat),
-                typeof(string), typeof(BooleanLazySwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
-
-        public string TrueResourceKeyStringFormat {
-            get => (string)GetValue(TrueResourceKeyStringFormatProperty);
-            set => SetValue(TrueResourceKeyStringFormatProperty, value);
-        }
-
-        public static readonly DependencyProperty FalseResourceKeyStringFormatProperty = DependencyProperty.Register(nameof(FalseResourceKeyStringFormat),
-                typeof(string), typeof(BooleanLazySwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
-
-        public string FalseResourceKeyStringFormat {
-            get => (string)GetValue(FalseResourceKeyStringFormatProperty);
-            set => SetValue(FalseResourceKeyStringFormatProperty, value);
-        }
-
-        public static readonly DependencyProperty CollapseIfMissingProperty = DependencyProperty.Register(nameof(CollapseIfMissing), typeof(bool),
-                typeof(BooleanLazySwitch), new PropertyMetadata(false, (o, e) => { ((BooleanLazySwitch)o)._collapseIfMissing = (bool)e.NewValue; }));
-
-        private bool _collapseIfMissing;
-
-        public bool CollapseIfMissing {
-            get => _collapseIfMissing;
-            set => SetValue(CollapseIfMissingProperty, value);
-        }
-    }
-
     [ContentProperty(nameof(Definitions))]
     public class LazySwitch : BaseLazySwitch {
         public LazySwitch() {
-            Definitions = new ObservableCollection<LazySwitchDefinition>();
+            _definitions = new ObservableCollection<LazySwitchDefinition>();
+            SetValue(DefinitionsProperty, _definitions);
         }
 
         protected override UIElement GetChild() {
-            var value = Value;
-            var key = (Definitions.FirstOrDefault(x => x.When.XamlEquals(value)) ?? Definitions.FirstOrDefault(x => x.When == null))?.ResourceKey;
-            return key == null ? null : TryFindResource(key) as UIElement;
+            var value = _value;
+            var key = (_definitions.FirstOrDefault(x => x.When.XamlEquals(value)) ?? _definitions.FirstOrDefault(x => x.When == null))?.ResourceKey;
+            return GetChildFromResources(key);
         }
 
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(object),
-                typeof(LazySwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
+                typeof(LazySwitch), new PropertyMetadata(null, (o, e) => {
+                    ((LazySwitch)o)._value = e.NewValue;
+                    OnChildAffectingPropertyChanged(o, e);
+                }));
 
-        [CanBeNull]
+        private object _value;
+
         public object Value {
-            get => GetValue(ValueProperty);
+            get => _value;
             set => SetValue(ValueProperty, value);
         }
 
-        public static readonly DependencyProperty DefinitionsProperty = DependencyProperty.Register(nameof(Definitions),
-                typeof(ObservableCollection<LazySwitchDefinition>),
+        public static readonly DependencyProperty DefinitionsProperty = DependencyProperty.Register(nameof(Definitions), typeof(ObservableCollection<LazySwitchDefinition>),
                 typeof(LazySwitch));
 
+        private readonly ObservableCollection<LazySwitchDefinition> _definitions;
+
         public ObservableCollection<LazySwitchDefinition> Definitions {
-            get => (ObservableCollection<LazySwitchDefinition>)GetValue(DefinitionsProperty);
+            get => _definitions;
             set => SetValue(DefinitionsProperty, value);
         }
     }

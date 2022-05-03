@@ -10,6 +10,8 @@ using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
     public static class TheSetupMarketApiProvider {
+        public static bool OptionResurrect = false;
+
         private static ApiCacheThing _cache;
         private static ApiCacheThing Cache => _cache ?? (_cache = new ApiCacheThing("The Setup Market", TimeSpan.FromHours(24)));
 
@@ -85,6 +87,10 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
         public static async Task<List<RemoteSetupInformation>> GetAvailableSetupsInner(string carId, CancellationToken cancellation = default) {
             var now = DateTime.Now;
             if (_errorSkip.HasValue && now < _errorSkip.Value) {
+                return null;
+            }
+
+            if (!OptionResurrect) {
                 return null;
             }
 

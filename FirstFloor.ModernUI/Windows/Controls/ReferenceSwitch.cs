@@ -5,31 +5,46 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     [ContentProperty(nameof(NonNull))]
     public class ReferenceSwitch : BaseSwitch {
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(object),
-                typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
+                typeof(ReferenceSwitch), new PropertyMetadata(null, (o, e) => {
+                    ((ReferenceSwitch)o)._value = e.NewValue;
+                    OnChildSelectingPropertyChanged(o, e);
+                }));
+
+        private object _value;
 
         public object Value {
-            get => GetValue(ValueProperty);
+            get => _value;
             set => SetValue(ValueProperty, value);
         }
 
         public static readonly DependencyProperty NullProperty = DependencyProperty.Register(nameof(Null), typeof(UIElement),
-                typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, OnChildSettingPropertyChanged));
+                typeof(ReferenceSwitch), new PropertyMetadata(null, (o, e) => {
+                    ((ReferenceSwitch)o)._null = (UIElement)e.NewValue;
+                    OnChildRegisteringPropertyChanged(o, e);
+                }));
+
+        private UIElement _null;
 
         public UIElement Null {
-            get => (UIElement)GetValue(NullProperty);
+            get => _null;
             set => SetValue(NullProperty, value);
         }
 
         public static readonly DependencyProperty NonNullProperty = DependencyProperty.Register(nameof(NonNull), typeof(UIElement),
-                typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, OnChildSettingPropertyChanged));
+                typeof(ReferenceSwitch), new PropertyMetadata(null, (o, e) => {
+                    ((ReferenceSwitch)o)._nonNull = (UIElement)e.NewValue;
+                    OnChildRegisteringPropertyChanged(o, e);
+                }));
+
+        private UIElement _nonNull;
 
         public UIElement NonNull {
-            get => (UIElement)GetValue(NonNullProperty);
+            get => _nonNull;
             set => SetValue(NonNullProperty, value);
         }
 
         protected override UIElement GetChild() {
-            return Value == null ? Null : NonNull;
+            return _value == null ? _null : _nonNull;
         }
     }
 }
