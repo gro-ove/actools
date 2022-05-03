@@ -7,7 +7,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Controls {
     [ContentProperty(nameof(NonNull))]
-    public class LazierSwitch : BaseSwitch {
+    public class LazierSwitch : BaseLazySwitch {
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(Lazier),
                 typeof(LazierSwitch), new FrameworkPropertyMetadata(null, OnValuePropertyChanged));
 

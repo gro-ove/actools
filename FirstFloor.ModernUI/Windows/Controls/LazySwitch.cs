@@ -6,7 +6,7 @@ using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public class BooleanLazySwitch : BaseSwitch {
+    public class BooleanLazySwitch : BaseLazySwitch {
         private UIElement _lastChild;
         private object _lashChildKey;
 
@@ -89,7 +89,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     }
 
     [ContentProperty(nameof(Definitions))]
-    public class LazySwitch : BaseSwitch {
+    public class LazySwitch : BaseLazySwitch {
         public LazySwitch() {
             Definitions = new ObservableCollection<LazySwitchDefinition>();
         }

@@ -13,7 +13,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty TrueProperty = DependencyProperty.Register(nameof(True), typeof(UIElement),
-                typeof(BooleanSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
+                typeof(BooleanSwitch), new FrameworkPropertyMetadata(null, OnChildSettingPropertyChanged));
 
         public UIElement True {
             get => (UIElement)GetValue(TrueProperty);
@@ -21,7 +21,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty FalseProperty = DependencyProperty.Register(nameof(False), typeof(UIElement),
-                typeof(BooleanSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
+                typeof(BooleanSwitch), new FrameworkPropertyMetadata(null, OnChildSettingPropertyChanged));
 
         public UIElement False {
             get => (UIElement)GetValue(FalseProperty);

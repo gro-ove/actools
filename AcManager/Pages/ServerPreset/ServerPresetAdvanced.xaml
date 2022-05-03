@@ -162,33 +162,35 @@
           <Label Content="Extra plugins:" />
           <Button DockPanel.Dock="Right" Margin="8 0 0 0" Content="Add new plugin" Command="{Binding SelectedObject.AddPluginEntryCommand}"
               VerticalAlignment="Top" />
-          <mui:Cell>
-            <mui:PlaceholderTextBlock Placeholder="None"
-                Visibility="{Binding SelectedObject.PluginEntries.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" />
-            <ItemsControl ItemsSource="{Binding SelectedObject.PluginEntries}"
-                Visibility="{Binding SelectedObject.PluginEntries.Count, Converter={StaticResource MoreToVisibilityConverter}}">
-              <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                  <mui:SpacingStackPanel Spacing="8" />
-                </ItemsPanelTemplate>
-              </ItemsControl.ItemsPanel>
-              <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                  <Grid>
-                    <Grid.ColumnDefinitions>
-                      <ColumnDefinition Width="2*" />
-                      <ColumnDefinition Width="1*" />
-                      <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <mui:BetterTextBox Text="{Binding Address}" Placeholder="Address" />
-                    <mui:BetterTextBox Grid.Column="1" Text="{Binding UdpPort}" Placeholder="Local port" Mode="Integer" Minimum="1" Maximum="65535"
-                        Margin="4 0 0 0" />
-                    <Button Grid.Column="2" Content="Remove plugin entry" Command="{Binding DeleteCommand}" Margin="4 0 0 0" VerticalAlignment="Top" />
-                  </Grid>
-                </DataTemplate>
-              </ItemsControl.ItemTemplate>
-            </ItemsControl>
-          </mui:Cell>
+          <mui:BooleanSwitch Value="{Binding SelectedObject.PluginEntries.Count, Converter={StaticResource MoreConverter}}">
+            <mui:BooleanSwitch.False>
+              <mui:PlaceholderTextBlock Placeholder="None" />
+            </mui:BooleanSwitch.False>
+            <mui:BooleanSwitch.True>
+              <ItemsControl ItemsSource="{Binding SelectedObject.PluginEntries}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <mui:SpacingStackPanel Spacing="8" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Grid>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="Auto" />
+                      </Grid.ColumnDefinitions>
+                      <mui:BetterTextBox Text="{Binding Address}" Placeholder="Address" />
+                      <mui:BetterTextBox Grid.Column="1" Text="{Binding UdpPort}" Placeholder="Local port" Mode="Integer" Minimum="1" Maximum="65535"
+                          Margin="4 0 0 0" />
+                      <Button Grid.Column="2" Content="Remove plugin entry" Command="{Binding DeleteCommand}" Margin="4 0 0 0" VerticalAlignment="Top" />
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </mui:BooleanSwitch.True>
+          </mui:BooleanSwitch>
         </DockPanel>
 
         <StackPanel DataContext="{Binding SelectedObject}" Visibility="{Binding UseCmPlugin, Converter={StaticResource BooleanToVisibilityConverter}}">

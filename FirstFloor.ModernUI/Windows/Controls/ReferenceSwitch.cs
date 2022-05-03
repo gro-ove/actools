@@ -13,7 +13,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty NullProperty = DependencyProperty.Register(nameof(Null), typeof(UIElement),
-                typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
+                typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, OnChildSettingPropertyChanged));
 
         public UIElement Null {
             get => (UIElement)GetValue(NullProperty);
@@ -21,7 +21,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty NonNullProperty = DependencyProperty.Register(nameof(NonNull), typeof(UIElement),
-                typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
+                typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, OnChildSettingPropertyChanged));
 
         public UIElement NonNull {
             get => (UIElement)GetValue(NonNullProperty);

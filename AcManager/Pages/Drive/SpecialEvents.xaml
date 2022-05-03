@@ -79,7 +79,7 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <mui:Switch Value="{Binding List.Count}" Style="{StaticResource ContentRootWithPadding}" ResetElementNameBindings="True">
+  <mui:Switch Value="{Binding List.Count}" Style="{StaticResource ContentRootWithPadding}">
     <mui:Cell mui:Switch.When="0">
       <TextBlock Text="{x:Static g:AppStrings.Online_NothingToDisplay}" Style="{StaticResource Heading1}" TextAlignment="Center" />
     </mui:Cell>

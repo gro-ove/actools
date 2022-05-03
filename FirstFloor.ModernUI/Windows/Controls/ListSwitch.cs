@@ -23,6 +23,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public bool IsSynchronized => ((IList)UiElements).IsSynchronized;
 
         public void RemoveAt(int index) {
+            RegisterChild(UiElements[index], null);
             UiElements.RemoveAt(index);
         }
 
@@ -31,6 +32,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set {
                 var vc = UiElements;
                 if (!ReferenceEquals(vc[index], value)) {
+                    RegisterChild(vc[index], value);
                     vc[index] = value;
                     InvalidateMeasure();
                 }
@@ -42,12 +44,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public virtual void Clear() {
+            ClearRegisteredChildren();
             UiElements.Clear();
         }
 
         public int Add(UIElement element) {
             InvalidateMeasure();
             UiElements.Add(element);
+            RegisterChild(null, element);
             return UiElements.Count;
         }
 
@@ -57,11 +61,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public void Insert(int index, UIElement element) {
             InvalidateMeasure();
+            RegisterChild(null, element);
             UiElements.Insert(index, element);
         }
 
         public void Remove(UIElement element) {
             UiElements.Remove(element);
+            RegisterChild(element, null);
         }
 
         int IList.Add(object value) {

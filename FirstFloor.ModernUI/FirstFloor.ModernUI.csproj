@@ -216,6 +216,7 @@
     <Compile Include="Windows\CompositionTargetEx.cs" />
     <Compile Include="Windows\Controls\AdornedControl.cs" />
     <Compile Include="Windows\Controls\AsyncButton.cs" />
+    <Compile Include="Windows\Controls\BaseLazySwitch.cs" />
     <Compile Include="Windows\Controls\BaseSwitch.cs" />
     <Compile Include="Windows\Controls\BbCode\BbCodeParser.Image.cs" />
     <Compile Include="Windows\Controls\BetterComboBox.cs" />
