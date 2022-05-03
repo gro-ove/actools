@@ -144,7 +144,9 @@ namespace AcManager.Tools.Managers.Online {
         public IEnumerable GetErrors(string propertyName) {
             switch (propertyName) {
                 case nameof(Password):
-                    return PasswordIsWrong ? new[] { "Password is wrong" } : null;
+                    return PasswordIsWrong ? new[] {
+                        PasswordRequired && string.IsNullOrEmpty(Password) ? ToolsStrings.ServerEntry_PasswordIsRequired : ToolsStrings.ServerEntry_PasswordIsWrong
+                    } : null;
                 default:
                     return null;
             }

@@ -241,27 +241,18 @@ namespace AcManager.Tools.Helpers.Api {
         /// <returns>True if parsing is successful.</returns>
         public static bool ParseAddress(string address, out string ip, out int port) {
             try {
-                var parsed = Regex.Match(address, @"^(?:.*//)?((?:\d+\.){3}\d+)(?::(\d+))?(?:/.*)?$");
-                if (!parsed.Success) {
-                    parsed = Regex.Match(address, @"^(?:.*//)?([\w\.]+)(?::(\d+))(?:/.*)?$");
-                    if (!parsed.Success) {
-                        ip = null;
-                        port = 0;
-                        return false;
-                    }
-
-                    ip = Dns.GetHostEntry(parsed.Groups[1].Value).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).ToString();
-                } else {
+                var parsed = Regex.Match(address, @"^(?:.*//)?([\w\.]+)(?::(\d+))?(?:/.*)?$");
+                if (parsed.Success) {
                     ip = parsed.Groups[1].Value;
+                    port = parsed.Groups[2].Success ? int.Parse(parsed.Groups[2].Value, CultureInfo.InvariantCulture) : -1;
+                    return true;
                 }
-
-                port = parsed.Groups[2].Success ? int.Parse(parsed.Groups[2].Value, CultureInfo.InvariantCulture) : -1;
-                return true;
-            } catch {
-                ip = null;
-                port = 0;
-                return false;
+            } catch (Exception e) {
+                Logging.Warning(e);
             }
+            ip = null;
+            port = 0;
+            return false;
         }
 
         private static ServerInformationComplete PrepareLoadedDirectly(ServerInformationComplete result, string ip) {
@@ -438,7 +429,7 @@ namespace AcManager.Tools.Helpers.Api {
             return Dns.GetHostEntry(address).AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork);
         }
 
-        private static Task<IPAddress> ParseIPAddressAsync(string address) {
+        private static Task<IPAddress> ParseIpAddressAsync(string address) {
             if (address.IndexOf(':') != -1 || _ipRegex.IsMatch(address)) return Task.FromResult(IPAddress.Parse(address));
             return Dns.GetHostEntryAsync(address).ContinueWith(r => r.Result.AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork),
                     TaskContinuationOptions.OnlyOnRanToCompletion);
@@ -462,7 +453,7 @@ namespace AcManager.Tools.Helpers.Api {
 
                 try {
                     var bytes = BitConverter.GetBytes(200);
-                    var endpoint = new IPEndPoint(await ParseIPAddressAsync(ip), port);
+                    var endpoint = new IPEndPoint(await ParseIpAddressAsync(ip), port);
                     if (logging) Logging.Debug("Sending bytes to: " + endpoint);
 
                     await Task.Factory.FromAsync(socket.BeginSendTo(bytes, 0, bytes.Length, SocketFlags.None, endpoint, null, socket),
