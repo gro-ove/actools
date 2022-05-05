@@ -90,24 +90,45 @@ namespace AcManager.Controls.UserControls.Web {
             _newWindowsBehavior = mode;
         }
 
-
         public event EventHandler<UrlEventArgs> PageLoadingStarted;
         public event EventHandler<UrlEventArgs> PageLoaded;
         public event EventHandler<PageLoadingEventArgs> LoadingStateChanged;
         public event EventHandler<NewWindowEventArgs> NewWindow;
-        public event EventHandler<UrlEventArgs> AddressChanged;
+
+        public event EventHandler<UrlEventArgs> AddressChanged {
+            add { }
+            remove { }
+        }
+
         public event EventHandler<TitleChangedEventArgs> TitleChanged;
-        public event EventHandler<FaviconChangedEventArgs> FaviconChanged;
+
+        public event EventHandler<FaviconChangedEventArgs> FaviconChanged {
+            add { }
+            remove { }
+        }
+
         public bool SupportsFavicons => false;
 
         public bool CanHandleAcApiRequests => false;
-        public event EventHandler<AcApiRequestEventArgs> AcApiRequest;
+
+        public event EventHandler<AcApiRequestEventArgs> AcApiRequest {
+            add { }
+            remove { }
+        }
 
         public bool IsInjectSupported => false;
-        public event EventHandler<WebInjectEventArgs> Inject;
+
+        public event EventHandler<WebInjectEventArgs> Inject {
+            add { }
+            remove { }
+        }
 
         public bool AreHeadersSupported => false;
-        public event EventHandler<WebHeadersEventArgs> Headers;
+
+        public event EventHandler<WebHeadersEventArgs> Headers {
+            add { }
+            remove { }
+        }
 
         public bool CanConvertFilenames => true;
 
@@ -241,7 +262,7 @@ namespace AcManager.Controls.UserControls.Web {
         public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand<bool?>(
                 noCache => _inner?.Refresh(noCache == true ? WebBrowserRefreshOption.Completely : WebBrowserRefreshOption.Normal)));
 
-        public void OnLoaded() {}
+        public void OnLoaded() { }
 
         public void OnUnloaded() {
             DisposeHelper.Dispose(ref _inner);

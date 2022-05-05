@@ -45,7 +45,7 @@ namespace AcManager.Tools.Objects {
         public void SetValues(string author, string informationUrl, string version) {
             Author = author;
             Url = informationUrl;
-            Version = version;
+            if (version.CompareAsVersionTo(Version) > 0) Version = version;
             SaveAsync();
         }
 

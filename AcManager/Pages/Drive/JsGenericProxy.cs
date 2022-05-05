@@ -8,8 +8,10 @@ using AcManager.CustomShowroom;
 using AcManager.Tools;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Data;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.SemiGui;
 using AcTools;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -84,7 +86,9 @@ namespace AcManager.Pages.Drive {
 
         public bool executeCommand(string command) {
             if (command.IsAnyUrl()) {
-                ArgumentsHandler.ProcessArguments(new[] { command }, true).Ignore();
+                using (GameWrapper.SetPropertiesCallback(p => p.SetAdditional(new LiveServiceMark("Generic")))) {
+                    ArgumentsHandler.ProcessArguments(new[] { command }, true).Ignore();
+                }
                 return true;
             }
             return false;

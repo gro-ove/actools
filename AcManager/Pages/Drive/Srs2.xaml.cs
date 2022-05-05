@@ -16,6 +16,7 @@ using AcManager.Controls.UserControls.Web;
 using AcManager.Controls.ViewModels;
 using AcManager.Properties;
 using AcManager.Tools.Data;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
@@ -129,6 +130,9 @@ namespace AcManager.Pages.Drive {
                                         Nationality = name?.Nationality
                                     };
                                 })
+                    },
+                    AdditionalPropertieses = {
+                        new LiveServiceMark("SRS")
                     }
                 });
             }, () => SelectedCar != null && Track != null));

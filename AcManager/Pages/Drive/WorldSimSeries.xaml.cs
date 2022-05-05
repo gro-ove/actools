@@ -133,7 +133,8 @@ namespace AcManager.Pages.Drive {
                                 Nationality = obj.GetStringValueOnly("driverNationality"),
                                 NationCode = obj.GetStringValueOnly("driverNationCode"),
                                 Team = obj.GetStringValueOnly("driverTeam"),
-                            }
+                            },
+                            new LiveServiceMark("WorldSimSeries")
                         }
                     });
                     callback?.ExecuteAsync(result?.IsNotCancelled);

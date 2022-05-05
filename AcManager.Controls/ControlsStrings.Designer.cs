@@ -1763,6 +1763,99 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to • Average FPS: [b]{0:F1}[/b] ([b]{1:F3}[/b] ms);
+        ///• Minimum FPS: {2};
+        ///• Taken: [b]{3}[/b];
+        ///• Test time: [b]{4}[/b]..
+        /// </summary>
+        public static string GameDialog_BenchmarkResults {
+            get {
+                return ResourceManager.GetString("GameDialog_BenchmarkResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [b]{0:F1}[/b] ([b]{1:F3}[/b] ms).
+        /// </summary>
+        public static string GameDialog_BenchmarkResults_MinFps {
+            get {
+                return ResourceManager.GetString("GameDialog_BenchmarkResults_MinFps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [b]N/A[/b].
+        /// </summary>
+        public static string GameDialog_BenchmarkResults_Na {
+            get {
+                return ResourceManager.GetString("GameDialog_BenchmarkResults_Na", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} sample.
+        /// </summary>
+        public static string GameDialog_BenchmarkResults_Samples {
+            get {
+                return ResourceManager.GetString("GameDialog_BenchmarkResults_Samples", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replay name.
+        /// </summary>
+        public static string GameDialog_ReplayName {
+            get {
+                return ResourceManager.GetString("GameDialog_ReplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replay name: .
+        /// </summary>
+        public static string GameDialog_ReplayNameSuggested {
+            get {
+                return ResourceManager.GetString("GameDialog_ReplayNameSuggested", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved as “{0}”.
+        /// </summary>
+        public static string GameDialog_SavedReplayAs {
+            get {
+                return ResourceManager.GetString("GameDialog_SavedReplayAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save replay as:.
+        /// </summary>
+        public static string GameDialog_SaveReplayAs {
+            get {
+                return ResourceManager.GetString("GameDialog_SaveReplayAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share replay.
+        /// </summary>
+        public static string GameDialog_ShareReplay {
+            get {
+                return ResourceManager.GetString("GameDialog_ShareReplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suggested replay name: “{0}”.
+        /// </summary>
+        public static string GameDialog_SuggestedReplayName {
+            get {
+                return ResourceManager.GetString("GameDialog_SuggestedReplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t save image.
         /// </summary>
         public static string ImageViewer_CannotSave {
@@ -2407,6 +2500,60 @@ namespace AcManager.Controls {
         public static string SelectDialog_RatingTitle {
             get {
                 return ResourceManager.GetString("SelectDialog_RatingTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CM launch event command:.
+        /// </summary>
+        public static string Settings_Drive_CMLaunch {
+            get {
+                return ResourceManager.GetString("Settings_Drive_CMLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically check and fix controllers order before the race.
+        /// </summary>
+        public static string Settings_Drive_FixControllersOrder {
+            get {
+                return ResourceManager.GetString("Settings_Drive_FixControllersOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep alive for:.
+        /// </summary>
+        public static string Settings_Drive_RhmKeepAlive {
+            get {
+                return ResourceManager.GetString("Settings_Drive_RhmKeepAlive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How long RHM will be running after the race (to avoid restarting it over and over).
+        /// </summary>
+        public static string Settings_Drive_RhmKeepAlive_ToolTip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_RhmKeepAlive_ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  {session}.
+        /// </summary>
+        public static string Settings_Drive_SessionFormat {
+            get {
+                return ResourceManager.GetString("Settings_Drive_SessionFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AC’s shared memory:.
+        /// </summary>
+        public static string Settings_Drive_SharedMemory {
+            get {
+                return ResourceManager.GetString("Settings_Drive_SharedMemory", resourceCulture);
             }
         }
         

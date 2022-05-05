@@ -22,6 +22,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected DpiAwareWindow() {
             Logging.SetParent(this);
 
+            if (Mouse.LeftButton == MouseButtonState.Pressed) {
+                PreviewMouseUp += PreventMouseUpEvent;
+                WaitToReactivateHitTestAsync().Ignore();
+            }
+
             SizeChanged += OnSizeChanged;
             Loaded += OnLoaded;
             Unloaded += OnUnloaded;
@@ -39,6 +44,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             NewWindowCreated?.Invoke(this, EventArgs.Empty);
+        }
+
+        private static void PreventMouseUpEvent(object sender, MouseButtonEventArgs args) {
+            args.Handled = true;
+        }
+
+        private async Task WaitToReactivateHitTestAsync() {
+            while (Mouse.LeftButton == MouseButtonState.Pressed) {
+                await Task.Delay(20);
+            }
+            PreviewMouseUp -= PreventMouseUpEvent;
         }
 
         #region Keep track of the last active window to make sure new ones are shown where needed

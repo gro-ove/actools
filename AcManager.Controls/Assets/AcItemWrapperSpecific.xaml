@@ -620,7 +620,7 @@
         <DataTemplate DataType="{x:Type t:CarObject}">
           <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="{DynamicResource ThumbnailBackground}" ClipToBounds="True" c:ToolTips.GenericObject="{Binding}"
               c:ContextMenus.GenericObject="{Binding}">
-            <mui:BetterImage Filename="{Binding SelectedSkinLazy.PreviewImage}" AsyncDecode="True" ClearOnChange="True" DecodeWidth="320" Stretch="UniformToFill"
+            <mui:BetterImage Filename="{Binding SelectedSkinLazy.Value.PreviewImage}" AsyncDecode="True" ClearOnChange="True" DecodeWidth="320" Stretch="UniformToFill"
                 Margin="-8 -10 -8 0" CollapseIfNull="True" />
             <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom">
               <c:CarIcon Width="12" Height="12" DockPanel.Dock="Left" Margin="2 0 4 0" VerticalAlignment="Center" Car="{Binding}" ClearOnChange="True" />

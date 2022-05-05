@@ -14,6 +14,8 @@ using JetBrains.Annotations;
 namespace AcManager.Controls.Presentation {
     public static class ExtraProgressRings {
         private static Dictionary<string, Style> _styles;
+
+        [CanBeNull]
         public static IReadOnlyDictionary<string, Style> Styles => _styles;
 
         public static void Initialize() {

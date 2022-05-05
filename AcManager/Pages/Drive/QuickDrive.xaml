@@ -250,10 +250,10 @@
             </mui:BetterComboBox.Template>
             <ComboBox.ItemTemplate>
               <DataTemplate>
-                <CheckBox x:Name="PART_Content" IsChecked="{Binding IsActive}" Margin="0 -1 0 1" Height="18">
+                <CheckBox x:Name="PART_Content" IsChecked="{Binding IsActive}" Margin="0 -1 0 1" Height="18" HorizontalAlignment="Stretch">
                   <CheckBox.Template>
                     <ControlTemplate TargetType="{x:Type CheckBox}">
-                      <Border Background="Transparent" Margin="-10 -2" Padding="10 2">
+                      <Border Background="Transparent" Margin="-10 -2" Padding="10 2" HorizontalAlignment="Stretch">
                         <DockPanel x:Name="LayoutRoot">
                           <Border x:Name="CheckBorder" Width="16" Height="16" Margin="0 1 4 0" Background="{TemplateBinding Background}"
                               BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" DockPanel.Dock="Left">

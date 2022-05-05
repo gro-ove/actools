@@ -248,7 +248,7 @@ namespace AcManager.Pages.Dialogs {
 
             public ICommand ApplyCommand => _applyCommand ?? (_applyCommand = new DelegateCommand(() => {
                 Logging.Write($"[Initial setup] AC root=“{Value}”, Steam ID=“{SteamProfile.SteamId}”");
-                AcRootDirectory.Instance.Value = Value?.Trim();
+                AcRootDirectory.Instance.RawValue = Value?.Trim();
                 SteamIdHelper.Instance.Value = SteamProfile.SteamId;
                 JustReviewed();
                 _getSteamIdCommand?.RaiseCanExecuteChanged();

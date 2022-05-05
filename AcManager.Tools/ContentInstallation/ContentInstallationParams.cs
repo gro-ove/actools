@@ -57,7 +57,7 @@ namespace AcManager.Tools.ContentInstallation {
             if (manager == null) return;
 
             // TODO: Make it firmer
-            progress.Report(new AsyncProgressEntry("Syncing versions…", 0.9999));
+            progress.Report(new AsyncProgressEntry(ToolsStrings.ContentInstallationParams_SyncingVersions, 0.9999));
             await Task.Delay(1000);
             foreach (var cupSupportedObject in IdsToUpdate.Select(x => manager.GetObjectById(x) as ICupSupportedObject).NonNull()) {
                 Logging.Debug($"Set values: {cupSupportedObject}={Version}");

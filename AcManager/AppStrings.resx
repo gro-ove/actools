@@ -33,7 +33,7 @@
       Each data row contains a name, and value. The row also contains a
       type or mimetype. Type corresponds to a .NET class that support
       text/value conversion through the TypeConverter architecture.
-      Classes that don't support this are serialized and stored with the
+      Classes that don’t support this are serialized and stored with the
       mimetype set.
 
       The mimetype is used for serialized objects, and tells the
@@ -413,7 +413,7 @@ Author: [b]{3}[/b]</value>
     <value>New starter is ready, now without any patching at all</value>
   </data>
   <data name="Main_OfficialSupportNotification_Message" xml:space="preserve">
-    <value>Since 1.7 Kunos added an official support for custom launchers. Basically, it works like Starter+, but now CM doesn't have to replace AssettoCorsa.exe, and it's great! Would you like to switch to a new Official Starter?</value>
+    <value>Since 1.7 Kunos added an official support for custom launchers. Basically, it works like Starter+, but now CM doesn’t have to replace AssettoCorsa.exe, and it’s great! Would you like to switch to a new Official Starter?</value>
   </data>
   <data name="Main_CannotProcessArgument" xml:space="preserve">
     <value>Can’t process argument: “{0}”</value>
@@ -556,7 +556,7 @@ Author: [b]{3}[/b]</value>
     <value>By the way, try shortcuts like F6/Ctrl+T/Ctrl+W/Ctrl+Tab/etc.</value>
   </data>
   <data name="Settings_Appearance_PopupToolbars_Tooltip" xml:space="preserve">
-    <value>Don't forget, there is a keyboard shortcut for every button</value>
+    <value>Don’t forget, there is a keyboard shortcut for every button</value>
   </data>
   <data name="Common_Restart" xml:space="preserve">
     <value>Restart</value>
@@ -583,7 +583,7 @@ Author: [b]{3}[/b]</value>
     <value>Limit search to Wikipedia</value>
   </data>
   <data name="Settings_Content_ChangeBrandIcon" xml:space="preserve">
-    <value>Change brand's icon automatically</value>
+    <value>Change brand’s icon automatically</value>
   </data>
   <data name="Settings_Content_CarsHeader" xml:space="preserve">
     <value>Cars:</value>
@@ -673,7 +673,7 @@ Author: [b]{3}[/b]</value>
     <value>Start race immediately</value>
   </data>
   <data name="Settings_Drive_SkipPracticeResults" xml:space="preserve">
-    <value>Don't show results of Practice session</value>
+    <value>Don’t show results of Practice sessions</value>
   </data>
   <data name="Settings_Drive_PlayerNameHeader" xml:space="preserve">
     <value>Player’s name:</value>
@@ -712,14 +712,17 @@ Author: [b]{3}[/b]</value>
 
 Values for replacement:
  [b][mono]{type}[/mono][/b] — type of race;
- [b][mono]{car}[/mono][/b] — car's name;
- [b][mono]{car.id}[/mono][/b] — car's id;
- [b][mono]{track}[/mono][/b] — track's name;
- [b][mono]{track.id}[/mono][/b] — track's id.
+ [b][mono]{car}[/mono][/b] — car’s name;
+ [b][mono]{car.id}[/mono][/b] — car’s id;
+ [b][mono]{track}[/mono][/b] — track’s name;
+ [b][mono]{track.id}[/mono][/b] — track’s id.
 
 If you need some other values, please, contact us and we'll add them.
 
 Working directory will be set to Assetto Corsa folder in Documents.</value>
+  </data>
+  <data name="Settings_Drive_CMLaunch_Tooltip" xml:space="preserve">
+    <value>This command will be executed when starting Content Manager. Working directory will be set to Assetto Corsa root folder.</value>
   </data>
   <data name="Settings_Drive_PreCommandLabel" xml:space="preserve">
     <value>Pre-race event command:</value>
@@ -732,17 +735,17 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
 
 Values for replacement:
  [b][mono]{type}[/mono][/b] — type of race;
- [b][mono]{car}[/mono][/b] — car's name;
- [b][mono]{car.id}[/mono][/b] — car's id;
- [b][mono]{track}[/mono][/b] — track's name;
- [b][mono]{track.id}[/mono][/b] — track's id.
+ [b][mono]{car}[/mono][/b] — car’s name;
+ [b][mono]{car.id}[/mono][/b] — car’s id;
+ [b][mono]{track}[/mono][/b] — track’s name;
+ [b][mono]{track.id}[/mono][/b] — track’s id.
 
 If you need some other values, please, contact us and we'll add them.
 
 Working directory will be set to Assetto Corsa folder in Documents.</value>
   </data>
   <data name="Settings_Drive_CustomClouds" xml:space="preserve">
-    <value>Replace clouds by weather’s clouds if exist</value>
+    <value>Replace clouds by weather clouds if exist</value>
   </data>
   <data name="Settings_Drive_ConvertScreenshots" xml:space="preserve">
     <value>Automatically convert screenshots from BMP-format to JPEG on exit</value>
@@ -988,10 +991,10 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
 
 Values for replacement:
  [b][mono]{type}[/mono][/b] — type of race;
- [b][mono]{car}[/mono][/b] — car's name;
- [b][mono]{car.id}[/mono][/b] — car's id;
- [b][mono]{track}[/mono][/b] — track's name;
- [b][mono]{track.id}[/mono][/b] — track's id;
+ [b][mono]{car}[/mono][/b] — car’s name;
+ [b][mono]{car.id}[/mono][/b] — car’s id;
+ [b][mono]{track}[/mono][/b] — track’s name;
+ [b][mono]{track.id}[/mono][/b] — track’s id;
  [b][mono]{date}[/mono][/b] — date and time in proper format;
  [b][mono]{date_ac}[/mono][/b] — date and time in AC format.
 
@@ -1012,10 +1015,10 @@ If you need some other values, please, contact us and we’ll add them.
 
   Values for replacement:
    [b][mono]{type}[/mono][/b] — type of race;
-   [b][mono]{car}[/mono][/b] — car's name;
-   [b][mono]{car.id}[/mono][/b] — car's id;
-   [b][mono]{track}[/mono][/b] — track's name;
-   [b][mono]{track.id}[/mono][/b] — track's id;
+   [b][mono]{car}[/mono][/b] — car’s name;
+   [b][mono]{car.id}[/mono][/b] — car’s id;
+   [b][mono]{track}[/mono][/b] — track’s name;
+   [b][mono]{track.id}[/mono][/b] — track’s id;
    [b][mono]{date}[/mono][/b] — date and time in proper format;
    [b][mono]{date_ac}[/mono][/b] — date and time in AC format.
 
@@ -1031,7 +1034,7 @@ If you need some other values, please, contact us and we’ll add them.
   If you need some other values, please, contact us and we’ll add them.
 
   [b]Warning[/b]:
-   Don't use symbols like “[” or “]”!-->
+   Don’t use symbols like “[” or “]”!-->
 </data>
   <data name="Settings_AcSettingsHeader" xml:space="preserve">
     <value>AC settings:</value>
@@ -1404,7 +1407,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Open track’s folder (Ctrl+F)</value>
   </data>
   <data name="Toolbar_Folder_WeatherTooltip" xml:space="preserve">
-    <value>Open weather’s folder (Ctrl+F)</value>
+    <value>Open weather folder (Ctrl+F)</value>
   </data>
   <data name="Common_Share" xml:space="preserve">
     <value>Share link</value>
@@ -1672,10 +1675,10 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Disable edit mode</value>
   </data>
   <data name="Toolbar_UpdatePreview_WeatherTooltip" xml:space="preserve">
-    <value>Update weather’s preview (Ctrl+P)</value>
+    <value>Update weather preview (Ctrl+P)</value>
   </data>
   <data name="Toolbar_ChangeId_WeatherTooltip" xml:space="preserve">
-    <value>Change weather’s ID (Ctrl+Shift+F2)</value>
+    <value>Change weather ID (Ctrl+Shift+F2)</value>
   </data>
   <data name="Toolbar_Test_WeatherTooltip" xml:space="preserve">
     <value>Test weather on track (Ctrl+G)</value>
@@ -1694,7 +1697,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Seems empty?</value>
   </data>
   <data name="Weather_SeemsEmpty_Commentary" xml:space="preserve">
-    <value>Switch to Edit Mode if you want to modify other weather's parameters.</value>
+    <value>Switch to Edit Mode if you want to modify other weather’s parameters.</value>
   </data>
   <data name="WeatherEdit_Headlights" xml:space="preserve">
     <value>Turn on headlights</value>
@@ -2048,7 +2051,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Weather:</value>
   </data>
   <data name="Drive_Weather_Warning" xml:space="preserve">
-    <value>{}Actual weather ({0}) isn't supported</value>
+    <value>{}Actual weather ({0}) isn’t supported</value>
   </data>
   <data name="Drive_Temperature" xml:space="preserve">
     <value>Temperature</value>
@@ -2161,7 +2164,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>RSR hotlap</value>
   </data>
   <data name="Srs_Commentary" xml:space="preserve">
-    <value>Just in case, if you can't join using this section (or missed joining time), use Online section instead.</value>
+    <value>Just in case, if you can’t join using this section (or missed joining time), use Online section instead.</value>
   </data>
   <data name="Srs_IpLabel" xml:space="preserve">
     <value>IP:</value>
@@ -2319,31 +2322,31 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   </data>
   <data name="CarSpecs_Power_FormatTooltip" xml:space="preserve">
     <value>… bhp</value>
-    <comment>Don't forget to use “…” (in one symbol)!</comment>
+    <comment>Don’t forget to use “…” (in one symbol)!</comment>
   </data>
   <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
     <value>… whp</value>
-    <comment>Don't forget to use “…” (in one symbol)!</comment>
+    <comment>Don’t forget to use “…” (in one symbol)!</comment>
   </data>
   <data name="CarSpecs_Torque_FormatTooltip" xml:space="preserve">
     <value>… Nm</value>
-    <comment>Don't forget to use “…” (in one symbol)!</comment>
+    <comment>Don’t forget to use “…” (in one symbol)!</comment>
   </data>
   <data name="CarSpecs_Weight_FormatTooltip" xml:space="preserve">
     <value>… kg</value>
-    <comment>Don't forget to use “…” (in one symbol)!</comment>
+    <comment>Don’t forget to use “…” (in one symbol)!</comment>
   </data>
   <data name="CarSpecs_MaxSpeed_FormatTooltip" xml:space="preserve">
     <value>… km/h</value>
-    <comment>Don't forget to use “…” (in one symbol)!</comment>
+    <comment>Don’t forget to use “…” (in one symbol)!</comment>
   </data>
   <data name="CarSpecs_Acceleration_FormatTooltip" xml:space="preserve">
     <value>… s 0–100</value>
-    <comment>Don't forget to use “…” (in one symbol)!</comment>
+    <comment>Don’t forget to use “…” (in one symbol)!</comment>
   </data>
   <data name="CarSpecs_PwRatio_FormatTooltip" xml:space="preserve">
     <value>… kg/hp</value>
-    <comment>Don't forget to use “…” (in one symbol)!</comment>
+    <comment>Don’t forget to use “…” (in one symbol)!</comment>
   </data>
   <data name="TrackSpecs_Length_FormatTooltip" xml:space="preserve">
     <value>… m</value>
@@ -2481,7 +2484,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Resize previews to Kunos size 1022×575 (highly recommended)</value>
   </data>
   <data name="CarPreviews_DisableSweetFx_Tooltip" xml:space="preserve">
-    <value>Apparently SweetFX doesn't affect the result, but could decrease loading time</value>
+    <value>Apparently SweetFX doesn’t affect the result, but could decrease loading time</value>
   </data>
   <data name="CarPreviews_HideWatermark_Tooltip" xml:space="preserve">
     <value>Kunos watermark will be temporary hidden</value>
@@ -2807,7 +2810,7 @@ Accepted values are from -1 to 1.</value>
   </data>
   <data name="CreateShowroom_Panorama_Commentary" xml:space="preserve">
     <value>Recommended format: DDS image, 32f.32f.32f.32f, 5120×2560
-But if you don't want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</value>
+But if you don’t want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</value>
   </data>
   <data name="CreateShowroom_InShadow" xml:space="preserve">
     <value>In shadow</value>
@@ -3071,7 +3074,7 @@ But if you don't want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</value>
     <value>Screenshots format:</value>
   </data>
   <data name="AcSettings_System_ScreenshotsQuality" xml:space="preserve">
-    <value>Switch to BMP, install Magick.NET plugin and don't forget to enable automatic conversion on Settings/Drive page.</value>
+    <value>Switch to BMP, install Magick.NET plugin and don’t forget to enable automatic conversion on Settings/Drive page.</value>
   </data>
   <data name="AcSettings_ProximityIndicator" xml:space="preserve">
     <value>Proximity indicator:</value>
@@ -3397,10 +3400,10 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <!--Always record ghost in hotlap mode-->
   </data>
   <data name="Settings_Drive_WeatherParticles" xml:space="preserve">
-    <value>Use custom weather’s particles</value>
+    <value>Use custom weather particles</value>
   </data>
   <data name="Settings_Drive_WeatherPpFilter" xml:space="preserve">
-    <value>Use custom weather’s PP-filter</value>
+    <value>Use custom weather PP-filter</value>
   </data>
   <data name="Settings_Drive_ExtendedWeatherHeader" xml:space="preserve">
     <value>Extended weather:</value>
@@ -3846,7 +3849,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <value>Manage track</value>
     </data>
     <data name="QuickDrive_TimeIsOutOfWeatherRange_Tooltip" xml:space="preserve">
-      <value>Time is out of weather’s range</value>
+      <value>Time is out of weather range</value>
     </data>
     <data name="QuickDrive_Drag_Total" xml:space="preserve">
       <value>Total</value>
@@ -4231,7 +4234,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <value>Move previous preview to the Recycle Bin</value>
     </data>
     <data name="Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin_Tooltip" xml:space="preserve">
-      <value>It’s quite a slow operation, so it might be better to disable it</value>
+      <value>Recyling old previews takes some time, so it might be a good idea to disable it</value>
     </data>
     <data name="Settings_CustomShowroom_Controls" xml:space="preserve">
       <value>Controls:</value>
@@ -4243,7 +4246,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <value>Reset heavy options:</value>
     </data>
     <data name="Settings_CustomShowroom_Reset_Tooltip" xml:space="preserve">
-      <value>Use it if showroom crashes — for example, because of way too high settings</value>
+      <value>Might help if showroom crashes (for example, because quality settings set too high)</value>
     </data>
     <data name="Settings_CustomShowroom_ResetAll" xml:space="preserve">
       <value>Reset all:</value>
@@ -4255,7 +4258,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <value>Reset all for previews:</value>
     </data>
     <data name="Settings_Drive_RaceResults_Hint" xml:space="preserve">
-      <value>When limit is exceeded, oldest results will be recycled after the end of the race.</value>
+      <value>Aftr exceeding the limit older entries will be moved to the Recycle Bin.</value>
     </data>
     <data name="AcSettings_Audio_OutputDevice" xml:space="preserve">
       <value>Output device:</value>

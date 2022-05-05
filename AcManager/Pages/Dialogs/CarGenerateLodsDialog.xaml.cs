@@ -848,7 +848,7 @@ namespace AcManager.Pages.Dialogs {
                 }
 
                 sb.Append("\nNodes:\n");
-                sb.Append(CollectNodeStats(kn5.RootNode, 0).Item1);
+                sb.Append(CollectNodeStats(kn5.RootNode, 0)?.Item1 ?? "<unknown>");
                 return sb.ToString();
 
                 Tuple<string, int> CollectNodeStats(Kn5Node node, int level, bool withNode = false) {
@@ -866,7 +866,7 @@ namespace AcManager.Pages.Dialogs {
                     var s = new StringBuilder();
                     var t = 0;
                     foreach (var child in node.Children
-                            .Select(x => CollectNodeStats(x, level + 1)).OrderByDescending(x => x.Item2).NonNull()) {
+                            .Select(x => CollectNodeStats(x, level + 1)).NonNull().OrderByDescending(x => x.Item2)) {
                         s.Append('\n').Append(child.Item1);
                         t += child.Item2;
                     }

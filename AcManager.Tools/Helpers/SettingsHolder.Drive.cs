@@ -5,11 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Starters;
 using AcTools.DataFile;
+using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -388,8 +391,7 @@ namespace AcManager.Tools.Helpers {
             private string _preCommand;
 
             public string PreCommand {
-                get => _preCommand
-                        ?? (_preCommand = ValuesStorage.Get("Settings.DriveSettings.PreCommand", ""));
+                get => _preCommand ?? (_preCommand = ValuesStorage.Get("Settings.DriveSettings.PreCommand", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _preCommand)) return;
@@ -402,13 +404,25 @@ namespace AcManager.Tools.Helpers {
             private string _postCommand;
 
             public string PostCommand {
-                get => _postCommand
-                        ?? (_postCommand = ValuesStorage.Get("Settings.DriveSettings.PostCommand", ""));
+                get => _postCommand ?? (_postCommand = ValuesStorage.Get("Settings.DriveSettings.PostCommand", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _postCommand)) return;
                     _postCommand = value;
                     ValuesStorage.Set("Settings.DriveSettings.PostCommand", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _cmLaunchCommand;
+
+            public string CmLaunchCommand {
+                get => _cmLaunchCommand ?? (_cmLaunchCommand = ValuesStorage.Get("Settings.DriveSettings.CmLaunchCommand", ""));
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _cmLaunchCommand)) return;
+                    _cmLaunchCommand = value;
+                    ValuesStorage.Set("Settings.DriveSettings.CmLaunchCommand", value);
                     OnPropertyChanged();
                 }
             }
@@ -480,17 +494,90 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _skipPracticeResults;
+            public sealed class SkipResultsCategory : Displayable, IWithId {
+                public string Id { get; }
 
-            public bool SkipPracticeResults {
-                get => _skipPracticeResults
-                        ?? (_skipPracticeResults = ValuesStorage.Get("Settings.DriveSettings.SkipPracticeResults", false)).Value;
-                set {
-                    if (Equals(value, _skipPracticeResults)) return;
-                    _skipPracticeResults = value;
-                    ValuesStorage.Set("Settings.DriveSettings.SkipPracticeResults", value);
-                    OnPropertyChanged();
+                public string ShortName { get; }
+
+                public SkipResultsCategory(string id, string displayName) {
+                    Id = id;
+                    ShortName = displayName.Split(new[] { @" (" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    DisplayName = displayName;
+                    _value = ValuesStorage.Get(id, false);
                 }
+
+                private bool _value;
+
+                public bool Value {
+                    get => _value;
+                    set => Apply(value, ref _value, () => ValuesStorage.Set(Id, value));
+                }
+            }
+
+            private ChangeableObservableCollection<SkipResultsCategory> _skipCategories;
+
+            public ChangeableObservableCollection<SkipResultsCategory> SkipCategories {
+                get {
+                    if (_skipCategories == null) {
+                        _skipCategories = new ChangeableObservableCollection<SkipResultsCategory> {
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipPracticeResults", ToolsStrings.Session_Practice),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipHotlapResults", ToolsStrings.Session_Hotlap),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipTimeAttackResults", ToolsStrings.Session_TimeAttack),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipRaceResults", ToolsStrings.Session_Race),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipWeekendResults", ToolsStrings.Common_Weekend),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipTrackDayResults", ToolsStrings.Session_TrackDay),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipDriftResults", ToolsStrings.Session_Drift),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipDragResults", ToolsStrings.Session_Drag),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipOnlineResults", ToolsStrings.Settings_Drive_SessionClass_Online),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipLiveResults", ToolsStrings.Settings_Drive_SessionClass_Live),
+                        };
+                        _skipCategories.ItemPropertyChanged += (sender, args) => OnPropertyChanged(nameof(DisplaySkipCategories));
+                    }
+                    return _skipCategories;
+                }
+            }
+
+            public string DisplaySkipCategories => _skipCategories.Where(x => x.Value).Select(x => x.ShortName)
+                    .JoinToReadableString().Or(ToolsStrings.Common_None);
+
+            public bool SkipResults(Game.Result result, Game.StartProperties startProperties) {
+                if (result == null) return false;
+
+                if (startProperties.HasAdditional<LiveServiceMark>()) {
+                    return SkipCategories.GetById(@"Settings.DriveSettings.SkipLiveResults").Value;
+                }
+
+                if (startProperties.ModeProperties is Game.OnlineProperties) {
+                    return SkipCategories.GetById(@"Settings.DriveSettings.SkipOnlineResults").Value;
+                }
+
+                if (startProperties.ModeProperties is Game.TrackdayProperties) {
+                    return SkipCategories.GetById(@"Settings.DriveSettings.SkipTrackDayResults").Value;
+                }
+
+                if (result.NumberOfSessions == 3 && result.Sessions?.Length == 3) {
+                    return SkipCategories.GetById(@"Settings.DriveSettings.SkipWeekendResults").Value;
+                }
+
+                if (result.NumberOfSessions == 1 && result.Sessions?.Length == 1) {
+                    Logging.Debug("result.Sessions[0].Type=" + result.Sessions[0].Type);
+                    switch (result.Sessions[0].Type) {
+                        case Game.SessionType.Practice:
+                            return SkipCategories.GetById(@"Settings.DriveSettings.SkipPracticeResults").Value;
+                        case Game.SessionType.Race:
+                            return SkipCategories.GetById(@"Settings.DriveSettings.SkipRaceResults").Value;
+                        case Game.SessionType.Hotlap:
+                            return SkipCategories.GetById(@"Settings.DriveSettings.SkipHotlapResults").Value;
+                        case Game.SessionType.TimeAttack:
+                            return SkipCategories.GetById(@"Settings.DriveSettings.SkipTimeAttackResults").Value;
+                        case Game.SessionType.Drift:
+                            return SkipCategories.GetById(@"Settings.DriveSettings.SkipDriftResults").Value;
+                        case Game.SessionType.Drag:
+                            return SkipCategories.GetById(@"Settings.DriveSettings.SkipDragResults").Value;
+                    }
+                }
+
+                return false;
             }
 
             private int? _raceResultsLimit;
@@ -1092,7 +1179,10 @@ namespace AcManager.Tools.Helpers {
             private bool? _loadPatchDataAutomatically;
 
             public bool LoadPatchDataAutomatically {
-                get => _loadPatchDataAutomatically ?? (_loadPatchDataAutomatically = ValuesStorage.Get("Settings.DriveSettings.LoadPatchDataAutomatically", true)).Value;
+                get
+                        =>
+                                _loadPatchDataAutomatically
+                                        ?? (_loadPatchDataAutomatically = ValuesStorage.Get("Settings.DriveSettings.LoadPatchDataAutomatically", true)).Value;
                 set {
                     if (Equals(value, _loadPatchDataAutomatically)) return;
                     _loadPatchDataAutomatically = value;

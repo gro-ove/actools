@@ -770,6 +770,10 @@ namespace AcManager {
                 CupClient.Instance?.LoadRegistries().Ignore();
 #endif
 
+                if (AcRootDirectory.Instance.Value != null && !string.IsNullOrWhiteSpace(SettingsHolder.Drive.CmLaunchCommand)) {
+                    GameCommandExecutorBase.Execute(SettingsHolder.Drive.CmLaunchCommand, AcRootDirectory.Instance.Value);
+                }
+
                 await Task.Delay(500);
                 AppArguments.Set(AppFlag.SimilarThreshold, ref CarAnalyzer.OptionSimilarThreshold);
 
@@ -842,7 +846,8 @@ namespace AcManager {
                 await Task.Delay(5000);
                 await Task.Run(() => {
                     foreach (var f in new DirectoryInfo(FilesStorage.Instance.GetTemporaryDirectory()).GetFiles("*", SearchOption.AllDirectories)
-                            .Where(x => x.LastAccessTime < DateTime.Now - TimeSpan.FromDays(10))) {
+                            .Where(x => x.LastAccessTime < DateTime.Now - TimeSpan.FromDays(30) && x.LastWriteTime < DateTime.Now - TimeSpan.FromDays(30))) {
+                        if (f.Name == "Startup.Profile") continue;
                         Logging.Debug($"Delete old temporary file: {f.FullName}");
                         f.Delete();
                     }

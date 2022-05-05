@@ -24,6 +24,7 @@ namespace AcManager.Controls.ViewModels {
         public event EventHandler<EventArgs> NewUpdate;
 
         private CupViewModel() {
+            DelayCupProcessing().Ignore();
             CupSupportedObjects.ItemPropertyChanged += OnCupSupportedObjectPropertyChanged;
             ToUpdate = new BetterListCollectionView(CupSupportedObjects) {
                 Filter = x => (x as ICupSupportedObject)?.IsCupUpdateAvailable == true
@@ -66,6 +67,12 @@ namespace AcManager.Controls.ViewModels {
 
         public AsyncCommand InstallAllCommand => _installAllCommand ?? (_installAllCommand = new AsyncCommand(() => ToUpdate.OfType<ICupSupportedObject>()
                 .Select(x => CupClient.Instance?.InstallUpdateAsync(x.CupContentType, x.Id)).NonNull().WhenAll(4)));
+
+        private async Task DelayCupProcessing() {
+            _cupProcessing = true;
+            await Task.Delay(5000);
+            await RunCupProcessing();
+        }
 
         private async Task RunCupProcessing() {
             _cupProcessing = true;

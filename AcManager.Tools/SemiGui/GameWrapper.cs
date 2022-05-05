@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -141,6 +142,15 @@ namespace AcManager.Tools.SemiGui {
             }
         }
 
+        private static List<Action<Game.StartProperties>> _callbacks = new List<Action<Game.StartProperties>>();
+
+        public static IDisposable SetPropertiesCallback(Action<Game.StartProperties> callback) {
+            _callbacks.Add(callback);
+            return new ActionAsDisposable(() => {
+                _callbacks.Remove(callback);
+            });
+        }
+
         private static void StartAsync_Prepare(Game.StartProperties properties) {
             if (!_nationCodesProviderSet) {
                 _nationCodesProviderSet = true;
@@ -234,6 +244,10 @@ namespace AcManager.Tools.SemiGui {
             if (SettingsHolder.Drive.CopyFilterToSystemForOculus
                     && (AcSettingsHolder.Video.CameraMode.Id == "OCULUS" || AcSettingsHolder.Video.CameraMode.Id == "OPENVR")) {
                 properties.SetAdditional(new CopyFilterToSystemForOculusHelper());
+            }
+
+            foreach (var callback in _callbacks) {
+                callback(properties);
             }
         }
 

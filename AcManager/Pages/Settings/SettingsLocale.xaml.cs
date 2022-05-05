@@ -277,12 +277,6 @@ namespace AcManager.Pages.Settings {
             public ICommand MoreInformationCommand => _moreInformationCommand ?? (_moreInformationCommand = new DelegateCommand(() => {
                 WindowsHelper.ViewInBrowser($"{InternalUtils.MainApiDomain}/f/d/7-content-manager-how-to-localize");
             }));
-
-            private ICommand _navigateCommand;
-
-            public ICommand NavigateCommand => _navigateCommand ?? (_navigateCommand = new DelegateCommand<object>(o => {
-                WindowsHelper.ViewInBrowser(o?.ToString());
-            }));
         }
     }
 }

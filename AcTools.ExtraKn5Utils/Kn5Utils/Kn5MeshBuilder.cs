@@ -21,7 +21,7 @@ namespace AcTools.ExtraKn5Utils.Kn5Utils {
             if (_vertices.Count >= 65536) throw new Exception("Limit exceeded");
 
             var hash = VertexHashCode(v);
-            if (_knownVertices.TryGetValue(hash, out var knownIndex)) {
+            if (_knownVertices.TryGetValue(hash, out var knownIndex) && _vertices[knownIndex].Position.Equals(v.Position)) {
                 _indices.Add(knownIndex);
             } else {
                 var newIndex = (ushort)_vertices.Count;
@@ -45,14 +45,16 @@ namespace AcTools.ExtraKn5Utils.Kn5Utils {
         }
 
         private long VertexHashCode(Kn5Node.Vertex v) {
-            long r = v.Position.GetHashCode();
-            if (_considerNormal) {
-                r = (r * 397) ^ v.Normal.GetHashCode();
+            unchecked {
+                long r = v.Position.GetHashCode();
+                if (_considerNormal) {
+                    r = (r * 397) ^ v.Normal.GetHashCode();
+                }
+                if (_considerTexCoords) {
+                    r = (r * 397) ^ v.Tex.GetHashCode();
+                }
+                return r;
             }
-            if (_considerTexCoords) {
-                r = (r * 397) ^ v.Tex.GetHashCode();
-            }
-            return r;
         }
     }
 }

@@ -2149,6 +2149,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Syncing versions….
+        /// </summary>
+        public static string ContentInstallationParams_SyncingVersions {
+            get {
+                return ResourceManager.GetString("ContentInstallationParams_SyncingVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t load CM’s data.
         /// </summary>
         public static string ContentSyncronizer_CannotLoadContent {
@@ -4082,6 +4091,24 @@ namespace AcManager.Tools {
         public static string Settings_DefaultPlayerName {
             get {
                 return ResourceManager.GetString("Settings_DefaultPlayerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Live (SRS, World Sim Series, etc.).
+        /// </summary>
+        public static string Settings_Drive_SessionClass_Live {
+            get {
+                return ResourceManager.GetString("Settings_Drive_SessionClass_Live", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Online.
+        /// </summary>
+        public static string Settings_Drive_SessionClass_Online {
+            get {
+                return ResourceManager.GetString("Settings_Drive_SessionClass_Online", resourceCulture);
             }
         }
         

@@ -80,10 +80,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new KeyboardSpecificButtonEntry("LEFT", ToolsStrings.Controls_SteerLeft)
             }.Union(WheelGearsButtonEntries.Select(x => x.KeyboardButton)).ToArray();
 
-            KeyboardPatchButtonEntries = new[] {
+            KeyboardPatchButtonEntries = new KeyboardButtonEntry[] {
                 new KeyboardSpecificButtonEntry("KEY_MODIFICATOR", "Forcing modifier", "__EXT_KEYBOARD_GAS_RAW"),
                 new KeyboardSpecificButtonEntry("KEY", "Forced throttle", "__EXT_KEYBOARD_GAS_RAW")
-            }.ToArray();
+            };
 
             #region Joystick entires
             ControllerCarExtraButtonEntries = new[] {
@@ -175,7 +175,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     var index = name.IndexOf('(');
                     if (index != -1 && name.EndsWith(")")) {
                         description = CapitalizeFirst(name.Substring(index + 1, name.Length - index - 2)).TrimEnd('.');
-                        name = name.Substring(0, index).TrimStart();
+                        name = name.Substring(0, index).Trim();
                     }
 
                     var flags = k.GetStrings(p.Key + "_FLAGS_");

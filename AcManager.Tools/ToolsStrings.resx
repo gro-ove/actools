@@ -1865,4 +1865,13 @@ Would you like to pack it before starting the server? But don’t forget to shar
   <data name="ServerEntry_PasswordIsRequired" xml:space="preserve">
       <value>Password is required</value>
   </data>
+  <data name="ContentInstallationParams_SyncingVersions" xml:space="preserve">
+      <value>Syncing versions…</value>
+  </data>
+  <data name="Settings_Drive_SessionClass_Online" xml:space="preserve">
+      <value>Online</value>
+  </data>
+  <data name="Settings_Drive_SessionClass_Live" xml:space="preserve">
+      <value>Live (SRS, World Sim Series, etc.)</value>
+  </data>
 </root>
