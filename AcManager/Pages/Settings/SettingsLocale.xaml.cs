@@ -223,7 +223,7 @@ namespace AcManager.Pages.Settings {
             private ICommand _prepareCustomCommand;
 
             public ICommand PrepareUnpackedCommand => _prepareCustomCommand ?? (_prepareCustomCommand = new AsyncCommand(async () => {
-                var localeName = Prompt.Show(
+                var localeName = await Prompt.ShowAsync(
                         "What locale are you going to work with (you can see some of them [url=\"https://msdn.microsoft.com/en-us/library/ms533052(v=vs.85).aspx\"]here[/url])? Enter it (but you can always change it later):",
                         "Locale ID", SettingsHolder.Locale.LocaleName, "?", "You can use some country-specific locale as well as just language-specific",
                         maxLength: 7);
@@ -256,7 +256,7 @@ namespace AcManager.Pages.Settings {
                 if (!Directory.Exists(directory)) return;
 
                 try {
-                    var message = Prompt.Show(
+                    var message = await Prompt.ShowAsync(
                             "You’re going to send an unpacked locale to developers. Thanks in advance!\n\nWould you like to add some notes? Maybe your name for About page? Or your address so I’ll be able to contact you back?",
                             "Additional notes", placeholder: @"?", multiline: true);
                     if (message == null) return;

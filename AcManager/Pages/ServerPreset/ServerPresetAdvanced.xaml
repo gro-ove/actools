@@ -321,6 +321,11 @@
               </DockPanel>
 
             </StackPanel>
+
+            <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" Margin="0 8 0 0">
+              <mui:AsyncButton Content="Save config for external plugin format" Command="{Binding SaveExternalPluginConfigCommand}" />
+              <mui:AsyncButton Content="Pack external plugin" Command="{Binding SaveExternalPluginCommand}" />
+            </mui:SpacingUniformGrid>
           </StackPanel>
         </StackPanel>
 

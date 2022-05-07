@@ -1,11 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
-  <Costura CreateTemporaryAssemblies="False" IncludeDebugSymbols="False" DisableCompression="False" DisableCleanup="False">
+  <Costura 
+    CreateTemporaryAssemblies="False" 
+    IncludeDebugSymbols="False" 
+    DisableCompression="False" 
+    DisableCleanup="False"
+    LoadAtModuleInit="True">
     <Unmanaged32Assemblies>
       SlimDX
       Nvidia.TextureTools.Compress
       Interop.D3DImageEx
-    </Unmanaged32Assemblies>
+      Magick.NET-Q8-x86
+      Magick.NET-Q8-x86.Native
+    </Unmanaged32Assemblies>  
     <ExcludeAssemblies>
       JetBrains.Annotations
       Steamworks.NET
@@ -14,6 +21,6 @@
       LUTLibrary
       FANNCSharp.Double
       system.windows.interactivity
-    </ExcludeAssemblies>
+    </ExcludeAssemblies>  
   </Costura>
 </Weavers>

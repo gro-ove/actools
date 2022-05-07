@@ -76,6 +76,16 @@ namespace AcTools.Utils.Helpers {
         }
 
         [Pure]
+        public static string ToInvariantString(this TimeSpan o) {
+            return o.ToString(null, CultureInfo.InvariantCulture);
+        }
+
+        [Pure]
+        public static string ToInvariantString(this DateTime o) {
+            return o.ToString(null, CultureInfo.InvariantCulture);
+        }
+
+        [Pure]
         public static string ToInvariantString([NotNull] this object o) {
             if (o == null) throw new ArgumentNullException(nameof(o));
             switch (o) {
@@ -92,6 +102,10 @@ namespace AcTools.Utils.Helpers {
                 case short h:
                     return h.ToInvariantString();
                 case ushort u:
+                    return u.ToInvariantString();
+                case TimeSpan u:
+                    return u.ToInvariantString();
+                case DateTime u:
                     return u.ToInvariantString();
                 default:
                     return o.ToString();

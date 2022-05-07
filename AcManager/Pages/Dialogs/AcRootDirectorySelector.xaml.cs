@@ -201,7 +201,7 @@ namespace AcManager.Pages.Dialogs {
                 if (acRoot == null) return;
 
                 if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) {
-                    var id = Prompt.Show("Enter new Steam ID:", "Change Steam ID", SteamIdHelper.Instance.Value);
+                    var id = await Prompt.ShowAsync("Enter new Steam ID:", "Change Steam ID", SteamIdHelper.Instance.Value);
                     if (id != null) {
                         SetSteamId(id);
                     }

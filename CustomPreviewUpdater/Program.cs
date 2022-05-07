@@ -8,6 +8,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using AcTools.AcdEncryption;
 using AcTools.AcdFile;
+using AcTools.Kn5File;
+using AcTools.Kn5Tools;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -43,6 +45,7 @@ namespace CustomPreviewUpdater {
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static int MainInner(string[] args) {
             Acd.Factory = new AcdFactory();
+            Kn5.Factory = Kn5New.GetFactoryInstance();
 
             var presets = args.Where(x => x.EndsWith(".pu-preset")).ToList();
             var actualList = new List<string>();
@@ -116,57 +119,63 @@ namespace CustomPreviewUpdater {
             if (options.Verbose) {
                 Console.WriteLine("AC root: " + acRoot);
                 Console.WriteLine("ImageMagick: " + ImageUtils.IsMagickSupported);
-                Console.WriteLine("Starting shoting...");
+                Console.WriteLine("Starting making previews...");
             }
 
             var sw = Stopwatch.StartNew();
             int i = 0, j = 0;
 
-            using (var thing = new DarkPreviewsUpdater(acRoot, new DarkPreviewsOptions {
-                PreviewName = options.FileName,
-                Showroom = options.Showroom,
-                AlignCar = options.AlignCar,
-                AlignCameraHorizontally = options.AlignCamera,
-                AlignCameraHorizontallyOffset = options.AlignCameraOffset.Split(',').Select(x => FlexibleParser.TryParseDouble(x) ?? 0d).ToArray()[0], // TODO
-                SsaaMultiplier = options.SsaaMultiplier,
-                UseFxaa = options.UseFxaa,
-                UseMsaa = options.UseMsaa,
-                SoftwareDownsize = options.SoftwareDownsize,
-                MsaaSampleCount = options.MsaaSampleCount,
-                PreviewWidth = options.PreviewWidth,
-                PreviewHeight = options.PreviewHeight,
-                BloomRadiusMultiplier = options.BloomRadiusMultiplier,
-                FlatMirror = options.FlatMirror,
-                WireframeMode = options.WireframeMode,
-                MeshDebugMode = options.MeshDebugMode,
-                SuspensionDebugMode = options.SuspensionDebugMode,
-                HeadlightsEnabled = options.HeadlightsEnabled,
-                BrakeLightsEnabled = options.BrakeLightsEnabled,
-                LeftDoorOpen = options.LeftDoorOpen,
-                RightDoorOpen = options.RightDoorOpen,
-                SteerDeg = options.SteerAngle,
-                CameraPosition = options.CameraPosition.Split(',').Select(x => FlexibleParser.TryParseDouble(x) ?? 0d).ToArray(),
-                CameraLookAt = options.LookAt.Split(',').Select(x => FlexibleParser.TryParseDouble(x) ?? 0d).ToArray(),
-                CameraFov = options.Fov,
-                BackgroundColor = ParseColor(options.BackgroundColor),
-                LightColor = ParseColor(options.LightColor),
-                AmbientUp = ParseColor(options.AmbientUp),
-                AmbientDown = ParseColor(options.AmbientDown),
-                AmbientBrightness = options.AmbientBrightness,
-                LightBrightness = options.LightBrightness,
-                DelayedConvertation = !options.SingleThread,
-                UseSslr = options.UseSslr,
-                UseAo = options.UseSsao,
-                UsePcss = options.UsePcss,
-                EnableShadows = options.EnableShadows,
-                ShadowMapSize = options.ShadowMapSize,
-                MaterialsReflectiveness = options.ReflectionMultiplier,
-                ReflectionCubemapAtCamera = options.ReflectionCubemapAtCamera,
-                ReflectionsWithShadows = !options.NoShadowsWithReflections,
-                FlatMirrorBlurred = options.FlatMirrorBlurred,
-                FlatMirrorReflectiveness = options.FlatMirrorReflectiveness,
-                LightDirection = options.LightDirection.Split(',').Select(x => FlexibleParser.TryParseDouble(x) ?? 0d).ToArray(),
-            })) {
+            var previewsOptions = !string.IsNullOrWhiteSpace(options.Preset) ? PresetLoader.Load(options.Preset) : new DarkPreviewsOptions();
+            if (string.IsNullOrWhiteSpace(options.Preset)) {
+                previewsOptions.PreviewName = options.FileName;
+                previewsOptions.Showroom = options.Showroom;
+                previewsOptions.AlignCar = options.AlignCar;
+                previewsOptions.AlignCameraHorizontally = options.AlignCamera;
+                previewsOptions.AlignCameraHorizontallyOffset =
+                        options.AlignCameraOffset.Split(',').Select(x => FlexibleParser.TryParseDouble(x) ?? 0d).ToArray()[0]; // TODO
+                previewsOptions.SsaaMultiplier = options.SsaaMultiplier;
+                previewsOptions.UseFxaa = options.UseFxaa;
+                previewsOptions.UseMsaa = options.UseMsaa;
+                previewsOptions.SoftwareDownsize = options.SoftwareDownsize;
+                previewsOptions.MsaaSampleCount = options.MsaaSampleCount;
+                previewsOptions.PreviewWidth = options.PreviewWidth;
+                previewsOptions.PreviewHeight = options.PreviewHeight;
+                previewsOptions.BloomRadiusMultiplier = options.BloomRadiusMultiplier;
+                previewsOptions.FlatMirror = options.FlatMirror;
+                previewsOptions.WireframeMode = options.WireframeMode;
+                previewsOptions.MeshDebugMode = options.MeshDebugMode;
+                previewsOptions.SuspensionDebugMode = options.SuspensionDebugMode;
+                previewsOptions.HeadlightsEnabled = options.HeadlightsEnabled;
+                previewsOptions.BrakeLightsEnabled = options.BrakeLightsEnabled;
+                previewsOptions.LeftDoorOpen = options.LeftDoorOpen;
+                previewsOptions.RightDoorOpen = options.RightDoorOpen;
+                previewsOptions.SteerDeg = options.SteerAngle;
+                previewsOptions.CameraPosition = options.CameraPosition.Split(',').Select(x => FlexibleParser.TryParseDouble(x) ?? 0d).ToArray();
+                previewsOptions.CameraLookAt = options.LookAt.Split(',').Select(x => FlexibleParser.TryParseDouble(x) ?? 0d).ToArray();
+                previewsOptions.CameraFov = options.Fov;
+                previewsOptions.BackgroundColor = ParseColor(options.BackgroundColor);
+                previewsOptions.LightColor = ParseColor(options.LightColor);
+                previewsOptions.AmbientUp = ParseColor(options.AmbientUp);
+                previewsOptions.AmbientDown = ParseColor(options.AmbientDown);
+                previewsOptions.AmbientBrightness = options.AmbientBrightness;
+                previewsOptions.LightBrightness = options.LightBrightness;
+                previewsOptions.DelayedConvertation = !options.SingleThread;
+                previewsOptions.UseSslr = options.UseSslr;
+                previewsOptions.UseAo = options.UseSsao;
+                previewsOptions.UsePcss = options.UsePcss;
+                previewsOptions.EnableShadows = options.EnableShadows;
+                previewsOptions.ShadowMapSize = options.ShadowMapSize;
+                previewsOptions.MaterialsReflectiveness = options.ReflectionMultiplier;
+                previewsOptions.ReflectionCubemapAtCamera = options.ReflectionCubemapAtCamera;
+                previewsOptions.ReflectionsWithShadows = !options.NoShadowsWithReflections;
+                previewsOptions.FlatMirrorBlurred = options.FlatMirrorBlurred;
+                previewsOptions.FlatMirrorReflectiveness = options.FlatMirrorReflectiveness;
+                previewsOptions.LightDirection = options.LightDirection.Split(',').Select(x => FlexibleParser.TryParseDouble(x) ?? 0d).ToArray();
+            }
+
+            Console.WriteLine($"showroom={options.Showroom}");
+
+            using (var thing = new DarkPreviewsUpdater(acRoot, previewsOptions)) {
                 foreach (var carId in Directory.GetDirectories(AcPaths.GetCarsDirectory(acRoot))
                                             .Select(Path.GetFileName).Where(x => filter.Test(x))) {
                     Console.WriteLine($"  {carId}...");

@@ -106,7 +106,7 @@ namespace AcManager.Pages.Selected {
                 defaultId = SelectedObject.Id + @"-copy";
             }
 
-            var newId = FixIdFromInput(Prompt.Show(AppStrings.AcObject_EnterNewId,
+            var newId = FixIdFromInput(await Prompt.ShowAsync(AppStrings.AcObject_EnterNewId,
                     AppStrings.Toolbar_Clone, PrepareIdForInput(defaultId), @"?"));
             if (string.IsNullOrWhiteSpace(newId)) return;
 

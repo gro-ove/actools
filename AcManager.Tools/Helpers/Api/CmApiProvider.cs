@@ -126,7 +126,13 @@ namespace AcManager.Tools.Helpers.Api {
             }
 
             Logging.Write($"Cached {id} used");
-            file.LastWriteTime = DateTime.Now;
+
+            try {
+                file.LastWriteTime = DateTime.Now;
+            } catch {
+                // ignored
+            }
+
             JustLoadedStaticData.Add(id);
             return Tuple.Create(file.FullName, false);
         }

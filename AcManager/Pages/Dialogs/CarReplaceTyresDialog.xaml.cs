@@ -92,9 +92,9 @@ namespace AcManager.Pages.Dialogs {
             private AsyncCommand _changeCarsFilterCommand;
 
             public AsyncCommand ChangeCarsFilterCommand => _changeCarsFilterCommand ?? (_changeCarsFilterCommand = new AsyncCommand(async () => {
-                var newFilter = Prompt.Show("New filter for source cars:", "Source cars filter",
+                var newFilter = (await Prompt.ShowAsync("New filter for source cars:", "Source cars filter",
                         SettingsHolder.Content.CarReplaceTyresDonorFilter, "*",
-                        suggestions: ValuesStorage.GetStringList("__CarReplaceTyresDonorFilters"))?.Trim();
+                        suggestions: ValuesStorage.GetStringList("__CarReplaceTyresDonorFilters")))?.Trim();
 
                 switch (newFilter) {
                     case null:

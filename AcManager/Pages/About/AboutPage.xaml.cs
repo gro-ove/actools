@@ -53,7 +53,7 @@ namespace AcManager.Pages.About {
 
             public ICommand SendLogsCommand => _sendLogsCommand ?? (_sendLogsCommand = new AsyncCommand(async () => {
                 try {
-                    var message = Prompt.Show(
+                    var message = await Prompt.ShowAsync(
                             AppStrings.About_ReportAnIssue_Prompt,
                             AppStrings.About_ReportAnIssue_Title, placeholder: @"?", multiline: true);
                     if (message == null) return;

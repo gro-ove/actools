@@ -43,14 +43,16 @@ namespace AcManager.Pages.Settings {
             InitializeComponent();
             DataContext = new ViewModel();
 
-            ProgressRingsComboBox.SelectionChanged += (sender, args) => {
-                var s = ((ComboBox)sender).SelectedItem as RingStyle;
-                ModernProgressRing.Style = ExtraProgressRings.Styles.GetValueOrDefault(s?.Key ?? "");
-            };
+            if (ExtraProgressRings.Styles != null) {
+                ProgressRingsComboBox.SelectionChanged += (sender, args) => {
+                    var s = ((ComboBox)sender).SelectedItem as RingStyle;
+                    ModernProgressRing.Style = ExtraProgressRings.Styles.GetValueOrDefault(s?.Key ?? "");
+                };
 
-            ProgressRingsComboBox.ItemsSource = ExtraProgressRings.Styles.Keys.Select(x => new RingStyle(x)).ToArray();
-            ProgressRingsComboBox.SelectedItem = ProgressRingsComboBox.ItemsSource.OfType<RingStyle>().FirstOrDefault();
-            ProgressRingColor = (Color)FindResource("AccentColor");
+                ProgressRingsComboBox.ItemsSource = ExtraProgressRings.Styles.Keys.Select(x => new RingStyle(x)).ToArray();
+                ProgressRingsComboBox.SelectedItem = ProgressRingsComboBox.ItemsSource.OfType<RingStyle>().FirstOrDefault();
+                ProgressRingColor = (Color)FindResource("AccentColor");
+            }
         }
 
         private Color _progressRingColor;

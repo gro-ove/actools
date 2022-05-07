@@ -272,7 +272,7 @@ namespace AcManager.Pages.Drive {
                     var entry = await IpGeoProvider.GetAsync();
                     var localAddress = entry == null ? "" : $"{entry.City}, {entry.Country}";
 
-                    var address = Prompt.Show("Where are you?", "Local address", localAddress, @"?", required: true);
+                    var address = await Prompt.ShowAsync("Where are you?", "Local address", localAddress, @"?", required: true);
                     if (string.IsNullOrWhiteSpace(address)) {
                         if (address != null) {
                             ModernDialog.ShowMessage("Value is required");

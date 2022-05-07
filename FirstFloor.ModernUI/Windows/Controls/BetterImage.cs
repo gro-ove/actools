@@ -570,7 +570,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             } catch (WebException) { }
 
             if (cacheFile == null) return Image.Empty;
-            cacheFile.LastWriteTime = DateTime.Now; // this way, checking with web request will be skipped for the next day
+
+            try {
+                cacheFile.LastWriteTime = DateTime.Now; // this way, checking with web request will be skipped for the next day
+            } catch {
+                // ignored
+            }
+
             using (var cacheBytes = await ReadBytesAsync(cache)) {
                 return cacheBytes == null
                         ? Image.Empty : LoadBitmapSourceFromMemoryStream(cacheBytes, decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);

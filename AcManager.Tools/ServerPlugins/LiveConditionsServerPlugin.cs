@@ -184,10 +184,15 @@ namespace AcManager.Tools.ServerPlugins {
                 } catch (Exception e) {
                     Logging.Warning(e);
                 }
+                if (_trackGripIncreasePerLap == 0d) {
+                    NonfatalError.Notify("Failed to load dynamic conditions configuration");
+                }
             }
 
             public LiveConditionParams Clone() {
-                return JsonConvert.DeserializeObject<LiveConditionParams>(JsonConvert.SerializeObject(this));
+                var created = new LiveConditionParams();
+                created.Deserialize(Serialize());
+                return created;
             }
         }
 
@@ -267,7 +272,7 @@ namespace AcManager.Tools.ServerPlugins {
                         TrackGrip = grip,
                         RainIntensity = (Half)_rainIntensity,
                         RainWetness = (Half)_rainWetness,
-                        RainWater = (Half)_rainWater
+                        RainWater = (Half)_rainLag[_rainCursor]
                     }.Serialize()
                     : new CommandWeatherSetV1 {
                         Timestamp = (ulong)date.ToUnixTimestamp(),
@@ -307,6 +312,9 @@ namespace AcManager.Tools.ServerPlugins {
         private double _rainWetness;
         private double _rainWater;
 
+        private int _rainCursor;
+        private double[] _rainLag = new double[120]; // two updates per second → 1 minute for changes to apply
+
         private double GetWeatherTransition() {
             return (_weatherTransitionStopwatch.Elapsed.TotalSeconds / _updatePeriod.TotalSeconds).Saturate().SmoothStep();
         }
@@ -326,6 +334,11 @@ namespace AcManager.Tools.ServerPlugins {
                             _drivenLapsEstimate += drivenDistanceKm / _lapLengthKm;
                         }
                     }
+                }
+
+                _rainLag[_rainCursor] = _rainWater;
+                if (++_rainCursor == _rainLag.Length) {
+                    _rainCursor = 0;
                 }
 
                 await Task.Delay(UpdateRainPeriod);
@@ -420,7 +433,7 @@ namespace AcManager.Tools.ServerPlugins {
             Tuple.Create(0.1, WeatherType.BrokenClouds),
             Tuple.Create(0.2, WeatherType.OvercastClouds),
             Tuple.Create(0.1, WeatherType.Fog),
-            Tuple.Create(0.2, WeatherType.Mist),
+            Tuple.Create(0.1, WeatherType.Mist),
             Tuple.Create(0.2, WeatherType.Windy),
         };
 
@@ -477,55 +490,64 @@ namespace AcManager.Tools.ServerPlugins {
         private Tuple<double, double, double> EstimateTemperatureWindSpeedHumidity(WeatherType type) {
             if (type == WeatherType.Clear) return Tuple.Create(26d, 1d, 0.6);
             if (type == WeatherType.FewClouds) return Tuple.Create(25d, 2d, 0.6);
-            if (type == WeatherType.ScatteredClouds) return Tuple.Create(24d, 3d, 0.6);
-            if (type == WeatherType.BrokenClouds) return Tuple.Create(22d, 4d, 0.6);
-            if (type == WeatherType.OvercastClouds) return Tuple.Create(20d, 5d, 0.6);
-            if (type == WeatherType.Fog) return Tuple.Create(16d, 0d, 0.9);
-            if (type == WeatherType.Mist) return Tuple.Create(18d, 0d, 0.8);
-            if (type == WeatherType.Windy) return Tuple.Create(16d, 10d, 0.4);
-            if (type == WeatherType.LightDrizzle) return Tuple.Create(16d, 2d, 0.7);
-            if (type == WeatherType.Drizzle) return Tuple.Create(14d, 3d, 0.7);
-            if (type == WeatherType.HeavyDrizzle) return Tuple.Create(12d, 4d, 0.7);
-            if (type == WeatherType.LightRain) return Tuple.Create(12d, 4d, 0.8);
-            if (type == WeatherType.Rain) return Tuple.Create(10d, 6d, 0.8);
-            if (type == WeatherType.HeavyRain) return Tuple.Create(10d, 10d, 0.8);
-            if (type == WeatherType.LightThunderstorm) return Tuple.Create(10d, 12d, 0.9);
-            if (type == WeatherType.Thunderstorm) return Tuple.Create(8d, 13d, 0.9);
-            if (type == WeatherType.HeavyThunderstorm) return Tuple.Create(8d, 14d, 0.9);
-            return Tuple.Create(20d, 1d, 0.6);
+            if (type == WeatherType.ScatteredClouds) return Tuple.Create(25d, 3d, 0.6);
+            if (type == WeatherType.BrokenClouds) return Tuple.Create(25d, 4d, 0.6);
+            if (type == WeatherType.OvercastClouds) return Tuple.Create(24d, 5d, 0.6);
+            if (type == WeatherType.Fog) return Tuple.Create(24d, 0d, 0.9);
+            if (type == WeatherType.Mist) return Tuple.Create(24d, 0d, 0.8);
+            if (type == WeatherType.Windy) return Tuple.Create(24d, 10d, 0.4);
+            if (type == WeatherType.LightDrizzle) return Tuple.Create(25d, 2d, 0.7);
+            if (type == WeatherType.Drizzle) return Tuple.Create(24d, 3d, 0.7);
+            if (type == WeatherType.HeavyDrizzle) return Tuple.Create(23d, 4d, 0.7);
+            if (type == WeatherType.LightRain) return Tuple.Create(24d, 4d, 0.8);
+            if (type == WeatherType.Rain) return Tuple.Create(23d, 6d, 0.8);
+            if (type == WeatherType.HeavyRain) return Tuple.Create(23d, 10d, 0.8);
+            if (type == WeatherType.LightThunderstorm) return Tuple.Create(23d, 12d, 0.9);
+            if (type == WeatherType.Thunderstorm) return Tuple.Create(22d, 13d, 0.9);
+            if (type == WeatherType.HeavyThunderstorm) return Tuple.Create(22d, 14d, 0.9);
+            return Tuple.Create(24d, 1d, 0.6);
         }
 
         private WeatherDescription GenerateRandomDescription(WeatherType? currentType) {
             var type = GenerateRandomWeatherType(currentType);
-            Logging.Debug($"Switching from {currentType} to {type}");
+            Logging.Debug($"Switching from {currentType?.ToString() ?? "?"} to {type}");
             var estimated = EstimateTemperatureWindSpeedHumidity(type);
-            return new WeatherDescription(type, estimated.Item1 * MathUtils.Random(0.6, 1.2), string.Empty, estimated.Item2 * MathUtils.Random(0.6, 1.2),
+            return new WeatherDescription(type, estimated.Item1 * MathUtils.Random(0.95, 1.05), string.Empty, estimated.Item2 * MathUtils.Random(0.6, 1.2),
                     MathUtils.Random() * 360, estimated.Item3 * MathUtils.Random(0.6, 1.2), 1030);
         }
 
-        private async Task SyncWeatherAsync([CanBeNull] TrackObjectBase track) {
+        public static async Task<GeoTagsEntry> GetSomeGeoTagsAsync([CanBeNull] TrackObjectBase track) {
             var trackGeoTags = track?.GeoTags;
             if (track != null && (trackGeoTags == null || trackGeoTags.IsEmptyOrInvalid)) {
                 trackGeoTags = await TracksLocator.TryToLocateAsync(track);
-                if (_disposed) return;
             }
 
             if (trackGeoTags == null && !string.IsNullOrWhiteSpace(SettingsHolder.Drive.LocalAddress)) {
                 trackGeoTags = await TracksLocator.TryToLocateAsync(SettingsHolder.Drive.LocalAddress);
-                if (_disposed) return;
+            }
+            return trackGeoTags;
+        }
+
+        private GeoTagsEntry _geoTags;
+
+        private async Task SyncWeatherAsync([CanBeNull] TrackObjectBase track) {
+            if (_geoTags == null) {
+                _geoTags = await GetSomeGeoTagsAsync(track);
+                if (_geoTags == null) {
+                    Logging.Warning("Failed to calculate coordinates for real conditions");
+                    Dispose();
+                    return;
+                }
             }
 
-            if (trackGeoTags == null) {
-                Logging.Warning("Failed to calculate coordinates for real conditions");
-                Dispose();
+            if (_geoTags == null) {
                 return;
             }
 
-            Logging.Debug("Geotags: " + trackGeoTags);
             if (_liveParams.UseRealConditions) {
                 _updatePeriod = UpdateWeatherPeriod;
                 while (!_disposed) {
-                    ApplyWeather(await WeatherProvider.TryToGetWeatherAsync(trackGeoTags));
+                    ApplyWeather(await WeatherProvider.TryToGetWeatherAsync(_geoTags));
                     await Task.Delay(UpdateWeatherPeriod);
                 }
             } else {

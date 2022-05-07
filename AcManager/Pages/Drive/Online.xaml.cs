@@ -231,7 +231,7 @@ namespace AcManager.Pages.Drive {
         }
 
         public static async Task AddServerManually(string listKey) {
-            var address = Prompt.Show(AppStrings.Online_AddServer, AppStrings.Online_AddServer_Title, "",
+            var address = await Prompt.ShowAsync(AppStrings.Online_AddServer, AppStrings.Online_AddServer_Title, "",
                     @"127.0.0.1:8081", AppStrings.Online_AddServer_Tooltip);
             if (address == null) return;
 

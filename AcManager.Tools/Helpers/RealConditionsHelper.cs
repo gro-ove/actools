@@ -9,7 +9,22 @@ using TimeZoneConverter;
 
 namespace AcManager.Tools.Helpers {
     public static class RealConditionsHelper {
-        public static async Task<TimeSpan> GetTimezoneOffsetAsync(TrackObjectBase track, CancellationToken cancellation) {
+        public static async Task<string> GetTimezoneId(TrackObjectBase track, CancellationToken cancellation = default) {
+            var trackGeoTags = track.GeoTags;
+            if (trackGeoTags == null || trackGeoTags.IsEmptyOrInvalid) {
+                trackGeoTags = await TracksLocator.TryToLocateAsync(track);
+                if (cancellation.IsCancellationRequested) return null;
+            }
+
+            var data = DataProvider.Instance.TrackParams[track.MainTrackObject.Id];
+            var timeZone = data.ContainsKey(@"TIMEZONE")
+                    ? TZConvert.GetTimeZoneInfo(data.GetNonEmpty("TIMEZONE"))
+                    : await TimeZoneDeterminer.TryToDetermineAsync(trackGeoTags);
+            if (cancellation.IsCancellationRequested) return null;
+            return timeZone?.Id;
+        }
+
+        public static async Task<TimeSpan> GetTimezoneOffsetAsync(TrackObjectBase track, CancellationToken cancellation = default) {
             var trackGeoTags = track.GeoTags;
             if (trackGeoTags == null || trackGeoTags.IsEmptyOrInvalid) {
                 trackGeoTags = await TracksLocator.TryToLocateAsync(track);
@@ -38,7 +53,7 @@ namespace AcManager.Tools.Helpers {
         /// <param name="cancellation">Cancellation token.</param>
         /// <returns>Task.</returns>
         public static async Task UpdateConditionsAsync(TrackObjectBase track, bool localWeather, bool considerTimezones,
-                [CanBeNull] Action<DateTime> dateTimeCallback, [CanBeNull] Action<WeatherDescription> weatherCallback, CancellationToken cancellation) {
+                [CanBeNull] Action<DateTime> dateTimeCallback, [CanBeNull] Action<WeatherDescription> weatherCallback, CancellationToken cancellation = default) {
             GeoTagsEntry trackGeoTags = null, localGeoTags = null;
 
             if (!localWeather || considerTimezones && dateTimeCallback != null) {

@@ -39,12 +39,16 @@ namespace AcManager.Tools.AcManagersNew {
         public override void ActualScan() {
             base.ActualScan();
 
-            if (_subscribed || !IsScanned) return;
+            if (_subscribed || !IsScanned || Directories == null) return;
             _subscribed = true;
             Directories.Subscribe(this);
         }
 
         protected virtual string GetLocationByFilename(string filename, out bool inner) {
+            if (Directories == null) {
+                inner = false;
+                return null;
+            }
             return Directories.GetLocationByFilename(filename, out inner);
         }
 

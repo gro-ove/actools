@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public abstract class BaseLazySwitch : Decorator {
+    public abstract class BaseLazySwitch : ContentControl {
         [CanBeNull]
         protected abstract UIElement GetChild();
 
@@ -31,14 +31,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private UIElement _child;
+        private bool _reattachChild;
         private bool _busy;
 
         private void SetActiveChild([CanBeNull] UIElement child) {
             if (ReferenceEquals(_child, child) || _busy) return;
             try {
                 _busy = true;
+                if (_reattachChild) {
+                    Content = null;
+                    AddLogicalChild(_child);
+                }
+                _reattachChild = child is FrameworkElement fe && fe.Parent == this;
+                if (_reattachChild) {
+                    RemoveLogicalChild(child);
+                }
                 _child = child;
-                Child = child;
+                Content = child;
             } finally {
                 _busy = false;
             }
