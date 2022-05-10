@@ -324,22 +324,26 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Focus();
         }
 
-        public void ShowInvisible() {
+        public async void ShowInvisible() {
             var needToShowInTaskbar = ShowInTaskbar;
             var initialWindowState = WindowState;
+            var hitTestVisible = IsHitTestVisible;
 
             try {
                 ShowInTaskbar = false;
                 WindowStyle = WindowStyle.None;
+                IsHitTestVisible = false;
                 AllowsTransparency = true;
-                Opacity = 0d;
+                Opacity = 0.01d;
 
                 Show();
+                await Task.Yield();
                 Hide();
                 Opacity = 1d;
             } finally {
                 ShowInTaskbar = needToShowInTaskbar;
                 WindowState = initialWindowState;
+                IsHitTestVisible = hitTestVisible;
             }
         }
     }

@@ -2,10 +2,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Data;
+using AcManager.Tools.Data.TzConvert;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
-using TimeZoneConverter;
 
 namespace AcManager.Tools.Helpers {
     public static class RealConditionsHelper {

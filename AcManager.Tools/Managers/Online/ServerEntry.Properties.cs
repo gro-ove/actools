@@ -333,6 +333,20 @@ namespace AcManager.Tools.Managers.Online {
             set => Apply(value, ref _cspRequiredMissing);
         }
 
+        private bool _CspExtendedCarsPhysics;
+
+        public bool CspExtendedCarsPhysics {
+            get => _CspExtendedCarsPhysics;
+            set => Apply(value, ref _CspExtendedCarsPhysics);
+        }
+
+        private bool _CspExtendedTrackPhysics;
+
+        public bool CspExtendedTrackPhysics {
+            get => _CspExtendedTrackPhysics;
+            set => Apply(value, ref _CspExtendedTrackPhysics);
+        }
+
         private string _trackId;
 
         [CanBeNull]

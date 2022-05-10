@@ -1,12 +1,12 @@
 ﻿using System;
 using AcManager.Tools.Data;
+using AcManager.Tools.Data.TzConvert;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
-using TimeZoneConverter;
 
 namespace AcManager.Tools.GameProperties {
     public class TrackDetails : Game.RaceIniProperties {

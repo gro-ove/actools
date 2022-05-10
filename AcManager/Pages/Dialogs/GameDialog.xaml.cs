@@ -59,15 +59,15 @@ namespace AcManager.Pages.Dialogs {
             DataContext = new ViewModel();
             InitializeComponent();
 
-            if (_progressStyles == null && !AppAppearanceManager.Instance.SoftwareRenderingMode && ExtraProgressRings.Styles != null) {
-                _progressStyles = GoodShuffle.Get(ExtraProgressRings.Styles.Keys);
+            if (_progressStyles == null && !AppAppearanceManager.Instance.SoftwareRenderingMode) {
+                _progressStyles = GoodShuffle.Get(ExtraProgressRings.StylesLazy.Keys);
             }
 
             _cancellationSource = new CancellationTokenSource();
             CancellationToken = _cancellationSource.Token;
 
-            if (!AppAppearanceManager.Instance.SoftwareRenderingMode && ExtraProgressRings.Styles != null && _progressStyles != null) {
-                ProgressRing.Style = ExtraProgressRings.Styles.GetValueOrDefault(_progressStyles.Next);
+            if (!AppAppearanceManager.Instance.SoftwareRenderingMode && _progressStyles != null) {
+                ProgressRing.Style = ExtraProgressRings.StylesLazy.GetValueOrDefault(_progressStyles.Next)?.Value;
             }
 
             Buttons = new[] { OptionHideCancelButton ? null : CancelButton };

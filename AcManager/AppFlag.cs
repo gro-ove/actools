@@ -13,6 +13,12 @@ namespace AcManager {
 
         /// <summary>
         /// For development purposes.
+        /// Example: --ring-debug.
+        /// </summary>
+        RingDebug,
+
+        /// <summary>
+        /// For development purposes.
         /// Example: --csp-reports-location.
         /// </summary>
         CspReportsLocation,

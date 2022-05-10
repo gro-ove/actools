@@ -146,8 +146,8 @@ namespace AcManager {
                     try {
                         if (value) {
                             /* add an icon to the tray for manual restoration just in case */
-                            AddTrayIcon();
-                            // AddTrayIconWpf();
+                            // AddTrayIcon();
+                            AddTrayIconWpf();
 
                             /* hide windows */
                             _hiddenWindows = Application.Current?.Windows.OfType<Window>().Where(x => x.Visibility == Visibility.Visible

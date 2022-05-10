@@ -181,6 +181,12 @@ namespace AcManager.Tools.Managers.Online {
                 if (trackIdPieces.Length == 2) {
                     RequiredCspVersion = Math.Max(PatchHelper.MinimumTestOnlineVersion, trackIdPieces[0].As(0));
                     CheckCspState();
+                } else if (trackIdPieces.Length == 3) {
+                    RequiredCspVersion = Math.Max(PatchHelper.MinimumTestOnlineVersion, trackIdPieces[0].As(0));
+                    var value = ServerPresetObject.EncodeSymbols.IndexOf(trackIdPieces[1].FirstOrDefault());
+                    CspExtendedCarsPhysics = (value & 1) == 1;
+                    CspExtendedTrackPhysics = (value & 2) == 2;
+                    CheckCspState();
                 } else {
                     RequiredCspVersion = 0;
                     CheckCspState();

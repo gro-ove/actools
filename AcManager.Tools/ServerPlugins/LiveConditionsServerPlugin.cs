@@ -93,8 +93,10 @@ namespace AcManager.Tools.ServerPlugins {
             [JsonProperty("temperatureOffset")]
             public double TemperatureOffset {
                 get => _temperatureOffset;
-                set => Apply(value, ref _temperatureOffset);
+                set => Apply(value, ref _temperatureOffset, () => OnPropertyChanged(nameof(DisplayEstimatedTemperature)));
             }
+
+            public string DisplayEstimatedTemperature => $"Approximate temperature range: {MinTemperature + TemperatureOffset}…{MaxTemperature + TemperatureOffset} °C";
 
             private bool _useFixedAirTemperature;
 
@@ -117,10 +119,10 @@ namespace AcManager.Tools.ServerPlugins {
             [JsonProperty("weatherTypeChangePeriod")]
             public TimeSpan WeatherTypeChangePeriod {
                 get => _weatherTypeChangePeriod;
-                set => Apply(value, ref _weatherTypeChangePeriod, () => OnPropertyChanged(nameof(WeatherTypeChangePeriodMinutes)));
+                set => Apply(value, ref _weatherTypeChangePeriod, () => OnPropertyChanged(nameof(WeatherTypeChangeMinutes)));
             }
 
-            public double WeatherTypeChangePeriodMinutes {
+            public double WeatherTypeChangeMinutes {
                 get => _weatherTypeChangePeriod.TotalMinutes;
                 set => WeatherTypeChangePeriod = TimeSpan.FromMinutes(value);
             }
@@ -171,6 +173,66 @@ namespace AcManager.Tools.ServerPlugins {
             public double TrackGripTransfer {
                 get => _trackGripTransfer;
                 set => Apply(value, ref _trackGripTransfer);
+            }
+
+            private double _rainTimeMultiplier = 1d;
+
+            [JsonProperty("rainTimeMultiplier")]
+            public double RainTimeMultiplier {
+                get => _rainTimeMultiplier;
+                set => Apply(value, ref _rainTimeMultiplier);
+            }
+
+            private TimeSpan _rainWetnessIncreaseTime = TimeSpan.FromMinutes(3d);
+
+            [JsonProperty("rainWetnessIncreaseTime")]
+            public TimeSpan RainWetnessIncreaseTime {
+                get => _rainWetnessIncreaseTime;
+                set => Apply(value, ref _rainWetnessIncreaseTime, () => OnPropertyChanged(nameof(RainWetnessIncreaseMinutes)));
+            }
+
+            public double RainWetnessIncreaseMinutes {
+                get => _rainWetnessIncreaseTime.TotalMinutes;
+                set => RainWetnessIncreaseTime = TimeSpan.FromMinutes(value);
+            }
+
+            private TimeSpan _rainWetnessDecreaseTime = TimeSpan.FromMinutes(15d);
+
+            [JsonProperty("rainWetnessDecreaseTime")]
+            public TimeSpan RainWetnessDecreaseTime {
+                get => _rainWetnessDecreaseTime;
+                set => Apply(value, ref _rainWetnessDecreaseTime, () => OnPropertyChanged(nameof(RainWetnessDecreaseMinutes)));
+            }
+
+            public double RainWetnessDecreaseMinutes {
+                get => _rainWetnessDecreaseTime.TotalMinutes;
+                set => RainWetnessDecreaseTime = TimeSpan.FromMinutes(value);
+            }
+
+            private TimeSpan _rainWaterIncreaseTime = TimeSpan.FromMinutes(30d);
+
+            [JsonProperty("rainWaterIncreaseTime")]
+            public TimeSpan RainWaterIncreaseTime {
+                get => _rainWaterIncreaseTime;
+                set => Apply(value, ref _rainWaterIncreaseTime, () => OnPropertyChanged(nameof(RainWaterIncreaseMinutes)));
+            }
+
+            public double RainWaterIncreaseMinutes {
+                get => _rainWaterIncreaseTime.TotalMinutes;
+                set => RainWaterIncreaseTime = TimeSpan.FromMinutes(value);
+            }
+
+            private TimeSpan _rainWaterDecreaseTime = TimeSpan.FromMinutes(120d);
+
+            [JsonProperty("rainWaterDecreaseTime")]
+            public TimeSpan RainWaterDecreaseTime {
+                get => _rainWaterDecreaseTime;
+                set => Apply(value, ref _rainWaterDecreaseTime, () => OnPropertyChanged(nameof(RainWaterDecreaseMinutes)));
+            }
+
+            public double RainWaterDecreaseMinutes {
+                get => _rainWaterDecreaseTime.TotalMinutes;
+                set => RainWaterDecreaseTime = TimeSpan.FromMinutes(value);
             }
 
             public string Serialize() {
@@ -272,7 +334,7 @@ namespace AcManager.Tools.ServerPlugins {
                         TrackGrip = grip,
                         RainIntensity = (Half)_rainIntensity,
                         RainWetness = (Half)_rainWetness,
-                        RainWater = (Half)_rainLag[_rainCursor]
+                        RainWater = (Half)_rainWater.LerpInvSat(0.1, 1)
                     }.Serialize()
                     : new CommandWeatherSetV1 {
                         Timestamp = (ulong)date.ToUnixTimestamp(),
@@ -312,20 +374,42 @@ namespace AcManager.Tools.ServerPlugins {
         private double _rainWetness;
         private double _rainWater;
 
-        private int _rainCursor;
-        private double[] _rainLag = new double[120]; // two updates per second → 1 minute for changes to apply
-
         private double GetWeatherTransition() {
             return (_weatherTransitionStopwatch.Elapsed.TotalSeconds / _updatePeriod.TotalSeconds).Saturate().SmoothStep();
         }
 
         private async Task UpdateStateAsync() {
             while (!_disposed) {
+                var transition = GetWeatherTransition();
+
                 var current = _weatherCurrent;
                 var next = _weatherNext;
-                _rainIntensity = current == null || next == null ? 0d : GetWeatherTransition().Lerp(_rainCurrent, _rainNext);
-                _rainWetness += ((_rainIntensity > 0 ? 1d : 0d) - _rainWetness) * (_rainIntensity > 0 ? _rainIntensity.Lerp(0.002, 0.01) : 0.005);
-                _rainWater += (_rainIntensity - _rainWater) * 0.005;
+                var weatherMissing = current == null || next == null;
+                _rainIntensity = weatherMissing ? 0d : transition.Lerp(_rainCurrent, _rainNext);
+
+                var date = _startingDate + TimeSpan.FromSeconds(_timePassedTotal.Elapsed.TotalSeconds * _liveParams.TimeMultiplier);
+                var ambientTemperature = weatherMissing ? 25d : _liveParams.UseFixedAirTemperature
+                        ? _liveParams.FixedAirTemperature : transition.Lerp(current.Temperature, next.Temperature) + _liveParams.TemperatureOffset;
+                var roadTemperature = Game.ConditionProperties.GetRoadTemperature(date.TimeOfDay.TotalSeconds.RoundToInt(), ambientTemperature,
+                        transition.Lerp(
+                                GetRoadTemperatureCoefficient(current?.Type ?? WeatherType.Clear),
+                                GetRoadTemperatureCoefficient(next?.Type ?? WeatherType.Clear)));
+
+                if (_rainIntensity > 0d) {
+                    _rainWetness = Math.Min(1d, _rainWetness + _rainIntensity.Lerp(0.3, 1.7d)
+                            * UpdateRainPeriod.TotalSeconds / Math.Max(1d, _liveParams.RainWetnessIncreaseTime.TotalSeconds * _liveParams.RainTimeMultiplier));
+                } else {
+                    _rainWetness = Math.Max(0d, _rainWetness - roadTemperature.LerpInvSat(10d, 35d).Lerp(0.3, 1.7d)
+                            * UpdateRainPeriod.TotalSeconds / Math.Max(1d, _liveParams.RainWetnessDecreaseTime.TotalSeconds * _liveParams.RainTimeMultiplier));
+                }
+
+                if (_rainWater < _rainIntensity) {
+                    _rainWater = Math.Min(_rainIntensity, _rainWater + _rainIntensity.Lerp(0.3, 1.7d)
+                            * UpdateRainPeriod.TotalSeconds / Math.Max(1d, _liveParams.RainWaterIncreaseTime.TotalSeconds * _liveParams.RainTimeMultiplier));
+                } else {
+                    _rainWater = Math.Max(_rainIntensity, _rainWater - roadTemperature.LerpInvSat(10d, 35d).Lerp(0.3, 1.7d)
+                            * UpdateRainPeriod.TotalSeconds / Math.Max(1d, _liveParams.RainWaterDecreaseTime.TotalSeconds * _liveParams.RainTimeMultiplier));
+                }
 
                 if (PluginManager != null) {
                     foreach (var info in PluginManager.GetDriverInfos()) {
@@ -334,11 +418,6 @@ namespace AcManager.Tools.ServerPlugins {
                             _drivenLapsEstimate += drivenDistanceKm / _lapLengthKm;
                         }
                     }
-                }
-
-                _rainLag[_rainCursor] = _rainWater;
-                if (++_rainCursor == _rainLag.Length) {
-                    _rainCursor = 0;
                 }
 
                 await Task.Delay(UpdateRainPeriod);
@@ -487,6 +566,9 @@ namespace AcManager.Tools.ServerPlugins {
             return PickRandomWeatherType(ChancesRegular, allowed) ?? WeatherType.Clear;
         }
 
+        private const double MinTemperature = 22d;
+        private const double MaxTemperature = 26d;
+
         private Tuple<double, double, double> EstimateTemperatureWindSpeedHumidity(WeatherType type) {
             if (type == WeatherType.Clear) return Tuple.Create(26d, 1d, 0.6);
             if (type == WeatherType.FewClouds) return Tuple.Create(25d, 2d, 0.6);
@@ -609,23 +691,23 @@ namespace AcManager.Tools.ServerPlugins {
                 case WeatherType.None:
                     return 1d;
                 case WeatherType.LightThunderstorm:
-                    return 0.7;
+                    return -0.9;
                 case WeatherType.Thunderstorm:
-                    return 0.2;
+                    return -1d;
                 case WeatherType.HeavyThunderstorm:
-                    return -0.2;
+                    return -1d;
                 case WeatherType.LightDrizzle:
-                    return 0.1;
-                case WeatherType.Drizzle:
-                    return -0.1;
-                case WeatherType.HeavyDrizzle:
                     return -0.3;
-                case WeatherType.LightRain:
-                    return 0.01;
-                case WeatherType.Rain:
-                    return -0.2;
-                case WeatherType.HeavyRain:
+                case WeatherType.Drizzle:
+                    return -0.4;
+                case WeatherType.HeavyDrizzle:
                     return -0.5;
+                case WeatherType.LightRain:
+                    return -0.6;
+                case WeatherType.Rain:
+                    return -0.7;
+                case WeatherType.HeavyRain:
+                    return -0.8;
                 case WeatherType.LightSnow:
                     return -0.7;
                 case WeatherType.Snow:

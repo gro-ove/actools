@@ -127,6 +127,10 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
+        private static string CacheKey() {
+            return $@"r={DateTime.Now.ToUnixTimestamp() / 30 % (24 * 60)}";
+        }
+
         [CanBeNull]
         public static ServerInformationComplete[] TryToGetList(IProgress<int> progress = null, CancellationToken cancellation = default) {
             if (SteamIdHelper.Instance.Value == null) throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
@@ -134,11 +138,12 @@ namespace AcManager.Tools.Helpers.Api {
             if (SettingsHolder.Online.CachingServerAvailable && SettingsHolder.Online.UseCachingServer) {
                 try {
                     var watch = Stopwatch.StartNew();
-                    var ret = LoadList(InternalUtils.GetKunosServerCompressedProxyUri(), OptionWebRequestTimeout, cancellation, stream => {
-                        using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
-                            return ServerInformationComplete.Deserialize(deflateStream);
-                        }
-                    });
+                    var ret = LoadList($@"{InternalUtils.GetKunosServerCompressedProxyUri()}?{CacheKey()}",
+                            OptionWebRequestTimeout, cancellation, stream => {
+                                using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
+                                    return ServerInformationComplete.Deserialize(deflateStream);
+                                }
+                            });
 
                     /*var ret = LoadList(InternalUtils.GetKunosServerProxyUri(), OptionWebRequestTimeout, cancellation,
                             ServerInformationComplete.Deserialize);*/
@@ -158,7 +163,7 @@ namespace AcManager.Tools.Helpers.Api {
                 }
 
                 var uri = ServerUri;
-                var requestUri = $@"http://{uri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}";
+                var requestUri = $@"http://{uri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}&{CacheKey()}";
                 ServerInformationComplete[] parsed;
 
                 try {

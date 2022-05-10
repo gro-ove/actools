@@ -205,7 +205,7 @@
                   Text="Overrides regular condition settings, needs CSP installed on client sides. By default only syncs weather type and transition, but if server is set to require CSP build 1643 or above, physics conditions will be synced as well." />
             </c:MessageBlock>
 
-            <TextBlock Text="Time:" Style="{StaticResource SettingsPanel.Heading2}" FontSize="14" Margin="0 12 0 8"></TextBlock>
+            <TextBlock Text="Time:" Style="{StaticResource SettingsPanel.Heading2}" FontSize="14" Margin="0 12 0 8" />
             <StackPanel Margin="12 0 0 0" DataContext="{Binding CmPluginLiveConditionsParams}">
 
               <DockPanel ToolTip="If set to “Live”, starting time will be set to match real life time taking timezones into account, with an optional offset">
@@ -247,7 +247,7 @@
 
             </StackPanel>
 
-            <TextBlock Text="Weather:" Style="{StaticResource SettingsPanel.Heading2}" FontSize="14" Margin="0 12 0 8"></TextBlock>
+            <TextBlock Text="Weather:" Style="{StaticResource SettingsPanel.Heading2}" FontSize="14" Margin="0 12 0 8" />
             <StackPanel Margin="12 0 0 0" DataContext="{Binding CmPluginLiveConditionsParams}">
 
               <DockPanel ToolTip="If set to “Real”, weather will be synced with real one thanks to OpenWeatherMap service">
@@ -257,9 +257,10 @@
 
               <DockPanel Visibility="{Binding UseRealConditions, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
                   ToolTip="Delay between randomized weather changes (actual delay will be from 50% to 150% of this value chosen randomly)">
-                <mui:ValueLabel Value="{Binding WeatherTypeChangePeriodMinutes}" Content="Change period" Postfix=" min" />
+                <mui:ValueLabel Value="{Binding WeatherTypeChangePeriod, Converter={StaticResource TimeSpanHhMmConverter}}" Content="Change period"
+                    Postfix=" min" />
                 <Slider Minimum="2" Maximum="120" TickFrequency="11.8" TickPlacement="BottomRight" Margin="0 0 0 -2"
-                    Value="{Binding WeatherTypeChangePeriodMinutes, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+                    Value="{Binding WeatherTypeChangeMinutes, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
               </DockPanel>
 
               <CheckBox IsChecked="{Binding WeatherTypeChangeToNeighboursOnly}"
@@ -297,9 +298,12 @@
                     Value="{Binding TemperatureOffset, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
               </DockPanel>
 
+              <TextBlock Visibility="{Binding UseFixedAirTemperature, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
+                  Style="{StaticResource Small}" Text="{Binding DisplayEstimatedTemperature}" />
+
             </StackPanel>
 
-            <TextBlock Text="Track grip:" Style="{StaticResource SettingsPanel.Heading2}" FontSize="14" Margin="0 12 0 8"></TextBlock>
+            <TextBlock Text="Track grip:" Style="{StaticResource SettingsPanel.Heading2}" FontSize="14" Margin="0 12 0 8" />
             <StackPanel Margin="12 0 0 0" DataContext="{Binding CmPluginLiveConditionsParams}">
 
               <DockPanel>
@@ -319,6 +323,55 @@
                 <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight" Margin="0 0 0 -2"
                     Value="{Binding TrackGripTransfer, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
               </DockPanel>
+
+            </StackPanel>
+
+            <TextBlock Text="Rain transition:" Style="{StaticResource SettingsPanel.Heading2}" FontSize="14" Margin="0 12 0 8" />
+            <StackPanel Margin="12 0 0 0" DataContext="{Binding CmPluginLiveConditionsParams}">
+
+              <DockPanel ToolTip="Increase to make rain-related changes slower, decrease to make them faster">
+                <mui:ValueLabel Value="{Binding RainTimeMultiplier, Converter={StaticResource PercentageConverter}}" Content="Overall multiplier" Postfix="%" />
+                <Slider Minimum="0" Maximum="2" TickFrequency="0.2" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                    Value="{Binding RainTimeMultiplier, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
+              </DockPanel>
+
+              <mui:RememberingExpander DefaultValue="False" Key="s.dc.rainTweaks" Style="{StaticResource Expander.Animated}" Margin="-16 4 0 0">
+                <Expander.Header>
+                  <Label Content="Advanced settings" Background="Transparent" />
+                </Expander.Header>
+                <StackPanel Margin="16 12 0 0">
+
+                  <DockPanel ToolTip="Time for track to get wet (without puddles) when rain starts; actual value may vary depending on rain intensity">
+                    <mui:ValueLabel Value="{Binding RainWetnessIncreaseTime, Converter={StaticResource TimeSpanHhMmConverter}}" Content="Wetness increase"
+                        Postfix=" min" />
+                    <Slider Minimum="0" Maximum="10" TickFrequency="6" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                        Value="{Binding RainWetnessIncreaseMinutes, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+                  </DockPanel>
+
+                  <DockPanel
+                      ToolTip="Time for track to dry out (keeping puddles) when rain stops; actual value may vary depending on weather type and temperature">
+                    <mui:ValueLabel Value="{Binding RainWetnessDecreaseTime, Converter={StaticResource TimeSpanHhMmConverter}}" Content="Wetness decrease"
+                        Postfix=" min" />
+                    <Slider Minimum="0" Maximum="60" TickFrequency="6" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                        Value="{Binding RainWetnessDecreaseMinutes, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+                  </DockPanel>
+
+                  <DockPanel ToolTip="Time for track to accumulate puddles reaching rain intensity; actual value may vary depending on rain intensity">
+                    <mui:ValueLabel Value="{Binding RainWaterIncreaseTime, Converter={StaticResource TimeSpanHhMmConverter}}" Content="Water increase"
+                        Postfix=" min" />
+                    <Slider Minimum="0" Maximum="60" TickFrequency="6" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                        Value="{Binding RainWaterIncreaseMinutes, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+                  </DockPanel>
+
+                  <DockPanel ToolTip="Time for puddles to dry out when rain stops; actual value may vary depending on weather type and temperature">
+                    <mui:ValueLabel Value="{Binding RainWaterDecreaseTime, Converter={StaticResource TimeSpanHhMmConverter}}" Content="Water decrease"
+                        Postfix=" min" />
+                    <Slider Minimum="0" Maximum="300" TickFrequency="30" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                        Value="{Binding RainWaterDecreaseMinutes, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+                  </DockPanel>
+
+                </StackPanel>
+              </mui:RememberingExpander>
 
             </StackPanel>
 

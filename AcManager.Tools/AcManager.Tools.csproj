@@ -104,14 +104,6 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Management" />
-    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="TimeZoneConverter, Version=2.4.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\TimeZoneConverter.2.4.1\lib\net45\TimeZoneConverter.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Unosquare.Labs.EmbedIO, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Unosquare.Labs.EmbedIO\Unosquare.Labs.EmbedIO.dll</HintPath>
@@ -306,6 +298,8 @@
     <Compile Include="Data\PatchTracksVaoDataUpdater.cs" />
     <Compile Include="Data\PatchUpdater.cs" />
     <Compile Include="Data\PatchVersionInfo.cs" />
+    <Compile Include="Data\TzConvert\DataLoader.cs" />
+    <Compile Include="Data\TzConvert\TZConvert.cs" />
     <Compile Include="Data\UserChampionshipProgressEntry.cs" />
     <Compile Include="Data\UserChampionshipsProgress.cs" />
     <Compile Include="Data\WeatherDescription.cs" />
@@ -886,6 +880,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Rules.txt" />
+    <None Include="Assets\TimeZoneConverter\Aliases.csv.gz" />
+    <None Include="Assets\TimeZoneConverter\Mapping.csv.gz" />
+    <None Include="Assets\TimeZoneConverter\RailsMapping.csv.gz" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\Libraries\PreBuildEvents.props" />

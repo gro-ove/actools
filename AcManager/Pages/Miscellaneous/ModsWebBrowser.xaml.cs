@@ -1253,10 +1253,10 @@ window.$KEY = outline.stop.bind(outline);
                         }
                     };
 
-                    Task.Delay(7000).ContinueWith(t => {
+                    Task.Delay(TimeSpan.FromSeconds(7d)).ContinueWith(t => {
                         if (suggestedRule != null && suggestedRule != _source.AutoDownloadRule) {
                             RunRule(suggestedRule);
-                            Task.Delay(4000).ContinueWith(t1 => {
+                            Task.Delay(TimeSpan.FromSeconds(7d)).ContinueWith(t1 => {
                                 if (_onDownloadFired) {
                                     _source.AutoDownloadRule = suggestedRule;
                                 } else {
@@ -1423,15 +1423,14 @@ window.$KEY = outline.stop.bind(outline);
                     () => !string.IsNullOrWhiteSpace(_finder.Model.Value)).ListenOn(_finder.Model, nameof(_finder.Model.Value)));
 
             private async Task Save() {
-                var source = _source;
-                source.AutoDownloadRule = _finder.Model.Value;
+                _source.AutoDownloadRule = _finder.Model.Value;
                 _message.Text = "Please, wait for newly created rule to start download…";
                 CancelRuleEditing();
 
                 using (var token = new CancellationTokenSource()) {
                     try {
                         _onDownloadFired = false;
-                        RunRule(source.AutoDownloadRule);
+                        RunRule(_source.AutoDownloadRule);
                         await Task.Delay(5000, token.Token);
                     } catch (OperationCanceledException) { }
                 }

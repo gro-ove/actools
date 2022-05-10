@@ -135,9 +135,9 @@ namespace AcManager.Pages.ContentTools {
             progress.Report("Loading showrooms…", 0.03);
             await ShowroomsManager.Instance.EnsureLoadedAsync();
 
-            var cars = CarsManager.Instance.WrappersList.Select(x => (AcCommonObject)x.Loaded()).ToList();
-            var tracks = TracksManager.Instance.WrappersList.Select(x => (AcCommonObject)x.Loaded()).ToList();
-            var showrooms = ShowroomsManager.Instance.WrappersList.Select(x => (AcCommonObject)x.Loaded()).ToList();
+            var cars = CarsManager.Instance.WrappersList.Select(x => x.Loaded() as AcCommonObject).NonNull().ToList();
+            var tracks = TracksManager.Instance.WrappersList.Select(x => x.Loaded() as AcCommonObject).NonNull().ToList();
+            var showrooms = ShowroomsManager.Instance.WrappersList.Select(x => x.Loaded() as AcCommonObject).NonNull().ToList();
             var index = new[] { 0 };
             var objectsProgress = progress.Subrange(0.04, 0.9);
 

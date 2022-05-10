@@ -86,8 +86,7 @@ namespace AcManager.Tools {
         ///        WBCAR_STEER         vector3  0.001
         ///        WBTYRE_STEER        vector3  0.001
         ///
-        ///[suspension_rear_geometry:v0]
-        ///su [rest of string was truncated]&quot;;.
+        ///[suspension_rear_ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Rules {
             get {

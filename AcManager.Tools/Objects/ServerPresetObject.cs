@@ -125,7 +125,7 @@ namespace AcManager.Tools.Objects {
                     .ToString().GetChecksum();
         }
 
-        private const string EncodeSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+        public const string EncodeSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
 
         protected override void LoadData(IniFile ini) {
             foreach (var session in Sessions) {
