@@ -34,7 +34,8 @@ technique10 Main {
 /* pp area */
 
 Texture2D gInputMap;
-Texture2D gPreprocessedMap;
+Texture2D gPreprocessedBaseMap;
+Texture2D gPreprocessedMarksMap;
 Texture2D gBlurredMap;
 
 SamplerState samInputImage {
@@ -89,7 +90,9 @@ technique10 Pp {
 }
 
 float4 ps_final(Pp_PS_IN pin) : SV_Target{
-	float4 base = gPreprocessedMap.SampleLevel(samInputImage, pin.Tex, 0.0);
+	float4 base = gPreprocessedBaseMap.SampleLevel(samInputImage, pin.Tex, 0.0);
+	float4 marks = gPreprocessedMarksMap.SampleLevel(samInputImage, pin.Tex, 0.0);
+	base = lerp(base, marks, marks.w);
 	return float4(base.rgb, base.w);
 }
 
@@ -102,7 +105,9 @@ technique10 Final {
 }
 
 float4 ps_final_checkers(Pp_PS_IN pin) : SV_Target{
-	float4 base = gPreprocessedMap.SampleLevel(samInputImage, pin.Tex, 0.0);
+	float4 base = gPreprocessedBaseMap.SampleLevel(samInputImage, pin.Tex, 0.0);
+	float4 marks = gPreprocessedMarksMap.SampleLevel(samInputImage, pin.Tex, 0.0);
+	base = lerp(base, marks, marks.w);
 
 	float x = saturate((pin.Tex.x * (gScreenSize.x / 16) % 2 - 1.0) * 1e6);
 	float y = saturate((pin.Tex.y * (gScreenSize.y / 16) % 2 - 1.0) * 1e6);

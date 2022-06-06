@@ -86,7 +86,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        private static IRenderableObject Create(AiPoint[] aiPoints, AiPointExtra[] aiPointsExtra, float? fixedWidth, float extraWidth, float progress,
+        private static IRenderableObject Create(AiPoint[] aiPoints, AiPointExtra[] aiPointsExtra, float? fixedWidth, float extraWidth, float pieceLength,
+                float progress,
                 object materialKey) {
             var vertices = new List<InputLayouts.VerticeP>();
             var indices = new List<ushort>();
@@ -104,8 +105,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             var d = Vector3.Normalize(v1 - v0);
             var p = (v0 + v1) / 2;
-            v0 = p - d * extraWidth / 2;
-            v1 = p + d * extraWidth / 2;
+            v0 = p - d * pieceLength;
+            v1 = p + d * pieceLength;
 
             var s0 = Vector3.Normalize(Vector3.Cross(d, Vector3.UnitY));
             var s1 = Vector3.Normalize(Vector3.Cross(d, Vector3.UnitY));
@@ -170,10 +171,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             return result;
         }
 
-        public static IRenderableObject Create([NotNull] AiSpline aiSpline, float? fixedWidth, float extraWidth, float progress, object materialKey) {
+        public static IRenderableObject Create([NotNull] AiSpline aiSpline, float? fixedWidth, float extraWidth, float pieceLength, float progress,
+                object materialKey) {
             var aiPoints = aiSpline.Points;
             var aiPointsExtra = aiSpline.PointsExtra;
-            return Create(aiPoints, aiPointsExtra, fixedWidth, extraWidth, progress, materialKey);
+            return Create(aiPoints, aiPointsExtra, fixedWidth, extraWidth, pieceLength, progress, materialKey);
         }
 
         private IRenderableMaterial _material;

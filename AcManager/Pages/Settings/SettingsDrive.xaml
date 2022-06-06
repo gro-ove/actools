@@ -232,6 +232,16 @@
           <Label Content="{x:Static g:AppStrings.Settings_Drive_AllowDecimalValuesForTrackState}" />
         </CheckBox>
 
+        <DockPanel ToolTip="Used when selecting randomized combination (Alt+R)">
+          <Label Content="Filter for random tracks" />
+          <mui:BetterTextBox Text="{Binding Drive.QuickDriveRandomizeTrackFilter}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        </DockPanel>
+
+        <DockPanel ToolTip="Used when selecting randomized combination (Alt+R)">
+          <Label Content="Filter for random cars" />
+          <mui:BetterTextBox Text="{Binding Drive.QuickDriveRandomizeCarFilter}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        </DockPanel>
+
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Quick Drive advanced tweaks:" />
 
         <CheckBox IsChecked="{Binding Drive.QuickDriveAiLimitations}" set:Search.Keywords="quick;drive;trackday"
@@ -333,6 +343,10 @@
 
         <CheckBox IsChecked="{Binding Drive.ContinueOnEscape}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_ContinueRaceIfEscapePressed}" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding Drive.ShowCspSettingsWithShortcut}">
+          <Label Content="Show CSP settings with Ctrl+Shift+~ shortcut" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.MonitorFramesPerSecond}" IsEnabled="{Binding Drive.WatchForSharedMemory}">

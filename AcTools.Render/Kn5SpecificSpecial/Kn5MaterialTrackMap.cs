@@ -11,7 +11,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private EffectSpecialTrackMap _effect;
 
         internal Kn5MaterialTrackMap(Vector3 color) {
-            AcToolsLogging.Write("COLOR:" + color);
             _color = color;
         }
 

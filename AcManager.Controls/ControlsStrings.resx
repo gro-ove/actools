@@ -1112,4 +1112,7 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Settings_Drive_CMLaunch" xml:space="preserve">
       <value>CM launch event command:</value>
   </data>
+  <data name="AcSettings_System_OrbitMode" xml:space="preserve">
+      <value>Orbit mode for F5 camera</value>
+  </data>
 </root>

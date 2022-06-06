@@ -167,9 +167,9 @@
                     <ColumnDefinition />
                   </Grid.ColumnDefinitions>
 
-                  <ListBox x:Name="PART_LinkList" ItemsSource="{TemplateBinding Links}"
+                  <ListBox x:Name="PART_LinkList" ItemsSource="{TemplateBinding Links}" ScrollViewer.VerticalScrollBarVisibility="Auto"
                       ScrollViewer.HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                      Template="{TemplateBinding LinksListBoxTemplate}">
+                      Template="{TemplateBinding LinksListBoxTemplate}" Style="{StaticResource {x:Type ListBox}}">
                     <ListBox.ItemContainerStyle>
                       <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
                         <Setter Property="Template">

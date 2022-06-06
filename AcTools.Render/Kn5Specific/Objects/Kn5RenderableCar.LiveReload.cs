@@ -37,6 +37,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     _colliderLines.Reset();
                     _flamesLines.Reset();
                     _wheelsLines.Reset();
+                    _inertiaBoxLines.Reset();
                     break;
 
                 case "aero.ini":
@@ -49,6 +50,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     _fuelTankLines.Reset();
                     _wheelsLines.Reset();
                     _colliderLines.Reset(); // because they are affected by offset
+                    _inertiaBoxLines.Reset();
                     ReloadSteeringWheelLock();
                     CamerasChanged?.Invoke(this, EventArgs.Empty);
                     if (AlignWheelsByData) {

@@ -464,8 +464,10 @@ namespace AcManager.Tools.Data {
                             }
                         }
                     } else {
+                        Logging.Debug("Loading entries list…");
                         progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Loading entries list…"));
-                        var list = await ApiCache.GetStringAsync($"{InternalUtils.MainApiDomain}/{GetBaseUrl()}", @"list");
+                        var list = await ApiCache.GetStringAsync($"{InternalUtils.MainApiDomain}/{GetBaseUrl()}", @"list").WithCancellation(cancellation);
+                        Logging.Debug("Done: " + cancellation.IsCancellationRequested);
                         if (cancellation.IsCancellationRequested) return;
 
                         var jObject = JObject.Parse(list);

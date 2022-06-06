@@ -301,7 +301,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             if (dataDir != null) {
                 _extraMarks = new List<Tuple<double, Vector3>>();
 
-                var sectors = new List<Tuple<double, double>>();
+                /*var sectors = new List<Tuple<double, double>>();
                 foreach (var section in new IniFile(Path.Combine(dataDir, "sections.ini")).GetSections("SECTION")) {
                     var valueIn = section.GetDoubleNullable("IN");
                     var valueOut = section.GetDoubleNullable("OUT");
@@ -330,11 +330,12 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                             }
                             return (v1 + v2) / 2;
                         }
+
                         for (var i = 0; i < sectors.Count; ++i) {
                             _extraMarks.Add(Tuple.Create(MixProgress(sectors[i].Item2, sectors[(i + 1) % sectors.Count].Item1), new Vector3(0.45f)));
                         }
                     }
-                }
+                }*/
 
                 foreach (var section in new IniFile(Path.Combine(dataDir, "drs_zones.ini")).GetSections("ZONE")) {
                     var valueIn = section.GetDoubleNullable("START");
@@ -356,7 +357,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         protected RenderableList RootNode { get; private set; }
 
-        protected RenderableList FilteredNode { get; private set; }
+        protected RenderableList FilteredBaseNode { get; private set; }
+
+        protected RenderableList MarksNode { get; private set; }
 
         private int _trianglesCount;
 
@@ -404,14 +407,63 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             return new TrackMapMaterialProvider();
         }*/
 
-        private TargetResourceTexture _buffer0, _buffer1, _buffer2;
+        private class Layer : IDisposable {
+            public TargetResourceTexture[] Buffers;
+
+            public Layer() {
+                Buffers = new[] {
+                    TargetResourceTexture.Create(Format.R8G8B8A8_UNorm),
+                    TargetResourceTexture.Create(Format.R8G8B8A8_UNorm),
+                    TargetResourceTexture.Create(Format.R8G8B8A8_UNorm),
+                };
+            }
+
+            public void Dispose() {
+                Buffers.DisposeEverything();
+            }
+
+            public void Resize(DeviceContextHolder contextHolder, int width, int height) {
+                foreach (var buffer in Buffers) {
+                    buffer.Resize(contextHolder, width, height, null);
+                }
+            }
+
+            public void Clear(DeviceContext context) {
+                foreach (var buffer in Buffers) {
+                    context.ClearRenderTargetView(buffer.TargetView, Color.Transparent);
+                }
+            }
+
+            public void Draw(DeviceContextHolder contextHolder, ICamera camera, RenderableList node) {
+                var context = contextHolder.DeviceContext;
+                foreach (var buffer in Buffers) {
+                    context.ClearRenderTargetView(buffer.TargetView, Color.Transparent);
+                }
+
+                context.OutputMerger.SetTargets(Buffers[0].TargetView);
+
+                context.OutputMerger.BlendState = null;
+                context.Rasterizer.State = contextHolder.States.DoubleSidedState;
+                node.Draw(contextHolder, camera, SpecialRenderMode.Simple);
+                contextHolder.DeviceContext.Rasterizer.State = null;
+
+                // blur to buffer-0 using buffer-1 as temporary
+                contextHolder.GetHelper<TrackMapBlurRenderHelper>().Blur(contextHolder, Buffers[0], Buffers[1], 1, Buffers[2]);
+
+                // outline map and add inset shadow to buffer-1 (alpha is in green channel for optional FXAA)
+                contextHolder.GetHelper<TrackMapRenderHelper>().Draw(contextHolder, Buffers[0].View, Buffers[2].View, Buffers[1].TargetView);
+            }
+        }
+
+        private Layer _layerBase, _layerMarks;
 
         [NotNull]
         private static RenderableList ToRenderableList([NotNull] IRenderableObject obj) {
             return obj as RenderableList ?? new RenderableList { obj };
         }
 
-        private bool _aiLaneDirty;
+        private bool _aiLaneBaseDirty;
+        private bool _aiLaneMarksDirty;
         private bool _aiLaneActualWidth;
 
         public bool AiLaneActualWidth {
@@ -420,7 +472,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 if (Equals(value, _aiLaneActualWidth)) return;
                 _aiLaneActualWidth = value;
                 OnPropertyChanged();
-                _aiLaneDirty = true;
+                _aiLaneBaseDirty = true;
                 IsDirty = true;
             }
         }
@@ -433,7 +485,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 if (Equals(value, _aiLaneWidth)) return;
                 _aiLaneWidth = value;
                 OnPropertyChanged();
-                _aiLaneDirty = true;
+                _aiLaneBaseDirty = true;
                 IsDirty = true;
             }
         }
@@ -446,7 +498,33 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 if (Equals(value, _showPitlane)) return;
                 _showPitlane = value;
                 OnPropertyChanged();
-                _aiLaneDirty = true;
+                _aiLaneBaseDirty = true;
+                IsDirty = true;
+            }
+        }
+
+        private float _aiPitLaneWidth = 6f;
+
+        public float AiPitLaneWidth {
+            get => _aiPitLaneWidth;
+            set {
+                if (Equals(value, _aiPitLaneWidth)) return;
+                _aiPitLaneWidth = value;
+                OnPropertyChanged();
+                _aiLaneBaseDirty = true;
+                IsDirty = true;
+            }
+        }
+
+        private Vector3 _aiPitLaneColor = new Vector3(.3f, .3f, .3f);
+
+        public Vector3 AiPitLaneColor {
+            get => _aiPitLaneColor;
+            set {
+                if (Equals(value, _aiPitLaneColor)) return;
+                _aiPitLaneColor = value;
+                OnPropertyChanged();
+                _aiLaneBaseDirty = true;
                 IsDirty = true;
             }
         }
@@ -459,40 +537,171 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 if (Equals(value, _showSpecialMarks)) return;
                 _showSpecialMarks = value;
                 OnPropertyChanged();
-                _aiLaneDirty = true;
+                _aiLaneMarksDirty = true;
+                IsDirty = true;
+            }
+        }
+
+        private bool _showAiPitLaneMarks;
+
+        public bool ShowAiPitLaneMarks {
+            get => _showAiPitLaneMarks;
+            set {
+                if (Equals(value, _showAiPitLaneMarks)) return;
+                _showAiPitLaneMarks = value;
+                OnPropertyChanged();
+                _aiLaneBaseDirty = true;
+                IsDirty = true;
+            }
+        }
+
+        private float _specialMarksWidth;
+
+        public float SpecialMarksWidth {
+            get => _specialMarksWidth;
+            set {
+                if (Equals(value, _specialMarksWidth)) return;
+                _specialMarksWidth = value;
+                OnPropertyChanged();
+                _aiLaneMarksDirty = true;
+                IsDirty = true;
+            }
+        }
+
+        private float _specialMarksThickness;
+
+        public float SpecialMarksThickness {
+            get => _specialMarksThickness;
+            set {
+                if (Equals(value, _specialMarksThickness)) return;
+                _specialMarksThickness = value;
+                OnPropertyChanged();
+                _aiLaneMarksDirty = true;
                 IsDirty = true;
             }
         }
 
         private List<Tuple<double, Vector3>> _extraMarks;
 
-        private RenderableList CreateAiLaneList() {
-            var width = AiLaneActualWidth ? (float?)null : AiLaneWidth;
-            var items = new[] {
-                ShowPitlane && _aiPitsSpline != null ? AiLaneObject.Create(_aiPitsSpline, width, "pits") : null,
-                _aiSpline != null ? AiLaneObject.Create(_aiSpline, width, "main") : null,
-                ShowSpecialMarks && _aiSpline != null ? AiLaneObject.Create(_aiSpline, width, 6f, 1f, new Vector3(0.80f, 0.04f, 0.95f)) : null,
-            }.NonNull();
-            if (ShowSpecialMarks && _extraMarks != null && _aiSpline != null) {
-                items = items.Concat(_extraMarks.Select(x => AiLaneObject.Create(_aiSpline, width, 3f, (float)x.Item1, x.Item2)));
-            }
-            return new RenderableList("_root", Matrix.Identity, items);
-        }
-
         private void RebuildAiLane() {
             if (_aiSpline == null) return;
             RootNode.Dispose();
-            RootNode = CreateAiLaneList();
+            RootNode = CreateAiLaneBaseList();
             UpdateFiltered();
-            _aiLaneDirty = false;
+            _aiLaneBaseDirty = false;
+        }
+
+        private void RebuildAiMarks() {
+            if (_aiSpline == null) return;
+            MarksNode.Dispose();
+            MarksNode = CreateAiMarksList();
+            UpdateFiltered();
+            _aiLaneMarksDirty = false;
+        }
+
+        private Tuple<float, float> _pitLaneMarks;
+
+        private Tuple<float, float> GetPitLaneMarks() {
+            if (_pitLaneMarks == null) {
+                var entry = -1f;
+                var exit = -1f;
+                if (_aiSpline != null && _aiPitsSpline != null) {
+                    var close = true;
+                    var lastJ = -1;
+                    for (var i = 1; i < 20; ++i) {
+                        var p = i / 20f;
+                        var o = _aiPitsSpline.Points[(int)(p * _aiPitsSpline.Points.Length)];
+                        // AcToolsLogging.Write($"i={i}, p={o.Position}");
+
+                        var j = 0;
+                        for (; j < _aiSpline.Points.Length; ++j) {
+                            if ((o.Position - _aiSpline.Points[j].Position).LengthSquared() < 6f) {
+                                // AcToolsLogging.Write($"j={j}, jp={_aiSpline.Points[j].Position}, l={(o.Position - _aiSpline.Points[j].Position).Length()}");
+                                lastJ = j;
+                                break;
+                            }
+                        }
+
+                        // AcToolsLogging.Write($"j={j}, close={close}");
+                        if (j < _aiSpline.Points.Length != close) {
+                            // AcToolsLogging.Write($"adding mark: j={j}, lastJ={lastJ}, out of {_aiSpline.Points.Length}");
+                            if (close) {
+                                entry = (float)lastJ / _aiSpline.Points.Length;
+                            } else {
+                                exit = (float)j / _aiSpline.Points.Length;
+                            }
+                            if (!close) {
+                                break;
+                            }
+                            close = false;
+                        }
+                    }
+                }
+                _pitLaneMarks = Tuple.Create(entry, exit);
+            }
+            return _pitLaneMarks;
+        }
+
+        private RenderableList CreateAiLaneBaseList() {
+            var width = AiLaneActualWidth ? (float?)null : AiLaneWidth;
+
+            var list = new List<IRenderableObject> {
+                ShowPitlane && _aiPitsSpline != null ? AiLaneObject.Create(_aiPitsSpline, AiPitLaneWidth, AiPitLaneColor) : null,
+                _aiSpline != null ? AiLaneObject.Create(_aiSpline, width, "main") : null,
+            };
+
+            if (_aiSpline != null && _aiPitsSpline != null && ShowAiPitLaneMarks) {
+                var marks = GetPitLaneMarks();
+                try {
+                    if (marks.Item1 >= 0d) {
+                        list.Add(AiLaneObject.Create(_aiSpline, width, 0f, 4f, marks.Item1, AiPitLaneColor));
+                    }
+                    if (marks.Item2 >= 0d) {
+                        list.Add(AiLaneObject.Create(_aiSpline, width, 0f, 4f, marks.Item2, AiPitLaneColor));
+                    }
+                } catch (Exception e) {
+                    AcToolsLogging.Write(e.Message);
+                    return null;
+                }
+            }
+
+            return new RenderableList("_root", Matrix.Identity, list.NonNull());
+        }
+
+        private RenderableList CreateAiMarksList() {
+            var list = new List<IRenderableObject>();
+            if (ShowSpecialMarks && _aiSpline != null) {
+                var width = AiLaneActualWidth ? (float?)null : AiLaneWidth;
+
+                if (_extraMarks != null) {
+                    list.AddRange(_extraMarks.Select(x => {
+                        try {
+                            return AiLaneObject.Create(_aiSpline, width, SpecialMarksWidth * 0.6f, SpecialMarksThickness, (float)x.Item1, x.Item2);
+                        } catch (Exception e) {
+                            AcToolsLogging.Write(e.Message);
+                            return null;
+                        }
+                    }).NonNull());
+                }
+
+                try {
+                    list.Add(AiLaneObject.Create(_aiSpline, width, SpecialMarksWidth, SpecialMarksThickness, 1f, new Vector3(0.80f, 0.04f, 0.95f)));
+                } catch (Exception e) {
+                    AcToolsLogging.Write(e.Message);
+                    return null;
+                }
+            }
+            return new RenderableList("_root", Matrix.Identity, list);
         }
 
         protected override void InitializeInner() {
             DeviceContextHolder.Set<IMaterialsFactory>(new TrackMapMaterialsFactory());
 
             if (_aiSpline != null) {
-                RootNode = CreateAiLaneList();
-                _aiLaneDirty = false;
+                RootNode = CreateAiLaneBaseList();
+                MarksNode = CreateAiMarksList();
+                _aiLaneBaseDirty = false;
+                _aiLaneMarksDirty = false;
             } else if (_kn5 != null) {
                 RootNode = ToRenderableList(Kn5DepthOnlyForceVisibleConverter.Instance.Convert(_kn5.RootNode));
             } else if (_description != null) {
@@ -505,15 +714,13 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 RootNode = new RenderableList();
             }
 
-            _buffer0 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
-            _buffer1 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
-            _buffer2 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+            _layerBase = new Layer();
+            _layerMarks = new Layer();
         }
 
         protected override void ResizeInner() {
-            _buffer0.Resize(DeviceContextHolder, Width, Height, null);
-            _buffer1.Resize(DeviceContextHolder, Width, Height, null);
-            _buffer2.Resize(DeviceContextHolder, Width, Height, null);
+            _layerBase.Resize(DeviceContextHolder, Width, Height);
+            _layerMarks.Resize(DeviceContextHolder, Width, Height);
             ResetCamera();
         }
 
@@ -522,14 +729,14 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         protected void UpdateFiltered() {
             if (_aiSpline != null) {
-                FilteredNode = RootNode;
+                FilteredBaseNode = RootNode;
             } else {
-                FilteredNode = Filter(RootNode, n => n is RenderableList ||
+                FilteredBaseNode = Filter(RootNode, n => n is RenderableList ||
                         (_filter?.Filter(n.Name) ?? n.Name?.IndexOf("ROAD", StringComparison.Ordinal) == 1));
             }
 
-            FilteredNode.UpdateBoundingBox();
-            TrianglesCount = FilteredNode.BoundingBox.HasValue ? FilteredNode.GetTrianglesCount() : 0;
+            FilteredBaseNode.UpdateBoundingBox();
+            TrianglesCount = FilteredBaseNode.BoundingBox.HasValue ? FilteredBaseNode.GetTrianglesCount() : 0;
             IsDirty = true;
         }
 
@@ -539,11 +746,15 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         protected void Prepare() {
             UpdateFiltered();
-            if (!FilteredNode.BoundingBox.HasValue) {
+            if (!FilteredBaseNode.BoundingBox.HasValue) {
                 throw new Exception("Can’t find a bounding box for provided filter");
             }
 
-            var box = FilteredNode.BoundingBox.Value;
+            var box = FilteredBaseNode.BoundingBox.Value;
+            if (MarksNode?.BoundingBox != null) {
+                box = box.ExtendBy(MarksNode.BoundingBox.Value);
+            }
+
             var size = box.GetSize();
 
             {
@@ -591,11 +802,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         protected virtual CameraOrtho GetCamera() {
-            if (!FilteredNode.BoundingBox.HasValue) {
+            if (!FilteredBaseNode.BoundingBox.HasValue) {
                 return new CameraOrtho();
             }
 
-            var box = FilteredNode.BoundingBox.Value;
+            var box = FilteredBaseNode.BoundingBox.Value;
             return new CameraOrtho {
                 Position = new Vector3(box.GetCenter().X, box.Maximum.Y + 1f, box.GetCenter().Z),
                 FarZ = box.GetSize().Y + 2f,
@@ -612,40 +823,34 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             EnsureAiLaneIsAllRight();
             Camera.UpdateViewMatrix();
 
-            // just in case
-            DeviceContext.ClearRenderTargetView(_buffer0.TargetView, Color.Transparent);
-            DeviceContext.ClearRenderTargetView(_buffer1.TargetView, Color.Transparent);
-            DeviceContext.ClearRenderTargetView(_buffer2.TargetView, Color.Transparent);
+            _layerBase.Draw(DeviceContextHolder, Camera, FilteredBaseNode);
+            if (MarksNode != null) {
+                _layerMarks.Draw(DeviceContextHolder, Camera, MarksNode);
+            } else {
+                _layerMarks.Clear(DeviceContext);
+            }
             DeviceContext.ClearRenderTargetView(RenderTargetView, Color.Transparent);
-
-            // render to buffer-0
-            DeviceContext.OutputMerger.SetTargets(_buffer0.TargetView);
-
-            DeviceContext.OutputMerger.BlendState = null;
-            DeviceContext.Rasterizer.State = DeviceContextHolder.States.DoubleSidedState;
-            FilteredNode.Draw(DeviceContextHolder, Camera, SpecialRenderMode.Simple);
-            DeviceContext.Rasterizer.State = null;
-
-            // blur to buffer-0 using buffer-1 as temporary
-            DeviceContextHolder.GetHelper<TrackMapBlurRenderHelper>().Blur(DeviceContextHolder, _buffer0, _buffer1, 1, _buffer2);
-
-            // outline map and add inset shadow to buffer-1 (alpha is in green channel for optional FXAA)
-            DeviceContextHolder.GetHelper<TrackMapRenderHelper>().Draw(DeviceContextHolder, _buffer0.View, _buffer2.View, _buffer1.TargetView);
 
             // move alpha from green channel to alpha-channel
             if (UseFxaa) {
                 // applying FXAA first
-                DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, _buffer1.View, _buffer0.TargetView);
-                DeviceContextHolder.GetHelper<TrackMapRenderHelper>().Final(DeviceContextHolder, _buffer0.View, RenderTargetView, !ShotMode);
+                DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, _layerBase.Buffers[1].View, _layerBase.Buffers[0].TargetView);
+                DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, _layerMarks.Buffers[1].View, _layerMarks.Buffers[0].TargetView);
+                DeviceContextHolder.GetHelper<TrackMapRenderHelper>().Final(DeviceContextHolder,
+                        _layerBase.Buffers[0].View, _layerMarks.Buffers[0].View, RenderTargetView, !ShotMode);
             } else {
                 // directly
-                DeviceContextHolder.GetHelper<TrackMapRenderHelper>().Final(DeviceContextHolder, _buffer1.View, RenderTargetView, !ShotMode);
+                DeviceContextHolder.GetHelper<TrackMapRenderHelper>().Final(DeviceContextHolder,
+                        _layerBase.Buffers[1].View, _layerMarks.Buffers[1].View, RenderTargetView, !ShotMode);
             }
         }
 
         protected void EnsureAiLaneIsAllRight() {
-            if (_aiLaneDirty) {
+            if (_aiLaneBaseDirty) {
                 RebuildAiLane();
+            }
+            if (_aiLaneMarksDirty) {
+                RebuildAiMarks();
             }
         }
 
@@ -684,8 +889,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         protected override void OnTickOverride(float dt) { }
 
         protected override void DisposeOverride() {
-            DisposeHelper.Dispose(ref _buffer0);
-            DisposeHelper.Dispose(ref _buffer1);
+            DisposeHelper.Dispose(ref _layerBase);
+            DisposeHelper.Dispose(ref _layerMarks);
             // DisposeHelper.Dispose(ref _materialsProvider);
             base.DisposeOverride();
         }

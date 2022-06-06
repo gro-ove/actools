@@ -5,12 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using AcManager.Pages.Settings;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
 using AcTools.Utils.Helpers;
+using AcTools.Windows.Input;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
@@ -21,9 +23,41 @@ using MenuItem = System.Windows.Forms.MenuItem;
 
 namespace AcManager {
     public partial class AppHibernator : IDisposable {
+        private IKeyboardListener _keyboard;
+
+        private void InitKeyboardWatcher() {
+            if (_keyboard != null) return;
+            _keyboard = KeyboardListenerFactory.Get();
+            _keyboard.WatchFor(Keys.Oemtilde);
+            _keyboard.PreviewKeyDown += (sender, args) => {
+                if (SettingsHolder.Drive.ShowCspSettingsWithShortcut && args.Key == Keys.Oemtilde
+                        && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
+                    if (SettingsShadersPatch.CloseOpenedSettings != null) {
+                        SettingsShadersPatch.CloseOpenedSettings();
+                    } else {
+                        ActionExtension.InvokeInMainThreadAsync(() => SettingsShadersPatch.GetShowSettingsCommand().Execute(null));
+                    }
+                }
+            };
+        }
+
         public void SetListener() {
             SettingsHolder.Drive.PropertyChanged += Drive_PropertyChanged;
             UpdateGameListeners();
+
+            if (SettingsHolder.Drive.ShowCspSettingsWithShortcut) {
+                InitKeyboardWatcher();
+            } else {
+                SettingsHolder.Drive.PropertyChanged += (sender, args) => {
+                    if (args.PropertyName == nameof(SettingsHolder.Drive.ShowCspSettingsWithShortcut)) {
+                        InitKeyboardWatcher();
+                    }
+                };
+            }
+
+#if DEBUG
+            Hibernated = true;
+#endif
         }
 
         private bool _added;
@@ -146,8 +180,8 @@ namespace AcManager {
                     try {
                         if (value) {
                             /* add an icon to the tray for manual restoration just in case */
-                            // AddTrayIcon();
-                            AddTrayIconWpf();
+                            AddTrayIcon();
+                            // AddTrayIconWpf();
 
                             /* hide windows */
                             _hiddenWindows = Application.Current?.Windows.OfType<Window>().Where(x => x.Visibility == Visibility.Visible
@@ -191,7 +225,8 @@ namespace AcManager {
         }
 
         public void Dispose() {
-            Hibernated = false;
+            RemoveTrayIcon();
+            RemoveTrayIconWpf();
         }
     }
 }

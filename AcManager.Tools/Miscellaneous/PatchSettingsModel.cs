@@ -354,19 +354,24 @@ namespace AcManager.Tools.Miscellaneous {
                 FilesRelativeDirectory = AcRootDirectory.Instance.Value ?? _dir,
                 ScanFunc = d => Directory.GetFiles(d, "*.ini").Where(x => !Path.GetFileName(x).StartsWith(@"data_")),
                 ConfigFactory = (p, f) => {
-                    var fileName = Path.GetFileName(f);
-                    if (fileName == null) {
+                    try {
+                        var fileName = Path.GetFileName(f);
+                        if (fileName == null) {
+                            return null;
+                        }
+
+                        var userEditedFile = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "extension", fileName);
+                        var cfg = PythonAppConfig.Create(p, f, true, userEditedFile);
+                        if (_isLive && cfg.Sections.GetByIdOrDefault("ℹ")?.GetByIdOrDefault("LIVE_SUPPORT")?.Value == @"0") {
+                            return null;
+                        }
+
+                        cfg.ValueChanged += (s, e) => PatchHelper.OnConfigPropertyChanged(Path.GetFileName(e.Source.Filename), e.Section, e.Key);
+                        return string.IsNullOrWhiteSpace(cfg.ShortDescription) ? null : cfg;
+                    } catch (Exception e) {
+                        Logging.Warning(e);
                         return null;
                     }
-
-                    var userEditedFile = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "extension", fileName);
-                    var cfg = PythonAppConfig.Create(p, f, true, userEditedFile);
-                    if (_isLive && cfg.Sections.GetByIdOrDefault("ℹ")?.GetByIdOrDefault("LIVE_SUPPORT")?.Value == @"0") {
-                        return null;
-                    }
-
-                    cfg.ValueChanged += (s, e) => PatchHelper.OnConfigPropertyChanged(Path.GetFileName(e.Source.Filename), e.Section, e.Key);
-                    return string.IsNullOrWhiteSpace(cfg.ShortDescription) ? null : cfg;
                 },
                 SaveOnlyNonDefault = true,
                 Flags = new Dictionary<string, string> {

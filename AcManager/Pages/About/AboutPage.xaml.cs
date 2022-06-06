@@ -27,7 +27,7 @@ namespace AcManager.Pages.About {
         }
 
         private void OnVersionClick(object sender, MouseButtonEventArgs e) {
-            if (!SettingsHolder.Common.DeveloperMode && ++_clicks == 7 &&
+            if (!SettingsHolder.Common.DeveloperMode && ++_clicks == 4 &&
                     ModernDialog.ShowMessage(AppStrings.About_DeveloperMode, AppStrings.About_DeveloperMode_Title, MessageBoxButton.YesNo) ==
                             MessageBoxResult.Yes) {
                 SettingsHolder.Common.DeveloperMode = true;

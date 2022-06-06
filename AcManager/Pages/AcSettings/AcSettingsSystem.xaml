@@ -24,8 +24,8 @@
           <Label Content="{x:Static g:AppStrings.AcSettings_System_FreeCamera}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding CameraOrbit.SphericalCoordinates}" mui:NewMarkService.New="True">
-          <Label Content="Orbit mode for F5 camera" />
+        <CheckBox IsChecked="{Binding CameraOrbit.SphericalCoordinates}">
+          <Label Content="{x:Static c:ControlsStrings.AcSettings_System_OrbitMode}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding System.Logging}">

@@ -25,6 +25,7 @@ using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
+using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -45,6 +46,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using StringBasedFilter;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive : ILoadableContent {
@@ -474,8 +476,24 @@ namespace AcManager.Pages.Drive {
             }));
 
             [CanBeNull]
-            private static T GetRandomObject<T>(BaseAcManager<T> manager, [CanBeNull] string currentId) where T : AcObjectNew {
-                var id = manager.WrappersList.Where(x => x.Value.Enabled).Select(x => x.Id).ApartFrom(currentId).RandomElementOrDefault()
+            private static T GetRandomObject<T>(BaseAcManager<T> manager, [CanBeNull] string currentId, [CanBeNull] IFilter<T> filter) where T : AcObjectNew {
+                var selection = manager.WrappersList.Where(x => x.Value.Enabled).Select(x => x.Id)
+                        .ApartFrom(currentId);
+                if (filter != null) {
+                    var candidates = selection.ToList();
+                    for (var i = 0; i < 3; ++i) {
+                        var random = candidates.RandomElementOrDefault();
+                        if (random != null) {
+                            var candidate = manager.GetById(random);
+                            if (candidate != null && filter.Test(candidate)) {
+                                return candidate;
+                            }
+                        }
+                    }
+                    return candidates.Select(manager.GetById).NonNull().Where(filter.Test).RandomElementOrDefault()
+                            ?? (currentId != null ? manager.GetById(currentId) : null) ?? manager.GetDefault();
+                }
+                var id = selection.RandomElementOrDefault()
                         ?? currentId ?? string.Empty;
                 return manager.GetById(id) ?? manager.GetDefault();
             }
@@ -483,9 +501,11 @@ namespace AcManager.Pages.Drive {
             private DelegateCommand _randomCarCommand;
 
             public DelegateCommand RandomCarCommand => _randomCarCommand ?? (_randomCarCommand = new DelegateCommand(() => {
-                SelectedCar = GetRandomObject(CarsManager.Instance, SelectedCar?.Id);
+                SelectedCar = GetRandomObject(CarsManager.Instance, SelectedCar?.Id,
+                        string.IsNullOrWhiteSpace(SettingsHolder.Drive.QuickDriveRandomizeCarFilter) ? null
+                                : Filter.Create(CarObjectTester.Instance, SettingsHolder.Drive.QuickDriveRandomizeCarFilter));
                 if (SelectedCar != null) {
-                    SelectedCar.SelectedSkin = GetRandomObject(SelectedCar.SkinsManager, SelectedCar.SelectedSkin?.Id);
+                    SelectedCar.SelectedSkin = GetRandomObject(SelectedCar.SkinsManager, SelectedCar.SelectedSkin?.Id, null);
                 }
             }));
 
@@ -493,7 +513,7 @@ namespace AcManager.Pages.Drive {
 
             public DelegateCommand RandomCarSkinCommand => _randomCarSkinCommand ?? (_randomCarSkinCommand = new DelegateCommand(() => {
                 if (SelectedCar != null) {
-                    SelectedCar.SelectedSkin = GetRandomObject(SelectedCar.SkinsManager, SelectedCar.SelectedSkin?.Id);
+                    SelectedCar.SelectedSkin = GetRandomObject(SelectedCar.SkinsManager, SelectedCar.SelectedSkin?.Id, null);
                 }
             }));
 
@@ -524,7 +544,9 @@ namespace AcManager.Pages.Drive {
             private DelegateCommand _randomTrackCommand;
 
             public DelegateCommand RandomTrackCommand => _randomTrackCommand ?? (_randomTrackCommand = new DelegateCommand(() => {
-                var track = GetRandomObject(TracksManager.Instance, SelectedTrack?.Id);
+                var track = GetRandomObject(TracksManager.Instance, SelectedTrack?.Id,
+                        string.IsNullOrWhiteSpace(SettingsHolder.Drive.QuickDriveRandomizeTrackFilter) ? null
+                                : Filter.Create(TrackObjectBaseTester.Instance, SettingsHolder.Drive.QuickDriveRandomizeTrackFilter));
                 SelectedTrack = track?.MultiLayouts?.RandomElementOrDefault() ?? track;
             }));
 

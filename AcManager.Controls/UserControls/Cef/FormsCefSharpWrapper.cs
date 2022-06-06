@@ -55,6 +55,13 @@ namespace AcManager.Controls.UserControls.Cef {
                         FileAccessFromFileUrls = CefState.Enabled,
                         UniversalAccessFromFileUrls = CefState.Enabled,
                         BackgroundColor = 0xff000000,
+                        WebGl = CefState.Disabled,
+                        Plugins = CefState.Disabled,
+                    },
+                    JavascriptObjectRepository = {
+                        Settings = {
+                            LegacyBindingEnabled = true
+                        }
                     },
                     DisplayHandler = this,
                     DownloadHandler = _downloadHandler,
@@ -189,6 +196,10 @@ namespace AcManager.Controls.UserControls.Cef {
                 NewWindow?.Invoke(this, args);
                 return args.Cancel;
             });
+        }
+
+        public void ShowDevTools() {
+            Task.Delay(1000).ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => _inner.ShowDevTools()));
         }
 
         public void Execute(string js) {

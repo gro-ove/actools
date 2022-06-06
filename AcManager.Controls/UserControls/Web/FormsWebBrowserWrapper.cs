@@ -90,6 +90,8 @@ namespace AcManager.Controls.UserControls.Web {
             _newWindowsBehavior = mode;
         }
 
+        public void ShowDevTools() { }
+
         public event EventHandler<UrlEventArgs> PageLoadingStarted;
         public event EventHandler<UrlEventArgs> PageLoaded;
         public event EventHandler<PageLoadingEventArgs> LoadingStateChanged;

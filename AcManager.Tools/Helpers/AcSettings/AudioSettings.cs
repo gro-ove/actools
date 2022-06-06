@@ -105,7 +105,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public CustomItem GetItem(string id, string displayName = null, double defaultValue = -1) {
             var item = _customItems.GetValueOrSet(id, () => {
-                var ret = new CustomItem { Id = id, Value = Ini["LEVELS_EXT"].GetDouble(id, defaultValue) * 100d };
+                var ret = new CustomItem { Id = id, Value = Ini?["LEVELS_EXT"].GetDouble(id, defaultValue) * 100d ?? 100d };
                 ret.PropertyChanged += (sender, args) => Save();
                 return ret;
             });

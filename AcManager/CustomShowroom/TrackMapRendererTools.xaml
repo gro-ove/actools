@@ -74,19 +74,49 @@
           <Label Content="Actual width" />
         </CheckBox>
 
-        <DockPanel IsEnabled="{Binding AiLaneActualWidth, Converter={StaticResource InvertBooleanConverter}}" Margin="0 4 0 0">
-          <mui:ValueLabel Value="{Binding AiLaneWidth, StringFormat='\{0:F1\}'}" Postfix=" m" mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top"
-              Content="Width" />
-          <Slider Minimum="1" Maximum="50" Value="{Binding AiLaneWidth}" TickFrequency="4.9" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+        <DockPanel Visibility="{Binding AiLaneActualWidth, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
+            Margin="20 4 0 0">
+          <mui:ValueLabel Value="{Binding AiLaneWidth}" Postfix=" m" mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="Width" />
+          <Slider Minimum="1" Maximum="50" TickFrequency="4.9" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
+              Value="{Binding AiLaneWidth, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}" />
         </DockPanel>
 
         <CheckBox Margin="0 4 0 0" IsChecked="{Binding ShowPitlane}">
           <Label Content="Show pitlane" />
         </CheckBox>
 
+        <DockPanel Visibility="{Binding ShowPitlane, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="20 4 0 0">
+          <mui:ValueLabel Value="{Binding AiPitLaneWidth}" Postfix=" m" mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="Pitlane width" />
+          <Slider Minimum="1" Maximum="{Binding AiLaneWidth}"
+              TickFrequency="{Binding AiLaneWidth, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.1}" TickPlacement="BottomRight"
+              IsSnapToTickEnabled="False" Value="{Binding AiPitLaneWidth, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}" />
+        </DockPanel>
+
+        <DockPanel Visibility="{Binding ShowPitlane, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="20 4 0 0">
+          <Label Content="Pitlane color:" Margin="8 0 0 0" VerticalAlignment="Center" />
+          <mui:ColorPicker Color="{Binding AiPitLaneColor}" />
+        </DockPanel>
+
         <CheckBox Margin="0 4 0 0" IsChecked="{Binding ShowSpecialMarks}">
           <Label Content="Show special marks" />
         </CheckBox>
+
+        <CheckBox Visibility="{Binding ShowSpecialMarks, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="20 4 0 0"
+            IsChecked="{Binding ShowAiPitLaneMarks}">
+          <Label Content="Show pitlane marks" />
+        </CheckBox>
+
+        <DockPanel Visibility="{Binding ShowSpecialMarks, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="20 4 0 0">
+          <mui:ValueLabel Value="{Binding SpecialMarksWidth}" Postfix=" m" mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="Marks width" />
+          <Slider Minimum="1" Maximum="40" TickFrequency="3.9" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
+              Value="{Binding SpecialMarksWidth, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}" />
+        </DockPanel>
+
+        <DockPanel Visibility="{Binding ShowSpecialMarks, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="20 4 0 0">
+          <mui:ValueLabel Value="{Binding SpecialMarksThickness}" Postfix=" m" mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="Marks thickness" />
+          <Slider Minimum="1" Maximum="40" TickFrequency="3.9" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
+              Value="{Binding SpecialMarksThickness, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}" />
+        </DockPanel>
       </StackPanel>
     </mui:Switch>
 

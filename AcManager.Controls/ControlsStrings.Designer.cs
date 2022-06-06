@@ -241,6 +241,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Orbit mode for F5 camera.
+        /// </summary>
+        public static string AcSettings_System_OrbitMode {
+            get {
+                return ResourceManager.GetString("AcSettings_System_OrbitMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Down.
         /// </summary>
         public static string Animation_Down {

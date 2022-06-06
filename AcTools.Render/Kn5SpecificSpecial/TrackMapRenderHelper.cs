@@ -21,10 +21,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _effect.TechPp.DrawAllPasses(holder.DeviceContext, 6);
         }
 
-        public void Final(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target, bool checkedBackground) {
+        public void Final(DeviceContextHolder holder, ShaderResourceView viewBase, ShaderResourceView viewMarks, RenderTargetView target, bool checkedBackground) {
             holder.DeviceContext.OutputMerger.SetTargets(target);
             holder.PrepareQuad(_effect.LayoutPT);
-            _effect.FxPreprocessedMap.SetResource(view);
+            _effect.FxPreprocessedBaseMap.SetResource(viewBase);
+            _effect.FxPreprocessedMarksMap.SetResource(viewMarks);
             (checkedBackground ? _effect.TechFinalCheckers : _effect.TechFinal).DrawAllPasses(holder.DeviceContext, 6);
         }
 

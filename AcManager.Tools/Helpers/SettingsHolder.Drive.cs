@@ -430,8 +430,8 @@ namespace AcManager.Tools.Helpers {
             private string _preReplayCommand;
 
             public string PreReplayCommand {
-                get => _preReplayCommand
-                        ?? (_preReplayCommand = ValuesStorage.Get("Settings.DriveSettings.PreReplayCommand", ""));
+                get => _preReplayCommand ?? (_preReplayCommand
+                        = ValuesStorage.Get("Settings.DriveSettings.PreReplayCommand", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _preReplayCommand)) return;
@@ -444,8 +444,8 @@ namespace AcManager.Tools.Helpers {
             private string _postReplayCommand;
 
             public string PostReplayCommand {
-                get => _postReplayCommand
-                        ?? (_postReplayCommand = ValuesStorage.Get("Settings.DriveSettings.PostReplayCommand", ""));
+                get => _postReplayCommand ?? (_postReplayCommand
+                        = ValuesStorage.Get("Settings.DriveSettings.PostReplayCommand", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _postReplayCommand)) return;
@@ -458,8 +458,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _immediateStart;
 
             public bool ImmediateStart {
-                get => _immediateStart
-                        ?? (_immediateStart = ValuesStorage.Get("Settings.DriveSettings.ImmediateStart", false)).Value;
+                get => _immediateStart ?? (_immediateStart
+                        = ValuesStorage.Get("Settings.DriveSettings.ImmediateStart", false)).Value;
                 set {
                     if (Equals(value, _immediateStart)) return;
                     _immediateStart = value;
@@ -471,8 +471,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _immediateCancel;
 
             public bool ImmediateCancel {
-                get => _immediateCancel
-                        ?? (_immediateCancel = ValuesStorage.Get("Settings.DriveSettings.ImmediateCancel", false)).Value;
+                get => _immediateCancel ?? (_immediateCancel
+                        = ValuesStorage.Get("Settings.DriveSettings.ImmediateCancel", false)).Value;
                 set {
                     if (Equals(value, _immediateCancel)) return;
                     _immediateCancel = value;
@@ -484,12 +484,25 @@ namespace AcManager.Tools.Helpers {
             private bool? _continueOnEscape;
 
             public bool ContinueOnEscape {
-                get => _continueOnEscape
-                        ?? (_continueOnEscape = ValuesStorage.Get("Settings.DriveSettings.ContinueOnEscape", false)).Value;
+                get => _continueOnEscape ?? (_continueOnEscape
+                        = ValuesStorage.Get("Settings.DriveSettings.ContinueOnEscape", false)).Value;
                 set {
                     if (Equals(value, _continueOnEscape)) return;
                     _continueOnEscape = value;
                     ValuesStorage.Set("Settings.DriveSettings.ContinueOnEscape", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _showCspSettingsWithShortcut;
+
+            public bool ShowCspSettingsWithShortcut {
+                get => _showCspSettingsWithShortcut ?? (_showCspSettingsWithShortcut
+                        = ValuesStorage.Get("Settings.DriveSettings.ShowCspSettingsWithShortcut", false)).Value;
+                set {
+                    if (Equals(value, _showCspSettingsWithShortcut)) return;
+                    _showCspSettingsWithShortcut = value;
+                    ValuesStorage.Set("Settings.DriveSettings.ShowCspSettingsWithShortcut", value);
                     OnPropertyChanged();
                 }
             }
@@ -1166,8 +1179,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _scanControllersAutomatically;
 
             public bool ScanControllersAutomatically {
-                get => _scanControllersAutomatically
-                        ?? (_scanControllersAutomatically = ValuesStorage.Get("Settings.DriveSettings.ScanControllersAutomatically", false)).Value;
+                get => _scanControllersAutomatically ?? (_scanControllersAutomatically
+                        = ValuesStorage.Get("Settings.DriveSettings.ScanControllersAutomatically", false)).Value;
                 set {
                     if (Equals(value, _scanControllersAutomatically)) return;
                     _scanControllersAutomatically = value;
@@ -1179,10 +1192,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _loadPatchDataAutomatically;
 
             public bool LoadPatchDataAutomatically {
-                get
-                        =>
-                                _loadPatchDataAutomatically
-                                        ?? (_loadPatchDataAutomatically = ValuesStorage.Get("Settings.DriveSettings.LoadPatchDataAutomatically", true)).Value;
+                get => _loadPatchDataAutomatically ?? (_loadPatchDataAutomatically
+                        = ValuesStorage.Get("Settings.DriveSettings.LoadPatchDataAutomatically", true)).Value;
                 set {
                     if (Equals(value, _loadPatchDataAutomatically)) return;
                     _loadPatchDataAutomatically = value;
@@ -1194,8 +1205,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _sameControllersKeepFirst;
 
             public bool SameControllersKeepFirst {
-                get => _sameControllersKeepFirst
-                        ?? (_sameControllersKeepFirst = ValuesStorage.Get("Settings.DriveSettings.SameControllersKeepFirst", false)).Value;
+                get => _sameControllersKeepFirst ?? (_sameControllersKeepFirst
+                        = ValuesStorage.Get("Settings.DriveSettings.SameControllersKeepFirst", false)).Value;
                 set {
                     if (Equals(value, _sameControllersKeepFirst)) return;
                     _sameControllersKeepFirst = value;
@@ -1207,8 +1218,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _patchAcToDisableShadows;
 
             public bool PatchAcToDisableShadows {
-                get => _patchAcToDisableShadows
-                        ?? (_patchAcToDisableShadows = ValuesStorage.Get("Settings.DriveSettings.PatchAcToDisableShadows", false)).Value;
+                get => _patchAcToDisableShadows ?? (_patchAcToDisableShadows
+                        = ValuesStorage.Get("Settings.DriveSettings.PatchAcToDisableShadows", false)).Value;
                 set {
                     if (Equals(value, _patchAcToDisableShadows)) return;
                     _patchAcToDisableShadows = value;
@@ -1220,8 +1231,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _allowDecimalTrackState;
 
             public bool AllowDecimalTrackState {
-                get => _allowDecimalTrackState
-                        ?? (_allowDecimalTrackState = ValuesStorage.Get("Settings.DriveSettings.AllowDecimalTrackState", false)).Value;
+                get => _allowDecimalTrackState ?? (_allowDecimalTrackState
+                        = ValuesStorage.Get("Settings.DriveSettings.AllowDecimalTrackState", false)).Value;
                 set {
                     if (Equals(value, _allowDecimalTrackState)) return;
                     _allowDecimalTrackState = value;
@@ -1233,8 +1244,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _monitorFramesPerSecond;
 
             public bool MonitorFramesPerSecond {
-                get => _monitorFramesPerSecond
-                        ?? (_monitorFramesPerSecond = ValuesStorage.Get("Settings.DriveSettings.MonitorFramesPerSecond", true)).Value;
+                get => _monitorFramesPerSecond ?? (_monitorFramesPerSecond
+                        = ValuesStorage.Get("Settings.DriveSettings.MonitorFramesPerSecond", true)).Value;
                 set {
                     if (Equals(value, _monitorFramesPerSecond)) return;
                     _monitorFramesPerSecond = value;
@@ -1245,6 +1256,34 @@ namespace AcManager.Tools.Helpers {
 
             // Demoted from UI option to an app flag, kept here to avoid rewriting any code
             public bool WatchForSharedMemory { get; set; }
+
+            private string _quickDriveRandomizeTrackFilter;
+
+            public string QuickDriveRandomizeTrackFilter {
+                get => _quickDriveRandomizeTrackFilter ?? (_quickDriveRandomizeTrackFilter
+                        = ValuesStorage.Get("Settings.DriveSettings.QuickDriveRandomizeTrackFilter", ""));
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _quickDriveRandomizeTrackFilter)) return;
+                    _quickDriveRandomizeTrackFilter = value;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickDriveRandomizeTrackFilter", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _quickDriveRandomizeCarFilter;
+
+            public string QuickDriveRandomizeCarFilter {
+                get => _quickDriveRandomizeCarFilter ?? (_quickDriveRandomizeCarFilter
+                        = ValuesStorage.Get("Settings.DriveSettings.QuickDriveRandomizeCarFilter", ""));
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _quickDriveRandomizeCarFilter)) return;
+                    _quickDriveRandomizeCarFilter = value;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickDriveRandomizeCarFilter", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static DriveSettings _drive;

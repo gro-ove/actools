@@ -54,7 +54,7 @@ namespace AcManager.Tools.Objects {
             var geoTags = await LiveConditionsServerPlugin.GetSomeGeoTagsAsync(track);
             if (geoTags == null) throw new Exception("Failed to get geotags");
 
-            var extraPlugins = PluginEntries.Select(x => $@"plugin.externalPlugin={x.UdpPort}, {x.Address}\n").JoinToString();
+            var extraPlugins = PluginEntries.Select(x => $"\nplugin.externalPlugin={x.UdpPort}, {x.Address}").JoinToString();
             return $@"# Something to show to remember where config comes from
 message=Dynamic conditions for {DisplayName}
 

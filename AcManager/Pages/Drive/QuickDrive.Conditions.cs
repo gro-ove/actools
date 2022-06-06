@@ -210,7 +210,7 @@ namespace AcManager.Pages.Drive {
             [CanBeNull]
             private WeatherObject GetRandomWeather(int? time, double? temperature) {
                 for (var i = 0;; i++) {
-                    var weatherObject = GetRandomObject(WeatherManager.Instance, SelectedWeatherObject?.Id);
+                    var weatherObject = GetRandomObject(WeatherManager.Instance, SelectedWeatherObject?.Id, null);
                     if (weatherObject == null) return null;
                     if (weatherObject.Fits(time, temperature) || i == 100) return weatherObject;
                 }
@@ -224,7 +224,7 @@ namespace AcManager.Pages.Drive {
             private DelegateCommand _randomWeatherCommand;
 
             public DelegateCommand RandomWeatherCommand
-                => _randomWeatherCommand ?? (_randomWeatherCommand = new DelegateCommand(() => { SetRandomWeather(true); }));
+                => _randomWeatherCommand ?? (_randomWeatherCommand = new DelegateCommand(() => SetRandomWeather(true)));
             #endregion
 
             #region Automatically set variables

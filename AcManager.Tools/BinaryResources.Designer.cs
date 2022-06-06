@@ -103,5 +103,35 @@ namespace AcManager.Tools {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TimeZoneConverter_Aliases {
+            get {
+                object obj = ResourceManager.GetObject("TimeZoneConverter.Aliases", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TimeZoneConverter_Mapping {
+            get {
+                object obj = ResourceManager.GetObject("TimeZoneConverter.Mapping", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TimeZoneConverter_RailsMapping {
+            get {
+                object obj = ResourceManager.GetObject("TimeZoneConverter.RailsMapping", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

@@ -7,9 +7,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             if (key as string == "main") {
                 return new Kn5MaterialTrackMap(new Vector3(1f, 1f, 1f));
             }
-            if (key as string == "pits") {
-                return new Kn5MaterialTrackMap(new Vector3(.3f, .3f, .3f));
-            }
             if (key is Vector3 v) {
                 return new Kn5MaterialTrackMap(v);
             }

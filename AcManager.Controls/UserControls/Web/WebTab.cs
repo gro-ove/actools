@@ -139,6 +139,10 @@ namespace AcManager.Controls.UserControls.Web {
             }
         }
 
+        public void ShowDevTools() {
+            _something.ShowDevTools();
+        }
+
         [ContractAnnotation(@"filename: null => null; filename: notnull => notnull")]
         public string ConvertFilename([CanBeNull] string filename) {
             return _broken ? filename : _something.ConvertFilename(filename);
