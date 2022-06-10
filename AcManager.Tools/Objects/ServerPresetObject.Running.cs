@@ -241,11 +241,13 @@ namespace AcManager.Tools.Objects {
             foreach (var key in dataSection.Keys.Where(x => x.StartsWith(@"FIXED_SETUP_")).ToList()) {
                 dataSection.Remove(key);
             }
+            var setupsRemap = new Dictionary<string, string>();
             foreach (var item in SetupItems) {
                 if (!File.Exists(item.Filename)) continue;
-                var name = $@"cfg/setup_{setupIndex}_{item.CarId}.ini";
+                var name = $@"setups/setup_{item.CarId}_{Path.GetFileName(item.Filename)}.ini";
                 result.Add(PackedEntry.FromFile(name, item.Filename));
                 dataSection[@"FIXED_SETUP_" + setupIndex] = $@"{(item.IsDefault ? @"1" : @"0")}|{name}";
+                setupsRemap[Path.GetFileName(item.Filename)] = Path.GetFileName(name);
                 setupIndex++;
             }
 
@@ -254,6 +256,12 @@ namespace AcManager.Tools.Objects {
             // Entry list
             var entryList = EntryListIniObject?.Clone() ?? new IniFile();
             entryList.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section, CspRequiredActual));
+            foreach (var section in entryList) {
+                if (section.Value.TryGetValue("FIXED_SETUP", out var setup)
+                        && setupsRemap.TryGetValue(setup, out var remapped)) {
+                    section.Value["FIXED_SETUP"] = remapped;
+                }
+            }
             result.Add(PackedEntry.FromContent("cfg/entry_list.ini", entryList.Stringify()));
 
             if (!DisableChecksums) {
@@ -447,6 +455,7 @@ namespace AcManager.Tools.Objects {
             if (SettingsHolder.Online.ServerCopyConfigsToCfgFolder) {
                 var root = AcRootDirectory.Instance.RequireValue;
                 FileUtils.EnsureDirectoryExists(Path.Combine(root, @"server", @"cfg"));
+                FileUtils.EnsureDirectoryExists(Path.Combine(root, @"server", @"setups"));
 
                 // Main config file
                 var serverCfg = await GetBaseMainConfigAsync();
@@ -464,6 +473,14 @@ namespace AcManager.Tools.Objects {
                 var entryList = EntryListIniObject?.Clone() ?? new IniFile();
                 entryList.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section, CspRequiredActual));
                 File.WriteAllText(Path.Combine(root, @"server", @"cfg", @"entry_list.ini"), entryList.Stringify());
+            }
+
+            if (SetupItems.Count > 0) {
+                var root = AcRootDirectory.Instance.RequireValue;
+                FileUtils.EnsureDirectoryExists(Path.Combine(root, @"server", @"setups"));
+                foreach (var item in SetupItems) {
+                    File.Copy(item.Filename, Path.Combine(root, @"server", @"setups", Path.GetFileName(item.Filename)));
+                }
             }
 
             var welcomeMessageLocal = IniObject?["SERVER"].GetNonEmpty("WELCOME_MESSAGE");
@@ -784,7 +801,10 @@ namespace AcManager.Tools.Objects {
                         }
                     };
 
-                    await process.WaitForExitAsync(cancellation);
+                    if (!process.HasExitedSafe()) {
+                        await process.WaitForExitAsync(cancellation);
+                    }
+
                     if (!process.HasExitedSafe()) {
                         process.Kill();
                     }
@@ -853,7 +873,10 @@ namespace AcManager.Tools.Objects {
                 process.OutputDataReceived += (sender, args) => log(LogMessageType.Message, args.Data);
                 process.ErrorDataReceived += (sender, args) => log(LogMessageType.Error, args.Data);
 
-                await process.WaitForExitAsync(cancellation);
+                if (!process.HasExitedSafe()) {
+                    await process.WaitForExitAsync(cancellation);
+                }
+
                 if (!process.HasExitedSafe()) {
                     process.Kill();
                 }

@@ -78,7 +78,7 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
             var priority = children[0].Item2;
             var considerDetails = mesh.MaterialId != uint.MaxValue;
             var builder = new Kn5MeshBuilder(considerDetails, considerDetails);
-            AcToolsLogging.Write($"Merging together: {children.Select(x => $"{x.Item1.Name} [{x.Item2}]").JoinToString(", ")}");
+            // AcToolsLogging.Write($"Merging together: {children.Select(x => $"{x.Item1.Name} [{x.Item2}]").JoinToString(", ")}");
 
             var extraCounter = 0;
             foreach (var child in children) {
