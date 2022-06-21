@@ -479,7 +479,7 @@ namespace AcManager.Tools.Objects {
                 var root = AcRootDirectory.Instance.RequireValue;
                 FileUtils.EnsureDirectoryExists(Path.Combine(root, @"server", @"setups"));
                 foreach (var item in SetupItems) {
-                    File.Copy(item.Filename, Path.Combine(root, @"server", @"setups", Path.GetFileName(item.Filename)));
+                    File.Copy(item.Filename, Path.Combine(root, @"server", @"setups", Path.GetFileName(item.Filename)), true);
                 }
             }
 

@@ -15,9 +15,18 @@
     <StackPanel>
       <StackPanel Style="{StaticResource SettingsPanel}" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureJoypadIndexAware}">
         <DockPanel>
-          <mui:ValueLabel Value="{Binding Controls.ControllerDeviceIndex}" mui:BetterTextBox.Mode="Integer" Content="Joypad index" />
-          <Slider Minimum="0" Maximum="3" Ticks="1" TickPlacement="BottomRight" Value="{Binding Controls.ControllerDeviceIndex}" />
+          <mui:ValueLabel Value="{Binding Controls.DisplayControllerDeviceIndex}" mui:BetterTextBox.Mode="Integer" mui:BetterTextBox.Minimum="1"
+              mui:BetterTextBox.Maximum="4" Content="Gamepad ID" />
+          <Slider Minimum="1" Maximum="4" TickFrequency="1" TickPlacement="BottomRight" Value="{Binding Controls.DisplayControllerDeviceIndex}" />
         </DockPanel>
+        <CheckBox IsChecked="{Binding Controls.ControllerUseDualSense}" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureDualSenseSupport}"
+            ToolTip="Requires CSP 0.1.79">
+          <Label Content="Use PlayStation 5 DualSense gamepad" />
+        </CheckBox>
+        <c:MessageBlock Visibility="{Binding Controls.ControllerUseDualSense, Converter={StaticResource BooleanToVisibilityConverter}}">
+          <mui:BbCodeBlock Style="{StaticResource Small}"
+              Text="With CSP active, use built-in Controller Tweaks app to change buttons live with DualSense gamepads (or any other gamepads)." />
+        </c:MessageBlock>
       </StackPanel>
 
       <CheckBox IsChecked="{Binding Controls.CombineWithKeyboardInput}" Margin="0 0 0 20">

@@ -1065,7 +1065,20 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public int ControllerDeviceIndex {
             get => _controllerDeviceIndex;
-            set => Apply(value, ref _controllerDeviceIndex);
+            set => Apply(value, ref _controllerDeviceIndex, () => {
+                OnPropertyChanged(nameof(DisplayControllerDeviceIndex));
+                OnPropertyChanged(nameof(ControllerUseDualSense));
+            });
+        }
+
+        public int DisplayControllerDeviceIndex {
+            get => _controllerDeviceIndex % 4 + 1;
+            set => ControllerDeviceIndex = (value - 1).Clamp(0, 3) + (_controllerDeviceIndex & 4);
+        }
+
+        public bool ControllerUseDualSense {
+            get => _controllerDeviceIndex > 3;
+            set => ControllerDeviceIndex = _controllerDeviceIndex % 4 + (value ? 4 : 0);
         }
 
         private double _controllerSteeringGamma;

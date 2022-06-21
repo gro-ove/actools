@@ -375,7 +375,8 @@ console.log(result);
                 }
             }
 
-            urlLength = last == '.' || last == ',' || last == ':' || last == ';' || last == '!' || last == ']' ? index - start - 1 : index - start;
+            urlLength = last == '.' || last == ',' || last == ':' || last == ';' || last == '!' || last == ']' || last == '”' || last == '»'
+                    ? index - start - 1 : index - start;
             return true;
 
             bool Expect(string p) {
