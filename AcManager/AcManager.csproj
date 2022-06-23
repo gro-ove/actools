@@ -127,7 +127,7 @@
       <HintPath>..\Libraries\AcTools\AcTools.AcdEncryption.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="AcTools.AcdEncryption, Culture=neutral">
+    <Reference Include="AcTools.Kn5Tools, Culture=neutral">
       <HintPath>..\Libraries\AcTools\AcTools.Kn5Tools.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
