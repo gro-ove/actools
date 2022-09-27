@@ -70,8 +70,9 @@
     <Reference Include="AcTools.AcdEncryption, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Libraries\AcTools\AcTools.AcdEncryption.dll</HintPath>
     </Reference>
-    <Reference Include="AcTools.Kn5Tools, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Output\x86\Debug\AcTools.Kn5Tools.dll</HintPath>
+    <Reference Include="AcTools.AcdEncryption, Culture=neutral">
+      <HintPath>..\Libraries\AcTools\AcTools.Kn5Tools.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
       <HintPath>..\packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
@@ -87,12 +88,16 @@
       <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Output\x86\Debug\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Output\x86\Debug\SlimDX.dll</HintPath>
+    <Reference Include="SlimDX, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\SlimDX-$(ActualPlatform)\SlimDX.dll</HintPath>
+      <Private>False</Private>
+      <EmbedInteropTypes>false</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
