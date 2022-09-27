@@ -1297,7 +1297,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                 }
 
                 private static async Task RunProcessAsync(string filename, [Localizable(false)] IEnumerable<string> args, bool checkErrorCode,
-                        IProgress<double?> progress, CancellationToken cancellationToken) {
+                        IProgress<double?> progress, CancellationToken cancellationToken, Action<string> errorCallback) {
                     var process = ProcessExtension.Start(filename, args, new ProcessStartInfo {
                         UseShellExecute = false,
                         RedirectStandardOutput = progress != null,
@@ -1318,6 +1318,9 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         }
 
                         await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
+                        if (errorCallback != null && errorData.Length > 0) {
+                            errorCallback.Invoke(errorData.ToString().Trim());
+                        }
                         if (checkErrorCode && process.ExitCode != 0) {
                             var errorMessage = errorData.ToString().Trim();
                             if (string.IsNullOrEmpty(errorMessage)) {
@@ -1372,17 +1375,22 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         // convert it once more:
                         intermediateFilename = FileUtils.EnsureUnique($@"{inputFile.ApartFromLast(@".fbx")}_fixed.fbx");
                         await RunProcessAsync(Kn5.FbxConverterLocation, new[] { inputFile, intermediateFilename, "/sffFBX", "/dffFBX", "/f201300" },
-                                true, null, cancellationToken).ConfigureAwait(false);
+                                true, null, cancellationToken, null).ConfigureAwait(false);
 
                         cancellationToken.ThrowIfCancellationRequested();
                         progress?.Report(0.01);
 
                         var outputFile = FileUtils.EnsureUnique($@"{inputFile.ApartFromLast(@".fbx")}_simplygon.fbx");
+                        string errorMessage = null;
                         await RunProcessAsync(_simplygonExecutable, new[] {
                             "-Progress", rulesFilename, intermediateFilename, outputFile
-                        }, false, progress.SubrangeDouble(0.01, 1d), cancellationToken).ConfigureAwait(false);
+                        }, false, progress.SubrangeDouble(0.01, 1d), cancellationToken, err => errorMessage = err)
+                                .ConfigureAwait(false);
                         if (cacheKey != null) {
                             CacheStorage.Set(cacheKey, outputFile);
+                        }
+                        if (!File.Exists(outputFile)) {
+                            throw new Exception(errorMessage ?? "Simplygon hasn’t created an output file");
                         }
                         return outputFile;
                     } finally {

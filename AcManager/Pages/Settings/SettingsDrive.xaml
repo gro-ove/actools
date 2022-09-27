@@ -346,7 +346,7 @@
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.ShowCspSettingsWithShortcut}">
-          <Label Content="Show CSP settings with Ctrl+Shift+~ shortcut" />
+          <Label Content="Show CSP settings with Ctrl+Alt+~ shortcut" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.MonitorFramesPerSecond}" IsEnabled="{Binding Drive.WatchForSharedMemory}">

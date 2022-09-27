@@ -22,6 +22,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         public static readonly DialogFilterPiece ZipFiles = new DialogFilterPiece("ZIP archives", "*.zip");
         public static readonly DialogFilterPiece TextFiles = new DialogFilterPiece("Text files", "*.txt");
         public static readonly DialogFilterPiece ConfigFiles = new DialogFilterPiece("Config files", "*.cfg");
+        public static readonly DialogFilterPiece FbxFiles = new DialogFilterPiece("FBX models", "*.fbx");
         public static readonly DialogFilterPiece LutTables = new DialogFilterPiece("LUT tables", "*.lut");
         public static readonly DialogFilterPiece CsvTables = new DialogFilterPiece("LUT tables", "*.csv");
         public static readonly DialogFilterPiece TarGZipFiles = new DialogFilterPiece("Tar GZip archives", "*.tar.gz");

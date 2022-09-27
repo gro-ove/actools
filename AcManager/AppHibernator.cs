@@ -105,6 +105,8 @@ namespace AcManager {
         private NotifyIcon _trayIcon;
 
         private void AddTrayIcon() {
+            if (_trayIcon != null) return;
+
             _trayIcon = new NotifyIcon {
                 Icon = AppIconService.GetTrayIcon(),
                 Text = AppStrings.Hibernate_TrayText
@@ -142,7 +144,7 @@ namespace AcManager {
         private void RemoveTrayIcon() {
             if (_trayIcon != null) {
                 _trayIcon.Visible = false;
-                DisposeHelper.Dispose(ref _trayIcon);
+                Task.Delay(TimeSpan.FromSeconds(1d)).ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => DisposeHelper.Dispose(ref _trayIcon)));
             }
         }
 

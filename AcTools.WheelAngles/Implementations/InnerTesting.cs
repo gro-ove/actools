@@ -7,16 +7,29 @@ using JetBrains.Annotations;
 
 namespace AcTools.WheelAngles.Implementations {
     [UsedImplicitly]
-    internal class InnerTesting1 : IWheelSteerLockSetter {
-        public virtual string ControllerName => "InnerTesting1";
+    internal class InnerTesting : IWheelSteerLockSetter {
+        private static int[] KnownDeviceIDs = {
+            0x1, 0x4, 0x5, 0x6, 0x7, 0x20, 0x11, 0xE03,
+            0x112, 0x280B, 0x1102, 0x280A, 0x50C
+        };
+
+        public virtual string ControllerName => "InnerTesting";
 
         public WheelOptionsBase GetOptions() {
             return null;
         }
 
         public virtual bool Test(string productGuid) {
-            return string.Equals(productGuid, "00070EB7-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(productGuid, "00200EB7-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase);
+            if (string.Equals(productGuid.Substring(4), "0EB7-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase)) {
+                AcToolsLogging.Write("F. device detected");
+
+                var isSupported = KnownDeviceIDs.Any(x => string.Equals(productGuid.Substring(0, 4), x.ToString("X4")));
+                AcToolsLogging.Write("F. device supported: " + isSupported);
+                return isSupported;
+            }
+            return false;
+            // return string.Equals(productGuid.Substring(4), "0EB7-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase)
+            //        && KnownDeviceIDs.Any(x => string.Equals(productGuid.Substring(0, 4), x.ToString("X4")));
         }
 
         public int MaximumSteerLock => 2520;
@@ -30,7 +43,7 @@ namespace AcTools.WheelAngles.Implementations {
                     .Concat(BitConverter.GetBytes((ushort)appliedValue))
                     .Concat(new byte[] { 0x0, 0x0, 0x0 }).ToArray();
             var cmdE = new byte[] { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
-            return HidDevices.Enumerate(0xEB7, 0x7).Aggregate(false, (a, b) => {
+            return HidDevices.Enumerate(0xEB7, KnownDeviceIDs).Aggregate(false, (a, b) => {
                 using (b) {
                     try {
                         AcToolsLogging.Write($"Set to {steerLock}: " + b.DevicePath);

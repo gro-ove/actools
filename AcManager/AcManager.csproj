@@ -403,6 +403,9 @@
       <DependentUpon>CupList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ContentTools\ContentTool.cs" />
+    <Compile Include="Pages\ContentTools\TreeModelConverter.xaml.cs">
+      <DependentUpon>TreeModelConverter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\AppKeyDialog.xaml.cs">
       <DependentUpon>AppKeyDialog.xaml</DependentUpon>
     </Compile>
@@ -1169,6 +1172,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\ContentTools\TreeModelConverter.xaml" />
     <Page Include="Pages\Dialogs\AcErrorSolutionSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

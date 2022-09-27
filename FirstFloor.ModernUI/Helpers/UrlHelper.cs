@@ -330,7 +330,7 @@ console.log(result);
                     urlLength = 0;
                     return false;
                 }
-            } else if (Expect(@"mumble") || Expect("ts")) {
+            } else if ((Expect(@"mumble") || Expect("ts") || Expect("acmanager")) && Expect(@"://")) {
                 goto EatTheRest;
             }
 

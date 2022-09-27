@@ -64,6 +64,10 @@
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Output\x86\Debug\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="xxHashSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\xxHashSharp.1.0.0\lib\net45\xxHashSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="SlimDX, Culture=neutral, processorArchitecture=$(ActualPlatform)">
       <HintPath>..\Libraries\SlimDX-$(ActualPlatform)\SlimDX.dll</HintPath>
       <Private>False</Private>
@@ -72,6 +76,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +121,7 @@
     <Compile Include="FbxUtils\Tokens\Value\IntegerToken.cs" />
     <Compile Include="FbxUtils\Tokens\Value\LongToken.cs" />
     <Compile Include="FbxUtils\Tokens\Value\ShortToken.cs" />
+    <Compile Include="Helpers\AcTreeModelConverter.cs" />
     <Compile Include="Kn5Utils\Kn5MaterialUtils.cs" />
     <Compile Include="Kn5Utils\Kn5MeshBuilder.cs" />
     <Compile Include="Kn5Utils\Kn5MeshUtils.cs" />

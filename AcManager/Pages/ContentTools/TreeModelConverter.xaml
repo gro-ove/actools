@@ -1,0 +1,84 @@
+<tools:ContentTool x:Class="AcManager.Pages.ContentTools.TreeModelConverter" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:tools="clr-namespace:AcManager.Pages.ContentTools" xmlns:g="clr-namespace:AcManager"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DataContext="{d:DesignInstance tools:TreeModelConverter}">
+  <FrameworkElement.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
+      <ContextMenu x:Key="FileContextMenu" d:DataContext="{d:DesignInstance tools:FilesCompressor+FileToCompress}">
+        <MenuItem Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_ViewInExplorer}" Command="{Binding ViewInExplorerCommand}" />
+      </ContextMenu>
+    </ResourceDictionary>
+  </FrameworkElement.Resources>
+
+  <mui:Cell mui:Switch.When="{x:Static tools:Stage.Loading}" Width="400" HorizontalAlignment="Center">
+    <mui:SpacingStackPanel Spacing="8" VerticalAlignment="Center">
+      <ProgressBar IsIndeterminate="{Binding ProgressValue.IsIndeterminate}" Maximum="1" Value="{Binding ProgressValue.Progress, Mode=OneWay}" Height="4" />
+      <TextBlock Text="{Binding ProgressValue.Message}" />
+    </mui:SpacingStackPanel>
+    <mui:SelectableBbCodeBlock VerticalAlignment="Bottom" Style="{StaticResource RichTextBox.Small.ReadOnly}"
+        Text="{x:Static g:AppStrings.ContentTools_FilesCompressor_Description}" />
+  </mui:Cell>
+
+  <DockPanel mui:Switch.When="{x:Static tools:Stage.Empty}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <TextBlock Text="{x:Static g:AppStrings.Online_NothingToDisplay}" Style="{StaticResource Heading1}" />
+  </DockPanel>
+
+  <DockPanel mui:Switch.When="{x:Static tools:Stage.Error}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <TextBlock Text="{x:Static g:AppStrings.ContentTools_BatchPreviewsUpdater_SomeErrorHappened}" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+    <TextBlock Text="{Binding Error}" Margin="0 20 0 0" />
+  </DockPanel>
+
+  <DockPanel mui:Switch.When="{x:Static tools:Stage.Ready}">
+    <mui:SpacingStackPanel Spacing="8" DockPanel.Dock="Top" Margin="0 0 0 20">
+      <TextBlock TextWrapping="Wrap"
+          Text="Save different LOD meshes in an FBX file and select it here. Make sure pivots for each mesh are in the middle of their trunks, at the lowest point. Also, make sure to assign diffuse and normal textures to trees (use multi-material if you need two materials or more)." />
+      <TextBlock TextWrapping="Wrap" Text="This is an experimental feature, more options will be added soon." />
+    </mui:SpacingStackPanel>
+    <Button DockPanel.Dock="Bottom" Content="Convert tree model" Command="{Binding ConvertCommand}"></Button>
+    <ItemsControl ItemsSource="{Binding KnownEntries}" Style="{StaticResource VirtualizingItemsControl}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <DockPanel Margin="0 0 0 8">
+            <Button DockPanel.Dock="Right" Command="{Binding ForgetCommand}" Content="Forget" ToolTip="Remove this tree from list of tracked conversions"
+                VerticalAlignment="Center" Margin="8 0 0 0" />
+            <Button DockPanel.Dock="Right" Command="{Binding RefreshCommand}" Content="Refresh"
+                ToolTip="Tracked conversions refresh automatically when source file changes" VerticalAlignment="Center" Margin="8 0 0 0" />
+            <mui:FallbackSwitch Width="10" Height="10" Margin="0 0 8 0" VerticalAlignment="Center" DockPanel.Dock="Left">
+              <Path Data="{StaticResource AlertIconData}" Width="10" Height="10" VerticalAlignment="Center" Fill="{DynamicResource Error}" Stretch="Uniform"
+                  mui:FallbackSwitch.Value="{Binding LastError}" mui:FallbackSwitch.WhenNot="{x:Null}" />
+              <Path Data="{StaticResource CheckIconData}" Width="10" Height="10" VerticalAlignment="Center" Fill="{DynamicResource Go}" Stretch="Uniform"
+                  mui:FallbackSwitch.Value="{Binding RefreshCommand.IsAbleToExecute}" mui:FallbackSwitch.When="True" />
+              <Path Data="{StaticResource RefreshIconData}" Width="10" Height="10" VerticalAlignment="Center"
+                  Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Stretch="Uniform" RenderTransformOrigin="0.5, 0.5">
+                <Path.RenderTransform>
+                  <RotateTransform />
+                </Path.RenderTransform>
+                <Path.Triggers>
+                  <EventTrigger RoutedEvent="Ellipse.Loaded">
+                    <BeginStoryboard>
+                      <Storyboard RepeatBehavior="Forever" TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)">
+                        <DoubleAnimationUsingKeyFrames>
+                          <DiscreteDoubleKeyFrame KeyTime="0:0:0.000" Value="0" />
+                          <DiscreteDoubleKeyFrame KeyTime="0:0:0.200" Value="0" />
+                          <EasingDoubleKeyFrame KeyTime="0:0:1.000" Value="180" EasingFunction="{StaticResource StandardEase}" />
+                        </DoubleAnimationUsingKeyFrames>
+                      </Storyboard>
+                    </BeginStoryboard>
+                  </EventTrigger>
+                </Path.Triggers>
+              </Path>
+            </mui:FallbackSwitch>
+            <TextBlock Text="{Binding Origin, StringFormat='Origin: {0}'}" DockPanel.Dock="Top"></TextBlock>
+            <TextBlock Text="{Binding Destination, StringFormat='Destination: {0}'}" DockPanel.Dock="Top" VerticalAlignment="Top"></TextBlock>
+            <TextBlock Text="{Binding LastError, StringFormat='Error: {0}'}" DockPanel.Dock="Top" VerticalAlignment="Top"
+                Visibility="{Binding LastError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}"></TextBlock>
+          </DockPanel>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </DockPanel>
+</tools:ContentTool>
