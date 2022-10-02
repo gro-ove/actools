@@ -36,7 +36,6 @@ using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Starters;
 using AcManager.UserControls;
-using AcManager.Workshop;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
@@ -56,6 +55,10 @@ using DragDropEffects = System.Windows.DragDropEffects;
 using Path = System.Windows.Shapes.Path;
 using QuickSwitchesBlock = AcManager.QuickSwitches.QuickSwitchesBlock;
 
+#if INCLUDE_WORKSHOP
+using AcManager.Workshop;
+#endif
+
 namespace AcManager.Pages.Windows {
     public partial class MainWindow : IFancyBackgroundListener, INavigateUriHandler {
         private static readonly TitleLinkEnabledEntry DownloadsEntry = new TitleLinkEnabledEntry("downloads", AppStrings.Main_Downloads);
@@ -66,7 +69,9 @@ namespace AcManager.Pages.Windows {
                 new TitleLinkEnabledEntry("lapTimes", AppStrings.Main_LapTimes),
                 new TitleLinkEnabledEntry("stats", AppStrings.Main_Results),
                 new TitleLinkEnabledEntry("media", AppStrings.Main_Media),
+#if INCLUDE_WORKSHOP
                 WorkshopClient.OptionUserAvailable ? new TitleLinkEnabledEntry("workshop", AppStrings.Main_Workshop) : null,
+#endif
                 new TitleLinkEnabledEntry("content", AppStrings.Main_Content),
                 DownloadsEntry,
                 new TitleLinkEnabledEntry("server", AppStrings.Main_Server, false),
@@ -144,6 +149,7 @@ namespace AcManager.Pages.Windows {
             ModsWebBrowser.Instance.RebuildLinksNow();
             ArgumentsHandler.HandlePasteEvent(this);
 
+#if INCLUDE_WORKSHOP
             if (!WorkshopClient.OptionUserAvailable) {
                 foreach (var link in TitleLinks.OfType<TitleLink>().Where(x => x.GroupKey == "workshop").ToList()) {
                     TitleLinks.Remove(link);
@@ -152,6 +158,7 @@ namespace AcManager.Pages.Windows {
                     MenuLinkGroups.Remove(link);
                 }
             }
+#endif
 
             if (SteamStarter.IsInitialized) {
                 OverlayContentCell.Children.Add((FrameworkElement)FindResource(@"SteamOverlayFix"));

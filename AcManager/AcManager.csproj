@@ -1948,6 +1948,9 @@
     <None Include="Assets\Presets\Previews\Kunos.cmpreset" />
     <None Include="Packages.config" />
   </ItemGroup>
+  <PropertyGroup Condition="'$(IncludeWorkshop)' == 'true'">
+    <DefineConstants>INCLUDE_WORKSHOP</DefineConstants>
+  </PropertyGroup>
   <ItemGroup Condition=" '$(IncludeWorkshop)' == 'true' ">
     <Compile Include="Pages\Workshop\AnimatableScrollViewer.cs" />
     <Compile Include="Pages\Workshop\UploadLogger.cs" />

@@ -31,7 +31,6 @@ using AcManager.Pages.Drive;
 using AcManager.Pages.Lists;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Pages.Windows;
-using AcManager.Pages.Workshop;
 using AcManager.Tools;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -56,7 +55,6 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
 using AcManager.Tools.Starters;
-using AcManager.Workshop;
 using AcTools;
 using AcTools.AcdEncryption;
 using AcTools.AcdFile;
@@ -90,6 +88,11 @@ using Newtonsoft.Json;
 using StringBasedFilter;
 using ComboBox = System.Windows.Controls.ComboBox;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
+
+#if INCLUDE_WORKSHOP
+using AcManager.Workshop;
+using AcManager.Pages.Workshop;
+#endif
 
 namespace AcManager {
     public partial class App : IDisposable {
@@ -257,9 +260,9 @@ namespace AcManager {
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 
             Acd.Factory = new AcdFactory();
-//#if !DEBUG
+            //#if !DEBUG
             Kn5.Factory = Kn5New.GetFactoryInstance();
-//#endif
+            //#endif
             Lazier.SyncAction = ActionExtension.InvokeInMainThreadAsync;
             KeyboardListenerFactory.Register<KeyboardListener>();
 
@@ -333,8 +336,10 @@ namespace AcManager {
             AppArguments.Set(AppFlag.PatchSupport, ref PatchHelper.OptionPatchSupport);
             AppArguments.Set(AppFlag.CspReportsLocation, ref CspReportUtils.OptionLocation);
             AppArguments.Set(AppFlag.RingDebug, ref ExtraProgressRings.OptionAnimationDevelopment);
+#if INCLUDE_WORKSHOP
             AppArguments.Set(AppFlag.CmWorkshop, ref WorkshopClient.OptionUserAvailable);
             AppArguments.Set(AppFlag.CmWorkshopCreator, ref WorkshopClient.OptionCreatorAvailable);
+#endif
 
             // Shared memory, now as an app flag
             SettingsHolder.Drive.WatchForSharedMemory = !AppArguments.GetBool(AppFlag.DisableSharedMemory);
@@ -513,7 +518,9 @@ namespace AcManager {
                 }
             };
 
+#if INCLUDE_WORKSHOP
             WorkshopLinkCommands.Initialize();
+#endif
 
             AppArguments.SetSize(AppFlag.ImagesCacheLimit, ref BetterImage.OptionCacheTotalSize);
             AppArguments.SetSize(AppFlag.CarLodGeneratorCacheSize, ref CarGenerateLodsDialog.OptionCacheSize);

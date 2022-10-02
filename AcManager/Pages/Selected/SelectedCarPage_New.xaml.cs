@@ -19,7 +19,6 @@ using AcManager.Pages.ContentTools;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Lists;
-using AcManager.Pages.Workshop;
 using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -29,7 +28,6 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
-using AcManager.Workshop;
 using AcTools;
 using AcTools.AcdFile;
 using AcTools.DataFile;
@@ -44,6 +42,11 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using StringBasedFilter;
 using MenuItem = System.Windows.Controls.MenuItem;
+
+#if INCLUDE_WORKSHOP
+using AcManager.Workshop;
+using AcManager.Pages.Workshop;
+#endif
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedCarPage_New : ILoadableContent, IParametrizedUriContent, IImmediateContent {
@@ -351,8 +354,17 @@ namespace AcManager.Pages.Selected {
 
             private DelegateCommand _uploadToWorkshopCommand;
 
-            public DelegateCommand UploadToWorkshopCommand => _uploadToWorkshopCommand ?? (_uploadToWorkshopCommand = new DelegateCommand(() =>
-                    new WorkshopUpload(SelectedObject).ShowDialog(), () => WorkshopClient.OptionCreatorAvailable));
+            public DelegateCommand UploadToWorkshopCommand => _uploadToWorkshopCommand ?? (_uploadToWorkshopCommand = new DelegateCommand(() => {
+#if INCLUDE_WORKSHOP
+                new WorkshopUpload(SelectedObject).ShowDialog();
+#endif
+            }, () => {
+#if INCLUDE_WORKSHOP
+                return WorkshopClient.OptionCreatorAvailable;
+#else
+                return false;
+#endif
+            }));
 
             private AsyncCommand _replaceSoundCommand;
 
