@@ -27,6 +27,9 @@ namespace AcTools.Kn5File {
         public float LodIn, LodOut;
         public Vec3 BoundingSphereCenter;
         public float BoundingSphereRadius;
+        
+        [CanBeNull]
+        public Vec2[] Uv2;
 
         /* Only for skinned meshes */
         public byte[] MisteryBytes;

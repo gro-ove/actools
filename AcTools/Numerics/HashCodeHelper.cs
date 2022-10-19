@@ -4,7 +4,7 @@
 using System.Runtime.CompilerServices;
 
 namespace AcTools.Numerics {
-    internal static class HashCodeHelper {
+    public static class HashCodeHelper {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static uint ReverseBytes(uint value) {
             return (value & 0x0000FFFFU) << 16 | (value & 0xFFFF0000U) >> 16;
@@ -17,7 +17,7 @@ namespace AcTools.Numerics {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static int CombineHashCodes(int h1, int h2) {
+        public static int CombineHashCodes(int h1, int h2) {
             h1 = ReverseBytes(h1);
             unchecked {
                 return ((h1 << 5) + h1) ^ h2;
@@ -25,7 +25,7 @@ namespace AcTools.Numerics {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static uint CombineHashCodes(uint h1, uint h2) {
+        public static uint CombineHashCodes(uint h1, uint h2) {
             h1 = ReverseBytes(h1);
             unchecked {
                 return ((h1 << 5) + h1) ^ h2;
@@ -33,7 +33,7 @@ namespace AcTools.Numerics {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static unsafe int CombineHashCodes(float h1, float h2, float h3) {
+        public static unsafe int CombineHashCodes(float h1, float h2, float h3) {
             var r = CombineHashCodes(*(uint*)&h1, CombineHashCodes(*(uint*)&h2, *(uint*)&h3));
             return *(int*)&r;
         }

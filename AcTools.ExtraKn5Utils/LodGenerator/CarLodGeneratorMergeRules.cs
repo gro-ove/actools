@@ -28,6 +28,9 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
         private IFilter<Kn5Node>[] _emptyNodesToKeep;
 
         [CanBeNull]
+        private IFilter<Kn5Node>[] _convertUv2;
+
+        [CanBeNull]
         private Tuple<IFilter<Kn5Node>, double>[] _elementPriorities;
 
         [CanBeNull]
@@ -40,6 +43,7 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
             _mergeAsBlack = stage.MergeAsBlack?.Select(filterContext.CreateFilter).ToArray();
             _elementToRemove = stage.ElementsToRemove?.Select(filterContext.CreateFilter).ToArray();
             _emptyNodesToKeep = stage.EmptyNodesToKeep?.Select(filterContext.CreateFilter).ToArray();
+            _convertUv2 = stage.ConvertUv2?.Select(filterContext.CreateFilter).ToArray();
             _elementPriorities = stage.ElementsPriorities?.Select(x => Tuple.Create(filterContext.CreateFilter(x.Filter), x.Priority)).ToArray();
             _offsetsAlongNormal = stage.OffsetsAlongNormal?.Select(x => Tuple.Create(filterContext.CreateFilter(x.Filter), x.Priority)).ToArray();
         }
@@ -65,6 +69,14 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
                     || _elementToRemove?.Any(x => x.Test(node)) == true;
         }
 
+        public bool AnyUv2Converts() {
+            return _convertUv2?.Length > 0;
+        }
+
+        public bool UseUv2(Kn5Node node) {
+            return _convertUv2?.Any(x => x.Test(node)) == true;
+        }
+
         public bool CanMerge(Kn5Node node) {
             return _mergeExceptions?.Any(x => x.Test(node)) != true;
         }
@@ -82,7 +94,10 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
                 node.MaterialId = uint.MaxValue;
                 return priority.GetHashCode();
             }
-            return (((int)node.MaterialId * 397) | (node.IsTransparent ? 1 << 31 : 0) | (node.CastShadows ? 1 << 30 : 0)) ^ priority.GetHashCode();
+            return (((int)node.MaterialId * 397) 
+                    | (node.IsTransparent ? 1 << 31 : 0) 
+                    | (node.CastShadows ? 1 << 30 : 0) 
+                    | (node.Uv2 != null ? 1 << 29 : 0)) ^ priority.GetHashCode();
         }
 
         public int GroupOrder(IKn5 kn5, IEnumerable<Tuple<Kn5Node, double, Mat4x4>> node, Dictionary<Kn5Node, int> nodeIndices) {

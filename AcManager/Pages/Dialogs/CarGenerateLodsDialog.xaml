@@ -77,6 +77,12 @@
           </mui:DirectContentLoaderEntry.Content>
         </mui:DirectContentLoaderEntry>
 
+        <mui:DirectContentLoaderEntry Key="ConvertUv2">
+          <mui:DirectContentLoaderEntry.Content>
+            <ae:TextEditor c:AvalonExtension.Text="{Binding ConvertUv2, UpdateSourceTrigger=PropertyChanged}" ShowLineNumbers="False" />
+          </mui:DirectContentLoaderEntry.Content>
+        </mui:DirectContentLoaderEntry>
+
       </mui:DirectContentLoader>
     </ResourceDictionary>
   </mui:ModernDialog.Resources>

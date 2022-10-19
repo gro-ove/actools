@@ -23,6 +23,7 @@ using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcTools;
 using AcTools.DataFile;
 using AcTools.ExtraKn5Utils.Kn5Utils;
 using AcTools.ExtraKn5Utils.LodGenerator;
@@ -133,6 +134,7 @@ namespace AcManager.Pages.Dialogs {
                 OnPropertyChanged(nameof(MergeAsBlack));
                 OnPropertyChanged(nameof(ElementsToRemove));
                 OnPropertyChanged(nameof(EmptyNodesToKeep));
+                OnPropertyChanged(nameof(ConvertUv2));
                 OnPropertyChanged(nameof(ElementsPriorities));
                 OnPropertyChanged(nameof(OffsetsAlongNormal));
                 OnPropertyChanged(nameof(KeepTemporaryFiles));
@@ -222,6 +224,12 @@ namespace AcManager.Pages.Dialogs {
             public string EmptyNodesToKeep {
                 get => Stage.EmptyNodesToKeep?.JoinToString("\n");
                 set => Apply(value?.Split('\n'), ref Stage.EmptyNodesToKeep);
+            }
+
+            [JsonProperty("convertUv2")]
+            public string ConvertUv2 {
+                get => Stage.ConvertUv2?.JoinToString("\n");
+                set => Apply(value?.Split('\n'), ref Stage.ConvertUv2);
             }
 
             [JsonProperty("elementsPriorities")]
@@ -317,6 +325,7 @@ namespace AcManager.Pages.Dialogs {
                     case nameof(MergeAsBlack):
                     case nameof(ElementsToRemove):
                     case nameof(EmptyNodesToKeep):
+                    case nameof(ConvertUv2):
                     case nameof(ElementsPriorities):
                     case nameof(OffsetsAlongNormal):
                     case nameof(KeepTemporaryFiles):
@@ -336,7 +345,7 @@ namespace AcManager.Pages.Dialogs {
             public Window LoadedWindow;
 
             public StoredValue<string> SimplygonLocation { get; } = Stored.Get("LodsGenerator.SimplygonLocation",
-                    @"C:\Program Files\Simplygon\9\SimplygonBatch.exe");
+                    @"C:\Program Files\Simplygon\10\SimplygonBatch.exe");
 
             public ChangeableObservableCollection<StageParams> Stages { get; }
 
@@ -443,6 +452,12 @@ namespace AcManager.Pages.Dialogs {
                     Key = "OffsetsAlongNormal",
                     Tag =
                         "During preparation LOD generator would move vertices for meshes listed here along normal (in other words, perpendicular to surface). Positive values will make meshes “grow”, negative — shrink. Mainly meant for stickers to expand a bit to prevent them from clipping through underlying surface."
+                },
+                new Link {
+                    DisplayName = "Convert UV2",
+                    Key = "ConvertUv2",
+                    Tag =
+                        "Meshes to prepare UV2 patches for are listed here. Note: due to Simplygon not supporting UV2 that well at the moment, the resulting mesh might be optimized to a lesser extend and looking worse. Consider not using UV2 patches for low-res cockpit and LOD D."
                 },
             };
 
@@ -1270,6 +1285,14 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         using (var replacement = FileUtils.RecycleOriginal(destination)) {
                             FileUtils.Move(filename, replacement.Filename);
                         }
+
+                        if (stage.ConvertUv2?.Trim().Length > 0) {
+                            var uv2 = FileUtils.ReplaceExtension(filename, @".uv2");
+                            FileUtils.TryToDelete(FileUtils.ReplaceExtension(destination, @".uv2"));
+                            if (File.Exists(uv2)) {
+                                FileUtils.Move(uv2, FileUtils.ReplaceExtension(destination, @".uv2"));
+                            }
+                        }
                     }
                 });
             }
@@ -1341,7 +1364,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                     }
                 }
 
-                public async Task<string> GenerateLodAsync(string stageId, string inputFile, string modelChecksum,
+                public async Task<string> GenerateLodAsync(string stageId, string inputFile, string modelChecksum, bool useUV2,
                         IProgress<double?> progress, CancellationToken cancellationToken) {
                     var stage = _stages.GetById(stageId);
                     var rulesFilename = stage.SimplygonConfigurationFilename;
@@ -1352,6 +1375,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         try {
                             var rules = JObject.Parse(File.ReadAllText(rulesFilename));
                             rules[@"Settings"][@"ReductionProcessor"][@"ReductionSettings"][@"ReductionTargetTriangleCount"] = stage.TrianglesCount;
+                            if (!useUV2) rules[@"Settings"][@"ReductionProcessor"][@"ReductionSettings"][@"VertexColorImportance"] = 0f;
                             rules[@"Settings"][@"ReductionProcessor"][@"RepairSettings"][@"UseWelding"] = stage.ApplyWeldingFix;
                             rules[@"Settings"][@"ReductionProcessor"][@"RepairSettings"][@"UseTJunctionRemover"] = stage.ApplyWeldingFix;
 
@@ -1422,6 +1446,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
 
         private void OnViewPreparedModelClick(object sender, RoutedEventArgs e) {
             if ((sender as FrameworkElement)?.DataContext is StageParams stageParams) {
+                GCHelper.CleanUp();
                 Model.ViewDebugModelAsync(stageParams).Ignore();
             }
         }

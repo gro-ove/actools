@@ -163,6 +163,13 @@ namespace AcTools.Utils {
             var result = filename.Substring(directory[directory.Length - 1].IsDirectorySeparator() ? directory.Length - 1 : directory.Length);
             return result.Length == 0 ? string.Empty : !result[0].IsDirectorySeparator() ? null : result.Substring(1);
         }
+
+        public static string ReplaceExtension([NotNull] string filename, string newExtension) {
+            var separator = filename.LastIndexOf('.');
+            var pathSeparator = filename.LastIndexOfAny(new[] { '/', '\\' });
+            if (pathSeparator >= separator) return filename + newExtension;
+            return filename.Substring(0, separator) + newExtension;
+        }
     }
 
     public static class CharExtension {

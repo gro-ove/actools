@@ -261,7 +261,7 @@ namespace AcManager {
 
             Acd.Factory = new AcdFactory();
             //#if !DEBUG
-            Kn5.Factory = Kn5New.GetFactoryInstance();
+            // Kn5.Factory = Kn5New.GetFactoryInstance();
             //#endif
             Lazier.SyncAction = ActionExtension.InvokeInMainThreadAsync;
             KeyboardListenerFactory.Register<KeyboardListener>();

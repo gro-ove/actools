@@ -95,6 +95,7 @@
     <Compile Include="Implementations\ThrustmasterFerrariF1Advanced2.cs" />
     <Compile Include="Implementations\ThrustmasterFerrariF1Advanced1.cs" />
     <Compile Include="Implementations\ThrustmasterFerrariF1TSPC.cs" />
+    <Compile Include="Implementations\ThrustmasterT150.cs" />
     <Compile Include="Implementations\ThrustmasterT300.cs" />
     <Compile Include="Implementations\ThrustmasterT500.cs" />
     <Compile Include="Implementations\ThrustmasterTGT.cs" />
