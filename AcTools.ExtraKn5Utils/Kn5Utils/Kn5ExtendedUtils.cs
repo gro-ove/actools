@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -12,7 +11,7 @@ using K4os.Compression.LZ4;
 using SystemHalf;
 
 namespace AcTools.ExtraKn5Utils.Kn5Utils {
-    public static class Kn5Utils {
+    public static class Kn5ExtendedUtils { 
         public static byte[] ExportUv2Data(this IKn5 kn5, Func<Kn5Node, bool> filter = null) {
             using (var memory = new MemoryStream()) {
                 using (var writer = new ExtendedBinaryWriter(memory, true)) {
@@ -55,12 +54,14 @@ namespace AcTools.ExtraKn5Utils.Kn5Utils {
 
         public static void SaveUv2(this IKn5 kn5, string filename, bool skipIfEmpty, Func<Kn5Node, bool> filter = null) {
             var data = kn5.ExportUv2Data(filter);
-            if (data.Length == 0) return;
-            
+            if (skipIfEmpty && data.Length == 0) return;
+            SaveUv2Data(filename, data);
+        }
+
+        public static void SaveUv2Data(string filename, byte[] data) {
             var compressed2 = new byte[data.Length];
             var newLength = LZ4Codec.Encode(data, 0, data.Length,
                     compressed2, 0, compressed2.Length, LZ4Level.L09_HC);
-
             var compressed = new byte[newLength + 5];
             compressed[0] = 0;
             Buffer.BlockCopy(BitConverter.GetBytes(data.Length), 0, compressed, 1, 4);
@@ -121,46 +122,6 @@ namespace AcTools.ExtraKn5Utils.Kn5Utils {
                 mesh.Uv2 = uv2;
             }
         }
-
-        public static byte[] ToArray(this IKn5 kn5, bool includeTextures = true) {
-            using (var memory = new MemoryStream()) {
-                if (!includeTextures) {
-                    kn5.Textures.Clear();
-                    kn5.TexturesData.Clear();
-                }
-                kn5.Save(memory);
-                return memory.ToArray();
-            }
-        }
-
-        public static List<string> FindBodyMaterials(this IKn5 kn5) {
-            var list = kn5.Materials.Values.Where(x => x.ShaderName == "ksPerPixelMultiMap_damage_dirt").Select(x => x.Name).ToList();
-            return list.Count > 0 ? list : null;
-        }
-
-        public static bool HasCockpitHr(this IKn5 kn5) {
-            return kn5.FirstByName("COCKPIT_HR") != null;
-        }
-
-        public static void RemoveUnusedMaterials(this IKn5 kn5) {
-            var materialsToKeep = new List<uint>();
-            foreach (var node in kn5.Nodes.Where(x => x.NodeClass != Kn5NodeClass.Base)) {
-                if (!materialsToKeep.Contains(node.MaterialId)) {
-                    materialsToKeep.Add(node.MaterialId);
-                }
-            }
-
-            var newMaterials = kn5.Materials.Values
-                    .Where((x, i) => materialsToKeep.Contains((uint)i))
-                    .ToDictionary(x => x.Name, x => x);
-            foreach (var node in kn5.Nodes.Where(x => x.NodeClass != Kn5NodeClass.Base)) {
-                var id = newMaterials.Values.IndexOf(kn5.Materials.Values.ElementAt((int)node.MaterialId));
-                if (id == -1) {
-                    throw new Exception("Unexpected conflict");
-                }
-                node.MaterialId = (uint)id;
-            }
-            kn5.Materials = newMaterials;
-        }
+        
     }
 }

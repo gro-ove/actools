@@ -661,7 +661,8 @@
     <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Mods}" Source="/Pages/Lists/GenericModsListPage.xaml" />
     <mui:LinkGroup GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Tools}">
       <mui:LinkGroup.Links>
-        <mui:Link DisplayName="{x:Static mui:UiStrings.FiltersLinkAll}" Source="/Pages/Lists/ToolsListPage.xaml" />
+        <mui:Link DisplayName="Collector tools" Source="/Pages/Lists/ToolsListPage.xaml" />
+        <mui:Link DisplayName="Creator tools" Source="/Pages/Lists/ToolsCreatorListPage.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
     <!--<mui:LinkGroup x:Name="WorkshopLinkGroup" GroupKey="content" DisplayName="Workshop">

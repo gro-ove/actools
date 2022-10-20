@@ -407,6 +407,9 @@
     <Compile Include="Pages\ContentTools\TreeModelConverter.xaml.cs">
       <DependentUpon>TreeModelConverter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ContentTools\Uv2ModelConverter.xaml.cs">
+      <DependentUpon>Uv2ModelConverter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\AppKeyDialog.xaml.cs">
       <DependentUpon>AppKeyDialog.xaml</DependentUpon>
     </Compile>
@@ -522,6 +525,9 @@
       <DependentUpon>GenericModsListPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Lists\ToolLink.cs" />
+    <Compile Include="Pages\Lists\ToolsCreatorListPage.xaml.cs">
+      <DependentUpon>ToolsCreatorListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Lists\TrackSkinsListPage.xaml.cs">
       <DependentUpon>TrackSkinsListPage.xaml</DependentUpon>
     </Compile>
@@ -1122,6 +1128,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\ContentTools\TreeModelConverter.xaml" />
+    <Page Include="Pages\ContentTools\Uv2ModelConverter.xaml" />
     <Page Include="Pages\Dialogs\AcErrorSolutionSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1248,6 +1255,7 @@
     </Page>
     <Page Include="Pages\Lists\LuaAppsListPage.xaml" />
     <Page Include="Pages\Lists\ServerBannedListPage.xaml" />
+    <Page Include="Pages\Lists\ToolsCreatorListPage.xaml" />
     <Page Include="Pages\Lists\TrackSkinsListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

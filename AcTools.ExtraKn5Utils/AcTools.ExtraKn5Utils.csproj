@@ -135,12 +135,14 @@
     <Compile Include="FbxUtils\Tokens\Value\ShortToken.cs" />
     <Compile Include="Helpers\AcTreeModelConverter.cs" />
     <Compile Include="Helpers\FbxDataAccessor.cs" />
+    <Compile Include="Helpers\AcUv2ModelConverter.cs" />
+    <Compile Include="Kn5Utils\Kn5ExtendedUtils.cs" />
     <Compile Include="Kn5Utils\Kn5MaterialUtils.cs" />
     <Compile Include="Kn5Utils\Kn5MeshBuilder.cs" />
     <Compile Include="Kn5Utils\Kn5MeshUtils.cs" />
     <Compile Include="Kn5Utils\Kn5NodeFilterContext.cs" />
     <Compile Include="Kn5Utils\Kn5NodeUtils.cs" />
-    <Compile Include="Kn5Utils\Kn5Utils.cs" />
+    <Compile Include="Kn5Utils\Kn5GenericUtils.cs" />
     <Compile Include="Kn5Utils\Kn5VectorUtils.cs" />
     <Compile Include="Kn5Utils\Kn5VertexUtils.cs" />
     <Compile Include="KsAnimUtils\KsAnimUtils.cs" />

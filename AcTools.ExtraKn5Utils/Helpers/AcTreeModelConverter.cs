@@ -105,7 +105,7 @@ namespace AcTools.ExtraKn5Utils.Helpers {
             }
         }
 
-        public static void Convert(string model, string destination) {
+        public static void Convert(string model, string destination, string treeParams) {
             var fbx = FbxIO.Read(model);
 
             var aabb = ComputeAABB(fbx);
@@ -113,8 +113,8 @@ namespace AcTools.ExtraKn5Utils.Helpers {
             using (var stream = File.Open(destination, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Create, true)) {
                 foreach (var name in CollectMeshNames(fbx)) {
-                    using (var entry = zip.CreateEntry(name + ".bin").Open()) {
-                        lods.Add(Tuple.Create(name + ".bin", ConvertModel(fbx, entry, aabb, x => x == name)));
+                    using (var entry = zip.CreateEntry(name + ".mesh").Open()) {
+                        lods.Add(Tuple.Create(name + ".mesh", ConvertModel(fbx, entry, aabb, x => x == name)));
                     }
                 }
 
@@ -122,8 +122,14 @@ namespace AcTools.ExtraKn5Utils.Helpers {
                 var maxDistance = lods[0].Item2.Item1.Max.Y * 10f;
                 var cfg = new IniFile {
                     ["BASIC"] = { ["HEIGHT"] = lods[0].Item2.Item1.Max.Y, ["WIDTH"] = lods[0].Item2.Item1.Finish() * 2 },
-                    ["SHADING"] = { ["SPECULAR"] = "1.0", ["SUBSCATTERING"] = "1.0", ["REFLECTIVITY"] = "1.0" },
+                    ["SHADING"] = { ["SPECULAR"] = "1.0", ["SUBSCATTERING"] = "1.0", ["REFLECTIVITY"] = "1.0", ["BRIGHTNESS"] = "1.0" },
+                    ["NORMALS"] = { ["BOOST"] = "0.9", ["SPHERE"] = "1.0" }
                 };
+                foreach (var s in IniFile.Parse(treeParams)) {
+                    foreach (var p in s.Value) {
+                        cfg[s.Key][p.Key] = p.Value;
+                    }
+                }
                 for (var i = 0; i < lods.Count; ++i) {
                     cfg["LOD_" + i]["MODEL"] = lods[i].Item1;
                     cfg["LOD_" + i]["DISTANCE"] = maxDistance * (i + 1) / lods.Count;
@@ -131,7 +137,8 @@ namespace AcTools.ExtraKn5Utils.Helpers {
                 zip.AddString("tree.ini", cfg.ToString());
 
                 foreach (var texture in lods.SelectMany(x => x.Item2.Item3).Distinct()) {
-                    zip.AddBytes(Path.GetFileName(texture), File.ReadAllBytes(texture));
+                    zip.AddBytes(Path.GetFileName(texture), File.ReadAllBytes(
+                            File.Exists(texture) ? texture : Path.Combine(Path.GetDirectoryName(model) ?? "", Path.GetFileName(texture))));
                 }
             }
         }

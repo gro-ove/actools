@@ -1,10 +1,7 @@
 using System;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AcTools.DataFile;
 using AcTools.ExtraKn5Utils.Helpers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -15,7 +12,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.ContentTools {
-    public partial class TreeModelConverter {
+    public partial class Uv2ModelConverter {
         protected override Task<bool> LoadAsyncOverride(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             return Task.FromResult(true);
         }
@@ -38,49 +35,20 @@ namespace AcManager.Pages.ContentTools {
 
             public string Destination { get; }
 
-            private IDisposable _watcher;
+            private IDisposable _watcher1;
+            private IDisposable _watcher2;
 
-            public KnownEntry(string origin, string destination) {
+            public KnownEntry(string origin, string destination, string refKn5Filename) {
                 Origin = origin;
                 Destination = destination;
-                TreeParams = @"[SHADING]
-SPECULAR=1.0
-SUBSCATTERING=1.0
-REFLECTIVITY=1.0
-BRIGHTNESS=1.0
-
-[NORMALS]
-BOOST=0.9
-SPHERE=1.0";
-
-                try {
-                    if (File.Exists(destination)) {
-                        using (var zip = ZipFile.OpenRead(destination)) {
-                            var manifest = zip.GetEntry(@"tree.ini")?.Open().ReadAsStringAndDispose();
-                            if (manifest != null) {
-                                var cfg = IniFile.Parse(manifest);
-                                foreach (var s in cfg.Keys.ApartFrom(@"SHADING", @"NORMALS").ToList()) {
-                                    cfg.Remove(s);
-                                }
-                                TreeParams = cfg.ToString();
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    Logging.Warning($"Failed to restore tree config: {e}");
-                }
-
-                _watcher = SimpleDirectoryWatcher.WatchFile(origin, async () => {
+                _watcher1 = SimpleDirectoryWatcher.WatchFile(origin, async () => {
                     await Task.Delay(TimeSpan.FromSeconds(5d));
                     RefreshCommand.ExecuteAsync().Ignore();
                 });
-            }
-
-            private string _treeParams;
-
-            public string TreeParams {
-                get => _treeParams;
-                set => Apply(value, ref _treeParams);
+                _watcher2 = SimpleDirectoryWatcher.WatchFile(refKn5Filename, async () => {
+                    await Task.Delay(TimeSpan.FromSeconds(5d));
+                    RefreshCommand.ExecuteAsync().Ignore();
+                });
             }
 
             private AsyncCommand _refreshCommand;
@@ -88,7 +56,7 @@ SPHERE=1.0";
             public AsyncCommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new AsyncCommand(async () => {
                 try {
                     LastError = null;
-                    await Task.Run(() => AcTreeModelConverter.Convert(Origin, Destination, TreeParams));
+                    await Task.Run(() => AcUv2ModelConverter.Convert(Origin, Destination));
                 } catch (Exception e) {
                     LastError = e.Message;
                 }
@@ -116,7 +84,8 @@ SPHERE=1.0";
             }
 
             public void Dispose() {
-                DisposeHelper.Dispose(ref _watcher);
+                DisposeHelper.Dispose(ref _watcher1);
+                DisposeHelper.Dispose(ref _watcher2);
             }
         }
 
@@ -126,25 +95,26 @@ SPHERE=1.0";
 
         public AsyncCommand ConvertCommand => _convertCommand ?? (_convertCommand = new AsyncCommand(async () => {
             var input = FileRelatedDialogs.Open(new OpenDialogParams {
-                DirectorySaveKey = "treemodelorigin",
+                DirectorySaveKey = "uv2modelorigin",
                 Filters = { DialogFilterPiece.FbxFiles, DialogFilterPiece.AllFiles },
-                Title = "Select FBX with tree meshes (mesh per LOD)"
+                Title = "Select FBX with UV2"
             });
             if (input == null) return;
 
-            var stored = CacheStorage.Get<string>($"treeoutput.{input}");
+            var stored = CacheStorage.Get<string>($"uv2output.{input}");
             var output = FileRelatedDialogs.Save(new SaveDialogParams {
-                DirectorySaveKey = "treemodeloutput",
+                DirectorySaveKey = "uv2modeloutput",
                 InitialDirectory = string.IsNullOrEmpty(stored) ? null : Path.GetDirectoryName(stored),
                 RestoreDirectory = string.IsNullOrEmpty(stored),
-                Filters = { new DialogFilterPiece("Converted models", "*.bin"), DialogFilterPiece.AllFiles },
-                Title = "Select destination for converted model",
-                DefaultFileName =  string.IsNullOrEmpty(stored) ? Path.GetFileNameWithoutExtension(input) + ".bin" : Path.GetFileName(stored)
+                Filters = { new DialogFilterPiece("Converted models", "*.kn5"), DialogFilterPiece.AllFiles },
+                Title = "Select converted model",
+                DefaultFileName =  string.IsNullOrEmpty(stored) ? Path.GetFileNameWithoutExtension(input) + ".kn5" : Path.GetFileName(stored),
+                OverwritePrompt = false
             });
             if (output == null) return;
 
-            CacheStorage.Set($"treeoutput.{input}", output);
-            KnownEntries.Add(new KnownEntry(input, output));
+            CacheStorage.Set($"uv2output.{input}", output);
+            KnownEntries.Add(new KnownEntry(input, FileUtils.ReplaceExtension(output, @".uv2"), output));
             KnownEntries[KnownEntries.Count - 1].RefreshCommand.ExecuteAsync().Ignore();
         }));
     }
