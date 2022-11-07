@@ -31,7 +31,6 @@ using AcManager.Pages.Drive;
 using AcManager.Pages.Lists;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Pages.Windows;
-using AcManager.Pages.Workshop;
 using AcManager.Tools;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -56,7 +55,6 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
 using AcManager.Tools.Starters;
-using AcManager.Workshop;
 using AcTools;
 using AcTools.AcdEncryption;
 using AcTools.AcdFile;
@@ -90,6 +88,11 @@ using Newtonsoft.Json;
 using StringBasedFilter;
 using ComboBox = System.Windows.Controls.ComboBox;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
+
+#if INCLUDE_WORKSHOP
+using AcManager.Workshop;
+using AcManager.Pages.Workshop;
+#endif
 
 namespace AcManager {
     public partial class App : IDisposable {
@@ -257,9 +260,9 @@ namespace AcManager {
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 
             Acd.Factory = new AcdFactory();
-//#if !DEBUG
+            //#if !DEBUG
             Kn5.Factory = Kn5New.GetFactoryInstance();
-//#endif
+            //#endif
             Lazier.SyncAction = ActionExtension.InvokeInMainThreadAsync;
             KeyboardListenerFactory.Register<KeyboardListener>();
 
@@ -332,8 +335,11 @@ namespace AcManager {
             AppArguments.Set(AppFlag.HideRaceCancelButton, ref GameDialog.OptionHideCancelButton);
             AppArguments.Set(AppFlag.PatchSupport, ref PatchHelper.OptionPatchSupport);
             AppArguments.Set(AppFlag.CspReportsLocation, ref CspReportUtils.OptionLocation);
+            AppArguments.Set(AppFlag.RingDebug, ref ExtraProgressRings.OptionAnimationDevelopment);
+#if INCLUDE_WORKSHOP
             AppArguments.Set(AppFlag.CmWorkshop, ref WorkshopClient.OptionUserAvailable);
             AppArguments.Set(AppFlag.CmWorkshopCreator, ref WorkshopClient.OptionCreatorAvailable);
+#endif
 
             // Shared memory, now as an app flag
             SettingsHolder.Drive.WatchForSharedMemory = !AppArguments.GetBool(AppFlag.DisableSharedMemory);
@@ -512,7 +518,9 @@ namespace AcManager {
                 }
             };
 
+#if INCLUDE_WORKSHOP
             WorkshopLinkCommands.Initialize();
+#endif
 
             AppArguments.SetSize(AppFlag.ImagesCacheLimit, ref BetterImage.OptionCacheTotalSize);
             AppArguments.SetSize(AppFlag.CarLodGeneratorCacheSize, ref CarGenerateLodsDialog.OptionCacheSize);
@@ -549,7 +557,6 @@ namespace AcManager {
 
             InitializeUpdatableStuff();
             BackgroundInitialization();
-            ExtraProgressRings.Initialize();
 
             FatalErrorMessage.Register(new AppRestartHelper());
             ImageUtils.SafeMagickWrapper = fn => {
@@ -628,6 +635,7 @@ namespace AcManager {
 
             // Check and apply FTH fix if necessary
             CheckFaultTolerantHeap().Ignore();
+            RaceUTemporarySkinsHelper.Initialize();
 
             // Initializing CSP handler
             if (PatchHelper.OptionPatchSupport) {
@@ -770,6 +778,10 @@ namespace AcManager {
                 CupClient.Instance?.LoadRegistries().Ignore();
 #endif
 
+                if (AcRootDirectory.Instance.Value != null && !string.IsNullOrWhiteSpace(SettingsHolder.Drive.CmLaunchCommand)) {
+                    GameCommandExecutorBase.Execute(SettingsHolder.Drive.CmLaunchCommand, AcRootDirectory.Instance.Value);
+                }
+
                 await Task.Delay(500);
                 AppArguments.Set(AppFlag.SimilarThreshold, ref CarAnalyzer.OptionSimilarThreshold);
 
@@ -825,13 +837,26 @@ namespace AcManager {
                 CupClient.Instance?.LoadRegistries().Ignore();
 #endif
 
-                await Task.Delay(5000);
+                await Task.Delay(1500);
+                ExtraProgressRings.Initialize();
+
+                await Task.Delay(3500);
                 await Task.Run(() => {
                     foreach (var f in from file in Directory.GetFiles(FilesStorage.Instance.GetDirectory("Logs"))
                         where file.EndsWith(@".txt") || file.EndsWith(@".log") || file.EndsWith(@".json")
                         let info = new FileInfo(file)
                         where info.LastWriteTime < DateTime.Now - TimeSpan.FromDays(3)
                         select info) {
+                        f.Delete();
+                    }
+                });
+
+                await Task.Delay(5000);
+                await Task.Run(() => {
+                    foreach (var f in new DirectoryInfo(FilesStorage.Instance.GetTemporaryDirectory()).GetFiles("*", SearchOption.AllDirectories)
+                            .Where(x => x.LastAccessTime < DateTime.Now - TimeSpan.FromDays(30) && x.LastWriteTime < DateTime.Now - TimeSpan.FromDays(30))) {
+                        if (f.Name == "Startup.Profile") continue;
+                        Logging.Debug($"Delete old temporary file: {f.FullName}");
                         f.Delete();
                     }
                 });

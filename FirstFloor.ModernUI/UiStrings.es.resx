@@ -574,4 +574,7 @@
   <data name="Common_Browse" xml:space="preserve">
     <value>Examinar</value>
   </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Recargar</value>
+  </data>
 </root>

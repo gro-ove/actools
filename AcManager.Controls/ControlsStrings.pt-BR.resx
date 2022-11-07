@@ -121,11 +121,11 @@
     <value>Linha Ideal:</value>
   </data>
   <data name="Assists_Header" xml:space="preserve">
-    <value>Ajudas:</value>
-  </data>
+    <value>Assistências:</value>
+  <alternative>Ajudas:</alternative></data>
   <data name="Assists_AutoShifterLabel" xml:space="preserve">
-    <value>Mudanças automáticas:</value>
-  </data>
+    <value>Marcha automática:</value>
+  <alternative>Mudanças automáticas:</alternative></data>
   <data name="Assists_AutoClutchLabel" xml:space="preserve">
     <value>Embreagem automática:</value>
   </data>
@@ -136,8 +136,8 @@
     <value>Combustível:</value>
   </data>
   <data name="Assists_TyreWearLabel" xml:space="preserve">
-    <value>Desgaste dos pneus:</value>
-  </data>
+    <value>Desgaste dos pneu:</value>
+  <alternative>Desgaste dos pneus:</alternative></data>
   <data name="WebBrowser_Prompt" xml:space="preserve">
     <value>A página web diz</value>
   </data>
@@ -160,8 +160,8 @@
     <value>Especificações</value>
   </data>
   <data name="AcObject_Author_Tooltip" xml:space="preserve">
-    <value>Autor, versão &amp; URL</value>
-  </data>
+    <value>Autor, versão &amp; URL (Ctrl+clique para seguir o link se definido)</value>
+  <alternative>Autor, versão &amp; URL</alternative></data>
   <data name="Car_OpenInShowroom" xml:space="preserve">
     <value>Abrir No Showroom</value>
   </data>
@@ -211,11 +211,11 @@
     <value>Salvar configurações atuais como predefinição (Ctrl+S)</value>
   </data>
   <data name="Presets_Unsaved" xml:space="preserve">
-    <value>Desgravado</value>
-  </data>
+    <value>Predefinição não salva</value>
+  <alternative>Desgravado</alternative></data>
   <data name="QuickSwitches_Header" xml:space="preserve">
-    <value>Switches rápidos</value>
-  </data>
+    <value>Trocas rápidas</value>
+  <alternative>Switches rápidos</alternative></data>
   <data name="QuickSwitches_HideWheel" xml:space="preserve">
     <value>Esconder volante</value>
   </data>
@@ -226,14 +226,14 @@
     <value>Esconder motorista</value>
   </data>
   <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
-    <value>Esconder modelo motorista</value>
-  </data>
+    <value>Esconder modelo do motorista</value>
+  <alternative>Esconder modelo motorista</alternative></data>
   <data name="QuickSwitches_LockWheel" xml:space="preserve">
     <value>Volante fixo</value>
   </data>
   <data name="QuickSwitches_LockCamera" xml:space="preserve">
-    <value>Câmara fixa</value>
-  </data>
+    <value>Câmera fixa</value>
+  <alternative>Câmara fixa</alternative></data>
   <data name="QuickSwitches_Mirror" xml:space="preserve">
     <value>Espelho</value>
   </data>
@@ -244,8 +244,8 @@
     <value>Tabela de classificação</value>
   </data>
   <data name="QuickSwitches_DamageUi" xml:space="preserve">
-    <value>Estrago (UI)</value>
-  </data>
+    <value>Dano (UI)</value>
+  <alternative>Estrago (UI)</alternative></data>
   <data name="QuickSwitches_Nearest" xml:space="preserve">
     <value>Mais perto</value>
   </data>
@@ -253,8 +253,8 @@
     <value>Tela cheia</value>
   </data>
   <data name="QuickSwitches_DevApps" xml:space="preserve">
-    <value>Apps de desenvolvimento</value>
-  </data>
+    <value>App de desenvolvimento</value>
+  <alternative>Apps de desenvolvimento</alternative></data>
   <data name="QuickSwitches_FreeCamera" xml:space="preserve">
     <value>Câmara-livre</value>
   </data>
@@ -280,14 +280,14 @@
     <value>Mostrar tabela de classificação</value>
   </data>
   <data name="QuickSwitches_DamageUi_Tooltip" xml:space="preserve">
-    <value>Mostrar estragos</value>
-  </data>
+    <value>Mostrar dano</value>
+  <alternative>Mostrar estragos</alternative></data>
   <data name="QuickSwitches_Fullscreen_Tooltip" xml:space="preserve">
     <value>Modo Tela cheia (necessário ao Shadowplay, por exemplo)</value>
   </data>
   <data name="QuickSwitches_DevApps_Tooltip" xml:space="preserve">
-    <value>ativar apps de desenvolvimento</value>
-  </data>
+    <value>Ativar apps de desenvolvedor</value>
+  <alternative>ativar apps de desenvolvimento</alternative></data>
   <data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
     <value>Ativar câmera-livre (pressine F7 dentro do jogo)</value>
   </data>
@@ -316,8 +316,8 @@
     <value>Esconder braços</value>
   </data>
   <data name="QuickSwitches_HideArms_Tooltip" xml:space="preserve">
-    <value>Esconder os braços do condutor</value>
-  </data>
+    <value>Esconder os braços do motorista</value>
+  <alternative>Esconder os braços do condutor</alternative></data>
   <data name="Theme_Dark" xml:space="preserve">
     <value>Escuro</value>
   </data>
@@ -328,8 +328,8 @@
     <value>Moderno</value>
   </data>
   <data name="Animation_Fade" xml:space="preserve">
-    <value>Desvanecimento</value>
-  </data>
+    <value>Desaparecimento</value>
+  <alternative>Desvanecimento</alternative></data>
   <data name="Animation_Up" xml:space="preserve">
     <value>Cima</value>
   </data>
@@ -337,8 +337,8 @@
     <value>Baixo</value>
   </data>
   <data name="Controls_LoadPresetWarning" xml:space="preserve">
-    <value>Ler "{0}"? Os valores atuais serão subsistituídos (mas poderão ser mais tarde recuperados da Lixeira) </value>
-  </data>
+    <value>Carregar "{0}"? Os valores atuais serão subsistituídos (mas poderão ser mais tarde recuperados da Lixeira) </value>
+  <alternative>Ler "{0}"? Os valores atuais serão subsistituídos (mas poderão ser mais tarde recuperados da Lixeira) </alternative></data>
   <data name="Common_AreYouSure" xml:space="preserve">
     <value>Tem certeza?</value>
   <alternative>Tem a certeza?</alternative></data>
@@ -346,11 +346,11 @@
     <value>Predefinições originais</value>
   </data>
   <data name="Controls_UserPresets" xml:space="preserve">
-    <value>Alternar entre predefinições de configurações de vídeo</value>
-  </data>
+    <value>Predefinições do usuário</value>
+  <alternative>Alternar entre predefinições de configurações de vídeo</alternative></data>
   <data name="Controls_Preview_InputMethod" xml:space="preserve">
-    <value>Método input: [b]{0}[/b]</value>
-  </data>
+    <value>Método de entrada: [b]{0}[/b]</value>
+  <alternative>Método input: [b]{0}[/b]</alternative></data>
   <data name="Controls_Preview_Devices" xml:space="preserve">
     <value>Dispositivos: [b]{0}[/b]</value>
   </data>
@@ -576,8 +576,8 @@ Tipo de entrada: [b]{2}[/b]</value>
     <value>O tamanho da sombra será salvo em “data/ambient_shadows.ini”, mas os dados serão encriptados, então não terá nenhum efeito. Continuar?</value>
   </data>
   <data name="Common_DevTools" xml:space="preserve">
-    <value>Ferramentas de Desenvolvimento</value>
-  </data>
+    <value>Ferramentas de Desenvolvedor</value>
+  <alternative>Ferramentas de Desenvolvimento</alternative></data>
   <data name="Common_Unpack" xml:space="preserve">
     <value>Decompactar {0}</value>
   </data>
@@ -644,8 +644,8 @@ Depth mode: [b]{4}[/b]</alternative></data>
     <value>Clicar para definir</value>
   </data>
   <data name="Controls_WaitingForInput" xml:space="preserve">
-    <value>Aguardando input</value>
-  </data>
+    <value>Aguardando entrada</value>
+  <alternative>Aguardando input</alternative></data>
   <data name="Controls_InvertAxis" xml:space="preserve">
     <value>Inverter</value>
   </data>
@@ -725,8 +725,8 @@ Depth mode: [b]{4}[/b]</alternative></data>
     <value>Boas notícias!</value>
   </data>
   <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
-    <value>Carro parente (se definido, este carro será uma versão "tuned")</value>
-  </data>
+    <value>Carro parente (se definido, este carro será uma versão tunada)</value>
+  <alternative>Carro parente (se definido, este carro será uma versão "tuned")</alternative></data>
   <data name="CustomShowroom_AmbientShadows_CannotUpdate" xml:space="preserve">
     <value>Não é possível atualizar as sombras ambiente</value>
   </data>
@@ -770,20 +770,20 @@ Depth mode: [b]{4}[/b]</alternative></data>
     <value>{0} oponente</value>
   </data>
   <data name="Common_RecommendedPercentageFormat" xml:space="preserve">
-    <value>Valor recomendado: {0}</value>
-  </data>
+    <value>Valor recomendado: {0}%</value>
+  <alternative>Valor recomendado: {0}</alternative></data>
   <data name="Common_ResetToRecommendedValue" xml:space="preserve">
-    <value>Repor valores recomendados</value>
-  </data>
+    <value>Resetar para valores recomendados</value>
+  <alternative>Repor valores recomendados</alternative></data>
   <data name="Common_ChangeSkin" xml:space="preserve">
     <value>Alterar Skin</value>
   </data>
   <data name="Common_Reset" xml:space="preserve">
-    <value>Repor configurações</value>
-  </data>
+    <value>Resetar</value>
+  <alternative>Repor configurações</alternative></data>
   <data name="Common_TryAgain" xml:space="preserve">
-    <value>Tentar de novo</value>
-  </data>
+    <value>Tente novamente</value>
+  <alternative>Tentar de novo</alternative></data>
   <data name="Common_OfflineMode" xml:space="preserve">
     <value>Modo Offline</value>
   </data>
@@ -794,8 +794,8 @@ Depth mode: [b]{4}[/b]</alternative></data>
     <value>volta</value>
   </data>
   <data name="Common_OpponentsPostfix" xml:space="preserve">
-    <value>adversário</value>
-  </data>
+    <value>oponente</value>
+  <alternative>adversário</alternative></data>
   <data name="Common_MinutePostfix" xml:space="preserve">
     <value>minuto</value>
   </data>
@@ -806,11 +806,11 @@ Depth mode: [b]{4}[/b]</alternative></data>
     <value>Instalando...</value>
   </data>
   <data name="CarParent_MakeIndependent" xml:space="preserve">
-    <value>Tornar Independente</value>
-  </data>
+    <value>Tornar independente</value>
+  <alternative>Tornar Independente</alternative></data>
   <data name="CarParent_ChildrenWillBeMoved" xml:space="preserve">
-    <value>As crianças serão transferidas para o novo pai!</value>
-  </data>
+    <value>As crianças serão transferidas para o novo parente!</value>
+  <alternative>As crianças serão transferidas para o novo pai!</alternative></data>
   <data name="FindInformation_Description" xml:space="preserve">
     <value>Selecione o ano ou descrição e pressione OK; Segure Ctrl para estender a descrição em vez
 de substitui-la.</value>
@@ -828,8 +828,8 @@ de substitui-la.</value>
     <value>Salvar como Descrição</value>
   </data>
   <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
-    <value>Não é possível atualizar a pré-visualiozação</value>
-  </data>
+    <value>Não é possível atualizar a pré-visualização</value>
+  <alternative>Não é possível atualizar a pré-visualiozação</alternative></data>
   <data name="AcObject_CannotUpdatePreview_TrackCommentary" xml:space="preserve">
     <value>Você deveria ter feito pelo menos uma screenshot.</value>
   </data>
@@ -885,8 +885,8 @@ de substitui-la.</value>
     <value>Definir para 0 para o Logitech G920, manter 1 para todo o resto</value>
   </data>
   <data name="Common_ExposureLabel" xml:space="preserve">
-    <value>Exposição</value>
-  </data>
+    <value>Exposição:</value>
+  <alternative>Exposição</alternative></data>
   <data name="Common_FpsPostfix" xml:space="preserve">
     <value>FPS</value>
   </data>
@@ -936,8 +936,8 @@ de substitui-la.</value>
     <value>Visível</value>
   </data>
   <data name="TableHeader_Locked" xml:space="preserve">
-    <value>Bloqueado</value>
-  </data>
+    <value>Travado</value>
+  <alternative>Bloqueado</alternative></data>
   <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
     <value>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</value>
   </data>
@@ -946,5 +946,11 @@ de substitui-la.</value>
   </data>
   <data name="Common_WhatIsIt" xml:space="preserve">
     <value>O que é isso?</value>
+  </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>Rolagem para selecionado (Ctrl+Shift+V)</value>
+  </data>
+  <data name="Common_Rating" xml:space="preserve">
+    <value>Avaliação:</value>
   </data>
 </root>

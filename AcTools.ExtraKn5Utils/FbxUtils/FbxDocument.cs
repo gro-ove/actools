@@ -494,6 +494,22 @@ namespace AcTools.ExtraKn5Utils.FbxUtils {
             throw new KeyNotFoundException($"Connection node with id {id} not found.");
         }
 
+        public IEnumerable<Tuple<long, string>> GetAllConnections(long id) {
+            var connectionNodes = GetFbxNodes("Connections", this)[0].Nodes;
+            foreach (var connectionNode in connectionNodes) {
+                if (connectionNode == null || connectionNode.Properties.Count < 2) {
+                    continue;
+                }
+                if (!(connectionNode.Properties[1] is LongToken sourceToken) || sourceToken.Value != id) {
+                    continue;
+                }
+                if (!(connectionNode.Properties[2] is LongToken destToken)) {
+                    continue;
+                }
+                yield return Tuple.Create(destToken.Value, connectionNode.Properties.Count > 3 ? connectionNode.Properties[3].GetAsString() : null);
+            }
+        }
+
         public long GetMaterialId(long geometryId) {
             var modelId = GetConnection(geometryId);
             var materialIds = GetMaterialIds();

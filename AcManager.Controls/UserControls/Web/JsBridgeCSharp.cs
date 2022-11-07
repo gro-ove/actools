@@ -11,7 +11,9 @@ namespace AcManager.Controls.UserControls.Web {
         public Collection<string> AcApiHosts { get; } = new Collection<string>();
 
         public bool IsHostAllowed(string url) {
-            return AcApiHosts.Contains(url.GetDomainNameFromUrl(), StringComparer.OrdinalIgnoreCase);
+            var domain = url.GetDomainNameFromUrl();
+            return AcApiHosts.Contains(domain, StringComparer.OrdinalIgnoreCase)
+                    || AcApiHosts.Any(x => x.StartsWith(".") && domain.EndsWith(x, StringComparison.OrdinalIgnoreCase));
         }
 
         public WebTab Tab { get; set; }

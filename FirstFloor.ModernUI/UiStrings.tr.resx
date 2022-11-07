@@ -205,8 +205,8 @@
     <value>Önceki Pist</value>
   </data>
   <data name="KeyMediaStop" xml:space="preserve">
-    <value>DurDUR</value>
-  <alternative>Dur</alternative></data>
+    <value>Durdur</value>
+  <alternative>Dur</alternative><alternative>DurDUR</alternative></data>
   <data name="KeyPause" xml:space="preserve">
     <value>Duraklat</value>
   </data>
@@ -451,8 +451,8 @@
     <value>Posta Uygulamasını Başlat</value>
   </data>
   <data name="KeyZoom" xml:space="preserve">
-    <value>Ykınlaştırma</value>
-  </data>
+    <value>Yakınlaştırma</value>
+  <alternative>Ykınlaştırma</alternative></data>
   <data name="Progress_Downloading" xml:space="preserve">
     <value>{0} indirildi</value>
   </data>

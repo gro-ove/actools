@@ -56,25 +56,26 @@ namespace AcManager.Tools.Helpers.Loaders {
             Register<GoogleDriveLoader>(GoogleDriveLoader.Test);
             Register<YandexDiskLoader>(YandexDiskLoader.Test);
             Register<MediaFireLoader>(MediaFireLoader.Test);
-            Register<ShareModsLoader>(ShareModsLoader.Test);
             Register<DropboxLoader>(DropboxLoader.Test);
             Register<OneDriveLoader>(OneDriveLoader.Test);
             Register<AdFlyLoader>(AdFlyLoader.Test);
             Register<MegaLoader>(MegaLoader.Test);
             Register<LongenerLoader>(LongenerLoader.Test);
             Register<YouTubeDescriptionLoader>(YouTubeDescriptionLoader.Test);
+            // Register<ShareModsLoader>(ShareModsLoader.Test);
         }
 
         public static bool IsSupportedFileStorage(string url) {
-            return AcStuffSharedLoader.Test(url) ||
-                    GoogleDriveLoader.Test(url) ||
-                    YandexDiskLoader.Test(url) ||
-                    MediaFireLoader.Test(url) ||
-                    ShareModsLoader.Test(url) ||
-                    DropboxLoader.Test(url) ||
-                    OneDriveLoader.Test(url) ||
-                    AdFlyLoader.Test(url) ||
-                    MegaLoader.Test(url);
+            return AcStuffSharedLoader.Test(url)
+                    || GoogleDriveLoader.Test(url)
+                    || YandexDiskLoader.Test(url)
+                    || MediaFireLoader.Test(url)
+                    || DropboxLoader.Test(url)
+                    || OneDriveLoader.Test(url)
+                    || AdFlyLoader.Test(url)
+                    || MegaLoader.Test(url)
+                    // ShareModsLoader.Test(url)
+                    ;
         }
 
         [ItemCanBeNull]
@@ -97,6 +98,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             return CreateLoaderAsync(url, null, cancellation);
         }
 
+        [CanBeNull]
         private static string UnwrapUrl([NotNull] string url) {
             if (CmRequestHandler?.Test(url) == true) {
                 var unwrapped = CmRequestHandler.UnwrapDownloadUrl(url);

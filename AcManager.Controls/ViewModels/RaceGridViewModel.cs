@@ -62,6 +62,20 @@ namespace AcManager.Controls.ViewModels {
             return _saveable.ToSerializedString();
         }
 
+        [CanBeNull]
+        public static string GeneratePresetData(IEnumerable<RaceGridEntry> entries) {
+            if (entries == null) return null;
+            var vm = new RaceGridViewModel(keySaveable: null) {
+                LoadingFromOutside = true,
+                Mode = BuiltInGridMode.Custom,
+                FilterValue = null,
+                RandomSkinsFilter = null
+            };
+            vm.NonfilteredList.ReplaceEverythingBy_Direct(entries.NonNull());
+            if (vm.NonfilteredList.Count == 0) return null;
+            return vm.ExportToPresetData();
+        }
+
         public event EventHandler Changed;
 
         public void ImportFromPresetData(string data) {
@@ -305,7 +319,7 @@ namespace AcManager.Controls.ViewModels {
                 ErrorMessage = null;
 
                 // NonfilteredList is not gonna be rebuilt now, because of LoadingItself flag set by SaveableHelper
-                var mode = Modes.GetByIdOrDefault<IRaceGridMode>(data.ModeId);
+                var mode = Modes?.GetByIdOrDefault<IRaceGridMode>(data.ModeId);
                 if (mode == null) {
                     NonfatalError.NotifyBackground(ToolsStrings.RaceGrid_GridModeIsMissing,
                             string.Format(ToolsStrings.RaceGrid_GridModeIsMissing_Commentary, data.ModeId));
@@ -666,7 +680,8 @@ namespace AcManager.Controls.ViewModels {
 
         private ICommand _switchModeCommand;
 
-        public ICommand SetModeCommand => _switchModeCommand ?? (_switchModeCommand = new DelegateCommand<BuiltInGridMode>(o => { Mode = o; }, o => o != null));
+        public ICommand SetModeCommand => _switchModeCommand ?? (_switchModeCommand = new DelegateCommand<BuiltInGridMode>(
+                o => Mode = o, o => o != null));
 
         private void UpdateRandomModes() {
             var items = new List<object> {

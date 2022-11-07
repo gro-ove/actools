@@ -24,7 +24,7 @@ namespace AcManager.Controls {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ControlsStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Controls {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -237,6 +237,15 @@ namespace AcManager.Controls {
         public static string AcObject_YearLabel_CarTooltip {
             get {
                 return ResourceManager.GetString("AcObject_YearLabel_CarTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Orbit mode for F5 camera.
+        /// </summary>
+        public static string AcSettings_System_OrbitMode {
+            get {
+                return ResourceManager.GetString("AcSettings_System_OrbitMode", resourceCulture);
             }
         }
         
@@ -1475,15 +1484,6 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Material:.
-        /// </summary>
-        public static string CustomShowroom_Selected_MaterialLabel {
-            get {
-                return ResourceManager.GetString("CustomShowroom_Selected_MaterialLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Name:.
         /// </summary>
         public static string CustomShowroom_Selected_NameLabel {
@@ -1534,6 +1534,24 @@ namespace AcManager.Controls {
         public static string CustomShowroom_Stats_FpsLabel {
             get {
                 return ResourceManager.GetString("CustomShowroom_Stats_FpsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Material:.
+        /// </summary>
+        public static string CustomShowroom_Stats_MaterialLabel {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Stats_MaterialLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Materials:.
+        /// </summary>
+        public static string CustomShowroom_Stats_MaterialsLabel {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Stats_MaterialsLabel", resourceCulture);
             }
         }
         
@@ -1750,6 +1768,99 @@ namespace AcManager.Controls {
         public static string FindInformation_SaveAsYear {
             get {
                 return ResourceManager.GetString("FindInformation_SaveAsYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Average FPS: [b]{0:F1}[/b] ([b]{1:F3}[/b] ms);
+        ///• Minimum FPS: {2};
+        ///• Taken: [b]{3}[/b];
+        ///• Test time: [b]{4}[/b]..
+        /// </summary>
+        public static string GameDialog_BenchmarkResults {
+            get {
+                return ResourceManager.GetString("GameDialog_BenchmarkResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [b]{0:F1}[/b] ([b]{1:F3}[/b] ms).
+        /// </summary>
+        public static string GameDialog_BenchmarkResults_MinFps {
+            get {
+                return ResourceManager.GetString("GameDialog_BenchmarkResults_MinFps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [b]N/A[/b].
+        /// </summary>
+        public static string GameDialog_BenchmarkResults_Na {
+            get {
+                return ResourceManager.GetString("GameDialog_BenchmarkResults_Na", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} sample.
+        /// </summary>
+        public static string GameDialog_BenchmarkResults_Samples {
+            get {
+                return ResourceManager.GetString("GameDialog_BenchmarkResults_Samples", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replay name.
+        /// </summary>
+        public static string GameDialog_ReplayName {
+            get {
+                return ResourceManager.GetString("GameDialog_ReplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replay name: .
+        /// </summary>
+        public static string GameDialog_ReplayNameSuggested {
+            get {
+                return ResourceManager.GetString("GameDialog_ReplayNameSuggested", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved as “{0}”.
+        /// </summary>
+        public static string GameDialog_SavedReplayAs {
+            get {
+                return ResourceManager.GetString("GameDialog_SavedReplayAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save replay as:.
+        /// </summary>
+        public static string GameDialog_SaveReplayAs {
+            get {
+                return ResourceManager.GetString("GameDialog_SaveReplayAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share replay.
+        /// </summary>
+        public static string GameDialog_ShareReplay {
+            get {
+                return ResourceManager.GetString("GameDialog_ShareReplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suggested replay name: “{0}”.
+        /// </summary>
+        public static string GameDialog_SuggestedReplayName {
+            get {
+                return ResourceManager.GetString("GameDialog_SuggestedReplayName", resourceCulture);
             }
         }
         
@@ -2398,6 +2509,60 @@ namespace AcManager.Controls {
         public static string SelectDialog_RatingTitle {
             get {
                 return ResourceManager.GetString("SelectDialog_RatingTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CM launch event command:.
+        /// </summary>
+        public static string Settings_Drive_CMLaunch {
+            get {
+                return ResourceManager.GetString("Settings_Drive_CMLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically check and fix controllers order before the race.
+        /// </summary>
+        public static string Settings_Drive_FixControllersOrder {
+            get {
+                return ResourceManager.GetString("Settings_Drive_FixControllersOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep alive for:.
+        /// </summary>
+        public static string Settings_Drive_RhmKeepAlive {
+            get {
+                return ResourceManager.GetString("Settings_Drive_RhmKeepAlive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How long RHM will be running after the race (to avoid restarting it over and over).
+        /// </summary>
+        public static string Settings_Drive_RhmKeepAlive_ToolTip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_RhmKeepAlive_ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  {session}.
+        /// </summary>
+        public static string Settings_Drive_SessionFormat {
+            get {
+                return ResourceManager.GetString("Settings_Drive_SessionFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AC’s shared memory:.
+        /// </summary>
+        public static string Settings_Drive_SharedMemory {
+            get {
+                return ResourceManager.GetString("Settings_Drive_SharedMemory", resourceCulture);
             }
         }
         

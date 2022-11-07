@@ -4632,8 +4632,8 @@ tak czy inaczej, gdy czeka na dysk, aby pobrać dane, a danych będzie znacznie 
     <value>Hasło:</value>
   </data>
   <data name="DownloadList_DetectionFailed" xml:space="preserve">
-    <value>Aplikacja nie wykryła kontentu do pobrania. Chcesz spróbować ponownie?</value>
-  </data>
+    <value>Aplikacja nie wykryła kontentu do pobrania. Chcesz zainstalować go ręcznie?</value>
+  <alternative>Aplikacja nie wykryła kontentu do pobrania. Chcesz spróbować ponownie?</alternative></data>
   <data name="DownloadList_ShowFile" xml:space="preserve">
     <value>Pokaż plik</value>
   </data>

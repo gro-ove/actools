@@ -109,6 +109,11 @@ namespace AcManager.Pages.Drive {
         private int _timerTick;
 
         private void OnTimerTick(object sender, EventArgs e) {
+            if (Application.Current?.MainWindow?.IsActive != true) {
+                _timerTick = 5;
+                return;
+            }
+
             if (++_timerTick > 5) {
                 _timerTick = 0;
 
@@ -226,7 +231,7 @@ namespace AcManager.Pages.Drive {
         }
 
         public static async Task AddServerManually(string listKey) {
-            var address = Prompt.Show(AppStrings.Online_AddServer, AppStrings.Online_AddServer_Title, "",
+            var address = await Prompt.ShowAsync(AppStrings.Online_AddServer, AppStrings.Online_AddServer_Title, "",
                     @"127.0.0.1:8081", AppStrings.Online_AddServer_Tooltip);
             if (address == null) return;
 

@@ -24,7 +24,7 @@ namespace FirstFloor.ModernUI {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class UiStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace FirstFloor.ModernUI {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FirstFloor.ModernUI.UiStrings", typeof(UiStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("FirstFloor.ModernUI.UiStrings", typeof(UiStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -786,6 +786,24 @@ namespace FirstFloor.ModernUI {
         public static string Maximize {
             get {
                 return ResourceManager.GetString("Maximize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don’t ask again.
+        /// </summary>
+        public static string MessageDialog_DontAskAgain {
+            get {
+                return ResourceManager.GetString("MessageDialog_DontAskAgain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don’t show again.
+        /// </summary>
+        public static string MessageDialog_DontShowAgain {
+            get {
+                return ResourceManager.GetString("MessageDialog_DontShowAgain", resourceCulture);
             }
         }
         

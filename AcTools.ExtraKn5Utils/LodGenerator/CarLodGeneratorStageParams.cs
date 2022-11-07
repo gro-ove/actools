@@ -110,6 +110,9 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
         [JsonProperty("emptyNodesToKeep"), CanBeNull]
         public string[] EmptyNodesToKeep;
 
+        [JsonProperty("convertUv2"), CanBeNull]
+        public string[] ConvertUv2;
+
         public class ElementsPriority {
             [JsonProperty("elements")]
             public string Filter;

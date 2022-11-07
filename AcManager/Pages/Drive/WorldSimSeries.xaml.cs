@@ -47,7 +47,8 @@ namespace AcManager.Pages.Drive {
             this.SetCustomAccentColor(Color.FromArgb(255, 222, 235, 0));
         }
 
-        public static PluginsRequirement Requirement { get; } = new PluginsRequirement(KnownPlugins.CefSharp);
+        private static PluginsRequirement _requirement;
+        public static PluginsRequirement Requirement => _requirement ?? (_requirement = new PluginsRequirement(KnownPlugins.CefSharp));
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
             await CarsManager.Instance.EnsureLoadedAsync();
@@ -132,7 +133,8 @@ namespace AcManager.Pages.Drive {
                                 Nationality = obj.GetStringValueOnly("driverNationality"),
                                 NationCode = obj.GetStringValueOnly("driverNationCode"),
                                 Team = obj.GetStringValueOnly("driverTeam"),
-                            }
+                            },
+                            new LiveServiceMark("WorldSimSeries")
                         }
                     });
                     callback?.ExecuteAsync(result?.IsNotCancelled);
@@ -162,14 +164,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnWebBlockLoaded(object sender, RoutedEventArgs e) {
-            var browser = (WebBlock)sender;
-            if (_loginToken != null) {
-                browser.Tabs.Clear();
-                browser.OpenNewTab($@"https://paddock.worldsimseries.com/login-cm?token={_loginToken}");
-                _loginToken = null;
-            }
-
-            browser.SetJsBridge<WorldSimSeriesApiBridge>();
+            ((WebBlock)sender).SetJsBridge<WorldSimSeriesApiBridge>();
         }
     }
 }

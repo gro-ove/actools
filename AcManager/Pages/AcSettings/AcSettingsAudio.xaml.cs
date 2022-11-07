@@ -129,6 +129,8 @@ namespace AcManager.Pages.AcSettings {
 
             public AudioSettings Audio => AcSettingsHolder.Audio;
 
+            public OculusSettings Oculus => AcSettingsHolder.Oculus;
+
             public IUserPresetable Presets => AcSettingsHolder.AudioPresets;
 
             private ICommand _shareCommand;

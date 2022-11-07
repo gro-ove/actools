@@ -16,6 +16,7 @@ namespace AcManager.Pages.AcSettings {
             public ProximityIndicatorSettings ProximityIndicator => AcSettingsHolder.ProximityIndicator;
             public SessionInfoSettings SessionInfo => AcSettingsHolder.SessionInfo;
             public SkidmarksSettings Skidmarks => AcSettingsHolder.Skidmarks;
+            public DriverNamesSettings DriverNames => AcSettingsHolder.DriverNames;
             public SystemSettings System => AcSettingsHolder.System;
             public CameraOrbitSettings CameraOrbit => AcSettingsHolder.CameraOrbit;
             public PitMenuSettings PitMenu => AcSettingsHolder.PitMenu;

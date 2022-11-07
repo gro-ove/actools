@@ -20,7 +20,7 @@ namespace AcManager.ContentRepair.Repairs {
             var buffer = new byte[OptionChecksumFastSize];
 
             try {
-                using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
                     fs.Read(buffer, 0, buffer.Length);
                 }
             } catch (Exception) {

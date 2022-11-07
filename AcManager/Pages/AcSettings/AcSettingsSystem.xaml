@@ -24,8 +24,8 @@
           <Label Content="{x:Static g:AppStrings.AcSettings_System_FreeCamera}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding CameraOrbit.SphericalCoordinates}" mui:NewMarkService.New="True">
-          <Label Content="Orbit mode for F5 camera" />
+        <CheckBox IsChecked="{Binding CameraOrbit.SphericalCoordinates}">
+          <Label Content="{x:Static c:ControlsStrings.AcSettings_System_OrbitMode}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding System.Logging}">
@@ -149,6 +149,35 @@
               mui:BetterTextBox.Mode="Number" Content="{x:Static g:AppStrings.AcSettings_Skidmarks_Height}" />
           <Slider Minimum="0" Maximum="0.04" Value="{Binding Skidmarks.Height}" TickFrequency="0.004" TickPlacement="BottomRight" />
         </DockPanel>
+
+        <!-- Driver names -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Driver name tags" />
+
+        <DockPanel>
+          <Label Content="Style" />
+          <ComboBox ItemsSource="{Binding DriverNames.Modes}" SelectedItem="{Binding DriverNames.Mode}" DisplayMemberPath="DisplayName" />
+        </DockPanel>
+
+        <DockPanel>
+          <Label Content="{x:Static g:AppStrings.Common_ColorLabel}" />
+          <mui:ColorPicker Color="{Binding DriverNames.Color}" />
+        </DockPanel>
+
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding DriverNames.Scale, Converter={StaticResource PercentageConverter}}" Postfix="%" Content="Scale" />
+          <Slider Minimum="20" Maximum="240" Value="{Binding DriverNames.Scale, Converter={StaticResource PercentageConverter}, ConverterParameter=5}"
+              TickFrequency="20" TickPlacement="BottomRight" />
+        </DockPanel>
+
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding DriverNames.MaxDistance}" Postfix=" m" Content="Maximum distance" />
+          <Slider Minimum="40" Maximum="400" Value="{Binding DriverNames.MaxDistance, Converter={StaticResource SliderRoundConverter}, ConverterParameter=10}"
+              TickFrequency="40" TickPlacement="BottomRight" />
+        </DockPanel>
+
+        <CheckBox IsChecked="{Binding DriverNames.DrawFocusedCar}">
+          <Label Content="Add a name tag to the selected car" />
+        </CheckBox>
 
         <!-- Mirrors -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Mirrors}" />

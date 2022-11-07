@@ -573,4 +573,13 @@
   <data name="TexturesDdsFilter" xml:space="preserve">
     <value>DDS Dateien (*.dds)|*.dds|Alle Dateien (*.*)|*.*</value>
   </data>
+  <data name="Progress_Short_KnownTotal" xml:space="preserve">
+    <value>{0} von {1}</value>
+  </data>
+  <data name="Common_Browse" xml:space="preserve">
+    <value>Durchsuchen</value>
+  </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Neu laden</value>
+  </data>
 </root>

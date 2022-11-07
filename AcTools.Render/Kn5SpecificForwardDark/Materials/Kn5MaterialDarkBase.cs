@@ -24,6 +24,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         // It’s actually not null, but Resharper won’t allow it.
         protected Kn5Material Kn5Material => Description.Material;
 
+        public string Name => Kn5Material.Name;
+
         protected EffectDarkMaterial Effect { get; private set; }
 
         internal Kn5MaterialDarkBase([NotNull] Kn5MaterialDescription description) {

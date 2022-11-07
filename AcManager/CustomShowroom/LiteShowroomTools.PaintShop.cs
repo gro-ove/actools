@@ -44,7 +44,7 @@ namespace AcManager.CustomShowroom {
                 // PaintShopRulesLoader = new PaintShopRulesLoader();
 
                 await Task.Delay(50);
-                if (cancellation.IsCancellationRequested) return null;
+                if (cancellation.IsCancellationRequested || Skin == null) return null;
 
                 var skinItems = (await PaintShop.PaintShop.GetPaintableItemsAsync(Car.Id, Renderer?.MainSlot.Kn5, cancellation))?.ToList();
                 if (skinItems == null || cancellation.IsCancellationRequested) return null;
@@ -93,8 +93,11 @@ namespace AcManager.CustomShowroom {
             }
             #endregion
 
-            public PluginsRequirement PaintShopRequirement { get; } = new PluginsRequirement(KnownPlugins.Magick);
-            public PluginsRequirement MontageRequirement { get; } = new PluginsRequirement(KnownPlugins.ImageMontage);
+            private static PluginsRequirement _requirement;
+            private static PluginsRequirement _requirementMontage;
+
+            public PluginsRequirement PaintShopRequirement => _requirement ?? (_requirement = new PluginsRequirement(KnownPlugins.Magick));
+            public PluginsRequirement MontageRequirement => _requirementMontage ?? (_requirementMontage = new PluginsRequirement(KnownPlugins.ImageMontage));
 
             public Lazier<bool> PaintShopSupported { get; }
 

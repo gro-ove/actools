@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AcManager.Tools.Helpers.AcSettings;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -29,7 +30,9 @@ namespace AcManager.Tools.Helpers {
             }
             return _mm.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active | DeviceState.Unplugged | DeviceState.Disabled)
                       .Select(ToAudioDevice).Where(x => x != null && x.DisplayName != defaultDevice?.DisplayName)
-                      .OrderBy(x => (int)x.State).ThenBy(x => x.DisplayName).Prepend(defaultDevice);
+                      .OrderBy(x => (int)x.State).ThenBy(x => x.DisplayName).Prepend(defaultDevice)
+                      .Prepend(new AudioDevice(AudioSettings.DefaultDeviceName, "Default Audio Device",
+                              "%windir%\\system32\\mmres.dll,0", DeviceState.Active));
         }
 
         public event EventHandler EndpointsChanged;

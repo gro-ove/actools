@@ -184,7 +184,7 @@ namespace AcManager.Pages.Drive {
                             using (var waiting = new WaitingDialog()) {
                                 waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Loading conditions…"));
 
-                                await RealConditionsHelper.UpdateConditions(round.Track, false, true,
+                                await RealConditionsHelper.UpdateConditionsAsync(round.Track, false, true,
                                         _acObject.RealConditionsManualTime
                                                 ? default(Action<DateTime>)
                                                 : OnTimeCallback,
@@ -337,7 +337,7 @@ namespace AcManager.Pages.Drive {
                 using (var cancellation = new CancellationTokenSource()) {
                     _conditionsTokenSource = cancellation;
                     try {
-                        await RealConditionsHelper.UpdateConditions(round.Track, false, true,
+                        await RealConditionsHelper.UpdateConditionsAsync(round.Track, false, true,
                                 _acObject.RealConditionsManualTime
                                         ? default(Action<DateTime>)
                                         : OnTimeCallback, w => {

@@ -5,11 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Starters;
 using AcTools.DataFile;
+using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -388,8 +391,7 @@ namespace AcManager.Tools.Helpers {
             private string _preCommand;
 
             public string PreCommand {
-                get => _preCommand
-                        ?? (_preCommand = ValuesStorage.Get("Settings.DriveSettings.PreCommand", ""));
+                get => _preCommand ?? (_preCommand = ValuesStorage.Get("Settings.DriveSettings.PreCommand", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _preCommand)) return;
@@ -402,8 +404,7 @@ namespace AcManager.Tools.Helpers {
             private string _postCommand;
 
             public string PostCommand {
-                get => _postCommand
-                        ?? (_postCommand = ValuesStorage.Get("Settings.DriveSettings.PostCommand", ""));
+                get => _postCommand ?? (_postCommand = ValuesStorage.Get("Settings.DriveSettings.PostCommand", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _postCommand)) return;
@@ -413,11 +414,24 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private string _cmLaunchCommand;
+
+            public string CmLaunchCommand {
+                get => _cmLaunchCommand ?? (_cmLaunchCommand = ValuesStorage.Get("Settings.DriveSettings.CmLaunchCommand", ""));
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _cmLaunchCommand)) return;
+                    _cmLaunchCommand = value;
+                    ValuesStorage.Set("Settings.DriveSettings.CmLaunchCommand", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private string _preReplayCommand;
 
             public string PreReplayCommand {
-                get => _preReplayCommand
-                        ?? (_preReplayCommand = ValuesStorage.Get("Settings.DriveSettings.PreReplayCommand", ""));
+                get => _preReplayCommand ?? (_preReplayCommand
+                        = ValuesStorage.Get("Settings.DriveSettings.PreReplayCommand", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _preReplayCommand)) return;
@@ -430,8 +444,8 @@ namespace AcManager.Tools.Helpers {
             private string _postReplayCommand;
 
             public string PostReplayCommand {
-                get => _postReplayCommand
-                        ?? (_postReplayCommand = ValuesStorage.Get("Settings.DriveSettings.PostReplayCommand", ""));
+                get => _postReplayCommand ?? (_postReplayCommand
+                        = ValuesStorage.Get("Settings.DriveSettings.PostReplayCommand", ""));
                 set {
                     value = value.Trim();
                     if (Equals(value, _postReplayCommand)) return;
@@ -444,8 +458,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _immediateStart;
 
             public bool ImmediateStart {
-                get => _immediateStart
-                        ?? (_immediateStart = ValuesStorage.Get("Settings.DriveSettings.ImmediateStart", false)).Value;
+                get => _immediateStart ?? (_immediateStart
+                        = ValuesStorage.Get("Settings.DriveSettings.ImmediateStart", false)).Value;
                 set {
                     if (Equals(value, _immediateStart)) return;
                     _immediateStart = value;
@@ -457,8 +471,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _immediateCancel;
 
             public bool ImmediateCancel {
-                get => _immediateCancel
-                        ?? (_immediateCancel = ValuesStorage.Get("Settings.DriveSettings.ImmediateCancel", false)).Value;
+                get => _immediateCancel ?? (_immediateCancel
+                        = ValuesStorage.Get("Settings.DriveSettings.ImmediateCancel", false)).Value;
                 set {
                     if (Equals(value, _immediateCancel)) return;
                     _immediateCancel = value;
@@ -470,8 +484,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _continueOnEscape;
 
             public bool ContinueOnEscape {
-                get => _continueOnEscape
-                        ?? (_continueOnEscape = ValuesStorage.Get("Settings.DriveSettings.ContinueOnEscape", false)).Value;
+                get => _continueOnEscape ?? (_continueOnEscape
+                        = ValuesStorage.Get("Settings.DriveSettings.ContinueOnEscape", false)).Value;
                 set {
                     if (Equals(value, _continueOnEscape)) return;
                     _continueOnEscape = value;
@@ -480,17 +494,103 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _skipPracticeResults;
+            private bool? _showCspSettingsWithShortcut;
 
-            public bool SkipPracticeResults {
-                get => _skipPracticeResults
-                        ?? (_skipPracticeResults = ValuesStorage.Get("Settings.DriveSettings.SkipPracticeResults", false)).Value;
+            public bool ShowCspSettingsWithShortcut {
+                get => _showCspSettingsWithShortcut ?? (_showCspSettingsWithShortcut
+                        = ValuesStorage.Get("Settings.DriveSettings.ShowCspSettingsWithShortcut", false)).Value;
                 set {
-                    if (Equals(value, _skipPracticeResults)) return;
-                    _skipPracticeResults = value;
-                    ValuesStorage.Set("Settings.DriveSettings.SkipPracticeResults", value);
+                    if (Equals(value, _showCspSettingsWithShortcut)) return;
+                    _showCspSettingsWithShortcut = value;
+                    ValuesStorage.Set("Settings.DriveSettings.ShowCspSettingsWithShortcut", value);
                     OnPropertyChanged();
                 }
+            }
+
+            public sealed class SkipResultsCategory : Displayable, IWithId {
+                public string Id { get; }
+
+                public string ShortName { get; }
+
+                public SkipResultsCategory(string id, string displayName) {
+                    Id = id;
+                    ShortName = displayName.Split(new[] { @" (" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    DisplayName = displayName;
+                    _value = ValuesStorage.Get(id, false);
+                }
+
+                private bool _value;
+
+                public bool Value {
+                    get => _value;
+                    set => Apply(value, ref _value, () => ValuesStorage.Set(Id, value));
+                }
+            }
+
+            private ChangeableObservableCollection<SkipResultsCategory> _skipCategories;
+
+            public ChangeableObservableCollection<SkipResultsCategory> SkipCategories {
+                get {
+                    if (_skipCategories == null) {
+                        _skipCategories = new ChangeableObservableCollection<SkipResultsCategory> {
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipPracticeResults", ToolsStrings.Session_Practice),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipHotlapResults", ToolsStrings.Session_Hotlap),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipTimeAttackResults", ToolsStrings.Session_TimeAttack),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipRaceResults", ToolsStrings.Session_Race),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipWeekendResults", ToolsStrings.Common_Weekend),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipTrackDayResults", ToolsStrings.Session_TrackDay),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipDriftResults", ToolsStrings.Session_Drift),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipDragResults", ToolsStrings.Session_Drag),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipOnlineResults", ToolsStrings.Settings_Drive_SessionClass_Online),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipLiveResults", ToolsStrings.Settings_Drive_SessionClass_Live),
+                        };
+                        _skipCategories.ItemPropertyChanged += (sender, args) => OnPropertyChanged(nameof(DisplaySkipCategories));
+                    }
+                    return _skipCategories;
+                }
+            }
+
+            public string DisplaySkipCategories => _skipCategories.Where(x => x.Value).Select(x => x.ShortName)
+                    .JoinToReadableString().Or(ToolsStrings.Common_None);
+
+            public bool SkipResults(Game.Result result, Game.StartProperties startProperties) {
+                if (result == null) return false;
+
+                if (startProperties.HasAdditional<LiveServiceMark>()) {
+                    return SkipCategories.GetById(@"Settings.DriveSettings.SkipLiveResults").Value;
+                }
+
+                if (startProperties.ModeProperties is Game.OnlineProperties) {
+                    return SkipCategories.GetById(@"Settings.DriveSettings.SkipOnlineResults").Value;
+                }
+
+                if (startProperties.ModeProperties is Game.TrackdayProperties) {
+                    return SkipCategories.GetById(@"Settings.DriveSettings.SkipTrackDayResults").Value;
+                }
+
+                if (result.NumberOfSessions == 3 && result.Sessions?.Length == 3) {
+                    return SkipCategories.GetById(@"Settings.DriveSettings.SkipWeekendResults").Value;
+                }
+
+                if (result.NumberOfSessions == 1 && result.Sessions?.Length == 1) {
+                    Logging.Debug("result.Sessions[0].Type=" + result.Sessions[0].Type);
+                    switch (result.Sessions[0].Type) {
+                        case Game.SessionType.Practice:
+                            return SkipCategories.GetById(@"Settings.DriveSettings.SkipPracticeResults").Value;
+                        case Game.SessionType.Race:
+                            return SkipCategories.GetById(@"Settings.DriveSettings.SkipRaceResults").Value;
+                        case Game.SessionType.Hotlap:
+                            return SkipCategories.GetById(@"Settings.DriveSettings.SkipHotlapResults").Value;
+                        case Game.SessionType.TimeAttack:
+                            return SkipCategories.GetById(@"Settings.DriveSettings.SkipTimeAttackResults").Value;
+                        case Game.SessionType.Drift:
+                            return SkipCategories.GetById(@"Settings.DriveSettings.SkipDriftResults").Value;
+                        case Game.SessionType.Drag:
+                            return SkipCategories.GetById(@"Settings.DriveSettings.SkipDragResults").Value;
+                    }
+                }
+
+                return false;
             }
 
             private int? _raceResultsLimit;
@@ -636,7 +736,7 @@ namespace AcManager.Tools.Helpers {
                 get => _playerNameOnline
                         ?? (_playerNameOnline = ValuesStorage.Get("Settings.DriveSettings.PlayerNameOnline", PlayerName));
                 set {
-                    value = value.Trim();
+                    value = value?.Trim();
                     if (Equals(value, _playerNameOnline)) return;
                     _playerNameOnline = value;
                     ValuesStorage.Set("Settings.DriveSettings.PlayerNameOnline", value);
@@ -1079,8 +1179,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _scanControllersAutomatically;
 
             public bool ScanControllersAutomatically {
-                get => _scanControllersAutomatically
-                        ?? (_scanControllersAutomatically = ValuesStorage.Get("Settings.DriveSettings.ScanControllersAutomatically", false)).Value;
+                get => _scanControllersAutomatically ?? (_scanControllersAutomatically
+                        = ValuesStorage.Get("Settings.DriveSettings.ScanControllersAutomatically", false)).Value;
                 set {
                     if (Equals(value, _scanControllersAutomatically)) return;
                     _scanControllersAutomatically = value;
@@ -1092,7 +1192,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _loadPatchDataAutomatically;
 
             public bool LoadPatchDataAutomatically {
-                get => _loadPatchDataAutomatically ?? (_loadPatchDataAutomatically = ValuesStorage.Get("Settings.DriveSettings.LoadPatchDataAutomatically", true)).Value;
+                get => _loadPatchDataAutomatically ?? (_loadPatchDataAutomatically
+                        = ValuesStorage.Get("Settings.DriveSettings.LoadPatchDataAutomatically", true)).Value;
                 set {
                     if (Equals(value, _loadPatchDataAutomatically)) return;
                     _loadPatchDataAutomatically = value;
@@ -1104,8 +1205,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _sameControllersKeepFirst;
 
             public bool SameControllersKeepFirst {
-                get => _sameControllersKeepFirst
-                        ?? (_sameControllersKeepFirst = ValuesStorage.Get("Settings.DriveSettings.SameControllersKeepFirst", false)).Value;
+                get => _sameControllersKeepFirst ?? (_sameControllersKeepFirst
+                        = ValuesStorage.Get("Settings.DriveSettings.SameControllersKeepFirst", false)).Value;
                 set {
                     if (Equals(value, _sameControllersKeepFirst)) return;
                     _sameControllersKeepFirst = value;
@@ -1117,8 +1218,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _patchAcToDisableShadows;
 
             public bool PatchAcToDisableShadows {
-                get => _patchAcToDisableShadows
-                        ?? (_patchAcToDisableShadows = ValuesStorage.Get("Settings.DriveSettings.PatchAcToDisableShadows", false)).Value;
+                get => _patchAcToDisableShadows ?? (_patchAcToDisableShadows
+                        = ValuesStorage.Get("Settings.DriveSettings.PatchAcToDisableShadows", false)).Value;
                 set {
                     if (Equals(value, _patchAcToDisableShadows)) return;
                     _patchAcToDisableShadows = value;
@@ -1130,8 +1231,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _allowDecimalTrackState;
 
             public bool AllowDecimalTrackState {
-                get => _allowDecimalTrackState
-                        ?? (_allowDecimalTrackState = ValuesStorage.Get("Settings.DriveSettings.AllowDecimalTrackState", false)).Value;
+                get => _allowDecimalTrackState ?? (_allowDecimalTrackState
+                        = ValuesStorage.Get("Settings.DriveSettings.AllowDecimalTrackState", false)).Value;
                 set {
                     if (Equals(value, _allowDecimalTrackState)) return;
                     _allowDecimalTrackState = value;
@@ -1143,8 +1244,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _monitorFramesPerSecond;
 
             public bool MonitorFramesPerSecond {
-                get => _monitorFramesPerSecond
-                        ?? (_monitorFramesPerSecond = ValuesStorage.Get("Settings.DriveSettings.MonitorFramesPerSecond", true)).Value;
+                get => _monitorFramesPerSecond ?? (_monitorFramesPerSecond
+                        = ValuesStorage.Get("Settings.DriveSettings.MonitorFramesPerSecond", true)).Value;
                 set {
                     if (Equals(value, _monitorFramesPerSecond)) return;
                     _monitorFramesPerSecond = value;
@@ -1155,6 +1256,34 @@ namespace AcManager.Tools.Helpers {
 
             // Demoted from UI option to an app flag, kept here to avoid rewriting any code
             public bool WatchForSharedMemory { get; set; }
+
+            private string _quickDriveRandomizeTrackFilter;
+
+            public string QuickDriveRandomizeTrackFilter {
+                get => _quickDriveRandomizeTrackFilter ?? (_quickDriveRandomizeTrackFilter
+                        = ValuesStorage.Get("Settings.DriveSettings.QuickDriveRandomizeTrackFilter", ""));
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _quickDriveRandomizeTrackFilter)) return;
+                    _quickDriveRandomizeTrackFilter = value;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickDriveRandomizeTrackFilter", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _quickDriveRandomizeCarFilter;
+
+            public string QuickDriveRandomizeCarFilter {
+                get => _quickDriveRandomizeCarFilter ?? (_quickDriveRandomizeCarFilter
+                        = ValuesStorage.Get("Settings.DriveSettings.QuickDriveRandomizeCarFilter", ""));
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _quickDriveRandomizeCarFilter)) return;
+                    _quickDriveRandomizeCarFilter = value;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickDriveRandomizeCarFilter", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static DriveSettings _drive;

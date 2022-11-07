@@ -57,6 +57,12 @@ namespace AcManager.Tools.Helpers.AcLog {
         [Description("Car’s sound might be broken")]
         CarSoundIsBroken,
 
+        [Description("Car’s rotating objects definitions (extra_animations.ini) might be incorrect")]
+        IncorrectRotatingObjects,
+
+        [Description("Car’s blurred objects definitions (blurred_objects.ini) are incorrect: object {0} is missing")]
+        IncorrectBlurredObjects,
+
         [Description("Drivetrain of {0} might be broken")]
         DrivetrainIsDamaged,
 

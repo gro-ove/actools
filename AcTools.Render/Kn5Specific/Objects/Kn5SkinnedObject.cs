@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AcTools.ExtraKn5Utils.Kn5Utils;
 using AcTools.Kn5File;
@@ -63,6 +64,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
+        public override IEnumerable<int> GetMaterialIds() {
+            return new []{ (int)OriginalNode.MaterialId };
+        }
+
         private ISkinnedMaterial Material => _debugMaterial ?? _material;
 
         public void SetMirrorMode(IDeviceContextHolder holder, bool enabled) { }
@@ -99,6 +104,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _isTransparent = isTransparent ?? OriginalNode.IsTransparent;
         }
 
+        [CanBeNull]
         private ISkinnedMaterial _material;
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {

@@ -84,6 +84,9 @@ namespace AcTools.Processes {
                     CarId, CarSkinId, CarSetupId,
                     TrackId, TrackConfigurationId;
 
+            [CanBeNull]
+            public string CarSetupFilename;
+
             public double Ballast, Restrictor;
             public bool UseMph;
 
@@ -110,6 +113,10 @@ namespace AcTools.Processes {
                     ["NATION_CODE"] = DriverNationCode ?? GetNationCode(DriverNationality),
                     ["NATIONALITY"] = DriverNationality
                 };
+
+                if (!string.IsNullOrWhiteSpace(CarSetupFilename)) {
+                    file["CAR_0"].Set("_EXT_SETUP_FILENAME", CarSetupFilename);
+                }
 
                 file["OPTIONS"].Set("USE_MPH", UseMph);
             }
@@ -228,6 +235,9 @@ namespace AcTools.Processes {
         }
 
         public class PracticeProperties : BaseModeProperties {
+            [CanBeNull]
+            public string SessionName = "Practice";
+
             public StartType StartType = StartType.Pit;
 
             public override void Set(IniFile file) {
@@ -237,7 +247,7 @@ namespace AcTools.Processes {
                 base.Set(file);
 
                 var section = file["SESSION_0"];
-                section.Set("NAME", "Practice");
+                section.Set("NAME", SessionName);
                 section.Set("TYPE", SessionType.Practice);
                 section.Set("DURATION_MINUTES", Duration);
                 section.Set("SPAWN_SET", StartType.Id);

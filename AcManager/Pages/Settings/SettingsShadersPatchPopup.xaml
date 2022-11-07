@@ -6,10 +6,11 @@
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ListBox.xaml" />
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernTab.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ListBox.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernTab.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernWindow.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSettingsSpecific.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
@@ -49,64 +50,112 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <mui:Switch Value="{Binding Mode}">
-    <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoShadersPatch}" HorizontalAlignment="Center" VerticalAlignment="Center"
-        Margin="{StaticResource ContentMarginWithPadding}">
-      <TextBlock Text="Custom Shaders Patch is not installed" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
-      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.ru/patch/">
-        <DockPanel IsHitTestVisible="False">
-          <Path Data="{StaticResource QuestionMarkIconData}" Width="10" Height="10"
-              Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
-              VerticalAlignment="Center" SnapsToDevicePixels="True" />
-          <TextBlock Text="What is it?" />
-        </DockPanel>
-      </Button>
-    </DockPanel>
+  <mui:Cell>
 
-    <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoConfigs}" HorizontalAlignment="Center" VerticalAlignment="Center"
-        Margin="{StaticResource ContentMarginWithPadding}">
-      <TextBlock Text="No Custom Shaders Patch configs were found" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
-      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.ru/patch/">
-        <DockPanel IsHitTestVisible="False">
-          <Path Data="{StaticResource DownloadIconData}" Width="10" Height="10"
-              Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
-              VerticalAlignment="Center" SnapsToDevicePixels="True" />
-          <TextBlock Text="Get a build with configs" />
-        </DockPanel>
-      </Button>
-    </DockPanel>
+    <mui:Switch Value="{Binding Mode}">
+      <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoShadersPatch}" HorizontalAlignment="Center" VerticalAlignment="Center"
+          Margin="{StaticResource ContentMarginWithPadding}">
+        <TextBlock Text="Custom Shaders Patch is not installed" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+        <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.ru/patch/">
+          <DockPanel IsHitTestVisible="False">
+            <Path Data="{StaticResource QuestionMarkIconData}" Width="10" Height="10"
+                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
+                VerticalAlignment="Center" SnapsToDevicePixels="True" />
+            <TextBlock Text="What is it?" />
+          </DockPanel>
+        </Button>
+      </DockPanel>
 
-    <mui:ModernTab x:Name="Tabs" mui:ModernFrame.KeepContentAlive="True" LinksMargin="4 0 20 0" FrameMargin="0 8 0 0" LinksHorizontalAlignment="Stretch"
-        Margin="8 0 0 0" WindowChrome.IsHitTestVisibleInChrome="True" SelectedSourceChanged="OnSelectedSourceChanged" SaveKey="cspPopup.selectedTab">
-      <mui:ModernTab.Template>
-        <ControlTemplate TargetType="mui:ModernTab">
-          <DockPanel>
-            <mui:Cell x:Name="PART_Cell" DockPanel.Dock="Top" Margin="{TemplateBinding LinksMargin}">
-              <Border x:Name="PART_SelectionBox" Background="{DynamicResource Accent}" Margin="-12 0 12 0" />
-              <ListBox x:Name="PART_LinkList" ItemContainerStyle="{StaticResource SettingTabItem}" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                  ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.CanContentScroll="False" ScrollViewer.PanningMode="Both"
-                  ItemsPanel="{StaticResource ModernTabLinkItemPanelTemplate}" HorizontalAlignment="{TemplateBinding LinksHorizontalAlignment}"
-                  Template="{TemplateBinding LinksListBoxTemplate}" ItemsSource="{Binding Links, RelativeSource={RelativeSource TemplatedParent}}">
+      <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoConfigs}" HorizontalAlignment="Center" VerticalAlignment="Center"
+          Margin="{StaticResource ContentMarginWithPadding}">
+        <TextBlock Text="No Custom Shaders Patch configs were found" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+        <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.ru/patch/">
+          <DockPanel IsHitTestVisible="False">
+            <Path Data="{StaticResource DownloadIconData}" Width="10" Height="10"
+                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
+                VerticalAlignment="Center" SnapsToDevicePixels="True" />
+            <TextBlock Text="Get a build with configs" />
+          </DockPanel>
+        </Button>
+      </DockPanel>
+
+      <mui:ModernTab x:Name="Tabs" mui:ModernFrame.KeepContentAlive="True" WindowChrome.IsHitTestVisibleInChrome="True"
+          SelectedSourceChanged="OnSelectedSourceChanged" Margin="0 0 0 0" SaveKey="cspPopup.selectedTab" Layout="List">
+        <mui:ModernTab.Template>
+          <ControlTemplate TargetType="mui:ModernTab">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="50" MaxWidth="100" />
+                <ColumnDefinition Width="9" />
+                <ColumnDefinition />
+              </Grid.ColumnDefinitions>
+              <ListBox x:Name="PART_LinkList" ItemsSource="{TemplateBinding Links}" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  mui:SaveScroll.Key="{Binding SelectedSource, RelativeSource={RelativeSource TemplatedParent}, StringFormat='{}csppss:{0}'}">
+                <ListBox.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Margin="0 8" />
+                  </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemContainerStyle>
+                  <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
+                    <Setter Property="Template">
+                      <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem" d:DataContext="{d:DesignInstance mui:Link}">
+                          <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                              BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                          </Border>
+                          <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                              <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                              <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
+                            </Trigger>
+                          </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                      </Setter.Value>
+                    </Setter>
+                  </Style>
+                </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
-                  <DataTemplate>
-                    <TextBlock Text="{Binding DisplayName, Converter={StaticResource ToUpperConverter}}" Style="{StaticResource Small}" />
+                  <DataTemplate DataType="mui:Link">
+                    <TextBlock x:Name="PART_Text" Text="{Binding DisplayName, Converter={StaticResource ToUpperConverter}}" Margin="10 2 2 2"
+                        FontSize="{DynamicResource SmallFontSize}" />
+                    <DataTemplate.Triggers>
+                      <DataTrigger Binding="{Binding Tag}" Value="{x:Null}">
+                        <Setter TargetName="PART_Text" Property="Opacity" Value="0.4" />
+                      </DataTrigger>
+                    </DataTemplate.Triggers>
                   </DataTemplate>
                 </ListBox.ItemTemplate>
               </ListBox>
-            </mui:Cell>
+              <mui:ModernTabSplitter Grid.Column="1" />
+              <mui:ModernFrame Grid.Column="2" x:Name="PART_Frame" KeepContentAlive="False"
+                  Source="{Binding SelectedSource, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                  ContentLoader="{TemplateBinding ContentLoader}" Margin="12 8 0 8" />
+            </Grid>
+          </ControlTemplate>
+        </mui:ModernTab.Template>
+        <mui:ModernTab.LinksListBoxTemplate>
+          <ControlTemplate>
+            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
+          </ControlTemplate>
+        </mui:ModernTab.LinksListBoxTemplate>
+      </mui:ModernTab>
 
-            <!-- content -->
-            <mui:ModernFrame x:Name="PART_Frame" Source="{Binding SelectedSource, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                ContentLoader="{TemplateBinding ContentLoader}" Margin="{TemplateBinding FrameMargin}" />
-          </DockPanel>
-        </ControlTemplate>
-      </mui:ModernTab.Template>
-      <mui:ModernTab.LinksListBoxTemplate>
-        <ControlTemplate>
-          <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
-        </ControlTemplate>
-      </mui:ModernTab.LinksListBoxTemplate>
-    </mui:ModernTab>
+    </mui:Switch>
 
-  </mui:Switch>
+    <Button Click="OnCloseButtonClick" ToolTip="{x:Static mui:UiStrings.Close}" Style="{StaticResource SystemCloseButton}" VerticalAlignment="Top"
+        HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True">
+      <mui:Cell Width="10" Height="10" ClipToBounds="True" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Line X1="-5.01" X2="14.99" Y1="-5.01" Y2="14.99" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+            RenderOptions.EdgeMode="Unspecified" StrokeThickness="1" />
+        <Line X1="-5.01" X2="14.99" Y1="14.99" Y2="-5.01" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+            RenderOptions.EdgeMode="Unspecified" StrokeThickness="1" />
+      </mui:Cell>
+    </Button>
+  </mui:Cell>
 </UserControl>

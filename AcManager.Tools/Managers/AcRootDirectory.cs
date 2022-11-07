@@ -7,23 +7,14 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
-    public class AcRootDirectoryEventArgs : EventArgs {
-        public readonly string PreviousValue, NewValue;
-
-        internal AcRootDirectoryEventArgs(string previousValue, string newValue) {
-            PreviousValue = previousValue;
-            NewValue = newValue;
-        }
-    }
-
     public class AcRootDirectory {
         public const string Key = "_ac_root";
 
         public static AcRootDirectory Instance { get; private set; }
 
-        public static AcRootDirectory Initialize(string directory = null) {
+        public static void Initialize(string directory = null) {
             if (Instance != null) throw new Exception(@"Already initialized");
-            return Instance = new AcRootDirectory(directory);
+            Instance = new AcRootDirectory(directory);
         }
 
         public bool IsFirstRun { get; }
@@ -31,11 +22,11 @@ namespace AcManager.Tools.Managers {
         private AcRootDirectory(string directory) {
             if (!ValuesStorage.Contains(Key)) IsFirstRun = true;
 
-            Value = (directory ?? ValuesStorage.Get<string>(Key))?.Trim();
+            RawValue = (directory ?? ValuesStorage.Get<string>(Key))?.Trim();
             if (Value == null || CheckDirectory(Value, true)) return;
 
             Logging.Warning($"AC root directory “{Value}” is not valid anymore");
-            Value = null;
+            RawValue = null;
         }
 
         public AcDirectories CarsDirectories { get; private set; }
@@ -45,6 +36,7 @@ namespace AcManager.Tools.Managers {
         public AcDirectories PpFiltersDirectories { get; private set; }
         public AcDirectories DriverModelsDirectories { get; private set; }
         public AcDirectories PythonAppsDirectories { get; private set; }
+        public AcDirectories LuaAppsDirectories { get; private set; }
         public AcDirectories FontsDirectories { get; private set; }
         public AcDirectories KunosCareerDirectories { get; private set; }
 
@@ -59,6 +51,7 @@ namespace AcManager.Tools.Managers {
             PpFiltersDirectories?.Obsolete();
             DriverModelsDirectories?.Obsolete();
             PythonAppsDirectories?.Obsolete();
+            LuaAppsDirectories?.Obsolete();
 
             CarsDirectories = Value == null ? null : new AcDirectories(AcPaths.GetCarsDirectory(Value));
             TracksDirectories = Value == null ? null : new AcDirectories(AcPaths.GetTracksDirectory(Value));
@@ -67,6 +60,7 @@ namespace AcManager.Tools.Managers {
             PpFiltersDirectories = Value == null ? null : new AcDirectories(AcPaths.GetPpFiltersDirectory(Value));
             DriverModelsDirectories = Value == null ? null : new AcDirectories(AcPaths.GetDriverModelsDirectory(Value));
             PythonAppsDirectories = Value == null ? null : new AcDirectories(AcPaths.GetPythonAppsDirectory(Value));
+            LuaAppsDirectories = Value == null ? null : new AcDirectories(Path.Combine(Value, "apps", "lua"));
             FontsDirectories = Value == null ? null : new AcDirectories(AcPaths.GetFontsDirectory(Value));
             KunosCareerDirectories = Value == null ? null : new AcDirectories(AcPaths.GetKunosCareerDirectory(Value));
 
@@ -86,32 +80,43 @@ namespace AcManager.Tools.Managers {
             PpFiltersDirectories?.CreateIfMissing();
             DriverModelsDirectories?.CreateIfMissing();
             PythonAppsDirectories?.CreateIfMissing();
+            LuaAppsDirectories?.CreateIfMissing();
             UserChampionshipsDirectories?.CreateIfMissing();
         }
 
-        private string _value;
+        [ContractAnnotation("path:null => null; path:notnull => notnull")]
+        private static string EnsureFullPath(string path) {
+            if (path == null || Path.IsPathRooted(path)) return path;
+            return Path.GetFullPath(path);
+        }
+
+        private string _rawValue;
+        private string _absoluteValue;
 
         [CanBeNull]
-        public string Value {
-            get => _value;
+        public string RawValue {
+            get => _rawValue;
             set {
-                if (_value == value) return;
+                if (_rawValue == value) return;
 
-                var oldValue = _value;
-                _value = CheckDirectory(value, true) ? value : null;
+                _rawValue = CheckDirectory(value, true) ? value : null;
+                _absoluteValue = EnsureFullPath(_rawValue);
 
-                ValuesStorage.Set(Key, _value);
+                ValuesStorage.Set(Key, _rawValue);
                 UpdateDirectories();
 
-                Changed?.Invoke(this, new AcRootDirectoryEventArgs(oldValue, _value));
+                Changed?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        [CanBeNull]
+        public string Value => _absoluteValue;
 
         [NotNull]
         public string RequireValue {
             get {
-                if (_value == null) throw new Exception(ToolsStrings.AcRootDirectory_Required);
-                return _value;
+                if (_absoluteValue == null) throw new Exception(ToolsStrings.AcRootDirectory_Required);
+                return _absoluteValue;
             }
         }
 
@@ -119,11 +124,9 @@ namespace AcManager.Tools.Managers {
             ValuesStorage.Remove(Key);
         }
 
-        public bool IsReady => _value != null;
+        public bool IsReady => _rawValue != null;
 
-        public delegate void AcRootDirectoryEventHandler(object sender, AcRootDirectoryEventArgs e);
-
-        public event AcRootDirectoryEventHandler Changed;
+        public event EventHandler Changed;
 
         private static void TryToFix(string from, string to) {
             try {
@@ -141,15 +144,17 @@ namespace AcManager.Tools.Managers {
             }
         }
 
-        public static bool CheckDirectory(string directory, bool verboseMode) {
+        public static bool CheckDirectory([CanBeNull] string directory, bool verboseMode) {
             return CheckDirectory(directory, verboseMode, out _);
         }
 
-        public static bool CheckDirectory(string directory, bool verboseMode, out string reason) {
+        public static bool CheckDirectory([CanBeNull] string directory, bool verboseMode, out string reason) {
             if (directory == null) {
                 reason = ToolsStrings.AcRootDirectory_NotDefined;
                 return false;
             }
+
+            directory = EnsureFullPath(directory);
 
             if (!AcPaths.OptionEaseAcRootCheck) {
                 // We don’t use AcPaths.IsAcRoot() here to get a nice message telling what’s wrong, but logic is similar

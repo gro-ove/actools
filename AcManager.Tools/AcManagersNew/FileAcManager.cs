@@ -38,16 +38,20 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
+        [CanBeNull]
         public abstract IAcDirectories Directories { get; }
 
         protected bool Filter(string filename) {
+            if (Directories == null) return false;
             return Filter(Directories.GetId(filename), filename);
         }
 
         protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
-            return Directories.GetContentDirectories().Select(dir => {
-                var id = Directories.GetId(dir);
-                return Filter(id, dir) ? CreateAcPlaceholder(id, Directories.CheckIfEnabled(dir)) : null;
+            var directories = Directories;
+            if (directories == null) return new AcPlaceholderNew[0];
+            return directories.GetContentDirectories().Select(dir => {
+                var id = directories.GetId(dir);
+                return Filter(id, dir) ? CreateAcPlaceholder(id, directories.CheckIfEnabled(dir)) : null;
             }).NonNull();
         }
 
@@ -132,7 +136,8 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         public async Task RenameAsync([NotNull] string oldId, [NotNull] string newId, bool newEnabled) {
-            if (!Directories.Actual) return;
+            var directories = Directories;
+            if (directories?.Actual != true) return;
             if (oldId == null) {
                 throw new ArgumentNullException(nameof(oldId));
             }
@@ -150,7 +155,7 @@ namespace AcManager.Tools.AcManagersNew {
 
             // files to move
             var currentLocation = obj.Location;
-            var newLocation = Directories.GetLocation(newId, newEnabled);
+            var newLocation = directories.GetLocation(newId, newEnabled);
             if (FileUtils.Exists(newLocation)) throw new ToggleException(ToolsStrings.AcObject_PlaceIsTaken);
 
             var currentAttached = GetAttachedFiles(currentLocation).NonNull().ToList();
@@ -171,7 +176,8 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         public async Task CloneAsync(string oldId, string newId, bool newEnabled) {
-            if (!Directories.Actual) return;
+            var directories = Directories;
+            if (directories?.Actual != true) return;
             if (oldId == null) throw new ArgumentNullException(nameof(oldId));
 
             // find object which is being renamed
@@ -183,7 +189,7 @@ namespace AcManager.Tools.AcManagersNew {
             var currentLocation = obj.Location;
             string newLocation;
             try {
-                newLocation = Directories.GetLocation(newId, newEnabled);
+                newLocation = directories.GetLocation(newId, newEnabled);
             } catch (Exception) {
                 throw new InformativeException(ToolsStrings.Common_CannotDo, ToolsStrings.AcObject_DisablingNotSupported_Commentary);
             }
@@ -206,7 +212,8 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         public Task ToggleAsync(string id, bool? enabled = null) {
-            if (!Directories.Actual) return Task.Delay(0);
+            var directories = Directories;
+            if (directories?.Actual != true) return Task.Delay(0);
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var wrapper = GetWrapperById(id);
@@ -220,7 +227,8 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         public async Task ToggleAsync(IEnumerable<string> ids, bool? enabled = null) {
-            if (!Directories.Actual) return;
+            var directories = Directories;
+            if (directories?.Actual != true) return;
             if (ids == null) throw new ArgumentNullException(nameof(ids));
 
             var objs = ids.Select(GetWrapperById).ToList();
@@ -237,7 +245,8 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         public virtual Task DeleteAsync([NotNull] string id) {
-            if (!Directories.Actual) return Task.Delay(0);
+            var directories = Directories;
+            if (directories?.Actual != true) return Task.Delay(0);
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var obj = GetById(id);
@@ -247,7 +256,8 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         public async Task DeleteAsync([NotNull] IEnumerable<string> ids) {
-            if (!Directories.Actual) return;
+            var directories = Directories;
+            if (directories?.Actual != true) return;
             if (ids == null) throw new ArgumentNullException(nameof(ids));
 
             var objs = (await ids.Select(GetByIdAsync).WhenAll(10)).ToList();
@@ -278,7 +288,10 @@ namespace AcManager.Tools.AcManagersNew {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var existing = GetById(id);
-            var location = existing?.Location ?? Directories.GetLocation(id, true);
+            var location = existing?.Location ?? Directories?.GetLocation(id, true);
+            if (location == null) {
+                throw new NotSupportedException("Directories are not set, AC root might be missing");
+            }
 
             if (removeExisting && FileUtils.Exists(location)) {
                 await CleanSpaceOverrideAsync(id, location);

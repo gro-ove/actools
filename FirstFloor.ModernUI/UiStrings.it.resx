@@ -118,8 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="StackTrace" xml:space="preserve">
-    <value>Stack Trace</value>
-  </data>
+    <value>Traccia dello Stack</value>
+  <alternative>Stack Trace</alternative></data>
   <data name="Progress_Downloading" xml:space="preserve">
     <value>Caricamento {0}</value>
   </data>
@@ -208,8 +208,8 @@
     <value>Esc</value>
   </data>
   <data name="KeyLeftArrow" xml:space="preserve">
-    <value>Freccia SX</value>
-  </data>
+    <value>Freccia sinistra</value>
+  <alternative>Freccia SX</alternative></data>
   <data name="KeyNumberPad" xml:space="preserve">
     <value>Num Pad {0}</value>
   </data>
@@ -220,8 +220,8 @@
     <value>Pag su</value>
   </data>
   <data name="KeyRightArrow" xml:space="preserve">
-    <value>Freccia DX</value>
-  </data>
+    <value>Freccia destra</value>
+  <alternative>Freccia DX</alternative></data>
   <data name="KeyShiftLeft" xml:space="preserve">
     <value>Shift (SX)</value>
   </data>
@@ -292,23 +292,23 @@
     <value>Menu contestuale</value>
   </data>
   <data name="KeyBrowserBack" xml:space="preserve">
-    <value>Browser Ritorna indietro</value>
-  <alternative>Browser Back</alternative></data>
+    <value>Browser pagina precedente</value>
+  <alternative>Browser Back</alternative><alternative>Browser Ritorna indietro</alternative></data>
   <data name="KeyBrowserFavorites" xml:space="preserve">
-    <value>Browser Preferiti</value>
-  <alternative>Browser Favorites</alternative></data>
+    <value>Browser preferiti</value>
+  <alternative>Browser Favorites</alternative><alternative>Browser Preferiti</alternative></data>
   <data name="KeyBrowserForward" xml:space="preserve">
-    <value>Browser Avanti</value>
-  <alternative>Browser Forward</alternative></data>
+    <value>Browser pagina successiva</value>
+  <alternative>Browser Forward</alternative><alternative>Browser Avanti</alternative></data>
   <data name="KeyBrowserHome" xml:space="preserve">
-    <value>Browser Pagina principale</value>
-  <alternative>Browser Home</alternative></data>
+    <value>Browser pagina principale</value>
+  <alternative>Browser Home</alternative><alternative>Browser Pagina principale</alternative></data>
   <data name="KeyBrowserRefresh" xml:space="preserve">
-    <value>Browser Aggiorna</value>
-  <alternative>Browser Refresh</alternative></data>
+    <value>Browser aggiorna pagina</value>
+  <alternative>Browser Refresh</alternative><alternative>Browser Aggiorna</alternative></data>
   <data name="KeyBrowserSearch" xml:space="preserve">
-    <value>Browser Cerca</value>
-  <alternative>Browser Search</alternative></data>
+    <value>Browser cerca</value>
+  <alternative>Browser Search</alternative><alternative>Browser Cerca</alternative></data>
   <data name="KeyVolumeDown" xml:space="preserve">
     <value>Volume giù</value>
   </data>
@@ -328,11 +328,11 @@
     <value>Traccia precedente</value>
   </data>
   <data name="KeySelectMedia" xml:space="preserve">
-    <value>Seleziona Media</value>
-  </data>
+    <value>Seleziona media</value>
+  <alternative>Seleziona Media</alternative></data>
   <data name="KeyLaunchMail" xml:space="preserve">
-    <value>Avvia Mail</value>
-  </data>
+    <value>Avvia mail</value>
+  <alternative>Avvia Mail</alternative></data>
   <data name="KeyLaunchApplication1" xml:space="preserve">
     <value>Applicazione da lanciare preferita 1</value>
   <alternative>Launch Favorite Application 1</alternative></data>
@@ -418,8 +418,8 @@
     <value>Diciassettesimo</value>
   </data>
   <data name="Ordinalizing_Eighteenth" xml:space="preserve">
-    <value>Dicioottesimo</value>
-  </data>
+    <value>Diciottesimo</value>
+  <alternative>Dicioottesimo</alternative></data>
   <data name="Ordinalizing_Nineteenth" xml:space="preserve">
     <value>Diciannovesimo</value>
   </data>
@@ -523,8 +523,8 @@
     <value>Invita</value>
   </data>
   <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
-    <value>Annulla prnotazione</value>
-  </data>
+    <value>Annulla prenotazione</value>
+  <alternative>Annulla prnotazione</alternative></data>
   <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
     <value>Includi password</value>
   </data>
@@ -563,5 +563,11 @@
   </data>
   <data name="Reload" xml:space="preserve">
     <value>Ricarica</value>
+  </data>
+  <data name="KeyBrowserStop" xml:space="preserve">
+    <value>Browser stop</value>
+  </data>
+  <data name="UnexpectedToken" xml:space="preserve">
+    <value>Token imprevisto</value>
   </data>
 </root>

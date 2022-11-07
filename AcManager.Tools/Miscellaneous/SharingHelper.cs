@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AcManager.Internal;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
@@ -135,13 +136,13 @@ namespace AcManager.Tools.Miscellaneous {
         public string GetFileName() {
             switch (EntryType) {
                 case SharedEntryType.Weather:
-                    return Regex.Replace(Target ?? Name ?? @"shared_weather", @"\W+", "").ToLowerInvariant();
+                    return FileUtils.EnsureFileNameIsValid(Regex.Replace(Target ?? Name ?? @"shared_weather", @"\W+", "").ToLowerInvariant(), true);
 
                 default:
                     // TODO: even localized?
-                    return (Name ?? EntryType.GetDescription()) +
+                    return FileUtils.EnsureFileNameIsValid((Name ?? EntryType.GetDescription()) +
                             // (Target == null ? "" : " for " + Target) +
-                            (Author == null ? "" : @" (" + Author + @")") + SharingHelper.GetExtenstion(EntryType);
+                            (Author == null ? "" : @" (" + Author + @")") + SharingHelper.GetExtenstion(EntryType), true);
             }
         }
 

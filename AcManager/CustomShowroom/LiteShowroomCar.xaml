@@ -64,6 +64,10 @@
         <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
         <TextBlock Text="{Binding Renderer.CarNode.TrianglesCount}" />
       </DockPanel>
+      <DockPanel Style="{StaticResource DockPanel}">
+        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_MaterialsLabel}" />
+        <TextBlock Text="{Binding Renderer.CarNode.MaterialsCount}" />
+      </DockPanel>
       <DockPanel IsEnabled="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource MoreConverter}}"
           Visibility="{Binding LodDefinitions, Converter={StaticResource NullToVisibilityConverter}}">
         <DockPanel.ToolTip>
@@ -148,6 +152,9 @@
         </CheckBox>
         <CheckBox IsChecked="{Binding Renderer.CarNode.IsFuelTankVisible}">
           <Label Content="Fuel tank" />
+        </CheckBox>
+        <CheckBox IsChecked="{Binding Renderer.CarNode.IsInertiaBoxVisible}">
+          <Label Content="Inertia box" />
         </CheckBox>
         <CheckBox IsChecked="{Binding Renderer.CarNode.AreFlamesVisible}">
           <Label Content="Flames" />

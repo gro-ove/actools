@@ -331,9 +331,9 @@ namespace AcTools.Render.Kn5Specific.Textures {
                 await UpdateTexture(local);
             } catch (Exception e) {
                 AcToolsLogging.Write(e);
-            } finally {
-                _updateInProcess.Remove(local);
             }
+
+            _updateInProcess.Remove(local);
         }
 
         private bool _updating;

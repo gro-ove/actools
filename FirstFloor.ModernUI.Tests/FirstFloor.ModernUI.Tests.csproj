@@ -82,6 +82,7 @@
     <Compile Include="LocalizableTest.cs" />
     <Compile Include="LzfTest.cs" />
     <Compile Include="SimpleSerializationTest.cs" />
+    <Compile Include="UrlHelperTest.cs" />
     <Compile Include="ValuesStorageTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WrappedCollectionTest.cs" />

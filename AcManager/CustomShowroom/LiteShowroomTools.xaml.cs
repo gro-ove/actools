@@ -1216,6 +1216,27 @@ namespace AcManager.CustomShowroom {
                 }
             }, () => Renderer?.GetKn5(Renderer.SelectedObject)?.IsEditable == true));
 
+            private AsyncCommand _ToggleMeshTransparencyCommand;
+
+            public AsyncCommand ToggleMeshTransparencyCommand
+                => _ToggleMeshTransparencyCommand ?? (_ToggleMeshTransparencyCommand = new AsyncCommand(async () => {
+                    try {
+                        var selected = Renderer?.SelectedObject;
+                        if (selected == null) return;
+
+                        var kn5 = Renderer?.GetKn5(Renderer.SelectedObject);
+                        if (kn5 == null) return;
+
+                        selected.OriginalNode.IsTransparent = !selected.OriginalNode.IsTransparent;
+                        selected.SetTransparent(selected.OriginalNode.IsTransparent);
+                        using (WaitingDialog.Create("Updating model…")) {
+                            await kn5.UpdateKn5(_renderer, _skin);
+                        }
+                    } catch (Exception e) {
+                        NonfatalError.Notify("Unexpected exception", e);
+                    }
+                }, () => Renderer?.GetKn5(Renderer.SelectedObject)?.IsEditable == true));
+
             private DelegateCommand<ToolsKn5ObjectRenderer.TextureInformation> _viewTextureCommand;
 
             public DelegateCommand<ToolsKn5ObjectRenderer.TextureInformation> ViewTextureCommand

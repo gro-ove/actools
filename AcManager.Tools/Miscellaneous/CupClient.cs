@@ -310,7 +310,7 @@ namespace AcManager.Tools.Miscellaneous {
             JObject list;
             try {
                 list = JObject.Parse(data);
-            } catch (Exception e) {
+            } catch {
                 Logging.Warning($"Failed to parse: {data}");
                 return;
             }

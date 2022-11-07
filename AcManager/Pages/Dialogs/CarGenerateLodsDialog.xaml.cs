@@ -23,6 +23,7 @@ using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcTools;
 using AcTools.DataFile;
 using AcTools.ExtraKn5Utils.Kn5Utils;
 using AcTools.ExtraKn5Utils.LodGenerator;
@@ -56,7 +57,8 @@ namespace AcManager.Pages.Dialogs {
         public static readonly PresetsCategory PresetableKeyCategory = new PresetsCategory(PresetableKey);
         public static readonly string PreviousSettingsPresetsName = "Previous car settings";
 
-        public static PluginsRequirement Plugins { get; } = new PluginsRequirement(KnownPlugins.FbxConverter);
+        private static PluginsRequirement _requirement;
+        public static PluginsRequirement Plugins => _requirement ?? (_requirement = new PluginsRequirement(KnownPlugins.FbxConverter));
 
         private ViewModel Model => (ViewModel)DataContext;
 
@@ -132,6 +134,7 @@ namespace AcManager.Pages.Dialogs {
                 OnPropertyChanged(nameof(MergeAsBlack));
                 OnPropertyChanged(nameof(ElementsToRemove));
                 OnPropertyChanged(nameof(EmptyNodesToKeep));
+                OnPropertyChanged(nameof(ConvertUv2));
                 OnPropertyChanged(nameof(ElementsPriorities));
                 OnPropertyChanged(nameof(OffsetsAlongNormal));
                 OnPropertyChanged(nameof(KeepTemporaryFiles));
@@ -221,6 +224,12 @@ namespace AcManager.Pages.Dialogs {
             public string EmptyNodesToKeep {
                 get => Stage.EmptyNodesToKeep?.JoinToString("\n");
                 set => Apply(value?.Split('\n'), ref Stage.EmptyNodesToKeep);
+            }
+
+            [JsonProperty("convertUv2")]
+            public string ConvertUv2 {
+                get => Stage.ConvertUv2?.JoinToString("\n");
+                set => Apply(value?.Split('\n'), ref Stage.ConvertUv2);
             }
 
             [JsonProperty("elementsPriorities")]
@@ -316,6 +325,7 @@ namespace AcManager.Pages.Dialogs {
                     case nameof(MergeAsBlack):
                     case nameof(ElementsToRemove):
                     case nameof(EmptyNodesToKeep):
+                    case nameof(ConvertUv2):
                     case nameof(ElementsPriorities):
                     case nameof(OffsetsAlongNormal):
                     case nameof(KeepTemporaryFiles):
@@ -335,7 +345,7 @@ namespace AcManager.Pages.Dialogs {
             public Window LoadedWindow;
 
             public StoredValue<string> SimplygonLocation { get; } = Stored.Get("LodsGenerator.SimplygonLocation",
-                    @"C:\Program Files\Simplygon\9\SimplygonBatch.exe");
+                    @"C:\Program Files\Simplygon\10\SimplygonBatch.exe");
 
             public ChangeableObservableCollection<StageParams> Stages { get; }
 
@@ -442,6 +452,12 @@ namespace AcManager.Pages.Dialogs {
                     Key = "OffsetsAlongNormal",
                     Tag =
                         "During preparation LOD generator would move vertices for meshes listed here along normal (in other words, perpendicular to surface). Positive values will make meshes “grow”, negative — shrink. Mainly meant for stickers to expand a bit to prevent them from clipping through underlying surface."
+                },
+                new Link {
+                    DisplayName = "Convert UV2",
+                    Key = "ConvertUv2",
+                    Tag =
+                        "Meshes to prepare UV2 patches for are listed here. Note: due to Simplygon not supporting UV2 that well at the moment, the resulting mesh might be optimized to a lesser extend and looking worse. Consider not using UV2 patches for low-res cockpit and LOD D."
                 },
             };
 
@@ -847,7 +863,7 @@ namespace AcManager.Pages.Dialogs {
                 }
 
                 sb.Append("\nNodes:\n");
-                sb.Append(CollectNodeStats(kn5.RootNode, 0).Item1);
+                sb.Append(CollectNodeStats(kn5.RootNode, 0)?.Item1 ?? "<unknown>");
                 return sb.ToString();
 
                 Tuple<string, int> CollectNodeStats(Kn5Node node, int level, bool withNode = false) {
@@ -865,7 +881,7 @@ namespace AcManager.Pages.Dialogs {
                     var s = new StringBuilder();
                     var t = 0;
                     foreach (var child in node.Children
-                            .Select(x => CollectNodeStats(x, level + 1)).OrderByDescending(x => x.Item2).NonNull()) {
+                            .Select(x => CollectNodeStats(x, level + 1)).NonNull().OrderByDescending(x => x.Item2)) {
                         s.Append('\n').Append(child.Item1);
                         t += child.Item2;
                     }
@@ -1269,6 +1285,14 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         using (var replacement = FileUtils.RecycleOriginal(destination)) {
                             FileUtils.Move(filename, replacement.Filename);
                         }
+
+                        if (stage.ConvertUv2?.Trim().Length > 0) {
+                            var uv2 = FileUtils.ReplaceExtension(filename, @".uv2");
+                            FileUtils.TryToDelete(FileUtils.ReplaceExtension(destination, @".uv2"));
+                            if (File.Exists(uv2)) {
+                                FileUtils.Move(uv2, FileUtils.ReplaceExtension(destination, @".uv2"));
+                            }
+                        }
                     }
                 });
             }
@@ -1296,7 +1320,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                 }
 
                 private static async Task RunProcessAsync(string filename, [Localizable(false)] IEnumerable<string> args, bool checkErrorCode,
-                        IProgress<double?> progress, CancellationToken cancellationToken) {
+                        IProgress<double?> progress, CancellationToken cancellationToken, Action<string> errorCallback) {
                     var process = ProcessExtension.Start(filename, args, new ProcessStartInfo {
                         UseShellExecute = false,
                         RedirectStandardOutput = progress != null,
@@ -1317,6 +1341,9 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         }
 
                         await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
+                        if (errorCallback != null && errorData.Length > 0) {
+                            errorCallback.Invoke(errorData.ToString().Trim());
+                        }
                         if (checkErrorCode && process.ExitCode != 0) {
                             var errorMessage = errorData.ToString().Trim();
                             if (string.IsNullOrEmpty(errorMessage)) {
@@ -1337,7 +1364,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                     }
                 }
 
-                public async Task<string> GenerateLodAsync(string stageId, string inputFile, string modelChecksum,
+                public async Task<string> GenerateLodAsync(string stageId, string inputFile, string modelChecksum, bool useUV2,
                         IProgress<double?> progress, CancellationToken cancellationToken) {
                     var stage = _stages.GetById(stageId);
                     var rulesFilename = stage.SimplygonConfigurationFilename;
@@ -1348,6 +1375,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         try {
                             var rules = JObject.Parse(File.ReadAllText(rulesFilename));
                             rules[@"Settings"][@"ReductionProcessor"][@"ReductionSettings"][@"ReductionTargetTriangleCount"] = stage.TrianglesCount;
+                            if (!useUV2) rules[@"Settings"][@"ReductionProcessor"][@"ReductionSettings"][@"VertexColorImportance"] = 0f;
                             rules[@"Settings"][@"ReductionProcessor"][@"RepairSettings"][@"UseWelding"] = stage.ApplyWeldingFix;
                             rules[@"Settings"][@"ReductionProcessor"][@"RepairSettings"][@"UseTJunctionRemover"] = stage.ApplyWeldingFix;
 
@@ -1371,17 +1399,22 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         // convert it once more:
                         intermediateFilename = FileUtils.EnsureUnique($@"{inputFile.ApartFromLast(@".fbx")}_fixed.fbx");
                         await RunProcessAsync(Kn5.FbxConverterLocation, new[] { inputFile, intermediateFilename, "/sffFBX", "/dffFBX", "/f201300" },
-                                true, null, cancellationToken).ConfigureAwait(false);
+                                true, null, cancellationToken, null).ConfigureAwait(false);
 
                         cancellationToken.ThrowIfCancellationRequested();
                         progress?.Report(0.01);
 
                         var outputFile = FileUtils.EnsureUnique($@"{inputFile.ApartFromLast(@".fbx")}_simplygon.fbx");
+                        string errorMessage = null;
                         await RunProcessAsync(_simplygonExecutable, new[] {
                             "-Progress", rulesFilename, intermediateFilename, outputFile
-                        }, false, progress.SubrangeDouble(0.01, 1d), cancellationToken).ConfigureAwait(false);
+                        }, false, progress.SubrangeDouble(0.01, 1d), cancellationToken, err => errorMessage = err)
+                                .ConfigureAwait(false);
                         if (cacheKey != null) {
                             CacheStorage.Set(cacheKey, outputFile);
+                        }
+                        if (!File.Exists(outputFile)) {
+                            throw new Exception(errorMessage ?? "Simplygon hasn’t created an output file");
                         }
                         return outputFile;
                     } finally {
@@ -1413,6 +1446,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
 
         private void OnViewPreparedModelClick(object sender, RoutedEventArgs e) {
             if ((sender as FrameworkElement)?.DataContext is StageParams stageParams) {
+                GCHelper.CleanUp();
                 Model.ViewDebugModelAsync(stageParams).Ignore();
             }
         }

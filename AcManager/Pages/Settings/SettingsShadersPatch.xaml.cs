@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -33,44 +34,28 @@ namespace AcManager.Pages.Settings {
         public SettingsShadersPatch() {
             Instance = this;
 
-            // Logging.Here();
             PatchHelper.Reload();
             KeyBindingsController = new LocalKeyBindingsController(this);
-            /*InputBindings.Add(new InputBinding(new DelegateCommand(() => {
-                Model.SelectedApp?.ViewInExplorerCommand.Execute(null);
-            }), new KeyGesture(Key.F, ModifierKeys.Control)));
-            InputBindings.Add(new InputBinding(new DelegateCommand(() => {
-                Model.SelectedApp?.ReloadCommand.Execute(null);
-            }), new KeyGesture(Key.R, ModifierKeys.Control)));*/
 
-            // Logging.Here();
             InitializeComponent();
             DataContext = new ViewModel();
-            // Logging.Here();
             Model.MainModel.PropertyChanged += OnModelPropertyChanged;
-            // Logging.Here();
             SetKeyboardInputs();
-            // Logging.Here();
             UpdateConfigsTabs();
-            // Logging.Here();
 
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
                 new InputBinding(Model.ShareSectionCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control | ModifierKeys.Shift)),
                 PresetsControl != null ? new InputBinding(PresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control)) : null
             }.NonNull().ToList());
-            // Logging.Here();
 
             ShadersPatchEntry.InstallationStart += OnPatchInstallationStart;
             ShadersPatchEntry.InstallationEnd += OnPatchInstallationEnd;
-            // Logging.Here();
 
             if (PatchHelper.OptionPatchSupport) {
                 PatchUpdater.Instance.PropertyChanged += OnPatchUpdaterPropertyChanged;
-                // Logging.Here();
             }
 
-            // Logging.Here();
             this.OnActualUnload(() => {
                 Model?.Dispose();
                 if (PatchHelper.OptionPatchSupport) {
@@ -78,7 +63,6 @@ namespace AcManager.Pages.Settings {
                 }
                 Instance = null;
             });
-            // Logging.Here();
         }
 
         private void OnPatchInstallationStart(object sender, CancelEventArgs e) {
@@ -204,36 +188,49 @@ namespace AcManager.Pages.Settings {
 
         public LocalKeyBindingsController KeyBindingsController { get; }
 
+        public static Action CloseOpenedSettings { get; set; }
+
         public static ICommand GetShowSettingsCommand() {
-            return new AsyncCommand(() => {
+            return new AsyncCommand(async () => {
                 var dlg = new ModernDialog {
                     ShowTitle = false,
                     Content = new SettingsShadersPatchPopup(),
                     MinHeight = 400,
-                    MinWidth = 450,
+                    MinWidth = 600,
                     MaxHeight = 99999,
-                    MaxWidth = 700,
+                    MaxWidth = 1200,
                     Padding = new Thickness(0),
-                    ButtonsMargin = new Thickness(8),
+                    ButtonsMargin = new Thickness(0),
                     SizeToContent = SizeToContent.Manual,
-                    ResizeMode = ResizeMode.NoResize,
+                    ResizeMode = ResizeMode.CanResizeWithGrip,
                     WindowStyle = WindowStyle.None,
                     AllowsTransparency = true,
                     BlurBackground = true,
                     ShowTopBlob = false,
                     Topmost = true,
+                    ShowActivated = true,
                     Title = "Custom Shaders Patch settings",
-                    LocationAndSizeKey = @".CustomShadersPatchDialog",
+                    LocationAndSizeKey = @".CustomShadersPatchDialog2",
                     Owner = null,
                     Buttons = new Control[0],
                     BorderThickness = new Thickness(0),
-                    Opacity = 0.9,
+                    Opacity = 0.95,
                     BorderBrush = new SolidColorBrush(Colors.Transparent)
                 };
-
                 dlg.Background = new SolidColorBrush(((Color)dlg.FindResource("WindowBackgroundColor")).SetAlpha(200));
-
-                return dlg.ShowAndWaitAsync();
+                CloseOpenedSettings = () => dlg.Close();
+                var opened = new[]{true};
+                ((Func<Task>)(async () => {
+                    while (opened[0]) {
+                        await Task.Delay(100);
+                        if (!dlg.IsActive) {
+                            dlg.Close();
+                        }
+                    }
+                }))().Ignore();
+                await dlg.ShowAndWaitAsync();
+                opened[0] = false;
+                CloseOpenedSettings = null;
             });
         }
 

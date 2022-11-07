@@ -86,7 +86,7 @@ namespace AcManager.Tools.AcErrors {
             _factory = factory;
         }
 
-        [ItemNotNull]
+        [ItemCanBeNull]
         public Task<IEnumerable<ISolution>> GetSolutionsAsync() {
             return _factory == null ? Task.FromResult((IEnumerable<ISolution>)new ISolution[0]) : _factory.GetSolutionsAsync(this);
         }

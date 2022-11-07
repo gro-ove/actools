@@ -14,6 +14,8 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
     public class Kn5MaterialSimpleBase : IRenderableMaterial {
         public bool IsBlending { get; }
 
+        public string Name => Description.Material?.Name;
+
         [NotNull]
         protected readonly Kn5MaterialDescription Description;
 

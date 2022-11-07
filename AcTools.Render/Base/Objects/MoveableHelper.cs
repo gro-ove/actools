@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
 using AcTools.Utils.Helpers;
@@ -238,6 +239,10 @@ namespace AcTools.Render.Base.Objects {
 
         public int GetObjectsCount() {
             return 0;
+        }
+
+        public IEnumerable<int> GetMaterialIds() {
+            return new int[0];
         }
 
         public BoundingBox? BoundingBox => default(BoundingBox);

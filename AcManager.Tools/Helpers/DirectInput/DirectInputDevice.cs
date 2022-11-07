@@ -24,7 +24,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public bool IsController { get; }
 
-        public int Index { get; }
+        public int Index { get; set; }
 
         public IList<int> OriginalIniIds { get; }
 
@@ -32,7 +32,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
             return other != null && (this.IsSameAs(other) || IsController && other.InstanceId == @"0");
         }
 
-        public bool Same(DeviceInstance other, int index) {
+        public bool Same(DeviceInstance other) {
             return other != null && InstanceId == GuidToString(other.InstanceGuid);
         }
 

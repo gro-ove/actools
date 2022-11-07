@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using AcTools.Utils;
 using SystemHalf;
@@ -18,7 +19,7 @@ namespace AcManager.Tools.AcPlugins.CspCommands {
         public Half RainIntensity, RainWetness, RainWater;
 
         public double TrackGrip {
-            set => TrackGripEnc = (byte)(value.LerpInvSat(0.6, 1) * 255d);
+            set => TrackGripEnc = (byte)Math.Round(value.LerpInvSat(0.6, 1) * 255d);
         }
 
         ushort ICspCommand.GetMessageType() {

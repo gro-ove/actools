@@ -24,7 +24,7 @@ namespace AcManager.Tools {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ToolsStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Tools {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -2149,6 +2149,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Syncing versions….
+        /// </summary>
+        public static string ContentInstallationParams_SyncingVersions {
+            get {
+                return ResourceManager.GetString("ContentInstallationParams_SyncingVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t load CM’s data.
         /// </summary>
         public static string ContentSyncronizer_CannotLoadContent {
@@ -3958,6 +3967,24 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password is required.
+        /// </summary>
+        public static string ServerEntry_PasswordIsRequired {
+            get {
+                return ResourceManager.GetString("ServerEntry_PasswordIsRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password is wrong.
+        /// </summary>
+        public static string ServerEntry_PasswordIsWrong {
+            get {
+                return ResourceManager.GetString("ServerEntry_PasswordIsWrong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Data of {0} is not packed, so users can change it before joining and gain an unfair advantage.
         ///
         ///Would you like to pack it before starting the server? But don’t forget to share packed version to clients..
@@ -4064,6 +4091,24 @@ namespace AcManager.Tools {
         public static string Settings_DefaultPlayerName {
             get {
                 return ResourceManager.GetString("Settings_DefaultPlayerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Live (SRS, World Sim Series, etc.).
+        /// </summary>
+        public static string Settings_Drive_SessionClass_Live {
+            get {
+                return ResourceManager.GetString("Settings_Drive_SessionClass_Live", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Online.
+        /// </summary>
+        public static string Settings_Drive_SessionClass_Online {
+            get {
+                return ResourceManager.GetString("Settings_Drive_SessionClass_Online", resourceCulture);
             }
         }
         

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AcTools.Render.Base.Cameras;
 using JetBrains.Annotations;
 using SlimDX;
@@ -17,6 +18,9 @@ namespace AcTools.Render.Base.Objects {
         int GetTrianglesCount();
 
         int GetObjectsCount();
+
+        [NotNull]
+        IEnumerable<int> GetMaterialIds();
 
         BoundingBox? BoundingBox { get; }
 
@@ -47,6 +51,10 @@ namespace AcTools.Render.Base.Objects {
 
         public int GetObjectsCount() {
             return 0;
+        }
+
+        public IEnumerable<int> GetMaterialIds() {
+            return new int[0];
         }
 
         public BoundingBox? BoundingBox => null;

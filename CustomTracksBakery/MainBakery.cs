@@ -340,6 +340,11 @@ namespace CustomTracksBakery {
         }
 
         int IRenderableObject.GetObjectsCount() => 1;
+
+        public IEnumerable<int> GetMaterialIds() {
+            return new int[0];
+        }
+
         Matrix IRenderableObject.ParentMatrix { get; set; }
         bool IRenderableObject.IsEnabled { get; set; }
         bool IRenderableObject.IsReflectable { get; set; }
@@ -900,7 +905,7 @@ namespace CustomTracksBakery {
                     }
 
                     string checksum;
-                    using (var stream = File.Open(_mainKn5.OriginalFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (var stream = File.Open(_mainKn5.OriginalFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     using (var sha1 = SHA1.Create()) {
                         checksum = sha1.ComputeHash(stream).ToHexString().ToLowerInvariant();
                     }

@@ -248,7 +248,6 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
                 while (reader.Until(JsonToken.EndObject)) {
                     SetToken(reader, ref currentProperty, entry);
                 }
-
                 response.Add(entry);
             }
 

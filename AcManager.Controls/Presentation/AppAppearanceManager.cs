@@ -97,7 +97,7 @@ namespace AcManager.Controls.Presentation {
                         BaseUri = new Uri(AssetsDirectory ?? "", UriKind.Absolute)
                     };
 
-                    using (var fs = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                    using (var fs = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
                         AppearanceManager.Instance.SetTheme((ResourceDictionary)XamlReader.Load(fs, parserContext));
                     }
                 } else {

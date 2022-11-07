@@ -24,7 +24,7 @@ namespace AcManager {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -1512,7 +1512,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Switch to BMP, install Magick.NET plugin and don&apos;t forget to enable automatic conversion on Settings/Drive page..
+        ///   Looks up a localized string similar to Switch to BMP, install Magick.NET plugin and don’t forget to enable automatic conversion on Settings/Drive page..
         /// </summary>
         public static string AcSettings_System_ScreenshotsQuality {
             get {
@@ -2722,7 +2722,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apparently SweetFX doesn&apos;t affect the result, but could decrease loading time.
+        ///   Looks up a localized string similar to Apparently SweetFX doesn’t affect the result, but could decrease loading time.
         /// </summary>
         public static string CarPreviews_DisableSweetFx_Tooltip {
             get {
@@ -3559,6 +3559,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  hour.
+        /// </summary>
+        public static string Common_SliderPostfix_Hours {
+            get {
+                return ResourceManager.GetString("Common.SliderPostfix.Hours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Test.
         /// </summary>
         public static string Common_Test {
@@ -4167,7 +4176,7 @@ namespace AcManager {
         
         /// <summary>
         ///   Looks up a localized string similar to Recommended format: DDS image, 32f.32f.32f.32f, 5120×2560
-        ///But if you don&apos;t want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP.
+        ///But if you don’t want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP.
         /// </summary>
         public static string CreateShowroom_Panorama_Commentary {
             get {
@@ -5427,7 +5436,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {}Actual weather ({0}) isn&apos;t supported.
+        ///   Looks up a localized string similar to {}Actual weather ({0}) isn’t supported.
         /// </summary>
         public static string Drive_Weather_Warning {
             get {
@@ -6750,6 +6759,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lua Apps.
+        /// </summary>
+        public static string Main_LuaApps {
+            get {
+                return ResourceManager.GetString("Main_LuaApps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Media.
         /// </summary>
         public static string Main_Media {
@@ -6804,7 +6822,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Since 1.7 Kunos added an official support for custom launchers. Basically, it works like Starter+, but now CM doesn&apos;t have to replace AssettoCorsa.exe, and it&apos;s great! Would you like to switch to a new Official Starter?.
+        ///   Looks up a localized string similar to Since 1.7 Kunos added an official support for custom launchers. Basically, it works like Starter+, but now CM doesn’t have to replace AssettoCorsa.exe, and it’s great! Would you like to switch to a new Official Starter?.
         /// </summary>
         public static string Main_OfficialSupportNotification_Message {
             get {
@@ -8165,7 +8183,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Time is out of weather’s range.
+        ///   Looks up a localized string similar to Time is out of weather range.
         /// </summary>
         public static string QuickDrive_TimeIsOutOfWeatherRange_Tooltip {
             get {
@@ -9175,7 +9193,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Don&apos;t forget, there is a keyboard shortcut for every button.
+        ///   Looks up a localized string similar to Don’t forget, there is a keyboard shortcut for every button.
         /// </summary>
         public static string Settings_Appearance_PopupToolbars_Tooltip {
             get {
@@ -9346,7 +9364,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change brand&apos;s icon automatically.
+        ///   Looks up a localized string similar to Change brand’s icon automatically.
         /// </summary>
         public static string Settings_Content_ChangeBrandIcon {
             get {
@@ -9877,7 +9895,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to It’s quite a slow operation, so it might be better to disable it.
+        ///   Looks up a localized string similar to Recyling old previews takes some time, so it might be a good idea to disable it.
         /// </summary>
         public static string Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin_Tooltip {
             get {
@@ -9913,7 +9931,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use it if showroom crashes — for example, because of way too high settings.
+        ///   Looks up a localized string similar to Might help if showroom crashes (for example, because quality settings set too high).
         /// </summary>
         public static string Settings_CustomShowroom_Reset_Tooltip {
             get {
@@ -10147,6 +10165,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This command will be executed when starting Content Manager. Working directory will be set to Assetto Corsa root folder..
+        /// </summary>
+        public static string Settings_Drive_CMLaunch_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_CMLaunch_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Continue race if Escape pressed.
         /// </summary>
         public static string Settings_Drive_ContinueRaceIfEscapePressed {
@@ -10174,7 +10201,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replace clouds by weather’s clouds if exist.
+        ///   Looks up a localized string similar to Replace clouds by weather clouds if exist.
         /// </summary>
         public static string Settings_Drive_CustomClouds {
             get {
@@ -10376,10 +10403,10 @@ namespace AcManager {
         ///
         ///Values for replacement:
         /// [b][mono]{type}[/mono][/b] — type of race;
-        /// [b][mono]{car}[/mono][/b] — car&apos;s name;
-        /// [b][mono]{car.id}[/mono][/b] — car&apos;s id;
-        /// [b][mono]{track}[/mono][/b] — track&apos;s name;
-        /// [b][mono]{track.id}[/mono][/b] — track&apos;s id.
+        /// [b][mono]{car}[/mono][/b] — car’s name;
+        /// [b][mono]{car.id}[/mono][/b] — car’s id;
+        /// [b][mono]{track}[/mono][/b] — track’s name;
+        /// [b][mono]{track.id}[/mono][/b] — track’s id.
         ///
         ///If you need some other values, please, contact us and we&apos;ll add them.
         ///
@@ -10405,10 +10432,10 @@ namespace AcManager {
         ///
         ///Values for replacement:
         /// [b][mono]{type}[/mono][/b] — type of race;
-        /// [b][mono]{car}[/mono][/b] — car&apos;s name;
-        /// [b][mono]{car.id}[/mono][/b] — car&apos;s id;
-        /// [b][mono]{track}[/mono][/b] — track&apos;s name;
-        /// [b][mono]{track.id}[/mono][/b] — track&apos;s id.
+        /// [b][mono]{car}[/mono][/b] — car’s name;
+        /// [b][mono]{car.id}[/mono][/b] — car’s id;
+        /// [b][mono]{track}[/mono][/b] — track’s name;
+        /// [b][mono]{track.id}[/mono][/b] — track’s id.
         ///
         ///If you need some other values, please, contact us and we&apos;ll add them.
         ///
@@ -10439,7 +10466,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When limit is exceeded, oldest results will be recycled after the end of the race..
+        ///   Looks up a localized string similar to Aftr exceeding the limit older entries will be moved to the Recycle Bin..
         /// </summary>
         public static string Settings_Drive_RaceResults_Hint {
             get {
@@ -10493,7 +10520,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Don&apos;t show results of Practice session.
+        ///   Looks up a localized string similar to Don’t show results of Practice sessions.
         /// </summary>
         public static string Settings_Drive_SkipPracticeResults {
             get {
@@ -10583,7 +10610,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use custom weather’s particles.
+        ///   Looks up a localized string similar to Use custom weather particles.
         /// </summary>
         public static string Settings_Drive_WeatherParticles {
             get {
@@ -10601,7 +10628,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use custom weather’s PP-filter.
+        ///   Looks up a localized string similar to Use custom weather PP-filter.
         /// </summary>
         public static string Settings_Drive_WeatherPpFilter {
             get {
@@ -11757,10 +11784,10 @@ namespace AcManager {
         ///
         ///  Values for replacement:
         ///   [b][mono]{type}[/mono][/b] — type of race;
-        ///   [b][mono]{car}[/mono][/b] — car&apos;s name;
-        ///   [b][mono]{car.id}[/mono][/b] — car&apos;s id;
-        ///   [b][mono]{track}[/mono][/b] — track&apos;s name;
-        ///   [b][mono]{track.id}[/mono][/b] — track&apos;s id;
+        ///   [b][mono]{car}[/mono][/b] — car’s name;
+        ///   [b][mono]{car.id}[/mono][/b] — car’s id;
+        ///   [b][mono]{track}[/mono][/b] — track’s name;
+        ///   [b][mono]{track.id}[/mono][/b] — track’s id;
         ///   [b][mono]{date}[/mono][/b] — date and time in proper format;
         ///   [b][mono]{date_ac}[/mono][/b] — date and time in AC format.
         ///
@@ -12504,7 +12531,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Just in case, if you can&apos;t join using this section (or missed joining time), use Online section instead..
+        ///   Looks up a localized string similar to Just in case, if you can’t join using this section (or missed joining time), use Online section instead..
         /// </summary>
         public static string Srs_Commentary {
             get {
@@ -12648,7 +12675,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change weather’s ID (Ctrl+Shift+F2).
+        ///   Looks up a localized string similar to Change weather ID (Ctrl+Shift+F2).
         /// </summary>
         public static string Toolbar_ChangeId_WeatherTooltip {
             get {
@@ -13161,7 +13188,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open weather’s folder (Ctrl+F).
+        ///   Looks up a localized string similar to Open weather folder (Ctrl+F).
         /// </summary>
         public static string Toolbar_Folder_WeatherTooltip {
             get {
@@ -13256,6 +13283,24 @@ namespace AcManager {
         public static string Toolbar_Play_Tooltip {
             get {
                 return ResourceManager.GetString("Toolbar_Play_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use car and track in a Quick Drive session (Ctrl+Alt+G).
+        /// </summary>
+        public static string Toolbar_QuickDrive_FirstLine {
+            get {
+                return ResourceManager.GetString("Toolbar_QuickDrive_FirstLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hold Shift and click to configure Quick Drive session.
+        /// </summary>
+        public static string Toolbar_QuickDrive_SecondLine {
+            get {
+                return ResourceManager.GetString("Toolbar_QuickDrive_SecondLine", resourceCulture);
             }
         }
         
@@ -13557,7 +13602,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update weather’s preview (Ctrl+P).
+        ///   Looks up a localized string similar to Update weather preview (Ctrl+P).
         /// </summary>
         public static string Toolbar_UpdatePreview_WeatherTooltip {
             get {
@@ -13923,7 +13968,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Switch to Edit Mode if you want to modify other weather&apos;s parameters..
+        ///   Looks up a localized string similar to Switch to Edit Mode if you want to modify other weather’s parameters..
         /// </summary>
         public static string Weather_SeemsEmpty_Commentary {
             get {

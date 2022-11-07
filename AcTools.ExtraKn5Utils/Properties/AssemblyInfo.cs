@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcTools.ExtraKn5Utils")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2021")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,6 +34,6 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.0.191")]
-[assembly: AssemblyFileVersion("1.0.0.191")]
-// Modified at: 9/7/2021 8:41:46 PM
+[assembly: AssemblyVersion("1.0.0.214")]
+[assembly: AssemblyFileVersion("1.0.0.214")]
+// Modified at: 8/29/2022 5:52:13 PM

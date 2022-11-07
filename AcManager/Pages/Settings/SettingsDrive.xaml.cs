@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
-using System.Windows.Input;
-using AcManager.Pages.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
@@ -30,22 +28,16 @@ namespace AcManager.Pages.Settings {
 
             public SettingsHolder.DriveSettings Drive => SettingsHolder.Drive;
 
+            public object AlwaysNull {
+                get => "";
+                set => OnPropertyChanged();
+            }
+
             public ViewModel() {
                 if (!Drive.SelectedStarterType.IsAvailable) {
                     Drive.SelectedStarterType = SettingsHolder.DriveSettings.TrickyStarterType;
                 }
             }
-
-            private CommandBase _navigateCommand;
-
-            public ICommand NavigateCommand => _navigateCommand ?? (_navigateCommand = new DelegateCommand<string>(o => {
-                if (o == null) return;
-                if (o.StartsWith(@"http")) {
-                    WindowsHelper.ViewInBrowser(o);
-                } else {
-                    (Application.Current?.MainWindow as MainWindow)?.NavigateTo(new Uri(o, UriKind.RelativeOrAbsolute));
-                }
-            }));
 
             private DelegateCommand _switchToSteamStarterCommand;
 

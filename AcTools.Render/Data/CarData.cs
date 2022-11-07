@@ -967,6 +967,12 @@ namespace AcTools.Render.Data {
         }
         #endregion
 
+        #region Inertia box
+        public Vector3 GetInertiaBox() {
+            return _data.GetIniFile("car.ini")["BASIC"].GetSlimVector3("INERTIA");
+        }
+        #endregion
+
         public float GetEngineMinimumRpm() {
             return _data.GetIniFile("engine.ini")["ENGINE_DATA"].GetFloat("MINIMUM", 800f);
         }

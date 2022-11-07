@@ -43,7 +43,8 @@ using BooleanSwitch = FirstFloor.ModernUI.Windows.Controls.BooleanSwitch;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarReplaceTyresDialog {
-        public static PluginsRequirement Plugins { get; } = new PluginsRequirement(KnownPlugins.Fann);
+        private static PluginsRequirement _requirement;
+        public static PluginsRequirement Plugins => _requirement ?? (_requirement = new PluginsRequirement(KnownPlugins.Fann));
 
         private CarReplaceTyresDialog(CarObject target) {
             DataContext = new ViewModel(target);
@@ -91,9 +92,9 @@ namespace AcManager.Pages.Dialogs {
             private AsyncCommand _changeCarsFilterCommand;
 
             public AsyncCommand ChangeCarsFilterCommand => _changeCarsFilterCommand ?? (_changeCarsFilterCommand = new AsyncCommand(async () => {
-                var newFilter = Prompt.Show("New filter for source cars:", "Source cars filter",
+                var newFilter = (await Prompt.ShowAsync("New filter for source cars:", "Source cars filter",
                         SettingsHolder.Content.CarReplaceTyresDonorFilter, "*",
-                        suggestions: ValuesStorage.GetStringList("__CarReplaceTyresDonorFilters"))?.Trim();
+                        suggestions: ValuesStorage.GetStringList("__CarReplaceTyresDonorFilters")))?.Trim();
 
                 switch (newFilter) {
                     case null:

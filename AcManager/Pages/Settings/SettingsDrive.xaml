@@ -3,7 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:c="http://acstuff.ru/app/controls" xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
-    d:DataContext="{d:DesignInstance set:SettingsDrive+ViewModel}">
+    d:DataContext="{d:DesignInstance set:SettingsDrive+ViewModel}" x:Name="This">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
@@ -61,14 +61,110 @@
           <Label Content="{x:Static g:AppStrings.Settings_Drive_StartImmediately}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Drive.SkipPracticeResults}">
-          <Label Content="{x:Static g:AppStrings.Settings_Drive_SkipPracticeResults}" />
-        </CheckBox>
+        <DockPanel ToolTip="{x:Static c:ControlsStrings.Settings_Drive_RhmKeepAlive_ToolTip}">
+          <Label Content="Skip results:" />
+          <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Drive.SkipCategories}" SelectedItem="{Binding AlwaysNull}">
+            <mui:BetterComboBox.Template>
+              <ControlTemplate TargetType="{x:Type mui:BetterComboBox}">
+                <mui:Cell x:Name="MainGrid" SnapsToDevicePixels="True">
+                  <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" Margin="1"
+                      IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                      PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+                    <mui:Cell Margin="0" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                      <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
+                          BorderThickness="1" TextBlock.Foreground="{DynamicResource WindowText}">
+                        <ScrollViewer x:Name="DropDownScrollViewer">
+                          <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled" KeyboardNavigation.DirectionalNavigation="Contained"
+                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </ScrollViewer>
+                      </Border>
+                    </mui:Cell>
+                  </Popup>
+                  <ToggleButton Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Padding="0"
+                      BorderThickness="{TemplateBinding BorderThickness}"
+                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                  <Path x:Name="Arrow" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}"
+                      HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" />
+                  <mui:LimitedViewbox MinimumScale="0.84" MaximumScale="1" Margin="7 3 20 5" IsHitTestVisible="False" VerticalAlignment="Bottom"
+                      HorizontalAlignment="Left" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                    <TextBlock Text="{Binding DataContext.Drive.DisplaySkipCategories, ElementName=This}" TextTrimming="CharacterEllipsis"
+                        VerticalAlignment="Bottom" Margin="0 0 0 -1" TextAlignment="Left" />
+                  </mui:LimitedViewbox>
+                </mui:Cell>
+                <ControlTemplate.Triggers>
+                  <Trigger Property="HasItems" Value="False">
+                    <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
+                  </Trigger>
+                  <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+                  </Trigger>
+                  <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{DynamicResource InputTextHover}" />
+                    <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
+                  </Trigger>
+                  <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource FocusBorder}" />
+                  </Trigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </mui:BetterComboBox.Template>
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <CheckBox x:Name="PART_Content" IsChecked="{Binding Value}" Margin="0 -1 0 1" Height="18" HorizontalAlignment="Stretch">
+                  <CheckBox.Template>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                      <Border Background="Transparent" HorizontalAlignment="Stretch" Margin="-10 -2" Padding="10 2">
+                        <DockPanel x:Name="LayoutRoot">
+                          <Border x:Name="CheckBorder" Width="16" Height="16" Margin="0 1 4 0" Background="{TemplateBinding Background}"
+                              BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" DockPanel.Dock="Left">
+                            <Path x:Name="CheckMark" Width="10" Height="10" Margin="2" Visibility="Collapsed" Stretch="Fill"
+                                Fill="{TemplateBinding Foreground}" Data="F1 M 15,21L 22,28L 32.9999,14.0001L 35.9999,17.0001L 22,34L 12.0001,24L 15,21 Z " />
+                          </Border>
+                          <ContentPresenter VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
+                        </DockPanel>
+                      </Border>
+                      <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                          <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
+                        </Trigger>
+                        <DataTrigger Binding="{Binding IsHighlighted, RelativeSource={RelativeSource AncestorType=ComboBoxItem}, FallbackValue=False}"
+                            Value="True">
+                          <Setter Property="TextBlock.Foreground" Value="{DynamicResource ItemTextSelected}" />
+                          <Setter TargetName="CheckBorder" Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
+                          <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource ButtonBorderHover}" />
+                          <Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource ButtonTextHover}" />
+                        </DataTrigger>
+                        <Trigger Property="IsChecked" Value="True">
+                          <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                          <Setter TargetName="CheckBorder" Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
+                          <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource DataGridForeground}" />
+                          <Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource DataGridForeground}" />
+                        </Trigger>
+                      </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                  </CheckBox.Template>
+                  <DockPanel Margin="0 1 0 -1">
+                    <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Top" />
+                  </DockPanel>
+                </CheckBox>
+                <DataTemplate.Triggers>
+                  <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}, FallbackValue={x:Null}}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Collapsed" TargetName="PART_Content" />
+                  </DataTrigger>
+                </DataTemplate.Triggers>
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </mui:BetterComboBox>
+        </DockPanel>
 
         <DockPanel x:Name="RaceResultsLimit" ToolTip="{x:Static g:AppStrings.Settings_Drive_KeepResultsOfTheLast_Tooltip}" Margin="0 20 0 8">
           <mui:ValueLabel Value="{Binding Drive.RaceResultsLimit}" Content="{x:Static g:AppStrings.Settings_Drive_KeepResultsOfTheLast}"
-              Postfix="{Binding Drive.RaceResultsLimit, Converter={StaticResource PluralizingConverter}, ConverterParameter='{} {session}'}"
-              Width="{x:Static system:Double.NaN}" DockPanel.Dock="Top" Margin="0 0 0 4" />
+              Width="{x:Static system:Double.NaN}" DockPanel.Dock="Top" Margin="0 0 0 4"
+              Postfix="{Binding Path=Drive.RaceResultsLimit, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Settings_Drive_SessionFormat}}">
+          </mui:ValueLabel>
           <Slider Minimum="0" Maximum="1">
             <Slider.Value>
               <Binding Path="Drive.RaceResultsLimit">
@@ -83,42 +179,6 @@
         <c:MessageBlock Margin="0 0 0 8" set:Search.LinkedTo="{Binding ElementName=RaceResultsLimit}">
           <mui:BbCodeBlock Text="{x:Static g:AppStrings.Settings_Drive_RaceResults_Hint}" TextWrapping="Wrap" />
         </c:MessageBlock>
-
-        <!-- Shared memory -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
-          <TextBlock.Text>AC’s shared memory:</TextBlock.Text>
-        </TextBlock>
-
-        <CheckBox IsChecked="{Binding Drive.HideWhileRacing}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
-          <Label Content="{x:Static g:AppStrings.Settings_Drive_HibernateCMWhileRacing}" />
-        </CheckBox>
-
-        <CheckBox IsChecked="{Binding Drive.ImmediateCancel}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
-          <Label Content="{x:Static g:AppStrings.Settings_Drive_TerminateLoadingIfEscapeIsPressed}" />
-        </CheckBox>
-
-        <CheckBox IsChecked="{Binding Drive.ContinueOnEscape}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
-          <Label Content="{x:Static g:AppStrings.Settings_Drive_ContinueRaceIfEscapePressed}" />
-        </CheckBox>
-
-        <CheckBox IsChecked="{Binding Drive.MonitorFramesPerSecond}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
-          <CheckBox.ToolTip>
-            <mui:BbCodeBlock Text="{x:Static g:AppStrings.Settings_Drive_MonitorFPS_Tooltip}" />
-          </CheckBox.ToolTip>
-          <Label Content="{x:Static g:AppStrings.Settings_Drive_MonitorFPS}" />
-        </CheckBox>
-
-        <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Drive_BeepIfRaceIsCancelled_Tooltip}">
-          <Label Content="{x:Static g:AppStrings.Settings_Drive_BeepIfRaceIsCancelled}" />
-          <mui:BetterComboBox ItemsSource="{Binding Drive.BeepingNoises}" SelectedItem="{Binding Drive.CrashBeepingNoise}" IsEditable="False"
-              mui:NewMarkService.New="True">
-            <mui:BetterComboBox.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" Margin="0" Padding="0" />
-              </DataTemplate>
-            </mui:BetterComboBox.ItemTemplate>
-          </mui:BetterComboBox>
-        </DockPanel>
 
         <!-- Quick Drive -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_QuickDriveHeader}" />
@@ -171,6 +231,18 @@
             set:Search.Keywords="quick;drive">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_AllowDecimalValuesForTrackState}" />
         </CheckBox>
+
+        <DockPanel ToolTip="Used when selecting randomized combination (Alt+R)">
+          <Label Content="Filter for random tracks" />
+          <mui:BetterTextBox Text="{Binding Drive.QuickDriveRandomizeTrackFilter}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        </DockPanel>
+
+        <DockPanel ToolTip="Used when selecting randomized combination (Alt+R)">
+          <Label Content="Filter for random cars" />
+          <mui:BetterTextBox Text="{Binding Drive.QuickDriveRandomizeCarFilter}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        </DockPanel>
+
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Quick Drive advanced tweaks:" />
 
         <CheckBox IsChecked="{Binding Drive.QuickDriveAiLimitations}" set:Search.Keywords="quick;drive;trackday"
             ToolTip="Very experimental feature which might be removed later">
@@ -235,7 +307,7 @@
           <Label Content="{x:Static g:AppStrings.Settings_Drive_ChangeCarSkin}" />
         </CheckBox>
 
-        <!-- Real head motion -->
+        <!-- Real Head Motion -->
         <DockPanel set:Search.SubCategory="{x:Static g:AppStrings.Settings_Drive_RealHeadMotion}" Margin="0 20 0 8" Style="{x:Null}">
           <TextBlock Text="{x:Static g:AppStrings.Settings_Drive_RealHeadMotion}" Style="{StaticResource Heading2}" />
           <Button Style="{StaticResource MoreDetailsSuperscript}"
@@ -252,17 +324,55 @@
           <mui:BetterTextBox Text="{Binding Drive.RhmLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
         </DockPanel>
 
-        <DockPanel ToolTip="How long RHM will be running after the race (to avoid restarting it over and over)">
-          <Label Content="Keep alive for:" />
+        <DockPanel ToolTip="{x:Static c:ControlsStrings.Settings_Drive_RhmKeepAlive_ToolTip}">
+          <Label Content="{x:Static c:ControlsStrings.Settings_Drive_RhmKeepAlive}" />
           <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Drive.RhmKeepAlivePeriods}" SelectedItem="{Binding Drive.RhmKeepAlivePeriod}"
               DisplayMemberPath="DisplayName" />
+        </DockPanel>
+
+        <!-- Shared memory -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static c:ControlsStrings.Settings_Drive_SharedMemory}" />
+
+        <CheckBox IsChecked="{Binding Drive.HideWhileRacing}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_HibernateCMWhileRacing}" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding Drive.ImmediateCancel}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_TerminateLoadingIfEscapeIsPressed}" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding Drive.ContinueOnEscape}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_ContinueRaceIfEscapePressed}" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding Drive.ShowCspSettingsWithShortcut}">
+          <Label Content="Show CSP settings with Ctrl+Alt+~ shortcut" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding Drive.MonitorFramesPerSecond}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
+          <CheckBox.ToolTip>
+            <mui:BbCodeBlock Text="{x:Static g:AppStrings.Settings_Drive_MonitorFPS_Tooltip}" />
+          </CheckBox.ToolTip>
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_MonitorFPS}" />
+        </CheckBox>
+
+        <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Drive_BeepIfRaceIsCancelled_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_BeepIfRaceIsCancelled}" />
+          <mui:BetterComboBox ItemsSource="{Binding Drive.BeepingNoises}" SelectedItem="{Binding Drive.CrashBeepingNoise}" IsEditable="False"
+              mui:NewMarkService.New="True">
+            <mui:BetterComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" Margin="0" Padding="0" />
+              </DataTemplate>
+            </mui:BetterComboBox.ItemTemplate>
+          </mui:BetterComboBox>
         </DockPanel>
 
         <!-- Game-related events -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_EventsHeader}" />
 
         <CheckBox IsChecked="{Binding Drive.CheckAndFixControlsOrder}" set:Search.Keywords="controls;drive">
-          <Label Content="Automatically check and fix controllers order before the race" />
+          <Label Content="{x:Static c:ControlsStrings.Settings_Drive_FixControllersOrder}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.CopyFilterToSystemForOculus}" ToolTip="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix_Tooltip}">
@@ -291,6 +401,18 @@
           </DockPanel.ToolTip>
           <Label Content="{x:Static g:AppStrings.Settings_Drive_PostCommandLabel}" />
           <mui:BetterTextBox Text="{Binding Drive.PostCommand}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        </DockPanel>
+
+        <DockPanel>
+          <DockPanel.ToolTip>
+            <ToolTip>
+              <StackPanel Margin="4">
+                <mui:BbCodeBlock TextWrapping="WrapWithOverflow" Text="{x:Static g:AppStrings.Settings_Drive_CMLaunch_Tooltip}" />
+              </StackPanel>
+            </ToolTip>
+          </DockPanel.ToolTip>
+          <Label Content="{x:Static c:ControlsStrings.Settings_Drive_CMLaunch}" />
+          <mui:BetterTextBox Text="{Binding Drive.CmLaunchCommand}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
         </DockPanel>
 
         <!--<CheckBox IsChecked="{Binding Drive.AutomaticallyConvertBmpToJpg}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ConvertScreenshots_Tooltip}">

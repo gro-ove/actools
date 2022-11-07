@@ -185,7 +185,7 @@ namespace AcManager.Pages.AcSettings {
             private void ImportLut(string filename) {
                 try {
                     string name;
-                    if (!FileUtils.ArePathsEqual(Path.GetDirectoryName(filename), AcPaths.GetDocumentsCfgDirectory())) {
+                    if (!FileUtils.ArePathsEqual(Path.GetDirectoryName(filename) ?? "", AcPaths.GetDocumentsCfgDirectory())) {
                         name = Prompt.Show("Choose a name for the new LUT setting:", "New LUT",
                                 Path.GetFileNameWithoutExtension(filename) + ".lut", "?", required: true, maxLength: 120);
                         if (string.IsNullOrWhiteSpace(name)) return;

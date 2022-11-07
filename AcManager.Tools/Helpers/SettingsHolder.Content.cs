@@ -13,6 +13,7 @@ namespace AcManager.Tools.Helpers {
     public static partial class SettingsHolder {
         public class ContentSettings : NotifyPropertyChanged {
             internal ContentSettings() { }
+            
             private string _cupRegistries;
 
             public string CupRegistries {
@@ -319,6 +320,18 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _skinsSkipPriority)) return;
                     _skinsSkipPriority = value;
                     ValuesStorage.Set("Settings.ContentSettings.SkinsSkipPriority", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _CarSkinsUsePngPreview;
+
+            public bool CarSkinsUsePngPreview {
+                get => _CarSkinsUsePngPreview ?? (_CarSkinsUsePngPreview = ValuesStorage.Get("Settings.ContentSettings.CarSkinsUsePngPreview", false)).Value;
+                set {
+                    if (Equals(value, _CarSkinsUsePngPreview)) return;
+                    _CarSkinsUsePngPreview = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CarSkinsUsePngPreview", value);
                     OnPropertyChanged();
                 }
             }

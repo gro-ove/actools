@@ -446,8 +446,9 @@ namespace AcManager.Pages.AcSettings {
                         var values = GetValues(setting, archive, out var description, out var selectCallback);
                         var alignment = GetAlignment(setting);
                         var dialog = new ImageViewer<SettingValue>(values, values.FindIndex(x => x.IsActive),
-                                e => Task.FromResult((object)e.Data.Value), e => {
+                                e => Task.FromResult((object)e?.Data.Value), e => {
                                     var ui = (Panel)_uiParent.FindResource(@"SettingDescription");
+                                    if (e == null) return ui;
                                     ui.RequireChild<TextBlock>("SettingName").Text = setting.GetAttribute<SettingNameAttribute>()?.Name;
                                     ui.RequireChild<BbCodeBlock>("Description").Text = e.CustomDescription ?? description;
                                     ui.RequireChild<TextBlock>("SettingValue").Text = e.DisplayName;

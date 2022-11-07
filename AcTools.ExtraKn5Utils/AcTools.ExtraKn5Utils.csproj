@@ -57,11 +57,28 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
-      <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
+      <HintPath>..\packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Output\x86\Debug\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="K4os.Compression.LZ4">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\K4os.Compression.LZ4\K4os.Compression.LZ4.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\System.Runtime.CompilerServices.Unsafe\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="xxHashSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\xxHashSharp.1.0.0\lib\net45\xxHashSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SlimDX, Culture=neutral, processorArchitecture=$(ActualPlatform)">
       <HintPath>..\Libraries\SlimDX-$(ActualPlatform)\SlimDX.dll</HintPath>
@@ -71,6 +88,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -115,12 +133,16 @@
     <Compile Include="FbxUtils\Tokens\Value\IntegerToken.cs" />
     <Compile Include="FbxUtils\Tokens\Value\LongToken.cs" />
     <Compile Include="FbxUtils\Tokens\Value\ShortToken.cs" />
+    <Compile Include="Helpers\AcTreeModelConverter.cs" />
+    <Compile Include="Helpers\FbxDataAccessor.cs" />
+    <Compile Include="Helpers\AcUv2ModelConverter.cs" />
+    <Compile Include="Kn5Utils\Kn5ExtendedUtils.cs" />
     <Compile Include="Kn5Utils\Kn5MaterialUtils.cs" />
     <Compile Include="Kn5Utils\Kn5MeshBuilder.cs" />
     <Compile Include="Kn5Utils\Kn5MeshUtils.cs" />
     <Compile Include="Kn5Utils\Kn5NodeFilterContext.cs" />
     <Compile Include="Kn5Utils\Kn5NodeUtils.cs" />
-    <Compile Include="Kn5Utils\Kn5Utils.cs" />
+    <Compile Include="Kn5Utils\Kn5GenericUtils.cs" />
     <Compile Include="Kn5Utils\Kn5VectorUtils.cs" />
     <Compile Include="Kn5Utils\Kn5VertexUtils.cs" />
     <Compile Include="KsAnimUtils\KsAnimUtils.cs" />
@@ -142,6 +164,9 @@
       <Project>{e9586699-505a-4349-9cbf-7e8ae1521207}</Project>
       <Name>StringBasedFilter</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\Libraries\PreBuildEvents.Templates.props" />

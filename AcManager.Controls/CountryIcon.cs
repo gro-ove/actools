@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.Helpers;
@@ -54,7 +53,7 @@ namespace AcManager.Controls {
             key = (key == null ? null : IsCountryId(key) ? key : AcStringValues.GetCountryId(key)) ?? @"default";
             return TaskCache.Get(() => Task.Run(() => {
                 var badge = FilesStorage.Instance.GetContentFile(ContentCategory.CountryFlags, $@"{key}.png");
-                return badge.Exists ? LoadBitmapSourceFromBytes(File.ReadAllBytes(badge.Filename), decodeWidth) : Image.Empty;
+                return badge.Exists ? LoadBitmapSourceFromFilename(badge.Filename, decodeWidth) : Image.Empty;
             }), key);
         }
 

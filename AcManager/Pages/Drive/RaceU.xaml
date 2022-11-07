@@ -35,6 +35,12 @@
             <ProgressBar IsIndeterminate="True"
                 Visibility="{Binding Tabs[0].IsLoading, ElementName=Browser, Converter={StaticResource BooleanToVisibilityConverter}}" />
           </Border>
+
+          <c:MessageBlock DockPanel.Dock="Top" Margin="20 0 20 12" CloseKey="raceu-hide-msg">
+            <mui:BbCodeBlock Mode="Extended"
+                Text="You can configure which live services are visible [url=&quot;/Pages/Settings/SettingsLive.xaml?Separate=True&quot;]here[/url]." />
+          </c:MessageBlock>
+
           <c:WebBlock x:Name="Browser" UserAgent="AC Content Manager" PreferTransparentBackground="True" NewWindowsBehavior="MultiTab"
               Loaded="OnWebBlockLoaded" Margin="0 4 0 0" SaveKey="RaceU.CurrentLocation" KeepAliveKey="RaceU" AlwaysKeepAlive="True" IsAddressBarVisible="True">
             <!--<c:WebBlock.LeftSideContent>

@@ -277,7 +277,7 @@ namespace AcTools.Utils.Helpers {
             if (!value.HasValue || value == false) {
                 obj.Remove(key);
             } else {
-                obj[key] = value.Value;
+                obj[key] = true;
             }
         }
     }

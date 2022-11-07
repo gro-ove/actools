@@ -301,6 +301,8 @@ namespace FirstFloor.ModernUI.Dialogs {
             public IEnumerable GetErrors(string propertyName) {
                 switch (propertyName) {
                     case nameof(Text):
+                        // ReSharper disable once RedundantAssignment
+                        // ReSharper disable once InlineOutVariableDeclaration
                         string v = null;
                         var error = Required && string.IsNullOrWhiteSpace(Text)
                                 ? "Required value" : _verificationCache?.TryGetValue(Text, out v) == true ? v : null;
@@ -388,22 +390,33 @@ namespace FirstFloor.ModernUI.Dialogs {
         /// <param name="suggestions">Suggestions if needed.</param>
         /// <param name="suggestionsFixed">Only allow values from suggestions.</param>
         /// <param name="comment">Something to display in the bottom left corner.</param>
+        /// <param name="suggestionsCallback">Callback for dynamic suggestions.</param>
+        /// <param name="verificationCallback">Callback for verification returning error message or null.</param>
+        /// <param name="suggestionsAsList">Show suggestions as a list box below text input.</param>
         /// <param name="cancellation">Cancellation token.</param>
         /// <returns>Result string or null if user cancelled input.</returns>
         [ItemCanBeNull]
         public static async Task<string> ShowAsync(string description, string title, string defaultValue = "", string placeholder = null, string toolTip = null,
                 bool multiline = false, bool passwordMode = false, bool required = false, int maxLength = -1, IEnumerable<string> suggestions = null,
-                bool suggestionsFixed = false, string comment = null, CancellationToken cancellation = default) {
+                bool suggestionsFixed = false, string comment = null,
+                Func<string, Task<IEnumerable<string>>> suggestionsCallback = null, Func<string, Task<string>> verificationCallback = null,
+                bool suggestionsAsList = false, CancellationToken cancellation = default) {
             if (passwordMode && suggestions != null) throw new ArgumentException(@"Can’t have suggestions with password mode");
             if (passwordMode && multiline) throw new ArgumentException(@"Can’t use multiline input area with password mode");
             if (suggestions != null && multiline) throw new ArgumentException(@"Can’t use multiline input area with suggestions");
 
             var dialog = new Prompt(title, description, defaultValue, placeholder, toolTip, multiline, passwordMode, required, maxLength, suggestions,
-                    suggestionsFixed, comment);
+                    suggestionsFixed, comment, suggestionsCallback, verificationCallback, suggestionsAsList) {
+                        DoNotAttachToWaitingDialogs = true
+                    };
             try {
                 await dialog.ShowAsync(cancellation);
             } catch (Exception e) when (e.IsCanceled()) {
                 return null;
+            }
+
+            while (Application.Current?.Windows.OfType<Window>().Contains(dialog) == true) {
+                await Task.Delay(20);
             }
 
             var result = dialog.Result;

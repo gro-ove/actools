@@ -475,7 +475,7 @@ namespace AcManager.Tools.ContentInstallation {
         }
         #endregion
 
-        private static readonly Regex ExecutablesRegex = new Regex(@"\.(?:exe|bat|cmd|py|vbs|js|ps1|sh|zsh|bash|pl|hta)$",
+        private static readonly Regex ExecutablesRegex = new Regex(@"\.(?:exe|dll|bat|cmd|com|py|lnk|vbs|js|ps1|sh|zsh|bash|pl|hta)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private DelegateCommand _copySourceToClipboardCommand;
@@ -577,6 +577,7 @@ namespace AcManager.Tools.ContentInstallation {
                         }
 
                         try {
+                            Logging.Debug("Loading: " + Source);
                             var properDisplayNameSet = false;
                             localFilename = await FlexibleLoader.LoadAsyncTo(Source,
                                     (url, information) => new FlexibleLoaderDestination(Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue,
@@ -611,8 +612,8 @@ namespace AcManager.Tools.ContentInstallation {
                         } catch (Exception e) when (e.IsCancelled()) {
                             CheckCancellation(true);
                             return false;
-                        } catch (WebException e) when (e.Response is HttpWebResponse) {
-                            FailedMessage = $"Can’t download file: {((HttpWebResponse)e.Response).StatusDescription.ToLower()}";
+                        } catch (WebException e) when (e.Response is HttpWebResponse webResponse) {
+                            FailedMessage = $"Can’t download file: {webResponse.StatusDescription.ToLower()}";
                             return false;
                         } catch (WebException) when (cancellation.IsCancellationRequested) {
                             CheckCancellation(true);
@@ -639,7 +640,7 @@ namespace AcManager.Tools.ContentInstallation {
                     LocalFilename = localFilename;
 
                     if (InstallationParams.Checksum != null) {
-                        using (var fs = new FileStream(localFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        using (var fs = new FileStream(localFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         using (var sha1 = SHA1.Create()) {
                             if (!string.Equals(sha1.ComputeHash(fs).ToHexString(), InstallationParams.Checksum, StringComparison.OrdinalIgnoreCase)) {
                                 FailedMessage = "Checksum failed";

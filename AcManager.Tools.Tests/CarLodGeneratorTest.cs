@@ -137,7 +137,7 @@ namespace AcManager.Tools.Tests {
                 }
             }
 
-            public async Task<string> GenerateLodAsync(string stageId, string inputFile, string modelChecksum,
+            public async Task<string> GenerateLodAsync(string stageId, string inputFile, string modelChecksum, bool useUv2,
                     IProgress<double?> progress, CancellationToken cancellationToken) {
                 var intermediateFile = $@"{inputFile.ApartFromLast(".fbx")}_fixed.fbx";
                 await RunProcessAsync(Kn5.FbxConverterLocation, new[] { inputFile, intermediateFile, "/sffFBX", "/dffFBX", "/f201300" },

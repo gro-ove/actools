@@ -902,8 +902,8 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</altern
     <value>Add By IP</value>
   </data>
   <data name="Online_AddNewServer" xml:space="preserve">
-    <value>Add a New Server</value>
-  </data>
+    <value>Lisää uusi palvelin</value>
+  <alternative>Add a New Server</alternative></data>
   <data name="Online_AddServer" xml:space="preserve">
     <value>Server address (IP &amp; HTTP or TCP Port):</value>
   </data>

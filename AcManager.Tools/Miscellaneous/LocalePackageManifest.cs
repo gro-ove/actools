@@ -41,7 +41,7 @@ namespace AcManager.Tools.Miscellaneous {
         [CanBeNull]
         public static LocalePackageManifest FromPackage(string filename) {
             try {
-                using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 using (var zip = new ZipArchive(fs)) {
                     return FromArchive(zip);
                 }

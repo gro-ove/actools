@@ -5,10 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
+using AcManager.Pages.Settings;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
 using AcTools.Utils.Helpers;
+using AcTools.Windows.Input;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
@@ -19,9 +23,41 @@ using MenuItem = System.Windows.Forms.MenuItem;
 
 namespace AcManager {
     public partial class AppHibernator : IDisposable {
+        private IKeyboardListener _keyboard;
+
+        private void InitKeyboardWatcher() {
+            if (_keyboard != null) return;
+            _keyboard = KeyboardListenerFactory.Get();
+            _keyboard.WatchFor(Keys.Oemtilde);
+            _keyboard.PreviewKeyDown += (sender, args) => {
+                if (SettingsHolder.Drive.ShowCspSettingsWithShortcut && args.Key == Keys.Oemtilde
+                        && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
+                    if (SettingsShadersPatch.CloseOpenedSettings != null) {
+                        SettingsShadersPatch.CloseOpenedSettings();
+                    } else {
+                        ActionExtension.InvokeInMainThreadAsync(() => SettingsShadersPatch.GetShowSettingsCommand().Execute(null));
+                    }
+                }
+            };
+        }
+
         public void SetListener() {
             SettingsHolder.Drive.PropertyChanged += Drive_PropertyChanged;
             UpdateGameListeners();
+
+            if (SettingsHolder.Drive.ShowCspSettingsWithShortcut) {
+                InitKeyboardWatcher();
+            } else {
+                SettingsHolder.Drive.PropertyChanged += (sender, args) => {
+                    if (args.PropertyName == nameof(SettingsHolder.Drive.ShowCspSettingsWithShortcut)) {
+                        InitKeyboardWatcher();
+                    }
+                };
+            }
+
+#if DEBUG
+            Hibernated = true;
+#endif
         }
 
         private bool _added;
@@ -69,12 +105,24 @@ namespace AcManager {
         private NotifyIcon _trayIcon;
 
         private void AddTrayIcon() {
+            if (_trayIcon != null) return;
+
             _trayIcon = new NotifyIcon {
                 Icon = AppIconService.GetTrayIcon(),
                 Text = AppStrings.Hibernate_TrayText
             };
 
             _trayIcon.DoubleClick += OnTrayIconDoubleClick;
+
+            var patchSettings = SettingsShadersPatch.IsCustomShadersPatchInstalled() ? new MenuItem { Text = "Custom Shaders Patch settings" } : null;
+            if (patchSettings != null) {
+                patchSettings.Click += (sender, args) => SettingsShadersPatch.GetShowSettingsCommand().Execute(null);
+            }
+
+            var rhm = RhmService.Instance.Active ? new MenuItem { Text = "RHM settings" } : null;
+            if (rhm != null) {
+                rhm.Click += (sender, args) => RhmService.Instance.ShowSettingsCommand.ExecuteAsync().Ignore();
+            }
 
             var restoreMenuItem = new MenuItem { Text = UiStrings.Restore };
             restoreMenuItem.Click += OnRestoreMenuItemClick;
@@ -83,9 +131,12 @@ namespace AcManager {
             closeMenuItem.Click += OnCloseMenuItemClick;
 
             _trayIcon.ContextMenu = new ContextMenu(new[] {
+                patchSettings,
+                rhm,
+                new MenuItem(@"-"),
                 restoreMenuItem,
                 closeMenuItem
-            });
+            }.NonNull().ToArray());
 
             _trayIcon.Visible = true;
         }
@@ -93,7 +144,7 @@ namespace AcManager {
         private void RemoveTrayIcon() {
             if (_trayIcon != null) {
                 _trayIcon.Visible = false;
-                DisposeHelper.Dispose(ref _trayIcon);
+                Task.Delay(TimeSpan.FromSeconds(1d)).ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => DisposeHelper.Dispose(ref _trayIcon)));
             }
         }
 
@@ -127,12 +178,12 @@ namespace AcManager {
                 if (Equals(value, _hibernated)) return;
                 _hibernated = value;
 
-                ActionExtension.InvokeInMainThread(() => {
+                ActionExtension.InvokeInMainThreadAsync(() => {
                     try {
                         if (value) {
                             /* add an icon to the tray for manual restoration just in case */
-                            // AddTrayIcon();
-                            AddTrayIconWpf();
+                            AddTrayIcon();
+                            // AddTrayIconWpf();
 
                             /* hide windows */
                             _hiddenWindows = Application.Current?.Windows.OfType<Window>().Where(x => x.Visibility == Visibility.Visible
@@ -176,7 +227,8 @@ namespace AcManager {
         }
 
         public void Dispose() {
-            Hibernated = false;
+            RemoveTrayIcon();
+            RemoveTrayIconWpf();
         }
     }
 }

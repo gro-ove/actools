@@ -1849,9 +1849,9 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyMatrixVariable FxWorldViewProj;
 		[NotNull]
-		public EffectOnlyResourceVariable FxInputMap;
+		public EffectOnlyResourceVariable FxInputMap, FxPreprocessedBaseMap, FxPreprocessedMarksMap, FxBlurredMap;
 		[NotNull]
-		public EffectOnlyVector4Variable FxScreenSize;
+		public EffectOnlyVector4Variable FxColor, FxScreenSize;
 
 		EffectOnlyVector4Variable IEffectScreenSizeWrapper.FxScreenSize => FxScreenSize;
 
@@ -1879,6 +1879,10 @@ namespace AcTools.Render.Shaders {
 
 			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj"));
 			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap"));
+			FxPreprocessedBaseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gPreprocessedBaseMap"));
+			FxPreprocessedMarksMap = new EffectOnlyResourceVariable(E.GetVariableByName("gPreprocessedMarksMap"));
+			FxBlurredMap = new EffectOnlyResourceVariable(E.GetVariableByName("gBlurredMap"));
+			FxColor = new EffectOnlyVector4Variable(E.GetVariableByName("gColor"));
 			FxScreenSize = new EffectOnlyVector4Variable(E.GetVariableByName("gScreenSize"));
 		}
 

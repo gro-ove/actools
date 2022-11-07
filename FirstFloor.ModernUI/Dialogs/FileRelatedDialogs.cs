@@ -21,6 +21,8 @@ namespace FirstFloor.ModernUI.Dialogs {
         public static readonly DialogFilterPiece Applications = new DialogFilterPiece("Applications", "*.exe");
         public static readonly DialogFilterPiece ZipFiles = new DialogFilterPiece("ZIP archives", "*.zip");
         public static readonly DialogFilterPiece TextFiles = new DialogFilterPiece("Text files", "*.txt");
+        public static readonly DialogFilterPiece ConfigFiles = new DialogFilterPiece("Config files", "*.cfg");
+        public static readonly DialogFilterPiece FbxFiles = new DialogFilterPiece("FBX models", "*.fbx");
         public static readonly DialogFilterPiece LutTables = new DialogFilterPiece("LUT tables", "*.lut");
         public static readonly DialogFilterPiece CsvTables = new DialogFilterPiece("LUT tables", "*.csv");
         public static readonly DialogFilterPiece TarGZipFiles = new DialogFilterPiece("Tar GZip archives", "*.tar.gz");
@@ -127,6 +129,53 @@ namespace FirstFloor.ModernUI.Dialogs {
             return dialog.FileName;
         }
 
+        private static OpenFileDialog ConfigureOpenDialog([NotNull] OpenDialogParams p, string currentFilename, bool multiselect) {
+            var filters = p.GetFilters().ToList();
+            var dialog = new OpenFileDialog {
+                Filter = string.Join("|", filters.Select(x => x.WinFilter)),
+                CheckFileExists = p.CheckFileExists,
+                RestoreDirectory = p.RestoreDirectory,
+                DereferenceLinks = p.DereferenceLinks,
+                ValidateNames = p.ValidateNames,
+                Multiselect = multiselect
+            };
+
+            var extension = p.DetaultExtension ?? filters[0].BaseExtension;
+            if (extension != null) {
+                dialog.DefaultExt = extension;
+            }
+
+            if (p.Title != null) {
+                dialog.Title = p.Title;
+            }
+
+            var key = p.ActualSaveKey;
+            var initial = key == null ? p.InitialDirectory :
+                    ValuesStorage.Get(key, p.InitialDirectory);
+            if (initial != null) {
+                dialog.InitialDirectory = initial;
+            }
+
+            foreach (var place in p.CustomPlaces) {
+                dialog.CustomPlaces.Add(place);
+            }
+
+            if (currentFilename != null) {
+                dialog.InitialDirectory = Path.GetDirectoryName(currentFilename) ?? "";
+                dialog.FileName = Path.GetFileNameWithoutExtension(currentFilename);
+            }
+
+            if (dialog.ShowDialog() != true) {
+                return null;
+            }
+
+            if (key != null) {
+                ValuesStorage.Set(key, Path.GetDirectoryName(dialog.FileName));
+            }
+
+            return dialog;
+        }
+
         [CanBeNull]
         public static string Open([NotNull] OpenDialogParams p, string currentFilename = null) {
             var key = p.ActualSaveKey;
@@ -141,55 +190,41 @@ namespace FirstFloor.ModernUI.Dialogs {
             }
 
             try {
-                var filters = p.GetFilters().ToList();
-                var dialog = new OpenFileDialog {
-                    Filter = string.Join("|", filters.Select(x => x.WinFilter)),
-                    CheckFileExists = p.CheckFileExists,
-                    RestoreDirectory = p.RestoreDirectory,
-                    DereferenceLinks = p.DereferenceLinks,
-                    ValidateNames = p.ValidateNames,
-                };
-
-                var extension = p.DetaultExtension ?? filters[0].BaseExtension;
-                if (extension != null) {
-                    dialog.DefaultExt = extension;
-                }
-
-                if (p.Title != null) {
-                    dialog.Title = p.Title;
-                }
-
-                var initial = key == null ? p.InitialDirectory :
-                        ValuesStorage.Get(key, p.InitialDirectory);
-                if (initial != null) {
-                    dialog.InitialDirectory = initial;
-                }
-
-                foreach (var place in p.CustomPlaces) {
-                    dialog.CustomPlaces.Add(place);
-                }
-
-                if (currentFilename != null) {
-                    dialog.InitialDirectory = Path.GetDirectoryName(currentFilename) ?? "";
-                    dialog.FileName = Path.GetFileNameWithoutExtension(currentFilename);
-                }
-
-                if (dialog.ShowDialog() != true) {
-                    return null;
-                }
-
-                if (key != null) {
-                    ValuesStorage.Set(key, Path.GetDirectoryName(dialog.FileName));
-                }
-
+                var dialog = ConfigureOpenDialog(p, currentFilename, false);
+                if (dialog == null) return null;
                 if (p.UseCachedIfAny) {
                     ValuesStorage.Set(cached, dialog.FileName);
                 }
-
                 return dialog.FileName;
             } catch (Exception e) {
                 NonfatalError.NotifyBackground("Can’t use Open File Dialog properly", e);
                 return OpenFallback(key);
+            }
+        }
+
+        [CanBeNull]
+        public static string[] OpenMultiple([NotNull] OpenDialogParams p, string currentFilename = null) {
+            var key = p.ActualSaveKey;
+            var cached = p.ActualSaveKey + @":cached";
+
+            try {
+                if (p.UseCachedIfAny && ValuesStorage.Contains(cached) && ValuesStorage.GetStringList(cached).All(File.Exists)) {
+                    return ValuesStorage.GetStringList(cached).ToArray();
+                }
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
+
+            try {
+                var dialog = ConfigureOpenDialog(p, currentFilename, true);
+                if (dialog == null || dialog.FileNames.Length == 0) return null;
+                if (p.UseCachedIfAny) {
+                    ValuesStorage.Set(cached, dialog.FileNames);
+                }
+                return dialog.FileNames.Distinct().ToArray();
+            } catch (Exception e) {
+                NonfatalError.NotifyBackground("Can’t use Open File Dialog properly", e);
+                return new[]{ OpenFallback(key) };
             }
         }
 

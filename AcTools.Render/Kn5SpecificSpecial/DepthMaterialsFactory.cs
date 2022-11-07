@@ -73,6 +73,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public bool IsBlending => false;
 
+        public string Name => null;
+
         public void Dispose() { }
     }
 

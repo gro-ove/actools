@@ -201,7 +201,7 @@ namespace AcManager.Pages.Dialogs {
                 if (acRoot == null) return;
 
                 if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) {
-                    var id = Prompt.Show("Enter new Steam ID:", "Change Steam ID", SteamIdHelper.Instance.Value);
+                    var id = await Prompt.ShowAsync("Enter new Steam ID:", "Change Steam ID", SteamIdHelper.Instance.Value);
                     if (id != null) {
                         SetSteamId(id);
                     }
@@ -248,7 +248,7 @@ namespace AcManager.Pages.Dialogs {
 
             public ICommand ApplyCommand => _applyCommand ?? (_applyCommand = new DelegateCommand(() => {
                 Logging.Write($"[Initial setup] AC root=“{Value}”, Steam ID=“{SteamProfile.SteamId}”");
-                AcRootDirectory.Instance.Value = Value?.Trim();
+                AcRootDirectory.Instance.RawValue = Value?.Trim();
                 SteamIdHelper.Instance.Value = SteamProfile.SteamId;
                 JustReviewed();
                 _getSteamIdCommand?.RaiseCanExecuteChanged();

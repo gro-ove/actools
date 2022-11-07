@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
+using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls.UserControls.Web;
 using AcManager.Tools;
@@ -8,6 +9,7 @@ using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -58,6 +60,7 @@ namespace AcManager.Pages.Dialogs {
 
             [UsedImplicitly]
             public void Update(double lat, double lng) {
+                Logging.Debug($"Update: lat={lat}, lng={lng}");
                 Sync(() => {
                     _skipNext = true;
                     if (_bridge.Model != null) {
@@ -132,6 +135,10 @@ namespace AcManager.Pages.Dialogs {
             var tags = track.GeoTags;
             return CmHelpersProvider.GetAddress("map") + @"?ms#" +
                     (tags?.IsEmptyOrInvalid == false ? $"{tags.LatitudeValue};{tags.LongitudeValue}" : GetQuery(track));
+        }
+
+        private void OnShowDevToolsClick(object sender, RoutedEventArgs e) {
+            MapWebBrowser.CurrentTab?.ShowDevTools();
         }
     }
 }

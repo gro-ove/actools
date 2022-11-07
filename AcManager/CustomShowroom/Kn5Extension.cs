@@ -13,7 +13,7 @@ using FirstFloor.ModernUI.Helpers;
 namespace AcManager.CustomShowroom {
     public static class Kn5Extension {
         public static async Task UpdateKn5(this IKn5 kn5, BaseRenderer renderer = null, CarSkinObject skin = null) {
-            if (!kn5.IsEditable) {
+            if (!kn5.IsEditable || kn5.OriginalFilename == null) {
                 throw new Exception("Can’t save KN5 loaded unusually");
             }
 

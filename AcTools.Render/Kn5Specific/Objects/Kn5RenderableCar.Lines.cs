@@ -543,6 +543,28 @@ namespace AcTools.Render.Kn5Specific.Objects {
         });
         #endregion
 
+        #region Inertia box
+        private bool _isInertiaBoxVisible;
+
+        public bool IsInertiaBoxVisible {
+            get => _isInertiaBoxVisible;
+            set {
+                if (Equals(value, _isInertiaBoxVisible)) return;
+                _isInertiaBoxVisible = value;
+                _skinsWatcherHolder?.RaiseSceneUpdated();
+                _inertiaBoxLines.Reset();
+                OnPropertyChanged();
+            }
+        }
+
+        private readonly CarDebugLinesWrapper _inertiaBoxLines = new CarDebugLinesWrapper((car, data) => {
+            var size = data.GetInertiaBox();
+            return new CarDebugLinesObject("Inertia box",
+                    DebugLinesObject.GetLinesBox(Matrix.Translation(new Vector3(0f, size.Y / 2f, 0f)),
+                            size, new Color4(1f, 0f, 0.7f, 1f))) { AllowScaling = false };
+        });
+        #endregion
+
         #region Flames position
         private bool _areFlamesVisible;
 
@@ -557,12 +579,15 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
+        private static Matrix GetFlameMatrix(CarData.FlameDescription x) {
+            var side = Vector3.Cross(x.Direction, Math.Abs(x.Direction.Y) > 0.5 ? -Vector3.UnitZ : Vector3.UnitY);
+            return Matrix.Invert(Matrix.LookAtRH(Vector3.Zero, -x.Direction, Vector3.Normalize(Vector3.Cross(x.Direction, side))))
+                    * Matrix.Translation(x.Position);
+        }
+
         private readonly CarDebugLinesWrapper _flamesLines = new CarDebugLinesWrapper((car, data) => {
             return data.GetFlames().Select(x => {
-                var renderable = DebugLinesObject.GetLinesArrow(
-                        Matrix.LookAtRH(Vector3.Zero, -x.Direction, Math.Abs(x.Direction.Y) > 0.5 ? Vector3.UnitZ : -Vector3.UnitY)
-                                * Matrix.Translation(x.Position), Vector3.UnitZ,
-                        new Color4(1f, 1f, 0f, 0f));
+                var renderable = DebugLinesObject.GetLinesArrow(GetFlameMatrix(x), Vector3.UnitZ, new Color4(1f, 1f, 0f, 0f));
                 return new CarDebugLinesObject(x.Name, renderable) {
                     AllowRotation = MoveableRotationAxis.All
                 };
@@ -626,6 +651,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             if (IsFuelTankVisible) {
                 _fuelTankLines.DrawLines(this, holder, camera);
+            }
+
+            if (IsInertiaBoxVisible) {
+                _inertiaBoxLines.DrawLines(this, holder, camera);
             }
 
             if (AreFlamesVisible) {

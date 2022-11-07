@@ -42,6 +42,10 @@ namespace AcTools.Render.Base.Objects {
             return IndicesCount / 3;
         }
 
+        public override IEnumerable<int> GetMaterialIds() {
+            return new int[0];
+        }
+
         public bool OptimizedBoundingBoxUpdate { get; set; } = true;
 
         private Matrix? _parentMatrix;

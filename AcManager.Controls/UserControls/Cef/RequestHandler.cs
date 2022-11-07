@@ -133,19 +133,18 @@ namespace AcManager.Controls.UserControls.Cef {
 
         IResponseFilter IResourceRequestHandler.GetResourceResponseFilter(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request,
                 IResponse response) {
-            if (response.MimeType == @"text/html") {
+            if (response.MimeType == @"text/html" && !request.Url.EndsWith(@".js")) {
+                Logging.Debug("Inject style: " + request.Url);
                 var css = StyleProvider?.GetStyle(request.Url, browserControl is CefSharp.Wpf.ChromiumWebBrowser);
                 var inject = new WebInjectEventArgs(request.Url);
                 Inject?.Invoke(this, inject);
-                return new ReplaceResponseFilter(inject.Replacements.Append(ReplaceResponseFilter.CreateCustomCssJs(inject.ToInject.JoinToString(), $@"
-::-webkit-scrollbar {{ width: 8px!important; height: 8px!important; }}
-::-webkit-scrollbar-track {{ box-shadow: none!important; border-radius: 0!important; background: {_windowColor}!important; opacity: 0!important; }}
-::-webkit-scrollbar-corner {{ background: {_windowColor}!important; }}
-::-webkit-scrollbar-thumb {{ border: none!important; box-shadow: none!important; border-radius: 0!important; {_scrollThumbColor} }}
-::-webkit-scrollbar-thumb:hover {{ {_scrollThumbHoverColor} }}
-::-webkit-scrollbar-thumb:active {{ {_scrollThumbDraggingColor} }}\n" + css, @"
-(function(){
-})()")));
+
+                var injectString = inject.ToInject.JoinToString();
+                if (string.IsNullOrWhiteSpace(injectString) && string.IsNullOrWhiteSpace(css)) {
+                    return null;
+                }
+
+                return new ReplaceResponseFilter(inject.Replacements.Append(ReplaceResponseFilter.CreateCustomCssJs(injectString, css)));
             }
 
             return null;
@@ -159,8 +158,8 @@ namespace AcManager.Controls.UserControls.Cef {
         }
 
         private class ReplaceResponseFilter : StreamReplacement, IResponseFilter {
-            public static KeyValuePair<string, string> CreateCustomCssJs(string prefix, string css, string js) {
-                return new KeyValuePair<string, string>(@"</head>", $@"{prefix}<style>{css}</style><script>{js}</script></head>");
+            public static KeyValuePair<string, string> CreateCustomCssJs(string prefix, string css) {
+                return new KeyValuePair<string, string>(@"</head>", $@"{prefix}<style>{css}</style></head>");
             }
 
             public ReplaceResponseFilter(IEnumerable<KeyValuePair<string, string>> replacements) : base(replacements) { }

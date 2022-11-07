@@ -167,18 +167,20 @@ namespace AcManager.Pages.Miscellaneous {
                 Track = Lazier.CreateAsync(() => TracksManager.Instance.GetLayoutByKunosIdAsync(Parsed?.TrackId ?? ""));
                 PlayerCar = Lazier.CreateAsync(() => CarsManager.Instance.GetByIdAsync(Parsed?.Players?.FirstOrDefault()?.CarId ?? ""));
                 Cars = Lazier.CreateAsync(async () => (await (Parsed?.Players?.Select(x => x.CarId)
-                                                                     .Distinct()
-                                                                     .Select(x => CarsManager.Instance.GetByIdAsync(x ?? ""))
-                                                                     .WhenAll() ??
+                        .Distinct()
+                        .Select(x => CarsManager.Instance.GetByIdAsync(x ?? ""))
+                        .WhenAll() ??
                         Task.FromResult<IEnumerable<CarObject>>(null)).ConfigureAwait(false)).Select((x, y) => new WrappedCarObject(x, y == 0))
-                                                                                             .OrderBy(x => x.Car.DisplayName).ToList());
+                        .OrderBy(x => x.Car.DisplayName).ToList());
                 ModeDetails = Lazier.CreateAsync(GetModeDetails);
             }
 
             [NotNull]
             public Lazier<TrackObjectBase> Track { get; }
+
             [NotNull]
             public Lazier<CarObject> PlayerCar { get; }
+
             [NotNull]
             public Lazier<List<WrappedCarObject>> Cars { get; }
 
@@ -194,10 +196,12 @@ namespace AcManager.Pages.Miscellaneous {
 
             [CanBeNull]
             public JObject JObject => _jObject.Get(() => JObject.Parse(File.ReadAllText(Filename)));
+
             private LazierThis<JObject> _jObject;
 
             [CanBeNull]
             public Game.Result Parsed => _parsed.Get(() => JObject?.ToObject<Game.Result>());
+
             private LazierThis<Game.Result> _parsed;
 
             [CanBeNull]
@@ -218,10 +222,12 @@ namespace AcManager.Pages.Miscellaneous {
 
                 return null;
             });
+
             private LazierThis<string> _modeSummary;
 
             [CanBeNull]
             public Lazier<string> ModeDetails { get; }
+
             private async Task<string> GetModeDetails() {
                 var online = RaceIni["REMOTE"];
                 if (online.GetBool("ACTIVE", false)) {
@@ -275,14 +281,17 @@ namespace AcManager.Pages.Miscellaneous {
 
                 return "?";
             });
+
             private LazierThis<string> _summary;
 
             [NotNull]
             public IniFile RaceIni => _raceIni.Get(() => IniFile.Parse(JObject?.GetStringValueOnly(RaceResultsStorage.KeyRaceIni) ?? ""));
+
             private LazierThis<IniFile> _raceIni;
 
             [CanBeNull]
             public string QuickDrivePreset => _quickDrivePreset.Get(() => JObject?.GetStringValueOnly(RaceResultsStorage.KeyQuickDrive));
+
             private LazierThis<string> _quickDrivePreset;
 
             [CanBeNull]
@@ -294,14 +303,14 @@ namespace AcManager.Pages.Miscellaneous {
                 return sessions.IsWeekendSessions() ? ToolsStrings.Common_Weekend :
                         Parsed?.Sessions?.Select(GameResultExtension.GetSessionName).JoinToReadableString();
             });
+
             private LazierThis<string> _sessionNames;
 #pragma warning restore 649
 
             private DelegateCommand _showDetailsCommand;
 
-            public DelegateCommand ShowDetailsCommand => _showDetailsCommand ?? (_showDetailsCommand = new DelegateCommand(() => {
-                new GameDialog(Parsed).ShowDialog();
-            }));
+            public DelegateCommand ShowDetailsCommand => _showDetailsCommand ?? (_showDetailsCommand = new DelegateCommand(()
+                        => new GameDialog(Parsed).ShowDialog()));
 
             private string SetQuickDriveRaceGrid() {
                 var parsed = Parsed;
@@ -309,21 +318,11 @@ namespace AcManager.Pages.Miscellaneous {
                 var sessions = parsed?.Sessions;
                 if (players == null || sessions == null || players.Length == 0) return null;
 
-                var opponents = players.Skip(1).Select(x => new {
+                return RaceGridViewModel.GeneratePresetData(players.Skip(1).Select(x => new {
                     x.Name,
                     Car = CarsManager.Instance.GetById(x.CarId ?? ""),
                     SkinId = x.CarSkinId
-                }).Where(x => x.Car != null).ToList();
-                if (opponents.Count <= 0) return null;
-
-                var vm = new RaceGridViewModel(keySaveable: null) {
-                    LoadingFromOutside = true,
-                    Mode = BuiltInGridMode.Custom,
-                    FilterValue = null,
-                    RandomSkinsFilter = null
-                };
-
-                vm.NonfilteredList.ReplaceEverythingBy(opponents.Select(x => {
+                }).Where(x => x.Car != null).Select(x => {
                     var match = Regex.Match(x.Name, @"^(.+) \((\d+(?:[,\.]\d+)?)%(?:, (\d+(?:[,\.]\d+)?)?%\))$");
                     if (match.Success) {
                         var cleanName = match.Groups[1].Value;
@@ -342,8 +341,6 @@ namespace AcManager.Pages.Miscellaneous {
                         Name = x.Name
                     };
                 }));
-
-                return vm.ExportToPresetData();
             }
 
             private Uri GetQuickDriveMode(bool anyOpponents) {
@@ -465,9 +462,8 @@ namespace AcManager.Pages.Miscellaneous {
 
             private DelegateCommand _viewInExplorerCommand;
 
-            public DelegateCommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(() => {
-                WindowsHelper.ViewFile(Filename);
-            }));
+            public DelegateCommand ViewInExplorerCommand
+                => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(() => { WindowsHelper.ViewFile(Filename); }));
 
             private bool _isDeleted;
 
@@ -548,8 +544,8 @@ namespace AcManager.Pages.Miscellaneous {
                 }
 
                 c.AddItem("Setup race", item.SetupRaceCommand)
-                 .AddItem("Start race", item.StartRaceCommand, style: TryFindResource("GoMenuItem") as Style)
-                 .IsOpen = true;
+                        .AddItem("Start race", item.StartRaceCommand, style: TryFindResource("GoMenuItem") as Style)
+                        .IsOpen = true;
             }
         }
     }

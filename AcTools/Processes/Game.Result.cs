@@ -90,7 +90,7 @@ namespace AcTools.Processes {
             [JsonProperty(PropertyName = "points")]
             public int Points { get; set; }
 
-            public override bool IsNotCancelled => Points > 0;
+            public override bool IsNotCancelled => Points != 0;
 
             public override string GetDescription() {
                 return $"({Name}, Cancelled={!IsNotCancelled}, Points={Points})";

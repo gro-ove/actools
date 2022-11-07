@@ -10,12 +10,15 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.ViewModels;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Selected;
+using AcManager.Tools;
 using AcManager.Tools.AcPlugins.Extras;
 using AcManager.Tools.Filters.Testers;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
@@ -79,6 +82,8 @@ namespace AcManager.Pages.ServerPreset {
         public static IMultiValueConverter ClientsToBandwidthConverter { get; } = new ClientsToBandwidthConverterInner();
 
         public partial class ViewModel : SelectedAcObjectViewModel<ServerPresetObject> {
+            public QuickDriveButtonModel QuickDriveButton { get; }
+
             public ServerPresetPackMode[] Modes { get; } = EnumExtension.GetValues<ServerPresetPackMode>();
 
             private readonly Busy _busy = new Busy();
@@ -142,6 +147,32 @@ namespace AcManager.Pages.ServerPreset {
                 UpdateWrapperContentCars();
                 UpdateWrapperContentTracks();
                 UpdateWrapperContentWeather();
+
+                QuickDriveButton = new QuickDriveButtonModel((setupRace, preset) => {
+                    var entry = acObject.DriverEntries.FirstOrDefault(x => x.Guid == SteamIdHelper.Instance.Value)
+                            ?? acObject.DriverEntries.FirstOrDefault();
+                    var weatherId = acObject.Weather?.RandomElementOrDefault()?.WeatherId;
+                    Uri mode = null;
+                    if (acObject.Sessions.GetById("PRACTICE").IsEnabled) {
+                        mode = acObject.Sessions.GetById("QUALIFY").IsEnabled && acObject.Sessions.GetById("RACE").IsEnabled
+                                ? QuickDrive.ModeWeekend : QuickDrive.ModePractice;
+                    } else if (acObject.Sessions.GetById("RACE").IsEnabled) {
+                        mode = QuickDrive.ModeRace;
+                    } else if (acObject.Sessions.GetById("QUALIFY").IsEnabled) {
+                        mode = QuickDrive.ModeHotlap;
+                    }
+                    return QuickDrive.Activate(setupRace, entry?.CarObject, entry?.CarSkinId, track: Track, presetFilename: preset,
+                            weatherId: weatherId, carSetupFilename: entry?.CarSetup?.Filename, time: acObject.Time, mode: mode,
+                            serializedRaceGrid: RaceGridViewModel.GeneratePresetData(acObject.DriverEntries?.ApartFrom(entry).Select(x => {
+                                if (x.CarObject == null) return null;
+                                return new RaceGridEntry(x.CarObject) {
+                                    CarSkin = x.CarSkinObject,
+                                    Ballast = x.Ballast,
+                                    Restrictor = x.Restrictor,
+                                    Name = x.DriverName,
+                                };
+                            })));
+                });
             }
 
             public override void Unload() {
@@ -152,6 +183,7 @@ namespace AcManager.Pages.ServerPreset {
                 SelectedObject.WeatherCollectionChanged -= OnWeatherCollectionChanged;
                 SelectedObject.SaveWrapperContent -= OnSaveWrapperContent;
                 _helper.Dispose();
+                QuickDriveButton.Dispose();
                 PackServerPresets = null;
             }
 
@@ -350,7 +382,7 @@ namespace AcManager.Pages.ServerPreset {
                 }));
 
             private void OnAcObjectPropertyChanged(object sender, PropertyChangedEventArgs e) {
-                Logging.Debug($"prop={e.PropertyName}, busy={_busy.Is}");
+                // Logging.Debug($"prop={e.PropertyName}, busy={_busy.Is}");
                 switch (e.PropertyName) {
                     case nameof(SelectedObject.TrackId):
                     case nameof(SelectedObject.TrackLayoutId):
@@ -451,7 +483,7 @@ namespace AcManager.Pages.ServerPreset {
             private void AddSetup() {
                 var car = SelectedObject.DriverEntries.GroupBy(x => x.CarId).MaxEntryOrDefault(x => x.Count())?.Key;
                 var directory = car == null ? null : AcPaths.GetCarSetupsDirectory(car);
-                var filename = FileRelatedDialogs.Open(new OpenDialogParams {
+                var filenames = FileRelatedDialogs.OpenMultiple(new OpenDialogParams {
                     DirectorySaveKey = @"addsetuptoserver:" + car,
                     Filters = {
                         DialogFilterPiece.IniFiles,
@@ -460,31 +492,33 @@ namespace AcManager.Pages.ServerPreset {
                     Title = "Select car setup settings",
                     InitialDirectory = directory == null || !Directory.Exists(directory) ? AcPaths.GetCarSetupsDirectory() : directory,
                 });
-                if (filename == null || !File.Exists(filename)) return;
-                var setup = ServerPresetObject.SetupItem.Create(filename, false);
-                if (setup == null) {
-                    var carId = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(filename)));
-                    if (carId != null && CarsManager.Instance.GetById(carId) != null) {
-                        new IniFile(filename) {
-                            ["CAR"] = { ["MODEL"] = carId }
-                        }.Save();
-                        setup = ServerPresetObject.SetupItem.Create(filename, false);
-                    }
+                if (filenames == null) return;
 
+                foreach (var filename in filenames) {
+                    if (SelectedObject.SetupItems.Any(x => FileUtils.ArePathsEqual(x.Filename, filename))) continue;
+                    var setup = ServerPresetObject.SetupItem.Create(filename, false);
                     if (setup == null) {
-                        MessageDialog.Show("This file doesn’t have car specified. Please, re-save it to fix that.");
-                        return;
+                        var carId = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(filename)));
+                        if (carId != null && CarsManager.Instance.GetById(carId) != null) {
+                            new IniFile(filename) {
+                                ["CAR"] = { ["MODEL"] = carId }
+                            }.Save();
+                            setup = ServerPresetObject.SetupItem.Create(filename, false);
+                        }
+                        if (setup == null) {
+                            MessageDialog.Show($"Setup “{Path.GetFileName(filename)}” doesn’t have car specified. Please, re-save it to fix that.");
+                            return;
+                        }
                     }
+                    SelectedObject.SetupItems.Add(setup);
                 }
-
-                SelectedObject.SetupItems.Add(setup);
             }
 
             public StoredValue<bool> CopyPasswordToInviteLink { get; } = Stored.Get("serverPreset.copyPwToInviteLink", false);
 
-            private AsyncCommand _InviteCommand;
+            private AsyncCommand _inviteCommand;
 
-            public AsyncCommand InviteCommand => _InviteCommand ?? (_InviteCommand = new AsyncCommand(async () => {
+            public AsyncCommand InviteCommand => _inviteCommand ?? (_inviteCommand = new AsyncCommand(async () => {
                 try {
                     var ipInfo = await IpGeoProvider.GetAsync();
                     if (ipInfo == null) {
@@ -587,6 +621,7 @@ namespace AcManager.Pages.ServerPreset {
                 new InputBinding(_model.PackOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.InviteCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
             });
+            InputBindings.AddRange(_model.QuickDriveButton.GetInputBindingCommands());
 
             foreach (var binding in Enumerable.Range(0, 8).Select(i => new InputBinding(new DelegateCommand(() =>
                     Tab.SelectedSource = Tab.Links.ApartFrom(RunningLogLink, RunningStatusLink).ElementAtOrDefault(i)?.Source ?? Tab.SelectedSource),
@@ -629,6 +664,10 @@ namespace AcManager.Pages.ServerPreset {
 
         private void OnPackServerButtonMouseDown(object sender, MouseButtonEventArgs e) {
             _model.InitializePackServerPresets();
+        }
+
+        private void OnDriveButtonMouseDown(object sender, MouseButtonEventArgs e) {
+            _model.QuickDriveButton.Initialize();
         }
     }
 }

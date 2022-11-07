@@ -40,6 +40,9 @@ namespace AcManager.Tools {
                 case nameof(PpFilterObject):
                     return UriExtension.Create("/Pages/Selected/SelectedPpFilterPage.xaml?Id={0}", obj.Id);
 
+                case nameof(LuaAppObject):
+                    return UriExtension.Create("/Pages/Selected/SelectedLuaAppPage.xaml?Id={0}", obj.Id);
+
                 case nameof(PythonAppObject):
                     return UriExtension.Create("/Pages/Selected/SelectedPythonAppPage.xaml?Id={0}", obj.Id);
 

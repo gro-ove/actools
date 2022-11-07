@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -24,6 +23,7 @@ namespace FirstFloor.ModernUI.Helpers {
         private readonly string _encryptionKey;
         private readonly bool _disableCompression;
         private readonly bool _useDeflate;
+        private readonly int _sizeLimit;
 
         public Storage(string filename = null, string encryptionKey = null, bool disableCompression =
 #if DEBUG
@@ -31,12 +31,13 @@ namespace FirstFloor.ModernUI.Helpers {
 #else
                 false,
 #endif
-                bool useDeflate = false) {
+                bool useDeflate = false, int sizeLimit = int.MaxValue) {
             _storage = new Dictionary<string, string>();
             _filename = filename;
             _encryptionKey = encryptionKey;
             _disableCompression = disableCompression;
             _useDeflate = useDeflate;
+            _sizeLimit = sizeLimit;
 
             Load();
             Exit += OnExit;
@@ -74,14 +75,14 @@ namespace FirstFloor.ModernUI.Helpers {
         private const byte DeflateFlag = 0;
         private const byte LzfFlag = 11;
 
-        private string DecodeBytes(byte[] bytes) {
+        private byte[] DecodeBytes(byte[] bytes) {
             if (bytes[0] == LzfFlag) {
-                return Encoding.UTF8.GetString(Lzf.Decompress(bytes, 1, bytes.Length - 1));
+                return Lzf.Decompress(bytes, 1, bytes.Length - 1);
             }
 
             var deflateMode = bytes[0] == DeflateFlag;
             if (!deflateMode && !bytes.Any(x => x < 0x20 && x != '\t' && x != '\n' && x != '\r')) {
-                return Encoding.UTF8.GetString(bytes);
+                return bytes;
             }
 
             using (var inputStream = new MemoryStream(bytes)) {
@@ -89,10 +90,10 @@ namespace FirstFloor.ModernUI.Helpers {
                     inputStream.Seek(1, SeekOrigin.Begin);
                 }
 
-                using (var gzip = new DeflateStream(inputStream, CompressionMode.Decompress)) {
-                    using (var reader = new StreamReader(gzip, Encoding.UTF8)) {
-                        return reader.ReadToEnd();
-                    }
+                using (var gzip = new DeflateStream(inputStream, CompressionMode.Decompress))
+                using (var memory = new MemoryStream()) {
+                    gzip.CopyTo(memory);
+                    return memory.ToArray();
                 }
             }
         }
@@ -143,33 +144,34 @@ namespace FirstFloor.ModernUI.Helpers {
             return encoded?.Split('\n').Where(x => !string.IsNullOrEmpty(x)).Select(Decode) ?? new string[0];
         }
 
-        public static string Encode([NotNull] string s) {
+        public static void EncodeTo([NotNull] StringBuilder dst, [NotNull] string s) {
             if (s == null) throw new ArgumentNullException(nameof(s));
-            var result = new StringBuilder(s.Length + 5);
-            foreach (var c in s) {
+            for (var i = 0; i < s.Length; i++) {
+                var c = s[i];
                 switch (c) {
                     case '\\':
-                        result.Append(@"\\");
+                        dst.Append(@"\\");
                         break;
-
                     case '\n':
-                        result.Append(@"\n");
+                        dst.Append(@"\n");
                         break;
-
                     case '\t':
-                        result.Append(@"\t");
+                        dst.Append(@"\t");
                         break;
-
                     case '\b':
                     case '\r':
                         break;
-
                     default:
-                        result.Append(c);
+                        dst.Append(c);
                         break;
                 }
             }
+        }
 
+        public static string Encode([NotNull] string s) {
+            if (s == null) throw new ArgumentNullException(nameof(s));
+            var result = new StringBuilder(s.Length + 5);
+            EncodeTo(result, s);
             return result.ToString();
         }
 
@@ -218,7 +220,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
             var filenameToLoadExists = File.Exists(filenameToLoad);
             var backupFilename = GetBackupFilename();
-            string[] decodedLines = null;
+            byte[] decodedLines = null;
             if (backupFilename != null && File.Exists(backupFilename)) {
                 if (!filenameToLoadExists || new FileInfo(backupFilename).Length > new FileInfo(filenameToLoad).Length * 4) {
                     filenameToLoad = backupFilename;
@@ -243,13 +245,17 @@ namespace FirstFloor.ModernUI.Helpers {
                 return;
             }
 
-            try {
-                var splitted = decodedLines ?? DecodeLines(filenameToLoad);
-                Load(int.Parse(splitted[0].Split(new[] { "version:" }, StringSplitOptions.None)[1].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture),
-                        splitted.Skip(1));
-            } catch (Exception e) {
-                Logging.Warning($"Failed to load {_filename}: {e}");
-                lock (_storage) {
+            lock (_storage) {
+                try {
+                    var splitted = decodedLines ?? DecodeLines(filenameToLoad);
+                    if (splitted.Length > _sizeLimit) {
+                        Logging.Debug($"Choosing not to load {_filename}: file is too large already");
+                        _storage.Clear();
+                    } else if (!Load(splitted)) {
+                        Logging.Warning($"Failed to load {_filename}: incorrect version");
+                    }
+                } catch (Exception e) {
+                    Logging.Warning($"Failed to load {_filename}: {e}");
                     _storage.Clear();
                 }
             }
@@ -259,47 +265,144 @@ namespace FirstFloor.ModernUI.Helpers {
                 Logging.Write($"{Path.GetFileName(_filename)}: {w.Elapsed.TotalMilliseconds:F2} ms");
             }
 
-            string[] DecodeLines(string filename) {
+            byte[] DecodeLines(string filename) {
                 var bytes = File.ReadAllBytes(filename);
-                if (bytes.Length == 0) return new string[0];
-                return DecodeBytes(bytes)
-                        .Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                return bytes.Length == 0 ? new byte[0] : DecodeBytes(bytes);
             }
         }
 
         private const int ActualVersion = 2;
 
-        private void Load(int version, IEnumerable<string> data) {
-            lock (_storage) {
-                _storage.Clear();
-                switch (version) {
-                    case 2:
-                        foreach (var split in data
-                                .Select(line => line.Split(new[] { '\t' }, 2))
-                                .Where(split => split.Length == 2)) {
-                            _storage[Decode(split[0])] = Decode(split[1]);
-                        }
-                        break;
+        private static char[] _chars = new char[256];
 
-                    case 1:
-                        foreach (var split in data
-                                .Select(line => line.Split(new[] { '\t' }, 2))
-                                .Where(split => split.Length == 2)) {
-                            _storage[split[0]] = DecodeBase64(split[1]);
-                        }
-                        break;
+        public static string Decode(byte[] d, int f, int l) {
+            if (l > _chars.Length) _chars = new char[l + 64];
 
-                    default:
-                        throw new InvalidDataException("Invalid version: " + version);
+            StringBuilder result = null;
+            var u = 0;
+            for (var i = 0; i < l; i++) {
+                var c = d[f + i];
+                if (c != '\\') {
+                    ++u;
+                    continue;
                 }
+
+                if (result == null) result = new StringBuilder(l);
+                if (u > 0) {
+                    var count = Encoding.UTF8.GetChars(d, f + i - u, u, _chars, 0);
+                    result.Append(_chars, 0, count);
+                    u = 0;
+                }
+
+                if (++i >= l) {
+                    break;
+                }
+
+                switch (d[f + i]) {
+                    case (byte)'\\':
+                        result.Append('\\');
+                        break;
+
+                    case (byte)'n':
+                        result.Append('\n');
+                        break;
+
+                    case (byte)'t':
+                        result.Append('\t');
+                        break;
+                }
+            }
+
+            if (u > 0) {
+                if (result == null) return Encoding.UTF8.GetString(d, f + l - u, u);
+                var count = Encoding.UTF8.GetChars(d, f + l - u, u, _chars, 0);
+                result.Append(_chars, 0, count);
+            }
+
+            return result?.ToString() ?? string.Empty;
+        }
+
+        private bool Load(byte[] data) {
+            _storage.Clear();
+
+            if (data.Length < 10
+                    || data[0] != 'v' || data[1] != 'e' || data[7] != ':' || data[8] != ' '
+                    || data.Length != 10 && data[10] != '\r' && data[10] != '\n') {
+                return false;
+            }
+
+            switch (data[9] - '0') {
+                case 2: {
+                    LoadV2(data);
+                    return true;
+                }
+                case 1: {
+                    LoadV1(data);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void LoadV1(byte[] data) {
+            var s = -1;
+            var d = -1;
+            for (var i = 10; i < data.Length; ++i) {
+                var c = data[i];
+                if (c == '\r' || c == '\n') {
+                    if (s != -1 && d != -1) {
+                        _storage[Decode(data, s, d - s)] = DecodeBase64(Encoding.ASCII.GetString(data, d + 1, i - d - 1));
+                    }
+                    s = i + 1;
+                    d = -1;
+                }
+                if (c == '\t') {
+                    d = i;
+                }
+            }
+            if (s != -1 && d != -1) {
+                var i = data.Length;
+                _storage[Decode(data, s, d - s)] = DecodeBase64(Encoding.ASCII.GetString(data, d + 1, i - d - 1));
+            }
+        }
+
+        private void LoadV2(byte[] data) {
+            var s = -1;
+            var d = -1;
+            for (var i = 10; i < data.Length; ++i) {
+                var c = data[i];
+                if (c == '\r' || c == '\n') {
+                    if (s != -1 && d != -1) {
+                        _storage[Decode(data, s, d - s)] = Decode(data, d + 1, i - d - 1);
+                    }
+                    s = i + 1;
+                    d = -1;
+                }
+                if (c == '\t') {
+                    d = i;
+                }
+            }
+
+            if (s != -1 && d != -1) {
+                var i = data.Length;
+                _storage[Decode(data, s, d - s)] = Decode(data, d + 1, i - d - 1);
             }
         }
 
         public string GetData() {
             lock (_storage) {
-                return "version: " + ActualVersion + "\n" + string.Join("\n", from x in _storage
-                    where x.Key != null && x.Value != null
-                    select Encode(x.Key) + '\t' + Encode(x.Value));
+                var ret = new StringBuilder();
+                ret.Append("version: ");
+                ret.Append(ActualVersion);
+                foreach (var p in _storage) {
+                    if (p.Key != null && p.Value != null) {
+                        ret.Append('\n');
+                        EncodeTo(ret, p.Key);
+                        ret.Append('\t');
+                        EncodeTo(ret, p.Value);
+                    }
+                }
+                return ret.ToString();
             }
         }
 
@@ -337,7 +440,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 if (_disableCompression) {
                     File.WriteAllBytes(newFilename, bytes);
                 } else {
-                    using (var output = new FileStream(newFilename, FileMode.Create, FileAccess.Write, FileShare.Read)) {
+                    using (var output = new FileStream(newFilename, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)) {
                         if (_useDeflate) {
                             output.WriteByte(DeflateFlag);
                             using (var gzip = new DeflateStream(output, CompressionLevel.Fastest)) {

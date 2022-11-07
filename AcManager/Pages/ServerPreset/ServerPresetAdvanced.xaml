@@ -2,9 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:g="clr-namespace:AcManager"
-    mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}" Background="Transparent">
+    xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}" Background="Transparent">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -16,176 +14,377 @@
   </UserControl.Resources>
 
   <ScrollViewer>
-    <StackPanel Style="{StaticResource SettingsCompactPanel}">
 
-      <mui:SpacingUniformGrid HorizontalSpacing="20" Columns="2" VerticalStackMode="True" Margin="0 0 0 8">
-        <StackPanel>
-          <TextBlock Text="Allowed tyres:" Style="{StaticResource SettingsPanel.Heading2.First}" />
-          <TextBlock Margin="20 0 0 0" Text="No tyres found" FontStyle="Italic"
-              Visibility="{Binding SelectedObject.Tyres.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter='0,inverse'}" />
-          <ListBox x:Name="AllowedTyres" DataContext="{Binding SelectedObject}" ItemsSource="{Binding Tyres}" mui:ListBoxHelper.ProperMultiSelectionMode="True"
-              ItemContainerStyle="{StaticResource CheckBoxListBoxItem}" DataContextChanged="AllowedTyres_OnDataContextChanged" Margin="20 0 0 0">
-            <ListBox.ItemTemplate>
-              <DataTemplate DataType="{x:Type t:ServerPresetObject+TyresItem}">
-                <DockPanel Margin="0 0 4 2">
-                  <TextBlock Text="{Binding CarsList}" Style="{StaticResource Small}" DockPanel.Dock="Bottom" Margin="0 2 0 0" />
-                  <TextBlock Text="{Binding ShortName, StringFormat='{}[{0}]'}" Style="{StaticResource Small}" FontWeight="Bold"
-                      FontFamily="{StaticResource MonospaceFont}" Margin="0 3 4 -3" />
-                  <TextBlock Text="{Binding DisplayName}" />
-                </DockPanel>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
-        </StackPanel>
-        <StackPanel>
-          <TextBlock Text="Fixed setups:" Style="{StaticResource SettingsPanel.Heading2.First}" />
-          <TextBlock Margin="20 0 0 0" Text="No fixed setups set" FontStyle="Italic"
-              Visibility="{Binding SelectedObject.SetupItems.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter='0,inverse'}" />
-          <ListBox x:Name="SetupItems" DataContext="{Binding SelectedObject}" ItemsSource="{Binding SetupItems}" SelectedItem="{Binding DefaultSetupItem}"
-              mui:Draggable.Enabled="True" mui:ListBoxHelper.ProperMultiSelectionMode="True" Margin="20 0 0 8"
-              ItemContainerStyle="{StaticResource CheckBoxListBoxItem}" mui:Draggable.DestinationConverter="{Binding SetupsDraggableConverterInstance}"
-              SelectionChanged="FixedSetups_OnSelectionChanged" DataContextChanged="FixedSetups_OnDataContextChanged">
-            <ListBox.ItemTemplate>
-              <DataTemplate DataType="{x:Type t:ServerPresetObject+SetupItem}">
-                <!--<TextBlock Text="{Binding DisplayName}" Margin="2 -4 0 4" />-->
-                <Border Background="Transparent" ToolTip="{Binding Filename}">
-                  <Border.ContextMenu>
-                    <ContextMenu>
-                      <MenuItem Header="View in folder" Command="{Binding ViewInDirectoryCommand}" />
-                      <MenuItem Header="Use as default" IsCheckable="True" IsChecked="{Binding IsDefault}" />
-                      <Separator />
-                      <MenuItem Header="Delete setup" Command="{Binding DeleteCommand}" />
-                    </ContextMenu>
-                  </Border.ContextMenu>
-                  <DockPanel Margin="0 0 4 2">
-                    <Button Margin="0 -2 0 0" Style="{StaticResource DeleteButton}" Command="{Binding DeleteCommand}"
-                        Visibility="{Binding DeleteCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 2" />
-                    <Path Data="{StaticResource AlertIconData}" Width="10" Height="10" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
-                        Margin="0 0 4 0" VerticalAlignment="Center" ToolTip="This isn’t a car selected for this server"
-                        Visibility="{Binding IsValidCar, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                    <TextBlock Text="{Binding CarDisplayName}" Style="{StaticResource Small}" />
-                  </DockPanel>
-                </Border>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
-          <Button Command="{Binding AddSetupCommand}" Margin="0 0 0 8">
-            <DockPanel IsHitTestVisible="False" Margin="0">
-              <Path Data="{StaticResource AddIconData}" Width="10" Height="10"
-                  Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left"
-                  Margin="0 0 4 0" VerticalAlignment="Center" SnapsToDevicePixels="True" />
-              <TextBlock Text="Add setup" />
-            </DockPanel>
-          </Button>
-          <c:MessageBlock CloseKey="servercheckedsetupinfo">
-            <TextBlock Text="Checked setup is the one applied by default." />
-          </c:MessageBlock>
-        </StackPanel>
-      </mui:SpacingUniformGrid>
+    <mui:SpacingUniformGrid HorizontalSpacing="20" Columns="2" VerticalStackMode="True" Margin="0 0 0 8">
 
-      <TextBlock Text="Server plugin:" Style="{StaticResource SettingsPanel.Heading2}" />
-      <DockPanel>
-        <Label Content="Address:" />
-        <mui:BetterTextBox Text="{Binding SelectedObject.PluginUdpAddress}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
-      </DockPanel>
-      <DockPanel>
-        <Label Content="Local port:" />
-        <mui:BetterTextBox Text="{Binding SelectedObject.PluginUdpPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
-            Maximum="65535" />
-      </DockPanel>
-      <DockPanel Visibility="{Binding SelectedObject.UseCmPlugin, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-        <Label Content="Auth:" />
-        <mui:BetterTextBox Text="{Binding SelectedObject.PluginAuthAddress}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
-      </DockPanel>
+      <StackPanel Style="{StaticResource SettingsCompactPanel}">
+        <!-- Left column -->
 
-      <TextBlock Text="CM plugin:" Style="{StaticResource SettingsPanel.Heading2}" />
-      <CheckBox IsChecked="{Binding SelectedObject.UseCmPlugin}">
-        <CheckBox.ToolTip>
-          <TextBlock MaxWidth="400" TextWrapping="Wrap"
-              Text="Using CM as server plugin allows to track server state, use real weather conditions and connect several other plugins at once. With this option active server plugin
-              parameters become parameters for CM plugin. To connect extra plugins, add new address and port combinations in CM plugin settings." />
-        </CheckBox.ToolTip>
-        <Label Content="Use Content Manager as server plugin" />
-      </CheckBox>
-      <CheckBox IsChecked="{Binding SelectedObject.RealConditions}"
-          Visibility="{Binding SelectedObject.UseCmPlugin, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <CheckBox.ToolTip>
-          <TextBlock MaxWidth="400" TextWrapping="Wrap"
-              Text="Works with CSP. Make server into CSP-only server with 1643 as minimum required version and not only weather type, but also physics conditions will be synced as well." />
-        </CheckBox.ToolTip>
-        <Label Content="{x:Static g:AppStrings.Drive_RealConditions}" />
-      </CheckBox>
-      <DockPanel Visibility="{Binding SelectedObject.UseCmPlugin, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <Label Content="Extra plugins:" />
-        <Button DockPanel.Dock="Right" Margin="8 0 0 0" Content="Add new plugin" Command="{Binding SelectedObject.AddPluginEntryCommand}" />
-        <mui:Switch Value="{Binding SelectedObject.PluginEntries.Count}">
-          <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="None" />
-          <ItemsControl ItemsSource="{Binding SelectedObject.PluginEntries}" Style="{StaticResource VirtualizingItemsControl}" MaxHeight="200">
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <Grid Margin="0 0 0 8">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="Auto" />
-                  </Grid.ColumnDefinitions>
-                  <mui:BetterTextBox Text="{Binding Address}" Placeholder="Address" />
-                  <mui:BetterTextBox Grid.Column="1" Text="{Binding UdpPort}" Placeholder="Local port" Mode="Integer" Minimum="1" Maximum="65535"
-                      Margin="4 0 0 0" />
-                  <Button Grid.Column="2" Content="Remove plugin entry" Command="{Binding DeleteCommand}" Margin="4 0 0 0" VerticalAlignment="Top" />
-                </Grid>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
-        </mui:Switch>
-      </DockPanel>
-
-      <TextBlock Text="Web link:" Style="{StaticResource SettingsPanel.Heading2}" />
-      <DockPanel>
-        <mui:BetterTextBox Text="{Binding SelectedObject.WebLink}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
-      </DockPanel>
-
-      <TextBlock Text="FTP data:" Style="{StaticResource SettingsPanel.Heading2}" />
-      <c:MessageBlock Margin="0 0 0 8">
-        <mui:BbCodeBlock
-            Text="This section doesn’t affect actual AC server, it only allows you to quickly upload all necessary files (including executable) to a remote server via FTP." />
-      </c:MessageBlock>
-      <DockPanel>
-        <Label Content="Host:" />
-        <mui:BetterTextBox Text="{Binding SelectedObject.FtpHost}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
-      </DockPanel>
-      <DockPanel>
-        <Label Content="Login:" />
-        <mui:BetterTextBox Text="{Binding SelectedObject.FtpLogin}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
-      </DockPanel>
-      <DockPanel>
-        <Label Content="Password:" />
-        <mui:AsyncButton Content="Verify connection" Command="{Binding SelectedObject.FtpVerifyConnectionCommand}" />
-        <mui:ProperPasswordBox Password="{Binding SelectedObject.FtpPassword}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
-      </DockPanel>
-      <DockPanel>
-        <Label Content="Folder:" />
-        <mui:BetterTextBox Text="{Binding SelectedObject.FtpDirectory}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
-      </DockPanel>
-      <CheckBox IsChecked="{Binding SelectedObject.FtpUploadDataOnly}">
-        <Label Content="Upload data only, without executable" />
-      </CheckBox>
-      <DockPanel IsEnabled="{Binding SelectedObject.FtpUploadDataOnly, Converter={StaticResource InvertBooleanConverter}}">
-        <Label Content="Target:" />
-        <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Modes}" SelectedItem="{Binding SelectedObject.FtpMode}">
-          <mui:BetterComboBox.ItemTemplate>
-            <DataTemplate>
-              <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+        <TextBlock Text="Allowed tyres:" Style="{StaticResource SettingsPanel.Heading2.First}" />
+        <TextBlock Margin="20 0 0 0" Text="No tyres found" FontStyle="Italic"
+            Visibility="{Binding SelectedObject.Tyres.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter='0,inverse'}" />
+        <ListBox x:Name="AllowedTyres" DataContext="{Binding SelectedObject}" ItemsSource="{Binding Tyres}" mui:ListBoxHelper.ProperMultiSelectionMode="True"
+            ItemContainerStyle="{StaticResource CheckBoxListBoxItem}" Margin="20 0 0 0" DataContextChanged="AllowedTyres_OnDataContextChanged"
+            SelectionChanged="AllowedTyres_OnSelectionChanged">
+          <ListBox.ItemTemplate>
+            <DataTemplate DataType="{x:Type t:ServerPresetObject+TyresItem}">
+              <DockPanel Margin="0 0 4 2">
+                <TextBlock Text="{Binding CarsList}" Style="{StaticResource Small}" DockPanel.Dock="Bottom" Margin="0 2 0 0" />
+                <TextBlock Text="{Binding ShortName, StringFormat='{}[{0}]'}" Style="{StaticResource Small}" FontWeight="Bold"
+                    FontFamily="{StaticResource MonospaceFont}" Margin="0 3 4 -3" />
+                <TextBlock Text="{Binding DisplayName}" />
+              </DockPanel>
             </DataTemplate>
-          </mui:BetterComboBox.ItemTemplate>
-        </mui:BetterComboBox>
-      </DockPanel>
-      <CheckBox IsChecked="{Binding SelectedObject.FtpClearBeforeUpload}">
-        <Label Content="Clear folder before upload" TextBlock.Foreground="{DynamicResource Error}" />
-      </CheckBox>
-      <mui:AsyncButton Content="Upload content" Command="{Binding SelectedObject.FtpUploadContentCommand}" />
+          </ListBox.ItemTemplate>
+        </ListBox>
 
-    </StackPanel>
+        <TextBlock Text="Fixed setups:" Style="{StaticResource SettingsPanel.Heading2}" />
+        <TextBlock Margin="20 0 0 0" Text="No fixed setups set" FontStyle="Italic"
+            Visibility="{Binding SelectedObject.SetupItems.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter='0,inverse'}" />
+        <ItemsControl x:Name="SetupItems" DataContext="{Binding SelectedObject}" ItemsSource="{Binding SetupItems}" mui:Draggable.Enabled="True"
+            mui:ListBoxHelper.ProperMultiSelectionMode="True" Margin="20 0 0 8" Style="{StaticResource VirtualizingItemsControl}"
+            mui:Draggable.DestinationConverter="{Binding SetupsDraggableConverterInstance}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate DataType="{x:Type t:ServerPresetObject+SetupItem}">
+              <!--<TextBlock Text="{Binding DisplayName}" Margin="2 -4 0 4" />-->
+              <Border Background="Transparent" ToolTip="{Binding Filename}">
+                <Border.ContextMenu>
+                  <ContextMenu>
+                    <MenuItem Header="View in folder" Command="{Binding ViewInDirectoryCommand}" />
+                    <MenuItem Header="Use as default" IsCheckable="True" IsChecked="{Binding IsDefault}" />
+                    <Separator />
+                    <MenuItem Header="Test setup" Click="OnTestSetupClick" />
+                    <Separator />
+                    <MenuItem Header="Delete setup" Command="{Binding DeleteCommand}" />
+                  </ContextMenu>
+                </Border.ContextMenu>
+                <DockPanel Margin="0 0 4 2">
+                  <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsDefault}" Margin="0 0 8 0" />
+                  <Button Margin="0 -2 0 0" Style="{StaticResource DeleteButton}" Command="{Binding DeleteCommand}"
+                      Visibility="{Binding DeleteCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                  <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 2" />
+                  <Path Data="{StaticResource AlertIconData}" Width="10" Height="10" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                      Margin="0 0 4 0" VerticalAlignment="Center" ToolTip="This isn’t a car selected for this server"
+                      Visibility="{Binding IsValidCar, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                  <TextBlock Text="{Binding CarDisplayName}" Style="{StaticResource Small}" />
+                </DockPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Button Command="{Binding AddSetupCommand}" Margin="0 0 0 8">
+          <DockPanel IsHitTestVisible="False" Margin="0">
+            <Path Data="{StaticResource AddIconData}" Width="10" Height="10"
+                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
+                VerticalAlignment="Center" SnapsToDevicePixels="True" />
+            <TextBlock Text="Add setup" />
+          </DockPanel>
+        </Button>
+        <c:MessageBlock CloseKey="servercheckedsetupinfo">
+          <TextBlock Text="Checked setup is the one applied by default." />
+        </c:MessageBlock>
+
+        <TextBlock Text="Web link:" Style="{StaticResource SettingsPanel.Heading2}" />
+        <DockPanel>
+          <mui:BetterTextBox Text="{Binding SelectedObject.WebLink}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        </DockPanel>
+
+        <TextBlock Text="FTP data:" Style="{StaticResource SettingsPanel.Heading2}" />
+        <c:MessageBlock Margin="0 0 0 8">
+          <mui:BbCodeBlock
+              Text="This section doesn’t affect actual AC server, it only allows you to quickly upload all necessary files (including executable) to a remote server via FTP." />
+        </c:MessageBlock>
+        <DockPanel>
+          <Label Content="Host:" />
+          <mui:BetterTextBox Text="{Binding SelectedObject.FtpHost}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        </DockPanel>
+        <DockPanel>
+          <Label Content="Login:" />
+          <mui:BetterTextBox Text="{Binding SelectedObject.FtpLogin}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        </DockPanel>
+        <DockPanel>
+          <Label Content="Password:" />
+          <mui:AsyncButton Content="Verify connection" Command="{Binding SelectedObject.FtpVerifyConnectionCommand}" />
+          <mui:ProperPasswordBox Password="{Binding SelectedObject.FtpPassword}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        </DockPanel>
+        <DockPanel>
+          <Label Content="Folder:" />
+          <mui:BetterTextBox Text="{Binding SelectedObject.FtpDirectory}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        </DockPanel>
+        <CheckBox IsChecked="{Binding SelectedObject.FtpUploadDataOnly}">
+          <Label Content="Upload data only, without executable" />
+        </CheckBox>
+        <DockPanel IsEnabled="{Binding SelectedObject.FtpUploadDataOnly, Converter={StaticResource InvertBooleanConverter}}">
+          <Label Content="Target:" />
+          <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Modes}" SelectedItem="{Binding SelectedObject.FtpMode}">
+            <mui:BetterComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+              </DataTemplate>
+            </mui:BetterComboBox.ItemTemplate>
+          </mui:BetterComboBox>
+        </DockPanel>
+        <CheckBox IsChecked="{Binding SelectedObject.FtpClearBeforeUpload}">
+          <Label Content="Clear folder before upload" TextBlock.Foreground="{DynamicResource Error}" />
+        </CheckBox>
+        <mui:AsyncButton Content="Upload content" Command="{Binding SelectedObject.FtpUploadContentCommand}" />
+
+      </StackPanel>
+      <StackPanel Style="{StaticResource SettingsCompactPanel}">
+        <!-- Right column -->
+
+
+        <TextBlock Text="Server plugin:" Style="{StaticResource SettingsPanel.Heading2.First}" />
+        <DockPanel>
+          <Label Content="Address:" />
+          <mui:BetterTextBox Text="{Binding SelectedObject.PluginUdpAddress}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        </DockPanel>
+        <DockPanel>
+          <Label Content="Local port:" />
+          <mui:BetterTextBox Text="{Binding SelectedObject.PluginUdpPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
+              Maximum="65535" />
+        </DockPanel>
+        <DockPanel Visibility="{Binding SelectedObject.UseCmPlugin, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+          <Label Content="Auth:" />
+          <mui:BetterTextBox Text="{Binding SelectedObject.PluginAuthAddress}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        </DockPanel>
+
+        <TextBlock Text="CM plugin:" Style="{StaticResource SettingsPanel.Heading2}" />
+        <CheckBox IsChecked="{Binding SelectedObject.UseCmPlugin}">
+          <CheckBox.ToolTip>
+            <TextBlock MaxWidth="400" TextWrapping="Wrap"
+                Text="Using CM as server plugin allows to track server state, use dynamic weather conditions and connect several other plugins at once. With this option active server plugin
+              parameters become parameters for CM plugin. To connect extra plugins, add new address and port combinations in CM plugin settings." />
+          </CheckBox.ToolTip>
+          <Label Content="Use Content Manager as server plugin" />
+        </CheckBox>
+        <DockPanel Visibility="{Binding SelectedObject.UseCmPlugin, Converter={StaticResource BooleanToVisibilityConverter}}">
+          <Label Content="Extra plugins:" />
+          <Button DockPanel.Dock="Right" Margin="8 0 0 0" Content="Add new plugin" Command="{Binding SelectedObject.AddPluginEntryCommand}"
+              VerticalAlignment="Top" />
+          <mui:BooleanSwitch Value="{Binding SelectedObject.PluginEntries.Count, Converter={StaticResource MoreConverter}}">
+            <mui:BooleanSwitch.False>
+              <mui:PlaceholderTextBlock Placeholder="None" />
+            </mui:BooleanSwitch.False>
+            <mui:BooleanSwitch.True>
+              <ItemsControl ItemsSource="{Binding SelectedObject.PluginEntries}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <mui:SpacingStackPanel Spacing="8" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Grid>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="Auto" />
+                      </Grid.ColumnDefinitions>
+                      <mui:BetterTextBox Text="{Binding Address}" Placeholder="Address" />
+                      <mui:BetterTextBox Grid.Column="1" Text="{Binding UdpPort}" Placeholder="Local port" Mode="Integer" Minimum="1" Maximum="65535"
+                          Margin="4 0 0 0" />
+                      <Button Grid.Column="2" Content="Remove plugin entry" Command="{Binding DeleteCommand}" Margin="4 0 0 0" VerticalAlignment="Top" />
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </mui:BooleanSwitch.True>
+          </mui:BooleanSwitch>
+        </DockPanel>
+
+        <StackPanel DataContext="{Binding SelectedObject}" Visibility="{Binding UseCmPlugin, Converter={StaticResource BooleanToVisibilityConverter}}">
+          <TextBlock Text="Live conditions:" Style="{StaticResource SettingsPanel.Heading2}" />
+          <CheckBox IsChecked="{Binding CmPluginLiveConditions}">
+            <Label Content="Active" />
+          </CheckBox>
+          <StackPanel Style="{StaticResource SettingsPanel}" IsEnabled="{Binding CmPluginLiveConditions}"
+              Visibility="{Binding CmPluginLiveConditions, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <c:MessageBlock Margin="0 0 0 8">
+              <TextBlock TextWrapping="Wrap"
+                  Text="Overrides regular condition settings, needs CSP installed on client sides. By default only syncs weather type and transition, but if server is set to require CSP build 1643 or above, physics conditions will be synced as well." />
+            </c:MessageBlock>
+
+            <TextBlock Text="Time:" Style="{StaticResource SettingsPanel.Heading2}" FontSize="14" Margin="0 12 0 8" />
+            <StackPanel Margin="12 0 0 0" DataContext="{Binding CmPluginLiveConditionsParams}">
+
+              <DockPanel ToolTip="If set to “Live”, starting time will be set to match real life time taking timezones into account, with an optional offset">
+                <Label Content="Mode:" />
+                <mui:LabeledToggleButton LabelChecked="Fixed time" LabelUnchecked="Live time" IsChecked="{Binding UseFixedStartingTime}" />
+              </DockPanel>
+
+              <DockPanel Visibility="{Binding UseFixedStartingTime, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Label Content="Date:" />
+                <DatePicker Margin="8 0 0 0" SelectedDate="{Binding FixedStartingDateValue}" c:AcDateLimiter.After1970Only="True" />
+              </DockPanel>
+
+              <DockPanel Visibility="{Binding UseFixedStartingTime, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <mui:ValueLabel Value="{Binding DisplayTime}" mui:BetterTextBox.Mode="Time" Content="{x:Static g:AppStrings.Drive_Time}" />
+                <Slider Minimum="0" Maximum="86400" TickFrequency="7200" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                    Value="{Binding FixedStartingTimeValue, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+              </DockPanel>
+
+              <DockPanel Visibility="{Binding UseFixedStartingTime, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
+                  ToolTip="Use it if real life time doesn’t quite fit your schedule">
+                <mui:ValueLabel Value="{Binding TimeOffsetHours}" Content="Offset"
+                    Postfix="{Binding TimeOffsetHours, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.Common_SliderPostfix_Hours}}" />
+                <Slider Minimum="-24" Maximum="24" TickFrequency="12" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                    Value="{Binding TimeOffsetHours, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+              </DockPanel>
+
+              <DockPanel ToolTip="Time multiplier; if mode is set to “Live” and multiplier is 1, time will always match real life time">
+                <mui:ValueLabel Value="{Binding TimeMultiplier}" Postfix="×" Content="{x:Static g:AppStrings.Drive_TimeMultiplerLabel}" />
+                <Slider Minimum="0" Maximum="1" TickFrequency="0.2" TickPlacement="None" IsSnapToTickEnabled="False">
+                  <Slider.Value>
+                    <Binding Path="TimeMultiplier">
+                      <Binding.Converter>
+                        <mui:LogarithmicScale Minimum="0" Middle="10" Maximum="60" RoundTo="0.5" />
+                      </Binding.Converter>
+                    </Binding>
+                  </Slider.Value>
+                </Slider>
+              </DockPanel>
+
+            </StackPanel>
+
+            <TextBlock Text="Weather:" Style="{StaticResource SettingsPanel.Heading2}" FontSize="14" Margin="0 12 0 8" />
+            <StackPanel Margin="12 0 0 0" DataContext="{Binding CmPluginLiveConditionsParams}">
+
+              <DockPanel ToolTip="If set to “Real”, weather will be synced with real one thanks to OpenWeatherMap service">
+                <Label Content="Mode:" />
+                <mui:LabeledToggleButton LabelChecked="Real conditions" LabelUnchecked="Randomized" IsChecked="{Binding UseRealConditions}" />
+              </DockPanel>
+
+              <DockPanel Visibility="{Binding UseRealConditions, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
+                  ToolTip="Delay between randomized weather changes (actual delay will be from 50% to 150% of this value chosen randomly)">
+                <mui:ValueLabel Value="{Binding WeatherTypeChangePeriod, Converter={StaticResource TimeSpanHhMmConverter}}" Content="Change period"
+                    Postfix=" min" />
+                <Slider Minimum="2" Maximum="120" TickFrequency="11.8" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                    Value="{Binding WeatherTypeChangeMinutes, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+              </DockPanel>
+
+              <CheckBox IsChecked="{Binding WeatherTypeChangeToNeighboursOnly}"
+                  Visibility="{Binding UseRealConditions, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
+                  ToolTip="Makes weather changes smoother and less dynamic, preventing something like switching from clear weather to fully overcast in a single step">
+                <Label Content="Only change to weather of a similar type" />
+              </CheckBox>
+
+              <DockPanel Visibility="{Binding UseRealConditions, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                <mui:ValueLabel Value="{Binding WeatherRainChance, Converter={StaticResource PercentageConverter}}" Content="Rain chance" Postfix="%" />
+                <Slider Minimum="0" Maximum="0.1" TickFrequency="1" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                    Value="{Binding WeatherRainChance, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}" />
+              </DockPanel>
+
+              <DockPanel Visibility="{Binding UseRealConditions, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                <mui:ValueLabel Value="{Binding WeatherThunderChance, Converter={StaticResource PercentageConverter}}" Content="Thundershorm chance"
+                    Postfix="%" />
+                <Slider Minimum="0" Maximum="0.1" TickFrequency="1" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                    Value="{Binding WeatherThunderChance, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}" />
+              </DockPanel>
+
+              <CheckBox IsChecked="{Binding UseFixedAirTemperature}">
+                <Label Content="Fixed air temperature" />
+              </CheckBox>
+
+              <DockPanel Visibility="{Binding UseFixedAirTemperature, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <mui:ValueLabel Value="{Binding FixedAirTemperature}" Content="Temperature" Postfix="°" />
+                <Slider Minimum="10" Maximum="30" TickFrequency="2" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                    Value="{Binding FixedAirTemperature, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+              </DockPanel>
+
+              <DockPanel Visibility="{Binding UseFixedAirTemperature, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                <mui:ValueLabel Value="{Binding TemperatureOffset}" Content="Temperature offset" Postfix="°" />
+                <Slider Minimum="-20" Maximum="20" TickFrequency="4" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                    Value="{Binding TemperatureOffset, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+              </DockPanel>
+
+              <TextBlock Visibility="{Binding UseFixedAirTemperature, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
+                  Style="{StaticResource Small}" Text="{Binding DisplayEstimatedTemperature}" />
+
+            </StackPanel>
+
+            <TextBlock Text="Track grip:" Style="{StaticResource SettingsPanel.Heading2}" FontSize="14" Margin="0 12 0 8" />
+            <StackPanel Margin="12 0 0 0" DataContext="{Binding CmPluginLiveConditionsParams}">
+
+              <DockPanel>
+                <mui:ValueLabel Value="{Binding TrackGripStartingValue}" Content="Starting grip" Postfix="%" />
+                <Slider Minimum="90" Maximum="100" TickFrequency="1" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                    Value="{Binding TrackGripStartingValue, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}" />
+              </DockPanel>
+
+              <DockPanel ToolTip="How much grip increases per lap per car">
+                <mui:ValueLabel Value="{Binding TrackGripIncreasePerLap}" Content="Lap increase" Postfix="%" />
+                <Slider Minimum="0" Maximum="0.2" TickFrequency="0.02" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                    Value="{Binding TrackGripIncreasePerLap, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
+              </DockPanel>
+
+              <DockPanel ToolTip="How much of accumulated grip increase is transferred to a next session">
+                <mui:ValueLabel Value="{Binding TrackGripTransfer}" Content="Grip transfer" Postfix="%" />
+                <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                    Value="{Binding TrackGripTransfer, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+              </DockPanel>
+
+            </StackPanel>
+
+            <TextBlock Text="Rain transition:" Style="{StaticResource SettingsPanel.Heading2}" FontSize="14" Margin="0 12 0 8" />
+            <StackPanel Margin="12 0 0 0" DataContext="{Binding CmPluginLiveConditionsParams}">
+
+              <DockPanel ToolTip="Increase to make rain-related changes slower, decrease to make them faster">
+                <mui:ValueLabel Value="{Binding RainTimeMultiplier, Converter={StaticResource PercentageConverter}}" Content="Overall multiplier" Postfix="%" />
+                <Slider Minimum="0" Maximum="2" TickFrequency="0.2" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                    Value="{Binding RainTimeMultiplier, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
+              </DockPanel>
+
+              <mui:RememberingExpander DefaultValue="False" Key="s.dc.rainTweaks" Style="{StaticResource Expander.Animated}" Margin="-16 4 0 0">
+                <Expander.Header>
+                  <Label Content="Advanced settings" Background="Transparent" />
+                </Expander.Header>
+                <StackPanel Margin="16 12 0 0">
+
+                  <DockPanel ToolTip="Time for track to get wet (without puddles) when rain starts; actual value may vary depending on rain intensity">
+                    <mui:ValueLabel Value="{Binding RainWetnessIncreaseTime, Converter={StaticResource TimeSpanHhMmConverter}}" Content="Wetness increase"
+                        Postfix=" min" />
+                    <Slider Minimum="0" Maximum="10" TickFrequency="6" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                        Value="{Binding RainWetnessIncreaseMinutes, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+                  </DockPanel>
+
+                  <DockPanel
+                      ToolTip="Time for track to dry out (keeping puddles) when rain stops; actual value may vary depending on weather type and temperature">
+                    <mui:ValueLabel Value="{Binding RainWetnessDecreaseTime, Converter={StaticResource TimeSpanHhMmConverter}}" Content="Wetness decrease"
+                        Postfix=" min" />
+                    <Slider Minimum="0" Maximum="60" TickFrequency="6" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                        Value="{Binding RainWetnessDecreaseMinutes, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+                  </DockPanel>
+
+                  <DockPanel ToolTip="Time for track to accumulate puddles reaching rain intensity; actual value may vary depending on rain intensity">
+                    <mui:ValueLabel Value="{Binding RainWaterIncreaseTime, Converter={StaticResource TimeSpanHhMmConverter}}" Content="Water increase"
+                        Postfix=" min" />
+                    <Slider Minimum="0" Maximum="60" TickFrequency="6" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                        Value="{Binding RainWaterIncreaseMinutes, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+                  </DockPanel>
+
+                  <DockPanel ToolTip="Time for puddles to dry out when rain stops; actual value may vary depending on weather type and temperature">
+                    <mui:ValueLabel Value="{Binding RainWaterDecreaseTime, Converter={StaticResource TimeSpanHhMmConverter}}" Content="Water decrease"
+                        Postfix=" min" />
+                    <Slider Minimum="0" Maximum="300" TickFrequency="30" TickPlacement="BottomRight" Margin="0 0 0 -2"
+                        Value="{Binding RainWaterDecreaseMinutes, Converter={StaticResource SliderRoundConverter}, ConverterParameter=1}" />
+                  </DockPanel>
+
+                </StackPanel>
+              </mui:RememberingExpander>
+
+            </StackPanel>
+
+            <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" Margin="0 8 0 0">
+              <mui:AsyncButton Content="Save config for external plugin format" Command="{Binding SaveExternalPluginConfigCommand}" />
+              <mui:AsyncButton Content="Pack external plugin" Command="{Binding SaveExternalPluginCommand}" />
+            </mui:SpacingUniformGrid>
+          </StackPanel>
+        </StackPanel>
+
+      </StackPanel>
+
+
+    </mui:SpacingUniformGrid>
   </ScrollViewer>
 </UserControl>

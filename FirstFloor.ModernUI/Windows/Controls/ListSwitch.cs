@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Markup;
@@ -8,60 +7,48 @@ using System.Windows.Markup;
 namespace FirstFloor.ModernUI.Windows.Controls {
     [ContentProperty(nameof(Children))]
     public abstract class ListSwitch : BaseSwitch, IAddChild, IList {
-        protected readonly List<UIElement> UiElements = new List<UIElement>(2);
-
         public IList Children => this;
 
         public void CopyTo(Array array, int index) {
-            ((IList)UiElements).CopyTo(array, index);
+            ((IList)RegisteredElements).CopyTo(array, index);
         }
 
-        public virtual int Count => UiElements.Count;
+        public virtual int Count => RegisteredElements.Count;
 
-        public object SyncRoot => ((IList)UiElements).SyncRoot;
+        public object SyncRoot => ((IList)RegisteredElements).SyncRoot;
 
-        public bool IsSynchronized => ((IList)UiElements).IsSynchronized;
+        public bool IsSynchronized => ((IList)RegisteredElements).IsSynchronized;
 
         public void RemoveAt(int index) {
-            UiElements.RemoveAt(index);
+            RegisterChild(RegisteredElements[index], null);
         }
 
         public UIElement this[int index] {
-            get => UiElements[index];
-            set {
-                var vc = UiElements;
-                if (!ReferenceEquals(vc[index], value)) {
-                    vc[index] = value;
-                    InvalidateMeasure();
-                }
-            }
+            get => RegisteredElements[index];
+            set => RegisterChild(RegisteredElements[index], value);
         }
 
         public bool Contains(UIElement element) {
-            return UiElements.Contains(element);
+            return RegisteredElements.Contains(element);
         }
 
         public virtual void Clear() {
-            UiElements.Clear();
+            ClearRegisteredChildren();
         }
 
         public int Add(UIElement element) {
             InvalidateMeasure();
-            UiElements.Add(element);
-            return UiElements.Count;
-        }
-
-        public int IndexOf(UIElement element) {
-            return UiElements.IndexOf(element);
+            RegisterChild(null, element);
+            return RegisteredElements.Count;
         }
 
         public void Insert(int index, UIElement element) {
             InvalidateMeasure();
-            UiElements.Insert(index, element);
+            RegisterChild(null, element);
         }
 
         public void Remove(UIElement element) {
-            UiElements.Remove(element);
+            RegisterChild(element, null);
         }
 
         int IList.Add(object value) {
@@ -94,26 +81,31 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         IEnumerator IEnumerable.GetEnumerator() {
-            return UiElements.GetEnumerator();
+            return ((IEnumerable)RegisteredElements).GetEnumerator();
         }
 
         void IAddChild.AddChild(object value) {
-            if (value == null) throw new ArgumentNullException(nameof(value));
-
-            var element = value as UIElement;
-            if (element == null) throw new ArgumentException("Only UIElement supported", nameof(value));
-
-            Add(element);
+            switch (value) {
+                case null:
+                    throw new ArgumentNullException(nameof(value));
+                case UIElement element:
+                    Add(element);
+                    break;
+                default:
+                    throw new ArgumentException(@"UIElement is required", nameof(value));
+            }
         }
 
         void IAddChild.AddText(string text) {
-            if (!string.IsNullOrWhiteSpace(text)) throw new NotSupportedException();
+            if (!string.IsNullOrWhiteSpace(text)) {
+                throw new NotSupportedException();
+            }
         }
 
         protected abstract bool TestChild(UIElement child);
 
         protected override UIElement GetChild() {
-            return UiElements?.FirstOrDefault(TestChild);
+            return RegisteredElements?.FirstOrDefault(TestChild);
         }
     }
 }

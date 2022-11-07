@@ -199,6 +199,7 @@ namespace AcManager.Controls.UserControls {
             PageParent.Child = tab?.GetElement(Window.GetWindow(this) as DpiAwareWindow);
             UrlTextBox.Text = tab?.ActiveUrl ?? "";
             ProgressBar.Visibility = tab?.IsLoading == true ? Visibility.Visible : Visibility.Collapsed;
+            ProgressBar.IsIndeterminate = tab?.IsLoading == true;
             CommandManager.InvalidateRequerySuggested();
             SaveTabs();
             CurrentTabChanged?.Invoke(this, EventArgs.Empty);
@@ -263,6 +264,7 @@ namespace AcManager.Controls.UserControls {
                 var tab = (WebTab)sender;
                 if (args.PropertyName == nameof(CurrentTab.IsLoading)) {
                     ProgressBar.Visibility = CurrentTab?.IsLoading == true ? Visibility.Visible : Visibility.Collapsed;
+                    ProgressBar.IsIndeterminate = CurrentTab?.IsLoading == true;
                 } else if (args.PropertyName == nameof(CurrentTab.ActiveUrl)) {
                     UrlTextBox.Text = tab.ActiveUrl ?? "";
                 }

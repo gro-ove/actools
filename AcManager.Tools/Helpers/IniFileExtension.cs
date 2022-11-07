@@ -76,7 +76,7 @@ namespace AcManager.Tools.Helpers {
                 return defaultValue;
             }
 
-            multipler = FlexibleParser.ParseDouble(strings[3], 1d);
+            multipler = FlexibleParser.ParseDouble(strings[3], defaultMultipler);
             return Color.FromRgb(result[0], result[1], result[2]);
         }
 
@@ -86,6 +86,15 @@ namespace AcManager.Tools.Helpers {
 
         public static void Set(this IniFileSection section, [LocalizationRequired(false)] string key, Color entry, double multipler) {
             section.Set(key, $"{entry.R.ToInvariantString()},{entry.G.ToInvariantString()},{entry.B.ToInvariantString()},{multipler.ToInvariantString()}");
+        }
+
+        public static Color GetNormalizedColor(this IniFileSection section, [LocalizationRequired(false)] string key, Color defaultValue) {
+            var result = section.GetStrings(key).Select(x => (FlexibleParser.ParseDouble(x, 0d) * 255).ClampToByte()).ToArray();
+            return result.Length == 3 ? Color.FromRgb(result[0], result[1], result[2]) : defaultValue;
+        }
+
+        public static void SetNormalizedColor(this IniFileSection section, [LocalizationRequired(false)] string key, Color entry) {
+            section.Set(key, $"{(entry.R / 255d).Round(0.001).ToInvariantString()},{(entry.G / 255d).Round(0.001).ToInvariantString()},{(entry.B / 255d).Round(0.001).ToInvariantString()}");
         }
     }
 }

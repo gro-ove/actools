@@ -27,6 +27,9 @@ namespace AcTools.Kn5File {
         public float LodIn, LodOut;
         public Vec3 BoundingSphereCenter;
         public float BoundingSphereRadius;
+        
+        [CanBeNull]
+        public Vec2[] Uv2;
 
         /* Only for skinned meshes */
         public byte[] MisteryBytes;
@@ -47,6 +50,24 @@ namespace AcTools.Kn5File {
                 Normal = normal;
                 Tex = tex;
                 Tangent = tangent;
+            }
+
+            public bool Equals(Vertex other) {
+                return Position.Equals(other.Position) && Normal.Equals(other.Normal) && Tangent.Equals(other.Tangent) && Tex.Equals(other.Tex);
+            }
+
+            public override bool Equals(object obj) {
+                return obj is Vertex other && Equals(other);
+            }
+
+            public override int GetHashCode() {
+                unchecked {
+                    var hashCode = Position.GetHashCode();
+                    hashCode = (hashCode * 397) ^ Normal.GetHashCode();
+                    hashCode = (hashCode * 397) ^ Tangent.GetHashCode();
+                    hashCode = (hashCode * 397) ^ Tex.GetHashCode();
+                    return hashCode;
+                }
             }
         }
 

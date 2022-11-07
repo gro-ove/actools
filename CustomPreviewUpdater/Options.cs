@@ -12,6 +12,9 @@ namespace CustomPreviewUpdater {
         [Option('r', "root", HelpText = "AC root folder.")]
         public string AcRoot { get; set; }
 
+        [Option('p', "preset", DefaultValue = null, HelpText = "Options preset from Content Manager.")]
+        public string Preset { get; set; }
+
         [Option('s', "showroom", DefaultValue = null, HelpText = "Showroom ID or its KN5 filename.")]
         public string Showroom { get; set; }
 
@@ -184,7 +187,7 @@ namespace CustomPreviewUpdater {
         [HelpOption]
         public string GetUsage() {
             var help = new HelpText {
-                Heading = new HeadingInfo("CustomPreviewUpdater", FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location ?? "").FileVersion),
+                Heading = new HeadingInfo("CustomPreviewUpdater", FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly()?.Location ?? "").FileVersion),
                 Copyright = new CopyrightInfo("AcClub", 2020),
                 AdditionalNewLineAfterOption = false,
                 AddDashesToOption = true

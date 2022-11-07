@@ -512,7 +512,7 @@ Entry type: [b]{2}[/b]</value>
   <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
     <value>Name:</value>
   </data>
-  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
+  <data name="CustomShowroom_Stats_MaterialLabel" xml:space="preserve">
     <value>Material:</value>
   </data>
   <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
@@ -1057,5 +1057,62 @@ Depth mode: [b]{4}[/b]</value>
   </data>
   <data name="ContentList_NothingToDisplay" xml:space="preserve">
       <value>Nothing to display</value>
+  </data>
+  <data name="CustomShowroom_Stats_MaterialsLabel" xml:space="preserve">
+      <value>Materials:</value>
+  </data>
+  <data name="GameDialog_SavedReplayAs" xml:space="preserve">
+      <value>Saved as “{0}”</value>
+  </data>
+  <data name="GameDialog_SuggestedReplayName" xml:space="preserve">
+      <value>Suggested replay name: “{0}”</value>
+  </data>
+  <data name="GameDialog_SaveReplayAs" xml:space="preserve">
+      <value>Save replay as:</value>
+  </data>
+  <data name="GameDialog_ReplayName" xml:space="preserve">
+      <value>Replay name</value>
+  </data>
+  <data name="GameDialog_ReplayNameSuggested" xml:space="preserve">
+      <value>Replay name: </value>
+  </data>
+  <data name="GameDialog_ShareReplay" xml:space="preserve">
+      <value>Share replay</value>
+  </data>
+  <data name="GameDialog_BenchmarkResults" xml:space="preserve">
+      <value>• Average FPS: [b]{0:F1}[/b] ([b]{1:F3}[/b] ms);
+• Minimum FPS: {2};
+• Taken: [b]{3}[/b];
+• Test time: [b]{4}[/b].</value>
+  </data>
+  <data name="GameDialog_BenchmarkResults_Samples" xml:space="preserve">
+      <value>{0} sample</value>
+  </data>
+  <data name="GameDialog_BenchmarkResults_MinFps" xml:space="preserve">
+      <value>[b]{0:F1}[/b] ([b]{1:F3}[/b] ms)</value>
+  </data>
+  <data name="GameDialog_BenchmarkResults_Na" xml:space="preserve">
+      <value>[b]N/A[/b]</value>
+  </data>
+  <data name="Settings_Drive_SharedMemory" xml:space="preserve">
+      <value>AC’s shared memory:</value>
+  </data>
+  <data name="Settings_Drive_SessionFormat" xml:space="preserve">
+      <value> {session}</value>
+  </data>
+  <data name="Settings_Drive_FixControllersOrder" xml:space="preserve">
+      <value>Automatically check and fix controllers order before the race</value>
+  </data>
+  <data name="Settings_Drive_RhmKeepAlive" xml:space="preserve">
+      <value>Keep alive for:</value>
+  </data>
+  <data name="Settings_Drive_RhmKeepAlive_ToolTip" xml:space="preserve">
+      <value>How long RHM will be running after the race (to avoid restarting it over and over)</value>
+  </data>
+  <data name="Settings_Drive_CMLaunch" xml:space="preserve">
+      <value>CM launch event command:</value>
+  </data>
+  <data name="AcSettings_System_OrbitMode" xml:space="preserve">
+      <value>Orbit mode for F5 camera</value>
   </data>
 </root>

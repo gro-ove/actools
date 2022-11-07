@@ -275,7 +275,8 @@ namespace AcManager.Pages.Drive {
                             GhostCarAdvantage = 0d
                         },
                         AdditionalPropertieses = {
-                            new RsrMark()
+                            new RsrMark(),
+                            new LiveServiceMark("RSR")
                         }
                     });
 

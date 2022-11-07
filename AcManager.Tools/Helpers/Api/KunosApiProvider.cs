@@ -127,6 +127,10 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
+        private static string CacheKey() {
+            return $@"r={DateTime.Now.ToUnixTimestamp() / 30 % (24 * 60)}";
+        }
+
         [CanBeNull]
         public static ServerInformationComplete[] TryToGetList(IProgress<int> progress = null, CancellationToken cancellation = default) {
             if (SteamIdHelper.Instance.Value == null) throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
@@ -134,11 +138,12 @@ namespace AcManager.Tools.Helpers.Api {
             if (SettingsHolder.Online.CachingServerAvailable && SettingsHolder.Online.UseCachingServer) {
                 try {
                     var watch = Stopwatch.StartNew();
-                    var ret = LoadList(InternalUtils.GetKunosServerCompressedProxyUri(), OptionWebRequestTimeout, cancellation, stream => {
-                        using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
-                            return ServerInformationComplete.Deserialize(deflateStream);
-                        }
-                    });
+                    var ret = LoadList($@"{InternalUtils.GetKunosServerCompressedProxyUri()}?{CacheKey()}",
+                            OptionWebRequestTimeout, cancellation, stream => {
+                                using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
+                                    return ServerInformationComplete.Deserialize(deflateStream);
+                                }
+                            });
 
                     /*var ret = LoadList(InternalUtils.GetKunosServerProxyUri(), OptionWebRequestTimeout, cancellation,
                             ServerInformationComplete.Deserialize);*/
@@ -158,7 +163,7 @@ namespace AcManager.Tools.Helpers.Api {
                 }
 
                 var uri = ServerUri;
-                var requestUri = $@"http://{uri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}";
+                var requestUri = $@"http://{uri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}&{CacheKey()}";
                 ServerInformationComplete[] parsed;
 
                 try {
@@ -241,27 +246,18 @@ namespace AcManager.Tools.Helpers.Api {
         /// <returns>True if parsing is successful.</returns>
         public static bool ParseAddress(string address, out string ip, out int port) {
             try {
-                var parsed = Regex.Match(address, @"^(?:.*//)?((?:\d+\.){3}\d+)(?::(\d+))?(?:/.*)?$");
-                if (!parsed.Success) {
-                    parsed = Regex.Match(address, @"^(?:.*//)?([\w\.]+)(?::(\d+))(?:/.*)?$");
-                    if (!parsed.Success) {
-                        ip = null;
-                        port = 0;
-                        return false;
-                    }
-
-                    ip = Dns.GetHostEntry(parsed.Groups[1].Value).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).ToString();
-                } else {
+                var parsed = Regex.Match(address, @"^(?:.*//)?([\w\.]+)(?::(\d+))?(?:/.*)?$");
+                if (parsed.Success) {
                     ip = parsed.Groups[1].Value;
+                    port = parsed.Groups[2].Success ? int.Parse(parsed.Groups[2].Value, CultureInfo.InvariantCulture) : -1;
+                    return true;
                 }
-
-                port = parsed.Groups[2].Success ? int.Parse(parsed.Groups[2].Value, CultureInfo.InvariantCulture) : -1;
-                return true;
-            } catch {
-                ip = null;
-                port = 0;
-                return false;
+            } catch (Exception e) {
+                Logging.Warning(e);
             }
+            ip = null;
+            port = 0;
+            return false;
         }
 
         private static ServerInformationComplete PrepareLoadedDirectly(ServerInformationComplete result, string ip) {
@@ -431,6 +427,25 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
+        private static Regex _ipRegex = new Regex(@"^\d+\.\d+\.\d+\.\d+", RegexOptions.Compiled);
+
+        private static IPAddress ParseIPAddress(string address) {
+            if (address.IndexOf(':') != -1 || _ipRegex.IsMatch(address)) return IPAddress.Parse(address);
+            return Dns.GetHostEntry(address).AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork);
+        }
+
+        private static Task<IPAddress> ParseIpAddressAsync(string address) {
+            if (address.IndexOf(':') != -1 || _ipRegex.IsMatch(address)) return Task.FromResult(IPAddress.Parse(address));
+            return Dns.GetHostEntryAsync(address).ContinueWith(r => r.Result.AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork),
+                    TaskContinuationOptions.OnlyOnRanToCompletion);
+        }
+
+        public static Task<string> ResolveIpAddressAsync(string address) {
+            if (address.IndexOf(':') != -1 || _ipRegex.IsMatch(address)) return Task.FromResult(address);
+            return Dns.GetHostEntryAsync(address).ContinueWith(r => r.Result.AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString(),
+                    TaskContinuationOptions.OnlyOnRanToCompletion);
+        }
+
         [ItemCanBeNull]
         public static async Task<Tuple<int, TimeSpan>> TryToPingServerAsync(string ip, int port, int timeout, bool logging = false) {
             using (var order = KillerOrder.Create(new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp) {
@@ -443,7 +458,7 @@ namespace AcManager.Tools.Helpers.Api {
 
                 try {
                     var bytes = BitConverter.GetBytes(200);
-                    var endpoint = new IPEndPoint(IPAddress.Parse(ip), port);
+                    var endpoint = new IPEndPoint(await ParseIpAddressAsync(ip), port);
                     if (logging) Logging.Debug("Sending bytes to: " + endpoint);
 
                     await Task.Factory.FromAsync(socket.BeginSendTo(bytes, 0, bytes.Length, SocketFlags.None, endpoint, null, socket),
@@ -480,7 +495,10 @@ namespace AcManager.Tools.Helpers.Api {
 
                     if (logging) Logging.Write("Pinging is a success");
                     return new Tuple<int, TimeSpan>(BitConverter.ToInt16(buffer, 1), elapsed);
-                } catch (Exception) {
+                } catch (Exception e) {
+#if DEBUG
+                    Logging.Warning(e);
+#endif
                     return null;
                 }
             }
@@ -504,7 +522,7 @@ namespace AcManager.Tools.Helpers.Api {
 
             try {
                 var bytes = BitConverter.GetBytes(200);
-                var endpoint = new IPEndPoint(IPAddress.Parse(ip), port);
+                var endpoint = new IPEndPoint(await ParseIPAddressAsync(ip), port);
                 if (logging) Logging.Debug("Sending bytes to: " + endpoint);
 
                 var e = new SocketAsyncEventArgs { RemoteEndPoint = endpoint };
@@ -565,7 +583,7 @@ namespace AcManager.Tools.Helpers.Api {
 
                 try {
                     var bytes = BitConverter.GetBytes(200);
-                    var endpoint = new IPEndPoint(IPAddress.Parse(ip), port);
+                    var endpoint = new IPEndPoint(ParseIPAddress(ip), port);
                     if (logging) Logging.Debug("Sending bytes to: " + endpoint);
 
                     socket.SendTo(bytes, endpoint);

@@ -340,8 +340,8 @@
     <value>Vorschau aktualisieren nicht möglich</value>
   </data>
   <data name="AcObject_CannotUpdatePreview_TrackCommentary" xml:space="preserve">
-    <value>Du solltest mindestens ein Bildschirmfoto machen</value>
-  <alternative>Du solltest mindestens ein Screenshot machen</alternative></data>
+    <value>Sie sollten mindestens ein Bildschirmfoto machen</value>
+  <alternative>Du solltest mindestens ein Screenshot machen</alternative><alternative>Du solltest mindestens ein Bildschirmfoto machen</alternative></data>
   <data name="AcObject_Fuel" xml:space="preserve">
     <value>Treibstoff:</value>
   </data>
@@ -526,8 +526,8 @@
     <value>Bis</value>
   </data>
   <data name="Controls_RoadEffect" xml:space="preserve">
-    <value>Oberlächeneffekt</value>
-  <alternative>Straßeneffekt</alternative></data>
+    <value>Oberflächeneffekt</value>
+  <alternative>Straßeneffekt</alternative><alternative>Oberlächeneffekt</alternative></data>
   <data name="Controls_SlipEffect" xml:space="preserve">
     <value>Rutscheffekt</value>
   </data>
@@ -896,5 +896,20 @@ Material: [b]{10}[/b]</value>
   </data>
   <data name="TableHeader_Track" xml:space="preserve">
     <value>Strecke</value>
+  </data>
+  <data name="Common_CelsiusPostfix" xml:space="preserve">
+    <value> °C</value>
+  </data>
+  <data name="Common_Rating" xml:space="preserve">
+    <value>Bewertung:</value>
+  </data>
+  <data name="Controls_DegreesLabel" xml:space="preserve">
+    <value>Grad</value>
+  </data>
+  <data name="Common_WhatIsIt" xml:space="preserve">
+    <value>Was ist das?</value>
+  </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>Zu Ausgewähltem scrollen (Strg+Shift+V)</value>
   </data>
 </root>

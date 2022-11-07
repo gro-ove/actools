@@ -178,8 +178,8 @@
     <value>Installazione...</value>
   </data>
   <data name="Common_OfflineMode" xml:space="preserve">
-    <value>Modalità Offline</value>
-  <alternative>Modo offline</alternative></data>
+    <value>Modalità offline</value>
+  <alternative>Modo offline</alternative><alternative>Modalità Offline</alternative></data>
   <data name="Common_TryAgain" xml:space="preserve">
     <value>Prova ancora</value>
   </data>
@@ -322,8 +322,8 @@
     <value>Frizione automatica:</value>
   </data>
   <data name="Assists_StabilityControlLabel" xml:space="preserve">
-    <value>Controllo stabilità</value>
-  </data>
+    <value>Controllo stabilità:</value>
+  <alternative>Controllo stabilità</alternative></data>
   <data name="Assists_FuelLabel" xml:space="preserve">
     <value>Carburante:</value>
   </data>
@@ -340,8 +340,8 @@
     <value>Specifiche:</value>
   </data>
   <data name="Car_OpenInShowroom" xml:space="preserve">
-    <value>Apri in Showroom</value>
-  </data>
+    <value>Apri in showroom</value>
+  <alternative>Apri in Showroom</alternative></data>
   <data name="Common_Options" xml:space="preserve">
     <value>Opzioni</value>
   </data>
@@ -349,8 +349,8 @@
     <value>Settaggi</value>
   </data>
   <data name="Car_OpenInCustomShowroom" xml:space="preserve">
-    <value>Apri in Showroom personalizzato</value>
-  </data>
+    <value>Apri in showroom personalizzato</value>
+  <alternative>Apri in Showroom personalizzato</alternative></data>
   <data name="KunosCareer_CompletedLabel" xml:space="preserve">
     <value>Completato:</value>
   </data>
@@ -382,14 +382,14 @@
     <value>Schermo pieno</value>
   </data>
   <data name="QuickSwitches_DevApps" xml:space="preserve">
-    <value>Apps sviluppatori</value>
-  </data>
+    <value>App sviluppatori</value>
+  <alternative>Apps sviluppatori</alternative></data>
   <data name="QuickSwitches_FreeCamera" xml:space="preserve">
     <value>Telecamera libera</value>
   </data>
   <data name="QuickSwitches_OnlineName" xml:space="preserve">
-    <value>Nome Online</value>
-  </data>
+    <value>Nome online</value>
+  <alternative>Nome Online</alternative></data>
   <data name="QuickSwitches_Exposure" xml:space="preserve">
     <value>Esposizione</value>
   </data>
@@ -460,11 +460,11 @@
     <value>Strumenti di sviluppo</value>
   </data>
   <data name="Common_ChangeSkin" xml:space="preserve">
-    <value>Cambia Skin</value>
-  </data>
+    <value>Cambia skin</value>
+  <alternative>Cambia Skin</alternative></data>
   <data name="FindInformation_SaveAndClose" xml:space="preserve">
-    <value>Salva e Chiudi</value>
-  </data>
+    <value>Salva e chiudi</value>
+  <alternative>Salva e Chiudi</alternative></data>
   <data name="Controls_ExperimentalHeader" xml:space="preserve">
     <value>Sperimentale:</value>
   </data>
@@ -532,8 +532,8 @@
     <value>modalità a schermo intero (ad esempio, Shadowplay non funziona senza di essa)</value>
   </data>
   <data name="QuickSwitches_DevApps_Tooltip" xml:space="preserve">
-    <value>Abilità le App sviluppatore</value>
-  </data>
+    <value>Abilità le app sviluppatore</value>
+  <alternative>Abilità le App sviluppatore</alternative></data>
   <data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
     <value>Abilta camera libera (premi F7 in pista)</value>
   </data>
@@ -550,8 +550,8 @@
     <value>Passare tra i preset delle impostazioni video</value>
   </data>
   <data name="QuickSwitches_PpFilters_Tooltip" xml:space="preserve">
-    <value>Passare tra i Filtri PP</value>
-  </data>
+    <value>Passare tra i filtri PP</value>
+  <alternative>Passare tra i Filtri PP</alternative></data>
   <data name="QuickSwitches_Exposure_Tooltip" xml:space="preserve">
     <value>Livello luminosità</value>
   </data>
@@ -586,8 +586,8 @@
     <value>Sicuro?</value>
   </data>
   <data name="Controls_BuiltInPresets" xml:space="preserve">
-    <value>Impostazioni incorporate</value>
-  </data>
+    <value>Preset incorporati</value>
+  <alternative>Impostazioni incorporate</alternative></data>
   <data name="Controls_UserPresets" xml:space="preserve">
     <value>Impostazioni utente</value>
   </data>
@@ -710,8 +710,8 @@ Inserisci tipo: [b]{2}[/b]</alternative></data>
     <value>Nascondi Ruote</value>
   </data>
   <data name="CustomShowroom_AmbientShadowsSize_Highlight" xml:space="preserve">
-    <value>Evidenzia Dimensione</value>
-  </data>
+    <value>Evidenzia dimensione</value>
+  <alternative>Evidenzia Dimensione</alternative></data>
   <data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
     <value>La dimensione dell'ombra verrà salvata in "data / ambient_shadows.ini", ma i dati vengono crittografati, quindi non avranno alcun effetto. Continua?</value>
   </data>
@@ -719,8 +719,8 @@ Inserisci tipo: [b]{2}[/b]</alternative></data>
     <value>Scompatta {0}</value>
   </data>
   <data name="Common_FolderExists" xml:space="preserve">
-    <value>La cartella "{0}" esiste già, Sovrascrivo i file?</value>
-  </data>
+    <value>La cartella "{0}" esiste già, Sovrascrivere i file?</value>
+  <alternative>La cartella "{0}" esiste già, Sovrascrivo i file?</alternative></data>
   <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
     <value>"Nome oggetto: [b]{0}[/b] 
 Classe: [b]{1}[/b] 
@@ -747,8 +747,8 @@ Alpha test: [b]{3}[/b]
 Profondità: [b]{4}[/b]</value>
   </data>
   <data name="CustomShowroom_ShaderProperties" xml:space="preserve">
-    <value>Proprrieta delle ombre:</value>
-  </data>
+    <value>Proprietà delle ombre:</value>
+  <alternative>Proprrieta delle ombre:</alternative></data>
   <data name="Controls_ClickToAssign" xml:space="preserve">
     <value>Clicca per assegnare</value>
   <alternative>Clicka per assegnare</alternative></data>
@@ -759,8 +759,8 @@ Profondità: [b]{4}[/b]</value>
     <value>Sensibiltà  alla velocità</value>
   </data>
   <data name="Controls_ClearWheelBinding" xml:space="preserve">
-    <value>Pulisci collegamento al volante</value>
-  <alternative>Pulisci collegamento alla Ruota</alternative></data>
+    <value>Cancella collegamento al volante</value>
+  <alternative>Pulisci collegamento alla Ruota</alternative><alternative>Pulisci collegamento al volante</alternative></data>
   <data name="Controls_SteeringWheelButton" xml:space="preserve">
     <value>Tasto del volante</value>
   </data>
@@ -777,8 +777,8 @@ Profondità: [b]{4}[/b]</value>
     <value>Piloti online:</value>
   </data>
   <data name="Online_JoinUsing" xml:space="preserve">
-    <value>Unisciti Usando {0}</value>
-  </data>
+    <value>Unisciti usando {0}</value>
+  <alternative>Unisciti Usando {0}</alternative></data>
   <data name="CustomShowroom_AmbientShadows_CannotUpdate" xml:space="preserve">
     <value>Non è possibile aggiornare le ambient shadows</value>
   </data>
@@ -789,8 +789,8 @@ Profondità: [b]{4}[/b]</value>
     <value>Crea un nuovo file ui_skin.json (Alt+S)</value>
   </data>
   <data name="Common_Uploading" xml:space="preserve">
-    <value>In upload…</value>
-  <alternative>Uploading…</alternative></data>
+    <value>Caricamento…</value>
+  <alternative>Uploading…</alternative><alternative>In upload…</alternative></data>
   <data name="Common_RecommendedPercentageFormat" xml:space="preserve">
     <value>Valore consigliato: {0}%</value>
   </data>
@@ -804,14 +804,14 @@ Profondità: [b]{4}[/b]</value>
     <value>Rendi indipendente</value>
   <alternative>Rendi indipendenre</alternative></data>
   <data name="FindInformation_SaveAsYear" xml:space="preserve">
-    <value>Salva come Anno</value>
-  </data>
+    <value>Salva come anno</value>
+  <alternative>Salva come Anno</alternative></data>
   <data name="FindInformation_SaveAsCountry" xml:space="preserve">
-    <value>Salva come Paese</value>
-  </data>
+    <value>Salva come paese</value>
+  <alternative>Salva come Paese</alternative></data>
   <data name="FindInformation_SaveAsDescription" xml:space="preserve">
-    <value>Salva come Descrizione</value>
-  </data>
+    <value>Salva come descrizione</value>
+  <alternative>Salva come Descrizione</alternative></data>
   <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
     <value>Impossibile aggiornare l'anteprima</value>
   </data>
@@ -822,14 +822,14 @@ Profondità: [b]{4}[/b]</value>
     <value>Anno di inizio produzione</value>
   <alternative>Annno di inizio produzione</alternative></data>
   <data name="Controls_MinimumForce" xml:space="preserve">
-    <value>Forza Minima</value>
-  </data>
+    <value>Forza minima</value>
+  <alternative>Forza Minima</alternative></data>
   <data name="Controls_SlipEffect" xml:space="preserve">
     <value>Effetto scivolata</value>
   </data>
   <data name="Controls_EnhancedUndersteer" xml:space="preserve">
-    <value>Migliora effetto sottosterzo</value>
-  </data>
+    <value>Effeto sottosterzo migiorato</value>
+  <alternative>Migliora effetto sottosterzo</alternative></data>
   <data name="Controls_SoftLock" xml:space="preserve">
     <value>Blocco soft</value>
   </data>
@@ -888,8 +888,8 @@ Profondità: [b]{4}[/b]</value>
     <value>Bloccato</value>
   </data>
   <data name="Controls_ClearKeyboardBinding" xml:space="preserve">
-    <value>Pulisci associazioni tasti</value>
-  </data>
+    <value>Cancella associazioni tasti</value>
+  <alternative>Pulisci associazioni tasti</alternative></data>
   <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
     <value>Auto genitore (se impostato, questa auto sarà una sua versione modificata)</value>
   </data>
@@ -903,8 +903,8 @@ Profondità: [b]{4}[/b]</value>
     <value>Selezionare l'anno o la descrizione e premere OK; tieni premuto Ctrl per estendere la descrizione anziché sostituirla.</value>
   </data>
   <data name="CarParent_ChildrenWillBeMoved" xml:space="preserve">
-    <value>Le dipendenze saranno spostate nel nuovo principale!</value>
-  </data>
+    <value>Le dipendenze saranno spostate nel nuovo genitore!</value>
+  <alternative>Le dipendenze saranno spostate nel nuovo principale!</alternative></data>
   <data name="Controls_DegreesLabel" xml:space="preserve">
     <value>Gradi</value>
   </data>
@@ -916,5 +916,11 @@ Profondità: [b]{4}[/b]</value>
   </data>
   <data name="Common_Rating" xml:space="preserve">
     <value>Valutazione:</value>
+  </data>
+  <data name="Assists_AutoBlipLabel" xml:space="preserve">
+    <value>Punta-tacco automatico:</value>
+  </data>
+  <data name="AssistsPreset_Pro" xml:space="preserve">
+    <value>Professionista</value>
   </data>
 </root>

@@ -558,4 +558,10 @@
   <data name="Controls_Brake" xml:space="preserve">
     <value>Brems</value>
   </data>
+  <data name="AdditionalContent_Track" xml:space="preserve">
+    <value>racerbane</value>
+  </data>
+  <data name="Units_WHP" xml:space="preserve">
+    <value>hk</value>
+  </data>
 </root>

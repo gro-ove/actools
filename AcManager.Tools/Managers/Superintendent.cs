@@ -72,7 +72,7 @@ namespace AcManager.Tools.Managers {
             Logging.Write($"Rescanning finished: {_managers.Count} managers, {w.Elapsed.TotalMilliseconds:F2} ms");
         }
 
-        void OnAcRootDirectoryChanged(object sender, AcRootDirectoryEventArgs e) {
+        void OnAcRootDirectoryChanged(object sender, EventArgs e) {
             RescanManagers();
         }
 

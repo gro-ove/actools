@@ -10,6 +10,13 @@ using AcTools.ExtraKn5Utils.FbxUtils.Tokens.ValueArray;
 
 namespace AcTools.ExtraKn5Utils.FbxUtils.Extensions {
     public static class TokenExtension {
+        public static string DebugSerialize(this Token token) {
+            if (!TryGetAsString(token, out var result)) {
+                return $"<TokenType={token.TokenType}, ValueType={token.ValueType}>";
+            }
+            return $"<TokenType={token.TokenType}, ValueType={token.ValueType}, Value={result}>";
+        }
+        
         public static string GetAsString(this Token token) {
             if (!TryGetAsString(token, out var result)) {
                 throw new NotSupportedException();

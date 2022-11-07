@@ -13,41 +13,41 @@
 
   <ScrollViewer x:Name="ContentRoot" mui:SaveScroll.Key="SettingsLive">
     <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Live}" x:Name="Panel" Style="{StaticResource SettingsPanel}">
-      <CheckBox IsChecked="{Binding LiveSettings.GridFinderEnabled}">
+      <CheckBox IsChecked="{Binding Live.GridFinderEnabled}">
         <Label Content="Enable Grid Finder" />
       </CheckBox>
 
-      <CheckBox IsChecked="{Binding LiveSettings.RaceUEnabled}">
+      <CheckBox IsChecked="{Binding Live.RaceUEnabled}">
         <Label Content="Enable RaceU" />
       </CheckBox>
 
-      <CheckBox IsChecked="{Binding LiveSettings.RsrEnabled}">
+      <CheckBox IsChecked="{Binding Live.RsrEnabled}">
         <Label Content="{x:Static g:AppStrings.Settings_Live_EnableRsr}" />
       </CheckBox>
 
-      <StackPanel IsEnabled="{Binding LiveSettings.RsrEnabled}" Margin="20 0 0 8">
-        <CheckBox IsChecked="{Binding LiveSettings.RsrCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrCustomStyle_Tooltip}">
+      <StackPanel IsEnabled="{Binding Live.RsrEnabled}" Margin="20 0 0 8">
+        <CheckBox IsChecked="{Binding Live.RsrCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrCustomStyle_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
         </CheckBox>
 
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_Live_RsrNameLabel}" />
-          <CheckBox DockPanel.Dock="Left" IsChecked="{Binding LiveSettings.RsrDifferentPlayerName}"
+          <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Live.RsrDifferentPlayerName}"
               ToolTip="{x:Static g:AppStrings.Settings_Live_RsrName_Tooltip}" VerticalAlignment="Center" />
-          <mui:BetterTextBox Text="{Binding LiveSettings.RsrPlayerName}" Placeholder="?" IsEnabled="{Binding LiveSettings.RsrDifferentPlayerName}" />
+          <mui:BetterTextBox Text="{Binding Live.RsrPlayerName}" Placeholder="?" IsEnabled="{Binding Live.RsrDifferentPlayerName}" />
         </DockPanel>
 
-        <CheckBox IsChecked="{Binding LiveSettings.RsrDisableAppAutomatically}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrAutoToggleApp_Tooltip}">
+        <CheckBox IsChecked="{Binding Live.RsrDisableAppAutomatically}" ToolTip="{x:Static g:AppStrings.Settings_Live_RsrAutoToggleApp_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Live_RsrAutoToggleApp}" />
         </CheckBox>
       </StackPanel>
 
-      <CheckBox IsChecked="{Binding LiveSettings.SrsEnabled}" Margin="0 20 0 8">
+      <CheckBox IsChecked="{Binding Live.SrsEnabled}" Margin="0 20 0 8">
         <Label Content="{x:Static g:AppStrings.Settings_Live_EnableSrs}" />
       </CheckBox>
 
-      <StackPanel IsEnabled="{Binding LiveSettings.SrsEnabled}" Margin="20 0 0 8">
-        <CheckBox IsChecked="{Binding LiveSettings.SrsCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsCustomStyle_Tooltip}">
+      <StackPanel IsEnabled="{Binding Live.SrsEnabled}" Margin="20 0 0 8">
+        <CheckBox IsChecked="{Binding Live.SrsCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsCustomStyle_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
         </CheckBox>
 
@@ -61,17 +61,40 @@
         </DockPanel>-->
       </StackPanel>
 
-      <CheckBox IsChecked="{Binding LiveSettings.TrackTitanEnabled}">
+      <CheckBox IsChecked="{Binding Live.TrackTitanEnabled}">
         <Label Content="Enable Track Titan" />
       </CheckBox>
 
-      <CheckBox IsChecked="{Binding LiveSettings.UnitedRacingDataEnabled}">
+      <CheckBox IsChecked="{Binding Live.UnitedRacingDataEnabled}">
         <Label Content="Enable United Racing Data" />
       </CheckBox>
 
-      <CheckBox IsChecked="{Binding LiveSettings.WorldSimSeriesEnabled}">
+      <CheckBox IsChecked="{Binding Live.WorldSimSeriesEnabled}">
         <Label Content="Enable World Sim Series" />
       </CheckBox>
+
+      <!-- Custom services -->
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Extra Live Services:" />
+
+      <DockPanel>
+        <Label Content="Services:" />
+        <ListBox SelectedItem="{Binding SelectedLiveService}" ItemsSource="{Binding Live.UserEntries}" DockPanel.Dock="Top"
+            ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Margin="20 4">
+                <mui:BetterTextBox Text="{Binding DisplayName}" Style="{StaticResource Borderless}" TextChanged="OnUserLinkTextChanged" />
+                <mui:BetterTextBox Text="{Binding Url}" Style="{StaticResource Borderless.Small}" TextChanged="OnUserLinkTextChanged" />
+              </StackPanel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+        <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" Margin="0 8 0 0">
+          <Button Content="Add service" Command="{Binding AddLiveServiceCommand}" />
+          <Button Content="Delete service" Command="{Binding DeleteSelectedServiceCommand}"
+              IsEnabled="{Binding SelectedLiveService, Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}" />
+        </mui:SpacingUniformGrid>
+      </DockPanel>
     </StackPanel>
   </ScrollViewer>
 </UserControl>

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
@@ -11,10 +13,18 @@ using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsIntegrated {
+        private bool _changed;
+
         public SettingsIntegrated() {
             DataContext = new ViewModel();
             InitializeComponent();
             this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
+            Unloaded += (sender, args) => {
+                if (_changed) {
+                    Model.Live.UserEntries = Model.Live.UserEntries.ToList();
+                    _changed = false;
+                }
+            };
         }
 
         private ViewModel Model => (ViewModel)DataContext;
@@ -23,6 +33,8 @@ namespace AcManager.Pages.Settings {
             public SettingsHolder.IntegratedSettings Integrated => SettingsHolder.Integrated;
             public SettingsHolder.LiveSettings Live => SettingsHolder.Live;
             public SettingsHolder.DriveSettings Drive => SettingsHolder.Drive;
+
+            public SettingsLive.ViewModel LiveModel { get; } = new SettingsLive.ViewModel();
 
             public ViewModel() {
                 _discordOriginal = Integrated.DiscordIntegration;
@@ -72,6 +84,10 @@ namespace AcManager.Pages.Settings {
             private DelegateCommand _restartCommand;
 
             public DelegateCommand RestartCommand => _restartCommand ?? (_restartCommand = new DelegateCommand(WindowsHelper.RestartCurrentApplication));
+        }
+
+        private void OnUserLinkTextChanged(object sender, TextChangedEventArgs e) {
+            _changed = true;
         }
     }
 }

@@ -385,12 +385,24 @@ namespace AcManager.Pages.Lists {
                     OnPropertyChanged();
                 }
             }
+
+            private bool _packWithSkinIni = ValuesStorage.Get("_ba.packSkins.packWithSkinIni", true);
+            public bool PackWithSkinIni {
+                get => _packWithSkinIni;
+                set {
+                    if (Equals(value, _packWithSkinIni)) return;
+                    _packWithSkinIni = value;
+                    ValuesStorage.Set("_ba.packSkins.packWithSkinIni", value);
+                    OnPropertyChanged();
+                }
+            }
             #endregion
 
             protected override AcCommonObject.AcCommonObjectPackerParams GetParams() {
                 return new CarSkinObject.CarSkinPackerParams {
                     CmForFlag = CmForFlag,
-                    CmPaintShopValues = CmPaintShopValues
+                    CmPaintShopValues = CmPaintShopValues,
+                    PackWithSkinIni = PackWithSkinIni
                 };
             }
         }

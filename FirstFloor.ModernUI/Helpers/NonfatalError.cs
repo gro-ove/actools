@@ -55,7 +55,8 @@ namespace FirstFloor.ModernUI.Helpers {
 
             Logging.Write('•', exception == null ? message : $"{message}:\n{exception}", m, p, l);
 
-            var entry = new NonfatalErrorEntry(message, commentary, exception, solutions ?? new NonfatalErrorSolution[0]);
+            var entry = new NonfatalErrorEntry(message, commentary, exception,
+                    solutions?.Where(x => x != null) ?? new NonfatalErrorSolution[0]);
             ActionExtension.InvokeInMainThreadAsync(() => {
                 try {
                     var active = _active;

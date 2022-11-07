@@ -217,6 +217,20 @@
               </StackPanel>
               <mui:SpacingStackPanel Spacing="4" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0 2 0 0"
                   d:DataContext="{d:DesignInstance t:ServerPresetDriverEntry}">
+                <mui:BetterComboBox Padding="8 2" Width="96" Margin="0 -4 0 0" ItemsSource="{Binding FittingSetups}"
+                    SelectedItem="{Binding CarSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Nullable="True"
+                    Visibility="{Binding FittingSetups.Count, Converter={StaticResource MoreToVisibilityConverter}}" IsEditable="False">
+                  <mui:BetterComboBox.ItemTemplate>
+                    <DataTemplate DataType="t:ServerPresetObject+SetupItem">
+                      <TextBlock x:Name="Text" Text="{Binding DisplayName}" />
+                      <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding}" Value="{x:Static mui:BetterComboBox.NullValue}">
+                          <Setter TargetName="Text" Property="Text" Value="(Any)" />
+                        </DataTrigger>
+                      </DataTemplate.Triggers>
+                    </DataTemplate>
+                  </mui:BetterComboBox.ItemTemplate>
+                </mui:BetterComboBox>
                 <Button Padding="4 2" Margin="0 -4 0 0" Command="{Binding CarObject.PackDataCommand}"
                     Visibility="{Binding CarObject.AcdData.IsPacked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse,
                         FallbackValue={x:Static Visibility.Collapsed}}">

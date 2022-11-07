@@ -4059,4 +4059,67 @@ Başka değerlerin eklenmesini istiyorsanız bizimle iletişime geçin.
   <data name="Solution_ChangeUpgradeIcon_Details" xml:space="preserve">
     <value>Düzenleyiciyi kullanarak yeni bir yükseltme ikonu seçin ya da oluşturun</value>
   </data>
+  <data name="AcError_AvailableSolutions" xml:space="preserve">
+    <value>İşe Yarayabilir {Çözüm}:</value>
+  </data>
+  <data name="AcSettings_Audio_TyresOffset" xml:space="preserve">
+    <value>Lastiklerin ofseti</value>
+  </data>
+  <data name="Car_PackExistingDataMessage" xml:space="preserve">
+    <value>Paketlenmiş veri zaten bulunuyor. Değiştirecek misin?[br][br]Orijinal "data.acd" Geri Dönüşüm Kutusuna taşınacak.</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+    <value>Quick Drive ön ayarlarıyla yardımları yükleyin (genel)</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataIfExists" xml:space="preserve">
+    <value>Varsa paketlenmemiş verileri kullanın</value>
+  </data>
+  <data name="Settings_General_ResetDoNotShowAgainCheckboxes" xml:space="preserve">
+    <value>"Bir daha gösterme" onay kutularını sıfırlayın</value>
+  </data>
+  <data name="Settings_General_ShowRecentChangesNotification_Tooltip" xml:space="preserve">
+    <value>Güncellemeden sonra son değişiklikleri içeren bildirimi göster</value>
+  </data>
+  <data name="Settings_General_RecentChangesNotification" xml:space="preserve">
+    <value>Son değişiklik bildirimi</value>
+  </data>
+  <data name="Settings_General_OpenAppsDataFolder" xml:space="preserve">
+    <value>Uygulamanın veri klasörünü aç</value>
+  </data>
+  <data name="Settings_Drive_KeepResultsOfTheLast_Tooltip" xml:space="preserve">
+    <value>Sonuçlar “…\AppData\Local\AcTools Content Manager\Progress\Sessions” klasöründe saklanır</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV_Tooltip" xml:space="preserve">
+    <value>WheelCheck'ten CSV'yi içe aktarın (gerekirse sürükleyip bırakmanız yeterlidir)</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_Import_Tooltip" xml:space="preserve">
+    <value>Gerekirse sürükleyip bırakmanız yeterli</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_SessionsNotFound" xml:space="preserve">
+    <value>Oturum bulunamadı.</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_RemoveMissing" xml:space="preserve">
+    <value>Eksik olanları kaldır</value>
+  </data>
+  <data name="Settings_Drive_ShowExtraDropDownListsForSkins" xml:space="preserve">
+    <value>Kaplamalar, araç modifikasyonu ve parça düzeni için ekstra açılır listeleri göster</value>
+  </data>
+  <data name="Settings_Online_PingAttempts" xml:space="preserve">
+    <value>Ping denemeleri</value>
+  </data>
+  <data name="Settings_Online_PingServersOnce_Tooltip" xml:space="preserve">
+    <value>Orijinal başlatıcıda olduğu gibi sunuculara yalnızca bir kez yenile düğmesine basarak ping işlemi yapın</value>
+  </data>
+  <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
+    <value>İçerik kayıpsa ek bilgi göster</value>
+  </data>
+  <data name="Main_Workshop" xml:space="preserve">
+    <value>Atölye</value>
+  </data>
+  <data name="DownloadList_7ZipComment" xml:space="preserve">
+    <value>7-Zip eklentisi ile kurulum performansını iyileştirebilir ve CM'nin her tür arşivi açmasına izin verebilirsiniz:</value>
+  </data>
+  <data name="DownloadList_DetectionFailed" xml:space="preserve">
+    <value>Uygulama buraya yüklenebilecek bir içerik tespit edemedi. El ile kurulum yapmak ister misiniz?</value>
+  </data>
 </root>

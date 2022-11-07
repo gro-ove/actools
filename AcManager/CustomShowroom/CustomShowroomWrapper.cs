@@ -11,6 +11,7 @@ using AcManager.Controls;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools;
 using AcTools.Render.Kn5Specific;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForward;
@@ -76,6 +77,7 @@ namespace AcManager.CustomShowroom {
             if (_starting) return;
             _starting = true;
 
+            GCHelper.CleanUp();
             await FormWrapperBase.PrepareAsync();
 
             ForwardKn5ObjectRenderer renderer = null;

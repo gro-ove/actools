@@ -16,6 +16,7 @@ using AcManager.Controls.UserControls.Web;
 using AcManager.Controls.ViewModels;
 using AcManager.Properties;
 using AcManager.Tools.Data;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
@@ -34,7 +35,8 @@ using Newtonsoft.Json;
 
 namespace AcManager.Pages.Drive {
     public partial class Srs2 : ILoadableContent {
-        public static PluginsRequirement Requirement { get; } = new PluginsRequirement(KnownPlugins.CefSharp);
+        private static PluginsRequirement _requirement;
+        public static PluginsRequirement Requirement => _requirement ?? (_requirement = new PluginsRequirement(KnownPlugins.CefSharp));
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
             await CarsManager.Instance.EnsureLoadedAsync();
@@ -128,6 +130,9 @@ namespace AcManager.Pages.Drive {
                                         Nationality = name?.Nationality
                                     };
                                 })
+                    },
+                    AdditionalPropertieses = {
+                        new LiveServiceMark("SRS")
                     }
                 });
             }, () => SelectedCar != null && Track != null));

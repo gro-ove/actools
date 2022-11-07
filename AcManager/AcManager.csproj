@@ -3,6 +3,7 @@
   <PropertyGroup>
     <!-- There is also a custom packer made for this app, that’s why there is an option. -->
     <UseCosturaToPack>true</UseCosturaToPack>
+    <IncludeWorkshop>false</IncludeWorkshop>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -135,8 +136,16 @@
       <HintPath>..\packages\Costura.Fody.2.0.0\lib\net452\Costura.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Hardcodet.NotifyIcon.Wpf, Version=1.1.0.0, Culture=neutral, PublicKeyToken=682384a853a08aad">
+      <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.1.0\lib\net45\Hardcodet.NotifyIcon.Wpf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
       <HintPath>..\packages\HtmlAgilityPack.1.7.0\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
+      <HintPath>..\packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="MegaApiClient, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Libraries\MegaApiClient\MegaApiClient.dll</HintPath>
@@ -164,18 +173,15 @@
       <HintPath>..\Libraries\CefSharp-91.1.211-$(ActualPlatform)\CefSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    <Reference Include="xxHashSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\xxHashSharp.1.0.0\lib\net45\xxHashSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
-      <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="MoonSharp.Interpreter, Version=2.0.0.0, Culture=neutral, PublicKeyToken=921e73ce94aa17f8, processorArchitecture=MSIL">
       <HintPath>..\packages\MoonSharp.2.0.0.0\lib\net40-client\MoonSharp.Interpreter.dll</HintPath>
@@ -398,6 +404,12 @@
       <DependentUpon>CupList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ContentTools\ContentTool.cs" />
+    <Compile Include="Pages\ContentTools\TreeModelConverter.xaml.cs">
+      <DependentUpon>TreeModelConverter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ContentTools\Uv2ModelConverter.xaml.cs">
+      <DependentUpon>Uv2ModelConverter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\AppKeyDialog.xaml.cs">
       <DependentUpon>AppKeyDialog.xaml</DependentUpon>
     </Compile>
@@ -473,7 +485,7 @@
     <Compile Include="Pages\Drive\RaceU.xaml.cs">
       <DependentUpon>RaceU.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Drive\RealConditionsHelper.cs" />
+    <Compile Include="Pages\Drive\RaceUTemporarySkinsHelper.cs" />
     <Compile Include="Pages\Drive\Srs2.xaml.cs">
       <DependentUpon>Srs2.xaml</DependentUpon>
     </Compile>
@@ -496,8 +508,14 @@
     <Compile Include="Pages\Drive\QuickDrive_Drag.xaml.cs">
       <DependentUpon>QuickDrive_Drag.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\UserLiveService.xaml.cs">
+      <DependentUpon>UserLiveService.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\WorldSimSeries.xaml.cs">
       <DependentUpon>WorldSimSeries.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Lists\LuaAppsListPage.xaml.cs">
+      <DependentUpon>LuaAppsListPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Lists\ServerBannedListPage.xaml.cs">
       <DependentUpon>ServerBannedListPage.xaml</DependentUpon>
@@ -507,6 +525,9 @@
       <DependentUpon>GenericModsListPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Lists\ToolLink.cs" />
+    <Compile Include="Pages\Lists\ToolsCreatorListPage.xaml.cs">
+      <DependentUpon>ToolsCreatorListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Lists\TrackSkinsListPage.xaml.cs">
       <DependentUpon>TrackSkinsListPage.xaml</DependentUpon>
     </Compile>
@@ -552,6 +573,9 @@
     <Compile Include="Pages\Selected\RoundsListDataTemplateSelector.cs" />
     <Compile Include="Pages\Selected\SelectedCarPage_New.xaml.cs">
       <DependentUpon>SelectedCarPage_New.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Selected\SelectedLuaAppPage.xaml.cs">
+      <DependentUpon>SelectedLuaAppPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Selected\SelectedTrackSkinPage.xaml.cs">
       <DependentUpon>SelectedTrackSkinPage.xaml</DependentUpon>
@@ -764,44 +788,6 @@
     <Compile Include="Pages\ShadersPatch\ShadersMainPage.xaml.cs">
       <DependentUpon>ShadersMainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Workshop\AnimatableScrollViewer.cs" />
-    <Compile Include="Pages\Workshop\UploadLogger.cs" />
-    <Compile Include="Pages\Workshop\VirtualDataWrapper.cs" />
-    <Compile Include="Pages\Workshop\WorkshopCarBrandsHorizonal.xaml.cs">
-      <DependentUpon>WorkshopCarBrandsHorizonal.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Workshop\WorkshopCarBrandsNarrrowColumns.xaml.cs">
-      <DependentUpon>WorkshopCarBrandsNarrrowColumns.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Workshop\WorkshopCarBrandsGrid.xaml.cs">
-      <DependentUpon>WorkshopCarBrandsGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Workshop\WorkshopCarBrandsBrandsRow.xaml.cs">
-      <DependentUpon>WorkshopCarBrandsBrandsRow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Workshop\WorkshopContentMain.xaml.cs">
-      <DependentUpon>WorkshopContentMain.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Workshop\WorkshopContentCategories.xaml.cs">
-      <DependentUpon>WorkshopContentCategories.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Workshop\WorkshopContentTags.xaml.cs">
-      <DependentUpon>WorkshopContentTags.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Workshop\WorkshopEditProfile.xaml.cs">
-      <DependentUpon>WorkshopEditProfile.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Workshop\WorkshopLinkCommands.cs" />
-    <Compile Include="Pages\Workshop\WorkshopManage.xaml.cs">
-      <DependentUpon>WorkshopManage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Workshop\WorkshopSelectedCar.xaml.cs">
-      <DependentUpon>WorkshopSelectedCar.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Workshop\WorkshopUpload.xaml.cs">
-      <DependentUpon>WorkshopUpload.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Workshop\WorkshopUtils.cs" />
     <Compile Include="PaintShop\CarPaint.cs" />
     <Compile Include="PaintShop\CarPaintColor.cs" />
     <Compile Include="PaintShop\CarPaintColors.cs" />
@@ -856,6 +842,7 @@
     <Compile Include="Tools\LiveryIconEditor.cs" />
     <Compile Include="Tools\NeutralColorGradingLut.cs" />
     <Compile Include="Tools\KeyboardListener.cs" />
+    <Compile Include="Tools\QuickDriveButtonModel.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Pages\Selected\ISelectedAcObjectViewModel.cs" />
     <Compile Include="Pages\Selected\SelectedAcJsonObjectPage.cs" />
@@ -950,20 +937,6 @@
     <Compile Include="Tools\WebDownloadListener.cs" />
     <Compile Include="Tools\WheelAnglesStorage.cs" />
     <Compile Include="Tools\Win10SharingUiHelper.cs" />
-    <Compile Include="Tools\WorkshopPublishTools\Submitters\IUploadLoggedOperation.cs" />
-    <Compile Include="Tools\WorkshopPublishTools\Submitters\IUploadLoggedParallelOperation.cs" />
-    <Compile Include="Tools\WorkshopPublishTools\Submitters\IUploadLogger.cs" />
-    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopBaseSubmitter.cs" />
-    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopCarSkinSubmitter.cs" />
-    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopCarSubmitter.cs" />
-    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopSubmitterFactory.cs" />
-    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopSubmitterParams.cs" />
-    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopBaseValidator.cs" />
-    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopCarSkinValidator.cs" />
-    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopCarValidator.cs" />
-    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopValidatedItem.cs" />
-    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopValidatedState.cs" />
-    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopValidatorFactory.cs" />
     <Compile Include="UserControls\AdditionalContentEntryTemplateSelector.cs" />
     <Compile Include="UserControls\BakedShadowsSettings.xaml.cs">
       <DependentUpon>BakedShadowsSettings.xaml</DependentUpon>
@@ -986,6 +959,7 @@
     <Compile Include="UserControls\SelectCar.xaml.cs">
       <DependentUpon>SelectCar.xaml</DependentUpon>
     </Compile>
+    <Page Condition="'$(Configuration)' == 'Debug'" Include="Assets\Development\ModernProgressRing.Imported.xaml" />
     <Page Include="CustomShowroom\CmPreviewsTools.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1153,6 +1127,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\ContentTools\TreeModelConverter.xaml" />
+    <Page Include="Pages\ContentTools\Uv2ModelConverter.xaml" />
     <Page Include="Pages\Dialogs\AcErrorSolutionSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1271,12 +1247,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Drive\UserLiveService.xaml" />
     <Page Include="Pages\Drive\WorldSimSeries.xaml" />
     <Page Include="Pages\Lists\GenericModsListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Lists\LuaAppsListPage.xaml" />
     <Page Include="Pages\Lists\ServerBannedListPage.xaml" />
+    <Page Include="Pages\Lists\ToolsCreatorListPage.xaml" />
     <Page Include="Pages\Lists\TrackSkinsListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1335,6 +1314,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Selected\SelectedLuaAppPage.xaml" />
     <Page Include="Pages\Selected\SelectedTrackSkinPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1870,17 +1850,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Workshop\WorkshopCarBrandsHorizonal.xaml" />
-    <Page Include="Pages\Workshop\WorkshopCarBrandsNarrrowColumns.xaml" />
-    <Page Include="Pages\Workshop\WorkshopCarBrandsGrid.xaml" />
-    <Page Include="Pages\Workshop\WorkshopCarBrandsBrandsRow.xaml" />
-    <Page Include="Pages\Workshop\WorkshopContentMain.xaml" />
-    <Page Include="Pages\Workshop\WorkshopContentCategories.xaml" />
-    <Page Include="Pages\Workshop\WorkshopContentTags.xaml" />
-    <Page Include="Pages\Workshop\WorkshopEditProfile.xaml" />
-    <Page Include="Pages\Workshop\WorkshopManage.xaml" />
-    <Page Include="Pages\Workshop\WorkshopSelectedCar.xaml" />
-    <Page Include="Pages\Workshop\WorkshopUpload.xaml" />
     <Page Include="QuickSwitches\QuickSwitchesBlock.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1987,6 +1956,78 @@
     <None Include="Assets\Presets\Previews\Kunos.cmpreset" />
     <None Include="Packages.config" />
   </ItemGroup>
+  <PropertyGroup Condition="'$(IncludeWorkshop)' == 'true'">
+    <DefineConstants>INCLUDE_WORKSHOP</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(IncludeWorkshop)' == 'true' ">
+    <Compile Include="Pages\Workshop\AnimatableScrollViewer.cs" />
+    <Compile Include="Pages\Workshop\UploadLogger.cs" />
+    <Compile Include="Pages\Workshop\VirtualDataWrapper.cs" />
+    <Compile Include="Pages\Workshop\WorkshopCarBrandsHorizonal.xaml.cs">
+      <DependentUpon>WorkshopCarBrandsHorizonal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopCarBrandsNarrrowColumns.xaml.cs">
+      <DependentUpon>WorkshopCarBrandsNarrrowColumns.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopCarBrandsGrid.xaml.cs">
+      <DependentUpon>WorkshopCarBrandsGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopCarBrandsBrandsRow.xaml.cs">
+      <DependentUpon>WorkshopCarBrandsBrandsRow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopContentMain.xaml.cs">
+      <DependentUpon>WorkshopContentMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopContentCategories.xaml.cs">
+      <DependentUpon>WorkshopContentCategories.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopContentTags.xaml.cs">
+      <DependentUpon>WorkshopContentTags.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopEditProfile.xaml.cs">
+      <DependentUpon>WorkshopEditProfile.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopLinkCommands.cs" />
+    <Compile Include="Pages\Workshop\WorkshopManage.xaml.cs">
+      <DependentUpon>WorkshopManage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopSelectedCar.xaml.cs">
+      <DependentUpon>WorkshopSelectedCar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopUpload.xaml.cs">
+      <DependentUpon>WorkshopUpload.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopUtils.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\IUploadLoggedOperation.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\IUploadLoggedParallelOperation.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\IUploadLogger.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopBaseSubmitter.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopCarSkinSubmitter.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopCarSubmitter.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopSubmitterFactory.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopSubmitterParams.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopBaseValidator.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopCarSkinValidator.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopCarValidator.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopValidatedItem.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopValidatedState.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopValidatorFactory.cs" />
+    <Page Include="Pages\Workshop\WorkshopCarBrandsHorizonal.xaml" />
+    <Page Include="Pages\Workshop\WorkshopCarBrandsNarrrowColumns.xaml" />
+    <Page Include="Pages\Workshop\WorkshopCarBrandsGrid.xaml" />
+    <Page Include="Pages\Workshop\WorkshopCarBrandsBrandsRow.xaml" />
+    <Page Include="Pages\Workshop\WorkshopContentMain.xaml" />
+    <Page Include="Pages\Workshop\WorkshopContentCategories.xaml" />
+    <Page Include="Pages\Workshop\WorkshopContentTags.xaml" />
+    <Page Include="Pages\Workshop\WorkshopEditProfile.xaml" />
+    <Page Include="Pages\Workshop\WorkshopManage.xaml" />
+    <Page Include="Pages\Workshop\WorkshopSelectedCar.xaml" />
+    <Page Include="Pages\Workshop\WorkshopUpload.xaml" />
+    <ProjectReference Include="..\AcManager.Workshop\AcManager.Workshop.csproj">
+      <Project>{abcd8f3f-5730-4fac-86ba-8a28086b75f8}</Project>
+      <Name>AcManager.Workshop</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Img\ShowroomPanoramaExample.jpg" />
     <Resource Include="Assets\Img\Upgrade.png" />
@@ -2018,10 +2059,6 @@
     <ProjectReference Include="..\AcManager.Controls\AcManager.Controls.csproj">
       <Project>{b1d477c5-f639-4043-b8a6-82ea950f9890}</Project>
       <Name>AcManager.Controls</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AcManager.Workshop\AcManager.Workshop.csproj">
-      <Project>{abcd8f3f-5730-4fac-86ba-8a28086b75f8}</Project>
-      <Name>AcManager.Workshop</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcTools.ExtraKn5Utils\AcTools.ExtraKn5Utils.csproj">
       <Project>{67729c43-6e5f-482a-8777-1651ea1aa393}</Project>

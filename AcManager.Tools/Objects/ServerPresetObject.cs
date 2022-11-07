@@ -38,11 +38,10 @@ namespace AcManager.Tools.Objects {
             Sessions = new ChangeableObservableCollection<ServerSessionEntry>(SimpleSessions.Append(RaceSession));
             Sessions.ItemPropertyChanged += OnSessionEntryPropertyChanged;
 
-            InitSetupsItems();
-
             PluginEntries = new ChangeableObservableCollection<PluginEntry>();
             PluginEntries.CollectionChanged += OnPluginEntriesCollectionChanged;
             PluginEntries.ItemPropertyChanged += OnPluginEntriesPropertyChanged;
+            CmPluginLiveConditionsParams.PropertyChanged += (sender, args) => Changed = true;
         }
 
         protected override IniFileMode IniFileMode => IniFileMode.ValuesWithSemicolons;
@@ -126,6 +125,8 @@ namespace AcManager.Tools.Objects {
                     .ToString().GetChecksum();
         }
 
+        public const string EncodeSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+
         protected override void LoadData(IniFile ini) {
             foreach (var session in Sessions) {
                 session.Load(ini);
@@ -163,6 +164,13 @@ namespace AcManager.Tools.Objects {
             if (trackIdPieces.Length == 2) {
                 CspRequired = true;
                 RequiredCspVersion = trackIdPieces[0].As<int?>();
+            } else if (trackIdPieces.Length == 3) {
+                CspRequired = true;
+                RequiredCspVersion = trackIdPieces[0].As<int?>();
+                var value = EncodeSymbols.IndexOf(trackIdPieces[1].FirstOrDefault());
+                CspExtendedCarsPhysics = (value & 1) == 1;
+                CspExtendedTrackPhysics = (value & 2) == 2;
+                CspHidePitCrew = (value & 4) == 4;
             } else {
                 CspRequired = false;
                 RequiredCspVersion = null;
@@ -213,7 +221,8 @@ namespace AcManager.Tools.Objects {
 
             var cmPluginSection = ini["__CM_PLUGIN"];
             UseCmPlugin = cmPluginSection.GetBool("ACTIVE", false);
-            RealConditions = cmPluginSection.GetBool("REAL_CONDITIONS", false);
+            CmPluginLiveConditions = cmPluginSection.GetBool("REAL_CONDITIONS", false);
+            CmPluginLiveConditionsParams.Deserialize(cmPluginSection.GetNonEmpty("REAL_CONDITIONS_PARAMS"));
             for (var i = 0; i < 100; ++i) {
                 var entryAddress = cmPluginSection.GetNonEmpty($"EXTRA_PLUGIN_{i}_ADDRESS");
                 var entryPort = cmPluginSection.GetIntNullable($"EXTRA_PLUGIN_{i}_PORT");
@@ -251,7 +260,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private void LoadEntryListData(IniFile ini) {
-            DriverEntries = new ChangeableObservableCollection<ServerPresetDriverEntry>(ini.GetSections("CAR").Select(x => new ServerPresetDriverEntry(x)));
+            DriverEntries = new ChangeableObservableCollection<ServerPresetDriverEntry>(ini.GetSections("CAR")
+                    .Select(x => new ServerPresetDriverEntry(x)));
         }
 
         private void ResetEntryListData() {
@@ -283,8 +293,13 @@ namespace AcManager.Tools.Objects {
             section.Set("CLIENT_SEND_INTERVAL_HZ", SendIntervalHz);
             section.Set("NUM_THREADS", Threads);
 
+            var extraTweaks = "";
+            if ((CspExtendedCarsPhysics || CspExtendedTrackPhysics || CspHidePitCrew) && RequiredCspVersion >= 2000) {
+                extraTweaks = $@"{EncodeSymbols[(CspExtendedCarsPhysics ? 1 : 0) | (CspExtendedTrackPhysics ? 2 : 0) | (CspHidePitCrew ? 4 : 0)]}/../";
+            }
+
             section.Set("TRACK",
-                    (CspRequired ? (RequiredCspVersion == PatchHelper.NonExistentVersion ? "" : @"csp/") + (RequiredCspVersion ?? 0) + @"/../" : "") + TrackId);
+                    (CspRequired ? (RequiredCspVersion == PatchHelper.NonExistentVersion ? "" : @"csp/") + (RequiredCspVersion ?? 0) + @"/../" + extraTweaks : "") + TrackId);
 
             section.Set("CONFIG_TRACK", TrackLayoutId ?? "");
             section.Set("CARS", CarIds, ';');
@@ -364,7 +379,8 @@ namespace AcManager.Tools.Objects {
             var cmPluginSection = ini["__CM_PLUGIN"];
             cmPluginSection.Clear();
             cmPluginSection.Set("ACTIVE", UseCmPlugin);
-            cmPluginSection.Set("REAL_CONDITIONS", RealConditions);
+            cmPluginSection.Set("REAL_CONDITIONS", CmPluginLiveConditions);
+            cmPluginSection.Set("REAL_CONDITIONS_PARAMS", CmPluginLiveConditionsParams.Serialize());
             var extraPluginIndex = 0;
             foreach (var entry in PluginEntries.Where(x => !string.IsNullOrWhiteSpace(x.Address) && x.UdpPort.HasValue)) {
                 cmPluginSection.Set($"EXTRA_PLUGIN_{extraPluginIndex}_ADDRESS", entry.Address);

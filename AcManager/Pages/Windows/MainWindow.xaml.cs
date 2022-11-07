@@ -36,7 +36,6 @@ using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Starters;
 using AcManager.UserControls;
-using AcManager.Workshop;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
@@ -56,6 +55,10 @@ using DragDropEffects = System.Windows.DragDropEffects;
 using Path = System.Windows.Shapes.Path;
 using QuickSwitchesBlock = AcManager.QuickSwitches.QuickSwitchesBlock;
 
+#if INCLUDE_WORKSHOP
+using AcManager.Workshop;
+#endif
+
 namespace AcManager.Pages.Windows {
     public partial class MainWindow : IFancyBackgroundListener, INavigateUriHandler {
         private static readonly TitleLinkEnabledEntry DownloadsEntry = new TitleLinkEnabledEntry("downloads", AppStrings.Main_Downloads);
@@ -66,7 +69,9 @@ namespace AcManager.Pages.Windows {
                 new TitleLinkEnabledEntry("lapTimes", AppStrings.Main_LapTimes),
                 new TitleLinkEnabledEntry("stats", AppStrings.Main_Results),
                 new TitleLinkEnabledEntry("media", AppStrings.Main_Media),
+#if INCLUDE_WORKSHOP
                 WorkshopClient.OptionUserAvailable ? new TitleLinkEnabledEntry("workshop", AppStrings.Main_Workshop) : null,
+#endif
                 new TitleLinkEnabledEntry("content", AppStrings.Main_Content),
                 DownloadsEntry,
                 new TitleLinkEnabledEntry("server", AppStrings.Main_Server, false),
@@ -141,10 +146,10 @@ namespace AcManager.Pages.Windows {
             }.NonNull().ToList());
 
             InitializeComponent();
-            RaceU.InitializeRaceULinks();
             ModsWebBrowser.Instance.RebuildLinksNow();
             ArgumentsHandler.HandlePasteEvent(this);
 
+#if INCLUDE_WORKSHOP
             if (!WorkshopClient.OptionUserAvailable) {
                 foreach (var link in TitleLinks.OfType<TitleLink>().Where(x => x.GroupKey == "workshop").ToList()) {
                     TitleLinks.Remove(link);
@@ -153,6 +158,7 @@ namespace AcManager.Pages.Windows {
                     MenuLinkGroups.Remove(link);
                 }
             }
+#endif
 
             if (SteamStarter.IsInitialized) {
                 OverlayContentCell.Children.Add((FrameworkElement)FindResource(@"SteamOverlayFix"));
@@ -203,6 +209,9 @@ namespace AcManager.Pages.Windows {
 
             ContentInstallationManager.Instance.TaskAdded += OnContentInstallationTaskAdded;
             UpdateDiscordRichPresence();
+
+            Task.Delay(5000).ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => RaceU.InitializeRaceULinks()));
+            Task.Delay(TimeSpan.FromMinutes(0.5)).ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => OnDownloadsButtonClick(null, null)));
 
 #if DEBUG
             // LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
@@ -344,6 +353,18 @@ namespace AcManager.Pages.Windows {
             UpdateLiveTabs();
         }
 
+        private class LinkComparer : IComparer<Link> {
+            public static LinkComparer Instance = new LinkComparer();
+
+            public int Compare(Link x, Link y) {
+                if (x == null) return y == null ? 0 : 1;
+                if (y == null) return -1;
+                if (x.Icon != null) return y.Icon != null ? 0 : 1;
+                if (y.Icon != null) return -1;
+                return string.Compare(x.DisplayName ?? string.Empty, y.DisplayName ?? string.Empty, StringComparison.Ordinal);
+            }
+        }
+
         private void UpdateLiveTabs() {
             GridFinderLink.IsShown = SettingsHolder.Live.GridFinderEnabled;
             RsrLink.IsShown = SettingsHolder.Live.RsrEnabled;
@@ -352,13 +373,23 @@ namespace AcManager.Pages.Windows {
             WorldSimSeriesLink.IsShown = SettingsHolder.Live.WorldSimSeriesEnabled;
             TrackTitanLink.IsShown = SettingsHolder.Live.TrackTitanEnabled;
             UnitedRacingDataLink.IsShown = SettingsHolder.Live.UnitedRacingDataEnabled;
+            foreach (var entry in LiveGroup.Links.Where(x => x.Tag == "user").ToList()) {
+                LiveGroup.Links.Remove(entry);
+            }
+            foreach (var entry in SettingsHolder.Live.UserEntries) {
+                LiveGroup.Links.AddSorted(new Link {
+                    DisplayName = entry.DisplayName,
+                    Source = new Uri("/Pages/Drive/UserLiveService.xaml", UriKind.Relative).AddQueryParam("url", entry.Url),
+                    Tag = "user"
+                }, LinkComparer.Instance);
+            }
             LiveGroup.IsShown = LiveGroup.Links.Any(x => x.IsShown && x.Icon == null);
             // ShortSurveyLink.IsShown = !Stored.Get<bool>("surveyHide").Value;
 
             RaceUGroup.IsShown = SettingsHolder.Live.RaceUEnabled && (ValuesStorage.Contains("RaceU.CurrentLocation") || RaceUCheckAb());
 
             bool RaceUCheckAb() {
-                return false;
+                return true;
                 /*var steamId = SteamIdHelper.Instance.Value;
                 if (steamId == null) return false;
 
@@ -945,6 +976,12 @@ namespace AcManager.Pages.Windows {
             if (s.Contains("/Pages/AcSettings/") && !s.Contains("/Pages/AcSettings/AcSettingsPage.xaml")) {
                 CurrentGroupKey = "settings";
                 NavigateTo(UriExtension.Create("/Pages/AcSettings/AcSettingsPage.xaml?Uri={0}", uri));
+                return true;
+            }
+
+            if (s.Contains("/Pages/Settings/SettingsLive.xaml?Separate=True")) {
+                CurrentGroupKey = "drive";
+                NavigateTo(uri);
                 return true;
             }
 

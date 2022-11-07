@@ -28,7 +28,7 @@ namespace AcManager.Tools.Managers.Online {
             Ip = information.Ip;
             PortHttp = information.PortHttp;
             Ping = null;
-            UpdateValuesAsync(information).Ignore();
+            UpdateValuesAsync(information, true).Ignore();
         }
 
         public override string DisplayName {
@@ -181,6 +181,12 @@ namespace AcManager.Tools.Managers.Online {
                 if (trackIdPieces.Length == 2) {
                     RequiredCspVersion = Math.Max(PatchHelper.MinimumTestOnlineVersion, trackIdPieces[0].As(0));
                     CheckCspState();
+                } else if (trackIdPieces.Length == 3) {
+                    RequiredCspVersion = Math.Max(PatchHelper.MinimumTestOnlineVersion, trackIdPieces[0].As(0));
+                    var value = ServerPresetObject.EncodeSymbols.IndexOf(trackIdPieces[1].FirstOrDefault());
+                    CspExtendedCarsPhysics = (value & 1) == 1;
+                    CspExtendedTrackPhysics = (value & 2) == 2;
+                    CheckCspState();
                 } else {
                     RequiredCspVersion = 0;
                     CheckCspState();
@@ -214,6 +220,7 @@ namespace AcManager.Tools.Managers.Online {
 
             var seconds = (int)Game.ConditionProperties.GetSeconds(information.Time);
             Time = seconds.ToDisplayTime();
+            TimeSeconds = seconds;
             SessionEnd = DateTime.Now + TimeSpan.FromSeconds(information.TimeLeft - Math.Round(information.Timestamp / 1000d));
             RaceMode = information.Timed ? information.Extra ? RaceMode.TimedExtra : RaceMode.Timed : RaceMode.Laps;
 

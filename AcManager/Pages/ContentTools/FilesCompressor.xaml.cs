@@ -44,7 +44,7 @@ namespace AcManager.Pages.ContentTools {
             }
 
             var format = DriveInfo.GetDrives().FirstOrDefault(x => x.RootDirectory.FullName == Path.GetPathRoot(AcRootDirectory.Instance.Value))?.DriveFormat;
-            if (format != @"NTFS") {
+            if (format != @"NTFS" && format != null) {
                 yield return $"Not supported file system: {format}";
             }
         }
@@ -135,9 +135,9 @@ namespace AcManager.Pages.ContentTools {
             progress.Report("Loading showrooms…", 0.03);
             await ShowroomsManager.Instance.EnsureLoadedAsync();
 
-            var cars = CarsManager.Instance.WrappersList.Select(x => (AcCommonObject)x.Loaded()).ToList();
-            var tracks = TracksManager.Instance.WrappersList.Select(x => (AcCommonObject)x.Loaded()).ToList();
-            var showrooms = ShowroomsManager.Instance.WrappersList.Select(x => (AcCommonObject)x.Loaded()).ToList();
+            var cars = CarsManager.Instance.Loaded.ToList();
+            var tracks = TracksManager.Instance.Loaded.ToList();
+            var showrooms = ShowroomsManager.Instance.Loaded.ToList();
             var index = new[] { 0 };
             var objectsProgress = progress.Subrange(0.04, 0.9);
 

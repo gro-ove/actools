@@ -255,7 +255,7 @@ namespace AcTools.Kn5File {
         public void ExportCollada(string filename) {
             EnsureUniqueNamesSet();
 
-            using (var xml = XmlWriter.Create(filename, new XmlWriterSettings{
+            using (var xml = XmlWriter.Create(filename, new XmlWriterSettings {
                 Indent = true,
                 Encoding = Encoding.UTF8
             })) {
@@ -656,6 +656,20 @@ namespace AcTools.Kn5File {
                 return s.ToString();
             }
 
+            string Vec2ToString4(IEnumerable<Vec2> vecs) {
+                var s = new StringBuilder();
+                foreach (var vec in vecs) {
+                    if (s.Length > 0) {
+                        s.Append(' ');
+                    }
+                    s.Append(vec.X);
+                    s.Append(' ');
+                    s.Append(vec.Y);
+                    s.Append(" 0 0");
+                }
+                return s.ToString();
+            }
+
             string Vec3ToString(IEnumerable<Vec3> vecs) {
                 var s = new StringBuilder();
                 foreach (var vec in vecs) {
@@ -749,6 +763,38 @@ namespace AcTools.Kn5File {
             xml.WriteEndElement(); // technique_common
             xml.WriteEndElement(); // source
 
+            var hasUv2 = nodes.Any(n => n.Uv2 != null);
+            if (hasUv2) {
+                AcToolsLogging.Write("UV2: " + nodes.Select(x => x.Name).JoinToString("; "));
+                if (nodes.Any(n => n.Uv2 == null)) {
+                    throw new Exception($"Can’t export KN5 into COLLADA with UV2 only applied to some of meshes in a group {name}");
+                }
+
+                /* uv 2 */
+                xml.WriteStartElement("source");
+                xml.WriteAttributeStringSafe("id", $"{name}-colors-Col");
+                xml.WriteStartElement("float_array");
+                xml.WriteAttributeStringSafe("id", $"{name}-colors-Col-array");
+                xml.WriteAttributeString("count", vertexCount * 2);
+                xml.WriteString(Vec2ToString4(nodes.SelectMany(x => x.Uv2)));
+                xml.WriteEndElement(); // float_array
+
+                xml.WriteStartElement("technique_common");
+                xml.WriteStartElement("accessor");
+                xml.WriteAttributeStringSafe("source", $"#{name}-colors-Col-array");
+                xml.WriteAttributeString("count", vertexCount);
+                xml.WriteAttributeString("stride", 4);
+
+                xml.WriteElement("param", "name", "R", "type", "float");
+                xml.WriteElement("param", "name", "G", "type", "float");
+                xml.WriteElement("param", "name", "B", "type", "float");
+                xml.WriteElement("param", "name", "A", "type", "float");
+
+                xml.WriteEndElement(); // accessor
+                xml.WriteEndElement(); // technique_common
+                xml.WriteEndElement(); // source
+            }
+
             /* vertices */
             xml.WriteStartElement("vertices");
             xml.WriteAttributeStringSafe("id", $"{name}-mesh-vertices");
@@ -766,9 +812,14 @@ namespace AcTools.Kn5File {
                 xml.WriteElement("input", "semantic", "VERTEX", "source", $"#{name}-mesh-vertices", "offset", 0);
                 xml.WriteElement("input", "semantic", "NORMAL", "source", $"#{name}-mesh-normals", "offset", 1);
                 xml.WriteElement("input", "semantic", "TEXCOORD", "source", $"#{name}-mesh-map-0", "offset", 2, "set", 0);
+                if (hasUv2) {
+                    xml.WriteElement("input", "semantic", "COLOR", "source", $"#{name}-colors-Col", "offset", 3, "set", 0);
+                }
 
                 var inner = offset;
-                xml.WriteElementString("p", node.Indices.SelectMany(x => new[] { x + inner, x + inner, x + inner }).JoinToString(" "));
+                xml.WriteElementString("p", hasUv2
+                        ? node.Indices.SelectMany(x => new[] { x + inner, x + inner, x + inner, x + inner }).JoinToString(" ")
+                        : node.Indices.SelectMany(x => new[] { x + inner, x + inner, x + inner }).JoinToString(" "));
                 xml.WriteEndElement(); // triangles
 
                 offset += node.Vertices.Length;

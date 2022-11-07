@@ -13,6 +13,10 @@ namespace AcManager.Tools.Filters.Testers {
 
         public static string InnerParameterFromKey(string key) {
             switch (key) {
+                case "desc":
+                case "description":
+                    return nameof(ServerEntry.Description);
+
                 case "country":
                     return nameof(ServerEntry.Country);
 
@@ -21,6 +25,12 @@ namespace AcManager.Tools.Filters.Testers {
 
                 case "csp":
                     return nameof(ServerEntry.RequiredCspVersion);
+
+                case "cphyscars":
+                    return nameof(ServerEntry.CspExtendedCarsPhysics);
+
+                case "cphystrack":
+                    return nameof(ServerEntry.CspExtendedTrackPhysics);
 
                 case "d":
                 case "drivers":
@@ -122,6 +132,10 @@ namespace AcManager.Tools.Filters.Testers {
             }
 
             switch (key) {
+                case "desc":
+                case "description":
+                    return value.Test(obj.Description);
+
                 case "country":
                     return value.Test(obj.Country);
 
@@ -138,7 +152,13 @@ namespace AcManager.Tools.Filters.Testers {
                     return obj.Cars?.Any(x => value.Test(x.Id)) == true;
 
                 case "csp":
-                    return obj.RequiredCspVersion > 0;
+                    return value.Test(obj.RequiredCspVersion);
+
+                case "cphyscars":
+                    return value.Test(obj.CspExtendedCarsPhysics);
+
+                case "cphystrack":
+                    return value.Test(obj.CspExtendedTrackPhysics);
 
                 case "c":
                 case "car":
@@ -322,7 +342,8 @@ namespace AcManager.Tools.Filters.Testers {
                 new KeywordDescription("laps", "Number of laps", KeywordType.Number, KeywordPriority.Normal, "l"),
                 new KeywordDescription("timed", "With race limited by time rather than amount of laps", KeywordType.Flag, KeywordPriority.Obscured),
                 new KeywordDescription("racetime", "Time of a race session limited by it", "minutes", KeywordType.TimeSpan, KeywordPriority.Obscured),
-                new KeywordDescription("extra", "With race limited by time rather than amount of laps, plus one extra lap", KeywordType.Flag, KeywordPriority.Obscured),
+                new KeywordDescription("extra", "With race limited by time rather than amount of laps, plus one extra lap", KeywordType.Flag,
+                        KeywordPriority.Obscured),
                 new KeywordDescription("drivers", "Number of drivers", KeywordType.Number, KeywordPriority.Important, "d", "players"),
                 new KeywordDescription("full", "Full (no more empty slots)", KeywordType.Flag, KeywordPriority.Important),
                 new KeywordDescription("free", "Number of free slots", KeywordType.Number, KeywordPriority.Important),
@@ -336,9 +357,9 @@ namespace AcManager.Tools.Filters.Testers {
                 new KeywordDescription("ended", "With current session ended", KeywordType.Flag, KeywordPriority.Normal),
                 new KeywordDescription("friend", "With drivers tagged as friends", KeywordType.Flag, KeywordPriority.Normal, "friends"),
                 new KeywordDescription("connected", "Date of previous connection", KeywordType.DateTime, KeywordPriority.Normal, "lastconnected"),
-                new KeywordDescription("connectedtimes", "Amount of times server was connected to before", KeywordType.Number, KeywordPriority.Normal, "sessionscount"),
+                new KeywordDescription("connectedtimes", "Amount of times server was connected to before", KeywordType.Number, KeywordPriority.Normal,
+                        "sessionscount"),
                 new KeywordDescription("tag", "Drivers’ tag", KeywordType.Number, KeywordPriority.Normal, "drivertag"),
-
                 new KeywordDescription("practice", "Practice session", KeywordType.TimeSpan | KeywordType.Flag, KeywordPriority.Extra),
                 new KeywordDescription("qualification", "Qualify session", KeywordType.TimeSpan | KeywordType.Flag, KeywordPriority.Extra),
                 new KeywordDescription("race", "Race session", KeywordType.TimeSpan | KeywordType.Flag, KeywordPriority.Extra),
@@ -347,7 +368,6 @@ namespace AcManager.Tools.Filters.Testers {
                 // new KeywordDescription("timeattack", "Time attack session", KeywordType.TimeSpan, KeywordPriority.Extra),
 
                 new KeywordDescription("name", "Name", KeywordType.Number, KeywordPriority.Obscured),
-
             }.Concat(AcCommonObjectTester.Instance.GetDescriptions());
         }
     }

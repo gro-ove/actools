@@ -3429,11 +3429,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Имейте в виду, что весь удаленный контент всегда можно восстановить из корзины</value>
   </data>
   <data name="Filter_ByLength" xml:space="preserve">
-    <value>Фильтр по схожей длине</value>
-  </data>
+    <value>Фильтровать по схожей длине</value>
+  <alternative>Фильтр по схожей длине</alternative></data>
   <data name="Filter_ByWidth" xml:space="preserve">
-    <value>Фильтр по схожей ширине</value>
-  </data>
+    <value>Фильтровать по схожей ширине</value>
+  <alternative>Фильтр по схожей ширине</alternative></data>
   <data name="Filter_ByPitboxes" xml:space="preserve">
     <value>Фильтр по схожему количеству пит-стопов</value>
   </data>
@@ -3485,8 +3485,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Попытка найти любой автомобиль фитинг выбранного типа сетки не удалась.</value>
   </data>
   <data name="Drive_CannotFilter" xml:space="preserve">
-    <value>Не удается отфильтровать соответствующие автомобили для стартовой сетки</value>
-  </data>
+    <value>Не удается отфильтровать соответствующие автомобили для стартовой решетке</value>
+  <alternative>Не удается отфильтровать соответствующие автомобили для стартовой сетки</alternative></data>
   <data name="Settings_Drive_WeatherParticles_Tooltip" xml:space="preserve">
     <value>Частицы будут возвращены назад позже</value>
   </data>
@@ -4545,8 +4545,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Максимальное количество контактов на километр</value>
   </data>
   <data name="Selected_FilterByOrigin" xml:space="preserve">
-    <value>Фильтр по происхождению</value>
-  </data>
+    <value>Фильтровать по происхождению</value>
+  <alternative>Фильтр по происхождению</alternative></data>
   <data name="Selected_CarPage_ReplaceTyres" xml:space="preserve">
     <value>Замена шин</value>
   </data>
@@ -4608,11 +4608,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>[я]А вы знали?[/i] Вы можете щелкнуть правой кнопкой мыши на свойстве, чтобы отфильтровать автомобили по нему.</value>
   </data>
   <data name="Selected_FilterBySimilarDrivenDistance" xml:space="preserve">
-    <value>Фильтр по аналогичному управляемому расстоянию</value>
-  </data>
+    <value>Фильтровать по аналогичному управляемому расстоянию</value>
+  <alternative>Фильтр по аналогичному управляемому расстоянию</alternative></data>
   <data name="Selected_FilterBySimilarMaxSpeedAchieved" xml:space="preserve">
-    <value>Фильтр по аналогичной максимальной достигнутой скорости</value>
-  </data>
+    <value>Фильтровать по аналогичной максимальной достигнутой скорости</value>
+  <alternative>Фильтр по аналогичной максимальной достигнутой скорости</alternative></data>
   <data name="Selected_CarPage_New_TSMSetups_Tooltip" xml:space="preserve">
     <value>Число готовых к установке настроек в магазине настроек</value>
   </data>
@@ -4654,5 +4654,150 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
   </data>
   <data name="Solution_MakeGeneric_Details" xml:space="preserve">
     <value>Переместить в общую папку</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteerThumb" xml:space="preserve">
+    <value>Рулевой стик</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ABSEffect" xml:space="preserve">
+    <value>Эффект ABS</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain" xml:space="preserve">
+    <value>Центральное увеличение усиления</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip" xml:space="preserve">
+    <value>Используйте это, чтобы увеличить FFB когда руль находится в центре</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostRange" xml:space="preserve">
+    <value>Центральный диапазон усиления</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_HandleMode" xml:space="preserve">
+    <value>Режим управления:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_Import_Tooltip" xml:space="preserve">
+    <value>Просто перетащите сюда если нужно</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV" xml:space="preserve">
+    <value>Импортировать CSV</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV_Tooltip" xml:space="preserve">
+    <value>Импортировать CSV из WheelCheck (просто перетащите сюда если нужно)</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportLUT" xml:space="preserve">
+    <value>Импортировать LUT</value>
+  </data>
+  <data name="DownloadList_Cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="DownloadList_Cancelled" xml:space="preserve">
+    <value>Отменено</value>
+  </data>
+  <data name="DownloadList_Cancelling" xml:space="preserve">
+    <value>Отмена...</value>
+  </data>
+  <data name="DownloadList_DetectionFailed" xml:space="preserve">
+    <value>Приложению не удалось обнаружить какой-либо контент для установки здесь. Хотите установить его вручную?</value>
+  </data>
+  <data name="DownloadList_ExtraOptions" xml:space="preserve">
+    <value>Экстра настройки:</value>
+  </data>
+  <data name="DownloadList_Failed" xml:space="preserve">
+    <value>Неудачно</value>
+  </data>
+  <data name="DownloadList_From" xml:space="preserve">
+    <value>Из:</value>
+  </data>
+  <data name="DownloadList_Install" xml:space="preserve">
+    <value>Установить</value>
+  </data>
+  <data name="DownloadList_Installing" xml:space="preserve">
+    <value>Установка...</value>
+  </data>
+  <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
+    <value>Нет активных загрузок</value>
+  </data>
+  <data name="DownloadList_NothingFound" xml:space="preserve">
+    <value>Ничего не найдено</value>
+  </data>
+  <data name="DownloadList_Password" xml:space="preserve">
+    <value>Пароль:</value>
+  </data>
+  <data name="DownloadList_Pause" xml:space="preserve">
+    <value>Пауза</value>
+  </data>
+  <data name="DownloadList_PluginsLoadFailed" xml:space="preserve">
+    <value>Не могу загрузить список плагинов</value>
+  </data>
+  <data name="DownloadList_Restart" xml:space="preserve">
+    <value>Перезапуск</value>
+  </data>
+  <data name="DownloadList_Resume" xml:space="preserve">
+    <value>Продолжить</value>
+  </data>
+  <data name="DownloadList_Retry" xml:space="preserve">
+    <value>Повтор</value>
+  </data>
+  <data name="DownloadList_ScanAgain" xml:space="preserve">
+    <value>Сканировать ещё раз</value>
+  </data>
+  <data name="DownloadList_ShowFile" xml:space="preserve">
+    <value>Показать файл</value>
+  </data>
+  <data name="DownloadList_ViewInExplorer" xml:space="preserve">
+    <value>Просмотреть в папке</value>
+  </data>
+  <data name="Main_Workshop" xml:space="preserve">
+    <value>Мастерская</value>
+  </data>
+  <data name="MainWindow_AddDownload_Comment" xml:space="preserve">
+    <value>Или скопируйте ссылку или файл и нажмите Ctrl + V в Content Manager</value>
+  </data>
+  <data name="MainWindow_AddDownload_MenuItem" xml:space="preserve">
+    <value>Скачивание...</value>
+  </data>
+  <data name="MainWindow_AddDownload_Message" xml:space="preserve">
+    <value>Вставить URL для скачивания:</value>
+  </data>
+  <data name="MainWindow_AddDownload_Title" xml:space="preserve">
+    <value>Скачать</value>
+  </data>
+  <data name="MainWindow_FoundNModUpdates" xml:space="preserve">
+    <value>Нашлось {0} {обновлений} для модов:</value>
+  </data>
+  <data name="MainWindow_InstallFromAFile_MenuItem" xml:space="preserve">
+    <value>Установить из файла...</value>
+  </data>
+  <data name="Selected_FilterByHavingNotes" xml:space="preserve">
+    <value>Фильтровать по имеющимся записям</value>
+  </data>
+  <data name="Settings_Drive_AllowDecimalValuesForTrackState_Tooltip" xml:space="preserve">
+    <value>Может вызвать проблемы с некоторыми приложениями при использовании</value>
+  </data>
+  <data name="Settings_Drive_CheckIfTrackFitsSelectedMode" xml:space="preserve">
+    <value>Проверить, подходит ли трек выбранному режиму
+</value>
+  </data>
+  <data name="Settings_Drive_CheckIfTrackFitsSelectedMode_Tooltip" xml:space="preserve">
+    <value>Не рекомендую отключать, CM предложит исправить описание трека, если что-то не так. Но, если вы используете теги не по умолчанию, определенно сделайте это.</value>
+  </data>
+  <data name="Settings_Live_SrsJoinFromOnline" xml:space="preserve">
+    <value>Присоединение из Онлайна</value>
+  </data>
+  <data name="Settings_Online_AutoRefreshSelected" xml:space="preserve">
+    <value>Авто-обновление выбрано:</value>
+  </data>
+  <data name="Settings_Online_PausePingingDuringTheRace" xml:space="preserve">
+    <value>Приостановить пинг во время гонки</value>
+  </data>
+  <data name="Settings_Online_PingServersOnce" xml:space="preserve">
+    <value>Пинг сервера</value>
+  </data>
+  <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
+    <value>Показывать развёрнутую информацию при отсутствии контента</value>
+  </data>
+  <data name="WeatherEdit_Radius_Tooltip" xml:space="preserve">
+    <value>Расстояние от центра скайбокса до квадро</value>
+  </data>
+  <data name="WeatherEdit_SpeedMultipler_Tooltip" xml:space="preserve">
+    <value>Множитель стандартной скорости</value>
   </data>
 </root>

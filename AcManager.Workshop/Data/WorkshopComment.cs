@@ -121,7 +121,7 @@ namespace AcManager.Workshop.Data {
         private AsyncCommand _reportCommand;
 
         public AsyncCommand ReportCommand => _reportCommand ?? (_reportCommand = new AsyncCommand(async () => {
-            var reason = Prompt.Show("What’s the problem?", "Report a comment", required: true, suggestions: new[] {
+            var reason = await Prompt.ShowAsync("What’s the problem?", "Report a comment", required: true, suggestions: new[] {
                 "Spam",
                 "Offensive",
                 "Misleading",
@@ -135,7 +135,7 @@ namespace AcManager.Workshop.Data {
         private AsyncCommand _editCommand;
 
         public AsyncCommand EditCommand => _editCommand ?? (_editCommand = new AsyncCommand(async () => {
-            var newMessage = Prompt.Show("New comment message:", "Edit comment", Message, required: true);
+            var newMessage = await Prompt.ShowAsync("New comment message:", "Edit comment", Message, required: true);
             if (newMessage != null) {
                 ChangeTo = newMessage;
                 await Task.Delay(TimeSpan.FromSeconds(5d));

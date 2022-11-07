@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -22,6 +23,7 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
+using Button = System.Windows.Controls.Button;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using ListBox = System.Windows.Controls.ListBox;
 
@@ -29,30 +31,21 @@ namespace AcManager.Pages.Settings {
     public partial class SettingsShadersPatchPopup : ILocalKeyBindings, IContentLoader {
         public SettingsShadersPatchPopup() {
             KeyBindingsController = new LocalKeyBindingsController(this);
-            /*InputBindings.Add(new InputBinding(new DelegateCommand(() => {
-                Model.SelectedApp?.ViewInExplorerCommand.Execute(null);
-            }), new KeyGesture(Key.F, ModifierKeys.Control)));
-            InputBindings.Add(new InputBinding(new DelegateCommand(() => {
-                Model.SelectedApp?.ReloadCommand.Execute(null);
-            }), new KeyGesture(Key.R, ModifierKeys.Control)));*/
-
             InitializeComponent();
             DataContext = PatchSettingsModel.Create().SetupWatcher();
             Model.PropertyChanged += OnModelPropertyChanged;
             SetKeyboardInputs();
             UpdateConfigsTabs();
             Tabs.ContentLoader = this;
-            this.OnActualUnload(() => { Model?.Dispose(); });
+            this.OnActualUnload(() => {
+                Model?.Dispose();
+                ResetConfigListeners();
+            });
         }
 
         private void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(Model.Configs)) {
                 UpdateConfigsTabs();
-            }
-
-            if (e.PropertyName == nameof(Model.SelectedPage)) {
-                //SetKeyboardInputs();
-                //UpdateConfigsTabs();
             }
         }
 
@@ -62,31 +55,61 @@ namespace AcManager.Pages.Settings {
 
         public object LoadContent(Uri uri) {
             var config = Model.Configs?.FirstOrDefault(x => x.Id == uri.OriginalString);
-            return new ContentControl {
+            var ret = new ContentControl {
                 ContentTemplate = (DataTemplate)FindResource("PythonAppConfig.Compact.NoHeader"),
-                Content = config
+                Content = null,
+                Visibility = Visibility.Collapsed
             };
+            Task.Delay(50).ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => {
+                ret.Content = config;
+                ret.Visibility = Visibility.Visible;
+            }));
+            return ret;
+        }
+
+        private void OnConfigPropertyChanged(object sender, PropertyChangedEventArgs args) {
+            foreach (var link in Tabs.Links) {
+                if (link.DisplayName == ((PythonAppConfig)sender).DisplayName) {
+                    link.Tag = ((PythonAppConfig)sender).IsActive ? "" : null;
+                }
+            }
+        }
+
+        private List<PythonAppConfig> _configs;
+
+        private void ResetConfigListeners() {
+            if (_configs != null) {
+                foreach (var config in _configs) {
+                    config.UnsubscribeWeak(OnConfigPropertyChanged);
+                }
+                _configs.Clear();
+            }
         }
 
         private void UpdateConfigsTabs() {
             try {
+                ResetConfigListeners();
+                if (_configs == null) {
+                    _configs = new List<PythonAppConfig>();
+                }
+
                 var links = Tabs.Links;
                 links.Clear();
                 Tabs.SelectedSource = null;
 
-                if (Model.Configs?.Count > 1) {
+                if (Model.Configs != null) {
                     foreach (var config in Model.Configs) {
                         links.Add(new Link {
                             DisplayName = config.DisplayName,
-                            Key = config.Id
+                            Key = config.Id,
+                            Tag = config.IsActive ? "" : null
                         });
+                        _configs.Add(config);
+                        config.SubscribeWeak(OnConfigPropertyChanged);
                     }
-                    Tabs.LinksMargin = new Thickness(0, 0, 0, 4);
                     Tabs.SelectedSource = Tabs.Links.FirstOrDefault()?.Source;
                 } else {
-                    Tabs.LinksMargin = new Thickness(0, 0, 0, -16);
-                    Tabs.SelectedSource = Model.Configs == null ? null
-                            : new Uri(Model.Configs.First().Id, UriKind.Relative);
+                    Tabs.SelectedSource = null;
                 }
             } catch (Exception e) {
                 Logging.Error(e);
@@ -199,6 +222,10 @@ namespace AcManager.Pages.Settings {
         private void OnSelectedSourceChanged(object sender, SourceEventArgs e) {
             if (_selectionTranslateTransform == null) return;
             MoveSelectionHighlight();
+        }
+
+        private void OnCloseButtonClick(object sender, RoutedEventArgs e) {
+            ((Button)sender).GetParent<Window>()?.Close();
         }
     }
 }

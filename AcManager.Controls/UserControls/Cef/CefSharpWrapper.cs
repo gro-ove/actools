@@ -227,6 +227,10 @@ namespace AcManager.Controls.UserControls.Cef {
             });
         }
 
+        public void ShowDevTools() {
+            Task.Delay(1000).ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => _inner.ShowDevTools()));
+        }
+
         public void Execute(string js) {
 #if DEBUG
             Logging.Debug(js);

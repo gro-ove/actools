@@ -61,6 +61,10 @@
     <Reference Include="HtmlAgilityPack, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
       <HintPath>..\packages\HtmlAgilityPack.1.7.0\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
+      <HintPath>..\packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MegaApiClient, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Libraries\MegaApiClient\MegaApiClient.dll</HintPath>
       <Private>True</Private>
@@ -100,20 +104,9 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Management" />
-    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="TimeZoneConverter, Version=2.4.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\TimeZoneConverter.2.4.1\lib\net45\TimeZoneConverter.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Unosquare.Labs.EmbedIO, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Unosquare.Labs.EmbedIO\Unosquare.Labs.EmbedIO.dll</HintPath>
-    </Reference>
-    <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
-      <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MoonSharp.Interpreter, Version=2.0.0.0, Culture=neutral, PublicKeyToken=921e73ce94aa17f8, processorArchitecture=MSIL">
@@ -253,6 +246,7 @@
     <Compile Include="ContentInstallation\Entries\CrewHelmetEntry.cs" />
     <Compile Include="ContentInstallation\Entries\CustomFolderEntry.cs" />
     <Compile Include="ContentInstallation\Entries\FontContentEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\LuaAppContentEntry.cs" />
     <Compile Include="ContentInstallation\Entries\PpFilterContentEntry.cs" />
     <Compile Include="ContentInstallation\Entries\PythonAppContentEntry.cs" />
     <Compile Include="ContentInstallation\Entries\ShowroomContentEntry.cs" />
@@ -304,6 +298,8 @@
     <Compile Include="Data\PatchTracksVaoDataUpdater.cs" />
     <Compile Include="Data\PatchUpdater.cs" />
     <Compile Include="Data\PatchVersionInfo.cs" />
+    <Compile Include="Data\TzConvert\DataLoader.cs" />
+    <Compile Include="Data\TzConvert\TZConvert.cs" />
     <Compile Include="Data\UserChampionshipProgressEntry.cs" />
     <Compile Include="Data\UserChampionshipsProgress.cs" />
     <Compile Include="Data\WeatherDescription.cs" />
@@ -355,6 +351,7 @@
     <Compile Include="GameProperties\InGameApp\CmInGameAppHelper.cs" />
     <Compile Include="GameProperties\InGameApp\CmInGameAppJoinRequestParams.cs" />
     <Compile Include="GameProperties\InGameApp\CmInGameAppParamsBase.cs" />
+    <Compile Include="GameProperties\LiveServiceMark.cs" />
     <Compile Include="GameProperties\ModeSpecificPresetsHelper.cs" />
     <Compile Include="GameProperties\NationCodeProvider.cs" />
     <Compile Include="GameProperties\RhmService.cs" />
@@ -393,6 +390,7 @@
     <Compile Include="Helpers\AcSettings\CameraChaseSettings.cs" />
     <Compile Include="Helpers\AcSettings\CameraOrbitSettings.cs" />
     <Compile Include="Helpers\AcSettings\DamageDisplayerSettings.cs" />
+    <Compile Include="Helpers\AcSettings\DriverNamesSettings.cs" />
     <Compile Include="Helpers\AcSettings\FanatecSettings.cs" />
     <Compile Include="Helpers\AcSettings\LauncherSettings.cs" />
     <Compile Include="Helpers\AcSettings\MessagesSettings.cs" />
@@ -429,6 +427,8 @@
     <Compile Include="Helpers\Loaders\YouTubeDescriptionLoader.cs" />
     <Compile Include="Helpers\ExtraDataProvider.cs" />
     <Compile Include="Helpers\PackedDescription.cs" />
+    <Compile Include="Helpers\PageTitleFinder.cs" />
+    <Compile Include="Helpers\RealConditionsHelper.cs" />
     <Compile Include="Helpers\RegistryPatch.cs" />
     <Compile Include="Helpers\ReplayDetails.cs" />
     <Compile Include="Helpers\SettingsHolder.Common.cs" />
@@ -556,8 +556,10 @@
     <Compile Include="Helpers\VisualCppTool.cs" />
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
+    <Compile Include="Helpers\WebExceptionExtensions.cs" />
     <Compile Include="Helpers\WindowsHelper.cs" />
     <Compile Include="Managers\DriverModelsManager.cs" />
+    <Compile Include="Managers\LuaAppsManager.cs" />
     <Compile Include="Managers\Online\FileBasedOnlineSources.cs" />
     <Compile Include="Managers\Online\LanOnlineSource.cs" />
     <Compile Include="Managers\Online\OnlineManager.Sources.cs" />
@@ -614,6 +616,7 @@
     <Compile Include="Objects\ICarSetupObject.cs" />
     <Compile Include="Objects\IPythonAppConfigValue.cs" />
     <Compile Include="Objects\IPythonAppConfigValueProvider.cs" />
+    <Compile Include="Objects\LuaAppObject.cs" />
     <Compile Include="Objects\PythonAppConfig.cs" />
     <Compile Include="Objects\PythonAppConfigBoolValue.cs" />
     <Compile Include="Objects\PythonAppConfigFileValue.cs" />
@@ -635,6 +638,7 @@
     <Compile Include="Objects\ServerPresetDetailsMode.cs" />
     <Compile Include="Objects\ServerPresetObject.Ftp.cs" />
     <Compile Include="Objects\ServerPresetObject.LegalTyres.cs" />
+    <Compile Include="Objects\ServerPresetObject.LiveConditions.cs" />
     <Compile Include="Objects\ServerPresetObject.Setups.cs" />
     <Compile Include="Objects\TrackObject.Extra.cs" />
     <Compile Include="Objects\TrackObject.Skins.cs" />
@@ -710,7 +714,7 @@
     <Compile Include="ServerPlugins\CmServerPlugin.cs" />
     <Compile Include="ServerPlugins\DynamicConditionsV1ServerPlugin.cs" />
     <Compile Include="ServerPlugins\DynamicConditionsV2ServerPlugin.cs" />
-    <Compile Include="ServerPlugins\RealConditionsServerPlugin.cs" />
+    <Compile Include="ServerPlugins\LiveConditionsServerPlugin.cs" />
     <Compile Include="ServerPlugins\ServerGuidsStorage.cs" />
     <Compile Include="SharedMemory\AcFlagType.cs" />
     <Compile Include="SharedMemory\AcSharedSessionType.cs" />
@@ -876,6 +880,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Rules.txt" />
+    <None Include="Assets\TimeZoneConverter\Aliases.csv.gz" />
+    <None Include="Assets\TimeZoneConverter\Mapping.csv.gz" />
+    <None Include="Assets\TimeZoneConverter\RailsMapping.csv.gz" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\Libraries\PreBuildEvents.props" />

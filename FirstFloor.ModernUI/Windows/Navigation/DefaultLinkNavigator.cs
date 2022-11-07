@@ -35,7 +35,7 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
         /// <remarks>
         /// Default schemes are http, https and mailto.
         /// </remarks>
-        private string[] ExternalSchemes { get; } = { Uri.UriSchemeHttp, Uri.UriSchemeHttps, Uri.UriSchemeMailto, Uri.UriSchemeFile };
+        private string[] ExternalSchemes { get; } = { Uri.UriSchemeHttp, Uri.UriSchemeHttps, Uri.UriSchemeMailto, Uri.UriSchemeFile, @"ts", @"mumble" };
 
         /// <summary>
         /// Gets or sets the navigable _commands.

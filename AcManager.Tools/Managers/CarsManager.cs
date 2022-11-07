@@ -63,6 +63,7 @@ namespace AcManager.Tools.Managers {
         private static readonly string[] WatchedSkinFileNames = {
             @"livery.png",
             @"preview.jpg",
+            @"preview.png",
             @"ui_skin.json"
         };
 

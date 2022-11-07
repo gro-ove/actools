@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Specialized;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,6 +41,12 @@ namespace AcManager.Tools.Helpers.Loaders {
 
                 Url = GetDocument(step2).DocumentNode.SelectSingleNode(@"//a[contains(@href, 'sharemods.com/cgi-bin')]")?.Attributes[@"href"]?.Value;
                 return Url != null;
+            } catch (WebException e) {
+                Logging.Error(e);
+                #if DEBUG
+                Logging.Error(await e.GetResponseBodyAsync());
+                #endif
+                throw new InformativeException(ToolsStrings.Common_CannotDownloadFile, "Sharemods.com has changed.");
             } catch (Exception e) {
                 Logging.Error(e);
                 throw new InformativeException(ToolsStrings.Common_CannotDownloadFile, "Sharemods.com has changed.");

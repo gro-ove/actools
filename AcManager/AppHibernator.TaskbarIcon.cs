@@ -14,7 +14,8 @@ namespace AcManager {
         private TaskbarIcon _icon;
 
         private void AddTrayIconWpf() {
-            ActionExtension.InvokeInMainThread(() => {
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                Logging.Debug("Adding taskbar icon");
                 var patchSettings = SettingsShadersPatch.IsCustomShadersPatchInstalled() ? new MenuItem {
                     Header = "Custom Shaders Patch settings",
                     Command = SettingsShadersPatch.GetShowSettingsCommand()
@@ -51,7 +52,10 @@ namespace AcManager {
         }
 
         private void RemoveTrayIconWpf() {
-            DisposeHelper.Dispose(ref _icon);
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                Logging.Debug("Removing taskbar icon");
+                DisposeHelper.Dispose(ref _icon);
+            });
         }
     }
 }

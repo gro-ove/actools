@@ -38,7 +38,7 @@ namespace AcManager.Tools {
         }
 
         public FrameworkElement Load() {
-            using (var fs = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+            using (var fs = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
                 return (FrameworkElement)XamlReader.Load(fs, new ParserContext {
                     BaseUri = new Uri(_filename, UriKind.Absolute)
                 });

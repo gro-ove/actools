@@ -144,7 +144,9 @@ namespace AcManager.Tools.Managers.Online {
         public IEnumerable GetErrors(string propertyName) {
             switch (propertyName) {
                 case nameof(Password):
-                    return PasswordIsWrong ? new[] { "Password is wrong" } : null;
+                    return PasswordIsWrong ? new[] {
+                        PasswordRequired && string.IsNullOrEmpty(Password) ? ToolsStrings.ServerEntry_PasswordIsRequired : ToolsStrings.ServerEntry_PasswordIsWrong
+                    } : null;
                 default:
                     return null;
             }
@@ -228,6 +230,13 @@ namespace AcManager.Tools.Managers.Online {
         public string Time {
             get => _time;
             set => Apply(value, ref _time);
+        }
+
+        private int _TimeSeconds;
+
+        public int TimeSeconds {
+            get => _TimeSeconds;
+            set => Apply(value, ref _TimeSeconds);
         }
 
         private RaceMode _raceMode;
@@ -322,6 +331,20 @@ namespace AcManager.Tools.Managers.Online {
         public bool CspRequiredMissing {
             get => _cspRequiredMissing;
             set => Apply(value, ref _cspRequiredMissing);
+        }
+
+        private bool _CspExtendedCarsPhysics;
+
+        public bool CspExtendedCarsPhysics {
+            get => _CspExtendedCarsPhysics;
+            set => Apply(value, ref _CspExtendedCarsPhysics);
+        }
+
+        private bool _CspExtendedTrackPhysics;
+
+        public bool CspExtendedTrackPhysics {
+            get => _CspExtendedTrackPhysics;
+            set => Apply(value, ref _CspExtendedTrackPhysics);
         }
 
         private string _trackId;

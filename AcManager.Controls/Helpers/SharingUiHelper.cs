@@ -54,7 +54,7 @@ namespace AcManager.Controls.Helpers {
             try {
                 var contentName = defaultName;
                 if (!SettingsHolder.Sharing.ShareWithoutName && type != SharedEntryType.Results) {
-                    contentName = Prompt.Show(ControlsStrings.Share_EnterName, ControlsStrings.Share_EnterNameHeader, defaultName, ToolsStrings.Common_None,
+                    contentName = await Prompt.ShowAsync(ControlsStrings.Share_EnterName, ControlsStrings.Share_EnterNameHeader, defaultName, ToolsStrings.Common_None,
                             maxLength: 60);
                     if (contentName == null) return; // cancelled
                     if (string.IsNullOrWhiteSpace(contentName)) {
@@ -64,8 +64,8 @@ namespace AcManager.Controls.Helpers {
 
                 string id = null;
                 if (SettingsHolder.Sharing.CustomIds && type != SharedEntryType.Results) {
-                    id = Prompt.Show(ControlsStrings.Share_EnterCustomId, ControlsStrings.Share_EnterCustomIdHeader, "",
-                            ToolsStrings.Common_None, maxLength: 200)?.Trim();
+                    id = (await Prompt.ShowAsync(ControlsStrings.Share_EnterCustomId, ControlsStrings.Share_EnterCustomIdHeader, "",
+                            ToolsStrings.Common_None, maxLength: 200))?.Trim();
                     if (id == null) return; // cancelled
                     if (string.IsNullOrWhiteSpace(id)) {
                         id = null;

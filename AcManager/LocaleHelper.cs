@@ -163,7 +163,7 @@ namespace AcManager {
                 Dictionary<string, Assembly> assemblies;
                 byte[] update;
 
-                using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 using (var zip = new ZipArchive(fs)) {
                     var manifest = LocalePackageManifest.FromArchive(zip);
                     if (manifest == null) throw new Exception("Manifest is missing");

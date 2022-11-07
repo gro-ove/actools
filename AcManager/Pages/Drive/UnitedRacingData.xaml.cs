@@ -30,7 +30,8 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        public static PluginsRequirement Requirement { get; } = new PluginsRequirement(KnownPlugins.CefSharp);
+        private static PluginsRequirement _requirement;
+        public static PluginsRequirement Requirement => _requirement ?? (_requirement = new PluginsRequirement(KnownPlugins.CefSharp));
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
             await Task.Yield();

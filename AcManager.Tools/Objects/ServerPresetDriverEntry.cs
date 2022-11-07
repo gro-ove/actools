@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -13,6 +15,29 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.Objects {
     public class ServerPresetDriverEntry : NotifyPropertyChanged, IDraggable, IDraggableCloneable {
         private static readonly string DefaultCarId = "abarth500";
+
+        private ServerPresetObject _parent;
+
+        public ServerPresetObject Parent {
+            get => _parent;
+            set => Apply(value, ref _parent, () => {
+                if (value != null) {
+                    var setupFileName = _fixedSetup;
+                    if (setupFileName != null) {
+                        CarSetup = value.SetupItems.FirstOrDefault(x => x.CarId == CarId &&
+                                string.Equals(Path.GetFileName(x.Filename), setupFileName, StringComparison.OrdinalIgnoreCase));
+                    }
+                }
+                _fittingSetupsSet = false;
+                OnPropertyChanged(nameof(FittingSetups));
+            });
+        }
+
+        public void RefreshFilteredSetupList() {
+            _fittingSetups?.Refresh();
+        }
+
+        private string _fixedSetup;
 
         public ServerPresetDriverEntry(IniFileSection section) {
             CarId = section.GetNonEmpty("MODEL") ?? DefaultCarId;
@@ -27,12 +52,29 @@ namespace AcManager.Tools.Objects {
             Guid = section.GetNonEmpty("GUID");
             Ballast = section.GetDouble("BALLAST", 0d);
             Restrictor = section.GetDouble("RESTRICTOR", 0d);
+            _fixedSetup = section.GetNonEmpty("FIXED_SETUP");
+
             CspOptions.PropertyChanged += (sender, args) => {
                 Logging.Write($"ARG: {args.PropertyName}");
 
                 // ReSharper disable once NotResolvedInText
                 OnPropertyChanged(@"CspOptions.Inner");
             };
+        }
+
+        public ServerPresetDriverEntry([NotNull] CarObject car) {
+            CarId = car.Id;
+            _carSet = true;
+            _carObject = car;
+            CarSkinId = car.SkinsManager.WrappersList.FirstOrDefault(x => x.Value.Enabled)?.Id;
+        }
+
+        public ServerPresetDriverEntry([NotNull] ServerSavedDriver saved) {
+            CarId = saved.GetCarId() ?? DefaultCarId;
+            CarSkinId = saved.GetSkinId(CarId) ?? CarObject?.SkinsManager.WrappersList.FirstOrDefault(x => x.Value.Enabled)?.Id;
+            DriverName = saved.DriverName;
+            TeamName = saved.TeamName;
+            Guid = saved.Guid;
         }
 
         bool IDraggableCloneable.CanBeCloned => true;
@@ -60,22 +102,12 @@ namespace AcManager.Tools.Objects {
             section.Set("GUID", Guid ?? "");
             section.Set("BALLAST", Ballast);
             section.Set("RESTRICTOR", Restrictor);
-        }
 
-        public ServerPresetDriverEntry([NotNull] CarObject car) {
-            CarId = car.Id;
-            _carSet = true;
-            _carObject = car;
-
-            CarSkinId = car.SkinsManager.WrappersList.FirstOrDefault(x => x.Value.Enabled)?.Id;
-        }
-
-        public ServerPresetDriverEntry([NotNull] ServerSavedDriver saved) {
-            CarId = saved.GetCarId() ?? DefaultCarId;
-            CarSkinId = saved.GetSkinId(CarId) ?? CarObject?.SkinsManager.WrappersList.FirstOrDefault(x => x.Value.Enabled)?.Id;
-            DriverName = saved.DriverName;
-            TeamName = saved.TeamName;
-            Guid = saved.Guid;
+            var setup = _fixedSetup;
+            if (string.IsNullOrWhiteSpace(setup)) {
+                setup = Path.GetFileName(Parent?.SetupItems.FirstOrDefault(x => x.IsDefault && x.CarId == CarId)?.Filename);
+            }
+            section.SetOrRemove("FIXED_SETUP", setup);
         }
 
         private string _carId;
@@ -84,7 +116,7 @@ namespace AcManager.Tools.Objects {
         public string CarId {
             get => _carId;
             set {
-                Logging.Debug($"CARID: {value}, {_carId}");
+                // Logging.Debug($"CARID: {value}, {_carId}");
                 if (value == _carId) return;
                 _carId = value;
                 _carSet = false;
@@ -202,12 +234,27 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _restrictor);
         }
 
-        private string _carSetup;
+        private ServerPresetObject.SetupItem _carSetup;
 
         [CanBeNull]
-        public string CarSetup {
+        public ServerPresetObject.SetupItem CarSetup {
             get => _carSetup;
-            set => Apply(value, ref _carSetup);
+            set => Apply(value, ref _carSetup, () => _fixedSetup = Path.GetFileName(value?.Filename));
+        }
+
+        private BetterListCollectionView _fittingSetups;
+        private bool _fittingSetupsSet;
+
+        public BetterListCollectionView FittingSetups {
+            get {
+                if (!_fittingSetupsSet) {
+                    _fittingSetupsSet = true;
+                    _fittingSetups = Parent != null ? new BetterListCollectionView(Parent.SetupItems) {
+                        Filter = x => (x as ServerPresetObject.SetupItem)?.CarId == CarId
+                    } : null;
+                }
+                return _fittingSetups;
+            }
         }
 
         private int _index;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AcTools.Render.Base.Cameras;
 using JetBrains.Annotations;
 using SlimDX;
@@ -16,6 +17,7 @@ namespace AcTools.Render.Base.Objects {
         public virtual bool IsReflectable { get; set; } = true;
         public virtual bool IsEnabled { get; set; } = true;
         public abstract int GetTrianglesCount();
+        public abstract IEnumerable<int> GetMaterialIds();
 
         public int GetObjectsCount() {
             return 1;

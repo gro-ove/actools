@@ -48,7 +48,7 @@ namespace AcManager.Pages.Dialogs {
         public static bool OptionBenchmarkReplays = false;
         public static bool OptionHideCancelButton = false;
 
-        public static readonly int DefinitelyNonPrizePlace = 99999;
+        public const int DefinitelyNonPrizePlace = 99999;
         private static GoodShuffle<string> _progressStyles;
 
         private ViewModel Model => (ViewModel)DataContext;
@@ -59,15 +59,15 @@ namespace AcManager.Pages.Dialogs {
             DataContext = new ViewModel();
             InitializeComponent();
 
-            if (_progressStyles == null) {
-                _progressStyles = GoodShuffle.Get(ExtraProgressRings.Styles.Keys);
+            if (_progressStyles == null && !AppAppearanceManager.Instance.SoftwareRenderingMode) {
+                _progressStyles = GoodShuffle.Get(ExtraProgressRings.StylesLazy.Keys);
             }
 
             _cancellationSource = new CancellationTokenSource();
             CancellationToken = _cancellationSource.Token;
 
-            if (!AppAppearanceManager.Instance.SoftwareRenderingMode) {
-                ProgressRing.Style = ExtraProgressRings.Styles.GetValueOrDefault(_progressStyles.Next);
+            if (!AppAppearanceManager.Instance.SoftwareRenderingMode && _progressStyles != null) {
+                ProgressRing.Style = ExtraProgressRings.StylesLazy.GetValueOrDefault(_progressStyles.Next)?.Value;
             }
 
             Buttons = new[] { OptionHideCancelButton ? null : CancelButton };
@@ -161,7 +161,7 @@ namespace AcManager.Pages.Dialogs {
                     break;
                 case Game.ProgressState.Launching:
                     if (AcRootDirectory.CheckDirectory(MainExecutingFile.Directory, false)
-                            && MainExecutingFile.Name != "AssettoCorsa.exe"
+                            && MainExecutingFile.Name != @"AssettoCorsa.exe"
                             && new IniFile(AcPaths.GetCfgVideoFilename())["CAMERA"].GetNonEmpty("MODE") == "OCULUS"
                             && MessageDialog.Show(
                                     "Oculus Rift might not work properly with Content Manager is in AC root folder. It’s better to move it to avoid potential issues.",
@@ -367,13 +367,10 @@ namespace AcManager.Pages.Dialogs {
                     select player).FirstOrDefault();
 
                 data.RemarkableNotes = new[] {
-                    sessionBestLap == null ? null :
-                            new SessionFinishedData.RemarkableNote("[b]Best lap[/b] made by ", data.PlayerEntries.GetByIdOrDefault(sessionBestLap.CarNumber),
-                                    null),
+                    sessionBestLap == null ? null : new SessionFinishedData.RemarkableNote("[b]Best lap[/b] made by ",
+                            data.PlayerEntries.GetByIdOrDefault(sessionBestLap.CarNumber), null),
                     new SessionFinishedData.RemarkableNote("[b]The Best Off-roader Award[/b] goes to ", (from player in data.PlayerEntries
-                        let cuts =
-                                (double)player.Laps.Sum(x => x.Cuts)
-                                        / player.Laps.Length
+                        let cuts = (double)player.Laps.Sum(x => x.Cuts) / player.Laps.Length
                         where cuts > 1.5
                         orderby cuts descending
                         select player).FirstOrDefault(), null),
@@ -553,11 +550,6 @@ namespace AcManager.Pages.Dialogs {
         public void OnResult(Game.Result result, ReplayHelper replayHelper) {
             RevertSizeFix().Ignore();
 
-            var practiceMode = SettingsHolder.Drive.SkipPracticeResults
-                    && !_resultsViewMode // If we got here before dialog is opened, user wants to see results anyway
-                    && result != null && result.NumberOfSessions == 1 && result.Sessions?.Length == 1
-                    && result.Sessions[0].Type == Game.SessionType.Practice;
-
             if (SettingsHolder.Drive.WatchForSharedMemory) {
                 AcSharedMemory.Instance.MonitorFramesPerSecond = false;
             }
@@ -572,20 +564,22 @@ namespace AcManager.Pages.Dialogs {
                 if ((_properties?.BenchmarkProperties != null || OptionBenchmarkReplays && _properties?.ReplayProperties != null)
                         && SettingsHolder.Drive.WatchForSharedMemory) {
                     Model.CurrentState = ViewModel.State.BenchmarkResult;
-                    Model.BenchmarkResults = $@"• Average FPS: [b]{data.AverageFps:F1}[/b] ([b]{1000 / data.AverageFps:F3}[/b] ms);
-• Minimum FPS: {(data.MinimumFps != null ? $"[b]{data.MinimumFps.Value:F1}[/b] ([b]{1000 / data.MinimumFps.Value:F3}[/b] ms)" : "[b]N/A[/b]")};
-• Taken: [b]{PluralizingConverter.PluralizeExt(data.SamplesTaken, "{0} sample")}[/b];
-• Test time: [b]{TimeSpan.FromSeconds(data.SamplesTaken * AcSharedMemory.MonitorFramesPerSecondSampleFrequency.TotalSeconds).ToMillisecondsString()}[/b].";
+                    Model.BenchmarkResults = string.Format(ControlsStrings.GameDialog_BenchmarkResults, data.AverageFps, 1000 / data.AverageFps,
+                            data.MinimumFps != null
+                                    ? string.Format(ControlsStrings.GameDialog_BenchmarkResults_MinFps, data.MinimumFps.Value, 1000 / data.MinimumFps.Value)
+                                    : ControlsStrings.GameDialog_BenchmarkResults_Na,
+                            PluralizingConverter.PluralizeExt(data.SamplesTaken, ControlsStrings.GameDialog_BenchmarkResults_Samples),
+                            TimeSpan.FromSeconds(data.SamplesTaken * AcSharedMemory.MonitorFramesPerSecondSampleFrequency.TotalSeconds).ToMillisecondsString());
                     Model.BenchmarkPassed = data.MinimumFps > 55;
                     Buttons = new[] { CloseButton };
                     return;
                 }
             }
 
-            var isNoResultsMode = _properties?.GetAdditional<WhatsGoingOn>() == null
-                    && (_properties?.ReplayProperties != null || _properties?.BenchmarkProperties != null);
-
-            if (practiceMode || isNoResultsMode) {
+            var skipResults = _properties?.ReplayProperties != null || _properties?.BenchmarkProperties != null
+                    ? _properties?.GetAdditional<WhatsGoingOn>() == null
+                    : !_resultsViewMode && SettingsHolder.Drive.SkipResults(result, _properties);
+            if (skipResults) {
                 if (IsLoaded) {
                     Close();
                     Application.Current?.MainWindow?.Activate();
@@ -624,7 +618,9 @@ namespace AcManager.Pages.Dialogs {
             ButtonWithComboBox saveReplayButton;
             if (replayHelper != null && replayHelper.IsAvailable) {
                 string ButtonText() => replayHelper.IsKept ? AppStrings.RaceResult_UnsaveReplay : AppStrings.RaceResult_SaveReplay;
-                string SaveAsText() => string.Format(replayHelper.IsKept ? "Saved as “{0}”" : "Suggested replay name: “{0}”", replayHelper.Name);
+
+                string SaveAsText() => string.Format(replayHelper.IsKept
+                        ? ControlsStrings.GameDialog_SavedReplayAs : ControlsStrings.GameDialog_SuggestedReplayName, replayHelper.Name);
 
                 saveReplayButton = new ButtonWithComboBox {
                     Margin = new Thickness(4, 0, 0, 0),
@@ -637,7 +633,8 @@ namespace AcManager.Pages.Dialogs {
                                 ? new MenuItem {
                                     Header = SaveAsText(),
                                     Command = new DelegateCommand(() => {
-                                        var newName = Prompt.Show("Save replay as:", "Replay name", replayHelper.Name, "?", required: true);
+                                        var newName = Prompt.Show(ControlsStrings.GameDialog_SaveReplayAs, ControlsStrings.GameDialog_ReplayName,
+                                                replayHelper.Name, @"?", required: true);
                                         if (!string.IsNullOrWhiteSpace(newName)) {
                                             replayHelper.Name = newName;
                                         }
@@ -645,11 +642,11 @@ namespace AcManager.Pages.Dialogs {
                                         replayHelper.IsKept = true;
                                     })
                                 }
-                                : new MenuItem { Header = "Replay name: " + replayHelper.Name, StaysOpenOnClick = true },
+                                : new MenuItem { Header = ControlsStrings.GameDialog_ReplayNameSuggested + replayHelper.Name, StaysOpenOnClick = true },
                         new MenuItem { Header = ButtonText(), Command = new DelegateCommand(replayHelper.ToggleKept) },
                         new Separator(),
                         new MenuItem {
-                            Header = "Share replay",
+                            Header = ControlsStrings.GameDialog_ShareReplay,
                             Command = new AsyncCommand(() => {
                                 var car = _properties?.BasicProperties?.CarId == null ? null :
                                         CarsManager.Instance.GetById(_properties.BasicProperties.CarId);
@@ -857,9 +854,9 @@ namespace AcManager.Pages.Dialogs {
                     .Add(x => {
                         columns[0].Width = x ? 100 : 140;
                         columns[0].HeaderStyle = (Style)FindResource(x ?
-                                "DataGridColumnHeader.RightAlignment" : "DataGridColumnHeader.RightAlignment.FarRight");
+                                @"DataGridColumnHeader.RightAlignment" : @"DataGridColumnHeader.RightAlignment.FarRight");
                         ((DataGridTemplateColumn)columns[0]).CellTemplate = (DataTemplate)FindResource(x ?
-                                "TotalTimeDeltaTemplate" : "TotalTimeDeltaTemplate.FarRight");
+                                @"TotalTimeDeltaTemplate" : @"TotalTimeDeltaTemplate.FarRight");
                         if (x) {
                             FancyHints.GameDialogTableSize.MaskAsUnnecessary();
                         }
@@ -881,12 +878,12 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e) {
-            if (e.PropertyName == "Tyres") {
-                e.Column.HeaderStyle = (Style)FindResource("DataGridColumnHeader.Small");
+            if (e.PropertyName == @"Tyres") {
+                e.Column.HeaderStyle = (Style)FindResource(@"DataGridColumnHeader.Small");
             } else {
-                e.Column.Width = e.PropertyName == "Lap" ? 60 : 100;
-                e.Column.HeaderStyle = (Style)FindResource("DataGridColumnHeader.RightAlignment.Small");
-                e.Column.CellStyle = (Style)FindResource("DataGridCell.Transparent.RightAlignment");
+                e.Column.Width = e.PropertyName == @"Lap" ? 60 : 100;
+                e.Column.HeaderStyle = (Style)FindResource(@"DataGridColumnHeader.RightAlignment.Small");
+                e.Column.CellStyle = (Style)FindResource(@"DataGridCell.Transparent.RightAlignment");
             }
         }
     }

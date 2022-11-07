@@ -210,7 +210,7 @@ namespace AcManager.Pages.Drive {
             [CanBeNull]
             private WeatherObject GetRandomWeather(int? time, double? temperature) {
                 for (var i = 0;; i++) {
-                    var weatherObject = GetRandomObject(WeatherManager.Instance, SelectedWeatherObject?.Id);
+                    var weatherObject = GetRandomObject(WeatherManager.Instance, SelectedWeatherObject?.Id, null);
                     if (weatherObject == null) return null;
                     if (weatherObject.Fits(time, temperature) || i == 100) return weatherObject;
                 }
@@ -224,7 +224,7 @@ namespace AcManager.Pages.Drive {
             private DelegateCommand _randomWeatherCommand;
 
             public DelegateCommand RandomWeatherCommand
-                => _randomWeatherCommand ?? (_randomWeatherCommand = new DelegateCommand(() => { SetRandomWeather(true); }));
+                => _randomWeatherCommand ?? (_randomWeatherCommand = new DelegateCommand(() => SetRandomWeather(true)));
             #endregion
 
             #region Automatically set variables
@@ -272,7 +272,7 @@ namespace AcManager.Pages.Drive {
                     var entry = await IpGeoProvider.GetAsync();
                     var localAddress = entry == null ? "" : $"{entry.City}, {entry.Country}";
 
-                    var address = Prompt.Show("Where are you?", "Local address", localAddress, @"?", required: true);
+                    var address = await Prompt.ShowAsync("Where are you?", "Local address", localAddress, @"?", required: true);
                     if (string.IsNullOrWhiteSpace(address)) {
                         if (address != null) {
                             ModernDialog.ShowMessage("Value is required");
@@ -639,7 +639,7 @@ namespace AcManager.Pages.Drive {
                         _updateCancellationTokenSource = cancellation;
 
                         try {
-                            await RealConditionsHelper.UpdateConditions(SelectedTrack, RealConditionsLocalWeather, RealConditionsTimezones,
+                            await RealConditionsHelper.UpdateConditionsAsync(SelectedTrack, RealConditionsLocalWeather, RealConditionsTimezones,
                                     RealConditionsManualTime ? default(Action<DateTime>) : TryToSetTime, weather => {
                                         RealWeather = weather;
                                         TryToSetTemperature(weather.Temperature);

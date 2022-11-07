@@ -4602,4 +4602,34 @@ Povolené hodnoty jsou -1 až 1."</value>
   <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
     <value>Zobrazení rozšířených informací, pokud obsah chybí</value>
   <alternative>Zobrazit rozšířené informace, pokud obsah chybí</alternative></data>
+  <data name="DownloadList_ShowFile" xml:space="preserve">
+    <value>Zobrazit soubor</value>
+  </data>
+  <data name="DownloadList_Retry" xml:space="preserve">
+    <value>Zopakovat</value>
+  </data>
+  <data name="DownloadList_Failed" xml:space="preserve">
+    <value>nepodařilo se</value>
+  </data>
+  <data name="DownloadList_NothingFound" xml:space="preserve">
+    <value>Nic nenalezeno</value>
+  </data>
+  <data name="DownloadList_Installing" xml:space="preserve">
+    <value>Instalování</value>
+  </data>
+  <data name="DownloadList_Install" xml:space="preserve">
+    <value>Instalovat</value>
+  </data>
+  <data name="DownloadList_Resume" xml:space="preserve">
+    <value>Pokračovat</value>
+  </data>
+  <data name="DownloadList_Pause" xml:space="preserve">
+    <value>Zastavit</value>
+  </data>
+  <data name="DownloadList_Restart" xml:space="preserve">
+    <value>Restartovat</value>
+  </data>
+  <data name="DownloadList_Cancel" xml:space="preserve">
+    <value>Zrušit</value>
+  </data>
 </root>

@@ -256,7 +256,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                         _spline = AiSpline.FromFile(GetAiLaneFastFilename(Filename));
                     }
 
-                    _obj = AiLaneObject.Create(_spline, AiLaneWidth);
+                    _obj = AiLaneObject.Create(_spline, AiLaneWidth, "main");
                     _obj.ParentMatrix = Matrix.Identity;
                     _obj.UpdateBoundingBox();
 
@@ -317,6 +317,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 }
 
                 public bool IsBlending => false;
+
+                public string Name => null;
 
                 public void Dispose() { }
             }

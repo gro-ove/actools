@@ -311,6 +311,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public partial class ViewModel : NotifyPropertyChanged, IComparer {
+            public QuickDriveButtonModel QuickDriveButton { get; }
+
             [CanBeNull]
             private readonly DiscordRichPresence _discordPresence;
 
@@ -364,6 +366,27 @@ namespace AcManager.Pages.Drive {
 
                 Entry.Assists = Assists.ToGameProperties();
                 Assists.Changed += OnAssistsChanged;
+
+                QuickDriveButton = new QuickDriveButtonModel((setupRace, preset) => {
+                    Uri mode = null;
+                    if (Entry.Sessions?.Any(x => x.Type == Game.SessionType.Practice) == true) {
+                        mode = Entry.Sessions?.Any(x => x.Type == Game.SessionType.Qualification) == true
+                                && Entry.Sessions?.Any(x => x.Type == Game.SessionType.Race) == true ? QuickDrive.ModeWeekend : QuickDrive.ModePractice;
+                    } else if (Entry.Sessions?.Any(x => x.Type == Game.SessionType.Race) == true) {
+                        mode = QuickDrive.ModeRace;
+                    } else if (Entry.Sessions?.Any(x => x.Type == Game.SessionType.Qualification) == true) {
+                        mode = QuickDrive.ModeHotlap;
+                    }
+                    return QuickDrive.Activate(setupRace, Entry.SelectedCarEntry?.CarObject, Entry.SelectedCarEntry?.AvailableSkinId,
+                            track: Entry.Track, presetFilename: preset, weatherId: Entry.WeatherId, mode: mode, time: Entry.TimeSeconds,
+                            serializedRaceGrid: RaceGridViewModel.GeneratePresetData((Entry.Cars?.SelectMany(x => {
+                                if (x.CarObject == null || x.Available == 0) return null;
+                                return Enumerable.Range(0, x.Available).Select(y => new RaceGridEntry(x.CarObject) { CarSkin = x.AvailableSkin });
+                            }) ?? new RaceGridEntry[0]).Concat(Entry.CurrentDrivers?.Select(x => {
+                                if (x.IsBookedForPlayer) return null;
+                                return new RaceGridEntry(x.Car) { CarSkin = x.CarSkin, Name = x.Name };
+                            }) ?? new RaceGridEntry[0])));
+                });
             }
 
             private void OnAssistsChanged(object sender, EventArgs eventArgs) {
@@ -479,6 +502,7 @@ namespace AcManager.Pages.Drive {
             _timer = null;
 
             Model.Entry.PropertyChanged -= OnEntryPropertyChanged;
+            Model.QuickDriveButton.Dispose();
             DisposeHelper.Dispose(ref _holder);
 
             if (_listsButtonInitialized) {
@@ -663,9 +687,14 @@ namespace AcManager.Pages.Drive {
 • Connected {PluralizingConverter.PluralizeExt(stats.SessionsCount, "{0} time")}, last time at {server.LastConnected:dd/MM/yyyy hh:mm tt};
 • Counting from {(server.CountingStatsFrom == null ? @"unknown time" : $@"{server.CountingStatsFrom:dd/MM/yyyy hh:mm tt}")};
 • Driven in total {stats.Distance / 1e3:F1} km ({stats.Time.ToReadableTime()});
-• Had {PluralizingConverter.PluralizeExt(stats.TotalCrashes, "{0} crash")} crashes, gone offroad {PluralizingConverter.PluralizeExt(stats.GoneOffroadTimes, "{0} time")};
+• Had {PluralizingConverter.PluralizeExt(stats.TotalCrashes, "{0} crash")} crashes, gone offroad {PluralizingConverter.PluralizeExt(stats.GoneOffroadTimes,
+        "{0} time")};
 • Avg. speed: {stats.AverageSpeed:F1} km/h, top speed: {stats.MaxSpeed:F1} km/h;
 • Burnt {stats.FuelBurnt:F1} l of fuel, worn out {PluralizingConverter.PluralizeExt(stats.TotalTyreWearRounded.RoundToInt(), "{0} tyre")}.");
+        }
+
+        private void OnDriveButtonMouseDown(object sender, MouseButtonEventArgs e) {
+            Model.QuickDriveButton.Initialize();
         }
     }
 }

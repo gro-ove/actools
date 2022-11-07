@@ -779,4 +779,7 @@
   <data name="Settings_Content_ConfirmBeforeRemoval" xml:space="preserve">
     <value>Ga akkoord voor verwijdering</value>
   </data>
+  <data name="Settings_Live_RsrNameLabel" xml:space="preserve">
+    <value>RSR naam:</value>
+  </data>
 </root>

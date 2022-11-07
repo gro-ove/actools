@@ -116,6 +116,10 @@ namespace AcTools.Render.Base.Objects {
             return this.Where(x => x.IsEnabled).Aggregate(0, (a, b) => a + b.GetObjectsCount());
         }
 
+        public IEnumerable<int> GetMaterialIds() {
+            return this.Where(x => x.IsEnabled).SelectMany(x => x.GetMaterialIds());
+        }
+
         public BoundingBox? BoundingBox { get; private set; }
 
         public void UpdateBoundingBox() {

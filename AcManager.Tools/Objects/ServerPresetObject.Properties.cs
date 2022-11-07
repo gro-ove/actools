@@ -96,6 +96,39 @@ namespace AcManager.Tools.Objects {
             });
         }
 
+        private bool _cspExtendedCarsPhysics;
+
+        public bool CspExtendedCarsPhysics {
+            get => _cspExtendedCarsPhysics;
+            set => Apply(value, ref _cspExtendedCarsPhysics, () => {
+                if (Loaded) {
+                    Changed = true;
+                }
+            });
+        }
+
+        private bool _cspExtendedTrackPhysics;
+
+        public bool CspExtendedTrackPhysics {
+            get => _cspExtendedTrackPhysics;
+            set => Apply(value, ref _cspExtendedTrackPhysics, () => {
+                if (Loaded) {
+                    Changed = true;
+                }
+            });
+        }
+
+        private bool _cspHidePitCrew;
+
+        public bool CspHidePitCrew {
+            get => _cspHidePitCrew;
+            set => Apply(value, ref _cspHidePitCrew, () => {
+                if (Loaded) {
+                    Changed = true;
+                }
+            });
+        }
+
         private string _cspExtraConfig;
 
         public string CspExtraConfig {
@@ -757,11 +790,12 @@ namespace AcManager.Tools.Objects {
             if (_driverEntries == null) return;
             for (var i = 0; i < _driverEntries.Count; i++) {
                 _driverEntries[i].Index = i + 1;
+                _driverEntries[i].Parent = this;
             }
         }
 
         private void UpdateCarIds() {
-            Logging.Debug("CAR IDS: " + _driverEntries.Select(x => x.CarId).Distinct().ToArray());
+            // Logging.Debug("CAR IDS: " + _driverEntries.Select(x => x.CarId).Distinct().ToArray());
             CarIds = _driverEntries.Select(x => x.CarId).Distinct().ToArray();
         }
 
@@ -779,7 +813,7 @@ namespace AcManager.Tools.Objects {
         }
 
         private void OnDriverEntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            Logging.Debug($"PROP CHANGED: {e.PropertyName}");
+            // Logging.Debug($"PROP CHANGED: {e.PropertyName}");
             switch (e.PropertyName) {
                 case nameof(ServerPresetDriverEntry.CarId):
                     UpdateCarIds();
@@ -871,7 +905,15 @@ namespace AcManager.Tools.Objects {
 
         public Game.TrackProperties TrackProperties {
             get => _trackProperties;
-            set => Apply(value, ref _trackProperties);
+            set {
+                if (_trackProperties == value) return;
+                _trackProperties?.UnsubscribeWeak(OnTrackPropertiesChanged);
+                Apply(value, ref _trackProperties, () => value?.SubscribeWeak(OnTrackPropertiesChanged));
+            }
+        }
+
+        private void OnTrackPropertiesChanged(object s, PropertyChangedEventArgs e) {
+            Changed = true;
         }
 
         private ChangeableObservableCollection<ServerWeatherEntry> _weather;
@@ -1018,15 +1060,6 @@ namespace AcManager.Tools.Objects {
         public bool UseCmPlugin {
             get => _useCmPlugin;
             set => Apply(value, ref _useCmPlugin, () => {
-                if (Loaded) Changed = true;
-            });
-        }
-
-        private bool _realConditions;
-
-        public bool RealConditions {
-            get => _realConditions;
-            set => Apply(value, ref _realConditions, () => {
                 if (Loaded) Changed = true;
             });
         }

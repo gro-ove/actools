@@ -120,7 +120,8 @@ namespace AcManager.Tools.AcObjectsNew {
 
                 if (_subFiles == null) {
                     _subFiles = Directory.GetFiles(location, "*", SearchOption.AllDirectories)
-                            .Select(x => FileUtils.GetRelativePath(x, location).Replace('\\', '/')).ToArray();
+                            .Select(x => FileUtils.GetRelativePath(x, location).Replace('\\', '/'))
+                            .Where(x => !x.Contains(@".vscode/")).ToArray();
                 }
 
                 var f = RegexFromQuery.Create(mask.Replace('\\', '/'), StringMatchMode.CompleteMatch);

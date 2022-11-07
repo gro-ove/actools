@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.Miscellaneous {
     internal sealed class ReplayReader : ReadAheadBinaryReader {
         public ReplayReader(string filename)
-                : this(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 8192)) { }
+                : this(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 8192)) { }
 
         public ReplayReader(Stream input)
                 : base(input) { }
@@ -88,7 +88,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                             if (i == BytesRead) {
                                 int n;
-                                while ((n = ReadByte()) != -1) {
+                                while ((n = ReadByte()) != 0) {
                                     if (IsStringCharacter(n)) {
                                         sb.Append((char)n);
                                     } else {
@@ -185,7 +185,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                             if (i == BytesRead) {
                                 int n;
-                                while ((n = ReadByte()) != -1) {
+                                while ((n = ReadByte()) != 0) {
                                     if (IsStringCharacter(n)) {
                                         sb.Append((char)n);
                                     } else {

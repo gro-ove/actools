@@ -80,10 +80,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new KeyboardSpecificButtonEntry("LEFT", ToolsStrings.Controls_SteerLeft)
             }.Union(WheelGearsButtonEntries.Select(x => x.KeyboardButton)).ToArray();
 
-            KeyboardPatchButtonEntries = new[] {
+            KeyboardPatchButtonEntries = new KeyboardButtonEntry[] {
                 new KeyboardSpecificButtonEntry("KEY_MODIFICATOR", "Forcing modifier", "__EXT_KEYBOARD_GAS_RAW"),
                 new KeyboardSpecificButtonEntry("KEY", "Forced throttle", "__EXT_KEYBOARD_GAS_RAW")
-            }.ToArray();
+            };
 
             #region Joystick entires
             ControllerCarExtraButtonEntries = new[] {
@@ -136,7 +136,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             #region Constructing custom patch entries
             var manifest = PatchHelper.GetManifest();
             var sectionsList = new List<CustomButtonEntrySection>();
-            for (var i = 0; i < 999; i++) {
+            for (var i = 0; manifest != null && i < 999; i++) {
                 var k = manifest[$@"INPUT_GROUP_{i}"];
                 var n = k.GetNonEmpty("GROUP_NAME");
                 if (string.IsNullOrWhiteSpace(n)) continue;
@@ -175,7 +175,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     var index = name.IndexOf('(');
                     if (index != -1 && name.EndsWith(")")) {
                         description = CapitalizeFirst(name.Substring(index + 1, name.Length - index - 2)).TrimEnd('.');
-                        name = name.Substring(0, index).TrimStart();
+                        name = name.Substring(0, index).Trim();
                     }
 
                     var flags = k.GetStrings(p.Key + "_FLAGS_");
@@ -299,6 +299,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Reload();
             foreach (var entry in Entries) {
                 entry.PropertyChanged += EntryPropertyChanged;
+            }
+
+            foreach (var entry in CustomButtonEntries) {
+                if (entry.CanBeHeld) {
+                    entry.PropertyChanged += EntryPropertyChanged;
+                }
             }
 
             UpdateWheelHShifterDevice();
@@ -474,13 +480,19 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
                         if (device.Information.ProductName.Contains(@"FANATEC CSL Elite")) {
                             if (SettingsHolder.Drive.SameControllersKeepFirst) {
-                                newDevices.RemoveAll(y => y.Same(device.Information, i));
-                            } else if (newDevices.Any(y => y.Same(device.Information, i))) {
+                                newDevices.RemoveAll(y => y.Same(device.Information));
+                            } else if (newDevices.Any(y => y.Same(device.Information))) {
                                 continue;
                             }
                         }
 
-                        newDevices.Add(Devices.FirstOrDefault(y => y.Same(device.Information, i)) ?? DirectInputDevice.Create(device, i));
+                        var existing = Devices.FirstOrDefault(y => y.Same(device.Information));
+                        if (existing != null) {
+                            existing.Index = i;
+                            newDevices.Add(existing);
+                        } else {
+                            newDevices.Add(DirectInputDevice.Create(device, i));
+                        }
                     }
                 }
 
@@ -1053,7 +1065,20 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public int ControllerDeviceIndex {
             get => _controllerDeviceIndex;
-            set => Apply(value, ref _controllerDeviceIndex);
+            set => Apply(value, ref _controllerDeviceIndex, () => {
+                OnPropertyChanged(nameof(DisplayControllerDeviceIndex));
+                OnPropertyChanged(nameof(ControllerUseDualSense));
+            });
+        }
+
+        public int DisplayControllerDeviceIndex {
+            get => _controllerDeviceIndex % 4 + 1;
+            set => ControllerDeviceIndex = (value - 1).Clamp(0, 3) + (_controllerDeviceIndex & 4);
+        }
+
+        public bool ControllerUseDualSense {
+            get => _controllerDeviceIndex > 3;
+            set => ControllerDeviceIndex = _controllerDeviceIndex % 4 + (value ? 4 : 0);
         }
 
         private double _controllerSteeringGamma;
@@ -1545,6 +1570,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 entry.Load(Ini, devices);
             }
 
+            foreach (var entry in CustomButtonEntries) {
+                if (entry.CanBeHeld) {
+                    entry.HoldMode = Ini[entry.Id].GetBool("HOLD_MODE", false);
+                }
+            }
+
             LoadFfbFromIni(Ini);
 
             var section = Ini["KEYBOARD"];
@@ -1649,6 +1680,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             foreach (var entry in Entries) {
                 entry.Save(Ini);
+            }
+
+            foreach (var entry in CustomButtonEntries) {
+                if (entry.CanBeHeld) {
+                    Ini[entry.Id].Set("HOLD_MODE", entry.HoldMode);
+                }
             }
 
             SaveFfbToIni(Ini);
