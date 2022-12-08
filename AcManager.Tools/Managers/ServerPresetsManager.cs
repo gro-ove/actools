@@ -15,6 +15,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
     public class ServerPresetsManager : AcManagerNew<ServerPresetObject>, IDisposable, ICreatingManager {
@@ -146,6 +147,7 @@ namespace AcManager.Tools.Managers {
             }
         }
 
+        [NotNull]
         public override IAcDirectories Directories { get; } = new AcDirectories(PresetsDirectory);
 
         protected override ServerPresetObject CreateAcObject(string id, bool enabled) {

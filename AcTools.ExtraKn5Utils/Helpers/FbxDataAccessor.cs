@@ -54,9 +54,9 @@ namespace AcTools.ExtraKn5Utils.Helpers {
             return new Vec2(_data[index * 2], 1f - _data[index * 2 + 1]);
         }
 
-        public Vec3 GetVec3(int index) {
+        public Vec3 GetVec3(int index, bool flipYZ = false) {
             index = GetIndex(index);
-            return new Vec3(_data[index * 3], _data[index * 3 + 1], _data[index * 3 + 2]);
+            return new Vec3(_data[index * 3], _data[index * 3 + (flipYZ ? 2 : 1)], _data[index * 3 + (flipYZ ? 1 : 2)]);
         }
 
         public Vec4 GetVec4(int index) {

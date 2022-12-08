@@ -178,11 +178,14 @@
     <Compile Include="AcPlugins\AcServerPluginManagerSettings.cs" />
     <Compile Include="AcPlugins\CspCommands\CommandHandshakeIn.cs" />
     <Compile Include="AcPlugins\CspCommands\CommandHandshakeOut.cs" />
+    <Compile Include="AcPlugins\CspCommands\CommandSignatureIn.cs" />
+    <Compile Include="AcPlugins\CspCommands\CommandSignatureOut.cs" />
     <Compile Include="AcPlugins\CspCommands\CommandWeatherSetV1.cs" />
     <Compile Include="AcPlugins\CspCommands\CommandWeatherSetV2.cs" />
     <Compile Include="AcPlugins\CspCommands\CommandWeatherType.cs" />
     <Compile Include="AcPlugins\CspCommands\CspCommandsUtils.cs" />
     <Compile Include="AcPlugins\CspCommands\ICspCommand.cs" />
+    <Compile Include="AcPlugins\CspCommands\ICspVariableCommand.cs" />
     <Compile Include="AcPlugins\ExternalPluginInfo.cs" />
     <Compile Include="AcPlugins\Extras\AcDriverDetails.cs" />
     <Compile Include="AcPlugins\Extras\AcDriverLeaderboardDetails.cs" />
@@ -714,6 +717,7 @@
     <Compile Include="ServerPlugins\CmServerPlugin.cs" />
     <Compile Include="ServerPlugins\DynamicConditionsV1ServerPlugin.cs" />
     <Compile Include="ServerPlugins\DynamicConditionsV2ServerPlugin.cs" />
+    <Compile Include="ServerPlugins\HandshakePlugin.cs" />
     <Compile Include="ServerPlugins\LiveConditionsServerPlugin.cs" />
     <Compile Include="ServerPlugins\ServerGuidsStorage.cs" />
     <Compile Include="SharedMemory\AcFlagType.cs" />

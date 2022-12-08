@@ -86,9 +86,11 @@ namespace AcManager.Pages.Drive {
 
         public bool executeCommand(string command) {
             if (command.IsAnyUrl()) {
-                using (GameWrapper.SetPropertiesCallback(p => p.SetAdditional(new LiveServiceMark("Generic")))) {
-                    ArgumentsHandler.ProcessArguments(new[] { command }, true).Ignore();
-                }
+                Sync(() => {
+                    using (GameWrapper.SetPropertiesCallback(p => p.SetAdditional(new LiveServiceMark("Generic")))) {
+                        ArgumentsHandler.ProcessArguments(new[] { command }, true).Ignore();
+                    }
+                });
                 return true;
             }
             return false;

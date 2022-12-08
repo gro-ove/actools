@@ -781,7 +781,7 @@
       </TextBlock>
     </mui:TitleLink>
     <!-- ReSharper disable once Xaml.PathError -->
-    <mui:TitleLink GroupKey="workshop" Source="/Pages/Workshop/WorkshopContentCategories.xaml?Content=cars&amp;Category=car-brands&amp;SearchBy=carBrand">
+    <!--<mui:TitleLink GroupKey="workshop" Source="/Pages/Workshop/WorkshopContentCategories.xaml?Content=cars&amp;Category=car-brands&amp;SearchBy=carBrand">
       <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Workshop}, Converter={StaticResource ToUpperConverter}}">
         <TextBlock.ContextMenu>
           <ContextMenu>
@@ -810,7 +810,7 @@
           </ContextMenu>
         </TextBlock.ContextMenu>
       </TextBlock>
-    </mui:TitleLink>
+    </mui:TitleLink>-->
     <mui:TitleLink GroupKey="content" Source="/Pages/Lists/CarsListPage.xaml">
       <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Content}, Converter={StaticResource ToUpperConverter}}" Drop="OnContentTitleLinkDrop"
           AllowDrop="True" Background="Transparent" Margin="0 -4" Padding="0 4">

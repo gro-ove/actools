@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.AcPlugins;
+using AcManager.Tools.AcPlugins.CspCommands;
 using AcManager.Tools.AcPlugins.Extras;
 using AcManager.Tools.AcPlugins.Messages;
 using AcManager.Tools.Objects;
@@ -182,7 +183,7 @@ namespace AcManager.Tools.ServerPlugins {
         }
 
         public override void OnChatMessage(MsgChat msg) {
-            if (msg.Message.StartsWith("\t\t\t\t$CSP0:")) return;
+            if (CspCommandsUtils.IsMessage(msg.Message)) return;
             ActionExtension.InvokeInMainThreadAsync(() => Chat.ChatMessages.Add(new ChatMessage(_leaderboard.GetDetails(msg.CarId), msg)));
             _logFn(ServerPresetObject.LogMessageType.Debug, $"Chat message: {msg.Message}");
         }

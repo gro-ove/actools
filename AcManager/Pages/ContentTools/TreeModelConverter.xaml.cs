@@ -48,10 +48,19 @@ SPECULAR=1.0
 SUBSCATTERING=1.0
 REFLECTIVITY=1.0
 BRIGHTNESS=1.0
+USE_AO_CHANNEL=0
 
 [NORMALS]
 BOOST=0.9
-SPHERE=1.0";
+SPHERE=1.0
+
+[LEAVES]
+MULT=20.0
+OFFSET=0.0
+
+[FAKE_SHADOW]
+SIZE=1.0
+OPACITY=1.0";
 
                 try {
                     if (File.Exists(destination)) {
@@ -59,7 +68,7 @@ SPHERE=1.0";
                             var manifest = zip.GetEntry(@"tree.ini")?.Open().ReadAsStringAndDispose();
                             if (manifest != null) {
                                 var cfg = IniFile.Parse(manifest);
-                                foreach (var s in cfg.Keys.ApartFrom(@"SHADING", @"NORMALS").ToList()) {
+                                foreach (var s in cfg.Keys.ApartFrom(@"SHADING", @"NORMALS", @"LEAVES", @"FAKE_SHADOW").ToList()) {
                                     cfg.Remove(s);
                                 }
                                 TreeParams = cfg.ToString();

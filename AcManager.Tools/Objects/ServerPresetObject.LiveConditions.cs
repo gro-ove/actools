@@ -86,7 +86,12 @@ weather.weatherRainChance={CmPluginLiveConditionsParams.WeatherRainChance.ToInva
 weather.weatherThunderChance={CmPluginLiveConditionsParams.WeatherThunderChance.ToInvariantString()}
 weather.trackGripStartingValue={CmPluginLiveConditionsParams.TrackGripStartingValue.ToInvariantString()}
 weather.trackGripIncreasePerLap={CmPluginLiveConditionsParams.TrackGripIncreasePerLap.ToInvariantString()}
-weather.trackGripTransfer={CmPluginLiveConditionsParams.TrackGripTransfer.ToInvariantString()}";
+weather.trackGripTransfer={CmPluginLiveConditionsParams.TrackGripTransfer.ToInvariantString()}
+weather.rainTimeMultiplier={CmPluginLiveConditionsParams.RainTimeMultiplier.ToInvariantString()}
+weather.rainWetnessDecreaseTime={CmPluginLiveConditionsParams.RainWetnessDecreaseTime.ToInvariantString()}
+weather.rainWetnessIncreaseTime={CmPluginLiveConditionsParams.RainWetnessIncreaseTime.ToInvariantString()}
+weather.rainWaterDecreaseTime={CmPluginLiveConditionsParams.RainWaterDecreaseTime.ToInvariantString()}
+weather.rainWaterIncreaseTime={CmPluginLiveConditionsParams.RainWaterIncreaseTime.ToInvariantString()}";
         }
 
         private AsyncCommand _SaveExternalPluginConfigCommand;
