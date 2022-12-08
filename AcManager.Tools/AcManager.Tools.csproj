@@ -717,7 +717,6 @@
     <Compile Include="ServerPlugins\CmServerPlugin.cs" />
     <Compile Include="ServerPlugins\DynamicConditionsV1ServerPlugin.cs" />
     <Compile Include="ServerPlugins\DynamicConditionsV2ServerPlugin.cs" />
-    <Compile Include="ServerPlugins\HandshakePlugin.cs" />
     <Compile Include="ServerPlugins\LiveConditionsServerPlugin.cs" />
     <Compile Include="ServerPlugins\ServerGuidsStorage.cs" />
     <Compile Include="SharedMemory\AcFlagType.cs" />
