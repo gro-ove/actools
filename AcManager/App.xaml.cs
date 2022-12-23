@@ -201,12 +201,25 @@ namespace AcManager {
 
         private AppHibernator _hibernator;
 
-        private App() {
-            if (AppArguments.GetBool(AppFlag.IgnoreHttps)) {
-                ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+        private static void TryTls13() {
+            try {
+                ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) => true;
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3
+                        | (SecurityProtocolType)12288
+                        | SecurityProtocolType.Tls12
+                        | SecurityProtocolType.Tls11
+                        | SecurityProtocolType.Tls;
+            } catch (Exception) {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3
+                        | SecurityProtocolType.Tls12
+                        | SecurityProtocolType.Tls11
+                        | SecurityProtocolType.Tls;
             }
+        }
 
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+        private App() {
+            TryTls13();
             AppArguments.Set(AppFlag.SyncNavigation, ref ModernFrame.OptionUseSyncNavigation);
             AppArguments.Set(AppFlag.DisableTransitionAnimation, ref ModernFrame.OptionDisableTransitionAnimation);
             AppArguments.Set(AppFlag.RecentlyClosedQueueSize, ref LinkGroupFilterable.OptionRecentlyClosedQueueSize);
