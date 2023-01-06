@@ -12,6 +12,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
+using Microsoft.Win32;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsDrive {
@@ -39,6 +40,26 @@ namespace AcManager.Pages.Settings {
                 }
             }
 
+            private static bool TryDisableAdminCompatibilitySettings(string acLauncher) {
+                FileUtils.TryToDelete(acLauncher + ".config");
+
+                var needsRemoval = false;
+                try {
+                    using (var stateKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers")) {
+                        var value = stateKey?.GetValue(acLauncher)?.ToString();
+                        if (value?.Contains("RUNASADMIN") == true) {
+                            needsRemoval = true;
+                            stateKey.SetValue(acLauncher, "");
+                        }
+                    }
+                } catch (UnauthorizedAccessException) {
+                    return !needsRemoval;
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+                return true;
+            }
+
             private DelegateCommand _switchToSteamStarterCommand;
 
             public DelegateCommand SwitchToSteamStarterCommand => _switchToSteamStarterCommand ?? (_switchToSteamStarterCommand = new DelegateCommand(() => {
@@ -56,6 +77,10 @@ namespace AcManager.Pages.Settings {
                         }
                     }
                     File.Copy(MainExecutingFile.Location, acLauncher, true);
+                    if (!TryDisableAdminCompatibilitySettings(acLauncher)) {
+                        NonfatalError.Notify("Failed to move Content Manager executable", "First, disable “Run this program as administrator” compatibility option of original Assetto Corsa launcher.");
+                        return;
+                    }
                     ProcessExtension.Start(acLauncher, new[] { @"--restart", @"--move-app=" + MainExecutingFile.Location });
                     Environment.Exit(0);
                 } catch (Exception e) {

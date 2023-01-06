@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Threading;
 using JetBrains.Annotations;
 
 namespace AcTools.WheelAngles.Implementations {
@@ -32,15 +29,8 @@ namespace AcTools.WheelAngles.Implementations {
             return SetValue(appliedValue);
         }
 
-        private static IntPtr GetHandle() {
-            return (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(() => {
-                var mainWindow = Application.Current?.MainWindow;
-                return mainWindow == null ? IntPtr.Zero : new WindowInteropHelper(mainWindow).Handle;
-            });
-        }
-
         private static bool SetValue(int value) {
-            var handle = GetHandle();
+            var handle = GetMainWindowHandle();
             if (handle == IntPtr.Zero) {
                 AcToolsLogging.Write("Main window not found, cancel");
                 return false;

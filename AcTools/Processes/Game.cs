@@ -99,6 +99,8 @@ namespace AcTools.Processes {
             if (_busy) return null;
             _busy = true;
 
+            AcToolsLogging.Write("Starting AC: " + starter);
+            AcToolsLogging.Write("  Debug mode: " + OptionDebugMode);
             if (OptionDebugMode) {
                 progress?.Report(ProgressState.Waiting);
                 await Task.Delay(500, cancellation);
@@ -126,10 +128,14 @@ namespace AcTools.Processes {
 
                 while (true) {
                     progress?.Report(ProgressState.Launching);
+                    AcToolsLogging.Write("  Starting: " + starter);
                     await starter.RunAsync(cancellation);
+                    AcToolsLogging.Write("  Started: " + starter);
                     if (cancellation.IsCancellationRequested) return null;
 
+                    AcToolsLogging.Write("  Waiting: " + starter);
                     var process = await starter.WaitUntilGameAsync(cancellation);
+                    AcToolsLogging.Write("  Waited: " + starter);
                     await Task.Run(() => properties.SetGame(process), cancellation);
                     if (cancellation.IsCancellationRequested) return null;
 

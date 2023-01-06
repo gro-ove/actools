@@ -163,16 +163,24 @@ namespace AcTools.Utils.Helpers {
             try {
                 var tcs = new TaskCompletionSource<object>();
                 process.EnableRaisingEvents = true;
-                process.Exited += (sender, args) => tcs.TrySetResult(null);
+                AcToolsLogging.Write($"Waiting for exit: “{process.StartInfo.FileName}”");
+                process.Exited += (sender, args) => {
+                    AcToolsLogging.Write($"Process “{process.StartInfo.FileName}” has finished");
+                    tcs.TrySetResult(null);
+                };
                 if (cancellationToken != default) {
-                    cancellationToken.Register(() => tcs.TrySetCanceled());
+                    cancellationToken.Register(() => {
+                        AcToolsLogging.Write($"Process “{process.StartInfo.FileName}” run cancelled");
+                        tcs.TrySetCanceled();
+                    });
                 }
                 if (process.HasExitedSafe()) {
+                    AcToolsLogging.Write($"Process “{process.StartInfo.FileName}” has already finished (that was quick)");
                     tcs.TrySetResult(null);
                 }
                 return tcs.Task;
             } catch (Exception e) {
-                AcToolsLogging.Write(e);
+                AcToolsLogging.Write($"Couldn’t properly wait for exit: “{process.StartInfo.FileName}”, {e}");
                 return WaitForExitAsyncFallback(process, cancellationToken);
             }
         }

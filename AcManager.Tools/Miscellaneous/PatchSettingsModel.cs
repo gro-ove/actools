@@ -380,8 +380,8 @@ namespace AcManager.Tools.Miscellaneous {
             });
             Mode = Configs?.Count > 0 ? PatchMode.EverythingIsFine : PatchMode.NoConfigs;
 
-            var configPages = Configs.Select(x =>
-                    Pages.FirstOrDefault(y => y.Config == x) ?? new PatchPage(x));
+            var configPages = Configs?.Select(x =>
+                    Pages.FirstOrDefault(y => y.Config == x) ?? new PatchPage(x)) ?? new PatchPage[0];
             Pages.ReplaceEverythingBy(PatchHelper.OptionPatchSupport ? BasePages.Concat(configPages) : configPages);
 
             SelectedPage = Pages.GetByIdOrDefault(selectedPageId) ?? Pages.FirstOrDefault();

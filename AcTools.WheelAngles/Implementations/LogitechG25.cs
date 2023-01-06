@@ -309,7 +309,7 @@ namespace AcTools.WheelAngles.Implementations {
             }.Distinct().Where(Directory.Exists).ToList();
 
             var lgHub = programFiles
-                    .SelectMany(x => CombineWith(x, Path.Combine("LGHUB", "sdk_legacy_steering_wheel_x86.dll"))).FirstOrDefault(File.Exists);
+                    .SelectMany(x => CombineWith(x, Path.Combine("LGHUB", "sdks", "sdk_legacy_steering_wheel_x86.dll"))).FirstOrDefault(File.Exists);
             if (lgHub != null) {
                 return lgHub;
             }

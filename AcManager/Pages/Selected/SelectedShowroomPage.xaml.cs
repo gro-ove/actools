@@ -65,7 +65,8 @@ namespace AcManager.Pages.Selected {
         private const string PreviewSphereId = "__sphere";
 
         public static void RemovePreviewSphere() {
-            var sphereDirectory = CarsManager.Instance.Directories.GetLocation(PreviewSphereId, true);
+            var sphereDirectory = CarsManager.Instance.Directories?.GetLocation(PreviewSphereId, true);
+            if (sphereDirectory == null) return;
             try {
                 if (Directory.Exists(sphereDirectory)) {
                     Directory.Delete(sphereDirectory, true);
@@ -76,7 +77,8 @@ namespace AcManager.Pages.Selected {
         }
 
         public static void UpdatePreview(ShowroomObject showroom, bool keepSphere) {
-            var sphereDirectory = CarsManager.Instance.Directories.GetLocation(PreviewSphereId, true);
+            var sphereDirectory = CarsManager.Instance.Directories?.GetLocation(PreviewSphereId, true);
+            if (sphereDirectory == null) return;
 
             try {
                 using (CarsManager.Instance.IgnoreChanges()) {

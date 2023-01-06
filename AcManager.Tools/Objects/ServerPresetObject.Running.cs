@@ -860,6 +860,12 @@ namespace AcManager.Tools.Objects {
                         }
                     }
                     _pluginManager.AddPlugin(CmPlugin = new CmServerPlugin(log, Capacity));
+                    _pluginManager.AddPlugin(new HandshakePlugin {
+                        LogFn = x => {
+                            Logging.Debug("Handshake message: " + x);
+                            log(LogMessageType.Debug, x);
+                        }
+                    });
                     if (CmPluginLiveConditions) {
                         var track = TrackId == null ? null : await TracksManager.Instance.GetLayoutByIdAsync(TrackId, TrackLayoutId);
                         _pluginManager.AddPlugin(new LiveConditionsServerPlugin(track, RequiredCspVersion >= 1643, CmPluginLiveConditionsParams.Clone()));

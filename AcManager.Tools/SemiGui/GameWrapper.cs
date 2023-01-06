@@ -356,7 +356,8 @@ namespace AcManager.Tools.SemiGui {
                                     : properties.BasicProperties?.TrackId + @"/" + properties.BasicProperties?.TrackConfigurationId;
                             using (var cancellation = new CancellationTokenSource()) {
                                 ui.OnProgress("Loading data for Custom Shaders Patch…", AsyncProgressEntry.Indetermitate, () => { cancellation.Cancel(); });
-                                var carName = properties.BasicProperties?.CarId == null ? null : CarsManager.Instance.GetById(properties.BasicProperties?.CarId);
+                                var carName = properties.BasicProperties?.CarId == null ? null 
+                                        : CarsManager.Instance.GetById(properties.BasicProperties?.CarId ?? string.Empty);
                                 var trackName = trackId == null ? null : TracksManager.Instance.GetById(trackId)?.Name ?? trackId;
                                 await PatchTracksDataUpdater.Instance.TriggerAutoLoadAsync(trackId,
                                         PatchSubProgress($"Config for track {trackName}"), cancellation.Token);

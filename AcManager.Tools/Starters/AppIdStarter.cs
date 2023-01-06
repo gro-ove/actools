@@ -25,6 +25,13 @@ namespace AcManager.Tools.Starters {
                 File.WriteAllText(appIdFilename, CommonAcConsts.AppId);
             }
         }
+        
+        protected override string AcsName {
+            get {
+                var acRoot = AcRootDirectory.Instance.Value;
+                return acRoot != null && File.Exists(Path.Combine(acRoot, "acs_pro.exe")) ? @"acs_pro.exe" : base.AcsName;
+            }
+        }
 
         public override void Run() {
             SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false);
