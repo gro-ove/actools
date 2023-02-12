@@ -611,7 +611,7 @@ namespace AcTools.Render.Base {
             DisposeHelper.Dispose(ref _depthView);
 
             if (!_sharedHolder) {
-                DisposeHelper.Dispose(ref _deviceContextHolder);
+                // DisposeHelper.Dispose(ref _deviceContextHolder);
             }
 
             GCHelper.CleanUp();

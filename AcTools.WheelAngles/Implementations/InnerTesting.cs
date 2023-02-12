@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 namespace AcTools.WheelAngles.Implementations {
     [UsedImplicitly]
-    internal abstract class InnerTesting : IWheelSteerLockSetter {
+    internal class InnerTesting : IWheelSteerLockSetter {
         private static int[] KnownDeviceIDs = {
             0x1, 0x4, 0x5, 0x6, 0x7, 0x20, 0x11, 0xE03,
             0x112, 0x280B, 0x1102, 0x280A, 0x50C

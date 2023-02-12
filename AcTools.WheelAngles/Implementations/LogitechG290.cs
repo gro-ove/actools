@@ -11,8 +11,7 @@ namespace AcTools.WheelAngles.Implementations {
         }
 
         protected override string GetRegistryPath() {
-            // TODO: Check
-            return @"Software\Logitech\Gaming Software\GlobalDeviceSettings\G920";
+            return null;
         }
 
         public override WheelOptionsBase GetOptions() {

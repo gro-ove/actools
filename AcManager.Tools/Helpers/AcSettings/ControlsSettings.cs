@@ -478,7 +478,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                         var device = devices[i];
                         if (device == null) continue;
 
-                        if (device.Information.ProductName.Contains(@"FANATEC CSL Elite")) {
+                        if (device.Information.ProductName.Contains(@"FANATEC CSL Elite")
+                            || device.Information.ProductName.Contains(@"FANATEC Podium Wheel Base DD")) {
                             if (SettingsHolder.Drive.SameControllersKeepFirst) {
                                 newDevices.RemoveAll(y => y.Same(device.Information));
                             } else if (newDevices.Any(y => y.Same(device.Information))) {

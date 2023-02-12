@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 
 namespace AcTools.WheelAngles.Implementations {
     [UsedImplicitly]
-    internal class LogitechG29 : LogitechG25 {
+    internal abstract class LogitechG29 : LogitechG25 {
         public override string ControllerName => "Logitech G29";
 
         [NotNull]
@@ -28,8 +28,7 @@ namespace AcTools.WheelAngles.Implementations {
         }
 
         protected override string GetRegistryPath() {
-            // TODO: Check
-            return @"Software\Logitech\Gaming Software\GlobalDeviceSettings\G29";
+            return null;
         }
 
         public override bool Apply(int steerLock, bool isReset, out int appliedValue) {
@@ -132,8 +131,9 @@ namespace AcTools.WheelAngles.Implementations {
 
         private static void SetWheelRange(int value) {
             for (var i = 0; i < 4; i++) {
+                var gotOldValue = LogiGetOperatingRange(i, out var oldValue);
                 var result = LogiSetOperatingRange(i, value);
-                AcToolsLogging.Write($"Set operating range for #{i}: {result}");
+                AcToolsLogging.Write($"Set operating range {value} for #{i}: {result} (old value: {oldValue}; {gotOldValue})");
             }
 
             Apply();

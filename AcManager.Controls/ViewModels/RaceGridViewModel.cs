@@ -337,6 +337,7 @@ namespace AcManager.Controls.ViewModels {
                             var aiLevel = data.AiLevels?.ArrayElementAtOrDefault(i);
                             var aiAggression = data.AiAggressions?.ArrayElementAtOrDefault(i);
                             var carSkinId = data.SkinIds?.ArrayElementAtOrDefault(i);
+                        
                             return new RaceGridEntry(x) {
                                 CandidatePriority = data.CandidatePriorities?.ElementAtOr(i, 1) ?? 1,
                                 AiLevel = aiLevel >= 0 ? aiLevel : null,

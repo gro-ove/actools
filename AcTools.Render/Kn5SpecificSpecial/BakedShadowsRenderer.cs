@@ -381,7 +381,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DisposeHelper.Dispose(ref _shadowBuffer);
             DisposeHelper.Dispose(ref _rasterizerStateFrontCull);
             DisposeHelper.Dispose(ref _rasterizerStateBackCull);
-            CarNode.Dispose();
+            // CarNode.Dispose();
             Scene.Dispose();
             base.DisposeOverride();
         }
