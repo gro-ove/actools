@@ -23,7 +23,7 @@ namespace AcManager.CustomShowroom {
         private CmPreviewsFormWrapper(CarObject car, DarkKn5ObjectRenderer renderer, string skinId, string presetFilename)
                 : base(renderer, "Previews Params", CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight) {
             _tools = new CmPreviewsTools(renderer, car, skinId, presetFilename);
-            _helper = new AttachedHelper(this, _tools);
+            _helper = new AttachedHelper(this, _tools, limitHeight: false);
         }
 
         public void SetToUpdate([NotNull] IReadOnlyList<ToUpdatePreview> list) {

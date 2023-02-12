@@ -207,7 +207,7 @@ namespace AcManager.CustomShowroom {
                 var pos = new Point(child.DeviceLeft, child.DeviceTop);
                 for (var i = 0; i < StickyLocationsCount; i++) {
                     var location = GetStickyLocation(i, child.DeviceWidth, child.DeviceHeight);
-                    if (location.HasValue && (pos - location.Value).Length < 5) {
+                    if (location.HasValue && (pos - location.Value).Length < 10 * child.DeviceScaleX) {
                         _stickyLocation.Value = i;
                         UpdatePosition(true);
                         return;
