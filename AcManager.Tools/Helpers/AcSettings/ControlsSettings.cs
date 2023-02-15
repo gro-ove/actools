@@ -1069,6 +1069,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             set => Apply(value, ref _controllerDeviceIndex, () => {
                 OnPropertyChanged(nameof(DisplayControllerDeviceIndex));
                 OnPropertyChanged(nameof(ControllerUseDualSense));
+                OnPropertyChanged(nameof(ControllerUseDualShock));
             });
         }
 
@@ -1078,8 +1079,13 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         public bool ControllerUseDualSense {
-            get => _controllerDeviceIndex > 3;
+            get => _controllerDeviceIndex > 3 && _controllerDeviceIndex <= 7;
             set => ControllerDeviceIndex = _controllerDeviceIndex % 4 + (value ? 4 : 0);
+        }
+
+        public bool ControllerUseDualShock {
+            get => _controllerDeviceIndex > 7;
+            set => ControllerDeviceIndex = _controllerDeviceIndex % 4 + (value ? 8 : 0);
         }
 
         private double _controllerSteeringGamma;

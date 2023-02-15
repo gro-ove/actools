@@ -1043,7 +1043,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                 if (AoDebug) {
                     DeviceContext.Rasterizer.SetViewports(InnerBuffer.Viewport);
-                    if (_aoBuffer?.Format == Format.R8_UNorm) {
+                    if (_aoBuffer.Format == Format.R8_UNorm) {
                         DeviceContextHolder.GetHelper<CopyHelper>().DrawFromRed(DeviceContextHolder, _aoBuffer.View, InnerBuffer.TargetView);
                     } else {
                         DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _aoBuffer.View, InnerBuffer.TargetView);

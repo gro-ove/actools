@@ -19,13 +19,17 @@
               mui:BetterTextBox.Maximum="4" Content="Gamepad ID" />
           <Slider Minimum="1" Maximum="4" TickFrequency="1" TickPlacement="BottomRight" Value="{Binding Controls.DisplayControllerDeviceIndex}" />
         </DockPanel>
+        <CheckBox IsChecked="{Binding Controls.ControllerUseDualShock}" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureDualShockSupport}"
+            ToolTip="Requires CSP 0.1.80">
+          <Label Content="Use PlayStation 4 DualShock gamepad" />
+        </CheckBox>
         <CheckBox IsChecked="{Binding Controls.ControllerUseDualSense}" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureDualSenseSupport}"
             ToolTip="Requires CSP 0.1.79">
           <Label Content="Use PlayStation 5 DualSense gamepad" />
         </CheckBox>
-        <c:MessageBlock Visibility="{Binding Controls.ControllerUseDualSense, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <c:MessageBlock c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureDualSenseSupport}">
           <mui:BbCodeBlock Style="{StaticResource Small}"
-              Text="With CSP active, use built-in Controller Tweaks app to change buttons live with DualSense gamepads (or any other gamepads)." />
+              Text="With CSP active, use built-in Controller Tweaks app to change buttons live with DualShock or DualSense gamepads (or any other gamepads)." />
         </c:MessageBlock>
       </StackPanel>
 

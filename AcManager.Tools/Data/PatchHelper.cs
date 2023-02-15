@@ -42,6 +42,7 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureCustomRenderingModes = "CUSTOM_RENDERING_MODES";
         public static readonly string FeatureJoypadIndexAware = "JOYPAD_INDEX_AWARE";
         public static readonly string FeatureHasShowroomMode = "RACEINI_SETUP_SUPPORT";
+        public static readonly string FeatureDualShockSupport = "PS4_DUALSHOCK_SUPPORT";
         public static readonly string FeatureDualSenseSupport = "PS5_DUALSENSE_SUPPORT";
         public static readonly string FeatureCarPreviews = "CAR_PREVIEWS";
 

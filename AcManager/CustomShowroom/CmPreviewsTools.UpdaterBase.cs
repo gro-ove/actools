@@ -99,6 +99,16 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
+            protected void ReportFailedSkin(string errorMessage, Exception exception) {
+                if (_entryIndex >= Items.Count) return;
+                RegisterError(errorMessage, exception, Items[_entryIndex]);
+                _shotSkins++;
+                if (++_skinIndex == Items[_entryIndex].Skins.Count) {
+                    _skinIndex = 0;
+                    if (++_entryIndex == Items.Count) _finished = true;
+                }
+            }
+
             protected async Task<string> GetDestinationAsync(CarSkinObject skin, double subprogress) {
                 var ret = _destinationOverrideCallback?.Invoke(skin) ?? Path.Combine(skin.Location, Options.PreviewName);
                 if (_destinationOverrideCallback == null && SettingsHolder.CustomShowroom.PreviewsRecycleOld && File.Exists(ret)) {
@@ -123,10 +133,11 @@ namespace AcManager.CustomShowroom {
                 _cancellationToken = cancellation;
             }
 
-            protected void RegisterError(Exception e, ToUpdateSolved entry) {
+            protected void RegisterError([CanBeNull] string errorMessage, [CanBeNull] Exception exception, ToUpdateSolved entry) {
                 if (_errors.All(x => x.ToUpdate != entry.Source)) {
-                    Logging.Warning(e);
-                    _errors.Add(new UpdatePreviewError(entry.Source, e.Message, null));
+                    var errorData = errorMessage ?? exception?.ToString() ?? "Unknown error";
+                    Logging.Warning(errorData);
+                    _errors.Add(new UpdatePreviewError(entry.Source, errorData, null));
                 }
             }
 

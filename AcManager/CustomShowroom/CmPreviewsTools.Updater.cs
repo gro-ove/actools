@@ -7,6 +7,7 @@ using AcManager.Tools.Objects;
 using AcTools.Render.Kn5SpecificForwardDark;
 using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
+using OxyPlot.Reporting;
 
 namespace AcManager.CustomShowroom {
     public partial class CmPreviewsTools {
@@ -57,10 +58,11 @@ namespace AcManager.CustomShowroom {
                                 await _updater.ShotAsync(currentCar.Id, currentSkin.Id, filename, currentCar.AcdData,
                                         GetInformation(currentCar, currentSkin, PresetName, checksum), () => PreviewReadyCallback(currentSkin),
                                         cancellation: CancellationToken);
-                                ReportShotSkin();
                             } catch (Exception e) {
-                                RegisterError(e, entry);
+                                ReportFailedSkin(null, e);
+                                continue;
                             }
+                            ReportShotSkin();
                         }
                     }
                 } finally {

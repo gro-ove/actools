@@ -13,12 +13,11 @@ using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.CustomShowroom {
     public partial class CmPreviewsTools {
-        public static int OptionBatchSize = 10;
+        public static int OptionBatchSize = 20;
 
         private class AcUpdater : UpdaterBase {
             public AcUpdater([NotNull] IReadOnlyList<ToUpdatePreview> entries, [NotNull] DarkPreviewsOptions options, [CanBeNull] string presetName,
@@ -42,8 +41,12 @@ namespace AcManager.CustomShowroom {
 
             protected override async Task RunAsyncOverride() {
                 progressReport?.Report(new AsyncProgressEntry("Launching Assetto Corsa in background…", double.Epsilon));
-                
+
                 var carIds = Items.Select(x => x.Car.Id).ToArray();
+                var totalSkins = Items.Sum(x => x.Skins.Count);
+                var readySkins = 0;
+                var multiCarRun = Items.Count > 1;
+
                 CleanUpStates(carIds);
                 using (new ActionAsDisposable(() => CleanUpStates(carIds))) {
                     var extension = Path.GetExtension(Options.PreviewName);
@@ -72,7 +75,6 @@ namespace AcManager.CustomShowroom {
                                 });
                     }
 
-
                     foreach (var car in Items) {
                         foreach (var skins in SplitIntoBatches(car.Skins, OptionBatchSize, (int)(OptionBatchSize * 1.5))) {
                             var currentRun = ++runIndex[0];
@@ -82,7 +84,7 @@ namespace AcManager.CustomShowroom {
                                     FilesStorage.Instance.GetTemporaryFilename("Previews", $"{x.Item1}__{x.Item2}{extension}")).ToList();
                             await Task.Run(() => temporaryDestinations.ForEach(x => FileUtils.TryToDelete(x)));
                             if (Cancel()) return;
-                            if (acError != null) {
+                            if (acError != null && !multiCarRun) {
                                 throw new Exception(acError.Or(timeouted ? "Assetto Corsa took too long" : "Assetto Corsa closed down unexpectedly"));
                             }
 
@@ -110,6 +112,10 @@ namespace AcManager.CustomShowroom {
                                             shutdownStopwatch.Restart();
                                             PreviewReadyCallback(skins[expectedIndex]);
                                             ReportShotSkin();
+
+                                            ++readySkins;
+                                            progressReport?.Report(new AsyncProgressEntry("Waiting for Assetto Corsa to make shots…", readySkins, totalSkins));
+
                                             if (++expectedIndex == temporaryDestinations.Count) {
                                                 ++currentRun;
                                                 break;
@@ -120,7 +126,17 @@ namespace AcManager.CustomShowroom {
                                 }))()
                             }.WhenAll();
                             if (Cancel()) return;
-                            if (acError != null) throw new Exception(acError.Or("Assetto Corsa closed down unexpectedly"));
+
+                            if (acError != null) {
+                                var errorMessage = acError.Or("Assetto Corsa closed down unexpectedly");
+                                if (multiCarRun) {
+                                    for (var i = expectedIndex; i < items.Count; ++i) {
+                                        ReportFailedSkin(errorMessage, null);
+                                    }
+                                } else {
+                                    throw new Exception(errorMessage);
+                                }
+                            }
                         }
                     }
                 }
