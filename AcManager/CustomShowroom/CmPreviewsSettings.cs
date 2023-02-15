@@ -210,6 +210,13 @@ namespace AcManager.CustomShowroom {
                                 .ToPreviewsOptions(true);
                     }
 
+                    var dataFilename = FilesStorage.Instance.GetContentFile(ContentCategory.BuiltInPresets, 
+                            CmPreviewsSettingsValues.DefaultPresetableKeyValue, Path.GetFileName(presetFilename));
+                    if (dataFilename.Exists) {
+                        return (SaveHelper<SaveableData>.LoadSerialized(File.ReadAllText(dataFilename.Filename)) ?? new SaveableData())
+                                .ToPreviewsOptions(true);
+                    }
+
                     warningMessage = $"File “{presetFilename}” not found.";
                 } else {
                     try {

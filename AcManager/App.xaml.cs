@@ -66,6 +66,7 @@ using AcTools.Kn5Tools;
 //#endif
 using AcTools.NeuralTyres;
 using AcTools.Processes;
+using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -546,6 +547,11 @@ namespace AcManager {
             };
 
             AppArguments.Set(AppFlag.UseVlcForAnimatedBackground, ref DynamicBackground.OptionUseVlc);
+            AppArguments.Set(AppFlag.CspPreviewsBatchSize, ref CmPreviewsTools.OptionBatchSize);
+            AppArguments.Set(AppFlag.CspPreviewsRunVisible, ref DarkPreviewsAcUpdater.OptionRunVisible);
+            AppArguments.Set(AppFlag.CspPreviewsKeepPositions, ref DarkPreviewsAcUpdater.OptionKeepPositions);
+            SlimDX.Configuration.DetectDoubleDispose = true;
+            SlimDX.Configuration.EnableObjectTracking = true;
             Filter.OptionSimpleMatching = true;
 
             GameResultExtension.RegisterNameProvider(new GameSessionNameProvider());

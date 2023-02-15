@@ -1,7 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsCustomShowroom" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:t="http://acstuff.ru/app/tools"
+    mc:Ignorable="d"
     FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance set:SettingsCustomShowroom+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -26,6 +28,11 @@
 
         <CheckBox IsChecked="{Binding Holder.CustomShowroomPreviews}">
           <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_UseCustomShowroomForPreviews}" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding Holder.CspPreviews}" IsEnabled="{Binding Holder.CustomShowroomPreviews}"
+            c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureCarPreviews}">
+          <Label Content="Use CSP for final previews render" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Holder.DetailedExifForPreviews}">

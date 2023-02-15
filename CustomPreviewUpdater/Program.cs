@@ -175,7 +175,7 @@ namespace CustomPreviewUpdater {
 
             Console.WriteLine($"showroom={options.Showroom}");
 
-            using (var thing = new DarkPreviewsUpdater(acRoot, previewsOptions)) {
+            using (var thing = DarkPreviewsUpdaterFactory.Create(false, acRoot, previewsOptions)) {
                 foreach (var carId in Directory.GetDirectories(AcPaths.GetCarsDirectory(acRoot))
                                             .Select(Path.GetFileName).Where(x => filter.Test(x))) {
                     Console.WriteLine($"  {carId}...");

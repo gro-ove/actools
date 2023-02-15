@@ -413,7 +413,7 @@ namespace AcManager.Pages.ContentTools {
                 var cancellation = waiting.CancellationToken;
 
                 await Task.Run(() => {
-                    var checksum = CmPreviewsTools.GetChecksum(presetFilename);
+                    var checksum = CmPreviewsTools.GetChecksum(SettingsHolder.CustomShowroom.CspPreviewsReady, presetFilename);
                     Logging.Debug($"Checksum: {checksum}");
 
                     for (var i = 0; i < list.Count; i++) {

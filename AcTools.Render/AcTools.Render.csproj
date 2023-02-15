@@ -146,7 +146,10 @@
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.Properties.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.SplitShot.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.UserInput.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkPreviewsAcUpdater.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkPreviewsOptions.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkPreviewsUpdaterFactory.cs" />
+    <Compile Include="Kn5SpecificForwardDark\IDarkPreviewsUpdater.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkAreaLightBase.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkLtcPlaneLight.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkAreaTubeLight.cs" />

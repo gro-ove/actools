@@ -19,7 +19,7 @@ using SlimDX;
 using ThreadPool = AcTools.Render.Base.Utils.ThreadPool;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
-    public class DarkPreviewsUpdater : IDisposable {
+    public class DarkPreviewsUpdater : IDarkPreviewsUpdater {
         private readonly string _acRoot;
         private DarkPreviewsOptions _options;
         private readonly bool _existingRenderer;
@@ -29,7 +29,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private ThreadPool _convertationThreadPool;
 
-        public DarkPreviewsUpdater(string acRoot, DarkPreviewsOptions options = null, DarkKn5ObjectRenderer existingRenderer = null) {
+        internal DarkPreviewsUpdater(string acRoot, DarkPreviewsOptions options = null, DarkKn5ObjectRenderer existingRenderer = null) {
             _acRoot = acRoot;
             _options = options ?? new DarkPreviewsOptions();
 
@@ -309,7 +309,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         /// <param name="carData">Car data (provide it only if it’s already loaded, so Updater won’t load it again).</param>
         /// <param name="information">Some lines for EXIF data, optional.</param>
         /// <param name="callback">Callback in sync version? Because, with Delayed Convertation enabled, even sync version is not so sync.</param>
-        public void Shot([NotNull] string carId, [NotNull] string skinId, string destination = null, DataWrapper carData = null, ImageUtils.ImageInformation information = null,
+        public void Shot(string carId, string skinId, string destination = null, DataWrapper carData = null, ImageUtils.ImageInformation information = null,
                 Action callback = null) {
             if (_carId != carId) {
                 if (_renderer == null) {
@@ -336,14 +336,16 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         /// <param name="carData">Car data (provide it only if it’s already loaded, so Updater won’t load it again).</param>
         /// <param name="information">Some lines for EXIF data, optional.</param>
         /// <param name="callback">Callback in Task version? Because, with Delayed Convertation enabled, image might be saved later.</param>
-        public async Task ShotAsync([NotNull] string carId, [NotNull] string skinId, string destination = null, DataWrapper carData = null,
-                ImageUtils.ImageInformation information = null, Action callback = null) {
+        public async Task ShotAsync(string carId, string skinId, string destination = null, DataWrapper carData = null,
+                ImageUtils.ImageInformation information = null, Action callback = null, 
+                Func<bool> shutdownCheck = null, CancellationToken cancellation = default(CancellationToken)) {
             if (_carId != carId) {
                 if (_renderer == null) {
                     _renderer = await Task.Run(() => CreateRenderer(_acRoot, _options, GetCarDescription(carId, carData), skinId)).ConfigureAwait(false);
                 } else {
                     await _renderer.MainSlot.SetCarAsync(GetCarDescription(carId, carData), skinId);
                 }
+                if (cancellation.IsCancellationRequested) return;
                 _carId = carId;
                 UpdateCamera();
             } else {

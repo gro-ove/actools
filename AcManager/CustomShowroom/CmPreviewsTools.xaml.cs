@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -25,7 +24,6 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.CustomShowroom {
@@ -239,12 +237,13 @@ namespace AcManager.CustomShowroom {
                 set => Apply(value, ref _singleSkin);
             }
 
-            private DarkPreviewsUpdater _previewsUpdater;
+            private IDarkPreviewsUpdater _previewsUpdater;
 
             private void PrepareUpdater() {
                 var options = Settings.ToPreviewsOptions();
                 if (_previewsUpdater == null) {
-                    _previewsUpdater = new DarkPreviewsUpdater(AcRootDirectory.Instance.RequireValue, options);
+                    _previewsUpdater = DarkPreviewsUpdaterFactory.Create(SettingsHolder.CustomShowroom.CspPreviewsReady, 
+                            AcRootDirectory.Instance.RequireValue, options);
                 } else {
                     _previewsUpdater.SetOptions(options);
                 }
@@ -266,7 +265,8 @@ namespace AcManager.CustomShowroom {
                     using (var waiting = new WaitingDialog()) {
                         waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Generating image…"));
                         await _previewsUpdater.ShotAsync(car.Id, skin.Id, temporary, car.AcdData,
-                                GetInformation(car, skin, presetName, Settings.ToPreviewsOptions().GetChecksum()));
+                                GetInformation(car, skin, presetName, Settings.ToPreviewsOptions().GetChecksum(SettingsHolder.CustomShowroom.CspPreviewsReady)),
+                                cancellation: waiting.CancellationToken);
 
                         waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Saving…"));
                         await _previewsUpdater.WaitForProcessing();
@@ -341,13 +341,13 @@ namespace AcManager.CustomShowroom {
             return Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(CmPreviewsSettingsValues.DefaultPresetableKeyValue));
         }
 
-        private static ImageUtils.ImageInformation GetInformation(CarObject car, CarSkinObject skin, string presetName, string checksum) {
+        private static ImageUtils.ImageInformation GetInformation([CanBeNull] CarObject car, [CanBeNull] CarSkinObject skin, string presetName, string checksum) {
             var result = new ImageUtils.ImageInformation {
                 Software = $"ContentManager {BuildInformation.AppVersion}",
                 Comment = presetName == null ? $"Settings checksum: {checksum}" : $"Used preset: {presetName} (checksum: {checksum})"
             };
 
-            if (SettingsHolder.CustomShowroom.DetailedExifForPreviews) {
+            if (SettingsHolder.CustomShowroom.DetailedExifForPreviews && car != null && skin != null) {
                 result.Subject = $"{car.DisplayName}";
                 result.Title = $"{car.DisplayName} ({skin.DisplayName})";
                 result.Tags = car.Tags.ToArray();
@@ -357,260 +357,12 @@ namespace AcManager.CustomShowroom {
             return result;
         }
 
-        private class Updater {
-            [NotNull]
-            private readonly IReadOnlyList<ToUpdatePreview> _entries;
-
-            [NotNull]
-            private readonly DarkPreviewsOptions _options;
-
-            [CanBeNull]
-            private readonly string _presetName;
-
-            [NotNull]
-            private readonly DarkPreviewsUpdater _updater;
-
-            private readonly bool _localUpdater;
-            private readonly List<UpdatePreviewError> _errors = new List<UpdatePreviewError>();
-            private DispatcherTimer _dispatcherTimer;
-
-            public Func<CarSkinObject, string> DestinationOverrideCallback;
-            public IProgress<AsyncProgressEntry> Progress;
-            public CancellationToken CancellationToken = default(CancellationToken);
-
-            public Updater([NotNull] IReadOnlyList<ToUpdatePreview> entries, [NotNull] DarkPreviewsOptions options, [CanBeNull] string presetName,
-                    [CanBeNull] DarkPreviewsUpdater updater) {
-                _entries = entries;
-                _options = options;
-                _presetName = presetName;
-
-                if (updater == null) {
-                    _localUpdater = true;
-                    _updater = new DarkPreviewsUpdater(AcRootDirectory.Instance.RequireValue, options);
-                } else {
-                    _updater = updater;
-                    _updater.SetOptions(options);
-                }
-            }
-
-            public async Task<IReadOnlyList<UpdatePreviewError>> Run() {
-                try {
-                    if (_options.Showroom != null && ShowroomsManager.Instance.GetById(_options.Showroom) == null) {
-                        if (_options.Showroom == @"at_previews" && MissingShowroomHelper != null) {
-                            await MissingShowroomHelper.OfferToInstall("Kunos Previews Showroom (AT Previews Special)", "at_previews",
-                                    "http://www.assettocorsa.net/assetto-corsa-v1-5-dev-diary-part-33/");
-                            if (ShowroomsManager.Instance.GetById(_options.Showroom) != null) {
-                                return await RunReady();
-                            }
-                        }
-
-                        throw new InformativeException("Can’t update preview", $"Showroom “{_options.Showroom}” is missing");
-                    }
-
-                    return await RunReady();
-                } catch (Exception e) {
-                    NonfatalError.Notify("Can’t update preview", e);
-                    return null;
-                } finally {
-                    _waiting?.Dispose();
-                    _dispatcherTimer?.Stop();
-                    if (_localUpdater) {
-                        _updater.Dispose();
-                    }
-                }
-            }
-
-            [CanBeNull]
-            private WaitingDialog _waiting;
-
-            private int _approximateSkinsPerCarCars = 1;
-            private int _approximateSkinsPerCarSkins = 10;
-            private Stopwatch _started;
-            private int _shotSkins;
-            private bool _recyclingWarning;
-            private bool _finished;
-            private bool _verySingleMode;
-            private string _checksum;
-
-            private int _i, _j;
-            private CarObject _currentCar;
-            private IReadOnlyList<CarSkinObject> _currentSkins;
-            private CarSkinObject _currentSkin;
-
-            private async Task<IReadOnlyList<UpdatePreviewError>> RunReady() {
-                _checksum = _options.GetChecksum();
-                Logging.Debug(_checksum);
-
-                _finished = false;
-                _i = _j = 0;
-
-                _waiting = Progress != null ? null : new WaitingDialog { CancellationText = "Stop" };
-                var progressReport = Progress ?? _waiting;
-                if (Progress == null) {
-                    CancellationToken = _waiting?.CancellationToken ?? default(CancellationToken);
-                }
-
-                var singleMode = _entries.Count == 1;
-                _verySingleMode = singleMode && _entries[0].Skins?.Count == 1;
-                var recycled = 0;
-
-                if (!_verySingleMode) {
-                    _waiting?.SetImage(null);
-
-                    if (SettingsHolder.CustomShowroom.PreviewsRecycleOld) {
-                        _waiting?.SetMultiline(true);
-                    }
-                }
-
-                var step = 1d / _entries.Count;
-                var postfix = string.Empty;
-
-                _started = Stopwatch.StartNew();
-
-                _dispatcherTimer = new DispatcherTimer(TimeSpan.FromSeconds(0.5), DispatcherPriority.Background, TimerCallback,
-                        Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher);
-                _dispatcherTimer.Start();
-
-                for (_j = 0; _j < _entries.Count; _j++) {
-                    if (Cancel()) return _errors;
-
-                    var entry = _entries[_j];
-                    var progress = step * _j;
-
-                    _currentCar = entry.Car;
-                    _currentSkins = entry.Skins;
-
-                    if (_currentSkins == null) {
-                        progressReport?.Report(new AsyncProgressEntry("Loading skins…" + postfix, _verySingleMode ? 0d : progress));
-                        _waiting?.SetDetails(GetDetails(_j, _currentCar, null, null));
-
-                        await _currentCar.SkinsManager.EnsureLoadedAsync();
-                        if (Cancel()) return _errors;
-
-                        _currentSkins = _currentCar.EnabledOnlySkins.ToList();
-                        UpdateApproximate(_currentSkins.Count);
-                    }
-
-                    var halfstep = step * 0.5 / _currentSkins.Count;
-                    for (_i = 0; _i < _currentSkins.Count; _i++) {
-                        if (Cancel()) return _errors;
-
-                        _currentSkin = _currentSkins[_i];
-                        _waiting?.SetDetails(GetDetails(_j, _currentCar, _currentSkin, _currentSkins.Count - _i));
-
-                        var subprogress = progress + step * (0.1 + 0.8 * _i / _currentSkins.Count);
-                        var filename = DestinationOverrideCallback?.Invoke(_currentSkin) ?? Path.Combine(_currentSkin.Location, _options.PreviewName);
-                        if (DestinationOverrideCallback == null) {
-                            if (SettingsHolder.CustomShowroom.PreviewsRecycleOld && File.Exists(filename)) {
-                                if (++recycled > 5) {
-                                    _recyclingWarning = true;
-                                }
-
-                                progressReport?.Report(new AsyncProgressEntry($"Recycling current preview for {_currentSkin.DisplayName}…" + postfix,
-                                        _verySingleMode ? 0d : subprogress));
-                                await Task.Run(() => FileUtils.Recycle(filename));
-                            }
-                        }
-
-                        progressReport?.Report(new AsyncProgressEntry($"Updating skin {_currentSkin.DisplayName}…" + postfix,
-                                _verySingleMode ? 0d : subprogress + halfstep));
-
-                        try {
-                            await _updater.ShotAsync(_currentCar.Id, _currentSkin.Id, filename, _currentCar.AcdData,
-                                    GetInformation(_currentCar, _currentSkin, _presetName, _checksum), PreviewReadyCallback);
-                            _shotSkins++;
-                        } catch (Exception e) {
-                            if (_errors.All(x => x.ToUpdate != entry)) {
-                                Logging.Warning(e);
-                                _errors.Add(new UpdatePreviewError(entry, e.Message, null));
-                            }
-                        }
-                    }
-                }
-
-                _dispatcherTimer?.Stop();
-                progressReport?.Report(new AsyncProgressEntry("Saving…" + postfix, _verySingleMode ? 0d : 0.999999d));
-                await _updater.WaitForProcessing();
-
-                _finished = true;
-
-                if (_errors.Count > 0) {
-                    NonfatalError.Notify("Can’t update previews:\n"
-                            + _errors.Select(x => @"• " + x.Message.ToSentence()).JoinToString(";" + Environment.NewLine));
-                }
-
-                return _errors;
-            }
-
-            private void PreviewReadyCallback() {
-                if (!_verySingleMode) {
-                    ((Action)UpdatePreviewImage).InvokeInMainThreadAsync();
-                }
-            }
-
-            private void UpdatePreviewImage() {
-                if (!_finished) {
-                    _waiting?.SetImage(Path.Combine(_currentSkin.Location, _options.PreviewName));
-                }
-            }
-
-            private bool Cancel() {
-                if (!CancellationToken.IsCancellationRequested) return false;
-                for (; _j < _entries.Count; _j++) {
-                    _errors.Add(new UpdatePreviewError(_entries[_j], ControlsStrings.Common_Cancelled, null));
-                }
-                return true;
-            }
-
-            private void TimerCallback(object sender, EventArgs args) {
-                if (_currentCar == null || _currentSkins == null || _currentSkin == null) return;
-                _waiting?.SetDetails(GetDetails(_j, _currentCar, _currentSkin, _currentSkins.Count - _i));
-            }
-
-            private void UpdateApproximate(int skinsPerCar) {
-                _approximateSkinsPerCarCars++;
-                _approximateSkinsPerCarSkins += skinsPerCar;
-            }
-
-            private int LeftSkins(int currentEntry) {
-                var skinsPerCar = (double)_approximateSkinsPerCarSkins / _approximateSkinsPerCarCars;
-
-                var result = 0d;
-                for (var k = currentEntry + 1; k < _entries.Count; k++) {
-                    var entry = _entries[k];
-                    result += entry.Skins?.Count ?? skinsPerCar;
-                }
-
-                return result.RoundToInt();
-            }
-
-            private IEnumerable<string> GetDetails(int currentIndex, CarObject car, CarSkinObject skin, int? currentEntrySkinsLeft) {
-                var left = LeftSkins(currentIndex) + (currentEntrySkinsLeft ?? _approximateSkinsPerCarSkins / _approximateSkinsPerCarCars);
-
-                var speed = _shotSkins / _started.Elapsed.TotalMinutes;
-                var remainingTime = speed < 0.0001 ? "Unknown" : $"About {TimeSpan.FromMinutes(left / speed).ToReadableTime()}";
-                var remainingItems = $"About {left} {PluralizingConverter.Pluralize(left, ControlsStrings.CustomShowroom_SkinHeader).ToSentenceMember()}";
-
-                return new[] {
-                    $"Car: {car?.DisplayName}", $"Skin: {skin?.DisplayName ?? "?"}",
-                    $"Speed: {speed:F2} {PluralizingConverter.Pluralize(10, ControlsStrings.CustomShowroom_SkinHeader).ToSentenceMember()}/{"min"}",
-                    $"Time remaining: {remainingTime}",
-                    $"Items remaining: {remainingItems}",
-                    _recyclingWarning ? "[i]Recycling seems to take too long? If so, it can always be disabled in Settings.[/i]" : null
-                }.NonNull();
-            }
-        }
-
         [ItemCanBeNull]
         public static Task<IReadOnlyList<UpdatePreviewError>> UpdatePreviewAsync([NotNull] IReadOnlyList<ToUpdatePreview> entries,
-                [NotNull] DarkPreviewsOptions options, string presetName = null, DarkPreviewsUpdater updater = null,
+                [NotNull] DarkPreviewsOptions options, string presetName = null, IDarkPreviewsUpdater updater = null,
                 Func<CarSkinObject, string> destinationOverrideCallback = null, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            return new Updater(entries, options, presetName, updater) {
-                DestinationOverrideCallback = destinationOverrideCallback,
-                Progress = progress,
-                CancellationToken = cancellation
-            }.Run();
+            return UpdaterFactory(entries, options, presetName, updater, destinationOverrideCallback, progress, cancellation).RunAsync();
         }
 
         /// <summary>
@@ -631,8 +383,8 @@ namespace AcManager.CustomShowroom {
         /// Get checksum of specified preset.
         /// </summary>
         [CanBeNull]
-        public static string GetChecksum(string presetFilename = null) {
-            return CmPreviewsSettings.GetSavedOptions(presetFilename)?.GetChecksum();
+        public static string GetChecksum(bool cspRenderMode, string presetFilename = null) {
+            return CmPreviewsSettings.GetSavedOptions(presetFilename)?.GetChecksum(cspRenderMode);
         }
     }
 

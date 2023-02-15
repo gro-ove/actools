@@ -26,7 +26,7 @@ namespace AcTools.Render.Tests {
             var sw = Stopwatch.StartNew();
             var i = 0;
 
-            using (var updater = new DarkPreviewsUpdater(path)) {
+            using (var updater = DarkPreviewsUpdaterFactory.Create(false, path)) {
                 foreach (var car in cars) {
                     foreach (var skin in car.SkinsIds) {
                         await updater.ShotAsync(car.CarId, skin);

@@ -256,6 +256,9 @@
     <Compile Include="CustomShowroom\BakedShadowsRendererViewModel.cs" />
     <Compile Include="CustomShowroom\CmPreviewsFormWrapper.cs" />
     <Compile Include="CustomShowroom\CmPreviewsSettings.cs" />
+    <Compile Include="CustomShowroom\CmPreviewsTools.AcUpdater.cs" />
+    <Compile Include="CustomShowroom\CmPreviewsTools.UpdaterBase.cs" />
+    <Compile Include="CustomShowroom\CmPreviewsTools.Updater.cs" />
     <Compile Include="CustomShowroom\CmPreviewsTools.xaml.cs">
       <DependentUpon>CmPreviewsTools.xaml</DependentUpon>
     </Compile>

@@ -43,6 +43,7 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureJoypadIndexAware = "JOYPAD_INDEX_AWARE";
         public static readonly string FeatureHasShowroomMode = "RACEINI_SETUP_SUPPORT";
         public static readonly string FeatureDualSenseSupport = "PS5_DUALSENSE_SUPPORT";
+        public static readonly string FeatureCarPreviews = "CAR_PREVIEWS";
 
         public class AudioDescription : Displayable {
             public string Id { get; set; }

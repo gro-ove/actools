@@ -185,6 +185,30 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
+        public static void TryKill([NotNull] this Process process) {
+            try {
+                process.Kill();
+            } catch {
+                // ignored
+            }
+        }
+
+        public static async Task WaitKillAndDisposeAsync([NotNull] this Process process, Func<bool> shutdownCheck, CancellationToken cancellationToken) {
+            var running = new[]{ true };
+            cancellationToken.Register(process.TryKill);
+            if (shutdownCheck != null) {
+                ((Func<Task>)(async () => {
+                    while (running[0]) {
+                        await Task.Delay(TimeSpan.FromSeconds(5d)).ConfigureAwait(false);
+                        if (shutdownCheck()) process.TryKill();
+                    }
+                }))().Ignore();
+            }
+            await process.WaitForExitAsync().ConfigureAwait(false);
+            running[0] = false;
+            Task.Delay(TimeSpan.FromSeconds(5d)).ContinueWith(r => process.Dispose()).Ignore();
+        }
+
         /// <summary>
         /// Might be very slow (up to ≈700ms) if GetProcessPathUsingPsApi won’t work properly.
         /// Returns null when all three ways failed.
