@@ -61,7 +61,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         public static int OptionColorSize = 16;
         public static int OptionMaxTintSize = 1024;
         public static int OptionMaxMapSize = 1024;
-        public static int OptionMaxPatternSize = 2048;
+        public static int OptionMaxPatternSize = 4096;
 
         // to generate real-time preview, we’re going to use a special shader
         [CanBeNull]
