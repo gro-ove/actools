@@ -3296,8 +3296,8 @@ But if you don’t want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</valu
     <value>Content Manager is made possible by some [url="/Pages/About/Credits.xaml|_top"]open source and not only software[/url].
 Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
-  <data name="About_Copyright" xml:space="preserve">
-    <value>Copyright © 2016–2020 AcClub.</value>
+  <data name="About_CopyrightFormat" xml:space="preserve">
+    <value>Copyright © 2016–{0:yyyy} AcClub.</value>
   </data>
   <data name="About_MarkAllAsRead" xml:space="preserve">
     <value>Mark all as read</value>

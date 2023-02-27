@@ -3,6 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:ab="clr-namespace:AcManager.Pages.About" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:c="http://acstuff.ru/app/controls" xmlns:at="clr-namespace:AcTools;assembly=AcTools" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     d:DataContext="{d:DesignInstance ab:AboutPage+ViewModel}">
   <Grid>
     <Grid.RowDefinitions>
@@ -90,7 +91,7 @@
 
     <StackPanel Grid.Row="1" Margin="20 12">
       <mui:BbCodeBlock Style="{StaticResource Small}" PreviewMouseLeftButtonDown="OnVersionClick" Background="Transparent"
-          Text="{x:Static g:AppStrings.About_Copyright}" />
+          Text="{Binding Source={x:Static sys:DateTime.Now}, StringFormat={x:Static g:AppStrings.About_CopyrightFormat}}" />
       <mui:BbCodeBlock Style="{StaticResource BbCodeBlock.Small}" Text="{x:Static g:AppStrings.About_Footer}" />
     </StackPanel>
   </Grid>
