@@ -469,28 +469,28 @@
           <Separator Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}"
               Visibility="{Binding DownloadsInSeparatePage, Source={x:Static c:AppAppearanceManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}" />
           <MenuItem Header="{x:Static g:AppStrings.Main_CMSettings}" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/SettingsPage.xaml"
-              InputGestureText="Alt+F1">
+              InputGestureText="Alt+F5">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource GearIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
           <MenuItem Header="{x:Static g:AppStrings.Main_ACSettings}" Click="OnNavigateItemClick" CommandParameter="/Pages/AcSettings/AcSettingsPage.xaml"
-              InputGestureText="Alt+F2">
+              InputGestureText="Alt+F6">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource AcIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
           <MenuItem Header="{x:Static g:AppStrings.Main_CSPSettings}" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/SettingsShadersPatch.xaml"
-              InputGestureText="Alt+F2">
+              InputGestureText="Alt+F7">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource BookmarkIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
           <MenuItem Header="{x:Static g:AppStrings.Main_AppsSettings}" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/PythonAppsSettings.xaml"
-              InputGestureText="Alt+F4">
+              InputGestureText="Alt+F8">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource CarSetupIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
