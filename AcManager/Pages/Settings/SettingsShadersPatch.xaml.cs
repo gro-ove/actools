@@ -65,11 +65,8 @@ namespace AcManager.Pages.Settings {
             });
         }
 
-        private void OnPatchInstallationStart(object sender, CancelEventArgs e) {
+        private void OnPatchInstallationStart(object sender, ShadersPatchEntry.InstallationEventArgs e) {
             if (Model != null) {
-                if (Model.MainModel.IsBlocked) {
-                    e.Cancel = true;
-                }
                 Model.MainModel.IsBlocked = true;
             }
         }

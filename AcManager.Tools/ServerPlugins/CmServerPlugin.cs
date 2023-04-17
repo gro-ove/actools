@@ -157,7 +157,7 @@ namespace AcManager.Tools.ServerPlugins {
         }
 
         public override void OnCarInfo(MsgCarInfo msg) {
-            _logFn(ServerPresetObject.LogMessageType.Debug, $"Car info: {msg.DriverGuid}");
+            // _logFn(ServerPresetObject.LogMessageType.Debug, $"Car info: {msg.DriverGuid}");
             ActionExtension.InvokeInMainThreadAsync(() => {
                 ServerGuidsStorage.RegisterUserName(msg.DriverGuid, msg.DriverName);
                 _leaderboard.OnCarInfo(msg);

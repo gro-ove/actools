@@ -347,7 +347,7 @@ namespace AcManager.Tools.Miscellaneous {
                 return;
             }
 
-            FileUtils.EnsureDirectoryExists(Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "extension"));
+            FileUtils.EnsureDirectoryExists(Path.Combine(AcPaths.GetDocumentsCfgDirectory(), PatchHelper.PatchDirectoryName));
 
             var selectedPageId = SelectedPage?.Id ?? _selectedPageId.Value;
             Configs = new PythonAppConfigs(new PythonAppConfigParams(_dir) {
@@ -360,7 +360,7 @@ namespace AcManager.Tools.Miscellaneous {
                             return null;
                         }
 
-                        var userEditedFile = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "extension", fileName);
+                        var userEditedFile = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), PatchHelper.PatchDirectoryName, fileName);
                         var cfg = PythonAppConfig.Create(p, f, true, userEditedFile);
                         if (_isLive && cfg.Sections.GetByIdOrDefault("ℹ")?.GetByIdOrDefault("LIVE_SUPPORT")?.Value == @"0") {
                             return null;

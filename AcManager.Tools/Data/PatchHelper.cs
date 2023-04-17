@@ -21,6 +21,12 @@ using StringBasedFilter.TestEntries;
 
 namespace AcManager.Tools.Data {
     public class PatchHelper {
+#if DEBUG
+        public static string PatchDirectoryName = "extension-debug";
+#else
+        public static string PatchDirectoryName = "extension";
+#endif
+        
         public static int MinimumTestOnlineVersion { get; } = 1061;
 
         public static int NonExistentVersion { get; } = 999999;
@@ -65,12 +71,12 @@ namespace AcManager.Tools.Data {
 
         [CanBeNull]
         public static string TryGetRootDirectory() {
-            return AcRootDirectory.Instance.Value == null ? null : Path.Combine(AcRootDirectory.Instance.Value, "extension");
+            return AcRootDirectory.Instance.Value == null ? null : Path.Combine(AcRootDirectory.Instance.Value, PatchDirectoryName);
         }
 
         [NotNull]
         public static string RequireRootDirectory() {
-            return Path.Combine(AcRootDirectory.Instance.RequireValue, "extension");
+            return Path.Combine(AcRootDirectory.Instance.RequireValue, PatchDirectoryName);
         }
 
         [CanBeNull]
@@ -80,7 +86,7 @@ namespace AcManager.Tools.Data {
         }
 
         public static string GetUserConfigFilename(string configName) {
-            return Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "extension", configName);
+            return Path.Combine(AcPaths.GetDocumentsCfgDirectory(), PatchDirectoryName, configName);
         }
 
         [CanBeNull]
@@ -214,7 +220,7 @@ namespace AcManager.Tools.Data {
         }
 
         public static string GetWindowPositionConfig() {
-            return Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "extension", "window_position.ini");
+            return Path.Combine(AcPaths.GetDocumentsCfgDirectory(), PatchDirectoryName, "window_position.ini");
         }
 
         public static bool IsActive() {

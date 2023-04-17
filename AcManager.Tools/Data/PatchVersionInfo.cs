@@ -62,7 +62,7 @@ namespace AcManager.Tools.Data {
                 if (_isDownloaded == null) {
                     _isDownloaded = CmApiProvider.HasPatchCached(Version);
                 }
-                return _isDownloaded ?? false;
+                return (bool)_isDownloaded;
             }
             set => Apply(value, ref _isDownloaded);
         }

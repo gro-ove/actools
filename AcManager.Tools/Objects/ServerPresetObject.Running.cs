@@ -860,12 +860,19 @@ namespace AcManager.Tools.Objects {
                         }
                     }
                     _pluginManager.AddPlugin(CmPlugin = new CmServerPlugin(log, Capacity));
-                    _pluginManager.AddPlugin(new HandshakePlugin {
+                    /*_pluginManager.AddPlugin(new HandshakePlugin {
                         LogFn = x => {
                             Logging.Debug("Handshake message: " + x);
                             log(LogMessageType.Debug, x);
                         }
-                    });
+                    });*/
+                    /*_pluginManager.AddPlugin(new HandshakeVerificationPlugin(CspExtraConfig, TracksManager.Instance.GetLayoutById(TrackId, TrackLayoutId),
+                            CarIds.Select(x => CarsManager.Instance.GetById(x) ?? throw new Exception($"Car {x} is missing"))) {
+                        LogFn = x => {
+                            Logging.Debug("Handshake verification message: " + x);
+                            log(LogMessageType.Debug, x);
+                        },
+                    });*/
                     if (CmPluginLiveConditions) {
                         var track = TrackId == null ? null : await TracksManager.Instance.GetLayoutByIdAsync(TrackId, TrackLayoutId);
                         _pluginManager.AddPlugin(new LiveConditionsServerPlugin(track, RequiredCspVersion >= 1643, CmPluginLiveConditionsParams.Clone()));

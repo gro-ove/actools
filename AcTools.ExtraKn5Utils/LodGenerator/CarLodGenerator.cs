@@ -88,17 +88,19 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
             var priority = children[0].Item2;
             var considerDetails = mesh.MaterialId != uint.MaxValue;
             var builder = new Kn5MeshBuilder(considerDetails, considerDetails);
-            #if DEBUG
-            AcToolsLogging.Write($"Merging together: {children.Select(x => $"{x.Item1.Name} [{x.Item2}]").JoinToString(", ")}");
-            #endif
             var useUv2 = children.Any(x => x.Item1.Uv2 != null && mergeRules.UseUv2(x.Item1));
+            
+#if DEBUG
+            AcToolsLogging.Write($"Merging together (UV2: {useUv2}): {children.Select(x => $"{x.Item1.Name} [{x.Item2}]").JoinToString(", ")}");
+#endif
 
             var extraCounter = 0;
             foreach (var child in children) {
                 var transform = child.Item3 * Mat4x4.CreateScale(new Vec3((float)priority)) * Mat4x4.CreateTranslation(MoveAsideDistance(priority, stage));
                 var offset = mergeRules.GetOffsetAlongNormal(child.Item1);
                 for (var i = 0; i < child.Item1.Indices.Length; ++i) {
-                    builder.AddVertex(child.Item1.Vertices[child.Item1.Indices[i]].Transform(transform, offset), useUv2 ? child.Item1.Uv2?[child.Item1.Indices[i]] : null);
+                    builder.AddVertex(child.Item1.Vertices[child.Item1.Indices[i]].Transform(transform, offset), 
+                            useUv2 ? child.Item1.Uv2?[child.Item1.Indices[i]] : null);
                     if (i % 3 == 2 && builder.IsCloseToLimit) {
                         builder.SetTo(mesh);
                         root.Children.Add(mesh);
@@ -332,8 +334,14 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
                             "LayerElementNormal", "Normals", "NormalsIndex");
                     var fbxUv0 = new GenDataAccessor(geometry.Item1, 
                             "LayerElementUV", "UV", "UVIndex");
-                    var fbxUv1 = mesh.Uv2 != null ? new GenDataAccessor(geometry.Item1, 
-                            "LayerElementColor", "Colors", "ColorIndex") : null;
+                    
+                    GenDataAccessor fbxUv1;
+                    try {
+                        fbxUv1 = mesh.Uv2 != null ? new GenDataAccessor(geometry.Item1,
+                                "LayerElementColor", "Colors", "ColorIndex") : null;
+                    } catch {
+                        fbxUv1 = null;
+                    }
 
                     var offset = MoveAsideDistance(geometry.Item2, stage);
                     var scale = (float)(1d / geometry.Item2);

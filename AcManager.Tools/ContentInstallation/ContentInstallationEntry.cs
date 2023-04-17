@@ -1002,7 +1002,11 @@ namespace AcManager.Tools.ContentInstallation {
                 return DirectoryContentInstallator.Create(filename, installationParams, cancellation);
             }
 
-            if ( /*!IsZipArchive(filename) &&*/ PluginsManager.Instance.IsPluginEnabled(KnownPlugins.SevenZip)) {
+            if (filename.EndsWith(@".zip")) {
+                return SharpCompressContentInstallator.Create(filename, installationParams, cancellation);
+            }
+
+            if (PluginsManager.Instance.IsPluginEnabled(KnownPlugins.SevenZip)) {
                 try {
                     Logging.Write("7-Zip plugin is available");
                     return SevenZipContentInstallator.Create(filename, installationParams, cancellation);

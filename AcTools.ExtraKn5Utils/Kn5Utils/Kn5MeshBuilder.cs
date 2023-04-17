@@ -10,7 +10,7 @@ namespace AcTools.ExtraKn5Utils.Kn5Utils {
         private readonly List<Kn5Node.Vertex> _vertices = new List<Kn5Node.Vertex>();
         private readonly List<ushort> _indices = new List<ushort>();
         private List<Vec2> _uv2;
-        private Dictionary<long, ushort> _knownVertices = new Dictionary<long, ushort>();
+        private readonly Dictionary<long, ushort> _knownVertices = new Dictionary<long, ushort>();
 
         public int Count => _vertices.Count;
 
@@ -53,6 +53,7 @@ namespace AcTools.ExtraKn5Utils.Kn5Utils {
             _vertices.Clear();
             _indices.Clear();
             _knownVertices.Clear();
+            _uv2 = null;
         }
 
         private long VertexHashCode(Kn5Node.Vertex v, Vec2? uv2 = null) {

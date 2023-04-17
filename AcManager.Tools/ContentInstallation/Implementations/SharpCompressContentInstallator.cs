@@ -222,22 +222,31 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                         while (reader.MoveToNextEntry()) {
                             i++;
 
-                            var readerEntry = reader.Entry;
-                            if (readerEntry.IsDirectory) {
-                                var entry = new SimpleDirectoryInfo(readerEntry);
-                                var destination = callback.Directory(entry);
-                                if (destination != null) {
-                                    FileUtils.EnsureDirectoryExists(destination);
+                            for (var j = 0; j < 5; ++j) {
+                                try {
+                                    var readerEntry = reader.Entry;
+                                    if (readerEntry.IsDirectory) {
+                                        var entry = new SimpleDirectoryInfo(readerEntry);
+                                        var destination = callback.Directory(entry);
+                                        if (destination != null) {
+                                            FileUtils.EnsureDirectoryExists(destination);
+                                        }
+                                    } else {
+                                        var entry = new SimpleFileInfo(readerEntry);
+                                        var destination = callback.File(entry);
+                                        if (destination != null) {
+                                            FileUtils.EnsureFileDirectoryExists(destination);
+                                            progress?.Report(Path.GetFileName(destination), i, count);
+                                            reader.WriteEntryTo(destination);
+                                            if (cancellation.IsCancellationRequested) return;
+                                        }
+                                    }
+                                    break;
+                                } catch (Exception e) {
+                                    if (j == 2) throw;
+                                    Logging.Warning($"Failed to install (going to try again in half a second): {e}");
                                 }
-                            } else {
-                                var entry = new SimpleFileInfo(readerEntry);
-                                var destination = callback.File(entry);
-                                if (destination != null) {
-                                    FileUtils.EnsureFileDirectoryExists(destination);
-                                    progress?.Report(Path.GetFileName(destination), i, count);
-                                    reader.WriteEntryTo(destination);
-                                    if (cancellation.IsCancellationRequested) return;
-                                }
+                                Thread.Sleep(500);
                             }
                         }
                     }

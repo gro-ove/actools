@@ -129,6 +129,10 @@ namespace AcManager.Tools.ContentInstallation {
                 return _files.GetValueOrDefault(name.ToLowerInvariant());
             }
 
+            public bool HasAnySubFile(Func<string, bool> fn) {
+                return _files.Keys.Any(fn);
+            }
+
             [CanBeNull]
             public DirectoryNode GetSubDirectory([Localizable(false), NotNull] string name) {
                 var index = name.IndexOfAny(new[] { '/', '\\' });
@@ -727,22 +731,50 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             PatchPluginEntry ret;
+            
+            // Extra scripts: weather
             if ((ret = await CheckPatchPlugin("weather.lua", "CSP Weather FX script", @"weather")) != null) {
                 return ret;
             }
             if ((ret = await CheckPatchPlugin("controller.lua", "CSP Weather FX controller", @"weather-controllers")) != null) {
                 return ret;
             }
+            
+            // Extra scripts: extension/lua
+            if ((ret = await CheckPatchPlugin("config.ini", "CSP car script", @"lua\cars")) != null) {
+                return ret;
+            }
             if ((ret = await CheckPatchPlugin("camera.lua", "CSP camera script", @"lua\chaser-camera")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("ffb.lua", "CSP FFB post-process script", @"lua\ffb-postprocess")) != null) {
                 return ret;
             }
             if ((ret = await CheckPatchPlugin("fireworks.lua", "CSP fireworks script", @"lua\fireworks")) != null) {
                 return ret;
             }
+            if ((ret = await CheckPatchPlugin("assist.lua", "CSP gamepad script", @"lua\joypad-assist")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("mode.lua", "CSP new mode", @"lua\new-modes")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("filter.lua", "CSP post-processing filter", @"lua\pp-filters")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("tool.lua", "CSP tool script", @"lua\tools")) != null) {
+                return ret;
+            }
+            
+            // Extra scripts: Android Auto
+            if ((ret = await CheckPatchPluginRe("app.lua", "CSP Android Auto app", 
+                    new Regex(@"^lua\\cars\\\w+\\apps$"))) != null) {
+                return ret;
+            }
 
-            async Task<PatchPluginEntry> CheckPatchPlugin(string fileName, string displayName, string relativePath) {
+            async Task<PatchPluginEntry> CheckPatchPluginGen(string fileName, string displayName, Func<string, bool> relativePath) {
                 var directoryName = directory?.Name;
-                if (directoryName != null && directory.HasSubFile(fileName) && directory.Parent?.NameLowerCase == Path.GetFileName(relativePath)) {
+                if (directoryName != null && (fileName == null || directory.HasSubFile(fileName)) && relativePath(directory.Parent?.NameLowerCase ?? "")) {
                     var manifestInfo = directory.GetSubFile("manifest.ini");
                     var name = AcStringValues.NameFromId(directoryName);
                     string version = null;
@@ -755,10 +787,18 @@ namespace AcManager.Tools.ContentInstallation {
                         description = data.GetNonEmpty("DESCRIPTION");
                     }
                     return new PatchPluginEntry(directory.Key ?? "", new[] { directory.Key }, $"{displayName} “{name}”",
-                            Path.Combine(AcRootDirectory.Instance.RequireValue, "extension", relativePath ?? "", directoryName), 1e5,
+                            Path.Combine(AcRootDirectory.Instance.RequireValue, PatchHelper.PatchDirectoryName, directory.Parent?.NameLowerCase ?? "", directoryName), 1e5,
                             version, description);
                 }
                 return null;
+            }
+
+            Task<PatchPluginEntry> CheckPatchPlugin(string fileName, string displayName, string relativePath) {
+                return CheckPatchPluginGen(fileName, displayName, x => x == relativePath);
+            }
+
+            Task<PatchPluginEntry> CheckPatchPluginRe(string fileName, string displayName, Regex relativePath) {
+                return CheckPatchPluginGen(fileName, displayName, x => relativePath.IsMatch(x));
             }
 
             // Mod

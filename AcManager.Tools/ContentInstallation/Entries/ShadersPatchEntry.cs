@@ -14,11 +14,11 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Entries {
     public class ShadersPatchEntry : ContentEntryBase {
-        public static bool IsBusy { get; private set; }
-        public static CancelEventHandler InstallationStart;
-        public static EventHandler InstallationEnd;
+        public class InstallationEventArgs : EventArgs { }
 
-        public static string PatchDirectoryName = "extension";
+        public static bool IsBusy { get; private set; }
+        public static EventHandler<InstallationEventArgs> InstallationStart;
+        public static EventHandler InstallationEnd;
 
         private readonly List<string> _toInstall;
 
@@ -46,20 +46,19 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             var first = true;
             var cleanInstall = SelectedOption == CleanOption;
 
-            var args = new CancelEventArgs();
+            var args = new InstallationEventArgs();
             InstallationStart?.Invoke(null, args);
-            if (args.Cancel) {
-                throw new InformativeException("Can’t install two things at once");
-            }
 
             var installedLogStream = new MemoryStream();
             var installedLog = new StreamWriter(installedLogStream);
             IsBusy = true;
 
-            Logging.Debug("STARTING TO INSTALL");
+            Logging.Debug("Installing CSP");
             return new CopyCallback(info => {
-                Logging.Debug("KEY: " + info.Key);
                 var filename = info.Key;
+#if DEBUG
+                filename = filename.Replace("extension", "extension-debug");
+#endif
 
                 if (path != string.Empty && !FileUtils.IsAffectedBy(filename, path)
                         || !_toInstall.Contains(info.Key) && !_toInstall.Any(x => FileUtils.IsAffectedBy(info.Key, x))) {
@@ -70,7 +69,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                 var result = Path.Combine(InstallTo(), relativePath);
 
                 if (first) {
-                    var directory = Path.Combine(InstallTo(), PatchDirectoryName);
+                    var directory = Path.Combine(InstallTo(), PatchHelper.PatchDirectoryName);
                     if (!Directory.Exists(directory)) {
                         Directory.CreateDirectory(directory);
                     } else if (cleanInstall) {
