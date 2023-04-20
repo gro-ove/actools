@@ -46,6 +46,8 @@ namespace AcManager.Tools.ContentInstallation {
         public string DisplayUpdateFor { get; }
 
         public bool PreferCleanInstallation { get; }
+        
+        public bool Virtual { get; set; }
 
         [NotNull]
         public ContentInstallationParams InstallationParams { get; }

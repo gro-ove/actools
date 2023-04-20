@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -246,19 +247,65 @@ namespace AcManager.Tools.Helpers.Api {
             Chunk
         }
 
+        private static async Task<byte[]> LoadDataFromCustomOrigin(string fullUrl, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+            try {
+                using (var order = KillerOrder.Create(new WebClient(), 30000)) {
+                    var client = order.Victim;
+                    cancellation.ThrowIfCancellationRequested();
+                    cancellation.Register(client.CancelAsync);
+
+                    if (progress != null) {
+                        var skipEvent = 0;
+                        var stopwatch = new AsyncProgressBytesStopwatch();
+                        client.DownloadProgressChanged += (sender, args) => {
+                            // ReSharper disable once AccessToDisposedClosure
+                            order.Delay();
+                            if (++skipEvent > 5) {
+                                skipEvent = 0;
+                            } else {
+                                return;
+                            }
+                            progress.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, args.TotalBytesToReceive, stopwatch));
+                        };
+                    }
+                    var result = progress != null ? await client.DownloadDataTaskAsync(fullUrl) :
+                            await client.DownloadDataTaskAsyncSafe(fullUrl);
+                    return result;
+                }
+            } catch (Exception e) {
+                if (cancellation.IsCancellationRequested) return null;
+                Logging.Warning($"Cannot get data: {e}");
+                return null;
+            }
+        }
+        
         /// <summary>
         /// Load piece of static data, either from CM API, or from cache.
         /// </summary>
         /// <returns>Cached filename and if data is just loaded or not.</returns>
         [ItemCanBeNull]
         public static async Task<Tuple<string, bool>> GetPatchDataAsync(PatchDataType type, [NotNull] string version, TimeSpan maxAge,
-                IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default) {
+                Dictionary<int, string[]> customBuilds, IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
             var key = GetPatchCacheKey(type, version);
             var file = new FileInfo(FilesStorage.Instance.GetFilename("Temporary", "Patch", key));
 
             if (file.Exists && (JustLoadedPatchData.Contains(key) || DateTime.Now - file.LastWriteTime < maxAge)) {
                 return Tuple.Create(file.FullName, false);
+            }
+
+            if (customBuilds != null) {
+                var custom = customBuilds.FirstOrDefault(x => x.Value.FirstOrDefault() == version);
+                if (custom.Value?.Length == 2) {
+                    if (file.Exists) {
+                        return Tuple.Create(file.FullName, false);
+                    }
+                    var data = await LoadDataFromCustomOrigin(custom.Value[1], progress, cancellation).ConfigureAwait(false);
+                    await FileUtils.WriteAllBytesAsync(file.FullName, data, cancellation).ConfigureAwait(false);
+                    file.Refresh();
+                    file.LastWriteTime = DateTime.Now;
+                    JustLoadedPatchData.Add(key);
+                    return Tuple.Create(file.FullName, true);
+                }
             }
 
             var result = await InternalUtils.CmGetDataAsync(GetPatchUrl(type, version), UserAgent,
@@ -311,9 +358,10 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [ItemCanBeNull]
-        public static async Task<byte[]> GetPatchVersionAsync(string version, IProgress<AsyncProgressEntry> progress = null,
+        public static async Task<byte[]> GetPatchVersionAsync(string version,
+                Dictionary<int, string[]> customBuilds, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default) {
-            var t = await GetPatchDataAsync(PatchDataType.Patch, version, TimeSpan.MaxValue, progress, cancellation);
+            var t = await GetPatchDataAsync(PatchDataType.Patch, version, TimeSpan.MaxValue, customBuilds, progress, cancellation);
             try {
                 return t == null ? null : await FileUtils.ReadAllBytesAsync(t.Item1);
             } catch (Exception e) {
@@ -325,7 +373,7 @@ namespace AcManager.Tools.Helpers.Api {
         [ItemCanBeNull]
         public static async Task<byte[]> GetChunkVersionAsync(string version, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default) {
-            var t = await GetPatchDataAsync(PatchDataType.Chunk, version, TimeSpan.MaxValue, progress, cancellation);
+            var t = await GetPatchDataAsync(PatchDataType.Chunk, version, TimeSpan.MaxValue, null, progress, cancellation);
             try {
                 return t == null ? null : await FileUtils.ReadAllBytesAsync(t.Item1);
             } catch (Exception e) {

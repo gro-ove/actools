@@ -648,14 +648,15 @@
           <DataTemplate DataType="{x:Type t:PythonAppConfigFileValue}">
             <Grid>
               <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
               <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}"
                   Style="{StaticResource PythonAppConfig.PropertyLabel}" />
               <Button Grid.Column="2" Padding="4 2" Margin="2 0 0 0" Content="…" Command="{Binding ChangeFileCommand}" />
-              <mui:PathTrimmingTextBlock Grid.Column="1" MinWidth="1" HorizontalAlignment="Left" Text="{Binding Value}" Placeholder="?" mui:NewMarkService.New="{Binding IsNew}" />
+              <mui:PathTrimmingTextBlock Grid.Column="1" MinWidth="1" HorizontalAlignment="Left" Text="{Binding Value}" Placeholder="?"
+                  mui:NewMarkService.New="{Binding IsNew}" />
               <!--<mui:BetterTextBox Text="{Binding Value}" Placeholder="?" mui:NewMarkService.New="{Binding IsNew}" />-->
             </Grid>
           </DataTemplate>
@@ -784,4 +785,145 @@
       </DockPanel>
     </ScrollViewer>
   </DataTemplate>
+
+  <ItemsPanelTemplate x:Key="PythonAppConfig.InlineSectionItemsPanel">
+    <mui:UniformGridWithOrientation Orientation="Horizontal" VerticalSpacing="4" HorizontalSpacing="12" Margin="0 0 12 0" Columns="1" />
+  </ItemsPanelTemplate>
+
+  <DataTemplate x:Key="PythonAppConfig.Compact.InlineSectionTemplate" DataType="{x:Type t:PythonAppConfigSection}">
+    <DockPanel>
+      <TextBlock Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" DockPanel.Dock="Top" Margin="0 0 0 8"
+          TextWrapping="Wrap" Style="{StaticResource Label}" ToolTip="{Binding ToolTip}" />
+      <c:MessageBlock DockPanel.Dock="Top" Margin="0 0 0 8"
+          Visibility="{Binding HintTop, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}">
+        <mui:BbCodeBlock Text="{Binding HintTop}" Style="{StaticResource Small}" />
+      </c:MessageBlock>
+      <c:MessageBlock DockPanel.Dock="Bottom" Margin="0 8 0 0"
+          Visibility="{Binding HintBottom, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}">
+        <mui:BbCodeBlock Text="{Binding HintBottom}" Style="{StaticResource Small}" />
+      </c:MessageBlock>
+      <ItemsControl ItemsSource="{Binding}" ItemTemplate="{StaticResource PythonAppConfig.ItemTemplate}"
+          ItemContainerStyle="{StaticResource PythonAppConfig.ItemContainerStyle}" ItemsPanel="{StaticResource PythonAppConfig.InlineSectionItemsPanel}" />
+    </DockPanel>
+  </DataTemplate>
+
+  <DataTemplate x:Key="PythonAppConfig.Compact.Inline" DataType="{x:Type t:PythonAppConfig}">
+    <Border Margin="-28 -2 -64 -2" Width="400" Background="{DynamicResource PopupBackground}" Padding="28 8 28 8">
+      <ItemsControl ItemsSource="{Binding Sections}" ItemTemplate="{StaticResource PythonAppConfig.Compact.InlineSectionTemplate}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <mui:SpacingStackPanel Spacing="20" Orientation="Vertical" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
+    </Border>
+  </DataTemplate>
+
+  <DataTemplate x:Key="PythonAppConfig.Compact.InlineSingleSectionTemplate" DataType="{x:Type t:PythonAppConfigSection}">
+    <DockPanel>
+      <c:MessageBlock DockPanel.Dock="Top" Margin="0 0 0 8"
+          Visibility="{Binding HintTop, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}">
+        <mui:BbCodeBlock Text="{Binding HintTop}" Style="{StaticResource Small}" />
+      </c:MessageBlock>
+      <c:MessageBlock DockPanel.Dock="Bottom" Margin="0 8 0 0"
+          Visibility="{Binding HintBottom, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}">
+        <mui:BbCodeBlock Text="{Binding HintBottom}" Style="{StaticResource Small}" />
+      </c:MessageBlock>
+      <ItemsControl ItemsSource="{Binding}" ItemTemplate="{StaticResource PythonAppConfig.ItemTemplate}"
+          ItemContainerStyle="{StaticResource PythonAppConfig.ItemContainerStyle}" ItemsPanel="{StaticResource PythonAppConfig.InlineSectionItemsPanel}" />
+    </DockPanel>
+  </DataTemplate>
+
+  <DataTemplate x:Key="PythonAppConfig.Compact.InlineSingle" DataType="{x:Type t:PythonAppConfig}">
+    <Border Margin="-28 -2 -64 -2" Width="400" Background="{DynamicResource PopupBackground}" Padding="28 8 28 8">
+      <ItemsControl ItemsSource="{Binding Sections}" ItemTemplate="{StaticResource PythonAppConfig.Compact.InlineSingleSectionTemplate}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <mui:SpacingStackPanel Spacing="20" Orientation="Vertical" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
+    </Border>
+  </DataTemplate>
+
+  <Style x:Key="WeatherLiveControllerMenuItem" TargetType="{x:Type MenuItem}">
+    <!--<Setter Property="HorizontalContentAlignment"
+        Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+    <Setter Property="VerticalContentAlignment"
+        Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />-->
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Background" Value="{DynamicResource PopupBackground}" />
+    <Setter Property="Foreground" Value="{DynamicResource ItemText}" />
+    <Setter Property="ScrollViewer.PanningMode" Value="Both" />
+    <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type MenuItem}">
+    <mui:Cell SnapsToDevicePixels="True">
+      <Rectangle x:Name="Bg" Fill="{TemplateBinding MenuItem.Background}" />
+      <Grid x:Name="Fg" Margin="7 0 8.5 0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="37" />
+          <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemIGTColumnGroup" />
+          <ColumnDefinition Width="17" />
+        </Grid.ColumnDefinitions>
+        <ContentPresenter Grid.Column="0" ContentSource="Header" Margin="0 2 8 2" RecognizesAccessKey="True"
+            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+        <Path x:Name="RightArrow" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="4 0 0 0"
+            Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" Data="{StaticResource RightArrow}" />
+      </Grid>
+      <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Right" VerticalOffset="-3" HorizontalOffset="-2"
+          IsOpen="{Binding Path=IsSubmenuOpen,RelativeSource={RelativeSource TemplatedParent}}" Focusable="False"
+          PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
+        <mui:Cell Margin="0" Background="{DynamicResource PopupBackground}">
+          <Border x:Name="SubMenuBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1">
+            <ScrollViewer x:Name="SubMenuScrollViewer" CanContentScroll="True" Foreground="{DynamicResource ItemText}">
+              <Grid RenderOptions.ClearTypeHint="Enabled">
+                <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.DirectionalNavigation="Cycle"
+                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Grid.IsSharedSizeScope="True" />
+              </Grid>
+            </ScrollViewer>
+          </Border>
+        </mui:Cell>
+      </Popup>
+    </mui:Cell>
+    <ControlTemplate.Triggers>
+      <Trigger Property="IsSuspendingPopupAnimation" Value="True">
+        <Setter TargetName="PART_Popup" Property="PopupAnimation" Value="None" />
+      </Trigger>
+      <Trigger Property="IsHighlighted" Value="True">
+        <Setter TargetName="Bg" Property="Fill" Value="{DynamicResource Accent}" />
+        <Setter Property="Control.Foreground" Value="{DynamicResource ItemTextSelected}" />
+        <Setter Property="TextBlock.Foreground" Value="{DynamicResource ItemTextSelected}" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Control.Foreground" Value="{DynamicResource ItemTextDisabled}" />
+        <Setter Property="TextBlock.Foreground" Value="{DynamicResource ItemTextDisabled}" />
+        <Setter TargetName="RightArrow" Property="Fill" Value="{DynamicResource ItemTextDisabled}" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <!--<Style.Triggers>
+      <Trigger Property="Role" Value="TopLevelHeader">
+        <Setter Property="Padding" Value="7,2,8,2" />
+        <Setter Property="Template"
+            Value="{DynamicResource {ComponentResourceKey TypeInTargetAssembly={x:Type MenuItem}, ResourceId=TopLevelHeaderTemplateKey}}" />
+      </Trigger>
+      <Trigger Property="Role" Value="TopLevelItem">
+        <Setter Property="Padding" Value="7,2,8,2" />
+        <Setter Property="Template" Value="{DynamicResource {ComponentResourceKey TypeInTargetAssembly={x:Type MenuItem}, ResourceId=TopLevelItemTemplateKey}}" />
+      </Trigger>
+      <Trigger Property="Role" Value="SubmenuHeader">
+        <Setter Property="Padding" Value="2,3,2,3" />
+        <Setter Property="Template"
+            Value="{DynamicResource {ComponentResourceKey TypeInTargetAssembly={x:Type MenuItem}, ResourceId=SubmenuHeaderTemplateKey}}" />
+      </Trigger>
+      <Trigger Property="Role" Value="SubmenuItem" />
+    </Style.Triggers>-->
+  </Style>
 </ResourceDictionary>

@@ -28,9 +28,15 @@ namespace AcManager.Tools.Data {
         public PatchUpdater() : base(PatchHelper.GetInstalledBuild()) {
             DisplayInstalledVersion = PatchHelper.GetInstalledVersion();
             PatchHelper.Reloaded += OnPatchHelperReload;
+            PatchVersionInfo.NewPreviewBuild += OnNewPreviewBuild;
         }
 
         private void OnPatchHelperReload(object sender, EventArgs e) {
+            UpdateVersions();
+        }
+
+        private async void OnNewPreviewBuild(object sender, EventArgs e) {
+            await CheckAndUpdateIfNeededInner();
             UpdateVersions();
         }
 
@@ -214,6 +220,9 @@ namespace AcManager.Tools.Data {
                         : VersionComparer.Instance.Compare(oldVersion.Version, versionInfo.Version) > 0 ? "Downgraded successfully" : "Updated successfully";
                 ChangeCurrentVersionWithoutForcing(versionInfo, false);
                 return true;
+            } catch (Exception e) when (e.IsCancelled()) {
+                LatestError = ToolsStrings.Solving_Cancelled;
+                return false;
             } catch (InformativeException e) {
                 Logging.Warning(e);
                 LatestError = e.SolutionCommentary != null ? $"{e.Message}: {e.SolutionCommentary.ToSentenceMember()}".ToSentence() : e.Message.ToSentence();

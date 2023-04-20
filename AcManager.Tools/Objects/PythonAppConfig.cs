@@ -54,7 +54,8 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _hasAnythingNew);
         }
 
-        private PythonAppConfig([NotNull] PythonAppConfigParams configParams, string filename, IniFile ini, string name, PythonAppObject parent,
+        private PythonAppConfig([NotNull] PythonAppConfigParams configParams, string filename, IniFile ini,
+                [CanBeNull] Func<string, bool> sectionFilter, string name, PythonAppObject parent,
                 IniFile values = null) {
             IsResettable = values != null;
             _valuesIniFile = values ?? ini;
@@ -70,8 +71,8 @@ namespace AcManager.Tools.Objects {
             }
 
             DisplayName = name.Trim();
-            Sections = new List<PythonAppConfigSection>(ini.Select(x =>
-                    new PythonAppConfigSection(configParams, x, values?[x.Key]))
+            Sections = new List<PythonAppConfigSection>(ini.Where(x => sectionFilter?.Invoke(x.Key) != false)
+                    .Select(x => new PythonAppConfigSection(configParams, x, values?[x.Key]))
                     .Where(x => x.DisplayName != @"hidden"));
             IsSingleSection = Sections.Count == 1 && IsSectionNameUseless(Sections[0].DisplayName, configParams.PythonAppLocation);
             HasAnythingNew = Sections.Any(x => x.Any(y => y.IsNew));
@@ -139,8 +140,7 @@ namespace AcManager.Tools.Objects {
                     IsNonDefault = isNonDefault;
                 }
 
-                if (sender is PythonAppConfigValue value)
-                {
+                if (sender is PythonAppConfigValue value) {
                     ValueChanged?.Invoke(this, new ValueChangedEventArgs {
                         Source = this,
                         Section = Sections.FirstOrDefault(x => x.Contains(value))?.Id,
@@ -201,6 +201,12 @@ namespace AcManager.Tools.Objects {
             return _valuesIniFile;
         }
 
+        public void Import(string data) {
+            _valuesIniFile.ParseAndReplace(data);
+            ApplyChangesFromIni();
+            Changed = false;
+        }
+
         public IniFile Export() {
             if (Changed) {
                 ApplyChangesToIni();
@@ -223,7 +229,8 @@ namespace AcManager.Tools.Objects {
         public List<PythonAppConfigSection> Sections { get; }
 
         [CanBeNull, ContractAnnotation(@"force:true => notnull")]
-        public static PythonAppConfig Create([NotNull] PythonAppConfigParams configParams, string filename, bool force, string userEditedFile = null) {
+        public static PythonAppConfig Create([NotNull] PythonAppConfigParams configParams, string filename, bool force, string userEditedFile = null,
+                Func<string, bool> sectionFilter = null) {
             var relative = FileUtils.GetRelativePath(filename, configParams.PythonAppLocation);
             if (!force && !Regex.IsMatch(relative, @"^(?:(?:cfg|config|params|options|settings)[/\\])?[\w-]+\.ini$", RegexOptions.IgnoreCase)) {
                 return null;
@@ -250,7 +257,7 @@ namespace AcManager.Tools.Objects {
                 var defaultsMode = File.Exists(defaults);
                 var ini = defaultsMode ? new IniFile(defaults, IniFileMode.Comments) : new IniFile(filename, IniFileMode.Comments);
                 if (!force && (!ini.Any() || ini.Any(x => !Regex.IsMatch(x.Key, @"^[\w -]+$")))) return null;
-                return new PythonAppConfig(configParams, filename, ini,
+                return new PythonAppConfig(configParams, filename, ini, sectionFilter,
                         (ini.ContainsKey("ℹ") ? ini["ℹ"].GetNonEmpty("FULLNAME") : null)
                                 ?? relative.ApartFromLast(extension, StringComparison.OrdinalIgnoreCase)
                                         .Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries)

@@ -33,7 +33,6 @@ namespace AcManager.Tools.Objects {
             ConfigParams = configParams;
             UpdateReferenced();
             foreach (var config in this) {
-
                 config.ValueChanged += OnValueChanged;
             }
         }

@@ -47,7 +47,7 @@
                     BorderThickness="1">
                   <!-- popup border thickness not dependent on BorderThickness property-->
                   <ScrollViewer x:Name="DropDownScrollViewer">
-                    <Grid RenderOptions.ClearTypeHint="Enabled">
+                    <Grid RenderOptions.ClearTypeHint="Enabled" Background="Green">
                       <Canvas Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <Rectangle x:Name="OpaqueRect" Height="{Binding ActualHeight, ElementName=DropDownBorder}"
                             Width="{Binding ActualWidth, ElementName=DropDownBorder}" Fill="{Binding Background, ElementName=DropDownBorder}" />
@@ -96,6 +96,19 @@
         </ControlTemplate>
       </Setter.Value>
     </Setter>
+    <!--<Style.Triggers>
+      <Trigger Binding="{Binding Header, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TypeToBooleanConverter}, ConverterParameter=ContentControl}" Value="True">
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="{x:Type MenuItem}">
+              <ContentPresenter x:Name="PART_Text" ContentSource="Header" RecognizesAccessKey="False" Margin="{TemplateBinding Padding}"
+                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" IsHitTestVisible="False"
+                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Trigger>
+    </Style.Triggers>-->
   </Style>
 
   <ControlTemplate x:Key="SpecialMenuItemHeaderControlTemplate" TargetType="{x:Type c:HierarchicalItem}">
@@ -138,7 +151,7 @@
   </ControlTemplate>
 
   <ControlTemplate x:Key="SpecialMenuItemControlTemplate" TargetType="{x:Type c:HierarchicalItem}">
-    <Border x:Name="Bg" Background="Transparent" SnapsToDevicePixels="True">
+    <Border x:Name="Bg" SnapsToDevicePixels="True">
       <Border.ToolTip>
         <ToolTip Placement="{Binding ToolTipPlacement, RelativeSource={RelativeSource TemplatedParent}}"
             Visibility="{Binding PreviewValue, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource NullToVisibilityConverter},

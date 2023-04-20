@@ -157,7 +157,8 @@
               </CheckBox>-->
 
               <TextBlock Text="Other options:" Style="{StaticResource SettingsPanel.Heading2}" Margin="0 40 0 8" />
-              <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="20">
+              <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="20"
+                  IsEnabled="{Binding IsInstalling, Converter={StaticResource InvertBooleanConverter}}">
                 <Button Command="{Binding ReinstallCommand}" Content="Reinstall current version" />
                 <Button Command="{Binding DeleteCommand}" Foreground="{DynamicResource Error}">
                   <DockPanel Margin="0">
@@ -185,7 +186,7 @@
               </ListBox.ItemContainerStyle>
               <ListBox.ItemTemplate>
                 <DataTemplate DataType="t:PatchVersionInfo">
-                  <DockPanel Margin="8 4 20 4" Background="Transparent" ToolTipService.ShowOnDisabled="True">
+                  <DockPanel x:Name="PART_CorePanel" Margin="8 4 20 4" Background="Transparent" ToolTipService.ShowOnDisabled="True">
                     <DockPanel.ToolTip>
                       <mui:BbCodeBlock Text="{Binding Changelog}" MaxWidth="440" FontSize="{DynamicResource SmallFontSize}" />
                     </DockPanel.ToolTip>
@@ -213,6 +214,9 @@
                             </DataTrigger>
                             <DataTrigger Binding="{Binding}" Value="untested">
                               <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource RatingBrush}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="preview">
+                              <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource Hyperlink}" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding}" Value="recommended">
                               <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource Go}" />
@@ -251,9 +255,16 @@
                     <DataTrigger Binding="{Binding Url}" Value="{x:Null}">
                       <Setter TargetName="PART_UrlButton" Property="Visibility" Value="Collapsed" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Size}" Value="0">
+                    <DataTrigger Binding="{Binding Changelog}" Value="{x:Null}">
+                      <Setter TargetName="PART_CorePanel" Property="ToolTip" Value="{x:Null}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding AvailableToDownload}" Value="False">
                       <Setter TargetName="PART_NA" Property="Visibility" Value="Visible" />
                       <Setter TargetName="PART_DisplaySize" Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Size}" Value="0">
+                      <Setter TargetName="PART_DisplaySize" Property="Text" Value="Preview build" />
+                      <Setter TargetName="PART_DisplaySize" Property="ToolTip" Value="Loaded not from the main registry, but from an URL added earlier" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding IsDownloaded}" Value="True">
                       <Setter TargetName="PART_DisplaySize" Property="Visibility" Value="Collapsed" />

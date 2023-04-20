@@ -481,8 +481,8 @@ namespace AcManager.Pages.Drive {
 
             public DateTime SpecificDateValue {
                 get => _specificDateValue;
-                set => Apply(value.ToUnixTimestamp() < TimeSpan.FromHours(12).TotalSeconds ? DateTime.Now :  value,
-                ref _specificDateValue, SaveLater);
+                set => Apply(value.ToUnixTimestamp() < TimeSpan.FromHours(12).TotalSeconds ? DateTime.Now : value,
+                        ref _specificDateValue, SaveLater);
             }
 
             private bool _randomTime;
@@ -682,9 +682,13 @@ namespace AcManager.Pages.Drive {
             private readonly WeatherTypeConverterState _weatherTypeHelper = new WeatherTypeConverterState();
 
             private void TryToSetWeather() {
-                var weather = _weatherTypeHelper.TryToGetWeather(SelectedWeatherType, Time, Temperature);
-                if (weather != null) {
-                    SelectedWeather = weather;
+                if (PatchHelper.IsWeatherFxActive()) {
+                    SelectedWeather = new WeatherTypeWrapped(SelectedWeatherType);
+                } else {
+                    var weather = _weatherTypeHelper.TryToGetWeather(SelectedWeatherType, Time, Temperature);
+                    if (weather != null) {
+                        SelectedWeather = weather;
+                    }
                 }
             }
 

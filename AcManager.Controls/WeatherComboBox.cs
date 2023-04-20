@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Input;
 using AcManager.Controls.Helpers;
 using AcManager.Tools;
 using AcManager.Tools.AcObjectsNew;
@@ -12,10 +16,13 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Media;
 
 namespace AcManager.Controls {
     /// <summary>
@@ -172,12 +179,63 @@ namespace AcManager.Controls {
             }
         }
 
+        private static WeatherType?[] _weathersOrdered = {
+            WeatherType.Clear,
+            WeatherType.FewClouds,
+            WeatherType.ScatteredClouds,
+            WeatherType.BrokenClouds,
+            WeatherType.OvercastClouds,
+            null,
+            WeatherType.Mist,
+            WeatherType.Fog,
+            null,
+            WeatherType.LightDrizzle,
+            WeatherType.Drizzle,
+            WeatherType.HeavyDrizzle,
+            WeatherType.LightRain,
+            WeatherType.Rain,
+            WeatherType.HeavyRain,
+            WeatherType.LightThunderstorm,
+            WeatherType.Thunderstorm,
+            WeatherType.HeavyThunderstorm,
+            WeatherType.LightSleet,
+            WeatherType.Sleet,
+            WeatherType.HeavySleet,
+            WeatherType.LightSnow,
+            WeatherType.Snow,
+            WeatherType.HeavySnow,
+            null,
+            WeatherType.Tornado,
+            WeatherType.Hurricane,
+            null,
+            WeatherType.Smoke,
+            WeatherType.Haze,
+            WeatherType.Sand,
+            WeatherType.Dust,
+            WeatherType.Squalls,
+            WeatherType.Cold,
+            WeatherType.Hot,
+            WeatherType.Windy,
+            WeatherType.Hail
+        };
+
+        private static object[] _virtualWeathers;
+
+        private static IReadOnlyCollection<object> VirtualWeathers => _virtualWeathers ?? (_virtualWeathers = _weathersOrdered
+                .Select(x => x == null ? (object)new Separator() : new WeatherTypeWrapped(x.Value)).ToArray());
+
+        private static SharedResourceDictionary _settingsDictionary;
+
+        private static SharedResourceDictionary SettingsDictionary => _settingsDictionary ?? (_settingsDictionary = new SharedResourceDictionary {
+            Source = new Uri("/AcManager.Controls;component/Assets/AcSettingsSpecific.xaml", UriKind.Relative)
+        });
+
         private async Task UpdateHierarchicalWeatherList() {
             if (!_loaded) return;
             await WeatherManager.Instance.EnsureLoadedAsync();
 
             HierarchicalGroup list;
-            if (WeatherList.All(IsKunosWeather)) {
+            if (WeatherList.All(IsKunosWeather) && !PatchHelper.IsWeatherFxActive()) {
                 if (AllowRandomWeather) {
                     list = new HierarchicalGroup { WeatherTypeWrapped.RandomWeather, new Separator() };
                     list.AddRange(WeatherList);
@@ -187,44 +245,125 @@ namespace AcManager.Controls {
             } else {
                 list = AllowRandomWeather ? new HierarchicalGroup { WeatherTypeWrapped.RandomWeather } : new HierarchicalGroup();
 
-                if (WeatherList.Any(IsKunosWeather)) {
-                    list.Add(new HierarchicalGroup(ToolsStrings.Weather_Original,
-                            WeatherList.Where(IsKunosWeather)));
-                }
+                if (PatchHelper.IsWeatherFxActive()) {
+                    IEnumerable<object> weathers = VirtualWeathers;
+                    if (!PatchHelper.IsRainFxActive()) {
+                        weathers = weathers.Where(x => {
+                            if (x is WeatherTypeWrapped w) {
+                                return w.TypeOpt >= WeatherType.Clear && w.TypeOpt != WeatherType.Hurricane && w.TypeOpt != WeatherType.Tornado;
+                            }
+                            return true;
+                        }).SubsequentDistinct(x => x is Separator ? null : x);
+                    } else if (!PatchHelper.IsFeatureSupported(PatchHelper.FeatureSnow)) {
+                        weathers = weathers.Where(x => {
+                            if (x is WeatherTypeWrapped w) {
+                                return w.TypeOpt < WeatherType.LightSnow || w.TypeOpt > WeatherType.HeavySnow;
+                            }
+                            return true;
+                        });
+                    }
+                    
+                    var items = WeatherFxControllerData.Items;
+                    var baseItems = items.Where(x => x.FollowsLauncher).ToList();
+                    if (baseItems.Count > 1) {
+                        weathers = weathers.Append(new Separator());
+                        weathers = weathers.Append(new TextBlock { 
+                            Text = "Controller:", Style = (Style)SettingsDictionary["Label"], 
+                            Margin = new Thickness(-20d, 0d, 0d, 0d) 
+                        });
 
-                if (AllowWeatherByType && WeatherList.Any(x => x.Type != WeatherType.None)) {
-                    list.Add(new HierarchicalGroup("By type",
-                            WeatherList.Select(x => x.Type).ApartFrom(WeatherType.None).Distinct()
-                                       .Select(x => new WeatherTypeWrapped(x)).OrderBy(x => x.DisplayName)));
-                }
-
-                if (WeatherList.Any(IsSolWeather)) {
-                    list.Add(new HierarchicalGroup(@"Sol",
-                            WeatherList.Where(IsSolWeather)) {
-                                HeaderConverter = new GbwConverter()
+                        weathers = weathers.Concat(baseItems.Select(x => {
+                            var menuItem = new MenuItem { Header = x.DisplayName, IsCheckable = true, IsChecked = false, StaysOpenOnClick = true };
+                            menuItem.SetBinding(MenuItem.IsCheckedProperty, new Binding {
+                                Path = new PropertyPath(nameof(WeatherFxControllerData.IsSelectedAsBase)),
+                                Converter = new BooleanToVisibilityConverter(),
+                                Source = x
                             });
-                }
+                            return menuItem;
+                        }));
+                    }
+                    
+                    list.Add(new Separator());
+                    list.Add(new WeatherTypeWrapped(WeatherType.Clear));
+                    list.Add(new WeatherTypeWrapped(WeatherType.ScatteredClouds));
+                    list.Add(new WeatherTypeWrapped(WeatherType.OvercastClouds));
+                    list.Add(new WeatherTypeWrapped(WeatherType.Fog));
+                    if (PatchHelper.IsRainFxActive()) {
+                        list.Add(new WeatherTypeWrapped(WeatherType.Rain, true));
+                    }
+                    list.Add(new HierarchicalGroup("More", weathers));
 
-                if (WeatherList.Any(IsGbwWeather)) {
-                    list.Add(new HierarchicalGroup(@"GBW",
-                            WeatherList.Where(IsGbwWeather)) {
-                                HeaderConverter = new GbwConverter()
-                            });
-                }
+                    var dynamicItems = items.Where(x => !x.FollowsLauncher).ToList();
+                    if (dynamicItems.Count > 0) {
+                        list.Add(new Separator());
+                        list.Add(new TextBlock { 
+                            Text = "Dynamic:", Style = (Style)SettingsDictionary["Label"], 
+                            Margin = new Thickness(-20d, 0d, 0d, 0d) 
+                        });
 
-                if (WeatherList.Any(IsA4SWeather)) {
-                    list.Add(new HierarchicalGroup(@"A4S",
-                            WeatherList.Where(IsA4SWeather)));
-                }
+                        var liveItems = new[] {
+                            Tuple.Create("Live", "base-live", "Loads real weather live."),
+                            Tuple.Create("Live Alt", "sol", "Something else for an example."),
+                        }.Select((x, i) => new MenuItem {
+                            Header = x.Item1,
+                            ToolTip = x.Item3,
+                            Style = (Style)SettingsDictionary["WeatherLiveControllerMenuItem"],
+                            ItemsSource = new [] { WfxControllerEditor(x.Item2) }
+                        }).ToList();
+                        foreach (var item in dynamicItems) {
+                            var menuItem = new MenuItem {
+                                Header = item.DisplayName,
+                                ToolTip = item.Description,
+                                Style = (Style)SettingsDictionary["WeatherLiveControllerMenuItem"],
+                                ItemsSource = new[] { item.Config }
+                            };
+                            
+                            list.Add(menuItem);
+                            menuItem.PreviewMouseDown += (sender, args) => {
+                                var selected = (MenuItem)sender;
+                                SelectedItem = item;
+                                if (selected.FindVisualChild<Popup>()?.IsOpen != true) {
+                                    if (this.FindVisualChild<Popup>() is Popup p) p.IsOpen = false;
+                                }
+                            };
+                        }
+                    }
+                } else {
+                    if (WeatherList.Any(IsKunosWeather)) {
+                        list.Add(new HierarchicalGroup(ToolsStrings.Weather_Original,
+                                WeatherList.Where(IsKunosWeather)));
+                    }
+                    
+                    if (AllowWeatherByType && WeatherList.Any(x => x.Type != WeatherType.None)) {
+                        list.Add(new HierarchicalGroup(ControlsStrings.Weather_Group_ByType,
+                                WeatherList.Select(x => x.Type).ApartFrom(WeatherType.None).Distinct()
+                                        .Select(x => new WeatherTypeWrapped(x)).OrderBy(x => _weathersOrdered.IndexOf(x.TypeOpt))));
+                    }
 
-                if (WeatherList.Any(IsAbnWeather)) {
-                    list.Add(new HierarchicalGroup(@"AssettoByNight",
-                            WeatherList.Where(IsAbnWeather)));
-                }
+                    if (WeatherList.Any(IsSolWeather)) {
+                        list.Add(new HierarchicalGroup(@"Sol", WeatherList.Where(IsSolWeather)) {
+                            HeaderConverter = new GbwConverter()
+                        });
+                    }
 
-                if (WeatherList.Any(IsModWeather)) {
-                    list.Add(new HierarchicalGroup(ToolsStrings.Weather_Mods,
-                            WeatherList.Where(x => !IsKunosWeather(x) && !IsGbwWeather(x) && !IsA4SWeather(x))));
+                    if (WeatherList.Any(IsGbwWeather)) {
+                        list.Add(new HierarchicalGroup(@"GBW", WeatherList.Where(IsGbwWeather)) {
+                            HeaderConverter = new GbwConverter()
+                        });
+                    }
+
+                    if (WeatherList.Any(IsA4SWeather)) {
+                        list.Add(new HierarchicalGroup(@"A4S", WeatherList.Where(IsA4SWeather)));
+                    }
+
+                    if (WeatherList.Any(IsAbnWeather)) {
+                        list.Add(new HierarchicalGroup(@"AssettoByNight", WeatherList.Where(IsAbnWeather)));
+                    }
+
+                    if (WeatherList.Any(IsModWeather)) {
+                        list.Add(new HierarchicalGroup(ToolsStrings.Weather_Mods,
+                                WeatherList.Where(x => !IsKunosWeather(x) && !IsGbwWeather(x) && !IsA4SWeather(x))));
+                    }
                 }
             }
 

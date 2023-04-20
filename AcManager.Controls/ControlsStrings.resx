@@ -1115,4 +1115,7 @@ Depth mode: [b]{4}[/b]</value>
   <data name="AcSettings_System_OrbitMode" xml:space="preserve">
       <value>Orbit mode for F5 camera</value>
   </data>
+  <data name="Weather_Group_ByType" xml:space="preserve">
+      <value>By type</value>
+  </data>
 </root>

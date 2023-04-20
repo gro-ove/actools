@@ -286,6 +286,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     }
                 }
 
+                // return new TextBlock { Text = value.GetType().FullName };
                 return direct;
             }
 
@@ -404,7 +405,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private object GetItem(int offset) {
-            var items = Flatten(ItemsSource).Where(x => !(x is Separator)).ToList();
+            var items = Flatten(ItemsSource).Where(x => !(x is UIElement)).ToList();
             var current = SelectedItem;
             if (items.Count < 2) return current;
 

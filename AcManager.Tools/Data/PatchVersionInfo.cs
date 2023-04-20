@@ -7,6 +7,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.ContentInstallation;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
@@ -16,8 +18,10 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using xxHashSharp;
 
 namespace AcManager.Tools.Data {
@@ -45,6 +49,8 @@ namespace AcManager.Tools.Data {
 
         [JsonProperty("build")]
         public int Build { get; set; }
+        
+        public bool CustomBuild { get; set; }
 
         public long TotalSize => Size + ChunkSize;
 
@@ -67,7 +73,7 @@ namespace AcManager.Tools.Data {
             set => Apply(value, ref _isDownloaded);
         }
 
-        public bool AvailableToDownload => Size > 0;
+        public bool AvailableToDownload => Size > 0 || CustomBuild;
 
         private bool _isInstalled;
 
@@ -82,7 +88,7 @@ namespace AcManager.Tools.Data {
             public FileInfo File;
             public string Checksum;
             public long Length;
-            public DateTime LastWrite;
+            public DateTime InstalledLastWrite;
             public bool ToRecycle = true;
         }
 
@@ -98,6 +104,7 @@ namespace AcManager.Tools.Data {
 
             private readonly List<string> _directoriesToRemove = new List<string>();
             private readonly List<InstalledFile> _filesToRemove = new List<InstalledFile>();
+            public readonly List<string> LogLines = new List<string>();
 
             public InstallStage(string stageName, string modsDirectory, string[] forcedFiles) {
                 _stageName = stageName;
@@ -120,7 +127,7 @@ namespace AcManager.Tools.Data {
 
                 progress.Report($"Recycling modified {_stageName} files", 0.01);
                 var toRecycle = _filesToRemove.Where(x => x.File.Exists
-                        && ((x.File.LastWriteTime - x.LastWrite).TotalSeconds > 2d || x.Length != x.File.Length)).ToList();
+                        && (x.File.LastWriteTime - x.InstalledLastWrite).TotalSeconds > 60d).ToList();
                 Logging.Debug(
                         $"Changed files to recycle: {(toRecycle.Count == 0 ? @"none" : toRecycle.Select(x => $"\n• {x.File.FullName}").JoinToString(@";"))}");
 
@@ -130,16 +137,33 @@ namespace AcManager.Tools.Data {
                 if (data.Length > 0) {
                     using (var stream = new MemoryStream(data, false))
                     using (var archive = new ZipArchive(stream)) {
-                        if (_forcedFiles.Length > 0) {
-                            var split = progress.Split(0.2);
-                            ProcessForced(split.Item1, cancellation, archive);
-                            if (cancellation.IsCancellationRequested) return;
-                            progress = split.Item2;
-                        }
+                        if (archive.GetEntry(@"dwrite.dll") != null) {
+                            var subProgress = progress.Subrange(0.0, 0.9);
+                            for (var i = 0; i < archive.Entries.Count; i++) {
+                                var entry = archive.Entries[i];
+                                if (entry.FullName == @"dwrite.dll" || entry.FullName.StartsWith(@"extension/")) {
+                                    var relativePath = entry.FullName;
+                                    #if DEBUG
+                                    relativePath = relativePath.Replace(@"extension/", @"extension-debug/");
+                                    #endif
+                                    var destination = Path.GetFullPath(Path.Combine(AcRootDirectory.Instance.RequireValue, relativePath));
+                                    ExtractFile(archive.Entries[i], destination,
+                                            () => subProgress.Report($"Extracting {_stageName} file: {entry.Name}",
+                                                    i, archive.Entries.Count));
+                                }
+                            }
+                        } else {
+                            if (_forcedFiles.Length > 0) {
+                                var split = progress.Split(0.2);
+                                ProcessForced(split.Item1, cancellation, archive);
+                                if (cancellation.IsCancellationRequested) return;
+                                progress = split.Item2;
+                            }
 
-                        var subProgress = progress.Subrange(0.0, 0.9);
-                        for (var i = 0; i < archive.Entries.Count; i++) {
-                            ProcessZipEntry(archive.Entries[i], i, archive.Entries.Count, subProgress);
+                            var subProgress = progress.Subrange(0.0, 0.9);
+                            for (var i = 0; i < archive.Entries.Count; i++) {
+                                ProcessZipEntry(archive.Entries[i], i, archive.Entries.Count, subProgress);
+                            }
                         }
                     }
                 }
@@ -199,7 +223,6 @@ namespace AcManager.Tools.Data {
                 if (string.IsNullOrWhiteSpace(destination)) return;
 
                 var relative = FileUtils.GetRelativePath(destination, _patchLocation);
-
                 if (Path.GetFileName(entry.FullName) == string.Empty) {
                     Logging.Debug($"Creating directory: {destination}");
                     progressReport();
@@ -232,23 +255,25 @@ namespace AcManager.Tools.Data {
                         existing.ToRecycle = false;
                         if (existing.File.Exists && existing.Checksum == checksum) {
                             Logging.Debug($"Perfectly matches existing: {existing.File.FullName}");
-                            _installationLog?.WriteLine(@"file: " + relative + @":" + checksum + @":" + entry.Length +
-                                    @":" + existing.LastWrite.ToUnixTimestamp());
+                            if (entry.FullName != @"dwrite.dll") {
+                                _installationLog?.WriteLine(
+                                        $@"file: {relative}:{checksum}:{entry.Length}:{new FileInfo(destination).LastWriteTime.ToUnixTimestamp()}");
+                            }
                             return;
                         }
                         Logging.Debug($"Stop existing from recycling: {existing.File.FullName}");
                     } else {
-                        Logging.Debug($"New file: {entry.FullName}");
+                        Logging.Debug($"New file: {entry.FullName} ({destination})");
                     }
 
                     progressReport();
                     if (TryToDoAFile(() => {
                         Directory.CreateDirectory(Path.GetDirectoryName(destination) ?? "");
                         File.WriteAllBytes(destination, unpackedStream.ToArray());
-                        File.SetLastWriteTime(destination, entry.LastWriteTime.DateTime);
                     })) {
-                        _installationLog?.WriteLine(@"file: " + relative + @":" + checksum + @":" + entry.Length +
-                                @":" + entry.LastWriteTime.DateTime.ToUnixTimestamp());
+                        if (entry.FullName != @"dwrite.dll") {
+                            _installationLog?.WriteLine($@"file: {relative}:{checksum}:{entry.Length}:{new FileInfo(destination).LastWriteTime.ToUnixTimestamp()}");
+                        }
                     }
                 }
             }
@@ -329,6 +354,11 @@ namespace AcManager.Tools.Data {
                 _filesToRemove.Clear();
                 _directoriesToRemove.Clear();
             }
+
+            public void CombineWith(InstallStage stage) {
+                _filesToRemove.AddRange(stage._filesToRemove);
+                _directoriesToRemove.AddRange(stage._directoriesToRemove);
+            }
         }
 
         private class InstallVars {
@@ -372,11 +402,12 @@ namespace AcManager.Tools.Data {
                                         File = new FileInfo(Path.Combine(location, pieces[0].Trim())),
                                         Checksum = pieces[1].Trim(),
                                         Length = pieces[2].As(0L),
-                                        LastWrite = pieces[3].As(0L).ToDateTime(),
+                                        InstalledLastWrite = pieces[3].As(0L).ToDateTime(),
                                     });
                                 }
                                 break;
                         }
+                        fillingStage.LogLines.Add(line);
                     }
 
                     Logging.Debug($"Currently installed: v{InstalledVersion} ({InstalledBuild}), {PatchStage.ToRemoveLine()}");
@@ -472,98 +503,176 @@ namespace AcManager.Tools.Data {
         public AsyncCommand<CancellationToken?> InstallCommand => _installCommand ??
                 (_installCommand = new AsyncCommand<CancellationToken?>(c => PatchUpdater.Instance.InstallAsync(this, c ?? default)));
 
-        public async Task InstallAsync(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
+        public async Task InstallAsync(IProgress<AsyncProgressEntry> progress = null) {
             if (_installing) throw new InformativeException("Can’t update patch", "Another update is in process.");
             _installing = true;
 
-            try {
-                if (!AvailableToDownload) {
-                    throw new InformativeException("Can’t update patch", "This version is not available.");
-                }
-
-                _installing = true;
-                Logging.Debug($"Beginning patch installation, trying to install v{Version} ({Build})");
-
-                /*if (BuildInformation.IsDebugConfiguration) {
-                    Logging.Warning("Skipping installation in debug configuration");
-                } else {*/
-                var vars = new InstallVars();
-                vars.LoadValues(ref progress);
-
-                byte[] dataPatch;
-                if (Version != vars.InstalledVersion && Build != vars.InstalledBuild) {
-                    dataPatch = await CmApiProvider.GetPatchVersionAsync(Version, progress.Subrange(0.0, 0.3), cancellation);
-                    if (dataPatch == null) throw new InformativeException(ToolsStrings.AppUpdater_CannotLoad, ToolsStrings.Common_MakeSureInternetWorks);
-                    if (cancellation.IsCancellationRequested) return;
-                    Logging.Debug("Zipped patch ready: " + dataPatch.Length);
-                } else {
-                    dataPatch = null;
-                    Logging.Debug("Skipping patch stage");
-                }
-
-                byte[] dataChunk;
-                if (ChunkVersion == null) {
-                    dataChunk = new byte[0];
-                    Logging.Debug("No chunk needed");
-                } else if (ChunkVersion != vars.InstalledChunk) {
-                    dataChunk = await CmApiProvider.GetChunkVersionAsync(ChunkVersion, progress.Subrange(0.3, 0.5), cancellation);
-                    if (dataChunk == null) throw new InformativeException(ToolsStrings.AppUpdater_CannotLoad, ToolsStrings.Common_MakeSureInternetWorks);
-                    if (cancellation.IsCancellationRequested) return;
-                    Logging.Debug("Zipped chunk ready: " + dataChunk.Length);
-                } else {
-                    dataChunk = null;
-                    Logging.Debug("Skipping chunk stage");
-                }
-
-                await Task.Run(() => {
-                    Logging.Debug("Main folder created");
-                    Directory.CreateDirectory(PatchHelper.RequireRootDirectory());
-
-                    using (var installedLogStream = new MemoryStream()) {
-                        using (var installedLog = new StreamWriter(installedLogStream)) {
-                            installedLog.WriteLine(@"# Generated automatically during last patch installation via Content Manager.");
-                            installedLog.WriteLine(@"# Do not edit, unless have to for some reason.");
-
-                            installedLog.WriteLine(@"version: " + Version);
-                            installedLog.WriteLine(@"build: " + Build);
-                            if (dataPatch != null) {
-                                Logging.Debug("Running patch stage");
-                                vars.PatchStage.Run(dataPatch, installedLog, progress.Subrange(0.5, 0.245), cancellation);
-                            }
-
-                            installedLog.WriteLine(@"chunk: " + ChunkVersion);
-                            if (dataChunk != null) {
-                                Logging.Debug("Running chunk stage");
-                                vars.ChunkStage.Run(dataChunk, installedLog, progress.Subrange(0.75, 0.245), cancellation);
-                            }
-                        }
-                        File.WriteAllBytes(PatchHelper.TryGetInstalledLog() ?? string.Empty, installedLogStream.ToArray());
+            var installationEntry = new ContentInstallationEntry("Custom Shaders Patch", ContentInstallationParams.DefaultWithoutExecutables) {
+                FileIcon = AppIconService.GetAppIcon().ToImageSource(),
+                Version = Version,
+                Virtual = true,
+            };
+            using (var cancellationSource = new CancellationTokenSource()) {
+                var cancellation = cancellationSource.Token;
+                installationEntry.CancellationTokenSource = cancellationSource;
+                
+                var progressBak = progress;
+                progress = new Progress<AsyncProgressEntry>(p => {
+                    installationEntry.Progress = p;
+                    progressBak?.Report(p);
+                });
+                ContentInstallationManager.Instance.DownloadList.Add(installationEntry);
+                ContentInstallationManager.Instance.UpdateBusyStates();
+                
+                try {
+                    if (!AvailableToDownload) {
+                        throw new InformativeException("Can’t update patch", "This version is not available.");
                     }
 
-                    PatchHelper.Reload();
-                });
-                /*}*/
-            } finally {
-                _installing = false;
+                    _installing = true;
+                    Logging.Debug($"Beginning patch installation, trying to install v{Version} ({Build})");
+
+                    /*if (BuildInformation.IsDebugConfiguration) {
+                        Logging.Warning("Skipping installation in debug configuration");
+                    } else {*/
+                    var vars = new InstallVars();
+                    vars.LoadValues(ref progress);
+
+                    byte[] dataPatch;
+                    if (Version != vars.InstalledVersion && Build != vars.InstalledBuild) {
+                        dataPatch = await CmApiProvider.GetPatchVersionAsync(Version, LoadPreviewBuilds(), progress.Subrange(0.0, 0.3), cancellation);
+                        cancellation.ThrowIfCancellationRequested();
+                        if (dataPatch == null) {
+                            throw new InformativeException(ToolsStrings.AppUpdater_CannotLoad, ToolsStrings.Common_MakeSureInternetWorks);
+                        }
+                        Logging.Debug("Zipped patch ready: " + dataPatch.Length);
+                    } else {
+                        dataPatch = null;
+                        Logging.Debug("Skipping patch stage");
+                    }
+
+                    byte[] dataChunk;
+                    if (ChunkVersion == null) {
+                        dataChunk = new byte[0];
+                        Logging.Debug("No chunk needed");
+                    } else if (ChunkVersion != vars.InstalledChunk) {
+                        dataChunk = await CmApiProvider.GetChunkVersionAsync(ChunkVersion, progress.Subrange(0.3, 0.5), cancellation);
+                        cancellation.ThrowIfCancellationRequested();
+                        if (dataChunk == null) {
+                            throw new InformativeException(ToolsStrings.AppUpdater_CannotLoad, ToolsStrings.Common_MakeSureInternetWorks);
+                        }
+                        Logging.Debug("Zipped chunk ready: " + dataChunk.Length);
+                    } else {
+                        dataChunk = null;
+                        Logging.Debug("Skipping chunk stage");
+                    }
+
+                    installationEntry.CancellationTokenSource = null;
+                    await Task.Run(() => {
+                        Logging.Debug("Main folder created");
+                        Directory.CreateDirectory(PatchHelper.RequireRootDirectory());
+
+                        using (var installedLogStream = new MemoryStream()) {
+                            using (var installedLog = new StreamWriter(installedLogStream)) {
+                                installedLog.WriteLine(@"# Generated automatically during last patch installation via Content Manager.");
+                                installedLog.WriteLine(@"# Do not edit, unless you have to for some reason.");
+
+                                installedLog.WriteLine(@"version: " + Version);
+                                installedLog.WriteLine(@"build: " + Build);
+                                if (dataPatch != null) {
+                                    Logging.Debug("Running patch stage");
+                                    if (CustomBuild) {
+                                        vars.PatchStage.CombineWith(vars.ChunkStage);
+                                    }
+                                    vars.PatchStage.Run(dataPatch, installedLog, progress.Subrange(0.5, 0.245), cancellation);
+                                }
+
+                                if (!CustomBuild) {
+                                    if (dataChunk != null) {
+                                        Logging.Debug("Running chunk stage");
+                                        installedLog.WriteLine(@"chunk: " + ChunkVersion);
+                                        vars.ChunkStage.Run(dataChunk, installedLog, progress.Subrange(0.75, 0.245), cancellation);
+                                    } else {
+                                        foreach (var line in vars.ChunkStage.LogLines) {
+                                            installedLog.WriteLine(line);
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // TODO: If chunk is being reused, does it show up in InstalledLog?
+                            File.WriteAllBytes(PatchHelper.TryGetInstalledLog() ?? string.Empty, installedLogStream.ToArray());
+                        }
+
+                        PatchHelper.Reload();
+                    });
+                    /*}*/
+                } finally {
+                    _installing = false;
+                    ContentInstallationManager.Instance.DownloadList.Remove(installationEntry);
+                    ContentInstallationManager.Instance.UpdateBusyStates();
+                }
             }
         }
+
+        private static string ExtraVersionsFilename() {
+            return FilesStorage.Instance.GetFilename("CSP Previews.json");
+        }
+
+        public static event EventHandler NewPreviewBuild;
 
         [ItemNotNull]
         public static async Task<IReadOnlyCollection<PatchVersionInfo>> GetPatchManifestAsync(IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default) {
             try {
                 var t = await CmApiProvider.GetPatchDataAsync(CmApiProvider.PatchDataType.Manifest, string.Empty,
-                        TimeSpan.FromMinutes(30.0), progress, cancellation);
+                        TimeSpan.FromMinutes(30.0), LoadPreviewBuilds(), progress, cancellation);
                 if (t == null) {
                     throw new InformativeException(ToolsStrings.AppUpdater_CannotLoad, ToolsStrings.Common_MakeSureInternetWorks);
                 }
-                var result = JsonConvert.DeserializeObject<PatchVersionInfo[]>(await FileUtils.ReadAllTextAsync(t.Item1));
+                var result = JsonConvert.DeserializeObject<List<PatchVersionInfo>>(await FileUtils.ReadAllTextAsync(t.Item1));
                 result.ForEach(x => x.Changelog = ChangelogPrepare(x.Changelog));
+                foreach (var build in LoadPreviewBuilds()) {
+                    try {
+                        result.Add(new PatchVersionInfo {
+                            Build = build.Key,
+                            Version = build.Value[0],
+                            Url = build.Value[1],
+                            Tags = new string[] { "preview" },
+                            CustomBuild = true
+                        });
+                    } catch (Exception e) {
+                        Logging.Warning($"Failed to convert patch data: {e}");
+                    }
+                }
                 return result;
             } catch (Exception e) {
                 NonfatalError.NotifyBackground("Can’t load list of patch versions", ToolsStrings.ContentSyncronizer_CannotLoadContent_Commentary, e);
                 return new List<PatchVersionInfo>();
             }
+        }
+
+        private static Dictionary<int, string[]> _previewBuilds;
+
+        private static Dictionary<int, string[]> LoadPreviewBuilds() {
+            if (_previewBuilds != null) return _previewBuilds;
+            var filename = ExtraVersionsFilename();
+            try {
+                if (File.Exists(filename)) {
+                    return _previewBuilds = JsonConvert.DeserializeObject<Dictionary<int, string[]>>(File.ReadAllText(filename));
+                }
+            } catch (Exception e) {
+                Logging.Warning($"Failed to read CSP previews: {e}");
+            }
+           return _previewBuilds = new Dictionary<int, string[]>();
+        }
+
+        public static void RegisterPreviewBuild(int build, string version, string url) {
+            var filename = ExtraVersionsFilename();
+            var existingList = LoadPreviewBuilds();
+            existingList[build] = new[]{ version, url };
+            NewPreviewBuild?.Invoke(null, EventArgs.Empty);
+            File.WriteAllText(filename, JsonConvert.SerializeObject(existingList));
         }
 
         private static string TagRegexCallback(Match m) {

@@ -97,6 +97,10 @@ namespace AcTools.DataFile {
             started = -1;
         }
 
+        public void ParseAndReplace(string data) {
+            ParseString(data);
+        }
+
         protected override void ParseString([NotNull] string data) {
             if (IniFileMode == IniFileMode.ValuesWithSemicolons || IniFileMode == IniFileMode.SquareBracketsWithin) {
                 ParseStringWithSemicolons(data);

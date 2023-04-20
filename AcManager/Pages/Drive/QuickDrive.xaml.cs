@@ -1000,7 +1000,7 @@ namespace AcManager.Pages.Drive {
                         WindSpeedMax = RandomWindSpeed ? 40 : WindSpeedMax,
                     }, TrackState.ToProperties(), ExportToPresetData(), new object[] {
                         new WeatherSpecificDate(UseSpecificDate, SpecificDateValue),
-                        new WeatherDetails(RealWeather),
+                        new WeatherDetails(RealWeather, (SelectedWeather as WeatherTypeWrapped)?.Type),
                         TrackState.WeatherDefined ? new CustomTrackState(Path.Combine(weather?.Location ?? ".", "track_state.ini")) : null
                     });
                 } finally {

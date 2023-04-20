@@ -212,6 +212,10 @@ namespace AcManager.Tools {
                     case "csp/install":
                         return await ProcessCspInstall(custom.Params.Get(@"version"));
 
+                    case "csp/preview":
+                        return await ProcessShadersPatchBuild(custom.Params.Get(@"url"), custom.Params.Get(@"version"), 
+                                custom.Params.Get(@"build").As(0));
+
                     case "replay":
                         return await ProcessReplay(custom.Params.Get(@"url"), custom.Params.Get(@"uncompressed") == null);
 
@@ -363,6 +367,36 @@ namespace AcManager.Tools {
 
                 await PatchUpdater.Instance.InstallAsync(info, waiting.CancellationToken);
 
+                using (var model = PatchSettingsModel.Create()) {
+                    var item = model.Configs?
+                            .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.Sections.GetByIdOrDefault("BASIC")?
+                            .GetByIdOrDefault("ENABLED");
+                    if (item != null) {
+                        item.Value = @"1";
+                    }
+                }
+            }
+            return ArgumentHandleResult.Successful;
+        }
+
+        private static async Task<ArgumentHandleResult> ProcessShadersPatchBuild(string url, string version, int build) {
+            if (build <= 0) {
+                throw new Exception("Invalid build ID");
+            }
+            if (url.GetDomainNameFromUrl() != @"files.acstuff.ru") {
+                throw new Exception("This URL is not supported");
+            }
+            using (var waiting = new WaitingDialog("Installing CSP preview…")) {
+                PatchVersionInfo.RegisterPreviewBuild(build, version, url);
+                var versions = await PatchVersionInfo.GetPatchManifestAsync(null, waiting.CancellationToken);
+                if (waiting.CancellationToken.IsCancellationRequested) return ArgumentHandleResult.Failed;
+
+                var info = versions.FirstOrDefault(x => x.Version == version);
+                if (info == null) {
+                    throw new Exception($"Wrong parameter: version={version}, no such version");
+                }
+
+                await PatchUpdater.Instance.InstallAsync(info, waiting.CancellationToken);
                 using (var model = PatchSettingsModel.Create()) {
                     var item = model.Configs?
                             .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.Sections.GetByIdOrDefault("BASIC")?

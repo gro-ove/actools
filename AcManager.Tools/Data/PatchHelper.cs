@@ -51,6 +51,7 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureDualShockSupport = "PS4_DUALSHOCK_SUPPORT";
         public static readonly string FeatureDualSenseSupport = "PS5_DUALSENSE_SUPPORT";
         public static readonly string FeatureCarPreviews = "CAR_PREVIEWS";
+        public static readonly string FeatureSnow = "SNOW";
 
         public class AudioDescription : Displayable {
             public string Id { get; set; }
@@ -123,6 +124,8 @@ namespace AcManager.Tools.Data {
         private static BetterObservableCollection<AudioDescription> _audioDescriptions = new BetterObservableCollection<AudioDescription>();
         private static bool _audioDescriptionsSet;
         private static bool? _active;
+        private static bool? _wfxActive;
+        private static bool? _rfxActive;
 
         [CanBeNull]
         private static string TryToRead([CanBeNull] string filename) {
@@ -139,10 +142,17 @@ namespace AcManager.Tools.Data {
 
         [CanBeNull]
         public static IniFile TryGetConfig([NotNull] string configName) {
-            return _configs.GetValueOrSet(configName, () => IniFile.Parse(
-                    TryToRead(TryGetConfigFilename(configName))
-                            + Environment.NewLine
-                            + TryToRead(GetUserConfigFilename(configName))));
+            return _configs.GetValueOrSet(configName, () => {
+                var defaultCfg = IniFile.Parse(TryToRead(TryGetConfigFilename(configName)) ?? string.Empty);
+                var userCfg = IniFile.Parse(TryToRead(GetUserConfigFilename(configName)) ?? string.Empty);
+                foreach (var s in userCfg) {
+                    var d = defaultCfg[s.Key];
+                    foreach (var p in s.Value) {
+                        d.Set(p.Key, p.Value);
+                    }
+                }
+                return defaultCfg;
+            });
         }
 
         [CanBeNull]
@@ -225,6 +235,14 @@ namespace AcManager.Tools.Data {
 
         public static bool IsActive() {
             return (_active ?? (_active = GetActualConfigValue("general.ini", "BASIC", "ENABLED").As(false))).Value;
+        }
+
+        public static bool IsWeatherFxActive() {
+            return (_wfxActive ?? (_wfxActive = IsActive() && GetActualConfigValue("weather_fx.ini", "BASIC", "ENABLED").As(false))).Value;
+        }
+
+        public static bool IsRainFxActive() {
+            return (_rfxActive ?? (_rfxActive = IsActive() && GetActualConfigValue("rain_fx.ini", "BASIC", "ENABLED").As(false))).Value;
         }
 
         private static bool TestQuery(string query, bool emptyFallback = false) {
@@ -324,6 +342,8 @@ namespace AcManager.Tools.Data {
 
         public static void Reload() {
             _active = null;
+            _wfxActive = null;
+            _rfxActive = null;
             _configs.Clear();
             _featureSupported.Clear();
             _installed.Reset();

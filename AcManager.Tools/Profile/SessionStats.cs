@@ -416,11 +416,11 @@ namespace AcManager.Tools.Profile {
 
                 var physics = current.Physics;
                 var graphics = current.Graphics;
-                var info = current.StaticInfo;
 
                 /* set car ID if missing */
                 if (CarId == null) {
                     IniFile raceIni = null;
+                    var info = current.StaticInfo;
                     CarId = GetCarId(info, ref raceIni);
                     TrackId = GetTrackLayoutId(info, ref raceIni);
                     Penalties = info.PenaltiesEnabled == 1;

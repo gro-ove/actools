@@ -21,6 +21,16 @@ namespace AcTools.Utils.Helpers {
             return items?.Aggregate(0, (x, o) => (x * 397) ^ o.GetHashCode()) ?? 0;
         }
 
+        public static IEnumerable<TSource> SubsequentDistinct<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector) {
+            TKey last = default;
+            foreach (var item in source) {
+                var cur = keySelector(item);
+                if (Equals(last, cur)) continue;
+                last = cur;
+                yield return item;
+            }
+        }
+
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector) {
             return source.DistinctBy(keySelector, EqualityComparer<TKey>.Default);
         }

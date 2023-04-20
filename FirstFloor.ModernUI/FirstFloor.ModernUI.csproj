@@ -294,6 +294,7 @@
     <Compile Include="Windows\Converters\ToSentenceConverter.cs" />
     <Compile Include="Windows\Converters\ToSentenceMemberConverter.cs" />
     <Compile Include="Windows\Converters\ToThicknessConverter.cs" />
+    <Compile Include="Windows\Converters\TypeToBooleanConverter.cs" />
     <Compile Include="Windows\CubicBesierEase.cs" />
     <Compile Include="Windows\DragPopup.cs" />
     <Compile Include="Windows\DragPreview.cs" />
