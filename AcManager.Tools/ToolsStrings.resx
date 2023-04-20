@@ -896,49 +896,49 @@
     <value>Make sure Internet connection is available and nothing is going on in Data folder.</value>
   </data>
   <data name="Weather_LightThunderstorm" xml:space="preserve">
-    <value>Thunderstorm (light)</value>
+    <value>Light thunderstorm</value>
   </data>
   <data name="Weather_Thunderstorm" xml:space="preserve">
-    <value>Thunderstorm (medium)</value>
+    <value>Thunderstorm</value>
   </data>
   <data name="Weather_HeavyThunderstorm" xml:space="preserve">
-    <value>Thunderstorm (heavy)</value>
+    <value>Heavy thunderstorm</value>
   </data>
   <data name="Weather_LightDrizzle" xml:space="preserve">
-    <value>Drizzle (light)</value>
+    <value>Light drizzle</value>
   </data>
   <data name="Weather_Drizzle" xml:space="preserve">
-    <value>Drizzle (medium)</value>
+    <value>Drizzle</value>
   </data>
   <data name="Weather_HeavyDrizzle" xml:space="preserve">
-    <value>Drizzle (heavy)</value>
+    <value>Heavy drizzle</value>
   </data>
   <data name="Weather_LightRain" xml:space="preserve">
-    <value>Rain (light)</value>
+    <value>Light rain</value>
   </data>
   <data name="Weather_Rain" xml:space="preserve">
-    <value>Rain (medium)</value>
+    <value>Rain</value>
   </data>
   <data name="Weather_HeavyRain" xml:space="preserve">
-    <value>Rain (heavy)</value>
+    <value>Heavy rain</value>
   </data>
   <data name="Weather_LightSnow" xml:space="preserve">
-    <value>Snow (light)</value>
+    <value>Light snow</value>
   </data>
   <data name="Weather_Snow" xml:space="preserve">
-    <value>Snow (medium)</value>
+    <value>Snow</value>
   </data>
   <data name="Weather_HeavySnow" xml:space="preserve">
-    <value>Snow (heavy)</value>
+    <value>Heavy snow</value>
   </data>
   <data name="Weather_LightSleet" xml:space="preserve">
-    <value>Sleet (light)</value>
+    <value>Light sleet</value>
   </data>
   <data name="Weather_Sleet" xml:space="preserve">
-    <value>Sleet (medium)</value>
+    <value>Sleet</value>
   </data>
   <data name="Weather_HeavySleet" xml:space="preserve">
-    <value>Sleet (heavy)</value>
+    <value>Heavy sleet</value>
   </data>
   <data name="Weather_Clear" xml:space="preserve">
     <value>Clear</value>

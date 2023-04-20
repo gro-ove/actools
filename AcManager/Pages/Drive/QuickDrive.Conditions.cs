@@ -142,6 +142,8 @@ namespace AcManager.Pages.Drive {
 
             private object _selectedWeather;
 
+            public WeatherTypeWrapped SelectedWeatherWrapped => SelectedWeather as WeatherTypeWrapped;
+
             /// <summary>
             /// Null for random weather, WeatherObject for specific weather, WeatherTypeWrapped for weather-by-type.
             /// </summary>
@@ -153,10 +155,12 @@ namespace AcManager.Pages.Drive {
 
                     OnPropertyChanged(nameof(RoadTemperature));
                     OnPropertyChanged(nameof(RecommendedRoadTemperature));
+                    OnPropertyChanged(nameof(SelectedWeatherWrapped));
 
                     if (!RealConditions) {
                         SaveLater();
 
+                        if (PatchHelper.IsWeatherFxActive()) return;
                         if (value is WeatherObject weather) {
                             var diapason = weather.GetTimeDiapason();
                             var timeFits = diapason?.Contains(Time);
@@ -167,10 +171,10 @@ namespace AcManager.Pages.Drive {
                             } else {
                                 IsTimeOutOfWeatherRange = timeFits == false;
                             }
-                        } else if (value is WeatherTypeWrapped type && !WeatherManager.Instance.Enabled.Any(x => x.Fits(type.Type, Time, null))) {
+                        } else if (value is WeatherTypeWrapped type && !WeatherManager.Instance.Enabled.Any(x => x.Fits(type.TypeOpt, Time, null))) {
                             var diapason = Diapason.CreateTime(string.Empty);
                             var basicAdded = false;
-                            foreach (var d in WeatherManager.Instance.Enabled.Where(x => x.Fits(type.Type, null, null)).Select(x => x.GetTimeDiapason())) {
+                            foreach (var d in WeatherManager.Instance.Enabled.Where(x => x.Fits(type.TypeOpt, null, null)).Select(x => x.GetTimeDiapason())) {
                                 if (d != null) {
                                     diapason.CombineWith(d);
                                 } else if (!basicAdded) {

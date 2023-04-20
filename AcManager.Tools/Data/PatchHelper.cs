@@ -21,15 +21,15 @@ using StringBasedFilter.TestEntries;
 
 namespace AcManager.Tools.Data {
     public class PatchHelper {
-#if DEBUG
+#if DEBUG_
         public static string PatchDirectoryName = "extension-debug";
 #else
         public static string PatchDirectoryName = "extension";
 #endif
         
-        public static int MinimumTestOnlineVersion { get; } = 1061;
+        public static int MinimumTestOnlineVersion => 1061;
 
-        public static int NonExistentVersion { get; } = 999999;
+        public static int NonExistentVersion => 999999;
 
         public static readonly string FeatureTestOnline = "CSP_TEST_ONLINE";
         public static readonly string FeatureFullDay = "CONDITIONS_24H";

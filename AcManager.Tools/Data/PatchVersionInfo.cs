@@ -144,7 +144,7 @@ namespace AcManager.Tools.Data {
                                 if (entry.FullName == @"dwrite.dll" || entry.FullName.StartsWith(@"extension/")) {
                                     var relativePath = entry.FullName;
                                     #if DEBUG
-                                    relativePath = relativePath.Replace(@"extension/", @"extension-debug/");
+                                    relativePath = relativePath.Replace(@"extension/", PatchHelper.PatchDirectoryName + @"/");
                                     #endif
                                     var destination = Path.GetFullPath(Path.Combine(AcRootDirectory.Instance.RequireValue, relativePath));
                                     ExtractFile(archive.Entries[i], destination,

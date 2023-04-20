@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Numerics;
@@ -20,33 +19,45 @@ namespace AcManager.Tools.Data {
         public string ControllerSettings { get; }
 
         private WeatherFxControllerData _controllerRef;
+        private string _controllerName;
 
         [CanBeNull]
         public WeatherFxControllerData ControllerRef => ControllerId == null ? null 
                 : _controllerRef ?? (_controllerRef = WeatherFxControllerData.Items.GetByIdOrDefault(ControllerId));
 
-        public WeatherTypeWrapped(WeatherType type, bool shortName = false) {
+        public WeatherTypeWrapped(WeatherType type) {
             TypeOpt = type;
             DisplayName = type.GetDescription();
-            if (shortName) {
-                DisplayName = DisplayName.Split(new[] { '(' }, 2, StringSplitOptions.None)[0].TrimEnd();
-            }
         }
 
         public WeatherTypeWrapped(WeatherFxControllerData controller) {
             TypeOpt = WeatherType.None;
-            DisplayName = controller.DisplayName;
             ControllerId = controller.Id;
             ControllerSettings = null;
             _controllerRef = controller;
+            _controllerName = controller.DisplayName;
+            DisplayName = $"Dynamic: {_controllerName}";
         }
 
-        public WeatherTypeWrapped(string controllerId, string controllerSettings) {
+        public WeatherTypeWrapped(string controllerId, string controllerName, string controllerSettings) {
             TypeOpt = WeatherType.None;
             ControllerId = controllerId;
             ControllerSettings = controllerSettings;
             _controllerRef = WeatherFxControllerData.Items.GetByIdOrDefault(controllerId);
-            DisplayName = ControllerRef?.DisplayName ?? AcStringValues.NameFromId(controllerId);
+            if (_controllerRef != null) {
+                _controllerRef.DeserializeSettings(controllerSettings);
+            }
+            _controllerName = ControllerRef?.DisplayName ?? controllerName;
+            DisplayName = $"Dynamic: {_controllerName}";
+        }
+
+        public void RefreshReference() {
+            if (ControllerId != null && _controllerRef == null) {
+                _controllerRef = WeatherFxControllerData.Items.GetByIdOrDefault(ControllerId);
+                if (_controllerRef != null) {
+                    OnPropertyChanged(nameof(ControllerRef));
+                }
+            }
         }
 
         public bool Equals(WeatherTypeWrapped other) {
@@ -92,7 +103,9 @@ namespace AcManager.Tools.Data {
         [CanBeNull]
         public static string Serialize([CanBeNull] object obj) {
             if (obj is WeatherTypeWrapped wrapped) {
-                if (wrapped.ControllerId != null) return $@"*${wrapped.ControllerId}:{wrapped.ControllerRef?.SerializeSettings() ?? wrapped.ControllerSettings}";
+                if (wrapped.ControllerId != null) {
+                    return $"*${wrapped.ControllerId}\t{wrapped._controllerName.Replace("\t", " ")}\t{wrapped.ControllerRef?.SerializeSettings() ?? wrapped.ControllerSettings}";
+                }
                 return $@"*{((int)wrapped.TypeOpt).ToInvariantString()}";
             }
             return (obj as WeatherObject)?.Id;
@@ -107,12 +120,11 @@ namespace AcManager.Tools.Data {
             if (serialized.StartsWith(@"*")) {
                 try {
                     if (serialized.StartsWith(@"*$")) {
-                        var separator = serialized.IndexOf(@":", 2, StringComparison.Ordinal);
-                        if (separator == -1) {
+                        var pieces = serialized.Substring(2).Split(new []{ '\t' }, 3, StringSplitOptions.None);
+                        if (pieces.Length != 3) {
                             return null;
                         }
-                        return new WeatherTypeWrapped(serialized.Substring(2, separator - 2), 
-                                serialized.Substring(separator + 1));
+                        return new WeatherTypeWrapped(pieces[0], pieces[1], pieces[2]);
                     }
 
                     return new WeatherTypeWrapped((WeatherType)(FlexibleParser.TryParseInt(serialized.Substring(1)) ?? 0));
@@ -123,6 +135,14 @@ namespace AcManager.Tools.Data {
             }
 
             return WeatherManager.Instance.GetById(serialized);
+        }
+
+        public void PublishSettings() {
+            if (ControllerRef is WeatherFxControllerData controller) {
+                controller.PublishSettings();
+            } else {
+                WeatherFxControllerData.PublishGenSettings(ControllerId, ControllerSettings);
+            }
         }
     }
 }

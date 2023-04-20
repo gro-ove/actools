@@ -168,6 +168,10 @@ namespace AcManager.Pages.Drive {
         private DispatcherTimer _realConditionsTimer;
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
+            if (Model.SelectedWeather is WeatherTypeWrapped w) {
+                w.RefreshReference();
+            }
+            
             if (_realConditionsTimer != null) return;
 
             _realConditionsTimer = new DispatcherTimer();
@@ -1000,7 +1004,8 @@ namespace AcManager.Pages.Drive {
                         WindSpeedMax = RandomWindSpeed ? 40 : WindSpeedMax,
                     }, TrackState.ToProperties(), ExportToPresetData(), new object[] {
                         new WeatherSpecificDate(UseSpecificDate, SpecificDateValue),
-                        new WeatherDetails(RealWeather, (SelectedWeather as WeatherTypeWrapped)?.Type),
+                        new WeatherDetails(RealWeather, SelectedWeather as WeatherTypeWrapped, 
+                                WeatherFxControllerData.Items.FirstOrDefault(x => x.IsSelectedAsBase)?.Id),
                         TrackState.WeatherDefined ? new CustomTrackState(Path.Combine(weather?.Location ?? ".", "track_state.ini")) : null
                     });
                 } finally {

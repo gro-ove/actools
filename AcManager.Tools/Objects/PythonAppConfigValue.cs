@@ -239,7 +239,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private static Func<IPythonAppConfigValueProvider, bool> CreateDisabledFunc(string query, bool invert, Func<string, string> unwrap) {
+        public static Func<IPythonAppConfigValueProvider, bool> CreateDisabledFunc(string query, bool invert, Func<string, string> unwrap) {
             query = Regex.Replace(query, @"\b(and|or|not)\b", m => {
                 switch (m.Value) {
                     case "and":

@@ -23,6 +23,8 @@ namespace AcTools.Processes {
             file["REPLAY"].Set("ACTIVE", false);
             file["REMOTE"].Set("ACTIVE", false);
             file["RESTART"].Set("ACTIVE", false);
+            file["LIGHTING"].Remove("__CM_WEATHER_TYPE");
+            file["LIGHTING"].Remove("__CM_WEATHER_CONTROLLER");
 
             file.RemoveSections("CAR", 1); // because CAR_0 is a player’s car
             file.RemoveSections("SESSION");

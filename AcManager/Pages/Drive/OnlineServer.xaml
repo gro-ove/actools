@@ -502,6 +502,8 @@
                     </TextBlock.Text>
                   </TextBlock>
                   <c:TemperatureBlock c:PropertiesGrid.Label="Road:" Text="{Binding RoadTemperature, TargetNullValue='?'}" Background="Transparent" />
+                  <!-- TODO: Buggy resharper -->
+                  <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                   <TextBlock c:PropertiesGrid.Label="Grip:" Text="{Binding Grip, StringFormat='{}{0:F1}%'}" Background="Transparent"
                       Visibility="{Binding Grip.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <TextBlock.ToolTip>

@@ -467,7 +467,13 @@
               c:ToolTips.Weather="{Binding SelectedWeatherObject}" />
         </StackPanel>
 
-        <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding ManualConditions}">
+        <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1">
+          <StackPanel.IsEnabled>
+            <MultiBinding Converter="{StaticResource AndConverter}">
+              <Binding Path="ManualConditions" />
+              <Binding Path="SelectedWeatherWrapped.ControllerRef.FollowsSelectedTemperature" FallbackValue="True" />
+            </MultiBinding>
+          </StackPanel.IsEnabled>
           <DockPanel>
             <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
               <c:ModernPopup Padding="16 12 16 16">
@@ -583,7 +589,14 @@
           <!--<ComboBox Margin="4 0 4 0" ItemsSource="{Binding TrackPropertiesPresets}" SelectedItem="{Binding SelectedTrackPropertiesPreset}" />-->
         </StackPanel>
 
-        <DockPanel Grid.Row="1" Grid.Column="2" Background="Transparent" IsEnabled="{Binding ManualWind}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+        <DockPanel Grid.Row="1" Grid.Column="2" Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
+          <DockPanel.IsEnabled>
+            <MultiBinding Converter="{StaticResource AndConverter}">
+              <Binding Path="ManualWind" />
+              <Binding Path="SelectedWeatherWrapped.ControllerRef.FollowsSelectedWind" FallbackValue="True" />
+            </MultiBinding>
+          </DockPanel.IsEnabled>
+          
           <DockPanel.ContextMenu>
             <ContextMenu>
               <MenuItem Header="{x:Static g:AppStrings.QuickDrive_Wind_MetersPerSecond}" IsCheckable="True" IsChecked="{mui:Stored windSpeedInMetersPerSecond}" />

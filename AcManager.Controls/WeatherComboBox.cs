@@ -1,7 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,7 +17,6 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
@@ -72,6 +72,8 @@ namespace AcManager.Controls {
             if (!_loaded) return;
             WeakEventManager<IBaseAcObjectObservableCollection, EventArgs>.RemoveHandler(WeatherManager.Instance.WrappersList,
                     nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
+            WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>.RemoveHandler(WeatherFxControllerData.Items,
+                    nameof(INotifyCollectionChanged.CollectionChanged), OnWeatherControllersUpdated);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs) {
@@ -81,6 +83,9 @@ namespace AcManager.Controls {
             UpdateHierarchicalWeatherList().Ignore();
             WeakEventManager<IBaseAcObjectObservableCollection, EventArgs>.AddHandler(WeatherManager.Instance.WrappersList,
                     nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
+            WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>.AddHandler(WeatherFxControllerData.Items,
+                    nameof(INotifyCollectionChanged.CollectionChanged), OnWeatherControllersUpdated);
+            UpdateReferences();
         }
 
         private readonly Busy _updateBusy = new Busy();
@@ -230,6 +235,26 @@ namespace AcManager.Controls {
             Source = new Uri("/AcManager.Controls;component/Assets/AcSettingsSpecific.xaml", UriKind.Relative)
         });
 
+        protected override bool IsItemPresent(IList newValue, object item) {
+            if (item is WeatherTypeWrapped w && w.ControllerId != null && PatchHelper.IsWeatherFxActive()) {
+                return true;
+            }
+            return base.IsItemPresent(newValue, item);
+        }
+
+        private WeatherType _lastWeatherType = WeatherType.Clear;
+
+        protected override void OnSelectedItemChanged(object oldValue, object newValue) {
+            base.OnSelectedItemChanged(oldValue, newValue);
+            if (newValue is WeatherTypeWrapped w) {
+                if (w.TypeOpt != WeatherType.None) {
+                    _lastWeatherType = w.TypeOpt;
+                } else {
+                    UpdateReferences();
+                }
+            }
+        }
+
         private async Task UpdateHierarchicalWeatherList() {
             if (!_loaded) return;
             await WeatherManager.Instance.EnsureLoadedAsync();
@@ -264,7 +289,8 @@ namespace AcManager.Controls {
                     }
                     
                     var items = WeatherFxControllerData.Items;
-                    var baseItems = items.Where(x => x.FollowsLauncher).ToList();
+                    var baseItems = items.Where(x => x.FollowsSelectedWeather)
+                            .Select(x => new WeatherTypeWrapped(x)).ToList();
                     if (baseItems.Count > 1) {
                         weathers = weathers.Append(new Separator());
                         weathers = weathers.Append(new TextBlock { 
@@ -273,12 +299,28 @@ namespace AcManager.Controls {
                         });
 
                         weathers = weathers.Concat(baseItems.Select(x => {
-                            var menuItem = new MenuItem { Header = x.DisplayName, IsCheckable = true, IsChecked = false, StaysOpenOnClick = true };
+                            var menuItem = new MenuItem {
+                                Header = x.ControllerRef?.DisplayName ?? x.DisplayName, 
+                                ToolTip = x.ControllerRef?.GetToolTip(),
+                                IsCheckable = true, 
+                                StaysOpenOnClick = true
+                            };
                             menuItem.SetBinding(MenuItem.IsCheckedProperty, new Binding {
                                 Path = new PropertyPath(nameof(WeatherFxControllerData.IsSelectedAsBase)),
-                                Converter = new BooleanToVisibilityConverter(),
-                                Source = x
+                                Source = x.ControllerRef,
+                                Mode = BindingMode.OneWay
                             });
+                            menuItem.Click += (s, a) => {
+                                a.Handled = true;
+                                if (x.ControllerRef != null) {
+                                    x.ControllerRef.IsSelectedAsBase = true;
+                                    var item = Flatten(ItemsSource).OfType<WeatherTypeWrapped>()
+                                            .FirstOrDefault(y => y.TypeOpt == _lastWeatherType);
+                                    if (item != null) {
+                                        SelectedItem = item;
+                                    }
+                                }
+                            };
                             return menuItem;
                         }));
                     }
@@ -289,11 +331,12 @@ namespace AcManager.Controls {
                     list.Add(new WeatherTypeWrapped(WeatherType.OvercastClouds));
                     list.Add(new WeatherTypeWrapped(WeatherType.Fog));
                     if (PatchHelper.IsRainFxActive()) {
-                        list.Add(new WeatherTypeWrapped(WeatherType.Rain, true));
+                        list.Add(new WeatherTypeWrapped(WeatherType.Rain));
                     }
                     list.Add(new HierarchicalGroup("More", weathers));
 
-                    var dynamicItems = items.Where(x => !x.FollowsLauncher).ToList();
+                    var dynamicItems = items.Where(x => !x.FollowsSelectedWeather)
+                            .Select(x => new WeatherTypeWrapped(x)).ToList();
                     if (dynamicItems.Count > 0) {
                         list.Add(new Separator());
                         list.Add(new TextBlock { 
@@ -301,31 +344,38 @@ namespace AcManager.Controls {
                             Margin = new Thickness(-20d, 0d, 0d, 0d) 
                         });
 
-                        var liveItems = new[] {
-                            Tuple.Create("Live", "base-live", "Loads real weather live."),
-                            Tuple.Create("Live Alt", "sol", "Something else for an example."),
-                        }.Select((x, i) => new MenuItem {
-                            Header = x.Item1,
-                            ToolTip = x.Item3,
-                            Style = (Style)SettingsDictionary["WeatherLiveControllerMenuItem"],
-                            ItemsSource = new [] { WfxControllerEditor(x.Item2) }
-                        }).ToList();
                         foreach (var item in dynamicItems) {
-                            var menuItem = new MenuItem {
-                                Header = item.DisplayName,
-                                ToolTip = item.Description,
-                                Style = (Style)SettingsDictionary["WeatherLiveControllerMenuItem"],
-                                ItemsSource = new[] { item.Config }
-                            };
+                            if (item.ControllerRef == null) continue;
+                            if (item.ControllerRef.Config != null) {
+                                var editor = new ContentControl {
+                                    ContentTemplate = (DataTemplate)SettingsDictionary[item.ControllerRef.Config.Sections.Count == 1 
+                                            ? "PythonAppConfig.Compact.InlineSingle" : "PythonAppConfig.Compact.Inline"],
+                                    Content = item.ControllerRef.Config
+                                };
+                                editor.MouseUp += (sender, args) => {
+                                    if (args.ChangedButton == MouseButton.Left) {
+                                        args.Handled = true;
+                                    }
+                                };
                             
-                            list.Add(menuItem);
-                            menuItem.PreviewMouseDown += (sender, args) => {
-                                var selected = (MenuItem)sender;
-                                SelectedItem = item;
-                                if (selected.FindVisualChild<Popup>()?.IsOpen != true) {
-                                    if (this.FindVisualChild<Popup>() is Popup p) p.IsOpen = false;
-                                }
-                            };
+                                var menuItem = new MenuItem {
+                                    Header = item.DisplayName,
+                                    ToolTip = item.ControllerRef.GetToolTip(),
+                                    Style = (Style)SettingsDictionary["WeatherLiveControllerMenuItem"],
+                                    ItemsSource = new[] { editor }
+                                };
+                                menuItem.PreviewMouseDown += (sender, args) => {
+                                    var selected = (MenuItem)sender;
+                                    SelectedItem = item;
+                                    if (selected.FindVisualChild<Popup>()?.IsOpen != true) {
+                                        if (this.FindVisualChild<Popup>() is Popup p) p.IsOpen = false;
+                                    }
+                                };
+                                
+                                list.Add(menuItem);
+                            } else {
+                                list.Add(item);
+                            }
                         }
                     }
                 } else {
@@ -372,6 +422,17 @@ namespace AcManager.Controls {
 
         private void OnWeatherListUpdated(object sender, EventArgs e) {
             UpdateHierarchicalWeatherList().Ignore();
+        }
+
+        private void UpdateReferences() {
+            if (SelectedItem is WeatherTypeWrapped w) {
+                w.RefreshReference();
+            }
+        }
+
+        private void OnWeatherControllersUpdated(object sender, EventArgs e) {
+            UpdateHierarchicalWeatherList().Ignore();
+            UpdateReferences();
         }
         #endregion
     }

@@ -57,7 +57,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             return new CopyCallback(info => {
                 var filename = info.Key;
 #if DEBUG
-                filename = filename.Replace("extension", "extension-debug");
+                filename = filename.Replace("extension", PatchHelper.PatchDirectoryName);
 #endif
 
                 if (path != string.Empty && !FileUtils.IsAffectedBy(filename, path)

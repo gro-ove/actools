@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -10,11 +11,13 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Data {
     public sealed class WeatherFxControllerData : Displayable, IWithId {
-        private static BetterObservableCollection<WeatherFxControllerData> _items = new BetterObservableCollection<WeatherFxControllerData>();
+        private static readonly BetterObservableCollection<WeatherFxControllerData> ItemsList = new BetterObservableCollection<WeatherFxControllerData>();
 
         public static BetterObservableCollection<WeatherFxControllerData> Items {
             get {
@@ -22,40 +25,61 @@ namespace AcManager.Tools.Data {
                     _initialized = true;
                     Initialize();
                 }
-                return _items;
+                return ItemsList;
             }
         }
 
         private static bool _initialized;
 
         private static string ControllersDirectory() {
-            return Path.Combine(AcRootDirectory.Instance.RequireValue, PatchHelper.PatchDirectoryName, "weather-controllers");
+            return Path.Combine(AcRootDirectory.Instance.RequireValue, PatchHelper.PatchDirectoryName, @"weather-controllers");
         }
 
         private static void Initialize() {
-            PatchHelper.Reloaded += (sender, args) => Rescan();
-            Rescan();
+            PatchHelper.Reloaded += (sender, args) => Rescan().Ignore();
+            Rescan().Ignore();
         }
 
-        private static void Rescan() {
-            var oldItems = Items.ToList();
-            Items.ReplaceEverythingBy_Direct(Directory.GetDirectories(ControllersDirectory()).Select(x => {
-                var id = Path.GetFileName(x);
-                var oldItem = oldItems.GetByIdOrDefault(id);
-                if (oldItem != null) {
-                    oldItem.RefreshData();
-                    return oldItem;
-                }
-                if (File.Exists(Path.Combine(x, "controller.lua"))) {
-                    return new WeatherFxControllerData(Path.GetFileName(x));
-                }
-                return null;
-            }).NonNull());
+        private static bool _updating;
+        private static bool _needsAnotherUpdate;
 
+        private static async Task Rescan() {
+            if (_updating) {
+                _needsAnotherUpdate = true;
+                return;
+            }
+            _updating = true;
 
-            var selected = ValuesStorage.Get<string>(_settingsBaseKey) ?? "default";
-            if ((Items.GetByIdOrDefault(selected) ?? Items.FirstOrDefault(x => x.FollowsLauncher)) is WeatherFxControllerData item) {
-                item.IsSelectedAsBase = true;
+            try {
+                var oldItems = Items.ToList();
+                var newList = await Task.Run(() => Directory.GetDirectories(ControllersDirectory()).Select(x => {
+                    var id = Path.GetFileName(x);
+                    var oldItem = oldItems.GetByIdOrDefault(id);
+                    if (oldItem != null) {
+                        oldItem.RefreshData();
+                        return oldItem;
+                    }
+                    if (File.Exists(Path.Combine(x, "controller.lua"))) {
+                        return new WeatherFxControllerData(Path.GetFileName(x));
+                    }
+                    return null;
+                }).NonNull().ToList());
+                if (Items.Count > 0 || newList.Count > 0) {
+                    Items.ReplaceEverythingBy_Direct(newList);
+
+                    var selected = ValuesStorage.Get<string>(_settingsBaseKey) ?? @"base";
+                    var selectedItem = Items.GetByIdOrDefault(selected) ?? Items.FirstOrDefault(x => x.FollowsSelectedWeather);
+                    if (selectedItem != null) {
+                        selectedItem.IsSelectedAsBase = true;
+                    }
+                }
+            } catch (Exception e) {
+                Logging.Error($"Failed to update WeatherFX controllers: {e}");
+            }
+            _updating = false;
+            if (_needsAnotherUpdate) {
+                _needsAnotherUpdate = false;
+                Rescan().Ignore();
             }
         }
 
@@ -68,13 +92,31 @@ namespace AcManager.Tools.Data {
         [CanBeNull]
         public string Version { get;  set; }
 
-        public bool FollowsLauncher { get;  set; }
+        public bool FollowsSelectedWeather { get;  set; }
+
+        private Func<IPythonAppConfigValueProvider, bool> _followsSelectedTemperatureQuery;
+        private Func<IPythonAppConfigValueProvider, bool> _followsSelectedWindQuery;
+        
+        private bool _followsSelectedTemperature;
+
+        public bool FollowsSelectedTemperature {
+            get => _followsSelectedTemperature;
+            set => Apply(value, ref _followsSelectedTemperature);
+        }
+
+        private bool _followsSelectedWind;
+
+        public bool FollowsSelectedWind {
+            get => _followsSelectedWind;
+            set => Apply(value, ref _followsSelectedWind);
+        }
 
         private bool _isSelectedAsBase;
 
         public bool IsSelectedAsBase {
             get => _isSelectedAsBase;
             set => Apply(value, ref _isSelectedAsBase, () => {
+                if (!value) return;
                 foreach (var item in Items) {
                     if (item != this) {
                         item.IsSelectedAsBase = false;
@@ -88,31 +130,11 @@ namespace AcManager.Tools.Data {
         private string _settingsKey;
         private string _userSettingsFilename;
 
-        public void RefreshData() {
-            var directory = Path.Combine(ControllersDirectory(), Id);
-            var manifest = Path.Combine(directory, "manifest.ini");
-
-            var fallbackName = AcStringValues.NameFromId(Id, true);
-            if (File.Exists(manifest)) {
-                var about = new IniFile(manifest)["ABOUT"];
-                DisplayName = about.GetNonEmpty("NAME", fallbackName);
-                Author = about.GetNonEmpty("AUTHOR");
-                Version = about.GetNonEmpty("VERSION");
-                Description = about.GetNonEmpty("DESCRIPTION");
-                FollowsLauncher = about.GetBool("FOLLOWS_LAUNCHER", true);
-            } else {
-                DisplayName = fallbackName;
-                FollowsLauncher = true;
-            }
-        }
-
         public WeatherFxControllerData(string id) {
             Id = id;
 
-            RefreshData();
             _settingsKey = $@".wfx-ctr.{id}";
-            _userSettingsFilename = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), PatchHelper.PatchDirectoryName,
-                    @"state\lua\wfx_controller", $@"{id}__settings.ini");
+            _userSettingsFilename = GetUserSettingsFilename(id);
             var directory = Path.Combine(ControllersDirectory(), Id);
             Config = new PythonAppConfigs(new PythonAppConfigParams(directory) {
                 FilesRelativeDirectory = AcRootDirectory.Instance.RequireValue,
@@ -130,17 +152,68 @@ namespace AcManager.Tools.Data {
 
             if (Config != null) {
                 var settings = ValuesStorage.Get<string>(_settingsKey);
+                Logging.Debug("_settingsKey=" + _settingsKey);
+                Logging.Debug("settings=" + settings);
                 if (!string.IsNullOrEmpty(settings)) {
                     Config.Import(settings);
                 }
                 var busy = new Busy();
-                Config.ValueChanged += (sender, args) => busy.DoDelay(OnConfigChange, 200);
+                Config.ValueChanged += (sender, args) => {
+                    busy.DoDelay(OnConfigChange, 200);
+                    RefreshQueries();
+                };
             }
+            
+            RefreshData();
+        }
+
+        private static Func<IPythonAppConfigValueProvider, bool> ParseQuery(string query, out bool fixedValue) {
+            if (query?.Length > 1) {
+                fixedValue = true;
+                return PythonAppConfigValue.CreateDisabledFunc(query, false, x => x);
+            }
+            fixedValue = query.As(true);
+            return null;
+        }
+
+        public void RefreshData() {
+            var directory = Path.Combine(ControllersDirectory(), Id);
+            var manifest = Path.Combine(directory, "manifest.ini");
+
+            var fallbackName = AcStringValues.NameFromId(Id, true);
+            if (File.Exists(manifest)) {
+                var about = new IniFile(manifest)["ABOUT"];
+                DisplayName = about.GetNonEmpty("NAME", fallbackName);
+                Author = about.GetNonEmpty("AUTHOR");
+                Version = about.GetNonEmpty("VERSION");
+                Description = about.GetNonEmpty("DESCRIPTION");
+                FollowsSelectedWeather = about.GetBool("FOLLOWS_SELECTED_WEATHER", true);
+                _followsSelectedTemperatureQuery = ParseQuery(about.GetNonEmpty("FOLLOWS_SELECTED_TEMPERATURE"), out _followsSelectedTemperature);
+                _followsSelectedWindQuery = ParseQuery(about.GetNonEmpty("FOLLOWS_SELECTED_WIND"), out _followsSelectedWind);
+                RefreshQueries();
+            } else {
+                DisplayName = fallbackName;
+                FollowsSelectedWeather = true;
+                FollowsSelectedTemperature = true;
+            }
+        }
+
+        private void RefreshQueries() {
+            if ((_followsSelectedTemperatureQuery != null || _followsSelectedWindQuery != null) && Config != null) {
+                var provider = new PythonAppConfigProvider(Config);
+                FollowsSelectedTemperature = _followsSelectedTemperatureQuery?.Invoke(provider) != false;
+                FollowsSelectedWind = _followsSelectedWindQuery?.Invoke(provider) != false;
+            }
+        }
+
+        private static string GetUserSettingsFilename(string id) {
+            return Path.Combine(AcPaths.GetDocumentsCfgDirectory(), PatchHelper.PatchDirectoryName,
+                    @"state\lua\wfx_controller", $@"{id}__settings.ini");
         }
 
         private void OnConfigChange() {
             if (Config == null) return;
-            ValuesStorage.Set(_settingsKey, Config.Export());
+            ValuesStorage.Set(_settingsKey, SerializeSettings());
         }
 
         public string Id { get; }
@@ -150,7 +223,7 @@ namespace AcManager.Tools.Data {
 
         [CanBeNull]
         public string SerializeSettings() {
-            return Config?.Export().ToString();
+            return Config?.Export().ToString().Replace("\r", "").Trim();
         }
 
         public void DeserializeSettings(string data) {
@@ -159,7 +232,22 @@ namespace AcManager.Tools.Data {
 
         public void PublishSettings() {
             if (Config == null) return;
-            File.WriteAllText(_userSettingsFilename, Config.Export().ToString());
+            FileUtils.EnsureFileDirectoryExists(_userSettingsFilename);
+            File.WriteAllText(_userSettingsFilename, SerializeSettings() ?? string.Empty);
+        }
+
+        public static void PublishGenSettings(string id, string data) {
+            Logging.Debug("Storing WeatherFX settings: " + id + ", " + data);
+            var filename = GetUserSettingsFilename(id);
+            FileUtils.EnsureFileDirectoryExists(filename);
+            File.WriteAllText(filename, data);
+        }
+
+        public BbCodeBlock GetToolTip() {
+            if (Description == null) return null;
+            return new BbCodeBlock {
+                Text = $"Author: [b]{Author ?? "?"}[/b]\nVersion: [b]{Version ?? "?"}[/b]\n{Description}"
+            };
         }
     }
 }

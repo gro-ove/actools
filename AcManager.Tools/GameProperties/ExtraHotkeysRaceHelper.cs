@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using AcManager.Internal;
+using AcManager.Tools.Data;
 using AcManager.Tools.GameProperties.InGameApp;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.DirectInput;
@@ -554,7 +555,7 @@ namespace AcManager.Tools.GameProperties {
                 }
 
                 var supportedByPatchFilename = Path.Combine(AcRootDirectory.Instance.RequireValue,
-                        @"extension", @"config", @"data_hotkeys_supported.txt");
+                        PatchHelper.PatchDirectoryName, @"config", @"data_hotkeys_supported.txt");
                 var supportedByPatch = File.Exists(supportedByPatchFilename) ? File.ReadAllLines(supportedByPatchFilename) : new string[0];
 
                 foreach (var n in AcSettingsHolder.Controls.SystemButtonKeys) {

@@ -129,6 +129,8 @@
 
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_General_ValuesSavingTimeLabel}" />
+          <!-- TODO: Buggy resharper -->
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
           <mui:PlaceholderTextBlock Placeholder="?"
               Text="{Binding PreviousSaveTime.Value.TotalMilliseconds, Source={x:Static mui:ValuesStorage.Storage},
                   StringFormat={x:Static g:AppStrings.Common_MillisecondsFormat}, Mode=OneWay}" />

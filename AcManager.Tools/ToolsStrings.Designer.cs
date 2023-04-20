@@ -4940,7 +4940,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drizzle (medium).
+        ///   Looks up a localized string similar to Drizzle.
         /// </summary>
         public static string Weather_Drizzle {
             get {
@@ -4994,7 +4994,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drizzle (heavy).
+        ///   Looks up a localized string similar to Heavy drizzle.
         /// </summary>
         public static string Weather_HeavyDrizzle {
             get {
@@ -5003,7 +5003,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rain (heavy).
+        ///   Looks up a localized string similar to Heavy rain.
         /// </summary>
         public static string Weather_HeavyRain {
             get {
@@ -5012,7 +5012,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sleet (heavy).
+        ///   Looks up a localized string similar to Heavy sleet.
         /// </summary>
         public static string Weather_HeavySleet {
             get {
@@ -5021,7 +5021,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Snow (heavy).
+        ///   Looks up a localized string similar to Heavy snow.
         /// </summary>
         public static string Weather_HeavySnow {
             get {
@@ -5030,7 +5030,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Thunderstorm (heavy).
+        ///   Looks up a localized string similar to Heavy thunderstorm.
         /// </summary>
         public static string Weather_HeavyThunderstorm {
             get {
@@ -5057,7 +5057,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drizzle (light).
+        ///   Looks up a localized string similar to Light drizzle.
         /// </summary>
         public static string Weather_LightDrizzle {
             get {
@@ -5066,7 +5066,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rain (light).
+        ///   Looks up a localized string similar to Light rain.
         /// </summary>
         public static string Weather_LightRain {
             get {
@@ -5075,7 +5075,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sleet (light).
+        ///   Looks up a localized string similar to Light sleet.
         /// </summary>
         public static string Weather_LightSleet {
             get {
@@ -5084,7 +5084,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Snow (light).
+        ///   Looks up a localized string similar to Light snow.
         /// </summary>
         public static string Weather_LightSnow {
             get {
@@ -5093,7 +5093,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Thunderstorm (light).
+        ///   Looks up a localized string similar to Light thunderstorm.
         /// </summary>
         public static string Weather_LightThunderstorm {
             get {
@@ -5138,7 +5138,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rain (medium).
+        ///   Looks up a localized string similar to Rain.
         /// </summary>
         public static string Weather_Rain {
             get {
@@ -5174,7 +5174,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sleet (medium).
+        ///   Looks up a localized string similar to Sleet.
         /// </summary>
         public static string Weather_Sleet {
             get {
@@ -5192,7 +5192,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Snow (medium).
+        ///   Looks up a localized string similar to Snow.
         /// </summary>
         public static string Weather_Snow {
             get {
@@ -5210,7 +5210,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Thunderstorm (medium).
+        ///   Looks up a localized string similar to Thunderstorm.
         /// </summary>
         public static string Weather_Thunderstorm {
             get {
