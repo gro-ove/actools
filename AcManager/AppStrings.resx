@@ -4991,4 +4991,7 @@ anyway while it’s waiting for disk to get the data, and there will much less d
     <data name="Common.SliderPostfix.Hours" xml:space="preserve">
         <value> hour</value>
     </data>
+    <data name="QuickDrive_Mode_More" xml:space="preserve">
+        <value>More</value>
+    </data>
 </root>

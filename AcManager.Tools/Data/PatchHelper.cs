@@ -21,7 +21,7 @@ using StringBasedFilter.TestEntries;
 
 namespace AcManager.Tools.Data {
     public class PatchHelper {
-#if DEBUG_
+#if DEBUG
         public static string PatchDirectoryName = "extension-debug";
 #else
         public static string PatchDirectoryName = "extension";
@@ -51,6 +51,7 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureDualShockSupport = "PS4_DUALSHOCK_SUPPORT";
         public static readonly string FeatureDualSenseSupport = "PS5_DUALSENSE_SUPPORT";
         public static readonly string FeatureCarPreviews = "CAR_PREVIEWS";
+        public static readonly string WeatherFxLauncherControlled = "WEATHERFX_LAUNCHER_CONTROLLED";
         public static readonly string FeatureSnow = "SNOW";
 
         public class AudioDescription : Displayable {
@@ -238,6 +239,7 @@ namespace AcManager.Tools.Data {
         }
 
         public static bool IsWeatherFxActive() {
+            if (!IsFeatureSupported(WeatherFxLauncherControlled)) return false;
             return (_wfxActive ?? (_wfxActive = IsActive() && GetActualConfigValue("weather_fx.ini", "BASIC", "ENABLED").As(false))).Value;
         }
 

@@ -507,12 +507,11 @@ namespace AcManager.Pages.Lists {
             }
 
             protected override void ApplyOverride(CarObject obj) {
-                var source = Path.Combine(obj.Location, "data.a" + "cd");
-                if (!File.Exists(source)) return;
                 try {
+                    var source = Path.Combine(obj.Location, "data.a" + "cd");
+                    if (!File.Exists(source)) return;
                     var destination = FileUtils.EnsureUnique(Path.Combine(obj.Location, "data"));
                     Acd.FromFile(source).ExportDirectory(destination);
-                    WindowsHelper.ViewDirectory(destination);
                 } catch (Exception e) {
                     NonfatalError.NotifyBackground(ToolsStrings.Common_CannotReadData, e);
                 }
@@ -532,14 +531,13 @@ namespace AcManager.Pages.Lists {
             }
 
             protected override void ApplyOverride(CarObject obj) {
-                var destination = Path.Combine(obj.Location, "data.a" + "cd");
-                var dataDirectory = Path.Combine(obj.Location, "data");
-                if (!Directory.Exists(dataDirectory) || File.Exists(destination)) {
-                    return;
-                }
                 try {
+                    var destination = Path.Combine(obj.Location, "data.a" + "cd");
+                    var dataDirectory = Path.Combine(obj.Location, "data");
+                    if (!Directory.Exists(dataDirectory) || File.Exists(destination)) {
+                        return;
+                    }
                     Acd.FromDirectory(dataDirectory).Save(destination);
-                    WindowsHelper.ViewFile(destination);
                 } catch (Exception e) {
                     NonfatalError.NotifyBackground(AppStrings.Car_CannotPackData, ToolsStrings.Common_MakeSureThereIsEnoughSpace, e);
                 }

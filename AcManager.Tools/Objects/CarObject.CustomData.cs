@@ -56,14 +56,12 @@ namespace AcManager.Tools.Objects {
             if (File.Exists(dataAcd)) {
                 var backupAcd = Path.Combine(Location, "data.acd~cm_bak_ep");
                 var custom = allowCustom && UseExtendedPhysics
-                        && PatchHelper.IsFeatureSupported(PatchHelper.FeatureFullDay)
                         && SettingsHolder.Drive.QuickDriveAllowExtendedPhysics;
                 if (custom) {
                     FileUtils.TryToDelete(backupAcd);
                     if (File.Exists(dataAcd) && !File.Exists(backupAcd)) {
                         File.Copy(dataAcd, backupAcd);
                         carIni["HEADER"].Set("VERSION", "extended-" + carIni["HEADER"].GetNonEmpty("VERSION").As(1));
-                        carIni["_EXTENSION"].Set("RAIN_DEV", 1);
                         carIni.Save();
                         return true;
                     }
@@ -77,14 +75,14 @@ namespace AcManager.Tools.Objects {
             } else {
                 var dataCar = Path.Combine(Location, "data", "car.ini");
                 var backupCar = Path.Combine(Location, "data", "car.ini~cm_bak_ep");
-                var custom = allowCustom && UseExtendedPhysics;
+                var custom = allowCustom && UseExtendedPhysics
+                        && SettingsHolder.Drive.QuickDriveAllowExtendedPhysics;
                 if (custom) {
                     FileUtils.TryToDelete(backupCar);
-                    if (File.Exists(dataAcd) && !File.Exists(backupCar)) {
-                        File.Copy(dataAcd, backupCar);
+                    if (File.Exists(dataCar) && !File.Exists(backupCar)) {
+                        File.Copy(dataCar, backupCar);
                         var ini = new IniFile(dataCar);
                         ini["HEADER"].Set("VERSION", "extended-" + carIni["HEADER"].GetNonEmpty("VERSION").As(1));
-                        ini["_EXTENSION"].Set("RAIN_DEV", 1);
                         ini.Save();
                         return true;
                     }

@@ -72,8 +72,8 @@ namespace AcManager.Controls {
             if (!_loaded) return;
             WeakEventManager<IBaseAcObjectObservableCollection, EventArgs>.RemoveHandler(WeatherManager.Instance.WrappersList,
                     nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
-            WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>.RemoveHandler(WeatherFxControllerData.Items,
-                    nameof(INotifyCollectionChanged.CollectionChanged), OnWeatherControllersUpdated);
+            WeakEventManager<WeatherFxControllerData.Holder, EventArgs>.RemoveHandler(WeatherFxControllerData.Instance,
+                    nameof(WeatherFxControllerData.Holder.Reloaded), OnWeatherControllersUpdated);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs) {
@@ -83,8 +83,8 @@ namespace AcManager.Controls {
             UpdateHierarchicalWeatherList().Ignore();
             WeakEventManager<IBaseAcObjectObservableCollection, EventArgs>.AddHandler(WeatherManager.Instance.WrappersList,
                     nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
-            WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>.AddHandler(WeatherFxControllerData.Items,
-                    nameof(INotifyCollectionChanged.CollectionChanged), OnWeatherControllersUpdated);
+            WeakEventManager<WeatherFxControllerData.Holder, EventArgs>.AddHandler(WeatherFxControllerData.Instance,
+                    nameof(WeatherFxControllerData.Holder.Reloaded), OnWeatherControllersUpdated);
             UpdateReferences();
         }
 
@@ -288,7 +288,7 @@ namespace AcManager.Controls {
                         });
                     }
                     
-                    var items = WeatherFxControllerData.Items;
+                    var items = WeatherFxControllerData.Instance.Items;
                     var baseItems = items.Where(x => x.FollowsSelectedWeather)
                             .Select(x => new WeatherTypeWrapped(x)).ToList();
                     if (baseItems.Count > 1) {

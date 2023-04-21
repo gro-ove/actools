@@ -23,7 +23,7 @@ namespace AcManager.Tools.Data {
 
         [CanBeNull]
         public WeatherFxControllerData ControllerRef => ControllerId == null ? null 
-                : _controllerRef ?? (_controllerRef = WeatherFxControllerData.Items.GetByIdOrDefault(ControllerId));
+                : _controllerRef ?? (_controllerRef = WeatherFxControllerData.Instance.Items.GetByIdOrDefault(ControllerId));
 
         public WeatherTypeWrapped(WeatherType type) {
             TypeOpt = type;
@@ -43,7 +43,7 @@ namespace AcManager.Tools.Data {
             TypeOpt = WeatherType.None;
             ControllerId = controllerId;
             ControllerSettings = controllerSettings;
-            _controllerRef = WeatherFxControllerData.Items.GetByIdOrDefault(controllerId);
+            _controllerRef = WeatherFxControllerData.Instance.Items.GetByIdOrDefault(controllerId);
             if (_controllerRef != null) {
                 _controllerRef.DeserializeSettings(controllerSettings);
             }
@@ -53,7 +53,7 @@ namespace AcManager.Tools.Data {
 
         public void RefreshReference() {
             if (ControllerId != null && _controllerRef == null) {
-                _controllerRef = WeatherFxControllerData.Items.GetByIdOrDefault(ControllerId);
+                _controllerRef = WeatherFxControllerData.Instance.Items.GetByIdOrDefault(ControllerId);
                 if (_controllerRef != null) {
                     OnPropertyChanged(nameof(ControllerRef));
                 }

@@ -336,7 +336,7 @@ namespace AcManager.Tools {
                     "New live service", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
                 SettingsHolder.Live.UserEntries =
                         SettingsHolder.Live.UserEntries.Append(new SettingsHolder.LiveSettings.LiveServiceEntry(url, name, color)).ToList();
-                Toast.Show("New live service", "New live service has been added");
+                Toast.Show("New Live Service", "New live service has been added");
                 return ArgumentHandleResult.Successful;
             }
 
@@ -344,6 +344,12 @@ namespace AcManager.Tools {
         }
 
         private static async Task<ArgumentHandleResult> ProcessCspInstall(string versionString) {
+            if (ModernDialog.ShowMessage(
+                    $"Do you want to install v{versionString} of Custom Shaders Patch?",
+                    "CSP Installation", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                return ArgumentHandleResult.Failed;
+            }
+            
             using (var waiting = new WaitingDialog("Installing CSP…")) {
                 var versions = await PatchVersionInfo.GetPatchManifestAsync(null, waiting.CancellationToken);
                 if (waiting.CancellationToken.IsCancellationRequested) return ArgumentHandleResult.Failed;
@@ -375,6 +381,8 @@ namespace AcManager.Tools {
                         item.Value = @"1";
                     }
                 }
+                
+                Toast.Show("CSP Updated", $"CSP has been updated to v{versionString}");
             }
             return ArgumentHandleResult.Successful;
         }
@@ -385,6 +393,11 @@ namespace AcManager.Tools {
             }
             if (url.GetDomainNameFromUrl() != @"files.acstuff.ru") {
                 throw new Exception("This URL is not supported");
+            }
+            if (ModernDialog.ShowMessage(
+                    $"Do you want to install a preview build v{version} of Custom Shaders Patch?",
+                    "CSP Installation", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                return ArgumentHandleResult.Failed;
             }
             using (var waiting = new WaitingDialog("Installing CSP preview…")) {
                 PatchVersionInfo.RegisterPreviewBuild(build, version, url);
@@ -405,6 +418,8 @@ namespace AcManager.Tools {
                         item.Value = @"1";
                     }
                 }
+                
+                Toast.Show("CSP Updated", $"CSP has been updated to v{version}");
             }
             return ArgumentHandleResult.Successful;
         }

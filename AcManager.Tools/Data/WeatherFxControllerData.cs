@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,86 +18,88 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Data {
     public sealed class WeatherFxControllerData : Displayable, IWithId {
-        private static readonly BetterObservableCollection<WeatherFxControllerData> ItemsList = new BetterObservableCollection<WeatherFxControllerData>();
+        public class Holder {
+            public BetterObservableCollection<WeatherFxControllerData> Items { get; } = new BetterObservableCollection<WeatherFxControllerData>();
 
-        public static BetterObservableCollection<WeatherFxControllerData> Items {
-            get {
-                if (!_initialized) {
-                    _initialized = true;
-                    Initialize();
+            public Holder() {
+                PatchHelper.Reloaded += (sender, args) => _reloadBusy.DoDelay(() => Rescan().Ignore(), 200);
+                Rescan().Ignore();
+            }
+
+            private Busy _reloadBusy = new Busy();
+            public event EventHandler Reloaded;
+            private bool _updating;
+            private bool _needsAnotherUpdate;
+
+            private async Task Rescan() {
+                if (_updating) {
+                    _needsAnotherUpdate = true;
+                    return;
                 }
-                return ItemsList;
+                _updating = true;
+
+                try {
+                    var oldItems = Items.ToList();
+                    var newList = await Task.Run(() => PatchHelper.IsFeatureSupported(PatchHelper.WeatherFxLauncherControlled)
+                            ? Directory.GetDirectories(ControllersDirectory()).Select(x => {
+                                var id = Path.GetFileName(x);
+                                var oldItem = oldItems.GetByIdOrDefault(id);
+                                if (oldItem != null) {
+                                    oldItem.RefreshData();
+                                    return oldItem;
+                                }
+                                if (File.Exists(Path.Combine(x, "controller.lua"))) {
+                                    return new WeatherFxControllerData(Path.GetFileName(x));
+                                }
+                                return null;
+                            }).NonNull().ToList()
+                            : new List<WeatherFxControllerData>());
+                    if (Items.Count > 0 || newList.Count > 0) {
+                        Items.ReplaceEverythingBy_Direct(newList);
+
+                        var selected = ValuesStorage.Get<string>(_settingsBaseKey) ?? @"base";
+                        var selectedItem = Items.GetByIdOrDefault(selected) ?? Items.FirstOrDefault(x => x.FollowsSelectedWeather);
+                        if (selectedItem != null) {
+                            selectedItem.IsSelectedAsBase = true;
+                        }
+                    }
+                } catch (Exception e) {
+                    Logging.Error($"Failed to update WeatherFX controllers: {e}");
+                }
+                _updating = false;
+                if (_needsAnotherUpdate) {
+                    _needsAnotherUpdate = false;
+                    Rescan().Ignore();
+                } else {
+                    Reloaded?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
-        private static bool _initialized;
+        private static Holder _instance;
+
+        public static Holder Instance {
+            get { return _instance ?? (_instance = new Holder()); }
+        }
 
         private static string ControllersDirectory() {
             return Path.Combine(AcRootDirectory.Instance.RequireValue, PatchHelper.PatchDirectoryName, @"weather-controllers");
-        }
-
-        private static void Initialize() {
-            PatchHelper.Reloaded += (sender, args) => Rescan().Ignore();
-            Rescan().Ignore();
-        }
-
-        private static bool _updating;
-        private static bool _needsAnotherUpdate;
-
-        private static async Task Rescan() {
-            if (_updating) {
-                _needsAnotherUpdate = true;
-                return;
-            }
-            _updating = true;
-
-            try {
-                var oldItems = Items.ToList();
-                var newList = await Task.Run(() => Directory.GetDirectories(ControllersDirectory()).Select(x => {
-                    var id = Path.GetFileName(x);
-                    var oldItem = oldItems.GetByIdOrDefault(id);
-                    if (oldItem != null) {
-                        oldItem.RefreshData();
-                        return oldItem;
-                    }
-                    if (File.Exists(Path.Combine(x, "controller.lua"))) {
-                        return new WeatherFxControllerData(Path.GetFileName(x));
-                    }
-                    return null;
-                }).NonNull().ToList());
-                if (Items.Count > 0 || newList.Count > 0) {
-                    Items.ReplaceEverythingBy_Direct(newList);
-
-                    var selected = ValuesStorage.Get<string>(_settingsBaseKey) ?? @"base";
-                    var selectedItem = Items.GetByIdOrDefault(selected) ?? Items.FirstOrDefault(x => x.FollowsSelectedWeather);
-                    if (selectedItem != null) {
-                        selectedItem.IsSelectedAsBase = true;
-                    }
-                }
-            } catch (Exception e) {
-                Logging.Error($"Failed to update WeatherFX controllers: {e}");
-            }
-            _updating = false;
-            if (_needsAnotherUpdate) {
-                _needsAnotherUpdate = false;
-                Rescan().Ignore();
-            }
         }
 
         [CanBeNull]
         public string Author { get; set; }
 
         [CanBeNull]
-        public string Description { get;  set; }
+        public string Description { get; set; }
 
         [CanBeNull]
-        public string Version { get;  set; }
+        public string Version { get; set; }
 
-        public bool FollowsSelectedWeather { get;  set; }
+        public bool FollowsSelectedWeather { get; set; }
 
         private Func<IPythonAppConfigValueProvider, bool> _followsSelectedTemperatureQuery;
         private Func<IPythonAppConfigValueProvider, bool> _followsSelectedWindQuery;
-        
+
         private bool _followsSelectedTemperature;
 
         public bool FollowsSelectedTemperature {
@@ -117,7 +120,7 @@ namespace AcManager.Tools.Data {
             get => _isSelectedAsBase;
             set => Apply(value, ref _isSelectedAsBase, () => {
                 if (!value) return;
-                foreach (var item in Items) {
+                foreach (var item in Instance.Items) {
                     if (item != this) {
                         item.IsSelectedAsBase = false;
                     }
@@ -163,7 +166,7 @@ namespace AcManager.Tools.Data {
                     RefreshQueries();
                 };
             }
-            
+
             RefreshData();
         }
 
