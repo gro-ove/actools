@@ -46,7 +46,7 @@ namespace AcManager.Tools.Objects {
             file = key.Substring(0, sectionSep);
         }
 
-        public string Get(string key) {
+        public string GetValue(string key) {
             if (_flags != null && _flags.TryGetValue(key, out var result)) return result;
 
             Parse(key, out var param, out var section, out _);
@@ -55,6 +55,15 @@ namespace AcManager.Tools.Objects {
             var values = section == null ? _section
                     : sections.FirstOrDefault(x => string.Equals(x.Key, section, StringComparison.OrdinalIgnoreCase));
             return values?.FirstOrDefault(x => string.Equals(x.Id, param))?.Value;
+        }
+
+        [CanBeNull]
+        public IPythonAppConfigValue GetItem(string key) {
+            Parse(key, out var param, out var section, out _);
+            var sections = _root.Sections;
+            var values = section == null ? _section
+                    : sections.FirstOrDefault(x => string.Equals(x.Key, section, StringComparison.OrdinalIgnoreCase));
+            return values?.FirstOrDefault(x => string.Equals(x.Id, param));
         }
 
         public void SetSection(Collection<IPythonAppConfigValue> section) {

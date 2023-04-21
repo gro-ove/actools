@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
@@ -44,6 +45,8 @@ namespace AcManager.Tools.Objects {
                 OnValueChanged();
             }
         }
+
+        public virtual string DisplayValueString => Value;
 
         protected virtual void OnValueChanged() { }
 
@@ -235,7 +238,7 @@ namespace AcManager.Tools.Objects {
             }
 
             public bool Test(IPythonAppConfigValueProvider obj, string key, ITestEntry value) {
-                return key == null || value.Test(obj.Get(_unwrap(key)));
+                return key == null || value.Test(obj.GetValue(_unwrap(key)));
             }
         }
 
@@ -404,6 +407,10 @@ namespace AcManager.Tools.Objects {
                                     .Select(x => (x.Groups[1].Success ? x.Groups[1].Value : x.Groups[2].Value).Trim()).ToArray();
                             if (options.Length > 0) {
                                 return new PythonAppConfigOptionsValue(options.Select(x => {
+                                    if (x == "__separator__") {
+                                        return (object)new Separator();
+                                    }
+                                    
                                     var m1 = OptionValueAltRegex.Match(x);
                                     if (m1.Success) {
                                         return new SettingEntry(unwrap(m1.Groups[1].Value.TrimStart()),

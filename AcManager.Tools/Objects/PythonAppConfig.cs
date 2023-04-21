@@ -72,7 +72,7 @@ namespace AcManager.Tools.Objects {
 
             DisplayName = name.Trim();
             Sections = new List<PythonAppConfigSection>(ini.Where(x => sectionFilter?.Invoke(x.Key) != false)
-                    .Select(x => new PythonAppConfigSection(configParams, x, values?[x.Key]))
+                    .Select(x => new PythonAppConfigSection(filename, configParams, x, values?[x.Key]))
                     .Where(x => x.DisplayName != @"hidden"));
             IsSingleSection = Sections.Count == 1 && IsSectionNameUseless(Sections[0].DisplayName, configParams.PythonAppLocation);
             HasAnythingNew = Sections.Any(x => x.Any(y => y.IsNew));

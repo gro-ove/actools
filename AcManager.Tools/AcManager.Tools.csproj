@@ -629,6 +629,7 @@
     <Compile Include="Objects\PythonAppConfigFileValue.cs" />
     <Compile Include="Objects\PythonAppConfigKeyValue.cs" />
     <Compile Include="Objects\PythonAppConfigNumberValue.cs" />
+    <Compile Include="Objects\PythonAppConfigOptionsTemplateSelector.cs" />
     <Compile Include="Objects\PythonAppConfigOptionsValue.cs" />
     <Compile Include="Objects\PythonAppConfigParams.cs" />
     <Compile Include="Objects\PythonAppConfigPluginInfo.cs" />

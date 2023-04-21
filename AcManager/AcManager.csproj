@@ -1922,7 +1922,6 @@
     <EmbeddedResource Include="App.config">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="About\ImportantTips\Browser Extension.txt" />
     <None Include="About\ImportantTips\Custom Showroom Best Antialiasing.txt" />
     <None Include="About\ImportantTips\Custom Showroom Color Grading.txt" />
     <None Include="About\ImportantTips\Custom Showroom Shadows Baking.txt" />

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -294,7 +293,7 @@ namespace AcManager.Controls {
                     if (baseItems.Count > 1) {
                         weathers = weathers.Append(new Separator());
                         weathers = weathers.Append(new TextBlock { 
-                            Text = "Controller:", Style = (Style)SettingsDictionary["Label"], 
+                            Text = ControlsStrings.WeatherSelection_Controller, Style = (Style)SettingsDictionary[@"Label"], 
                             Margin = new Thickness(-20d, 0d, 0d, 0d) 
                         });
 
@@ -333,14 +332,14 @@ namespace AcManager.Controls {
                     if (PatchHelper.IsRainFxActive()) {
                         list.Add(new WeatherTypeWrapped(WeatherType.Rain));
                     }
-                    list.Add(new HierarchicalGroup("More", weathers));
+                    list.Add(new HierarchicalGroup(ControlsStrings.WeatherSelection_Category_More, weathers));
 
                     var dynamicItems = items.Where(x => !x.FollowsSelectedWeather)
                             .Select(x => new WeatherTypeWrapped(x)).ToList();
                     if (dynamicItems.Count > 0) {
                         list.Add(new Separator());
                         list.Add(new TextBlock { 
-                            Text = "Dynamic:", Style = (Style)SettingsDictionary["Label"], 
+                            Text = ControlsStrings.WeatherSelection_Label_Dynamic, Style = (Style)SettingsDictionary[@"Label"], 
                             Margin = new Thickness(-20d, 0d, 0d, 0d) 
                         });
 
@@ -349,7 +348,7 @@ namespace AcManager.Controls {
                             if (item.ControllerRef.Config != null) {
                                 var editor = new ContentControl {
                                     ContentTemplate = (DataTemplate)SettingsDictionary[item.ControllerRef.Config.Sections.Count == 1 
-                                            ? "PythonAppConfig.Compact.InlineSingle" : "PythonAppConfig.Compact.Inline"],
+                                            ? @"PythonAppConfig.Compact.InlineSingle" : @"PythonAppConfig.Compact.Inline"],
                                     Content = item.ControllerRef.Config
                                 };
                                 editor.MouseUp += (sender, args) => {
@@ -359,14 +358,19 @@ namespace AcManager.Controls {
                                 };
                             
                                 var menuItem = new MenuItem {
-                                    Header = item.DisplayName,
                                     ToolTip = item.ControllerRef.GetToolTip(),
-                                    Style = (Style)SettingsDictionary["WeatherLiveControllerMenuItem"],
+                                    Style = (Style)SettingsDictionary[@"WeatherLiveControllerMenuItem"],
                                     ItemsSource = new[] { editor }
                                 };
+                                menuItem.SetBinding(HeaderedItemsControl.HeaderProperty, new Binding {
+                                    Source = item,
+                                    Path = new PropertyPath(nameof(item.DisplayName)),
+                                    Mode = BindingMode.OneWay
+                                });
                                 menuItem.PreviewMouseDown += (sender, args) => {
                                     var selected = (MenuItem)sender;
                                     SelectedItem = item;
+                                    item.RefreshName();
                                     if (selected.FindVisualChild<Popup>()?.IsOpen != true) {
                                         if (this.FindVisualChild<Popup>() is Popup p) p.IsOpen = false;
                                     }

@@ -6,11 +6,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Markup;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 
@@ -353,6 +355,67 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
             return item is Link l ? l.IsPinned ? PinnedLinkDataTemplate : LinkDataTemplate : TitleDataTemplate;
+        }
+    }
+
+    public class ModernTabDataLinkListTemplateSelector : DataTemplateSelector {
+        public DataTemplate ListLinkDataTemplate { get; set; }
+
+        public DataTemplate LinkDataTemplate { get; set; }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container) {
+            return item is LinksList ? ListLinkDataTemplate : LinkDataTemplate;
+        }
+    }
+
+    public class ModernTabLinksComboBox : BetterComboBox {
+        public static readonly DependencyProperty IsAnySelectedProperty = DependencyProperty.Register(nameof(IsAnySelected), typeof(bool),
+                typeof(ModernTabLinksComboBox), new PropertyMetadata(false, (o, e) => {
+                    ((ModernTabLinksComboBox)o)._isAnySelected = (bool)e.NewValue;
+                }));
+
+        private bool _isAnySelected;
+
+        public bool IsAnySelected {
+            get => _isAnySelected;
+            set => SetValue(IsAnySelectedProperty, value);
+        }
+        
+        private ModernTab _parent;
+        
+        public ModernTabLinksComboBox() {
+            PreviewMouseUp += (sender, args) => {
+                if (_parent == null) return;
+                var popup = this.FindVisualChild<Popup>();
+                if (popup?.IsOpen == true) {
+                    popup.IsOpen = false;
+                    _parent.SelectedSource = (SelectedItem as Link)?.Source;
+                }
+            };
+            Loaded += (sender, args) => {
+                _parent = this.GetParent<ModernTab>();
+                if (_parent == null) return;
+                _parent.SelectedSourceChanged += OnParentSelectedSourceChanged;
+            };
+            Unloaded += (sender, args) => {
+                if (_parent == null) return;
+                _parent.SelectedSourceChanged -= OnParentSelectedSourceChanged;
+            };
+        }
+
+        private void OnParentSelectedSourceChanged(object o, SourceEventArgs eventArgs) {
+            var selected = ItemsSource.OfType<Link>().FirstOrDefault(x => x.Source == eventArgs.Source);
+            if (selected != null && SelectedItem != selected) {
+                SelectedItem = selected;
+            }
+            IsAnySelected = selected != null;
+        }
+
+        protected override void OnSelectionChanged(SelectionChangedEventArgs e) {
+            base.OnSelectionChanged(e);
+            if (SelectedItem is Link selected && _parent != null && _parent.SelectedSource != selected.Source) {
+                _parent.SelectedSource = selected.Source;
+            }
         }
     }
 }

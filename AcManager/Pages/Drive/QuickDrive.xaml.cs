@@ -278,6 +278,17 @@ namespace AcManager.Pages.Drive {
             private CarObject _selectedCar;
             private TrackObjectBase _selectedTrack;
 
+            public static Dictionary<string, Func<bool, QuickDriveModeViewModel>> _knownModes = new Dictionary<string, Func<bool, QuickDriveModeViewModel>> {
+                [ModeDriftPath] = initialize => new QuickDrive_Drift.ViewModel(initialize),
+                [ModeHotlapPath] = initialize => new QuickDrive_Hotlap.ViewModel(initialize),
+                [ModePracticePath] = initialize => new QuickDrive_Practice.ViewModel(initialize),
+                [ModeRacePath] = initialize => new QuickDrive_Race.ViewModel(initialize),
+                [ModeTrackdayPath] = initialize => new QuickDrive_Trackday.ViewModel(initialize),
+                [ModeWeekendPath] = initialize => new QuickDrive_Weekend.ViewModel(initialize),
+                [ModeTimeAttackPath] = initialize => new QuickDrive_TimeAttack.ViewModel(initialize),
+                [ModeDragPath] = initialize => new QuickDrive_Drag.ViewModel(initialize),
+            };
+
             private bool _skipLoading;
 
             public Uri SelectedMode {
@@ -288,43 +299,11 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged();
                     SaveLater();
 
-                    switch (value.OriginalString) {
-                        case ModeDriftPath:
-                            SelectedModeViewModel = new QuickDrive_Drift.ViewModel(!_skipLoading);
-                            break;
-
-                        case ModeHotlapPath:
-                            SelectedModeViewModel = new QuickDrive_Hotlap.ViewModel(!_skipLoading);
-                            break;
-
-                        case ModePracticePath:
-                            SelectedModeViewModel = new QuickDrive_Practice.ViewModel(!_skipLoading);
-                            break;
-
-                        case ModeRacePath:
-                            SelectedModeViewModel = new QuickDrive_Race.ViewModel(!_skipLoading);
-                            break;
-
-                        case ModeTrackdayPath:
-                            SelectedModeViewModel = new QuickDrive_Trackday.ViewModel(!_skipLoading);
-                            break;
-
-                        case ModeWeekendPath:
-                            SelectedModeViewModel = new QuickDrive_Weekend.ViewModel(!_skipLoading);
-                            break;
-
-                        case ModeTimeAttackPath:
-                            SelectedModeViewModel = new QuickDrive_TimeAttack.ViewModel(!_skipLoading);
-                            break;
-
-                        case ModeDragPath:
-                            SelectedModeViewModel = new QuickDrive_Drag.ViewModel(!_skipLoading);
-                            break;
-
-                        default:
-                            Logging.Warning("Not supported mode: " + value);
-                            SelectedMode = ModePractice;
-                            break;
+                    if (_knownModes.TryGetValue(value.OriginalString, out var constructor)) {
+                        SelectedModeViewModel = constructor(!_skipLoading);
+                    } else {
+                        Logging.Warning("Unknown mode: " + value);
+                        SelectedMode = ModePractice;
                     }
                 }
             }
@@ -1005,7 +984,7 @@ namespace AcManager.Pages.Drive {
                     }, TrackState.ToProperties(), ExportToPresetData(), new object[] {
                         new WeatherSpecificDate(UseSpecificDate, SpecificDateValue),
                         new WeatherDetails(RealWeather, SelectedWeather as WeatherTypeWrapped, 
-                                WeatherFxControllerData.Items.FirstOrDefault(x => x.IsSelectedAsBase)?.Id),
+                                WeatherFxControllerData.Instance.Items.FirstOrDefault(x => x.IsSelectedAsBase)?.Id),
                         TrackState.WeatherDefined ? new CustomTrackState(Path.Combine(weather?.Location ?? ".", "track_state.ini")) : null
                     });
                 } finally {

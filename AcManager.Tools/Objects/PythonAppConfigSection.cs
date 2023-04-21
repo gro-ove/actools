@@ -27,9 +27,14 @@ namespace AcManager.Tools.Objects {
             return hint;
         }
 
-        public PythonAppConfigSection([NotNull] PythonAppConfigParams configParams, KeyValuePair<string, IniFileSection> pair, [CanBeNull] IniFileSection values)
+        private static bool DoNotShow(string configName, string sectionName, string key) {
+            return key == @"__HINT" || key == @"CONTROLLER" && sectionName == @"BASIC" && configName.EndsWith(@"cfg\extension\weather_fx.ini");
+        }
+
+        public PythonAppConfigSection(string filename, [NotNull] PythonAppConfigParams configParams, KeyValuePair<string, IniFileSection> pair, 
+                [CanBeNull] IniFileSection values)
                 : base(pair.Value
-                        .Where(x => !x.Key.StartsWith("__HINT"))
+                        .Where(x => !DoNotShow(filename, pair.Key, x.Key))
                         .Select(x => PythonAppConfigValue.Create(configParams, x,
                                 pair.Value.Commentaries?.GetValueOrDefault(x.Key)?.Split('\n')[0],
                                 values?.GetValueOrDefault(x.Key), values != null)).NonNull()) {

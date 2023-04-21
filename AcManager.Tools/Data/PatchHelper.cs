@@ -21,7 +21,7 @@ using StringBasedFilter.TestEntries;
 
 namespace AcManager.Tools.Data {
     public class PatchHelper {
-#if DEBUG
+#if DEBUG_
         public static string PatchDirectoryName = "extension-debug";
 #else
         public static string PatchDirectoryName = "extension";

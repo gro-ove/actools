@@ -559,9 +559,8 @@
                       Text="{Binding RealWeather.Description, Converter={StaticResource ToTitleConverter}, TargetNullValue='?'}" />
                   <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource Heading1}"
                       Text="{Binding RealWeather.Temperature, StringFormat={x:Static c:ControlsStrings.Common_CelsiusFormat}, TargetNullValue='?'}" Margin="8" />
-                  <mui:BetterImage Grid.Column="1" Grid.RowSpan="2" Grid.Row="1"
-                      Filename="{Binding RealWeather.Icon}" Width="36" Height="36"
-                      Stretch="Uniform" Margin="8 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" />
+                  <mui:BetterImage Grid.Column="1" Grid.RowSpan="2" Grid.Row="1" Filename="{Binding RealWeather.Icon}" Width="36" Height="36" Stretch="Uniform"
+                      Margin="8 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" />
                 </Grid>
               </ToolTip>
             </mui:Cell.ToolTip>
@@ -596,7 +595,7 @@
               <Binding Path="SelectedWeatherWrapped.ControllerRef.FollowsSelectedWind" FallbackValue="True" />
             </MultiBinding>
           </DockPanel.IsEnabled>
-          
+
           <DockPanel.ContextMenu>
             <ContextMenu>
               <MenuItem Header="{x:Static g:AppStrings.QuickDrive_Wind_MetersPerSecond}" IsCheckable="True" IsChecked="{mui:Stored windSpeedInMetersPerSecond}" />
@@ -784,7 +783,7 @@
 
       <mui:ModernTab Grid.Column="1" LinksMargin="0 0 0 20" FrameMargin="0 0 0 4" LinksHorizontalAlignment="Left"
           SelectedSource="{Binding SelectedMode, Mode=TwoWay}" x:Name="ModeTab" FrameNavigated="OnModeTabNavigated" VerticalAlignment="Stretch"
-          ContentLoader="{x:Static dr:QuickDrive.ContentLoader}">
+          ContentLoader="{x:Static dr:QuickDrive.ContentLoader}" Layout="TabWithLinksLists">
         <mui:ModernTab.LinksListBoxTemplate>
           <ControlTemplate>
             <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
@@ -793,12 +792,14 @@
         <mui:ModernTab.Links>
           <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Practice}" Source="/Pages/Drive/QuickDrive_Practice.xaml" />
           <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Hotlap}" Source="/Pages/Drive/QuickDrive_Hotlap.xaml" />
-          <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_TimeAttack}" Source="/Pages/Drive/QuickDrive_TimeAttack.xaml" />
           <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Race}" Source="/Pages/Drive/QuickDrive_Race.xaml" />
           <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_TrackDay}" Source="/Pages/Drive/QuickDrive_Trackday.xaml" />
           <mui:Link DisplayName="{x:Static t:ToolsStrings.Common_Weekend}" Source="/Pages/Drive/QuickDrive_Weekend.xaml" />
           <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drift}" Source="/Pages/Drive/QuickDrive_Drift.xaml" />
-          <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drag}" Source="/Pages/Drive/QuickDrive_Drag.xaml" />
+          <mui:LinksList x:Name="LinksList" DisplayName="{x:Static g:AppStrings.QuickDrive_Mode_More}">
+            <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_TimeAttack}" Source="/Pages/Drive/QuickDrive_TimeAttack.xaml" />
+            <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drag}" Source="/Pages/Drive/QuickDrive_Drag.xaml" />
+          </mui:LinksList>
         </mui:ModernTab.Links>
       </mui:ModernTab>
     </Grid>

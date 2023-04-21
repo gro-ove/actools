@@ -1,9 +1,12 @@
 using System;
+using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Numerics;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -19,7 +22,6 @@ namespace AcManager.Tools.Data {
         public string ControllerSettings { get; }
 
         private WeatherFxControllerData _controllerRef;
-        private string _controllerName;
 
         [CanBeNull]
         public WeatherFxControllerData ControllerRef => ControllerId == null ? null 
@@ -35,8 +37,14 @@ namespace AcManager.Tools.Data {
             ControllerId = controller.Id;
             ControllerSettings = null;
             _controllerRef = controller;
-            _controllerName = controller.DisplayName;
-            DisplayName = $"Dynamic: {_controllerName}";
+            DisplayName = controller.DisplayName;
+            controller.SubscribeWeak(OnControllerChanged);
+        }
+
+        private void OnControllerChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(DisplayName)) {
+                DisplayName = _controllerRef.DisplayName;
+            }
         }
 
         public WeatherTypeWrapped(string controllerId, string controllerName, string controllerSettings) {
@@ -46,9 +54,15 @@ namespace AcManager.Tools.Data {
             _controllerRef = WeatherFxControllerData.Instance.Items.GetByIdOrDefault(controllerId);
             if (_controllerRef != null) {
                 _controllerRef.DeserializeSettings(controllerSettings);
+                _controllerRef.SubscribeWeak(OnControllerChanged);
             }
-            _controllerName = ControllerRef?.DisplayName ?? controllerName;
-            DisplayName = $"Dynamic: {_controllerName}";
+            DisplayName = ControllerRef?.DisplayName ?? controllerName;
+        }
+
+        public void RefreshName() {
+            if (ControllerRef != null) {
+                DisplayName = ControllerRef.DisplayName;
+            }
         }
 
         public void RefreshReference() {
@@ -56,6 +70,7 @@ namespace AcManager.Tools.Data {
                 _controllerRef = WeatherFxControllerData.Instance.Items.GetByIdOrDefault(ControllerId);
                 if (_controllerRef != null) {
                     OnPropertyChanged(nameof(ControllerRef));
+                    _controllerRef.SubscribeWeak(OnControllerChanged);
                 }
             }
         }
@@ -104,7 +119,7 @@ namespace AcManager.Tools.Data {
         public static string Serialize([CanBeNull] object obj) {
             if (obj is WeatherTypeWrapped wrapped) {
                 if (wrapped.ControllerId != null) {
-                    return $"*${wrapped.ControllerId}\t{wrapped._controllerName.Replace("\t", " ")}\t{wrapped.ControllerRef?.SerializeSettings() ?? wrapped.ControllerSettings}";
+                    return $"*${wrapped.ControllerId}\t{wrapped.DisplayName.Replace("\t", " ")}\t{wrapped.ControllerRef?.SerializeSettings() ?? wrapped.ControllerSettings}";
                 }
                 return $@"*{((int)wrapped.TypeOpt).ToInvariantString()}";
             }

@@ -611,8 +611,23 @@
             <DockPanel>
               <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}"
                   Style="{StaticResource PythonAppConfig.PropertyLabel}" />
-              <mui:BetterComboBox ItemsSource="{Binding Values}" DisplayMemberPath="DisplayName" SelectedItem="{Binding Value, Mode=TwoWay}" IsEditable="False"
-                  Height="23" VerticalAlignment="Top" mui:NewMarkService.New="{Binding IsNew}" />
+              <mui:BetterComboBox ItemsSource="{Binding Values}" SelectedItem="{Binding Value, Mode=TwoWay}" IsEditable="False"
+                  Height="23" VerticalAlignment="Top" mui:NewMarkService.New="{Binding IsNew}">
+                <mui:BetterComboBox.ItemTemplateSelector>
+                  <t:PythonAppConfigOptionsTemplateSelector>
+                    <t:PythonAppConfigOptionsTemplateSelector.NullTemplate>
+                      <DataTemplate>
+                        <Separator Background="{DynamicResource SeparatorBackground}" />
+                      </DataTemplate>
+                    </t:PythonAppConfigOptionsTemplateSelector.NullTemplate>
+                    <t:PythonAppConfigOptionsTemplateSelector.DataTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding DisplayName}" />
+                      </DataTemplate>
+                    </t:PythonAppConfigOptionsTemplateSelector.DataTemplate>
+                  </t:PythonAppConfigOptionsTemplateSelector>
+                </mui:BetterComboBox.ItemTemplateSelector>
+              </mui:BetterComboBox>
             </DockPanel>
           </DataTemplate>
 

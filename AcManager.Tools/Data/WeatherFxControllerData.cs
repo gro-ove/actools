@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -78,9 +79,7 @@ namespace AcManager.Tools.Data {
 
         private static Holder _instance;
 
-        public static Holder Instance {
-            get { return _instance ?? (_instance = new Holder()); }
-        }
+        public static Holder Instance => _instance ?? (_instance = new Holder());
 
         private static string ControllersDirectory() {
             return Path.Combine(AcRootDirectory.Instance.RequireValue, PatchHelper.PatchDirectoryName, @"weather-controllers");
@@ -99,6 +98,7 @@ namespace AcManager.Tools.Data {
 
         private Func<IPythonAppConfigValueProvider, bool> _followsSelectedTemperatureQuery;
         private Func<IPythonAppConfigValueProvider, bool> _followsSelectedWindQuery;
+        private string _nameFormat;
 
         private bool _followsSelectedTemperature;
 
@@ -155,8 +155,6 @@ namespace AcManager.Tools.Data {
 
             if (Config != null) {
                 var settings = ValuesStorage.Get<string>(_settingsKey);
-                Logging.Debug("_settingsKey=" + _settingsKey);
-                Logging.Debug("settings=" + settings);
                 if (!string.IsNullOrEmpty(settings)) {
                     Config.Import(settings);
                 }
@@ -193,11 +191,13 @@ namespace AcManager.Tools.Data {
                 FollowsSelectedWeather = about.GetBool("FOLLOWS_SELECTED_WEATHER", true);
                 _followsSelectedTemperatureQuery = ParseQuery(about.GetNonEmpty("FOLLOWS_SELECTED_TEMPERATURE"), out _followsSelectedTemperature);
                 _followsSelectedWindQuery = ParseQuery(about.GetNonEmpty("FOLLOWS_SELECTED_WIND"), out _followsSelectedWind);
+                _nameFormat = about.GetNonEmpty("NAME_FORMAT");
                 RefreshQueries();
             } else {
                 DisplayName = fallbackName;
                 FollowsSelectedWeather = true;
                 FollowsSelectedTemperature = true;
+                _nameFormat = null;
             }
         }
 
@@ -206,6 +206,30 @@ namespace AcManager.Tools.Data {
                 var provider = new PythonAppConfigProvider(Config);
                 FollowsSelectedTemperature = _followsSelectedTemperatureQuery?.Invoke(provider) != false;
                 FollowsSelectedWind = _followsSelectedWindQuery?.Invoke(provider) != false;
+            }
+            if (_nameFormat != null && Config != null) {
+                var provider = new PythonAppConfigProvider(Config);
+                DisplayName = Regex.Replace(_nameFormat, @"\{([/\w]+)(~[^?:]*)?(\?[^?:]*)?(:[^?:]*)?\}", x => {
+                    if (x.Groups.Count != 5) return @"?";
+                    var item = provider.GetItem(x.Groups[1].Value);
+                    if (item == null) {
+                        return @"?";
+                    }
+                    bool? hit = null;
+                    if (x.Groups[2].Success) {
+                        hit = item.Value == x.Groups[2].Value.Substring(1);
+                    }
+                    if (x.Groups[3].Success && hit == true) {
+                        return x.Groups[3].Value.Substring(1);
+                    }
+                    if (x.Groups[4].Success && hit == false) {
+                        return x.Groups[4].Value.Substring(1);
+                    }
+                    if (hit.HasValue) {
+                        return hit == true ? "yes" : "no";
+                    }
+                    return item.DisplayValueString;
+                }, RegexOptions.Compiled).Trim();
             }
         }
 

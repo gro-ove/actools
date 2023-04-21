@@ -1118,4 +1118,13 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Weather_Group_ByType" xml:space="preserve">
       <value>By type</value>
   </data>
+  <data name="WeatherSelection_Category_More" xml:space="preserve">
+      <value>More</value>
+  </data>
+  <data name="WeatherSelection_Label_Dynamic" xml:space="preserve">
+      <value>Dynamic:</value>
+  </data>
+  <data name="WeatherSelection_Controller" xml:space="preserve">
+      <value>Controller:</value>
+  </data>
 </root>
