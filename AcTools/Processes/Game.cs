@@ -25,6 +25,7 @@ namespace AcTools.Processes {
             file["RESTART"].Set("ACTIVE", false);
             file["LIGHTING"].Remove("__CM_WEATHER_TYPE");
             file["LIGHTING"].Remove("__CM_WEATHER_CONTROLLER");
+            file["RACE"].Remove("__CM_CUSTOM_MODE");
 
             file.RemoveSections("CAR", 1); // because CAR_0 is a player’s car
             file.RemoveSections("SESSION");

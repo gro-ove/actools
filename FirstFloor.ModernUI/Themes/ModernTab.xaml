@@ -48,11 +48,11 @@
   </DataTemplate>
 
   <DataTemplate x:Key="ModernTabLinksItemPanelDataTemplate" DataType="{x:Type pr:LinksList}">
-    <c:ModernTabLinksComboBox ItemsSource="{Binding Children}" SelectedItem="{Binding SelectedLink}" IsEditable="false" Style="{StaticResource BetterComboBox.Borderless}"
+    <c:ModernTabLinksComboBox ItemsSource="{Binding Children}" SelectedItem="{Binding SelectedLink}" IsEditable="False" Style="{StaticResource BetterComboBox.Borderless}"
         BorderThickness="0">
       <c:ModernTabLinksComboBox.ItemTemplate>
         <DataTemplate DataType="pr:Link">
-          <TextBlock Text="{Binding DisplayName}" FontWeight="Normal" ToolTip="{Binding Tag}" />
+          <TextBlock Text="{Binding DisplayName}" FontWeight="Normal" ToolTip="{Binding ToolTip}" />
         </DataTemplate>
       </c:ModernTabLinksComboBox.ItemTemplate>
       <c:ModernTabLinksComboBox.Template>

@@ -126,22 +126,9 @@ namespace AcTools.AcdFile {
             }
         }
 
-        private static void CompatibilityCheck(string filename) {
-            var kn5 = AcPaths.GetMainCarFilename(Path.GetDirectoryName(filename) ?? "", false);
-            if (kn5 == null || !File.Exists(kn5)) return;
-            using (var f = new ReadAheadBinaryReader(kn5)) {
-                if (f.BaseStream.Length <= 70) return;
-                f.Seek(-38, SeekOrigin.End);
-                if (f.ReadBytes(30).ToCutBase64() == "X19BQ19TSEFERVJTX1BBVENIX0tONUVOQ192MV9f") {
-                    throw new Exception("Not allowed");
-                }
-            }
-        }
-
         public void Save([NotNull] string filename) {
             if (filename == null) throw new Exception("Filename not specified (shouldn’t happen)");
 
-            CompatibilityCheck(filename);
             EnsureFullyLoaded();
             using (var writer = new AcdWriter(filename)) {
                 foreach (var entry in _entries.Values.NonNull()) {
@@ -158,7 +145,6 @@ namespace AcTools.AcdFile {
         public void Save([NotNull] string filename, Stream outputStream) {
             if (filename == null) throw new Exception("Filename not specified (shouldn’t happen)");
 
-            CompatibilityCheck(filename);
             EnsureFullyLoaded();
             using (var writer = new AcdWriter(filename, outputStream)) {
                 foreach (var entry in _entries.Values.NonNull()) {

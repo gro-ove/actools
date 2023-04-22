@@ -61,6 +61,7 @@ namespace AcManager.Pages.Drive {
         private const string ModeWeekendPath = "/Pages/Drive/QuickDrive_Weekend.xaml";
         private const string ModeTimeAttackPath = "/Pages/Drive/QuickDrive_TimeAttack.xaml";
         private const string ModeDragPath = "/Pages/Drive/QuickDrive_Drag.xaml";
+        private const string ModeCustomPath = "/Pages/Drive/QuickDrive_Custom.xaml";
 
         public static readonly Uri ModeDrift = new Uri(ModeDriftPath, UriKind.Relative);
         public static readonly Uri ModeHotlap = new Uri(ModeHotlapPath, UriKind.Relative);
@@ -99,12 +100,20 @@ namespace AcManager.Pages.Drive {
 
             WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(Model.TrackState, nameof(INotifyPropertyChanged.PropertyChanged),
                     OnTrackStateChanged);
+            WeakEventManager<NewRaceModeData.Holder, EventArgs>.AddHandler(NewRaceModeData.Instance, nameof(NewRaceModeData.Holder.Reloaded),
+                    OnNewModesChanged);
             this.OnActualUnload(() => {
                 _discordPresence.Dispose();
                 WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveHandler(Model.TrackState,
                         nameof(INotifyPropertyChanged.PropertyChanged), OnTrackStateChanged);
+                WeakEventManager<NewRaceModeData.Holder, EventArgs>.RemoveHandler(NewRaceModeData.Instance, nameof(NewRaceModeData.Holder.Reloaded),
+                        OnNewModesChanged);
                 Model.Dispose();
             });
+
+            if (NewRaceModeData.Instance.IsReady) {
+                OnNewModesChanged(null, null);
+            }
 
             _current = new WeakReference<QuickDrive>(this);
 
@@ -270,6 +279,15 @@ namespace AcManager.Pages.Drive {
             public double? CustomRoadTemperatureValue;
         }
 
+        private void OnNewModesChanged(object sender, EventArgs e) {
+            LinksList.Children.ReplaceEverythingBy(LinksList.Children.Where(x => x.Source?.OriginalString.StartsWith(ModeCustomPath) == false)
+                    .Concat(NewRaceModeData.Instance.Items.Select(x => new Link {
+                        DisplayName = x.DisplayName,
+                        Source = new Uri(ModeCustomPath + "?Id=" + x.Id, UriKind.Relative),
+                        ToolTip = x.GetToolTip()
+                    })));
+        }
+
         public partial class ViewModel : NotifyPropertyChanged, IUserPresetable {
             private readonly bool _uiMode;
 
@@ -278,7 +296,7 @@ namespace AcManager.Pages.Drive {
             private CarObject _selectedCar;
             private TrackObjectBase _selectedTrack;
 
-            public static Dictionary<string, Func<bool, QuickDriveModeViewModel>> _knownModes = new Dictionary<string, Func<bool, QuickDriveModeViewModel>> {
+            private static Dictionary<string, Func<bool, QuickDriveModeViewModel>> _knownModes = new Dictionary<string, Func<bool, QuickDriveModeViewModel>> {
                 [ModeDriftPath] = initialize => new QuickDrive_Drift.ViewModel(initialize),
                 [ModeHotlapPath] = initialize => new QuickDrive_Hotlap.ViewModel(initialize),
                 [ModePracticePath] = initialize => new QuickDrive_Practice.ViewModel(initialize),
@@ -294,6 +312,11 @@ namespace AcManager.Pages.Drive {
             public Uri SelectedMode {
                 get => _selectedMode;
                 set {
+                    if (value.OriginalString.StartsWith(ModeCustomPath) && !NewRaceModeData.Instance.IsReady) {
+                        WaitForNewModes(value).Ignore();
+                        return;
+                    }
+                    
                     if (Equals(value, _selectedMode)) return;
                     _selectedMode = value;
                     OnPropertyChanged();
@@ -301,11 +324,25 @@ namespace AcManager.Pages.Drive {
 
                     if (_knownModes.TryGetValue(value.OriginalString, out var constructor)) {
                         SelectedModeViewModel = constructor(!_skipLoading);
+                    } else if (value.OriginalString.StartsWith(ModeCustomPath)) {
+                        try {
+                            SelectedModeViewModel = new QuickDrive_Custom.ViewModel(value.GetQueryParam("Id"), !_skipLoading);
+                        } catch (Exception e) {
+                            NonfatalError.Notify("Failed to configure custom mode", e);
+                            SelectedMode = ModePractice;
+                        }
                     } else {
                         Logging.Warning("Unknown mode: " + value);
                         SelectedMode = ModePractice;
                     }
                 }
+            }
+
+            private async Task WaitForNewModes(Uri uri) {
+                for (var i = 0; i < 5 && !NewRaceModeData.Instance.IsReady; ++i) {
+                    await Task.Delay(200);
+                }
+                SelectedMode = uri;
             }
 
             private AsyncCommand _randomizeCommand;
@@ -841,7 +878,7 @@ namespace AcManager.Pages.Drive {
             private ICommand _changeCarCommand;
 
             public ICommand ChangeCarCommand => _changeCarCommand ?? (_changeCarCommand = new DelegateCommand(() => {
-                var dialog = new SelectCarDialog(SelectedCar);
+                var dialog = new SelectCarDialog(SelectedCar).ApplyDefault(SelectedModeViewModel?.GetDefaultCarFilter());
                 dialog.ShowDialog();
                 if (!dialog.IsResultOk || dialog.SelectedCar == null) return;
 
@@ -856,7 +893,7 @@ namespace AcManager.Pages.Drive {
 
             public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new DelegateCommand(() => {
                 // var extra = this.SelectedModeViewModel.GetSpecificTrackSelectionPage();
-                SelectedTrack = SelectTrackDialog.Show(SelectedTrack);
+                SelectedTrack = SelectTrackDialog.Show(SelectedTrack, SelectedModeViewModel?.GetDefaultTrackFilter());
             }));
 
             private DelegateCommand _manageCarSetupsCommand;
@@ -929,19 +966,63 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            private static TrackDoesNotFitRespond ShowCarOrTrackDoesNotFitMessage(string car, string track) {
+                var subject = car == null ? "Track" : track == null ? "Car" : "Car and track";
+                var dlg = new ModernDialog {
+                    Title = ToolsStrings.Common_Warning,
+                    Content = new ScrollViewer {
+                        Content = new SelectableBbCodeBlock {
+                            Text = $"{subject} won’t work with selected mode. Are you sure you want to continue?",
+                            Margin = new Thickness(0, 0, 0, 8)
+                        },
+                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
+                    },
+                    MinHeight = 0,
+                    MinWidth = 0,
+                    MaxHeight = 480,
+                    MaxWidth = 640
+                };
+
+                dlg.Buttons = new[] {
+                    dlg.YesButton,
+                    dlg.NoButton
+                };
+
+                dlg.ShowDialog();
+
+                switch (dlg.MessageBoxResult) {
+                    case MessageBoxResult.Yes:
+                        return TrackDoesNotFitRespond.Go;
+                    case MessageBoxResult.OK:
+                        return TrackDoesNotFitRespond.FixAndGo;
+                    case MessageBoxResult.None:
+                    case MessageBoxResult.Cancel:
+                    case MessageBoxResult.No:
+                        return TrackDoesNotFitRespond.Cancel;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
             internal async Task Go() {
                 var selectedCar = SelectedCar;
                 var selectedMode = SelectedModeViewModel;
                 if (selectedCar == null || selectedMode == null) return;
 
                 if (SettingsHolder.Drive.QuickDriveCheckTrack) {
-                    var doesNotFit = selectedMode.TrackDoesNotFit;
-                    if (doesNotFit != null) {
-                        var respond = ShowTrackDoesNotFitMessage(doesNotFit.Item1);
+                    var doesNotFitCar = selectedMode.CarDoesNotFit;
+                    var doesNotFitTrack = selectedMode.TrackDoesNotFit;
+                    if (doesNotFitTrack != null && doesNotFitCar == null && doesNotFitTrack.Item2 != QuickDriveModeViewModel.EmptyTrackAction) {
+                        var respond = ShowTrackDoesNotFitMessage(doesNotFitTrack.Item1);
                         if (respond == TrackDoesNotFitRespond.Cancel) return;
 
                         if (respond == TrackDoesNotFitRespond.FixAndGo) {
-                            doesNotFit.Item2(SelectedTrack);
+                            doesNotFitTrack.Item2(SelectedTrack);
+                        }
+                    } else if (doesNotFitCar != null || doesNotFitTrack != null) {
+                        if (ShowCarOrTrackDoesNotFitMessage(doesNotFitCar?.Item1, doesNotFitTrack?.Item1) == TrackDoesNotFitRespond.Cancel) {
+                            return;
                         }
                     }
                 }

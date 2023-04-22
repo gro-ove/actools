@@ -1,11 +1,10 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Markup;
 
 namespace FirstFloor.ModernUI.Presentation {
     [ContentProperty(nameof(Children))]
     public class LinksList : Link, IAddChild {
-        public List<Link> Children { get; } = new List<Link>();
+        public BetterObservableCollection<Link> Children { get; } = new BetterObservableCollection<Link>();
         
         public void AddChild(object value) {
             if (value is Link link) {

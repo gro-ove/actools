@@ -27,7 +27,7 @@ namespace AcManager.Tools.Data {
                 Rescan().Ignore();
             }
 
-            private Busy _reloadBusy = new Busy();
+            private readonly Busy _reloadBusy = new Busy();
             public event EventHandler Reloaded;
             private bool _updating;
             private bool _needsAnotherUpdate;
@@ -144,7 +144,7 @@ namespace AcManager.Tools.Data {
                 ScanFunc = d => Directory.GetFiles(d, "settings.ini"),
                 ConfigFactory = (p, f) => {
                     try {
-                        return PythonAppConfig.Create(p, f, true, _userSettingsFilename, x => x != "ABOUT");
+                        return PythonAppConfig.Create(p, f, true, _userSettingsFilename);
                     } catch (Exception e) {
                         Logging.Warning(e);
                         return null;
@@ -250,7 +250,7 @@ namespace AcManager.Tools.Data {
 
         [CanBeNull]
         public string SerializeSettings() {
-            return Config?.Export().ToString().Replace("\r", "").Trim();
+            return Config?.Serialize();
         }
 
         public void DeserializeSettings(string data) {

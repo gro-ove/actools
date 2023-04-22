@@ -182,7 +182,7 @@ namespace AcManager.Pages.Dialogs {
                     $"enabled+&country:{Filter.Encode(country)}", country);
         }
 
-        public SelectCarDialog([CanBeNull] CarObject car, string defaultFilter = null) {
+        public SelectCarDialog([CanBeNull] CarObject car) {
             _selectedCar = new DelayedPropertyWrapper<CarObject>(SelectedCarChanged);
 
             SelectedCar = car;
@@ -200,11 +200,24 @@ namespace AcManager.Pages.Dialogs {
             });
             InitializeComponent();
             Buttons = new Control[0];
+        }
 
+        public SelectCarDialog ApplyDefault([CanBeNull] Tuple<string, string> defaultFilter) {
+            if (defaultFilter?.Item1 != null) {
+                Tabs.SavePolicy = SavePolicy.SkipLoadingFlexible;
+                Tabs.SelectedSource = UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}", 
+                        defaultFilter.Item1, defaultFilter.Item2.Or(defaultFilter.Item1));
+            }
+            return this;
+        }
+
+        public SelectCarDialog ApplyDefault(string defaultFilter) {
             if (defaultFilter != null) {
                 Tabs.SavePolicy = SavePolicy.SkipLoadingFlexible;
-                Tabs.SelectedSource = UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={0}", defaultFilter);
+                Tabs.SelectedSource = UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={0}", 
+                        defaultFilter);
             }
+            return this;
         }
 
         [CanBeNull]
@@ -219,7 +232,7 @@ namespace AcManager.Pages.Dialogs {
 
         [CanBeNull]
         public static CarObject Show([CanBeNull] CarObject car, string defaultFilter) {
-            var dialog = new SelectCarDialog(car ?? CarsManager.Instance.GetDefault(), defaultFilter);
+            var dialog = new SelectCarDialog(car ?? CarsManager.Instance.GetDefault()).ApplyDefault(defaultFilter);
             dialog.ShowDialog();
             return dialog.IsResultOk ? dialog.SelectedCar : null;
         }

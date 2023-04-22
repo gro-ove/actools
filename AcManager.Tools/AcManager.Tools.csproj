@@ -294,6 +294,7 @@
     <Compile Include="Data\KunosLauncherDataWatcher.cs" />
     <Compile Include="Data\AuthenticationStorage.cs" />
     <Compile Include="Data\NameNationality.cs" />
+    <Compile Include="Data\NewRaceModeData.cs" />
     <Compile Include="Data\PatchBackgroundsDataUpdater.cs" />
     <Compile Include="Data\PatchBaseDataUpdater.cs" />
     <Compile Include="Data\PatchCarsDataUpdater.cs" />
@@ -361,6 +362,7 @@
     <Compile Include="GameProperties\LiveServiceMark.cs" />
     <Compile Include="GameProperties\ModeSpecificPresetsHelper.cs" />
     <Compile Include="GameProperties\NationCodeProvider.cs" />
+    <Compile Include="GameProperties\NewModeDetails.cs" />
     <Compile Include="GameProperties\RhmService.cs" />
     <Compile Include="GameProperties\TrackDetails.cs" />
     <Compile Include="GameProperties\WeatherDetails.cs" />

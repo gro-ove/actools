@@ -783,7 +783,8 @@
 
       <mui:ModernTab Grid.Column="1" LinksMargin="0 0 0 20" FrameMargin="0 0 0 4" LinksHorizontalAlignment="Left"
           SelectedSource="{Binding SelectedMode, Mode=TwoWay}" x:Name="ModeTab" FrameNavigated="OnModeTabNavigated" VerticalAlignment="Stretch"
-          ContentLoader="{x:Static dr:QuickDrive.ContentLoader}" Layout="TabWithLinksLists">
+          ContentLoader="{x:Static dr:QuickDrive.ContentLoader}" Layout="TabWithLinksLists" mui:ModernFrame.KeepAlive="False"
+          mui:ModernFrame.KeepContentAlive="False">
         <mui:ModernTab.LinksListBoxTemplate>
           <ControlTemplate>
             <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
@@ -797,8 +798,8 @@
           <mui:Link DisplayName="{x:Static t:ToolsStrings.Common_Weekend}" Source="/Pages/Drive/QuickDrive_Weekend.xaml" />
           <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drift}" Source="/Pages/Drive/QuickDrive_Drift.xaml" />
           <mui:LinksList x:Name="LinksList" DisplayName="{x:Static g:AppStrings.QuickDrive_Mode_More}">
-            <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_TimeAttack}" Source="/Pages/Drive/QuickDrive_TimeAttack.xaml" />
             <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drag}" Source="/Pages/Drive/QuickDrive_Drag.xaml" />
+            <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_TimeAttack}" Source="/Pages/Drive/QuickDrive_TimeAttack.xaml" />
           </mui:LinksList>
         </mui:ModernTab.Links>
       </mui:ModernTab>
@@ -830,7 +831,7 @@
         </Button.ToolTip>
         <DockPanel>
           <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
-              Visibility="{Binding SelectedModeViewModel.TrackDoesNotFit, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+              Visibility="{Binding SelectedModeViewModel.CarOrTrackDoesNotFit, Converter={StaticResource BooleanToVisibilityConverter}}"
               Margin="2 2 4 0" VerticalAlignment="Center" />
           <TextBlock Text="{x:Static g:AppStrings.Common_Go}" />
         </DockPanel>

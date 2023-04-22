@@ -77,6 +77,10 @@ namespace AcManager.Tools.Objects {
             IsSingleSection = Sections.Count == 1 && IsSectionNameUseless(Sections[0].DisplayName, configParams.PythonAppLocation);
             HasAnythingNew = Sections.Any(x => x.Any(y => y.IsNew));
 
+            if (Sections.Count == 1) {
+                Sections[0].IsSingleSection = true;
+            }
+
             foreach (var value in Sections.SelectMany(x => x)) {
                 value.PropertyChanged += OnValuePropertyChanged;
             }
@@ -212,6 +216,10 @@ namespace AcManager.Tools.Objects {
                 ApplyChangesToIni();
             }
             return _valuesIniFile;
+        }
+
+        public string Serialize() {
+            return Export().ToString().Replace("\r", "").Trim();
         }
 
         public void Save() {

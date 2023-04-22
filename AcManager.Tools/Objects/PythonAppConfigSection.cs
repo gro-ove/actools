@@ -12,7 +12,10 @@ namespace AcManager.Tools.Objects {
         public string Key { get; }
 
         public string DisplayName { get; }
+        
         public string ToolTip { get; }
+        
+        public bool IsSingleSection { get; set; }
 
         private static readonly Regex SectionName = new Regex(@"^([^(]*)(?:\((.+)\))?", RegexOptions.Compiled);
 

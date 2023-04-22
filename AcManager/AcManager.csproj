@@ -485,6 +485,9 @@
     <Compile Include="Pages\Drive\JsGenericProxy.cs" />
     <Compile Include="Pages\Drive\Online.QuickFilters.cs" />
     <Compile Include="Pages\Drive\OnlineServer.AutoJoin.cs" />
+    <Compile Include="Pages\Drive\QuickDrive_Custom.xaml.cs">
+      <DependentUpon>QuickDrive_Custom.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\RaceU.xaml.cs">
       <DependentUpon>RaceU.xaml</DependentUpon>
     </Compile>
@@ -1230,6 +1233,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Drive\GridFinder.xaml" />
+    <Page Include="Pages\Drive\QuickDrive_Custom.xaml" />
     <Page Include="Pages\Drive\RaceU.xaml" />
     <Page Include="Pages\Drive\Srs2.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -1,76 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Markup;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public interface ITitleable {
-        string Title { get; }
-    }
-
-    public enum SavePolicy {
-        /// <summary>
-        /// Save or load only when URI is in one of original links.
-        /// </summary>
-        Strict,
-
-        /// <summary>
-        /// Save or load even if there is no link with that URI.
-        /// </summary>
-        Flexible,
-
-        /// <summary>
-        /// Do not load URI, but instead use current Source value.
-        /// </summary>
-        SkipLoading,
-
-        /// <summary>
-        /// Do not load URI, but instead use current Source value, even if there is no link with that URI.
-        /// </summary>
-        SkipLoadingFlexible
-    }
-
-    public class DirectContentLoaderEntry {
-        public Uri Source { get; set; }
-
-        public string Key {
-            get => Source.OriginalString;
-            set => Source = new Uri(value, UriKind.Relative);
-        }
-
-        public object Content { get; set; }
-    }
-
-    [ContentProperty(nameof(Entries))]
-    public class DirectContentLoader : IContentLoader {
-        public List<DirectContentLoaderEntry> Entries { get; }
-
-        public DirectContentLoader() {
-            Entries = new List<DirectContentLoaderEntry>(3);
-        }
-
-        public Task<object> LoadContentAsync(Uri uri, CancellationToken cancellationToken) {
-            return Task.FromResult(LoadContent(uri));
-        }
-
-        public object LoadContent(Uri uri) {
-            return Entries.FirstOrDefault(x => string.Equals(x.Source.ToString(), uri.OriginalString, StringComparison.OrdinalIgnoreCase))?.Content;
-        }
-    }
-
     public class ModernTab : Control {
         public static readonly DependencyProperty LinksHorizontalAlignmentProperty = DependencyProperty.Register("LinksHorizontalAlignment",
                 typeof(HorizontalAlignment), typeof(ModernTab), new PropertyMetadata());
@@ -198,15 +139,51 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             SelectedSourceChanged?.Invoke(this, new SourceEventArgs(newValue));
         }
 
+        private static object FindFittingLink(LinkCollection collection, Uri source) {
+            foreach (var link in collection) {
+                if (link.IsShown && link.Source == source) return link;
+                if (link is LinksList list) {
+                    foreach (var child in list.Children) {
+                        if (child.IsShown && child.Source == source) {
+                            list.SelectedLink = child;
+                            return list;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        private static object FindFittingLink(LinkCollection collection, string source) {
+            foreach (var link in collection) {
+                if (link.IsShown && link.Source?.OriginalString == source) return link;
+                if (link is LinksList list) {
+                    foreach (var child in list.Children) {
+                        if (child.IsShown && child.Source?.OriginalString == source) {
+                            list.SelectedLink = child;
+                            return list;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        private object FindFittingLink(string source) {
+            return FindFittingLink(Links, source) ?? FindFittingLink(PinnedLinks, source);
+        }
+
+        private object FindFittingLink(Uri source) {
+            return FindFittingLink(Links, source) ?? FindFittingLink(PinnedLinks, source);
+        }
+
         private void UpdateSelection(bool skipLoading) {
             if (_linkList == null || Links == null || SavePolicy == SavePolicy.SkipLoadingFlexible) {
                 return;
             }
 
             if (SavePolicy == SavePolicy.SkipLoading && Frame.Source != null) {
-                _linkList.SelectedItem = Links.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource)
-                        ?? PinnedLinks.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource)
-                                ?? (skipLoading ? null : Links.FirstOrDefault());
+                _linkList.SelectedItem = FindFittingLink(SelectedSource) ?? (skipLoading ? null : Links.FirstOrDefault());
                 return;
             }
 
@@ -214,12 +191,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 Frame.Source = ValuesStorage.Get<Uri>(SaveKey) ?? Links.FirstOrDefault()?.Source;
             } else {
                 var saved = skipLoading || SaveKey == null ? null : ValuesStorage.Get<string>(SaveKey);
-                _linkList.SelectedItem = (saved == null ? null
-                        : Links.FirstOrDefault(l => l.IsShown && l.Source?.OriginalString == saved)
-                                ?? PinnedLinks.FirstOrDefault(l => l.IsShown && l.Source?.OriginalString == saved))
-                        ?? Links.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource)
-                                ?? PinnedLinks.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource)
-                                        ?? (skipLoading ? null : Links.FirstOrDefault());
+                _linkList.SelectedItem = (saved == null ? null : FindFittingLink(saved))
+                        ?? FindFittingLink(SelectedSource) ?? (skipLoading ? null : Links.FirstOrDefault());
             }
         }
 
@@ -253,7 +226,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnLinkListSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            if (_linkList.SelectedItem is Link link && link.Source != SelectedSource) {
+            if (_linkList.SelectedItem is Link link && !(link is LinksList) && link.Source != SelectedSource) {
                 SetCurrentValue(SelectedSourceProperty, link.Source);
             }
         }
@@ -343,79 +316,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public ControlTemplate LinksListBoxTemplate {
             get => (ControlTemplate)GetValue(LinksListBoxTemplateProperty);
             set => SetValue(LinksListBoxTemplateProperty, value);
-        }
-    }
-
-    public class ModernTabDataTemplateSelector : DataTemplateSelector {
-        public DataTemplate LinkDataTemplate { get; set; }
-
-        public DataTemplate PinnedLinkDataTemplate { get; set; }
-
-        public DataTemplate TitleDataTemplate { get; set; }
-
-        public override DataTemplate SelectTemplate(object item, DependencyObject container) {
-            return item is Link l ? l.IsPinned ? PinnedLinkDataTemplate : LinkDataTemplate : TitleDataTemplate;
-        }
-    }
-
-    public class ModernTabDataLinkListTemplateSelector : DataTemplateSelector {
-        public DataTemplate ListLinkDataTemplate { get; set; }
-
-        public DataTemplate LinkDataTemplate { get; set; }
-
-        public override DataTemplate SelectTemplate(object item, DependencyObject container) {
-            return item is LinksList ? ListLinkDataTemplate : LinkDataTemplate;
-        }
-    }
-
-    public class ModernTabLinksComboBox : BetterComboBox {
-        public static readonly DependencyProperty IsAnySelectedProperty = DependencyProperty.Register(nameof(IsAnySelected), typeof(bool),
-                typeof(ModernTabLinksComboBox), new PropertyMetadata(false, (o, e) => {
-                    ((ModernTabLinksComboBox)o)._isAnySelected = (bool)e.NewValue;
-                }));
-
-        private bool _isAnySelected;
-
-        public bool IsAnySelected {
-            get => _isAnySelected;
-            set => SetValue(IsAnySelectedProperty, value);
-        }
-        
-        private ModernTab _parent;
-        
-        public ModernTabLinksComboBox() {
-            PreviewMouseUp += (sender, args) => {
-                if (_parent == null) return;
-                var popup = this.FindVisualChild<Popup>();
-                if (popup?.IsOpen == true) {
-                    popup.IsOpen = false;
-                    _parent.SelectedSource = (SelectedItem as Link)?.Source;
-                }
-            };
-            Loaded += (sender, args) => {
-                _parent = this.GetParent<ModernTab>();
-                if (_parent == null) return;
-                _parent.SelectedSourceChanged += OnParentSelectedSourceChanged;
-            };
-            Unloaded += (sender, args) => {
-                if (_parent == null) return;
-                _parent.SelectedSourceChanged -= OnParentSelectedSourceChanged;
-            };
-        }
-
-        private void OnParentSelectedSourceChanged(object o, SourceEventArgs eventArgs) {
-            var selected = ItemsSource.OfType<Link>().FirstOrDefault(x => x.Source == eventArgs.Source);
-            if (selected != null && SelectedItem != selected) {
-                SelectedItem = selected;
-            }
-            IsAnySelected = selected != null;
-        }
-
-        protected override void OnSelectionChanged(SelectionChangedEventArgs e) {
-            base.OnSelectionChanged(e);
-            if (SelectedItem is Link selected && _parent != null && _parent.SelectedSource != selected.Source) {
-                _parent.SelectedSource = selected.Source;
-            }
         }
     }
 }
