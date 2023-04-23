@@ -3032,7 +3032,7 @@ But if you don’t want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</valu
     <value>Replays:</value>
   </data>
   <data name="AcSettings_Apps" xml:space="preserve">
-    <value>Apps</value>
+    <value>Python Apps</value>
   </data>
   <data name="AcSettings_Video" xml:space="preserve">
     <value>Video</value>

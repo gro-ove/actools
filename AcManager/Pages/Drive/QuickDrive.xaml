@@ -464,7 +464,7 @@
           </DockPanel>
 
           <c:WeatherComboBox SelectedItem="{Binding SelectedWeather}" AllowRandomWeather="True" AllowWeatherByType="True"
-              c:ToolTips.Weather="{Binding SelectedWeatherObject}" />
+              c:ToolTips.Weather="{Binding SelectedWeatherObject}" UseWeatherFX="True" />
         </StackPanel>
 
         <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1">
@@ -765,7 +765,7 @@
           <DockPanel c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureFullDay}">
             <c:MessageBlock Margin="0 8 0 0" DockPanel.Dock="Bottom">
               <mui:BbCodeBlock Style="{StaticResource BbCodeBlock.Small}"
-                  Text="[b]Warning:[/b] this feature is highly experimental. If you would experience any issues with online servers after using it, please run Steam integrity check." />
+                  Text="This feature is experimental. If you’d experience any issues with online servers after using it, please run Steam integrity check." />
             </c:MessageBlock>
             <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
               <ContextMenu>
@@ -774,8 +774,10 @@
                     Command="{Binding SelectedCar.ResetUseExtendedPhysicsFlagCommand}" />
               </ContextMenu>
             </mui:ContextMenuButton>
-            <CheckBox IsChecked="{Binding SelectedCar.UseExtendedPhysics}" Margin="0 0 0 0">
-              <Label Content="Use extended physics (experimental)" />
+            <CheckBox IsChecked="{Binding SelectedCar.UseExtendedPhysics}" Margin="0 0 0 0"
+                mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.ExtendedPhysics}, Mode=OneTime}"
+                mui:FancyHintsService.HorizontalAlignment="Left">
+              <Label Content="Use extended physics" />
             </CheckBox>
           </DockPanel>
         </Border>

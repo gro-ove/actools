@@ -10,6 +10,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             if (key is Vector3 v) {
                 return new Kn5MaterialTrackMap(v);
             }
+            if (key as string == "BasicMaterial.DepthOnly") {
+                return new Kn5MaterialTrackMap(new Vector3(1f, 1f, 1f));
+            }
             return new InvisibleMaterial();
         }
     }

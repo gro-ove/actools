@@ -483,16 +483,9 @@
             </MenuItem.Icon>
           </MenuItem>
           <MenuItem Header="{x:Static g:AppStrings.Main_CSPSettings}" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/SettingsShadersPatch.xaml"
-              InputGestureText="Alt+F2">
+              InputGestureText="Alt+F3">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource BookmarkIconData}" HorizontalAlignment="Center"
-                  VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
-            </MenuItem.Icon>
-          </MenuItem>
-          <MenuItem Header="{x:Static g:AppStrings.Main_AppsSettings}" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/PythonAppsSettings.xaml"
-              InputGestureText="Alt+F4">
-            <MenuItem.Icon>
-              <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource CarSetupIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
@@ -694,7 +687,6 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_ContentManager}" Source="/Pages/Settings/SettingsPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_AssettoCorsa}" Source="/Pages/AcSettings/AcSettingsPage.xaml" />
         <mui:Link DisplayName="Custom Shaders Patch" Source="/Pages/Settings/SettingsShadersPatch.xaml" />
-        <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Apps}" Source="/Pages/Settings/PythonAppsSettings.xaml" />
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
 
@@ -860,8 +852,6 @@
                 CommandParameter="/Pages/AcSettings/AcSettingsPage.xaml" />
             <MenuItem Header="Custom Shaders Patch" Command="mui:LinkCommands.NavigateLinkMainWindow"
                 CommandParameter="/Pages/Settings/SettingsShadersPatch.xaml" />
-            <MenuItem Header="{x:Static g:AppStrings.AcSettings_Apps}" Command="mui:LinkCommands.NavigateLinkMainWindow"
-                CommandParameter="/Pages/Settings/PythonAppsSettings.xaml" />
           </ContextMenu>
         </TextBlock.ContextMenu>
       </TextBlock>

@@ -113,10 +113,6 @@
         <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap" Height="60"
             Placeholder="None" />
       </StackPanel>
-
-      <c:MessageBlock CloseKey="appconfigsmoved" Margin="0 8 0 0">
-        <mui:BbCodeBlock Text="Configs were moved to [url=&quot;/Pages/Settings/PythonAppsSettings.xaml|_top&quot;]the Settings section[/url]." />
-      </c:MessageBlock>
     </mui:SpacingStackPanel>
 
   </c:AcObjectBase>

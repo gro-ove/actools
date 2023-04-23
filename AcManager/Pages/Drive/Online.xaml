@@ -30,7 +30,7 @@
             Visibility="{Binding UserListMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <Separator />
         <MenuItem Header="Use caching server for lobby" DataContext="{Binding Source={x:Static t:SettingsHolder.Online}}"
-            IsChecked="{Binding UseCachingServer}" IsEnabled="{Binding CachingServerAvailable}" mui:NewMarkService.New="True"
+            IsChecked="{Binding UseCachingServer}" IsEnabled="{Binding CachingServerAvailable}"
             ToolTipService.ShowOnDisabled="True" IsCheckable="True">
           <MenuItem.ToolTip>
             <DockPanel MaxWidth="300">

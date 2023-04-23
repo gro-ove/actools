@@ -160,7 +160,19 @@ namespace AcManager.Pages.Drive {
                     if (!RealConditions) {
                         SaveLater();
 
-                        if (PatchHelper.IsWeatherFxActive()) return;
+                        if (PatchHelper.IsWeatherFxActive()) {
+                            if (value is WeatherTypeWrapped weatherType 
+                                && weatherType.TypeOpt >= WeatherType.LightThunderstorm && weatherType.TypeOpt <= WeatherType.HeavySleet) {
+                                if (SelectedCar?.UseExtendedPhysics == false && PatchHelper.IsRainFxActive()) {
+                                    Logging.Debug("Triggering extended physics hint");
+                                    FancyHints.ExtendedPhysics.Trigger();
+                                } else {
+                                    FancyHints.ExtendedPhysics.MarkAsUnnecessary();
+                                }
+                            }
+                            return;
+                        }
+                        
                         if (value is WeatherObject weather) {
                             var diapason = weather.GetTimeDiapason();
                             var timeFits = diapason?.Contains(Time);
@@ -184,7 +196,7 @@ namespace AcManager.Pages.Drive {
                             }
                             Time = diapason.FindClosest(Time);
                         }
-                    }
+                    } 
                 });
             }
 
@@ -708,7 +720,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnAssistsContextMenuButtonClick(object sender, ContextMenuButtonEventArgs e) {
-            FancyHints.MoreDriveAssists.MaskAsUnnecessary();
+            FancyHints.MoreDriveAssists.MarkAsUnnecessary();
         }
     }
 }

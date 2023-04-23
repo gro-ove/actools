@@ -554,7 +554,7 @@ namespace AcManager.Tools.Helpers {
                     .JoinToReadableString().Or(ToolsStrings.Common_None);
 
             public bool SkipResults(Game.Result result, Game.StartProperties startProperties) {
-                if (result == null) return false;
+                if (result == null || result.GetExtraByType<Game.ResultExtraCustomMode>() != null) return false;
 
                 if (startProperties.HasAdditional<LiveServiceMark>()) {
                     return SkipCategories.GetById(@"Settings.DriveSettings.SkipLiveResults").Value;
@@ -787,7 +787,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool QuickDriveAllowExtendedPhysics {
                 get => _quickDriveAllowExtendedPhysics
-                        ?? (_quickDriveAllowExtendedPhysics = ValuesStorage.Get("Settings.DriveSettings.QuickDriveAllowExtendedPhysics", false)).Value;
+                        ?? (_quickDriveAllowExtendedPhysics = ValuesStorage.Get("Settings.DriveSettings.QuickDriveAllowExtendedPhysics", true)).Value;
                 set {
                     if (Equals(value, _quickDriveAllowExtendedPhysics)) return;
                     _quickDriveAllowExtendedPhysics = value;

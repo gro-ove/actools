@@ -358,8 +358,7 @@
 
         <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Drive_BeepIfRaceIsCancelled_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_BeepIfRaceIsCancelled}" />
-          <mui:BetterComboBox ItemsSource="{Binding Drive.BeepingNoises}" SelectedItem="{Binding Drive.CrashBeepingNoise}" IsEditable="False"
-              mui:NewMarkService.New="True">
+          <mui:BetterComboBox ItemsSource="{Binding Drive.BeepingNoises}" SelectedItem="{Binding Drive.CrashBeepingNoise}" IsEditable="False">
             <mui:BetterComboBox.ItemTemplate>
               <DataTemplate>
                 <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" Margin="0" Padding="0" />

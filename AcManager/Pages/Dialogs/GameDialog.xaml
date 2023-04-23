@@ -148,6 +148,23 @@
         mui:FancyHintsService.OffsetY="64" mui:FancyHintsService.HorizontalAlignment="Right" mui:FancyHintsService.VerticalAlignment="Bottom"
         mui:FancyHintsService.HorizontalContentAlignment="Right" mui:FancyHintsService.VerticalContentAlignment="Bottom">
       <ContentControl.Resources>
+        <!-- Custom -->
+        <DataTemplate DataType="{x:Type di:GameDialog+CustomModeFinishedData}">
+          <Viewbox Stretch="Uniform" MaxHeight="320" MaxWidth="600" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel>
+              <DockPanel Margin="0 0 0 8">
+                <Border Width="80">
+                  <Ellipse Style="{StaticResource PlaceMark}" HorizontalAlignment="Right" Margin="0 0 16 0"
+                      Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
+                </Border>
+
+                <TextBlock Text="{Binding ModeName}" Style="{StaticResource Heading1}" FontSize="40" DockPanel.Dock="Top" />
+                <mui:BbCodeBlock Mode="Extended" Text="{Binding Message}" VerticalAlignment="Bottom" Margin="0 12 0 6" TextOptions.TextFormattingMode="Ideal" />
+              </DockPanel>
+            </StackPanel>
+          </Viewbox>
+        </DataTemplate>
+        
         <!-- Drift -->
         <DataTemplate DataType="{x:Type di:GameDialog+DriftFinishedData}">
           <Viewbox Stretch="Uniform" MaxHeight="320" MaxWidth="600" HorizontalAlignment="Center" VerticalAlignment="Center">

@@ -270,6 +270,10 @@
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_ShowBackButton}" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding AppAppearanceManager.ShowSelectionDialogToolTips}" mui:NewMarkService.New="True">
+          <Label Content="Show popup details in selection dialogs" />
+        </CheckBox>
+
         <CheckBox IsChecked="{Binding AppAppearanceManager.SemiTransparentAttachedTools}" set:Search.Keywords="custom showroom">
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_SemiTransparentToolsInCustomShowroom}" />
         </CheckBox>
@@ -308,7 +312,7 @@
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Video_SystemHeader}" />
 
         <CheckBox IsChecked="{Binding AppAppearanceManager.DisallowTransparency}"
-            ToolTip="{x:Static g:AppStrings.Settings_Appearance_DisableWindowsTransparency_Tooltip}" mui:NewMarkService.New="True">
+            ToolTip="{x:Static g:AppStrings.Settings_Appearance_DisableWindowsTransparency_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_DisableWindowsTransparency}" />
         </CheckBox>
 

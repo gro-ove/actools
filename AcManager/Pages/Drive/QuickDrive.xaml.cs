@@ -846,12 +846,12 @@ namespace AcManager.Pages.Drive {
 
                 var stored = Stored.Get("windDirectionInDegrees");
                 if (stored.Value != null) {
-                    FancyHints.DegreesWind.MaskAsUnnecessary();
+                    FancyHints.DegreesWind.MarkAsUnnecessary();
                 } else {
                     FancyHints.DegreesWind.Trigger(TimeSpan.FromSeconds(1.5d));
                     stored.SubscribeWeak((o, e) => {
                         if (e.PropertyName == nameof(StoredValue.Value)) {
-                            FancyHints.DegreesWind.MaskAsUnnecessary();
+                            FancyHints.DegreesWind.MarkAsUnnecessary();
                         }
                     });
                 }

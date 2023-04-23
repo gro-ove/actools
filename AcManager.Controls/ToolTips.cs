@@ -4,11 +4,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.Presentation;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls {
@@ -131,6 +134,11 @@ namespace AcManager.Controls {
 
         [CanBeNull]
         private static ToolTip GetToolTip(string key, FrameworkElement obj = null) {
+            if ((key == @"CarPreviewTooltip" || key == @"TrackPreviewTooltip")
+                    && !AppAppearanceManager.Instance.ShowSelectionDialogToolTips
+                    && obj?.GetParent<Window>() is ModernDialog) {
+                return null;
+            }
             return obj?.TryFindResource(key) as ToolTip ?? Dictionary[key] as ToolTip;
         }
 
@@ -156,6 +164,7 @@ namespace AcManager.Controls {
 
         [CanBeNull]
         public static ToolTip GetCupUpdateToolTip(FrameworkElement obj = null) {
+            if (obj == null) return null;
             return GetToolTip(obj.GetValue(CupUi.InformationModeProperty) as bool? == true ? @"CupInformationTooltip" : @"CupUpdateTooltip", obj);
         }
 

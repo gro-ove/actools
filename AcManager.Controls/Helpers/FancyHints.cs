@@ -59,7 +59,7 @@ namespace AcManager.Controls.Helpers {
                 "content-updates-arrived",
                 "Updates for mods",
                 "It seems like Content Manager just found some. Would you like to download them?",
-                startupsDelay: 0, forced: true);
+                startupsDelay: 0);
 
         public static readonly FancyHint MultiSelectionMode = new FancyHint(
                 "multiselection-mode",
@@ -126,5 +126,11 @@ namespace AcManager.Controls.Helpers {
                 "Want to switch to thumbnail mode?",
                 "Just make the list wider.",
                 startupsDelay: 2, probability: 0.25);
+
+        public static readonly FancyHint ExtendedPhysics = new FancyHint(
+                "extended-physics",
+                "Try with extended physics enabled",
+                "With it, CSP can use rain physics properly and will generate rain tyres for cars that need them.",
+                startupsDelay: 0, probability: 1d, forced: true);
     }
 }

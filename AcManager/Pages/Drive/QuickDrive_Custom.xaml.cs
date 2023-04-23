@@ -17,6 +17,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using StringBasedFilter;
@@ -53,7 +54,7 @@ namespace AcManager.Pages.Drive {
 
         public class ViewModel : QuickDrive_Race.ViewModel {
             public string ID { get; }
-            
+
             protected override bool IgnoreStartingPosition => true;
 
             private enum SessionType {
@@ -68,21 +69,24 @@ namespace AcManager.Pages.Drive {
             private readonly int _startingPosition = -1;
             private readonly double _speedLimit = 0d;
             private readonly Game.StartType _selectedStartType;
-            
+            private readonly string _forceWeather;
+            private readonly Tuple<double, double> _forceWind;
+            private readonly long? _forceDateTime;
+
             public int AiLimit { get; }
-            
+
             public string DetailedDescription { get; set; }
-            
+
             public bool ShowPenalties { get; set; }
-            
+
             public bool ShowLapsNumber { get; set; }
-            
+
             public bool ShowAiLevel { get; set; }
-            
+
             public bool ShowJumpStartPenalty { get; set; }
-            
+
             public bool ShowStartingPositionSelection { get; set; }
-            
+
             // public bool ShowBallast { get; set; }
             // public bool ShowRestrictor { get; set; }
 
@@ -101,7 +105,7 @@ namespace AcManager.Pages.Drive {
 
             private Tuple<string, string> SplitFilter(string filter) {
                 var i = filter.IndexOf('@');
-                return i != -1 ? Tuple.Create(filter.Substring(0, i).TrimEnd(), filter.Substring(i + 1).TrimStart()) 
+                return i != -1 ? Tuple.Create(filter.Substring(0, i).TrimEnd(), filter.Substring(i + 1).TrimStart())
                         : Tuple.Create(filter, string.Empty);
             }
 
@@ -122,6 +126,12 @@ namespace AcManager.Pages.Drive {
                         break;
                 }
 
+                _forceWeather = manifest["RULES"].GetNonEmpty("FORCE_WEATHER");
+                _forceDateTime = manifest["RULES"].GetNonEmpty("FORCE_DATETIME").As<long?>();
+                if (manifest["RULES"].GetNonEmpty("FORCE_WIND")?.Split(',') is string[] split) {
+                    _forceWind = Tuple.Create(split[0].As(0d), split.ElementAtOrDefault(1).As(0d));
+                }
+
                 var carFilter = manifest["RULES"].GetNonEmpty("ALLOWED_CARS");
                 if (carFilter != null && carFilter != @"*") {
                     _filterCarsRaw = SplitFilter(carFilter);
@@ -133,7 +143,7 @@ namespace AcManager.Pages.Drive {
                     _filterTracksRaw = SplitFilter(trackFilter);
                     _filterTracks = Filter.Create(TrackObjectBaseTester.Instance, _filterTracksRaw.Item1);
                 }
-                
+
                 var penalties = manifest["RULES"].GetInt("PENALTIES", -1);
                 if (penalties == -1) {
                     ShowPenalties = true;
@@ -192,14 +202,14 @@ namespace AcManager.Pages.Drive {
                 LoadSaveable(initialize);
 
                 try {
-                    var detailsFilename = Path.Combine(_mode.Location, "details.txt");
+                    var detailsFilename = Path.Combine(_mode.Location, "description.txt");
                     if (File.Exists(detailsFilename)) {
                         DetailedDescription = File.ReadAllText(detailsFilename).TrimEnd();
                     }
                 } catch {
                     // ignored
                 }
-                
+
                 InitializeConfig();
             }
 
@@ -207,7 +217,7 @@ namespace AcManager.Pages.Drive {
             public PythonAppConfig Config { get; set; }
 
             private string _settingsKey;
-            
+
             private void InitializeConfig() {
                 _settingsKey = $@".new-mode.{_mode.Id}";
                 Config = new PythonAppConfigs(new PythonAppConfigParams(_mode.Location) {
@@ -268,12 +278,12 @@ namespace AcManager.Pages.Drive {
             }
 
             protected override void CheckIfCarFits(CarObject track) {
-                CarDoesNotFit = track != null && _filterCars?.Test(track) == false 
+                CarDoesNotFit = track != null && _filterCars?.Test(track) == false
                         ? Tuple.Create("Car is not for this mode", EmptyCarAction) : null;
             }
 
             protected override void CheckIfTrackFits(TrackObjectBase track) {
-                TrackDoesNotFit = track != null && _filterTracks?.Test(track) == false 
+                TrackDoesNotFit = track != null && _filterTracks?.Test(track) == false
                         ? Tuple.Create("Track is not for this mode", EmptyTrackAction) : null;
             }
 
@@ -294,7 +304,7 @@ namespace AcManager.Pages.Drive {
                 if (_startingPosition != -1) {
                     RaceGridViewModel.StartingPosition = _startingPosition;
                 }
-                
+
                 IEnumerable<Game.AiCar> botCars = null;
                 if (_sessionType != SessionType.Practice) {
                     try {
@@ -340,7 +350,7 @@ namespace AcManager.Pages.Drive {
                         new QuickDrivePresetProperty(serializedQuickDrivePreset),
                         new CarCustomDataHelper(),
                         new CarExtendedPhysicsHelper(),
-                        new NewModeDetails(_mode.Id),
+                        new NewModeDetails(_mode.Id, _forceWeather, _forceDateTime, _forceWind),
                     }).ToList()
                 });
             }
@@ -349,6 +359,7 @@ namespace AcManager.Pages.Drive {
                 _mode.PublishSettings(Config?.Serialize());
                 if (_sessionType == SessionType.Race) {
                     return new Game.RaceProperties {
+                        SessionName = _mode.DisplayName,
                         AiLevel = RaceGridViewModel.AiLevelFixed ? RaceGridViewModel.AiLevel : 100,
                         Penalties = Penalties,
                         JumpStartPenalty = JumpStartPenalty,
@@ -360,6 +371,7 @@ namespace AcManager.Pages.Drive {
                 }
                 if (_sessionType == SessionType.TrackDay) {
                     return new Game.TrackdayProperties {
+                        SessionName = _mode.DisplayName,
                         AiLevel = RaceGridViewModel.AiLevelFixed ? RaceGridViewModel.AiLevel : 100,
                         Penalties = Penalties,
                         JumpStartPenalty = Game.JumpStartPenaltyType.None,
@@ -371,6 +383,7 @@ namespace AcManager.Pages.Drive {
                     };
                 }
                 return new Game.PracticeProperties {
+                    SessionName = _mode.DisplayName,
                     Penalties = Penalties,
                     StartType = _selectedStartType
                 };

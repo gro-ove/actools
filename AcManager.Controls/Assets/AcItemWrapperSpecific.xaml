@@ -678,7 +678,8 @@
   </DataTemplate>
 
   <DataTemplate x:Key="CarSkinItemTemplate" DataType="{x:Type t:CarSkinObject}">
-    <mui:BetterImage c:ToolTips.CarSkin="{Binding}" Width="32" Height="32" Filename="{Binding LiveryImage}" ClearOnChange="True" />
+    <mui:BetterImage c:ToolTips.CarSkin="{Binding}" Width="32" Height="32" Filename="{Binding LiveryImage}" ClearOnChange="True"
+        c:ContextMenus.CarSkin="{Binding}" />
   </DataTemplate>
 
   <DataTemplate x:Key="AcItemWrapperSpecific.CarSkinItemTemplate" DataType="{x:Type t:AcItemWrapper}">

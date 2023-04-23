@@ -16,6 +16,7 @@ using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Pages.Selected;
 using AcManager.Tools;
+using AcManager.Tools.Data;
 using AcManager.Tools.Data.GameSpecific;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcLog;
@@ -38,6 +39,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using DataGrid = System.Windows.Controls.DataGrid;
@@ -205,6 +207,14 @@ namespace AcManager.Pages.Dialogs {
             var takenPlace = conditions?.GetTakenPlace(result) ?? PlaceConditions.UnremarkablePlace;
 
             Logging.Debug($"Place conditions: {conditions?.GetDescription()}, result: {result.GetDescription()}");
+
+            if (result.GetExtraByType<Game.ResultExtraCustomMode>(out var custom)) {
+                return new CustomModeFinishedData {
+                    ModeName = NewRaceModeData.Instance.Items.GetByIdOrDefault(custom.Id)?.DisplayName ?? AcStringValues.NameFromId(custom.Id),
+                    Message = custom.Message,
+                    TakenPlace = custom.TakenPlace
+                };
+            }
 
             if (result.GetExtraByType<Game.ResultExtraDrift>(out var drift)) {
                 return new DriftFinishedData {
@@ -510,6 +520,12 @@ namespace AcManager.Pages.Dialogs {
             public override string Title => SelectedSession?.Title;
         }
 
+        public class CustomModeFinishedData : BaseFinishedData {
+            public override string Title => ModeName;
+            public string ModeName { get; set; }
+            public string Message { get; set; }
+        }
+
         public class DriftFinishedData : BaseFinishedData {
             public override string Title { get; } = ToolsStrings.Session_Drift;
             public int Points { get; set; }
@@ -674,7 +690,6 @@ namespace AcManager.Pages.Dialogs {
             });
 
             Button fixButton = null;
-
             if (result == null || !result.IsNotCancelled) {
                 Model.CurrentState = ViewModel.State.Cancelled;
                 DelayedBeep().Ignore();
@@ -858,14 +873,14 @@ namespace AcManager.Pages.Dialogs {
                         ((DataGridTemplateColumn)columns[0]).CellTemplate = (DataTemplate)FindResource(x ?
                                 @"TotalTimeDeltaTemplate" : @"TotalTimeDeltaTemplate.FarRight");
                         if (x) {
-                            FancyHints.GameDialogTableSize.MaskAsUnnecessary();
+                            FancyHints.GameDialogTableSize.MarkAsUnnecessary();
                         }
                     });
 
             if (ActualWidth < 1000d) {
                 FancyHints.GameDialogTableSize.Trigger();
             } else {
-                FancyHints.GameDialogTableSize.MaskAsUnnecessary();
+                FancyHints.GameDialogTableSize.MarkAsUnnecessary();
             }
         }
 

@@ -40,6 +40,11 @@ namespace AcManager.Tools.Data.GameSpecific {
         public int GetTakenPlace(Game.Result result) {
             if (result == null) return UnremarkablePlace;
 
+            var custom = result.GetExtraByType<Game.ResultExtraCustomMode>();
+            if (custom != null) {
+                return custom.TakenPlace;
+            }
+
             var drift = result.GetExtraByType<Game.ResultExtraDrift>();
             if (drift != null && Type == PlaceConditionsType.Points) {
                 return GetTakenPlace(drift.Points);

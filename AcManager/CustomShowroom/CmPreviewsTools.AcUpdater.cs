@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Managers;
@@ -40,6 +41,12 @@ namespace AcManager.CustomShowroom {
             }
 
             protected override async Task RunAsyncOverride() {
+                foreach (var car in Items.Select(x => x.Car).Distinct()) {
+                    progressReport?.Report(new AsyncProgressEntry($"Installing config and occlusion for {car.DisplayName}…", double.Epsilon));
+                    await PatchCarsDataUpdater.Instance.TriggerAutoLoadAsync(car?.Id, null, CancellationToken);
+                    await PatchCarsVaoDataUpdater.Instance.TriggerAutoLoadAsync(car?.Id, null, CancellationToken);
+                }
+                
                 progressReport?.Report(new AsyncProgressEntry("Launching Assetto Corsa in background…", double.Epsilon));
 
                 var carIds = Items.Select(x => x.Car.Id).ToArray();

@@ -252,6 +252,11 @@ namespace AcManager.Pages.Miscellaneous {
                 var playersLine = PluralizingConverter.PluralizeExt(players, "{0} player");
                 var bestLapLine = lastSession.BestLaps?.FirstOrDefault(x => x.CarNumber == 0)?.Time.ToMillisecondsString() ?? "N/A";
 
+                var custom = parsed.GetExtraByType<Game.ResultExtraCustomMode>();
+                if (custom != null) {
+                    return custom.Summary ?? "Custom mode";
+                }
+
                 if (lastSession.Type == Game.SessionType.Race) {
                     return playersLine + ", taken place: " + ((lastSession.GetTakenPlacesPerCar()?.FirstOrDefault() + 1)?.ToInvariantString() ?? "N/A");
                 }
@@ -298,6 +303,10 @@ namespace AcManager.Pages.Miscellaneous {
             public string SessionNames => _sessionNames.Get(() => {
                 var sessions = Parsed?.Sessions;
                 if (sessions == null) return null;
+
+                if (sessions.Length == 1 && Parsed.GetExtraByType<Game.ResultExtraCustomMode>() != null) {
+                    return sessions[0].Name;
+                }
 
                 // var online = RaceIni;
                 return sessions.IsWeekendSessions() ? ToolsStrings.Common_Weekend :

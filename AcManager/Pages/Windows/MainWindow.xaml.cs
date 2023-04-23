@@ -141,7 +141,7 @@ namespace AcManager.Pages.Windows {
                         new KeyGesture(Key.F1, ModifierKeys.Alt)),
                 new InputBinding(new NavigateCommand(this, new Uri("/Pages/AcSettings/AcSettingsPage.xaml", UriKind.Relative)),
                         new KeyGesture(Key.F2, ModifierKeys.Alt)),
-                new InputBinding(new NavigateCommand(this, new Uri("/Pages/Settings/PythonAppsSettings.xaml", UriKind.Relative)),
+                new InputBinding(new NavigateCommand(this, new Uri("/Pages/Settings/SettingsShadersPatch.xaml", UriKind.Relative)),
                         new KeyGesture(Key.F3, ModifierKeys.Alt)),
             }.NonNull().ToList());
 
@@ -870,7 +870,7 @@ namespace AcManager.Pages.Windows {
             }
 
             e.Effects = DragDropEffects.Copy;
-            FancyHints.DragForContentSection.MaskAsUnnecessary();
+            FancyHints.DragForContentSection.MarkAsUnnecessary();
         }
 
         private void OnDriveTitleLinkDrop(object sender, DragEventArgs e) {
@@ -896,7 +896,7 @@ namespace AcManager.Pages.Windows {
             }
 
             e.Effects = DragDropEffects.Copy;
-            FancyHints.DragForContentSection.MaskAsUnnecessary();
+            FancyHints.DragForContentSection.MarkAsUnnecessary();
         }
 
         private static void MakeSureOnlineIsReady([CanBeNull] Uri uri) {
@@ -985,11 +985,11 @@ namespace AcManager.Pages.Windows {
                 return true;
             }
 
-            if (s.Contains("/Pages/Settings/PythonAppsSettings.xaml")) {
+            /*if (s.Contains("/Pages/Settings/PythonAppsSettings.xaml")) {
                 CurrentGroupKey = "settings";
                 NavigateTo(uri);
                 return true;
-            }
+            }*/
 
             if (s.Contains("/Pages/Settings/SettingsShadersPatch.xaml")) {
                 CurrentGroupKey = "settings";

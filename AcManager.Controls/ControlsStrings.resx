@@ -1125,6 +1125,6 @@ Depth mode: [b]{4}[/b]</value>
       <value>Dynamic:</value>
   </data>
   <data name="WeatherSelection_Controller" xml:space="preserve">
-      <value>Controller:</value>
+      <value>Controllers</value>
   </data>
 </root>

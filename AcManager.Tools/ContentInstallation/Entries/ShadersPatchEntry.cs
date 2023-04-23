@@ -77,7 +77,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                     }
 
                     FileUtils.TryToDelete(PatchHelper.TryGetInstalledLog());
-                    FileUtils.TryToDelete(Path.Combine(PatchHelper.RequireRootDirectory(), "config", "data_manifest.ini"));
+                    FileUtils.TryToDelete(Path.Combine(PatchHelper.RequireRootDirectory(), @"config", @"data_manifest.ini"));
+                    FileUtils.TryToDelete(Path.Combine(PatchHelper.RequireRootDirectory(), @"config", @"joypad_assist.ini"));
                     first = false;
 
                     installedLog.WriteLine(@"# Generated automatically during last patch installation via Content Manager.");

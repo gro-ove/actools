@@ -38,7 +38,7 @@
           <Label Content="{x:Static g:AppStrings.Settings_General_LaunchSteamAutomatically}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Common.CheckForFaultTolerantHeap}" mui:NewMarkService.New="True"
+        <CheckBox IsChecked="{Binding Common.CheckForFaultTolerantHeap}"
             ToolTip="If Assetto Corsa is flagged, loading times can increase drastically">
           <Label Content="Check if Assetto Corsa is flagged to use Fault Tolerant Heap and offer to fix the issue" />
         </CheckBox>

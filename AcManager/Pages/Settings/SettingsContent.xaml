@@ -34,7 +34,7 @@
           <Label Content="{x:Static g:AppStrings.Settings_Content_MentionCMInPacked}" />
         </CheckBox>
 
-        <CheckBox set:Search.Keywords="display;ui" IsChecked="{Binding Holder.ShowNotesIconInLists}" mui:NewMarkService.New="True">
+        <CheckBox set:Search.Keywords="display;ui" IsChecked="{Binding Holder.ShowNotesIconInLists}">
           <Label Content="{x:Static g:AppStrings.Settings_Content_MarkObjectsWithNotesWithIcon}" />
         </CheckBox>
 
@@ -137,7 +137,7 @@
           <Label Content="{x:Static g:AppStrings.Settings_Content_HideSymbolsLikeFromCarNames}" />
         </CheckBox>
 
-        <CheckBox set:Search.Keywords="display;ui;cars" IsChecked="{Binding Holder.ShowCarPreviewInToolTips}" mui:NewMarkService.New="True">
+        <CheckBox set:Search.Keywords="display;ui;cars" IsChecked="{Binding Holder.ShowCarPreviewInToolTips}">
           <Label Content="{x:Static g:AppStrings.Settings_Content_ShowCarPreviewsInTooltips}" />
         </CheckBox>
 

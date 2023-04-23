@@ -5,14 +5,15 @@
   <Grid Style="{StaticResource ContentRoot}">
     <mui:ModernTab x:Name="Tab" Layout="List" SelectedSource="/Pages/AcSettings/AcSettingsGeneral.xaml" SaveKey="__AcSettingsPage.SelectedPage">
       <mui:ModernTab.Links>
-        <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Apps}" Source="/Pages/AcSettings/AcSettingsPython.xaml" />
-        <mui:Link DisplayName="App windows" Source="/Pages/AcSettings/AcSettingsPython_detailed.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Video}" Source="/Pages/AcSettings/AcSettingsVideo.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_ViewAndUi}" Source="/Pages/AcSettings/AcSettingsView.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Audio}" Source="/Pages/AcSettings/AcSettingsAudio.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Controls}" Source="/Pages/AcSettings/AcSettingsControls.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Miscellaneous}" Source="/Pages/AcSettings/AcSettingsGeneral.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_System}" Source="/Pages/AcSettings/AcSettingsSystem.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Apps}" Source="/Pages/AcSettings/AcSettingsPython.xaml" />
+        <mui:Link DisplayName="Python App Settings" Source="/Pages/Settings/PythonAppsSettings.xaml" />
+        <mui:Link DisplayName="App windows" Source="/Pages/AcSettings/AcSettingsPython_detailed.xaml" />
         <mui:Link DisplayName="Chase camera" Source="/Pages/AcSettings/AcSettingsChaseCamera.xaml" />
         <mui:Link DisplayName="Damage displayer" Source="/Pages/AcSettings/AcSettingsDamageDisplayer.xaml" />
         <mui:Link DisplayName="Fanatec" Source="/Pages/AcSettings/AcSettingsFanatec.xaml" IsNew="True" />

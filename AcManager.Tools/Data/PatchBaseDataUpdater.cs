@@ -336,12 +336,8 @@ namespace AcManager.Tools.Data {
 
         private DelegateCommand _viewInExplorerCommand;
 
-        public DelegateCommand ViewInExplorerCommand
-            =>
-                    _viewInExplorerCommand
-                            ?? (_viewInExplorerCommand =
-                                    new DelegateCommand(() => { WindowsHelper.ViewDirectory(GetDestinationDirectory()); },
-                                            () => Directory.Exists(GetDestinationDirectory())));
+        public DelegateCommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(
+                () => WindowsHelper.ViewDirectory(GetDestinationDirectory()), () => Directory.Exists(GetDestinationDirectory())));
 
         private int _availableToInstall;
 

@@ -30,6 +30,18 @@ namespace AcManager.Controls {
     public class WeatherComboBox : HierarchicalComboBox {
         public static AcEnabledOnlyCollection<WeatherObject> WeatherList { get; } = WeatherManager.Instance.Enabled;
 
+        public static readonly DependencyProperty UseWeatherFXProperty = DependencyProperty.Register(nameof(UseWeatherFX), typeof(bool),
+                typeof(WeatherComboBox), new PropertyMetadata(false, (o, e) => {
+                    ((WeatherComboBox)o)._useWeatherFX = (bool)e.NewValue;
+                }));
+
+        private bool _useWeatherFX;
+
+        public bool UseWeatherFX {
+            get => _useWeatherFX;
+            set => SetValue(UseWeatherFXProperty, value);
+        }
+
         public static readonly DependencyProperty TimeProperty = DependencyProperty.Register(nameof(Time), typeof(int?),
                 typeof(WeatherComboBox), new PropertyMetadata(null, (o, e) => {
                     var w = (WeatherComboBox)o;
@@ -258,8 +270,9 @@ namespace AcManager.Controls {
             if (!_loaded) return;
             await WeatherManager.Instance.EnsureLoadedAsync();
 
+            var wfx = UseWeatherFX && PatchHelper.IsWeatherFxActive();
             HierarchicalGroup list;
-            if (WeatherList.All(IsKunosWeather) && !PatchHelper.IsWeatherFxActive()) {
+            if (WeatherList.All(IsKunosWeather) && !wfx) {
                 if (AllowRandomWeather) {
                     list = new HierarchicalGroup { WeatherTypeWrapped.RandomWeather, new Separator() };
                     list.AddRange(WeatherList);
@@ -269,7 +282,7 @@ namespace AcManager.Controls {
             } else {
                 list = AllowRandomWeather ? new HierarchicalGroup { WeatherTypeWrapped.RandomWeather } : new HierarchicalGroup();
 
-                if (PatchHelper.IsWeatherFxActive()) {
+                if (wfx) {
                     IEnumerable<object> weathers = VirtualWeathers;
                     if (!PatchHelper.IsRainFxActive()) {
                         weathers = weathers.Where(x => {
@@ -290,14 +303,23 @@ namespace AcManager.Controls {
                     var items = WeatherFxControllerData.Instance.Items;
                     var baseItems = items.Where(x => x.FollowsSelectedWeather)
                             .Select(x => new WeatherTypeWrapped(x)).ToList();
+                    
+                    list.Add(new Separator());
+                    list.Add(new TextBlock { 
+                        Text = "Static:", Style = (Style)SettingsDictionary[@"Label"], 
+                        Margin = new Thickness(-20d, 0d, 0d, 0d) 
+                    });
+                    list.Add(new WeatherTypeWrapped(WeatherType.Clear));
+                    list.Add(new WeatherTypeWrapped(WeatherType.ScatteredClouds));
+                    list.Add(new WeatherTypeWrapped(WeatherType.OvercastClouds));
+                    list.Add(new WeatherTypeWrapped(WeatherType.Fog));
+                    if (PatchHelper.IsRainFxActive()) {
+                        list.Add(new WeatherTypeWrapped(WeatherType.Rain));
+                    }
+                    list.Add(new HierarchicalGroup(ControlsStrings.WeatherSelection_Category_More, weathers));
+                    
                     if (baseItems.Count > 1) {
-                        weathers = weathers.Append(new Separator());
-                        weathers = weathers.Append(new TextBlock { 
-                            Text = ControlsStrings.WeatherSelection_Controller, Style = (Style)SettingsDictionary[@"Label"], 
-                            Margin = new Thickness(-20d, 0d, 0d, 0d) 
-                        });
-
-                        weathers = weathers.Concat(baseItems.Select(x => {
+                        list.Add(new HierarchicalGroup(ControlsStrings.WeatherSelection_Controller, baseItems.Select(x => {
                             var menuItem = new MenuItem {
                                 Header = x.ControllerRef?.DisplayName ?? x.DisplayName, 
                                 ToolTip = x.ControllerRef?.GetToolTip(),
@@ -321,18 +343,38 @@ namespace AcManager.Controls {
                                 }
                             };
                             return menuItem;
-                        }));
+                        })));
+                        // weathers = weathers.Append(new Separator());
+                        /*list.Add(new TextBlock { 
+                            Text = ControlsStrings.WeatherSelection_Controller, Style = (Style)SettingsDictionary[@"Label"], 
+                            Margin = new Thickness(-20d, 0d, 0d, 0d) 
+                        });
+                        list.AddRange(baseItems.Select(x => {
+                            var menuItem = new MenuItem {
+                                Header = x.ControllerRef?.DisplayName ?? x.DisplayName, 
+                                ToolTip = x.ControllerRef?.GetToolTip(),
+                                IsCheckable = true, 
+                                StaysOpenOnClick = true
+                            };
+                            menuItem.SetBinding(MenuItem.IsCheckedProperty, new Binding {
+                                Path = new PropertyPath(nameof(WeatherFxControllerData.IsSelectedAsBase)),
+                                Source = x.ControllerRef,
+                                Mode = BindingMode.OneWay
+                            });
+                            menuItem.Click += (s, a) => {
+                                a.Handled = true;
+                                if (x.ControllerRef != null) {
+                                    x.ControllerRef.IsSelectedAsBase = true;
+                                    var item = Flatten(ItemsSource).OfType<WeatherTypeWrapped>()
+                                            .FirstOrDefault(y => y.TypeOpt == _lastWeatherType);
+                                    if (item != null) {
+                                        SelectedItem = item;
+                                    }
+                                }
+                            };
+                            return menuItem;
+                        }));*/
                     }
-                    
-                    list.Add(new Separator());
-                    list.Add(new WeatherTypeWrapped(WeatherType.Clear));
-                    list.Add(new WeatherTypeWrapped(WeatherType.ScatteredClouds));
-                    list.Add(new WeatherTypeWrapped(WeatherType.OvercastClouds));
-                    list.Add(new WeatherTypeWrapped(WeatherType.Fog));
-                    if (PatchHelper.IsRainFxActive()) {
-                        list.Add(new WeatherTypeWrapped(WeatherType.Rain));
-                    }
-                    list.Add(new HierarchicalGroup(ControlsStrings.WeatherSelection_Category_More, weathers));
 
                     var dynamicItems = items.Where(x => !x.FollowsSelectedWeather)
                             .Select(x => new WeatherTypeWrapped(x)).ToList();

@@ -531,6 +531,7 @@ namespace AcManager.Tools.Data {
 
                     _installing = true;
                     Logging.Debug($"Beginning patch installation, trying to install v{Version} ({Build})");
+                    FileUtils.TryToDelete(Path.Combine(PatchHelper.RequireRootDirectory(), @"config", @"joypad_assist.ini"));
 
                     /*if (BuildInformation.IsDebugConfiguration) {
                         Logging.Warning("Skipping installation in debug configuration");

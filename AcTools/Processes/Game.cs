@@ -18,13 +18,18 @@ namespace AcTools.Processes {
         public static bool OptionRaceIniTestMode = false;
         public static bool OptionReplaySupportsFullPaths = false;
 
-        private static void ClearUpIniFile(IniFile file) {
+        public static void ClearUpIniFile(IniFile file) {
             file["BENCHMARK"].Set("ACTIVE", false);
             file["REPLAY"].Set("ACTIVE", false);
             file["REMOTE"].Set("ACTIVE", false);
             file["RESTART"].Set("ACTIVE", false);
+            file["__PREVIEW_GENERATION"].Set("ACTIVE", false);
             file["LIGHTING"].Remove("__CM_WEATHER_TYPE");
             file["LIGHTING"].Remove("__CM_WEATHER_CONTROLLER");
+            file["LIGHTING"].Remove("__CM_DATE");
+            file["LIGHTING"].Remove("__CM_DATE_USE_TIME");
+            file["LIGHTING"].Remove("__CM_WEATHER_HUMIDITY");
+            file["LIGHTING"].Remove("__CM_WEATHER_PRESSURE");
             file["RACE"].Remove("__CM_CUSTOM_MODE");
 
             file.RemoveSections("CAR", 1); // because CAR_0 is a player’s car

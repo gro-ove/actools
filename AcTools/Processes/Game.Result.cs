@@ -34,8 +34,15 @@ namespace AcTools.Processes {
                 return value != null;
             }
 
-            public bool IsNotCancelled => NumberOfSessions == Sessions?.Length &&
-                    (Sessions.Any(x => x.IsNotCancelled) || Extras?.Any(x => x.IsNotCancelled) == true);
+            public bool IsNotCancelled {
+                get {
+                    if (GetExtraByType<ResultExtraCustomMode>(out var v) && v.Cancelled) {
+                        return false;
+                    }
+                    return NumberOfSessions == Sessions?.Length &&
+                            (Sessions.Any(x => x.IsNotCancelled) || Extras?.Any(x => x.IsNotCancelled) == true);
+                }
+            }
 
             public string GetDescription() {
                 return $"(Track={TrackId}, Sessions={NumberOfSessions}, " +
@@ -94,6 +101,29 @@ namespace AcTools.Processes {
 
             public override string GetDescription() {
                 return $"({Name}, Cancelled={!IsNotCancelled}, Points={Points})";
+            }
+        }
+
+        public class ResultExtraCustomMode : ResultExtra {
+            [JsonProperty(PropertyName = "id")]
+            public string Id { get; set; }
+
+            [JsonProperty(PropertyName = "cancelled")]
+            public bool Cancelled { get; set; }
+            
+            [JsonProperty(PropertyName = "place")]
+            public int TakenPlace { get; set; } = 4;
+            
+            [JsonProperty(PropertyName = "summary")]
+            public string Summary { get; set; }
+            
+            [JsonProperty(PropertyName = "message")]
+            public string Message { get; set; }
+
+            public override bool IsNotCancelled => !Cancelled;
+
+            public override string GetDescription() {
+                return $"({Name}, Id={Id}, Message={Message})";
             }
         }
 
@@ -157,6 +187,9 @@ namespace AcTools.Processes {
 
                         case "timeattack":
                             return jo.ToObject<ResultExtraTimeAttack>(serializer);
+
+                        case "__custom_mode":
+                            return jo.ToObject<ResultExtraCustomMode>(serializer);
 
                         default:
                             return jo.ToObject<ResultExtra>(serializer);

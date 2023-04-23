@@ -31,7 +31,7 @@ namespace AcManager.Tools.Objects {
         }
 
         private static bool DoNotShow(string configName, string sectionName, string key) {
-            return key == @"__HINT" || key == @"CONTROLLER" && sectionName == @"BASIC" && configName.EndsWith(@"cfg\extension\weather_fx.ini");
+            return key.StartsWith(@"__HINT") || key == @"CONTROLLER" && sectionName == @"BASIC" && configName.EndsWith(@"cfg\extension\weather_fx.ini");
         }
 
         public PythonAppConfigSection(string filename, [NotNull] PythonAppConfigParams configParams, KeyValuePair<string, IniFileSection> pair, 

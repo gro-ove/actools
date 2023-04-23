@@ -387,7 +387,7 @@ namespace AcManager.Pages.Dialogs {
 
         private void OnSeparatorDrag(object sender, DragDeltaEventArgs e) {
             if (Tabs.ActualWidth > AcObjectListBox.AutoThumbnailModeThresholdValue) {
-                FancyHints.CarDialogThumbinalMode.MaskAsUnnecessary();
+                FancyHints.CarDialogThumbinalMode.MarkAsUnnecessary();
             }
         }
 

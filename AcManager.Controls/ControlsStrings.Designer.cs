@@ -2955,7 +2955,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controller:.
+        ///   Looks up a localized string similar to Controllers.
         /// </summary>
         public static string WeatherSelection_Controller {
             get {

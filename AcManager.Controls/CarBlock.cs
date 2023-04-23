@@ -282,6 +282,7 @@ namespace AcManager.Controls {
         });
 
         private void OnPreviewImageClick(object sender, MouseButtonEventArgs e) {
+            if (e.ChangedButton != MouseButton.Left) return;
             var selected = new ImageViewer<CarSkinObject>(Car.SkinsManager.Enabled, Car.SkinsManager.Enabled.IndexOf(SelectedSkin),
                     ImageViewerImageCallback, ImageViewerDetailsCallback).SelectDialog();
             if (selected != null) {

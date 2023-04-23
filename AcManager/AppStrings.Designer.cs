@@ -548,7 +548,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apps.
+        ///   Looks up a localized string similar to Python Apps.
         /// </summary>
         public static string AcSettings_Apps {
             get {

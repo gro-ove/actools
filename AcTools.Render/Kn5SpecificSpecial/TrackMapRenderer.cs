@@ -227,7 +227,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private readonly string _modelsIniFilename;
         private List<TrackComplexModelEntry> _models;
 
-        public IKn5TextureLoader TextureLoader { get; set; } = DefaultKn5TextureLoader.Instance;
+        public IKn5TextureLoader TextureLoader { get; set; } = SkippingTextureLoader.Instance;
         public IKn5NodeLoader NodeLoader { get; set; } = DefaultKn5NodeLoader.Instance;
         public IKn5MaterialLoader MaterialLoader { get; set; } = DefaultKn5MaterialLoader.Instance;
 
