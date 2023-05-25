@@ -36,6 +36,10 @@
           <Label Content="{x:Static c:ControlsStrings.QuickSwitches_HideDriver}" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding SystemOptions.AutoflipRecovery}">
+          <Label Content="Automatically recover car if flipped" />
+        </CheckBox>
+        
         <!--<CheckBox IsChecked="{Binding SystemOptions.IgnoreResultTeleport}">
           <Label Content="Disable teleporting at the end of race" />
         </CheckBox>-->

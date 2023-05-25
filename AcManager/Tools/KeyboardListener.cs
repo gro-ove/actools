@@ -82,7 +82,7 @@ namespace AcManager.Tools {
             }
 
             public void Update() {
-                var p = User32.IsKeyPressed(_key);
+                var p = User32.IsAsyncKeyPressed(_key);
                 if (p == _isPressed) return;
 
                 _isPressed = p;
@@ -128,8 +128,7 @@ namespace AcManager.Tools {
             if (_thread == null) {
                 _thread = new Thread(Start) {
                     Name = "CM Keyboard Polling",
-                    IsBackground = true,
-                    Priority = ThreadPriority.AboveNormal
+                    IsBackground = true
                 };
                 _thread.Start();
             }
@@ -166,7 +165,7 @@ namespace AcManager.Tools {
 #else
                 OnTick();
 #endif
-                Thread.Sleep(5);
+                Thread.Sleep(20);
 
 #if DEBUG
                 if (++iterations >= 3000) {

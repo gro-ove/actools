@@ -58,7 +58,7 @@ namespace AcTools.Utils.Helpers {
             return subset;
         }
 
-        [DllImport("msvcrt.dll", CallingConvention=CallingConvention.Cdecl)]
+        [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int memcmp(byte[] b1, byte[] b2, long count);
 
         public static bool EqualsTo(this byte[] b1, byte[] b2) {
@@ -79,7 +79,7 @@ namespace AcTools.Utils.Helpers {
             var c = new char[l-- * 2];
             while (i < l) {
                 var d = data[++i];
-                c[++p] = lookup[d >> 4];
+                c[++p] = lookup[d >>  4];
                 c[++p] = lookup[d & 0xF];
             }
             return new string(c, 0, c.Length);
@@ -91,7 +91,7 @@ namespace AcTools.Utils.Helpers {
             var c = new char[l-- * 2];
             while (i < l) {
                 var d = data[++i];
-                c[++p] = lookup[d >> 4];
+                c[++p] = lookup[d >>  4];
                 c[++p] = lookup[d & 0xF];
             }
             return new string(c, 0, c.Length);
@@ -127,6 +127,19 @@ namespace AcTools.Utils.Helpers {
             }
 
             return null;
+        }
+
+        public static unsafe long IndexOf(this byte[] haystack, byte[] needle) {
+            fixed (byte* h = haystack)
+            fixed (byte* n = needle) {
+                long i = 0;
+                for (byte* hNext = h, hEnd = h + haystack.LongLength; hNext < hEnd; i++, hNext++) {
+                    var found = true;
+                    for (byte* hInc = hNext, nInc = n, nEnd = n + needle.LongLength; found && nInc < nEnd; found = *nInc == *hInc, nInc++, hInc++) ;
+                    if (found) return i;
+                }
+                return -1;
+            }
         }
     }
 }

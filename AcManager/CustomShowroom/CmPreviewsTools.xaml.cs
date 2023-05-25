@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Managers;
@@ -242,6 +243,9 @@ namespace AcManager.CustomShowroom {
             private void PrepareUpdater() {
                 var options = Settings.ToPreviewsOptions();
                 if (_previewsUpdater == null) {
+                    if (SettingsHolder.CustomShowroom.CspPreviewsReady) {
+                        PatchHelper.PatchASmallIssue();
+                    }
                     _previewsUpdater = DarkPreviewsUpdaterFactory.Create(SettingsHolder.CustomShowroom.CspPreviewsReady, 
                             AcRootDirectory.Instance.RequireValue, options);
                 } else {

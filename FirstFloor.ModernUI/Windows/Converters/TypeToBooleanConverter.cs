@@ -7,7 +7,6 @@ namespace FirstFloor.ModernUI.Windows.Converters {
     [ValueConversion(typeof(Enum), typeof(int))]
     public class TypeToBooleanConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            Logging.Write($"HERE: {value?.GetType().Name}, {value}");
             return value?.GetType().Name == parameter as string;
         }
 

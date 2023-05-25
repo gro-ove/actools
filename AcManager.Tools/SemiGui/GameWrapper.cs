@@ -321,6 +321,7 @@ namespace AcManager.Tools.SemiGui {
 
                 try {
                     FileUtils.TryToDelete(AcPaths.GetLogFilename());
+                    PatchHelper.PatchASmallIssue();
 
                     Game.Result result;
                     using (ReplaysExtensionSetter.OnlyNewIfEnabled())

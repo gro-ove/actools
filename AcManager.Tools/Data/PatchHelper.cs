@@ -356,5 +356,43 @@ namespace AcManager.Tools.Data {
                 GetExtraAudioLevels();
             });
         }
+
+        public static void PatchASmallIssue() {
+            if (GetActiveBuild().As(-1) > 2450) return;
+            try {
+                var filename = Path.Combine(AcRootDirectory.Instance.RequireValue, @"dwrite.dll");
+                if (!File.Exists(filename)) return;
+                
+                var data = File.ReadAllBytes(filename);
+                var index1 = data.IndexOf(new byte[] {
+                    0x05, 0x66, 0x6C, 0x75, 0x73, 0x68, 0x05, 0x69, 0x6E, 0x70, 0x75, 0x74, 0x06, 0x6F, 0x75, 0x74, 0x70, 0x75, 0x74,
+                    0x05, 0x6C, 0x69, 0x6E, 0x65, 0x73, 0x04, 0x74, 0x79, 0x70, 0x65
+                });
+                var index2 = data.IndexOf(new byte[] {
+                    0x6C, 0x6F, 0x61, 0x64, 0xFC, 0x04, 0xC1, 0x43, 0xFA, 0xFC, 0x03, 0xC2, 0x6F, 0x73, 0xFA, 0xFC,
+                    0x02, 0xC4, 0x61, 0x72, 0x63, 0x68, 0xFA, 0xFF, 0x43, 0x20, 0x74, 0x79, 0x70, 0x65
+                });
+                var replacement1 = new byte[] {
+                    0x06, 0x66, 0x6C, 0x75, 0x73, 0x68, 0x00, 0x05, 0x6C, 0x69, 0x6E, 0x65, 0x73, 0x05, 0x6C, 0x69, 0x6E, 0x65, 0x73
+                };
+                var replacement2 = new byte[] {
+                    0x61, 0x72, 0x63, 0x68
+                };
+                if (index1 != -1 || index2 != -1) {
+                    using (Stream stream = File.Open(filename, FileMode.Open)) {
+                        if (index1 != -1) {
+                            stream.Position = index1;
+                            stream.Write(replacement1, 0, replacement1.Length);
+                        }
+                        if (index2 != -1) {
+                            stream.Position = index2;
+                            stream.Write(replacement2, 0, replacement2.Length);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
+        }
     }
 }

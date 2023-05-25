@@ -178,6 +178,7 @@ namespace AcManager.Pages.Settings {
         }
 
         private void SetSelected() {
+            return;
             var selected = GetSelected();
             if (selected == null || _selectionCell == null) return;
 

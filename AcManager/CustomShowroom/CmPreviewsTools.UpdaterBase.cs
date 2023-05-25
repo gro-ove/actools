@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using AcManager.Controls;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -27,6 +28,9 @@ namespace AcManager.CustomShowroom {
                 [CanBeNull] string presetName, [CanBeNull] IDarkPreviewsUpdater updater,
                 Func<CarSkinObject, string> destinationOverrideCallback = null, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
+            if (SettingsHolder.CustomShowroom.CspPreviewsReady) {
+                PatchHelper.PatchASmallIssue();
+            }
             return SettingsHolder.CustomShowroom.CspPreviewsReady
                     ? (UpdaterBase)new AcUpdater(entries, options, presetName, destinationOverrideCallback, progress, cancellation)
                     : new Updater(entries, options, presetName, updater, destinationOverrideCallback, progress, cancellation);

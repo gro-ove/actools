@@ -20,8 +20,8 @@ namespace AcManager.Pages.AcSettings {
         public void Initialize() {
             InitializeComponent();
 
-            UpdateListBox();
-            AcSettingsHolder.Python.PropertyChanged += OnPythonPropertyChanged;
+            // UpdateListBox();
+            // AcSettingsHolder.Python.PropertyChanged += OnPythonPropertyChanged;
             this.AddWidthCondition(1200).Add(x => MainGrid.Columns = x ? 2 : 1);
         }
 
@@ -86,7 +86,7 @@ namespace AcManager.Pages.AcSettings {
             PythonAppsManager.Instance.EnsureLoaded();
         }
 
-        private void UpdateListBox() {
+        /*private void UpdateListBox() {
             _overlayAppsBusy.Do(() => {
                 EnabledAppsListBox.SelectedItems.Clear();
                 foreach (var item in AcSettingsHolder.Controls.AppsForOverlay.Where(x => AcSettingsHolder.Python.IsActivated(x.Id)).ToList()) {
@@ -109,6 +109,6 @@ namespace AcManager.Pages.AcSettings {
                     AcSettingsHolder.Python.SetActivated(item.Id, EnabledAppsListBox.SelectedItems.Contains(item));
                 }
             });
-        }
+        }*/
     }
 }

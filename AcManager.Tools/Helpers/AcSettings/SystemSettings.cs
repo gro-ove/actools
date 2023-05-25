@@ -237,13 +237,22 @@ namespace AcManager.Tools.Helpers.AcSettings {
             set => Apply(value, ref _ignoreResultTeleport);
         }
 
+        private bool _autoflipRecovery;
+
+        public bool AutoflipRecovery {
+            get => _autoflipRecovery;
+            set => Apply(value, ref _autoflipRecovery);
+        }
+
         protected override void LoadFromIni() {
             var section = Ini["OPTIONS"];
+            AutoflipRecovery = section.GetBool("AUTOFLIP_RECOVERY", true);
             IgnoreResultTeleport = section.GetBool("IGNORE_RESULT_TELEPORT", false);
         }
 
         protected override void SetToIni() {
             var section = Ini["OPTIONS"];
+            section.Set("AUTOFLIP_RECOVERY", AutoflipRecovery);
             section.Set("IGNORE_RESULT_TELEPORT", IgnoreResultTeleport);
         }
     }

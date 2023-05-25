@@ -90,8 +90,7 @@
                 <ColumnDefinition />
               </Grid.ColumnDefinitions>
               <ListBox x:Name="PART_LinkList" ItemsSource="{TemplateBinding Links}" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  mui:SaveScroll.Key="{Binding SelectedSource, RelativeSource={RelativeSource TemplatedParent}, StringFormat='{}csppss:{0}'}">
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemsPanel>
                   <ItemsPanelTemplate>
                     <StackPanel Margin="0 8" />

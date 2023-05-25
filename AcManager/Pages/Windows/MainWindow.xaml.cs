@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +16,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.QuickSwitches;
@@ -216,6 +219,14 @@ namespace AcManager.Pages.Windows {
 #if DEBUG
             // LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
 #endif
+
+            Deactivated += (sender, args) => {
+                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
+            };
+
+            Activated += (sender, args) => {
+                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
+            };
         }
 
         private static Uri _navigateOnOpen;

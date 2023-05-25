@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.DiscordRpc {
     public class DiscordConnector : IDisposable {
-        public static TimeSpan OptionMinReconnectionDelay = TimeSpan.FromSeconds(1);
-        public static TimeSpan OptionMaxReconnectionDelay = TimeSpan.FromMinutes(1);
+        public static TimeSpan OptionMinReconnectionDelay = TimeSpan.FromSeconds(4d);
+        public static TimeSpan OptionMaxReconnectionDelay = TimeSpan.FromMinutes(1d);
         public static bool OptionVerboseMode = false;
 
         [CanBeNull]
@@ -70,8 +69,6 @@ namespace AcManager.DiscordRpc {
             }
         }
 
-        private CancellationTokenSource _currentDelay;
-
         private async Task RunAsync() {
             var delay = OptionMinReconnectionDelay;
 
@@ -101,11 +98,7 @@ namespace AcManager.DiscordRpc {
                 }
 
                 _currentConnection = null;
-                using (_currentDelay = new CancellationTokenSource()) {
-                    await Task.Delay(delay, _currentDelay.Token).ConfigureAwait(false);
-                }
-
-                _currentDelay = null;
+                await Task.Delay(delay).ConfigureAwait(false);
                 delay = TimeSpan.FromSeconds(Math.Min(delay.TotalSeconds * 2, OptionMaxReconnectionDelay.TotalSeconds));
             }
         }
