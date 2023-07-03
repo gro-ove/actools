@@ -22,7 +22,7 @@ using Resource = SlimDX.Direct3D11.Resource;
 
 namespace AcTools.Render.Base {
     public abstract class BaseRenderer : IDisposable, INotifyPropertyChanged {
-        public static bool OptionDebugResources = false;
+        public static bool OptionDebugResources = true;
         public static readonly Color4 ColorTransparent = new Color4(0f, 0f, 0f, 0f);
 
         private DeviceContextHolder _deviceContextHolder;
@@ -298,12 +298,15 @@ namespace AcTools.Render.Base {
                 Usage = Usage.RenderTargetOutput
             };
 
+            #if DEBUG
+            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags | DeviceCreationFlags.Debug, _swapChainDescription, out var device, out _swapChain);
+            #else
             Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags, _swapChainDescription, out var device, out _swapChain);
+            #endif
             SetDeviceContextHolder(new DeviceContextHolder(device));
 
-            using (var factory = _swapChain.GetParent<Factory>()) {
-                factory.SetWindowAssociation(outputHandle, WindowAssociationFlags.IgnoreAll);
-            }
+            // Let Factory leak: otherwise we can’t dispose swap chain
+            _swapChain.GetParent<Factory>().SetWindowAssociation(outputHandle, WindowAssociationFlags.IgnoreAll);
 
             InitializeInner();
             Initialized = true;
@@ -543,6 +546,7 @@ namespace AcTools.Render.Base {
         }
 
         protected void DisposeSwapChain() {
+            Debug.WriteLine("DISPOSING SWAP CHAIN: " + _swapChain);
             try {
                 DisposeHelper.Dispose(ref _swapChain);
                 Debug.WriteLine("SWAPCHAIN DISPOSED");
@@ -594,8 +598,8 @@ namespace AcTools.Render.Base {
 
             Disposed = true;
 
+            // var debug = new SlimDX.Direct3D11.Debug(Device);
             DisposeOverride();
-            DisposeSwapChain();
 
             DisposeHelper.Dispose(ref _renderView);
             DisposeHelper.Dispose(ref _renderBuffer);
@@ -609,12 +613,20 @@ namespace AcTools.Render.Base {
 
             DisposeHelper.Dispose(ref _depthBuffer);
             DisposeHelper.Dispose(ref _depthView);
-
+            
             if (!_sharedHolder) {
-                // DisposeHelper.Dispose(ref _deviceContextHolder);
+                _deviceContextHolder.Dispose(_swapChain);
+                _deviceContextHolder = null;
+                _swapChain = null;
             }
 
             GCHelper.CleanUp();
+            // debug.ReportLiveDeviceObjects(ReportingLevel.Detail);
+            // debug.Dispose();
+
+#if DEBUG
+            Debug.WriteLine(ObjectTable.ReportLeaks());
+#endif
         }
 
         [NotNull]

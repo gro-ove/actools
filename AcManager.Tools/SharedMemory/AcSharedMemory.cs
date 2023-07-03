@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Timers;
@@ -163,7 +164,7 @@ namespace AcManager.Tools.SharedMemory {
         private double _averageFps;
         private double? _minimumFps;
 
-        public class FpsDetails {
+        public class FpsDetails : NotifyPropertyChanged {
             [JsonConstructor]
             public FpsDetails(double averageFps, double? minimumFps, int samplesTaken) {
                 AverageFps = averageFps;

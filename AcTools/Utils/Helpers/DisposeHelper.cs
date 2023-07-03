@@ -7,8 +7,9 @@ namespace AcTools.Utils.Helpers {
         [ContractAnnotation("=> disposable:null")]
         public static void Dispose<T>([CanBeNull] ref T disposable) where T : class, IDisposable {
             if (disposable == null) return;
-            disposable.Dispose();
+            var value = disposable;
             disposable = null;
+            value.Dispose();
         }
 
         [ContractAnnotation("=> disposable:null")]

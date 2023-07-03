@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AcManager.Tools.Data;
 using AcTools.DataFile;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -31,7 +32,9 @@ namespace AcManager.Tools.Objects {
         }
 
         private static bool DoNotShow(string configName, string sectionName, string key) {
-            return key.StartsWith(@"__HINT") || key == @"CONTROLLER" && sectionName == @"BASIC" && configName.EndsWith(@"cfg\extension\weather_fx.ini");
+            return key.StartsWith(@"__HINT") 
+                    || key == @"CONTROLLER" && sectionName == @"BASIC" && configName.EndsWith(@"cfg\extension\weather_fx.ini") 
+                    && PatchHelper.IsFeatureSupported(PatchHelper.WeatherFxLauncherControlled);
         }
 
         public PythonAppConfigSection(string filename, [NotNull] PythonAppConfigParams configParams, KeyValuePair<string, IniFileSection> pair, 
