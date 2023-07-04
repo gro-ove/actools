@@ -17,7 +17,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private readonly string _destination;
 
         public SystemConfigEntry([NotNull] string path, [NotNull] string id, string name = null)
-                : base(path, id, name ?? AcStringValues.NameFromId(id.ApartFromLast(".ini", StringComparison.OrdinalIgnoreCase))) {
+                : base(false, path, id, name ?? AcStringValues.NameFromId(id.ApartFromLast(".ini", StringComparison.OrdinalIgnoreCase))) {
             _destination = Path.Combine(AcPaths.GetSystemCfgDirectory(AcRootDirectory.Instance.RequireValue), id);
         }
 

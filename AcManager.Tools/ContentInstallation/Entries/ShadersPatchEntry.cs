@@ -23,7 +23,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private readonly List<string> _toInstall;
 
         public ShadersPatchEntry([NotNull] string path, IEnumerable<string> items, [CanBeNull] string version)
-                : base(path, "", version: version) {
+                : base(true, path, "", version: version) {
             _toInstall = items.ToList();
         }
 

@@ -247,6 +247,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             var t = DrawLights(progress, cancellation);
             if (cancellation.IsCancellationRequested) return;
 
+            DeviceContext.Flush();
             DeviceContextHolder.PrepareQuad(_effect.LayoutPT);
             DeviceContext.Rasterizer.State = null;
             DeviceContext.OutputMerger.BlendState = null;
@@ -315,8 +316,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 if (cancellation.IsCancellationRequested) return null;
             }
 
-            _filteredNodes = Flatten(Kn5, Scene, textureName, objectPath).OfType<TrianglesRenderableObject<InputLayouts.VerticePT>>()
-                                                                         .Select(x => new UvProjectedObject(x)).ToArray();
+            _filteredNodes = Flatten(Kn5, Scene, textureName, objectPath)
+                    .OfType<TrianglesRenderableObject<InputLayouts.VerticePT>>()
+                    .Select(x => new UvProjectedObject(x)).ToArray();
             AcToolsLogging.Write("Filtered nodes:\n" + _filteredNodes.Select(x => x.Name).JoinToString('\n'));
 
             PrepareBuffers(MapSize);
@@ -324,10 +326,13 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             if (cancellation.IsCancellationRequested) return null;
 
             Draw(1f, progress, cancellation);
+            DeviceContext.Flush();
             if (cancellation.IsCancellationRequested) return null;
 
+            AcToolsLogging.Write("Baked shadows are ready");
             using (var stream = new MemoryStream()) {
                 Texture2D.ToStream(DeviceContext, RenderBuffer, ImageFileFormat.Png, stream);
+                AcToolsLogging.Write("Baked shadows are saved in stream: " + stream.Position);
                 return stream.ToArray();
             }
         }
@@ -382,7 +387,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DisposeHelper.Dispose(ref _rasterizerStateFrontCull);
             DisposeHelper.Dispose(ref _rasterizerStateBackCull);
             // CarNode.Dispose();
-            Scene.Dispose();
             base.DisposeOverride();
         }
     }

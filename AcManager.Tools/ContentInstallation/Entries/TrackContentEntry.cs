@@ -56,13 +56,13 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         private TrackContentEntry([NotNull] string path, [NotNull] string id, [CanBeNull] List<string> kn5Files,
                 [CanBeNull] List<string> requiredKn5Files, string name = null, string version = null,
-                byte[] iconData = null) : base(path, id, name, version, iconData) {
+                byte[] iconData = null) : base(false, path, id, name, version, iconData) {
             RequiredKn5Files = requiredKn5Files;
             Kn5Files = kn5Files;
         }
 
         private TrackContentEntry([NotNull] string path, [NotNull] string id, [NotNull] IReadOnlyList<TrackContentLayoutEntry> layouts)
-                : base(path, id, GetName(layouts), layouts.FirstOrDefault()?.Version) {
+                : base(false, path, id, GetName(layouts), layouts.FirstOrDefault()?.Version) {
             Layouts = layouts.ToList();
             foreach (var layout in Layouts) {
                 layout.PropertyChanged += OnLayoutPropertyChanged;

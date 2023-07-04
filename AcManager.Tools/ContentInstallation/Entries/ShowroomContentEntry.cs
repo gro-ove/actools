@@ -11,7 +11,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public override double Priority => 70d;
 
         public ShowroomContentEntry([NotNull] string path, [NotNull] string id, string name = null, string version = null, byte[] iconData = null)
-                : base(path, id, name, version, iconData) { }
+                : base(false, path, id, name, version, iconData) { }
 
         public override string GenericModTypeName => "Showroom";
         public override string NewFormat => ToolsStrings.ContentInstallation_ShowroomNew;

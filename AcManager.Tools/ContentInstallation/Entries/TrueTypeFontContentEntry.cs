@@ -9,7 +9,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public override double Priority => 15d;
 
         public TrueTypeFontContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
-                : base(path, id, name, iconData: iconData) { }
+                : base(false, path, id, name, iconData: iconData) { }
 
         public override string GenericModTypeName => "TrueType font";
         public override string NewFormat => "New TrueType font “{0}”";

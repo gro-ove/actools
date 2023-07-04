@@ -11,7 +11,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public override double Priority => 25d;
 
         public WeatherContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
-                : base(path, id, name, iconData: iconData) { }
+                : base(true, path, id, name, iconData: iconData) { }
 
         public override string GenericModTypeName => "Weather";
         public override string NewFormat => ToolsStrings.ContentInstallation_WeatherNew;

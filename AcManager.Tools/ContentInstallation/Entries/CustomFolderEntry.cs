@@ -16,9 +16,9 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private readonly bool _onlyUpdating;
         private readonly List<string> _toInstall;
 
-        public CustomFolderEntry([NotNull] string path, IEnumerable<string> items, string name, string relativeDestination, double priority = 10d,
-                string version = null, string description = null, bool onlyUpdating = false)
-                : base(path, "", name, version, null, description) {
+        public CustomFolderEntry(bool showWarning, [NotNull] string path, IEnumerable<string> items, string name, string relativeDestination,
+                double priority = 10d, string version = null, string description = null, bool onlyUpdating = false)
+                : base(showWarning, path, "", name, version, null, description) {
             _relativeDestination = relativeDestination;
             _onlyUpdating = onlyUpdating;
             _toInstall = items.ToList();

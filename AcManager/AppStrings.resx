@@ -4852,7 +4852,7 @@ anyway while it’s waiting for disk to get the data, and there will much less d
         <value>Password:</value>
     </data>
     <data name="DownloadList_DetectionFailed" xml:space="preserve">
-        <value>App couldn’t detect any content to install here. Would you like to install it manually?</value>
+        <value>Nothing to install found. Try installing manually?</value>
     </data>
     <data name="DownloadList_ShowFile" xml:space="preserve">
         <value>Show file</value>

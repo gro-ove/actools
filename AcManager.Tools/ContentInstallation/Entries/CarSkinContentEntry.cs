@@ -15,7 +15,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private readonly CarObject _car;
 
         public CarSkinContentEntry([NotNull] string path, [NotNull] string id, [NotNull] string carId, string name = null, byte[] iconData = null)
-                : base(path, id, name, null, iconData) {
+                : base(false, path, id, name, null, iconData) {
             _car = CarsManager.Instance.GetById(carId) ?? throw new Exception($"Car “{carId}” for the skin not found");
             NewFormat = string.Format(ToolsStrings.ContentInstallation_CarSkinNew, "{0}", _car.DisplayName);
             ExistingFormat = string.Format(ToolsStrings.ContentInstallation_CarSkinExisting, "{0}", _car.DisplayName);

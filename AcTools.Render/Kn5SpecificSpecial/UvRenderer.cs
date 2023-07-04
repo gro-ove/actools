@@ -36,6 +36,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             Height = 2048;
         }
 
+        protected override void DisposeOverride() {
+            _carNode.Dispose();
+            base.DisposeOverride();
+        }
+
         protected override void ResizeInner() {}
 
         protected override void InitializeInner() {
@@ -101,6 +106,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 for (var i = _filteredNodes.Length - 1; i >= 0; i--) {
                     _filteredNodes[i].Draw(DeviceContextHolder, null, SpecialRenderMode.Simple);
                 }
+                DeviceContext.Flush();
             }
 
             AcToolsLogging.Write($"Performance: {s.Elapsed.TotalMilliseconds / a.Count:F1} ms per sector; {a.Count} sectors; {_filteredNodes.Length} node(s)");
@@ -145,6 +151,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             _filteredNodes = Flatten(_kn5, _carNode, textureName, objectPath).ToArray();
             Draw();
+            DeviceContext.Flush();
             Texture2D.ToFile(DeviceContext, RenderBuffer, ImageFileFormat.Png, outputFile);
         }
 

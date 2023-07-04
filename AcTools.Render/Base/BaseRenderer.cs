@@ -598,7 +598,9 @@ namespace AcTools.Render.Base {
 
             Disposed = true;
 
+#if DEBUG
             // var debug = new SlimDX.Direct3D11.Debug(Device);
+#endif
             DisposeOverride();
 
             DisposeHelper.Dispose(ref _renderView);
@@ -621,10 +623,10 @@ namespace AcTools.Render.Base {
             }
 
             GCHelper.CleanUp();
-            // debug.ReportLiveDeviceObjects(ReportingLevel.Detail);
-            // debug.Dispose();
 
 #if DEBUG
+            // debug.ReportLiveDeviceObjects(ReportingLevel.Detail);
+            // debug.Dispose();
             Debug.WriteLine(ObjectTable.ReportLeaks());
 #endif
         }

@@ -618,13 +618,22 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private readonly CarDebugLinesWrapper _wingsLines = new CarDebugLinesWrapper((car, data) => {
             var graphicMatrix = Matrix.Invert(data.GetGraphicMatrix());
-            return data.GetWings().Select((x, i) => new CarDebugLinesObject(i, x.Name,
-                    DebugLinesObject.GetLinesPlane(
-                            Matrix.RotationX(x.Angle.ToRadians()) * Matrix.Translation(x.Position) * graphicMatrix,
-                            Vector3.UnitY, new Color4(1f, 0f, 1f, 1f), x.Span, x.Chord)) {
-                                Source = x,
-                                OriginalName = x.SectionName
-                            }).ToArray();
+
+            CarDebugLinesObject GetWingLines(CarData.WingDescription x, int i) {
+                var plane = DebugLinesObject.GetLinesPlane(
+                        Matrix.RotationX(x.Angle.ToRadians()) * Matrix.Translation(x.Position) * graphicMatrix, 
+                        Vector3.UnitY, new Color4(1f, 0f, 1f, 1f), x.Span, x.Chord);
+                return new CarDebugLinesObject(i, x.Name, plane) { Source = x, OriginalName = x.SectionName };
+            }
+
+            CarDebugLinesObject GetFinLines(CarData.FinDescription x, int i) {
+                var plane = DebugLinesObject.GetLinesPlane(
+                        Matrix.RotationZ(MathF.PI / 2f) * Matrix.RotationX(x.Angle.ToRadians()) * Matrix.Translation(x.Position) * graphicMatrix, 
+                        Vector3.UnitY, new Color4(1f, 0f, 0f, 1f), x.Span, x.Chord);
+                return new CarDebugLinesObject(i, x.Name, plane) { Source = x, OriginalName = x.SectionName };
+            }
+
+            return data.GetWings().Select(GetWingLines).Concat(data.GetFins().Select(GetFinLines)).ToArray();
         });
 
         private void UpdateWingLineAngle(int wing, float angle) {

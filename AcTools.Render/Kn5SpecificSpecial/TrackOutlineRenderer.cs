@@ -256,7 +256,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                         _spline = AiSpline.FromFile(GetAiLaneFastFilename(Filename));
                     }
 
-                    _obj = AiLaneObject.Create(_spline, AiLaneWidth, "main");
+                    _obj = AiLaneObject.Create(_spline, AiLaneWidth, BasicMaterials.DepthOnlyKey);
                     _obj.ParentMatrix = Matrix.Identity;
                     _obj.UpdateBoundingBox();
 

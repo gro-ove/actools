@@ -15,7 +15,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private readonly TrackObject _track;
 
         public TrackSkinContentEntry([NotNull] string path, [NotNull] string id, [NotNull] string trackId, string name, string version, byte[] iconData = null)
-                : base(path, id, name, version, iconData) {
+                : base(false, path, id, name, version, iconData) {
             _track = TracksManager.Instance.GetById(trackId) ?? throw new Exception($"Track “{trackId}” for the skin not found");
             NewFormat = string.Format(ToolsStrings.ContentInstallation_CarSkinNew, "{0}", _track.DisplayName);
             ExistingFormat = string.Format(ToolsStrings.ContentInstallation_CarSkinExisting, "{0}", _track.DisplayName);

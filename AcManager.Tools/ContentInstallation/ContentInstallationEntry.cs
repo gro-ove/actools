@@ -717,7 +717,19 @@ namespace AcManager.Tools.ContentInstallation {
                                 return false;
                             }
 
+                            var trustedSource = Lazier.Create(() => {
+                                try {
+                                    return InternalUtils.VerifySignature(localFilename);
+                                } catch (Exception e) {
+                                    Logging.Warning(e);
+                                    return false;
+                                }
+                            });
+
                             foreach (var entry in entries) {
+                                if (entry.ShowWarning && trustedSource.Value) {
+                                    entry.ShowWarning = false;
+                                }
                                 entry.SingleEntry = entries.Count == 1;
                                 await entry.CheckExistingAsync();
                             }

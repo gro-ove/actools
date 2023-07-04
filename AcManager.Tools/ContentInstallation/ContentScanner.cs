@@ -719,15 +719,15 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             if (directory.NameLowerCase == "__gbwsuite") {
-                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, "GBW scripts", "__gbwSuite");
+                return new CustomFolderEntry(true, directory.Key ?? "", new[] { directory.Key }, "GBW scripts", "__gbwSuite");
             }
 
             if (directory.Name == "cars" && directory.Parent?.Name == "config" && directory.Parent?.Parent?.Name == "extension") {
-                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, "Cars configs", "extension/config/cars", onlyUpdating: true);
+                return new CustomFolderEntry(false, directory.Key ?? "", new[] { directory.Key }, "Cars configs", "extension/config/cars", onlyUpdating: true);
             }
 
             if (directory.Name == "tracks" && directory.Parent?.Name == "config" && directory.Parent?.Parent?.Name == "extension") {
-                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, "Track configs", "extension/config/tracks", onlyUpdating: true);
+                return new CustomFolderEntry(false, directory.Key ?? "", new[] { directory.Key }, "Track configs", "extension/config/tracks", onlyUpdating: true);
             }
 
             PatchPluginEntry ret;
@@ -741,28 +741,28 @@ namespace AcManager.Tools.ContentInstallation {
             }
             
             // Extra scripts: extension/lua
-            if ((ret = await CheckPatchPlugin("config.ini", "CSP car script", @"lua\cars")) != null) {
+            if ((ret = await CheckPatchPlugin("config.ini", "CSP car script", @"cars")) != null) {
                 return ret;
             }
-            if ((ret = await CheckPatchPlugin("camera.lua", "CSP camera script", @"lua\chaser-camera")) != null) {
+            if ((ret = await CheckPatchPlugin("camera.lua", "CSP camera script", @"chaser-camera")) != null) {
                 return ret;
             }
-            if ((ret = await CheckPatchPlugin("ffb.lua", "CSP FFB post-process script", @"lua\ffb-postprocess")) != null) {
+            if ((ret = await CheckPatchPlugin("ffb.lua", "CSP FFB post-process script", @"ffb-postprocess")) != null) {
                 return ret;
             }
-            if ((ret = await CheckPatchPlugin("fireworks.lua", "CSP fireworks script", @"lua\fireworks")) != null) {
+            if ((ret = await CheckPatchPlugin("fireworks.lua", "CSP fireworks script", @"fireworks")) != null) {
                 return ret;
             }
-            if ((ret = await CheckPatchPlugin("assist.lua", "CSP gamepad script", @"lua\joypad-assist")) != null) {
+            if ((ret = await CheckPatchPlugin("assist.lua", "CSP gamepad script", @"joypad-assist")) != null) {
                 return ret;
             }
-            if ((ret = await CheckPatchPlugin("mode.lua", "CSP new mode", @"lua\new-modes")) != null) {
+            if ((ret = await CheckPatchPlugin("mode.lua", "CSP new mode", @"new-modes")) != null) {
                 return ret;
             }
-            if ((ret = await CheckPatchPlugin("filter.lua", "CSP post-processing filter", @"lua\pp-filters")) != null) {
+            if ((ret = await CheckPatchPlugin("filter.lua", "CSP post-processing filter", @"pp-filters")) != null) {
                 return ret;
             }
-            if ((ret = await CheckPatchPlugin("tool.lua", "CSP tool script", @"lua\tools")) != null) {
+            if ((ret = await CheckPatchPlugin("tool.lua", "CSP tool script", @"tools")) != null) {
                 return ret;
             }
             

@@ -10,7 +10,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private readonly bool _isChild;
 
         public CarContentEntry([NotNull] string path, [NotNull] string id, bool isChild, string name = null, string version = null, byte[] iconData = null)
-                : base(path, id, name, version, iconData) {
+                : base(false, path, id, name, version, iconData) {
             _isChild = isChild;
         }
 

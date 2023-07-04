@@ -39,6 +39,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -928,31 +929,13 @@ namespace AcManager.Pages.Drive {
             }
 
             private static TrackDoesNotFitRespond ShowTrackDoesNotFitMessage(string message) {
-                var dlg = new ModernDialog {
-                    Title = ToolsStrings.Common_Warning,
-                    Content = new ScrollViewer {
-                        Content = new SelectableBbCodeBlock {
-                            Text = $"Most likely, track won’t work with selected mode: {message.ToSentenceMember()}. Are you sure you want to continue?",
-                            Margin = new Thickness(0, 0, 0, 8)
-                        },
-                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                        HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
-                    },
-                    MinHeight = 0,
-                    MinWidth = 0,
-                    MaxHeight = 480,
-                    MaxWidth = 640
-                };
-
-                dlg.Buttons = new[] {
-                    dlg.YesButton,
-                    dlg.CreateCloseDialogButton(AppStrings.Drive_Quick_YesAndFixIt, false, false, MessageBoxResult.OK),
-                    dlg.NoButton
-                };
-
-                dlg.ShowDialog();
-
-                switch (dlg.MessageBoxResult) {
+                switch (MessageDialog.Show(
+                        $"Most likely, track won’t work with selected mode: {message.ToSentenceMember()}. Are you sure you want to continue?",
+                        ToolsStrings.Common_Warning, new MessageDialogButton {
+                            [MessageBoxResult.Yes] = UiStrings.Yes,
+                            [MessageBoxResult.OK] = AppStrings.Drive_Quick_YesAndFixIt,
+                            [MessageBoxResult.No] = UiStrings.No,
+                        }, "incompatibleTrack")) {
                     case MessageBoxResult.Yes:
                         return TrackDoesNotFitRespond.Go;
                     case MessageBoxResult.OK:

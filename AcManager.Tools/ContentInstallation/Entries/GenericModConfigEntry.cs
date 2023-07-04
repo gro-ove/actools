@@ -21,7 +21,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private readonly string _destination;
 
         public GenericModConfigEntry([NotNull] string path, [NotNull] string id, string description = null)
-                : base(path, id, id, description: description) {
+                : base(true, path, id, id, description: description) {
             _destination = Path.Combine(SettingsHolder.GenericMods.GetModsDirectory(), id);
         }
 

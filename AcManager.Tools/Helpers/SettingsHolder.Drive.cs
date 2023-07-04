@@ -543,6 +543,7 @@ namespace AcManager.Tools.Helpers {
                             new SkipResultsCategory(@"Settings.DriveSettings.SkipDragResults", ToolsStrings.Session_Drag),
                             new SkipResultsCategory(@"Settings.DriveSettings.SkipOnlineResults", ToolsStrings.Settings_Drive_SessionClass_Online),
                             new SkipResultsCategory(@"Settings.DriveSettings.SkipLiveResults", ToolsStrings.Settings_Drive_SessionClass_Live),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipNewModes", ToolsStrings.ettings_Drive_SessionClass_NewModes),
                         };
                         _skipCategories.ItemPropertyChanged += (sender, args) => OnPropertyChanged(nameof(DisplaySkipCategories));
                     }
@@ -558,6 +559,10 @@ namespace AcManager.Tools.Helpers {
 
                 if (startProperties.HasAdditional<LiveServiceMark>()) {
                     return SkipCategories.GetById(@"Settings.DriveSettings.SkipLiveResults").Value;
+                }
+
+                if (startProperties.HasAdditional<NewModeDetails>()) {
+                    return SkipCategories.GetById(@"Settings.DriveSettings.SkipNewModes").Value;
                 }
 
                 if (startProperties.ModeProperties is Game.OnlineProperties) {

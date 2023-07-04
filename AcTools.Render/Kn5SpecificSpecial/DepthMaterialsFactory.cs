@@ -13,6 +13,7 @@ using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
+using Debug = System.Diagnostics.Debug;
 
 namespace AcTools.Render.Kn5SpecificSpecial {
     public class DepthMaterialsFactory : IMaterialsFactory {

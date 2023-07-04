@@ -54,8 +54,8 @@ namespace AcManager.Controls.Helpers {
             try {
                 var contentName = defaultName;
                 if (!SettingsHolder.Sharing.ShareWithoutName && type != SharedEntryType.Results) {
-                    contentName = await Prompt.ShowAsync(ControlsStrings.Share_EnterName, ControlsStrings.Share_EnterNameHeader, defaultName, ToolsStrings.Common_None,
-                            maxLength: 60);
+                    contentName = await Prompt.ShowAsync(ControlsStrings.Share_EnterName, ControlsStrings.Share_EnterNameHeader, 
+                            defaultName ?? string.Empty, ToolsStrings.Common_None, maxLength: 60);
                     if (contentName == null) return; // cancelled
                     if (string.IsNullOrWhiteSpace(contentName)) {
                         contentName = null;
@@ -88,8 +88,8 @@ namespace AcManager.Controls.Helpers {
                     if (link == null) return;
                 }
 
+                await Task.Delay(500);
                 ShowShared(type, link);
-                await Task.Delay(2000);
             } catch (Exception e) {
                 NonfatalError.Notify(string.Format(ControlsStrings.Share_CannotShare, type.GetDescription()),
                         ToolsStrings.Common_CannotDownloadFile_Commentary, e);

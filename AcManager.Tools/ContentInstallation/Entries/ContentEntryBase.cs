@@ -43,6 +43,13 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         [CanBeNull]
         public string Description { get; }
 
+        private bool _showWarning;
+
+        public bool ShowWarning {
+            get => _showWarning;
+            set => Apply(value, ref _showWarning);
+        }
+
         private bool _singleEntry;
 
         public bool SingleEntry {
@@ -75,7 +82,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public abstract string NewFormat { get; }
         public abstract string ExistingFormat { get; }
 
-        protected ContentEntryBase([NotNull] string path, [NotNull] string id,
+        protected ContentEntryBase(bool showWarning, [NotNull] string path, [NotNull] string id,
                 string name = null, string version = null, byte[] iconData = null, string description = null) {
             EntryPath = path ?? throw new ArgumentNullException(nameof(path));
             Id = id ?? throw new ArgumentNullException(nameof(id));
@@ -83,6 +90,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             Version = version;
             IconData = iconData;
             Description = description;
+            ShowWarning = showWarning;
         }
 
         private bool _installEntry;
@@ -307,8 +315,9 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     public abstract class ContentEntryBase<T> : ContentEntryBase where T : AcCommonObject {
-        protected ContentEntryBase([NotNull] string path, [NotNull] string id, string name = null, string version = null, byte[] iconData = null)
-                : base(path, id, name, version, iconData) { }
+        protected ContentEntryBase(bool showWarning, [NotNull] string path, [NotNull] string id, string name = null, string version = null,
+                byte[] iconData = null)
+                : base(showWarning, path, id, name, version, iconData) { }
 
         protected sealed override bool GenericModSupportedByDesign => IsNew;
 

@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.ContentInstallation.Entries {
     public class OriginalLauncherModuleEntry : ContentEntryBase {
         public OriginalLauncherModuleEntry([NotNull] string path, string id, string name, string version, byte[] iconData, string description)
-                : base(path, id, name, version, iconData, description) {
+                : base(true, path, id, name, version, iconData, description) {
             Priority = 10d;
         }
 

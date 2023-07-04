@@ -9,7 +9,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public override double Priority => 27d;
 
         public PpFilterContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
-                : base(path, id, name, iconData: iconData) { }
+                : base(true, path, id, name, iconData: iconData) { }
 
         public override string GenericModTypeName => "PP-Filter";
         public override string NewFormat => "New PP-filter “{0}”";

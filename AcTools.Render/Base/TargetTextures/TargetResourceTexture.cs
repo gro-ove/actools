@@ -32,12 +32,12 @@ namespace AcTools.Render.Base.TargetTextures {
         }
 
         public override void Dispose() {
-            base.Dispose();
-
             if (TargetViews != null) {
                 TargetViews.DisposeEverything();
                 TargetViews = null;
             }
+            
+            base.Dispose();
         }
 
         [NotNull]
@@ -71,12 +71,12 @@ namespace AcTools.Render.Base.TargetTextures {
         }
 
         public override void Dispose() {
-            base.Dispose();
-
             if (TargetView != null) {
                 TargetView.Dispose();
                 TargetView = null;
             }
+            
+            base.Dispose();
         }
 
         [NotNull]

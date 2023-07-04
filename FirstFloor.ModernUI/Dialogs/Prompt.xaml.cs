@@ -166,6 +166,7 @@ namespace FirstFloor.ModernUI.Dialogs {
             Closing += (sender, args) => {
                 if (MessageBoxResult != MessageBoxResult.OK) return;
                 Result = Model.Text;
+                Logging.Debug("Result:" + (Result != null));
             };
         }
 

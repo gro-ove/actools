@@ -57,6 +57,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             Scene.UpdateBoundingBox();
         }
 
+        protected override void DisposeOverride() {
+            Scene.Dispose();
+            base.DisposeOverride();
+        }
+
         #region Light sources distribution
         private List<Vector2> _poissonDisk;
         private static WeakReference<List<Vector2>> _poissonDiskWeak;
@@ -144,6 +149,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             var summaryBrightness = 0f;
 
             foreach (var vec in GetLightsDistribution()) {
+                if (iteration % 100 == 0) { 
+                    DeviceContext.Flush();
+                }
+                
                 if (++iteration % 10 == 9) {
                     progress?.Report((double)iteration / t);
                     if (cancellation.IsCancellationRequested) return 0f;

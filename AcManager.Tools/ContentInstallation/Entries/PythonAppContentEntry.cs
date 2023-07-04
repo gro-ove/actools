@@ -16,7 +16,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private readonly List<string> _icons;
 
         public PythonAppContentEntry([NotNull] string path, [NotNull] string id, string name = null, string version = null,
-                byte[] iconData = null, IEnumerable<string> icons = null) : base(path, id, name, version, iconData) {
+                byte[] iconData = null, IEnumerable<string> icons = null) : base(true, path, id, name, version, iconData) {
             MoveEmptyDirectories = true;
             _icons = icons?.ToList();
         }
