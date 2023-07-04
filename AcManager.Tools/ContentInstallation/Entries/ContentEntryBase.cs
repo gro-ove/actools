@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.ContentInstallation.Installators;
@@ -15,6 +16,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Entries {
     public abstract class ContentEntryBase : NotifyPropertyChanged {
+        public static event EventHandler OnInstallationModeChanged;
+        
         [NotNull]
         public string Id { get; }
 
@@ -147,6 +150,10 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                 _selectedOption = value;
                 OnSelectedOptionChanged(oldValue, value);
                 OnPropertyChanged();
+
+                if (Keyboard.Modifiers == ModifierKeys.Control) {
+                    OnInstallationModeChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 

@@ -7,6 +7,8 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.Caching;
+using AcManager.Tools.ContentInstallation.Entries;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -40,6 +42,8 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
+        private Busy _updatingGlobalMode = new Busy();
+
         private ContentInstallationManager() {
             DownloadList = new ChangeableObservableCollection<ContentInstallationEntry>();
         }
@@ -57,6 +61,24 @@ namespace AcManager.Tools.ContentInstallation {
 
             DownloadList.ItemPropertyChanged += OnItemPropertyChanged;
             DownloadList.CollectionChanged += OnCollectionChanged;
+            
+            ContentEntryBase.OnInstallationModeChanged += (sender, args) => {
+                _updatingGlobalMode.Yield(() => {
+                    var mode = (sender as ContentEntryBase)?.SelectedOption?.DisplayName;
+                    if (mode == null) return;
+                    
+                    foreach (var item in DownloadList) {
+                        foreach (var entry in item.Entries) {
+                            if (entry.SelectedOption?.DisplayName != mode) {
+                                var fitting = entry.UpdateOptions.FirstOrDefault(x => x.DisplayName == mode && x.Enabled);
+                                if (fitting != null) {
+                                    entry.SelectedOption = fitting;
+                                }
+                            }
+                        }
+                    }
+                });
+            };
         }
 
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {

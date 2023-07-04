@@ -88,7 +88,7 @@ namespace FirstFloor.ModernUI.Dialogs {
             FloatingTip.HorizontalOffset = position.X + 20;
             FloatingTip.VerticalOffset = position.Y + 20;
 
-            Color = GetPixelColor((int)position.X, (int)position.Y);
+            Color = GetPixelColor((int)(position.X * DeviceScaleX), (int)(position.Y * DeviceScaleY));
         }
 
         private void OnMouseLeave(object sender, MouseEventArgs e) {

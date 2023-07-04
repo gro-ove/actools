@@ -3678,7 +3678,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <value>Downloads:</value>
     </data>
     <data name="MainWindow_Downloads_RemoveCompleted" xml:space="preserve">
-      <value>Remove completed</value>
+      <value>Clear completed</value>
     </data>
     <data name="MainWindow_Downloads_InstallAll" xml:space="preserve">
       <value>Install all</value>

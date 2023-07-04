@@ -412,7 +412,7 @@
     <value>NEW</value>
   </data>
   <data name="PickColor" xml:space="preserve">
-    <value>Pick a color</value>
+    <value>Pick color</value>
   </data>
   <data name="ShowPassword" xml:space="preserve">
     <value>Show password</value>

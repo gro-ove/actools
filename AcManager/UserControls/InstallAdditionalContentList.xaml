@@ -71,11 +71,10 @@
                     x:Name="PART_NewVersion" />
               </DockPanel>
             </mui:SpacingUniformGrid>
-            <DockPanel Dock="Top" Margin="0 4 0 0"
-                Visibility="{Binding ShowWarning, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <DockPanel Dock="Top" Margin="0 4 0 0" Visibility="{Binding ShowWarning, Converter={StaticResource BooleanToVisibilityConverter}}">
               <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
                   Margin="2 2 4 0" VerticalAlignment="Center" />
-              <TextBlock Text="Please install mods from trusted sources only" Style="{StaticResource Small}" Foreground="{DynamicResource Error}" />
+              <TextBlock Text="Please install mods from trusted sources only." Style="{StaticResource Small}" Foreground="{DynamicResource Error}" />
             </DockPanel>
           </DockPanel>
 
@@ -107,7 +106,14 @@
 
           <!-- Update options -->
           <mui:BetterComboBox x:Name="PART_UpdateOptions" ItemsSource="{Binding UpdateOptions}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0"
-              IsEnabled="{Binding Active}" IsEditable="False" DockPanel.Dock="Top" />
+              IsEnabled="{Binding Active}" IsEditable="False" DockPanel.Dock="Top"
+              ToolTip="Hold Ctrl when selecting a mode to select similar one for all the other mods">
+            <mui:BetterComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding DisplayName}" ToolTip="Hold Ctrl when selecting a mode to select similar one for all the other mods" />
+              </DataTemplate>
+            </mui:BetterComboBox.ItemTemplate>
+          </mui:BetterComboBox>
         </DockPanel>
 
         <DataTemplate.Resources>
