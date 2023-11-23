@@ -53,6 +53,7 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureCarPreviews = "CAR_PREVIEWS";
         public static readonly string WeatherFxLauncherControlled = "WEATHERFX_LAUNCHER_CONTROLLED";
         public static readonly string FeatureSnow = "SNOW";
+        public static readonly string FeatureDirectInputExtraGamma = "DIRECTINPUT_EXTRA_GAMMA";
 
         public class AudioDescription : Displayable {
             public string Id { get; set; }
@@ -161,7 +162,7 @@ namespace AcManager.Tools.Data {
             var instance = PatchSettingsModel.GetExistingInstance();
             if (instance != null) {
                 var config = instance.Configs?.FirstOrDefault(x => x.Filename.EndsWith(configName));
-                return config?.Sections.GetByIdOrDefault(section)?.GetByIdOrDefault(key)?.Value;
+                return config?.SectionsOwn.GetByIdOrDefault(section)?.GetByIdOrDefault(key)?.Value;
             }
 
             return TryGetConfig(configName)?[section].GetNonEmpty(key);
@@ -256,6 +257,7 @@ namespace AcManager.Tools.Data {
         public static bool IsFeatureSupported([CanBeNull] string featureId) {
             if (string.IsNullOrWhiteSpace(featureId)) return true;
             return _featureSupported.GetValueOrSet(featureId, () => {
+                if (featureId == @"$disabled") return GetInstalledVersion() == null || !IsActive();
                 if (GetInstalledVersion() == null || !IsActive()) return false;
                 if (featureId == FeatureWindowPosition) return true;
                 var query = GetManifest()?["FEATURES"].GetNonEmpty(featureId);

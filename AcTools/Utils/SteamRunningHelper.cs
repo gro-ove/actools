@@ -9,7 +9,7 @@ namespace AcTools.Utils {
     public static class SteamRunningHelper {
         private static string GetSteamDirectory() {
             var regKey = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam");
-            var ret = regKey?.GetValue("SteamPath").ToString();
+            var ret = regKey?.GetValue("SteamPath")?.ToString();
             regKey?.Close();
             return ret;
         }

@@ -497,7 +497,6 @@
     <Compile Include="Helpers\Api\Rsr\RsrApiProvider.cs" />
     <Compile Include="Helpers\Api\SteamWebProvider.cs" />
     <Compile Include="Helpers\CarDataComparing.cs" />
-    <Compile Include="Helpers\ChildProcessTracker.cs" />
     <Compile Include="Helpers\CookieAwareWebClient.cs">
       <SubType>Component</SubType>
     </Compile>

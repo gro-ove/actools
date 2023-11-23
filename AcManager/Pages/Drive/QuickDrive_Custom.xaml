@@ -116,7 +116,7 @@
       </DataTemplate>
 
       <DataTemplate x:Key="PythonAppConfig.Compact.Race" DataType="{x:Type t:PythonAppConfig}">
-        <ItemsControl ItemsSource="{Binding Sections}" ItemTemplate="{StaticResource PythonAppConfig.Compact.RaceSectionTemplate}">
+        <ItemsControl ItemsSource="{Binding SectionsOwn}" ItemTemplate="{StaticResource PythonAppConfig.Compact.RaceSectionTemplate}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <mui:SpacingStackPanel Spacing="20" Orientation="Vertical" />

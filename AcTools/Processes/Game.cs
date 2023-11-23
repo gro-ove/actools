@@ -22,6 +22,8 @@ namespace AcTools.Processes {
             file["BENCHMARK"].Set("ACTIVE", false);
             file["REPLAY"].Set("ACTIVE", false);
             file["REMOTE"].Set("ACTIVE", false);
+            file["REMOTE"].Remove("__FEATURES");
+            file["REMOTE"].Remove("__CM_EXTENDED");
             file["RESTART"].Set("ACTIVE", false);
             file["__PREVIEW_GENERATION"].Set("ACTIVE", false);
             file["LIGHTING"].Remove("__CM_WEATHER_TYPE");
@@ -31,6 +33,7 @@ namespace AcTools.Processes {
             file["LIGHTING"].Remove("__CM_WEATHER_HUMIDITY");
             file["LIGHTING"].Remove("__CM_WEATHER_PRESSURE");
             file["RACE"].Remove("__CM_CUSTOM_MODE");
+            file["OPTIONS"].Remove("__BACKGROUND_IMAGE");
 
             file.RemoveSections("CAR", 1); // because CAR_0 is a player’s car
             file.RemoveSections("SESSION");

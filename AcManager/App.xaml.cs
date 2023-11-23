@@ -447,7 +447,7 @@ namespace AcManager {
             BbCodeBlock.AddLinkCommand(new Uri("cmd://csp/enable"), new DelegateCommand(() => {
                 using (var model = PatchSettingsModel.Create()) {
                     var item = model.Configs?
-                            .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.Sections.GetByIdOrDefault("BASIC")?
+                            .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.SectionsOwn.GetByIdOrDefault("BASIC")?
                             .GetByIdOrDefault("ENABLED");
                     if (item != null) {
                         item.Value = @"1";
@@ -458,7 +458,7 @@ namespace AcManager {
             BbCodeBlock.AddLinkCommand(new Uri("cmd://csp/disable"), new DelegateCommand(() => {
                 using (var model = PatchSettingsModel.Create()) {
                     var item = model.Configs?
-                            .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.Sections.GetByIdOrDefault("BASIC")?
+                            .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.SectionsOwn.GetByIdOrDefault("BASIC")?
                             .GetByIdOrDefault("ENABLED");
                     if (item != null) {
                         item.Value = @"0";

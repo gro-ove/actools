@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using AcManager.Tools.Data;
 using AcTools.DataFile;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -23,6 +25,11 @@ namespace AcManager.Tools.Objects {
         public string HintTop { get; }
 
         public string HintBottom { get; }
+        
+        [CanBeNull]
+        public List<string> PluginSettings { get; }
+
+        public object Tag;
 
         private static string PrepareHint(string hint) {
             if (string.IsNullOrWhiteSpace(hint)) return null;
@@ -37,6 +44,9 @@ namespace AcManager.Tools.Objects {
                     && PatchHelper.IsFeatureSupported(PatchHelper.WeatherFxLauncherControlled);
         }
 
+        public readonly Func<IPythonAppConfigValueProvider, bool> IsEnabledTest;
+        public readonly Func<IPythonAppConfigValueProvider, bool> IsHiddenTest;
+        
         public PythonAppConfigSection(string filename, [NotNull] PythonAppConfigParams configParams, KeyValuePair<string, IniFileSection> pair, 
                 [CanBeNull] IniFileSection values)
                 : base(pair.Value
@@ -47,8 +57,10 @@ namespace AcManager.Tools.Objects {
             Key = pair.Key;
             HintTop = PrepareHint(pair.Value.GetNonEmpty("__HINT_TOP"));
             HintBottom = PrepareHint(pair.Value.GetNonEmpty("__HINT_BOTTOM"));
+            PluginSettings = pair.Value.GetNonEmpty("__PLUGIN_SETTINGS")?.Split(',').Select(x => x.Trim()).ToList();
 
-            var commentary = pair.Value.Commentary?.Split('\n')[0].Trim();
+            var comments = pair.Value.Commentary?.Split('\n');
+            var commentary = comments?[0].Trim();
             if (commentary == @"hidden") {
                 DisplayName = @"hidden";
             } else {
@@ -61,6 +73,12 @@ namespace AcManager.Tools.Objects {
                 }
 
                 DisplayName = PythonAppConfig.CapitalizeFirst(name);
+            }
+
+            if (comments?.Length > 1 && comments[1].StartsWith(@"; section tweaks")) {
+                var description = comments[1].Trim().WrapQuoted(out var unwrap);
+                PythonAppConfigValue.CreateTestingFunctions(ref IsEnabledTest, ref IsHiddenTest, ref description, unwrap);
+                Logging.Debug($"comments={description}, fn1={IsEnabledTest}, fn2={IsHiddenTest}");
             }
         }
 

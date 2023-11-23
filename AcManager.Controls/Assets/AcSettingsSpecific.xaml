@@ -654,6 +654,11 @@
                             Visibility="{Binding AuthorVersionLine, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
                       </DockPanel>
                     </DockPanel>
+                    <DataTemplate.Triggers>
+                      <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}}" Value="{x:Null}">
+                        <Setter TargetName="PART_Details" Property="Visibility" Value="Collapsed" />
+                      </DataTrigger>
+                    </DataTemplate.Triggers>
                   </DataTemplate>
                 </mui:BetterComboBox.ItemTemplate>
               </mui:BetterComboBox>
@@ -661,19 +666,13 @@
           </DataTemplate>
 
           <DataTemplate DataType="{x:Type t:PythonAppConfigFileValue}">
-            <Grid>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-              </Grid.ColumnDefinitions>
+            <DockPanel>
               <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}"
                   Style="{StaticResource PythonAppConfig.PropertyLabel}" />
-              <Button Grid.Column="2" Padding="4 2" Margin="2 0 0 0" Content="…" Command="{Binding ChangeFileCommand}" />
-              <mui:PathTrimmingTextBlock Grid.Column="1" MinWidth="1" HorizontalAlignment="Left" Text="{Binding Value}" Placeholder="?"
+              <Button Padding="4 2" Margin="2 0 0 0" Content="…" Command="{Binding ChangeFileCommand}" DockPanel.Dock="Right" />
+              <mui:PathTrimmingTextBlock MinWidth="1" HorizontalAlignment="Left" Text="{Binding Value}" Placeholder="?"
                   mui:NewMarkService.New="{Binding IsNew}" />
-              <!--<mui:BetterTextBox Text="{Binding Value}" Placeholder="?" mui:NewMarkService.New="{Binding IsNew}" />-->
-            </Grid>
+            </DockPanel>
           </DataTemplate>
 
           <DataTemplate DataType="{x:Type t:PythonAppConfigValue}">
@@ -753,7 +752,7 @@
       <Button DockPanel.Dock="Bottom" Margin="0 8 0 0" Content="{x:Static c:ControlsStrings.Common_Reset}" Command="{Binding ResetCommand}"
           Visibility="{Binding IsNonDefault, Converter={StaticResource BooleanToVisibilityConverter}}" />
       <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" DockPanel.Dock="Top" Margin="0 0 0 8" />
-      <ItemsControl ItemsSource="{Binding Sections}" Margin="20 0 0 -20" ItemTemplate="{StaticResource PythonAppConfig.SectionTemplate}" />
+      <ItemsControl ItemsSource="{Binding SectionsDisplay}" Margin="20 0 0 -20" ItemTemplate="{StaticResource PythonAppConfig.SectionTemplate}" />
     </DockPanel>
   </DataTemplate>
 
@@ -762,7 +761,7 @@
       <DockPanel VerticalAlignment="Top">
         <Button DockPanel.Dock="Bottom" Margin="0 20 0 0" Content="{x:Static c:ControlsStrings.Common_Reset}" Command="{Binding ResetCommand}"
             Visibility="{Binding IsNonDefault, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        <ItemsControl ItemsSource="{Binding Sections[0]}" ItemTemplate="{StaticResource PythonAppConfig.ItemTemplate}"
+        <ItemsControl ItemsSource="{Binding SectionsDisplay[0]}" ItemTemplate="{StaticResource PythonAppConfig.ItemTemplate}"
             ItemContainerStyle="{StaticResource PythonAppConfig.ItemContainerStyle}" ItemsPanel="{StaticResource PythonAppConfig.SectionItemsPanel}"
             VerticalAlignment="Top" />
       </DockPanel>
@@ -774,7 +773,7 @@
       <DockPanel VerticalAlignment="Top">
         <Button DockPanel.Dock="Bottom" Margin="0 20 0 0" Content="{x:Static c:ControlsStrings.Common_Reset}" Command="{Binding ResetCommand}"
             Visibility="{Binding IsNonDefault, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        <ItemsControl ItemsSource="{Binding Sections}" ItemTemplate="{StaticResource PythonAppConfig.SectionTemplate}" Margin="0 0 0 -20" />
+        <ItemsControl ItemsSource="{Binding SectionsDisplay}" ItemTemplate="{StaticResource PythonAppConfig.SectionTemplate}" Margin="0 0 0 -20" />
       </DockPanel>
     </ScrollViewer>
   </DataTemplate>
@@ -796,7 +795,7 @@
       <DockPanel VerticalAlignment="Top">
         <Button DockPanel.Dock="Bottom" Margin="0 20 0 0" Content="{x:Static c:ControlsStrings.Common_Reset}" Command="{Binding ResetCommand}"
             Visibility="{Binding IsNonDefault, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        <ItemsControl ItemsSource="{Binding Sections}" ItemTemplate="{StaticResource PythonAppConfig.Compact.SectionTemplate}" Margin="0 0 0 -20" />
+        <ItemsControl ItemsSource="{Binding SectionsDisplay}" ItemTemplate="{StaticResource PythonAppConfig.Compact.SectionTemplate}" Margin="0 0 0 -20" />
       </DockPanel>
     </ScrollViewer>
   </DataTemplate>
@@ -824,7 +823,7 @@
 
   <DataTemplate x:Key="PythonAppConfig.Compact.Inline" DataType="{x:Type t:PythonAppConfig}">
     <Border Margin="-28 -2 -64 -2" Width="400" Background="{DynamicResource PopupBackground}" Padding="28 8 28 8">
-      <ItemsControl ItemsSource="{Binding Sections}" ItemTemplate="{StaticResource PythonAppConfig.Compact.InlineSectionTemplate}">
+      <ItemsControl ItemsSource="{Binding SectionsDisplay}" ItemTemplate="{StaticResource PythonAppConfig.Compact.InlineSectionTemplate}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
             <mui:SpacingStackPanel Spacing="20" Orientation="Vertical" />
@@ -851,7 +850,7 @@
 
   <DataTemplate x:Key="PythonAppConfig.Compact.InlineSingle" DataType="{x:Type t:PythonAppConfig}">
     <Border Margin="-28 -2 -64 -2" Width="400" Background="{DynamicResource PopupBackground}" Padding="28 8 28 8">
-      <ItemsControl ItemsSource="{Binding Sections}" ItemTemplate="{StaticResource PythonAppConfig.Compact.InlineSingleSectionTemplate}">
+      <ItemsControl ItemsSource="{Binding SectionsDisplay}" ItemTemplate="{StaticResource PythonAppConfig.Compact.InlineSingleSectionTemplate}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
             <mui:SpacingStackPanel Spacing="20" Orientation="Vertical" />

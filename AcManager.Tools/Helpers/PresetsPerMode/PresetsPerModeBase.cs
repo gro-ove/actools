@@ -5,6 +5,7 @@ using System.Linq;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
+using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -160,6 +161,19 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
                 }
 
                 if (backup.Controls != null) {
+                    if (!string.IsNullOrWhiteSpace(backup.ControlsPresetFilename)) {
+                        try {
+                            if (new FileInfo(AcSettingsHolder.Controls.Filename).LastWriteTime > new FileInfo(filename).LastWriteTime + TimeSpan.FromSeconds(5d)) {
+                                var origin = File.ReadAllText(AcSettingsHolder.Controls.Filename);
+                                if (File.Exists(origin)) {
+                                    FileUtils.Recycle(origin);
+                                    File.Move(backup.ControlsPresetFilename, origin);
+                                }
+                            }
+                        } catch (Exception e) {
+                            Logging.Warning(e);
+                        }
+                    }
                     File.WriteAllText(AcSettingsHolder.Controls.Filename, backup.Controls);
                 }
 
@@ -185,6 +199,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
 
         private class Backup {
             public string Apps, Audio, Video, Controls, CustomShadersPatch;
+            public string ControlsPresetFilename;
             public bool? RearViewMirror;
         }
 
@@ -206,6 +221,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
             if (set.Controls.IsActuallyEnabled()) {
                 try {
                     backup.Controls = File.ReadAllText(AcSettingsHolder.Controls.Filename);
+                    backup.ControlsPresetFilename = set.Controls.Filename;
                 } catch (Exception e) {
                     Logging.Warning(e);
                 }
@@ -297,6 +313,11 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
                 Logging.Debug($"Applying {name} preset {entry.Filename}…");
                 if (File.Exists(entry.Filename)) {
                     File.Copy(entry.Filename, destination, true);
+                    
+                    var cfg = new IniFile(destination);
+                    cfg["__EXTRA_CM"].Set("CAR_SPECIFIC", false);
+                    cfg["__EXTRA_CM"].Set("PRESET_OVERRIDE", entry.Filename);
+                    cfg.Save();
                 } else {
                     NonfatalError.NotifyBackground($"Can’t load {name} preset", $"File “{entry.Name}” is missing.");
                 }

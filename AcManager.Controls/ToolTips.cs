@@ -135,8 +135,8 @@ namespace AcManager.Controls {
         [CanBeNull]
         private static ToolTip GetToolTip(string key, FrameworkElement obj = null) {
             if ((key == @"CarPreviewTooltip" || key == @"TrackPreviewTooltip")
-                    && !AppAppearanceManager.Instance.ShowSelectionDialogToolTips
-                    && obj?.GetParent<Window>() is ModernDialog) {
+                    && (!AppAppearanceManager.Instance.ShowSelectionDialogToolTips && obj?.GetParent<Window>() is ModernDialog
+                    || !AppAppearanceManager.Instance.ShowContentToolTips && obj?.GetParent<AcListPage>() != null)) {
                 return null;
             }
             return obj?.TryFindResource(key) as ToolTip ?? Dictionary[key] as ToolTip;

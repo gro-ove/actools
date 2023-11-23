@@ -22,6 +22,32 @@
     </mui:SpacingStackPanel>
   </DataTemplate>
 
+  <DataTemplate x:Key="Batch.FindAndReplace" DataType="{x:Type t:CommonBatchActions+BatchAction_NameReplace}">
+    <DataTemplate.Resources>
+      <mui:SharedResourceDictionary Source="AcListPage.BatchStyle.xaml" />
+    </DataTemplate.Resources>
+    <mui:SpacingStackPanel Spacing="4">
+      <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" HorizontalAlignment="Left">
+        <DockPanel VerticalAlignment="Top">
+          <TextBlock Text="Find:" Width="60" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+          <mui:BetterTextBox Text="{Binding Find}" Width="120" />
+        </DockPanel>
+        <DockPanel VerticalAlignment="Top">
+          <TextBlock Text="Replace:" Width="60" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+          <mui:BetterTextBox Text="{Binding Replace}" Width="120" />
+        </DockPanel>
+      </mui:SpacingUniformGrid>
+      <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" HorizontalAlignment="Left">
+        <CheckBox IsChecked="{Binding IgnoreCase}">
+          <Label Content="Ignore case" />
+        </CheckBox>
+        <CheckBox IsChecked="{Binding UseRegularExpression}" ToolTip="To refer to captured text, use “\1” syntax (number is the group number)">
+          <Label Content="Use regular expression" />
+        </CheckBox>
+      </mui:SpacingUniformGrid>
+    </mui:SpacingStackPanel>
+  </DataTemplate>
+
   <DataTemplate x:Key="Batch.SetRating" DataType="{x:Type t:CommonBatchActions+BatchAction_SetRating}">
     <DataTemplate.Resources>
       <mui:SharedResourceDictionary Source="AcListPage.BatchStyle.xaml" />

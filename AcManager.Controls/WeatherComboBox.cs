@@ -389,7 +389,7 @@ namespace AcManager.Controls {
                             if (item.ControllerRef == null) continue;
                             if (item.ControllerRef.Config != null) {
                                 var editor = new ContentControl {
-                                    ContentTemplate = (DataTemplate)SettingsDictionary[item.ControllerRef.Config.Sections.Count == 1 
+                                    ContentTemplate = (DataTemplate)SettingsDictionary[item.ControllerRef.Config.SectionsOwn.Count == 1 
                                             ? @"PythonAppConfig.Compact.InlineSingle" : @"PythonAppConfig.Compact.Inline"],
                                     Content = item.ControllerRef.Config
                                 };

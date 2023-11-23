@@ -67,10 +67,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             WheelAxleEntries = new[] {
                 SteerAxleEntry,
-                new WheelAxleEntry("THROTTLE", ToolsStrings.Controls_Throttle),
+                new WheelAxleEntry("THROTTLE", ToolsStrings.Controls_Throttle, gammaMode: PatchHelper.IsFeatureSupported(PatchHelper.FeatureDirectInputExtraGamma)),
                 new WheelAxleEntry("BRAKES", ToolsStrings.Controls_Brakes, gammaMode: true),
-                new WheelAxleEntry("CLUTCH", ToolsStrings.Controls_Clutch),
-                new WheelAxleEntry(HandbrakeId, ToolsStrings.Controls_Handbrake)
+                new WheelAxleEntry("CLUTCH", ToolsStrings.Controls_Clutch, gammaMode: PatchHelper.IsFeatureSupported(PatchHelper.FeatureDirectInputExtraGamma)),
+                new WheelAxleEntry(HandbrakeId, ToolsStrings.Controls_Handbrake, gammaMode: PatchHelper.IsFeatureSupported(PatchHelper.FeatureDirectInputExtraGamma))
             };
 
             KeyboardSpecificButtonEntries = new[] {
@@ -478,14 +478,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
                         var device = devices[i];
                         if (device == null) continue;
 
-                        if (device.Information.ProductName.Contains(@"FANATEC CSL Elite")
+                        /*if (device.Information.ProductName.Contains(@"FANATEC CSL Elite")
                             || device.Information.ProductName.Contains(@"FANATEC Podium Wheel Base DD")) {
                             if (SettingsHolder.Drive.SameControllersKeepFirst) {
                                 newDevices.RemoveAll(y => y.Same(device.Information));
                             } else if (newDevices.Any(y => y.Same(device.Information))) {
                                 continue;
                             }
-                        }
+                        }*/
 
                         var existing = Devices.FirstOrDefault(y => y.Same(device.Information));
                         if (existing != null) {

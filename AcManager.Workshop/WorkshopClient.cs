@@ -64,6 +64,7 @@ namespace AcManager.Workshop {
         private string _pokeKey;
 
         public WorkshopClient([NotNull] string apiHost) {
+            apiHost = "http://localhost:3000";
             _apiHost = apiHost;
         }
 

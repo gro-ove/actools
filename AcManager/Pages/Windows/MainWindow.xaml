@@ -548,6 +548,7 @@
     <mui:LinkGroup x:Name="LiveGroup" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Live}">
       <mui:LinkGroup.Links>
         <mui:Link x:Name="GridFinderLink" DisplayName="Grid Finder" Source="/Pages/Drive/GridFinder.xaml" />
+        <mui:Link x:Name="RaceULink" DisplayName="RaceU" Source="/Pages/Drive/RaceU.xaml" />
         <mui:Link x:Name="RsrLink" DisplayName="{x:Static g:AppStrings.Main_Rsr}" Source="/Pages/Drive/Rsr.xaml" />
         <mui:Link x:Name="Srs2Link" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs2.xaml" />
         <mui:Link x:Name="TrackTitanLink" DisplayName="Track Titan" Source="/Pages/Drive/TrackTitan.xaml" />
@@ -560,11 +561,11 @@
         </mui:Link>
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
-    <mui:LinkGroup x:Name="RaceUGroup" GroupKey="drive" DisplayName="RaceU" IsShown="False">
+    <!--<mui:LinkGroup x:Name="RaceUGroup" GroupKey="drive" DisplayName="RaceU" IsShown="False">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="Main" Source="/Pages/Drive/RaceU.xaml" />
       </mui:LinkGroup.Links>
-    </mui:LinkGroup>
+    </mui:LinkGroup>-->
     <mui:LinkGroupFilterable x:Name="OnlineGroup" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Online}" AddAllLink="False"
         Source="/Pages/Drive/Online.xaml" FilterHint="{x:Static c:FilterHints.ServerEntries}">
       <mui:LinkGroupFilterable.FixedLinks>
@@ -605,14 +606,14 @@
         FilterHint="{x:Static c:FilterHints.Files}" />
 
     <!-- Workshop -->
-    <mui:LinkGroupFilterable GroupKey="workshop" DisplayName="{x:Static g:AppStrings.Main_Cars}" Source="/Pages/Workshop/WorkshopContentMain.xaml?Content=cars"
+    <!--<mui:LinkGroupFilterable GroupKey="workshop" DisplayName="{x:Static g:AppStrings.Main_Cars}" Source="/Pages/Workshop/WorkshopContentMain.xaml?Content=cars"
         FilterHint="{x:Static c:FilterHints.Cars}" AddAllLink="False">
       <mui:LinkGroupFilterable.FixedLinks>
         <mui:Link DisplayName="Brands" Source="/Pages/Workshop/WorkshopCarBrandsHorizonal.xaml?Content=cars&amp;Category=car-brands&amp;SearchBy=carBrand" />
         <mui:Link DisplayName="Countries" Source="/Pages/Workshop/WorkshopCarBrandsHorizonal.xaml?Content=cars&amp;Category=car-countries&amp;SearchBy=country" />
         <mui:Link DisplayName="Tags" Source="/Pages/Workshop/WorkshopContentTags.xaml?Content=cars&amp;Category=car-tags" />
         <mui:Link DisplayName="Latest" Source="/Pages/Workshop/WorkshopContentMain.xaml?Content=cars" />
-        <!--<mui:Link DisplayName="My" Source="/Pages/Miscellaneous/CarsMy" />-->
+        ~1~<mui:Link DisplayName="My" Source="/Pages/Miscellaneous/CarsMy" />@1@
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
     <mui:LinkGroupFilterable GroupKey="workshop" DisplayName="Car skins" Source="/Pages/Workshop/WorkshopCarSkins.xaml"
@@ -631,7 +632,7 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Weather}" Source="/Pages/Workshop/WorkshopWeather.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
-    <mui:LinkGroup GroupKey="workshop" DisplayName="Community" />
+    <mui:LinkGroup GroupKey="workshop" DisplayName="Community" />-->
 
     <!-- Content -->
     <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Cars}" Source="/Pages/Lists/CarsListPage.xaml"

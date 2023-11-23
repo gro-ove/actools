@@ -29,8 +29,10 @@ namespace AcManager {
             if (_keyboard != null) return;
             _keyboard = KeyboardListenerFactory.Get();
             _keyboard.WatchFor(Keys.Oemtilde);
+            _keyboard.WatchFor(Keys.F1);
             _keyboard.PreviewKeyDown += (sender, args) => {
-                if (SettingsHolder.Drive.ShowCspSettingsWithShortcut && args.Key == Keys.Oemtilde
+                if (SettingsHolder.Drive.ShowCspSettingsWithShortcut
+                        && (args.Key == Keys.Oemtilde || args.Key == Keys.F1)
                         && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                     if (SettingsShadersPatch.CloseOpenedSettings != null) {
                         SettingsShadersPatch.CloseOpenedSettings();

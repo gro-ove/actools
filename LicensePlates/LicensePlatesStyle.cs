@@ -267,19 +267,19 @@ namespace LicensePlates {
             return NormalsMap(_textLayer, Path.Combine(_directory, _plateParams.Normals), previewMode);
         }
 
-        public void CreateDiffuseMap(bool previewMode, string filename) {
+        public void CreateDiffuseMap(bool previewMode, string filename, bool compression) {
             using (var image = CreateDiffuseMap(previewMode)) {
-                image.Settings.SetDefine(MagickFormat.Dds, "compression", "dxt5");
-                image.Settings.SetDefine(MagickFormat.Dds, "mipmaps", "false");
+                image.Settings.SetDefine(MagickFormat.Dds, "compression", compression ? "dxt5" : "none");
+                image.Settings.SetDefine(MagickFormat.Dds, "mipmaps", "true");
                 image.Settings.SetDefine(MagickFormat.Dds, "cluster-fit", "true");
                 image.Write(filename);
             }
         }
 
-        public void CreateNormalsMap(bool previewMode, string filename) {
+        public void CreateNormalsMap(bool previewMode, string filename, bool compression) {
             using (var image = CreateNormalsMap(previewMode)) {
-                image.Settings.SetDefine(MagickFormat.Dds, "compression", "dxt5");
-                image.Settings.SetDefine(MagickFormat.Dds, "mipmaps", "false");
+                image.Settings.SetDefine(MagickFormat.Dds, "compression", compression ? "dxt5" : "none");
+                image.Settings.SetDefine(MagickFormat.Dds, "mipmaps", "true");
                 image.Settings.SetDefine(MagickFormat.Dds, "cluster-fit", "true");
                 image.Write(filename);
             }

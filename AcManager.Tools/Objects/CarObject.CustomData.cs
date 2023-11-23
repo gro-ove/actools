@@ -55,7 +55,7 @@ namespace AcManager.Tools.Objects {
             var dataAcd = Path.Combine(Location, "data.acd");
             if (File.Exists(dataAcd)) {
                 var backupAcd = Path.Combine(Location, "data.acd~cm_bak_ep");
-                var custom = allowCustom && UseExtendedPhysics
+                var custom = allowCustom && UseExtendedPhysics && PatchHelper.IsActive()
                         && SettingsHolder.Drive.QuickDriveAllowExtendedPhysics;
                 if (custom) {
                     FileUtils.TryToDelete(backupAcd);
@@ -75,7 +75,7 @@ namespace AcManager.Tools.Objects {
             } else {
                 var dataCar = Path.Combine(Location, "data", "car.ini");
                 var backupCar = Path.Combine(Location, "data", "car.ini~cm_bak_ep");
-                var custom = allowCustom && UseExtendedPhysics
+                var custom = allowCustom && UseExtendedPhysics && PatchHelper.IsActive()
                         && SettingsHolder.Drive.QuickDriveAllowExtendedPhysics;
                 if (custom) {
                     FileUtils.TryToDelete(backupCar);

@@ -117,7 +117,7 @@ namespace AcManager.Pages.Settings {
         }
 
         private void SetKeyboardInputs() {
-            KeyBindingsController.Set(Model.MainModel.SelectedPage?.Config?.Sections.SelectMany().OfType<PythonAppConfigKeyValue>());
+            KeyBindingsController.Set(Model.MainModel.SelectedPage?.Config?.SectionsOwn.SelectMany().OfType<PythonAppConfigKeyValue>());
         }
 
         private void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e) {

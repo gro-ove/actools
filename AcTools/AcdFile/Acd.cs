@@ -44,21 +44,24 @@ namespace AcTools.AcdFile {
 
         [CanBeNull]
         public AcdEntry GetEntry([NotNull] string entryName) {
-            AcdEntry entry;
-
-            if (!_entries.TryGetValue(entryName, out entry)) {
-                if (_unpackedDirectory != null) {
-                    var filename = Path.Combine(_unpackedDirectory, entryName);
-                    entry = File.Exists(filename) ? new AcdEntry {
-                        Name = entryName,
-                        Data =  File.ReadAllBytes(filename)
-                    } : null;
-                } else {
-                    var data = ReadPacked(entryName);
-                    entry = data != null ? new AcdEntry {
-                        Name = entryName,
-                        Data = data
-                    } : null;
+            if (!_entries.TryGetValue(entryName, out var entry)) {
+                try {
+                    if (_unpackedDirectory != null) {
+                        var filename = Path.Combine(_unpackedDirectory, entryName);
+                        entry = File.Exists(filename) ? new AcdEntry {
+                            Name = entryName,
+                            Data = File.ReadAllBytes(filename)
+                        } : null;
+                    } else {
+                        var data = ReadPacked(entryName);
+                        entry = data != null ? new AcdEntry {
+                            Name = entryName,
+                            Data = data
+                        } : null;
+                    }
+                } catch (Exception e) {
+                    AcToolsLogging.Write("Failed to read car data: " + e);
+                    entry = null;
                 }
 
                 _entries[entryName] = entry;

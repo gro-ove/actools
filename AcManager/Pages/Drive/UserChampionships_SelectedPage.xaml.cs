@@ -171,7 +171,7 @@ namespace AcManager.Pages.Drive {
             public AsyncCommand<AssistsViewModel> GoCommand => _goCommand ?? (_goCommand = new AsyncCommand<AssistsViewModel>(async o => {
                 try {
                     var round = _acObject.CurrentRound;
-                    if (!round.IsAvailable) return;
+                    if (round?.IsAvailable != true) return;
 
                     var time = PatchHelper.ClampTime(round.Time);
                     var temperature = round.Temperature;

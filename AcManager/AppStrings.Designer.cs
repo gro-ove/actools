@@ -10582,7 +10582,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Try to start Steam if not running (recommended).
+        ///   Looks up a localized string similar to Try to start Steam if not running when starting a race (recommended).
         /// </summary>
         public static string Settings_Drive_TryToStartSteamIfNotRunning {
             get {

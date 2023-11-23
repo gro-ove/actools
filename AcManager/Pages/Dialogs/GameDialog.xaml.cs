@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Effects;
+using System.Windows.Threading;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
@@ -118,7 +121,7 @@ namespace AcManager.Pages.Dialogs {
         protected override void OnClosingOverride(CancelEventArgs e) {
             if (IsResultCancel) {
                 try {
-                    _cancellationSource.Cancel();
+                    _cancellationSource?.Cancel();
                 } catch (ObjectDisposedException) { }
             }
 
@@ -128,7 +131,7 @@ namespace AcManager.Pages.Dialogs {
 
         public void Dispose() {
             try {
-                _cancellationSource.Dispose();
+                _cancellationSource?.Dispose();
             } catch (ObjectDisposedException) { }
         }
 
@@ -154,6 +157,33 @@ namespace AcManager.Pages.Dialogs {
             Model.WaitingStatus = message;
             Model.WaitingProgress = subProgress ?? AsyncProgressEntry.Ready;
             Model.SubCancellationCallback = subCancellationCallback;
+        }
+
+        private void MonitorExitStatus() {
+            if (_shuttingDownTimer == null) {
+                _shuttingDownTimer = new DispatcherTimer(TimeSpan.FromSeconds(0.5d), DispatcherPriority.Background, (s, e) => {
+                    if (_shuttingDownMmFile == null) {
+                        try {
+                            _shuttingDownMmFile = new BetterMemoryMappedAccessor<ShuttingDownData>("AcTools.CSP.ShutdownProgress.v0");
+                        } catch {
+                            return;
+                        }
+                    }
+                    
+                    var phase = _shuttingDownMmFile.GetPacketId();
+                    if (_shuttingDownPhase != phase) {
+                        _shuttingDownPhase = phase;
+                        if (phase == 0) {
+                            _shuttingDownTimer?.Stop();
+                        } else {
+                            var i = _shuttingDownMmFile.Get().Message.IndexOf((byte)0);
+                            var d = _shuttingDownMmFile.Get().Message;
+                            Model.WaitingStatus = Encoding.UTF8.GetString(d, 0, i < 0 ? d.Length : i);
+                        }
+                    }
+                }, Application.Current.Dispatcher);
+                
+            }
         }
 
         public void OnProgress(Game.ProgressState progress) {
@@ -192,6 +222,7 @@ namespace AcManager.Pages.Dialogs {
                 case Game.ProgressState.Waiting:
                     Model.WaitingStatus = _mode == GameMode.Race ? AppStrings.Race_Waiting :
                             _mode == GameMode.Replay ? AppStrings.Race_WaitingReplay : AppStrings.Race_WaitingBenchmark;
+                    MonitorExitStatus();
                     break;
                 case Game.ProgressState.Finishing:
                     RevertSizeFix().Ignore();
@@ -563,6 +594,23 @@ namespace AcManager.Pages.Dialogs {
             public DragFinishedData() : base(ToolsStrings.Session_Drag) { }
         }
 
+        [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode), Serializable]
+        private class ShuttingDownData {
+            public int Phase;
+            
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+            public byte[] Message;
+        }
+
+        private BetterMemoryMappedAccessor<ShuttingDownData> _shuttingDownMmFile;
+        private int _shuttingDownPhase;
+        private DispatcherTimer _shuttingDownTimer;
+
+        protected override void OnClosedOverride() {
+            base.OnClosedOverride();
+            _shuttingDownTimer?.Stop();
+        }
+
         public void OnResult(Game.Result result, ReplayHelper replayHelper) {
             RevertSizeFix().Ignore();
 
@@ -571,7 +619,6 @@ namespace AcManager.Pages.Dialogs {
             }
 
             var data = AcSharedMemory.Instance.GetFpsDetails();
-
             if (SettingsHolder.Drive.MonitorFramesPerSecond) {
                 AcSettingsHolder.Video.LastSessionPerformanceData = data;
             }

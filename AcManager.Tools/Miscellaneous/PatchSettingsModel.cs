@@ -131,7 +131,7 @@ namespace AcManager.Tools.Miscellaneous {
             } else if (Configs != null) {
                 _busyCreateConfigs.DoDelay(() => {
                     foreach (var item in Configs
-                            .SelectMany(x => x.Sections)
+                            .SelectMany(x => x.SectionsOwn)
                             .SelectMany(x => x)
                             .OfType<PythonAppConfigPluginValue>()) {
                         if (FileUtils.IsAffectedBy(filename, item.PluginsDirectory)) {
@@ -362,7 +362,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                         var userEditedFile = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), PatchHelper.PatchDirectoryName, fileName);
                         var cfg = PythonAppConfig.Create(p, f, true, userEditedFile);
-                        if (_isLive && cfg.Sections.GetByIdOrDefault("ℹ")?.GetByIdOrDefault("LIVE_SUPPORT")?.Value == @"0") {
+                        if (_isLive && cfg.SectionsOwn.GetByIdOrDefault("ℹ")?.GetByIdOrDefault("LIVE_SUPPORT")?.Value == @"0") {
                             return null;
                         }
 

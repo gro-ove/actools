@@ -30,7 +30,7 @@ namespace AcManager.Pages.Selected {
                 IsActivated = AcSettingsHolder.Python.IsActivated(SelectedObject.Id);
                 AcSettingsHolder.Python.PropertyChanged += OnPythonPropertyChanged;
                 Configs = acObject.GetAppConfigs();
-                KeyValues = Configs.SelectMany(x => x.Sections).SelectMany(x => x)
+                KeyValues = Configs.SelectMany(x => x.SectionsOwn).SelectMany(x => x)
                                    .OfType<PythonAppConfigKeyValue>().ToList();
             }
 

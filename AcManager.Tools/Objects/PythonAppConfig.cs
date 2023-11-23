@@ -4,11 +4,13 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -54,6 +56,8 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _hasAnythingNew);
         }
 
+        private readonly bool _hasDynamicSections;
+
         private PythonAppConfig([NotNull] PythonAppConfigParams configParams, string filename, IniFile ini,
                 [CanBeNull] Func<string, bool> sectionFilter, string name, PythonAppObject parent,
                 IniFile values = null) {
@@ -71,23 +75,25 @@ namespace AcManager.Tools.Objects {
             }
 
             DisplayName = name.Trim();
-            Sections = new List<PythonAppConfigSection>(ini.Where(x => sectionFilter?.Invoke(x.Key) != false)
+            _sectionsOwn = new List<PythonAppConfigSection>(ini
+                    .Where(x => sectionFilter?.Invoke(x.Key) != false)
                     .Select(x => new PythonAppConfigSection(filename, configParams, x, values?[x.Key]))
                     .Where(x => x.DisplayName != @"hidden"));
-            IsSingleSection = Sections.Count == 1 && IsSectionNameUseless(Sections[0].DisplayName, configParams.PythonAppLocation);
-            HasAnythingNew = Sections.Any(x => x.Any(y => y.IsNew));
-
-            if (Sections.Count == 1) {
-                Sections[0].IsSingleSection = true;
+            _hasDynamicSections = _sectionsOwn.Any(x => x.PluginSettings != null || x.IsHiddenTest != null);
+            IsSingleSection = !_hasDynamicSections && _sectionsOwn.Count == 1 
+                    && IsSectionNameUseless(_sectionsOwn[0].DisplayName, configParams.PythonAppLocation);
+            if (IsSingleSection) {
+                _sectionsOwn[0].IsSingleSection = true;
             }
+            HasAnythingNew = _sectionsOwn.Any(x => x.Any(y => y.IsNew));
 
-            foreach (var value in Sections.SelectMany(x => x)) {
+            foreach (var value in _sectionsOwn.SelectMany(x => x)) {
                 value.PropertyChanged += OnValuePropertyChanged;
             }
 
             if (IsResettable) {
                 var isNonDefault = false;
-                foreach (var section in Sections) {
+                foreach (var section in _sectionsOwn) {
                     if (section.Key == @"ℹ") continue;
                     foreach (var p in section) {
                         if (p.IsNonDefault) {
@@ -97,6 +103,8 @@ namespace AcManager.Tools.Objects {
                 }
                 IsNonDefault = isNonDefault;
             }
+
+            SectionsDisplay = new BetterObservableCollection<PythonAppConfigSection>(_sectionsOwn.Where(x => x.PluginSettings == null));
         }
 
         private static bool IsSectionNameUseless(string sectionName, string appDirectory) {
@@ -108,14 +116,24 @@ namespace AcManager.Tools.Objects {
             return false;
         }
 
-        private DelegateCommand _resetCommand;
-
-        public DelegateCommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(() => {
-            foreach (var section in Sections) {
+        private void ResetValues() {
+            foreach (var section in _sectionsOwn) {
                 foreach (var value in section) {
                     value.Reset();
                 }
             }
+        }
+
+        private DelegateCommand _resetCommand;
+
+        public DelegateCommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(() => {
+            ResetValues();
+            if (_activePluginConfigs.Count == 0) return;
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                foreach (var config in _activePluginConfigs) {
+                    config.Value?.Item2?.ResetValues();
+                }
+            });
         }, () => IsResettable));
 
         private bool _changed;
@@ -133,7 +151,7 @@ namespace AcManager.Tools.Objects {
 
                 if (IsResettable) {
                     var isNonDefault = false;
-                    foreach (var section in Sections) {
+                    foreach (var section in _sectionsOwn) {
                         if (section.Key == @"ℹ") continue;
                         foreach (var p in section) {
                             if (p.IsNonDefault) {
@@ -147,7 +165,7 @@ namespace AcManager.Tools.Objects {
                 if (sender is PythonAppConfigValue value) {
                     ValueChanged?.Invoke(this, new ValueChangedEventArgs {
                         Source = this,
-                        Section = Sections.FirstOrDefault(x => x.Contains(value))?.Id,
+                        Section = _sectionsOwn.FirstOrDefault(x => x.Contains(value))?.Id,
                         Key = value.OriginalKey,
                         Value = value.Value
                     });
@@ -159,21 +177,99 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private Dictionary<string, Tuple<string, PythonAppConfig>> _activePluginConfigs = new Dictionary<string, Tuple<string, PythonAppConfig>>();
+
+        [CanBeNull]
+        private PythonAppConfig GetPluginConfig(string key, [NotNull] string pluginLocation, string userSettingsPath) {
+            var item = _activePluginConfigs.GetValueOrSet(key, () => null);
+            if (item?.Item1 != pluginLocation) {
+                var userSettingsFilename = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), 
+                        string.Format(userSettingsPath, Path.GetFileName(pluginLocation)));
+                var ret = new PythonAppConfigs(new PythonAppConfigParams(pluginLocation) {
+                    FilesRelativeDirectory = AcRootDirectory.Instance.RequireValue,
+                    ScanFunc = d => Directory.GetFiles(d, "settings.ini"),
+                    ConfigFactory = (p, f) => {
+                        try {
+                            return PythonAppConfig.Create(p, f, true, userSettingsFilename);
+                        } catch (Exception e) {
+                            Logging.Warning(e);
+                            return null;
+                        }
+                    },
+                    SaveOnlyNonDefault = true,
+                }).FirstOrDefault();
+                if (ret != null) {
+                    ret.ValueChanged += (sender, args) => ret.Save();
+                }
+                item = new Tuple<string, PythonAppConfig>(pluginLocation, ret);
+                _activePluginConfigs[key] = item;
+            }
+            return item.Item2;
+        }
+
+        private void UpdateSectionsDisplay(PythonAppConfigProvider provider) {
+            var insertIndex = 0;
+            foreach (var s in _sectionsOwn) {
+                if (s.IsHiddenTest != null) {
+                    var hidden = s.IsHiddenTest(provider);
+                    var existing = SectionsDisplay.IndexOf(s);
+                    if (existing == -1 != hidden) {
+                        if (hidden) SectionsDisplay.RemoveAt(existing);
+                        else SectionsDisplay.Insert(insertIndex++, s);
+                    } else if (!hidden) {
+                        ++insertIndex;
+                    }
+                } else if (s.PluginSettings?.Count >= 2) {
+                    var reference = provider.GetItem(s.PluginSettings[0]);
+
+                    IReadOnlyList<PythonAppConfigSection> sections = null;
+                    if (reference is PythonAppConfigPluginValue v && !string.IsNullOrWhiteSpace(v.Value) && v.IsEnabled) {
+                        if (v.SelectedPlugin != null) {
+                            sections = GetPluginConfig(s.PluginSettings[0], v.SelectedPlugin.Location, s.PluginSettings[1])?.SectionsOwn;
+                        }
+                    }
+
+                    var existing = SectionsDisplay.Where(x => x.Tag == s).ToList();
+                    if (sections?.SequenceEqual(existing) != true) {
+                        foreach (var i in existing) {
+                            SectionsDisplay.Remove(i);
+                        }
+                        if (sections != null) {
+                            foreach (var item in sections) {
+                                SectionsDisplay.Insert(insertIndex++, item);
+                                item.Tag = s;
+                            }
+                        } else {
+                            _activePluginConfigs.Remove(s.PluginSettings[0]);
+                        }
+                    } else {
+                        insertIndex += existing.Count;
+                    }
+                } else {
+                    ++insertIndex;
+                }
+            }
+        }
+
         public void UpdateReferenced() {
             var provider = new PythonAppConfigProvider(this);
-            for (var j = Sections.Count - 1; j >= 0; j--) {
-                var section = Sections[j];
+            for (var j = _sectionsOwn.Count - 1; j >= 0; j--) {
+                var section = _sectionsOwn[j];
                 provider.SetSection(section);
 
                 for (var k = section.Count - 1; k >= 0; k--) {
                     section[k].UpdateReferenced(provider);
                 }
             }
+            
+            if (_hasDynamicSections) {
+                UpdateSectionsDisplay(provider);
+            }
         }
 
         public void ApplyChangesFromIni() {
             Changed = true;
-            foreach (var section in Sections) {
+            foreach (var section in _sectionsOwn) {
                 if (section.Key == @"ℹ") continue;
                 var iniSection = _valuesIniFile[section.Key];
                 foreach (var p in section) {
@@ -187,7 +283,7 @@ namespace AcManager.Tools.Objects {
         }
 
         private void ApplyChangesToIni() {
-            foreach (var section in Sections) {
+            foreach (var section in _sectionsOwn) {
                 if (section.Key == @"ℹ") continue;
                 var iniSection = _valuesIniFile[section.Key];
                 foreach (var p in section) {
@@ -230,11 +326,16 @@ namespace AcManager.Tools.Objects {
         }
 
         internal bool IsAffectedBy(string changed) {
-            return FileUtils.IsAffectedBy(Filename, changed) || _defaultsFilename != null && FileUtils.IsAffectedBy(_defaultsFilename, changed);
+            return FileUtils.IsAffectedBy(Filename, changed) 
+                    || _defaultsFilename != null && FileUtils.IsAffectedBy(_defaultsFilename, changed);
         }
 
+        private readonly List<PythonAppConfigSection> _sectionsOwn;
+        
+        public IReadOnlyList<PythonAppConfigSection> SectionsOwn => _sectionsOwn;
+
         [NotNull]
-        public List<PythonAppConfigSection> Sections { get; }
+        public BetterObservableCollection<PythonAppConfigSection> SectionsDisplay { get; }
 
         [CanBeNull, ContractAnnotation(@"force:true => notnull")]
         public static PythonAppConfig Create([NotNull] PythonAppConfigParams configParams, string filename, bool force, string userEditedFile = null,
@@ -298,15 +399,15 @@ namespace AcManager.Tools.Objects {
         public string Id => Filename;
 
         [CanBeNull]
-        public string Order => Sections.GetByIdOrDefault("ℹ")?.Order;
+        public string Order => _sectionsOwn.GetByIdOrDefault("ℹ")?.Order;
 
         [CanBeNull]
-        public string Description => Sections.GetByIdOrDefault("ℹ")?.Description;
+        public string Description => _sectionsOwn.GetByIdOrDefault("ℹ")?.Description;
 
         [CanBeNull]
-        public string ShortDescription => Sections.GetByIdOrDefault("ℹ")?.ShortDescription;
+        public string ShortDescription => _sectionsOwn.GetByIdOrDefault("ℹ")?.ShortDescription;
 
-        public bool IsActive => Sections.GetByIdOrDefault("BASIC")?.GetByIdOrDefault("ENABLED")?.Value.As<bool?>() != false;
+        public bool IsActive => _sectionsOwn.GetByIdOrDefault("BASIC")?.GetByIdOrDefault("ENABLED")?.Value.As<bool?>() != false;
 
         public string PresetId => Path.GetFileNameWithoutExtension(Id).ToUpperInvariant();
     }

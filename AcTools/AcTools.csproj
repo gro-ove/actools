@@ -154,6 +154,7 @@
     <Compile Include="Utils\AcPaths.cs" />
     <Compile Include="Utils\AcProcess.cs" />
     <Compile Include="Utils\AesUtils.cs" />
+    <Compile Include="Utils\ChildProcessTracker.cs" />
     <Compile Include="Utils\DoubleRange.cs" />
     <Compile Include="Utils\AssemblyResolver.cs" />
     <Compile Include="Utils\Half.cs" />

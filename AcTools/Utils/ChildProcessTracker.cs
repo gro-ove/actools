@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.Helpers {
+namespace AcTools.Utils {
     /// <summary>
     /// Allows processes to be automatically killed if this parent process unexpectedly quits.
     /// This feature requires Windows 8 or greater. On Windows 7, nothing is done.</summary>

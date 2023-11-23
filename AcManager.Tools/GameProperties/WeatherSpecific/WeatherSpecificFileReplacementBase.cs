@@ -11,7 +11,7 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
         }
 
         public bool Apply(WeatherObject weather) {
-            return Apply(Path.Combine(weather.Location, RelativeSource));
+            return Apply(Path.Combine(weather.Location, RelativeSource), false);
         }
 
         protected override string GetAbsolutePath(string relative) {

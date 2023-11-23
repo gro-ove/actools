@@ -1247,6 +1247,7 @@ namespace AcManager.Tools.Objects {
 
         private UserChampionshipRoundExtended _currentRound;
 
+        [CanBeNull]
         public UserChampionshipRoundExtended CurrentRound {
             get => _currentRound;
             set => Apply(value, ref _currentRound);
@@ -1311,7 +1312,7 @@ namespace AcManager.Tools.Objects {
                 UpdateTakenPlaces();
 
                 _lastSelectedTimestamp = 0;
-                CurrentRound = ExtendedRounds.First();
+                CurrentRound = ExtendedRounds.FirstOrDefault();
 
                 foreach (var round in ExtendedRounds) {
                     round.TakenPlace = Type == KunosCareerObjectType.SingleEvents ? PlaceConditions.UnremarkablePlace : 0;

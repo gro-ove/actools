@@ -39,6 +39,9 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         [JsonProperty(PropertyName = "currentWeatherId")]
         public string WeatherId { get; set; }
 
+        [JsonProperty(PropertyName = "loadingImageUrl"), CanBeNull]
+        public string LoadingImageUrl { get; set; }
+
         [JsonProperty(PropertyName = "frequency")]
         public int? FrequencyHz { get; set; }
 

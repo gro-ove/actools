@@ -341,7 +341,8 @@
           <Label Content="{x:Static g:AppStrings.Settings_Drive_TerminateLoadingIfEscapeIsPressed}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Drive.ContinueOnEscape}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
+        <CheckBox IsChecked="{Binding Drive.ContinueOnEscape}" IsEnabled="{Binding Drive.WatchForSharedMemory}"
+            c:FeatureIsAvailable.Feature="$disabled">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_ContinueRaceIfEscapePressed}" />
         </CheckBox>
 

@@ -219,6 +219,12 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
                 DegreesOfRotation = section.GetIntNullable("__CM_ORIGINAL_LOCK") ?? section.GetInt("LOCK", 900);
                 Scale = section.GetIntNullable("__CM_ORIGINAL_SCALE") ?? section.GetDouble("SCALE", 1d).ToIntPercentage();
+                if (Scale < 0d) {
+                    Scale = -Scale;
+                    Invert = true;
+                } else {
+                    Invert = false;
+                }
                 Filter = section.GetDouble("STEER_FILTER", 0d).ToIntPercentage();
                 SpeedSensitivity = section.GetDouble("SPEED_SENSITIVITY", 0d).ToIntPercentage();
             }
@@ -248,7 +254,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
                 section.Set("LOCK", DegreesOfRotation);
                 section.Remove("__CM_ORIGINAL_LOCK");
-                section.Set("SCALE", Scale.ToDoublePercentage());
+                section.Set("SCALE", (Invert ? -1d : 1d) * Scale.ToDoublePercentage());
                 section.Remove("__CM_ORIGINAL_SCALE");
                 section.Set("STEER_FILTER", Filter.ToDoublePercentage());
                 section.Set("SPEED_SENSITIVITY", SpeedSensitivity.ToDoublePercentage());

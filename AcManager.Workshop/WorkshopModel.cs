@@ -43,7 +43,7 @@ namespace AcManager.Workshop {
     }
 
     public class WorkshopModel : NotifyPropertyChanged {
-        private const string KeySteamId = "w/ui";
+        private const string KeySteamId = "w/uk";
         private const string KeyUserPassword = "w/up";
 
         [NotNull]

@@ -4042,7 +4042,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <value>Changes won’t affect already shown windows.</value>
     </data>
     <data name="Settings_Drive_TryToStartSteamIfNotRunning" xml:space="preserve">
-      <value>Try to start Steam if not running (recommended)</value>
+      <value>Try to start Steam if not running when starting a race (recommended)</value>
     </data>
     <data name="Settings_General_Open" xml:space="preserve">
       <value>Open</value>

@@ -194,6 +194,7 @@ namespace AcTools.Processes {
             public bool ExtendedMode;
             public string CspFeaturesList;
             public string CspReplayClipUploadUrl;
+            public string BackgroundImage;
 
             public override void Set(IniFile file) {
                 SetGhostCar(file);
@@ -230,6 +231,10 @@ namespace AcTools.Processes {
                     section.Set("NAME", "Nothing");
                     section.Set("TYPE", SessionType.Practice);
                     section.Set("DURATION_MINUTES", Duration);
+                }
+
+                if (!string.IsNullOrWhiteSpace(BackgroundImage)) {
+                    file["OPTIONS"].Set("__BACKGROUND_IMAGE", $"'{BackgroundImage.Replace("\'", "\\'")}'");
                 }
             }
         }

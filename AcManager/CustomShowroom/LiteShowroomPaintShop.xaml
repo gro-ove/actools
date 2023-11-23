@@ -62,6 +62,10 @@
               <Label Content="Simplity in preview" ToolTip="Simplify normal map to make it work faster" />
             </CheckBox>
 
+            <CheckBox IsChecked="{Binding SaveCompressed}" Margin="8 4 0 0">
+              <Label Content="Save compressed" ToolTip="Apply DXT5 compression" />
+            </CheckBox>
+
             <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">
               <DockPanel Style="{StaticResource DockPanel}">
                 <Label Content="Style:" />

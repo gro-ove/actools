@@ -851,6 +851,13 @@ namespace AcManager.Controls.Presentation {
             get => _showSelectionDialogToolTips.Value;
             set => Apply(value, _showSelectionDialogToolTips);
         }
+
+        private readonly StoredValue<bool> _showContentToolTips = Stored.Get("AppAppearanceManager.ShowContentToolTips", true);
+
+        public bool ShowContentToolTips {
+            get => _showContentToolTips.Value;
+            set => Apply(value, _showContentToolTips);
+        }
         #endregion
     }
 }

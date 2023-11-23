@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -9,10 +10,14 @@ namespace AcManager.Tools.Objects {
         private readonly PythonAppConfig _root;
         private Collection<IPythonAppConfigValue> _section;
         private Dictionary<string, string> _flags;
+        private bool _sectionChanged;
+        private static Dictionary<string, string> _values = new Dictionary<string, string>();
 
         public PythonAppConfigProvider([NotNull] PythonAppConfig root) {
             _root = root;
             _flags = root.ConfigParams.Flags;
+            _values.Clear();
+            _sectionChanged = true;
         }
 
         private static int LastIndexOf(string key) {
@@ -49,25 +54,33 @@ namespace AcManager.Tools.Objects {
         public string GetValue(string key) {
             if (_flags != null && _flags.TryGetValue(key, out var result)) return result;
 
-            Parse(key, out var param, out var section, out _);
+            if (_sectionChanged) {
+                _values.Clear();
+            }
 
-            var sections = _root.Sections;
-            var values = section == null ? _section
-                    : sections.FirstOrDefault(x => string.Equals(x.Key, section, StringComparison.OrdinalIgnoreCase));
-            return values?.FirstOrDefault(x => string.Equals(x.Id, param))?.Value;
+            return _values.GetValueOrSet(key, () => {
+                Parse(key, out var param, out var section, out _);
+
+                var sections = _root.SectionsOwn;
+                var values = section == null ? _section
+                        : sections.FirstOrDefault(x => string.Equals(x.Key, section, StringComparison.OrdinalIgnoreCase));
+                return values?.FirstOrDefault(x => string.Equals(x.Id, param))?.Value;
+            });
         }
 
         [CanBeNull]
         public IPythonAppConfigValue GetItem(string key) {
             Parse(key, out var param, out var section, out _);
-            var sections = _root.Sections;
+            var sections = _root.SectionsOwn;
             var values = section == null ? _section
                     : sections.FirstOrDefault(x => string.Equals(x.Key, section, StringComparison.OrdinalIgnoreCase));
             return values?.FirstOrDefault(x => string.Equals(x.Id, param));
         }
 
         public void SetSection(Collection<IPythonAppConfigValue> section) {
+            _sectionChanged = true;
             _section = section;
+            _values.Clear();
         }
     }
 }

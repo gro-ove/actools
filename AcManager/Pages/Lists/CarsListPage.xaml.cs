@@ -420,7 +420,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_SortAndCleanUpTags : BatchAction<CarObject> {
             public static readonly BatchAction_SortAndCleanUpTags Instance = new BatchAction_SortAndCleanUpTags();
 
-            public BatchAction_SortAndCleanUpTags() : base("Sort & Clean Tags", "This way, they’ll be more readable", "UI", "Batch.SortAndCleanUpTags") {
+            public BatchAction_SortAndCleanUpTags() : base("Sort & clean tags", "This way, they’ll be more readable", "UI", "Batch.SortAndCleanUpTags") {
                 DisplayApply = "Fix";
             }
 

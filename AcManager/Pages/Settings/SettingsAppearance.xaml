@@ -270,8 +270,12 @@
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_ShowBackButton}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding AppAppearanceManager.ShowSelectionDialogToolTips}" mui:NewMarkService.New="True">
-          <Label Content="Show popup details in selection dialogs" />
+        <CheckBox IsChecked="{Binding AppAppearanceManager.ShowSelectionDialogToolTips}">
+          <Label Content="Show details tooltip in selection dialogs" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding AppAppearanceManager.ShowContentToolTips}" mui:NewMarkService.New="True">
+          <Label Content="Show details tooltip in lists in content section" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding AppAppearanceManager.SemiTransparentAttachedTools}" set:Search.Keywords="custom showroom">

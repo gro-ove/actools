@@ -295,12 +295,12 @@ namespace AcManager.Pages.Windows {
         }
 
         public void UpdateRaceULinks(IEnumerable<Link> links) {
-            for (var i = RaceUGroup.Links.Count - 1; i > 0; --i) {
+            /*for (var i = RaceUGroup.Links.Count - 1; i > 0; --i) {
                 RaceUGroup.Links.RemoveAt(i);
             }
             foreach (var link in links) {
                 RaceUGroup.Links.Add(link);
-            }
+            }*/
         }
 
         private void OnOnlineSourcesUpdate(object sender, EventArgs e) {
@@ -397,17 +397,7 @@ namespace AcManager.Pages.Windows {
             LiveGroup.IsShown = LiveGroup.Links.Any(x => x.IsShown && x.Icon == null);
             // ShortSurveyLink.IsShown = !Stored.Get<bool>("surveyHide").Value;
 
-            RaceUGroup.IsShown = SettingsHolder.Live.RaceUEnabled && (ValuesStorage.Contains("RaceU.CurrentLocation") || RaceUCheckAb());
-
-            bool RaceUCheckAb() {
-                return true;
-                /*var steamId = SteamIdHelper.Instance.Value;
-                if (steamId == null) return false;
-
-                using (var algo = MD5.Create()) {
-                    return BitConverter.ToInt32(algo.ComputeHash(Encoding.UTF8.GetBytes(steamId)), 0) % 10 < 4;
-                }*/
-            }
+            RaceULink.IsShown = SettingsHolder.Live.RaceUEnabled;
         }
 
         /// <summary>

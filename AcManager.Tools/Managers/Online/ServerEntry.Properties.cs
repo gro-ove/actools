@@ -207,6 +207,8 @@ namespace AcManager.Tools.Managers.Online {
             set => Apply(value, ref _cspFeaturesList, () => OnPropertyChanged(nameof(DisplayCspFeatures)));
         }
 
+        private string _backgroundImage;
+
         [CanBeNull]
         public string DisplayCspFeatures => CspFeaturesList?.Length > 0 ? CspFeaturesList.JoinToReadableString() : null;
 

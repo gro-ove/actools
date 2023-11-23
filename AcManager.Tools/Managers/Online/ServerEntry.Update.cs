@@ -205,6 +205,7 @@ namespace AcManager.Tools.Managers.Online {
 
                         UpdateValuesExtended(extended);
                         CspFeaturesList = extended.Features?.Length > 0 ? extended.Features : null;
+                        _backgroundImage = extended.LoadingImageUrl;
 
                         driversCount = extended.Clients;
                         carsInformation = extended.Players;
@@ -296,6 +297,7 @@ namespace AcManager.Tools.Managers.Online {
 
                 if (!informationLoadedExtended) {
                     CspFeaturesList = carsInformation.Features?.Length > 0 ? carsInformation.Features : null;
+                    _backgroundImage = null;
                 }
 
                 if (!BookingMode) {

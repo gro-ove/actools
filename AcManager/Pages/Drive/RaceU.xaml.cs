@@ -501,7 +501,7 @@ namespace AcManager.Pages.Drive {
                 Sync(() => {
                     using (var model = PatchSettingsModel.Create()) {
                         var item = model.Configs?
-                                .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.Sections.GetByIdOrDefault("BASIC")?
+                                .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.SectionsOwn.GetByIdOrDefault("BASIC")?
                                 .GetByIdOrDefault("ENABLED");
                         if (item != null) {
                             item.Value = @"1";
