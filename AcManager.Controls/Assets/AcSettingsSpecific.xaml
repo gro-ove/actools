@@ -670,8 +670,7 @@
               <Label Content="{Binding DisplayName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}"
                   Style="{StaticResource PythonAppConfig.PropertyLabel}" />
               <Button Padding="4 2" Margin="2 0 0 0" Content="…" Command="{Binding ChangeFileCommand}" DockPanel.Dock="Right" />
-              <mui:PathTrimmingTextBlock MinWidth="1" HorizontalAlignment="Left" Text="{Binding Value}" Placeholder="?"
-                  mui:NewMarkService.New="{Binding IsNew}" />
+              <mui:PathTrimmingTextBlock MinWidth="1" Text="{Binding Value}" Placeholder="?" mui:NewMarkService.New="{Binding IsNew}" />
             </DockPanel>
           </DataTemplate>
 
@@ -688,7 +687,7 @@
   </DataTemplate>
 
   <ItemsPanelTemplate x:Key="PythonAppConfig.SectionItemsPanel">
-    <mui:UniformGridWithOrientation Orientation="Vertical" VerticalSpacing="4" HorizontalSpacing="20" Margin="0 0 20 0">
+    <mui:UniformGridWithOrientation Orientation="Horizontal" VerticalSpacing="4" HorizontalSpacing="20" Margin="0 0 20 0">
       <mui:UniformGridWithOrientation.Style>
         <Style TargetType="{x:Type mui:UniformGridWithOrientation}">
           <Style.Resources>

@@ -115,8 +115,18 @@
             <Button Content="{x:Static mui:UiStrings.Toolbar_OnlineCancelBooking}" Command="{Binding CancelBookingCommand}" />
           </mui:BooleanSwitch.True>
           <mui:BooleanSwitch.False>
-            <Button Content="{x:Static g:AppStrings.Toolbar_Join}" Command="{Binding JoinCommand}" Style="{StaticResource Go.ToolBarButton}"
+            <Button Command="{Binding JoinCommand}" Style="{StaticResource Go.ToolBarButton}"
                 Visibility="{Binding IsBooked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+              <Button.Content>
+                <mui:BooleanSwitch Value="{Binding PasswordIsMissing}">
+                  <mui:BooleanSwitch.True>
+                    <TextBlock Text="{Binding Source={x:Static g:AppStrings.Toolbar_Join}, StringFormat='{}{0} (password required)'}" />
+                  </mui:BooleanSwitch.True>
+                  <mui:BooleanSwitch.False>
+                    <TextBlock Text="{x:Static g:AppStrings.Toolbar_Join}" />
+                  </mui:BooleanSwitch.False>
+                </mui:BooleanSwitch>
+              </Button.Content>
               <Button.ToolTip>
                 <mui:BooleanSwitch Value="{Binding IsAvailable}">
                   <mui:BooleanSwitch.True>
@@ -547,81 +557,79 @@
 
               <DockPanel>
                 <TextBlock Style="{StaticResource Label.Padding}" DockPanel.Dock="Top" Foreground="{DynamicResource WindowText}"
-                    Text="{Binding ConnectedDrivers, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {driver} on server'}" />
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="20 8 0 0">
-                  <ItemsControl ItemsSource="{Binding CurrentDrivers}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      ScrollViewer.CanContentScroll="True">
-                    <ItemsControl.ItemsPanel>
-                      <ItemsPanelTemplate>
-                        <mui:SpacingUniformGrid Columns="2" VerticalAlignment="Top" HorizontalSpacing="8" Margin="0 0 0 20" />
-                      </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemContainerStyle>
-                      <Style>
-                        <Setter Property="Control.Margin" Value="4" />
-                      </Style>
-                    </ItemsControl.ItemContainerStyle>
-                    <ItemsControl.ItemTemplate>
-                      <DataTemplate DataType="{x:Type t:ServerEntry+CurrentDriver}">
-                        <DockPanel Background="Transparent">
-                          <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center" Click="OnDriverContextMenu" />
+                    Text="{Binding Path=ConnectedDrivers, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.Online_DriversOnServer}}">
+                </TextBlock>
+                <ItemsControl ItemsSource="{Binding CurrentDrivers}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <mui:SpacingUniformGrid Columns="2" VerticalAlignment="Top" HorizontalSpacing="8" Margin="0 0 0 20" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemContainerStyle>
+                    <Style>
+                      <Setter Property="Control.Margin" Value="4" />
+                    </Style>
+                  </ItemsControl.ItemContainerStyle>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type t:ServerEntry+CurrentDriver}">
+                      <DockPanel Background="Transparent">
+                        <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center" Click="OnDriverContextMenu" />
 
-                          <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0" ClearOnChange="True">
-                            <mui:BetterImage.ToolTip>
-                              <StackPanel>
-                                <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding CarSkin.DisplayName}" Margin="4" />
-                                <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" Width="256" Height="144" Margin="4" />
-                              </StackPanel>
-                            </mui:BetterImage.ToolTip>
-                          </mui:BetterImage>
+                        <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0" ClearOnChange="True">
+                          <mui:BetterImage.ToolTip>
+                            <StackPanel>
+                              <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding CarSkin.DisplayName}" Margin="4" />
+                              <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" Width="256" Height="144" Margin="4" />
+                            </StackPanel>
+                          </mui:BetterImage.ToolTip>
+                        </mui:BetterImage>
 
-                          <mui:BbCodeBlock Mode="WithoutBbCodes" DockPanel.Dock="Bottom" Text="{Binding Car.DisplayName}" Style="{StaticResource Small}"
-                              TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                        <mui:BbCodeBlock Mode="WithoutBbCodes" DockPanel.Dock="Bottom" Text="{Binding Car.DisplayName}" Style="{StaticResource Small}"
+                            TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
-                          <ItemsControl ItemsSource="{Binding Tags}" DockPanel.Dock="Left" Height="16" VerticalAlignment="Bottom">
-                            <ItemsControl.ItemTemplate>
-                              <DataTemplate>
-                                <mui:BbCodeBlock Text="{Binding DisplayName}"
-                                    Foreground="{Binding Color, Converter={x:Static mui:ColorPicker.ColorToBrushConverter}}"
-                                    Background="{DynamicResource ButtonBackground}" FontFamily="{StaticResource CondensedFont}" FontSize="10" Margin="0 0 4 0"
-                                    Padding="2 2" />
-                              </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                            <ItemsControl.ItemsPanel>
-                              <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" />
-                              </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                          </ItemsControl>
+                        <ItemsControl ItemsSource="{Binding Tags}" DockPanel.Dock="Left" Height="16" VerticalAlignment="Bottom">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                              <mui:BbCodeBlock Text="{Binding DisplayName}"
+                                  Foreground="{Binding Color, Converter={x:Static mui:ColorPicker.ColorToBrushConverter}}"
+                                  Background="{DynamicResource ButtonBackground}" FontFamily="{StaticResource CondensedFont}" FontSize="10" Margin="0 0 4 0"
+                                  Padding="2 2" />
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                          <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                              <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                          </ItemsControl.ItemsPanel>
+                        </ItemsControl>
 
-                          <mui:BbCodeBlock x:Name="DriverName" Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                        </DockPanel>
+                        <mui:BbCodeBlock x:Name="DriverName" Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                      </DockPanel>
 
-                        <DataTemplate.Triggers>
-                          <DataTrigger Binding="{Binding IsConnected}" Value="False">
-                            <Setter Property="TextBlock.TextDecorations" Value="Strikethrough" TargetName="DriverName" />
-                            <Setter Property="ToolTip" Value="Disconnected" />
-                          </DataTrigger>
-                          <DataTrigger Binding="{Binding IsBookedForPlayer}" Value="True">
-                            <Setter Property="TextBlock.TextDecorations" Value="None" TargetName="DriverName" />
-                            <!-- <Setter Property="TextBlock.FontWeight" Value="Bold" TargetName="DriverName" /> -->
-                            <Setter Property="TextBlock.Opacity" Value="0.5" TargetName="DriverName" />
-                            <Setter Property="TextBlock.Text" TargetName="DriverName"
-                                Value="{Binding Path=Name, StringFormat={x:Static t:ToolsStrings.Online_YouFormat}}" />
-                            <Setter Property="ToolTip" Value="{x:Static t:ToolsStrings.Online_YouAreBookedOnThisServer}" />
-                          </DataTrigger>
-                          <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                              <Condition Binding="{Binding IsConnected}" Value="True" />
-                              <Condition Binding="{Binding IsBookedForPlayer}" Value="True" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="ToolTip" Value="{x:Static t:ToolsStrings.Online_YouAreOnThisServer}" />
-                          </MultiDataTrigger>
-                        </DataTemplate.Triggers>
-                      </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                  </ItemsControl>
-                </ScrollViewer>
+                      <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                          <Setter Property="TextBlock.TextDecorations" Value="Strikethrough" TargetName="DriverName" />
+                          <Setter Property="ToolTip" Value="Disconnected" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsBookedForPlayer}" Value="True">
+                          <Setter Property="TextBlock.TextDecorations" Value="None" TargetName="DriverName" />
+                          <!-- <Setter Property="TextBlock.FontWeight" Value="Bold" TargetName="DriverName" /> -->
+                          <Setter Property="TextBlock.Opacity" Value="0.5" TargetName="DriverName" />
+                          <Setter Property="TextBlock.Text" TargetName="DriverName"
+                              Value="{Binding Path=Name, StringFormat={x:Static t:ToolsStrings.Online_YouFormat}}" />
+                          <Setter Property="ToolTip" Value="{x:Static t:ToolsStrings.Online_YouAreBookedOnThisServer}" />
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                          <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsConnected}" Value="True" />
+                            <Condition Binding="{Binding IsBookedForPlayer}" Value="True" />
+                          </MultiDataTrigger.Conditions>
+                          <Setter Property="ToolTip" Value="{x:Static t:ToolsStrings.Online_YouAreOnThisServer}" />
+                        </MultiDataTrigger>
+                      </DataTemplate.Triggers>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
               </DockPanel>
             </mui:Switch>
           </DockPanel>

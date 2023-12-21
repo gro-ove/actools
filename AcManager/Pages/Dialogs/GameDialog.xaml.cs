@@ -42,7 +42,6 @@ using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using DataGrid = System.Windows.Controls.DataGrid;
@@ -50,6 +49,30 @@ using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace AcManager.Pages.Dialogs {
     public partial class GameDialog : IGameUi {
+        public class DialogHolder : NotifyPropertyChanged {
+            public DialogHolder(GameDialog parent) {
+                Parent = parent;
+            }
+            
+            public GameDialog Parent { get; }
+
+            private DelegateCommand _restoreCommand;
+
+            public DelegateCommand RestoreCommand => _restoreCommand ?? (_restoreCommand = new DelegateCommand(() => {
+                Parent.Visibility = Visibility.Visible;
+                HiddenInstances.Remove(this);
+            }));
+
+            public string DisplayState => Parent.Model.Title;
+            
+            public string DisplayDetails => Parent.Model.CurrentState == ViewModel.State.Waiting ? Parent.Model.WaitingStatus 
+                    : Parent.Model.CurrentState == ViewModel.State.Error ? ControlsStrings.Common_Error
+                    : Parent.Model.CurrentState == ViewModel.State.Cancelled ? ControlsStrings.Common_Cancelled 
+                    : ControlsStrings.Common_Finished;
+        }
+        
+        public static BetterObservableCollection<DialogHolder> HiddenInstances { get; } = new BetterObservableCollection<DialogHolder>();
+        
         public static bool OptionBenchmarkReplays = false;
         public static bool OptionHideCancelButton = false;
 
@@ -75,7 +98,18 @@ namespace AcManager.Pages.Dialogs {
                 ProgressRing.Style = ExtraProgressRings.StylesLazy.GetValueOrDefault(_progressStyles.Next)?.Value;
             }
 
-            Buttons = new[] { OptionHideCancelButton ? null : CancelButton };
+            Buttons = new[] {
+                OptionHideCancelButton ? null : new Button {
+                    Content = UiStrings.Toolbar_Hide,
+                    Command = new DelegateCommand(() => {
+                        HiddenInstances.Add(new DialogHolder(this));
+                        Visibility = Visibility.Collapsed;
+                    }),
+                },
+                OptionHideCancelButton ? null : CancelButton
+            };
+            Activated += (sender, args) => ProgressRing.IsActive = true;
+            Deactivated += (sender, args) => ProgressRing.IsActive = false;
         }
 
         public GameDialog(Game.Result readyResult) {

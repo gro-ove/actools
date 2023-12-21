@@ -55,17 +55,63 @@
           </CheckBox>
         </StackPanel>
       </DockPanel>
+
+
+      <mui:Cell x:Key="SimpleVersion">
+        <mui:SpacingUniformGrid HorizontalAlignment="Center" VerticalAlignment="Center" Rows="1" Columns="3" HorizontalSpacing="20">
+          <mui:Cell Width="200" Height="120" Background="{DynamicResource CardBackground}" MouseLeftButtonUp="OnCarBlockClick" ClipToBounds="True">
+            <TextBlock Style="{StaticResource Title}" Text="{x:Static g:AppStrings.QuickDrive_NoCarSelected}"
+                Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 20"
+                Visibility="{Binding SelectedCar, Converter={StaticResource NullToVisibilityConverter}}" />
+            <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
+            <mui:BbCodeBlock Mode="WithoutBbCodes" TextWrapping="NoWrap" Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+                Text="{Binding SelectedCar.DisplayName}" Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}"
+                TextTrimming="CharacterEllipsis" />
+          </mui:Cell>
+          <mui:Cell Width="200" Height="120" Background="{DynamicResource CardBackground}"  MouseLeftButtonUp="OnTrackBlockClick">
+            <TextBlock Style="{StaticResource Title}" Text="{x:Static g:AppStrings.QuickDrive_NoTrackSelected}"
+                Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 20"
+                Visibility="{Binding SelectedTrack, Converter={StaticResource NullToVisibilityConverter}}" />
+            <mui:BetterImage Filename="{Binding SelectedTrack.PreviewImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackPreviewWidth}}"
+                Stretch="UniformToFill" />
+            <mui:BetterImage Filename="{Binding SelectedTrack.OutlineImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackOutlineWidth}}"
+                ShowBroken="False" />
+            <mui:BbCodeBlock Mode="WithoutBbCodes" TextWrapping="NoWrap" Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+                Text="{Binding SelectedTrack.Name}" Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}"
+                TextTrimming="CharacterEllipsis" />
+          </mui:Cell>
+          <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" HorizontalAlignment="Left">
+            <Button.ToolTip>
+              <mui:ReferenceSwitch Value="{Binding SelectedModeViewModel.TrackDoesNotFit}">
+                <mui:ReferenceSwitch.Null>
+                  <TextBlock Text="{x:Static g:AppStrings.Common_Go_RaceTooltip}" />
+                </mui:ReferenceSwitch.Null>
+                <mui:ReferenceSwitch.NonNull>
+                  <TextBlock Text="{Binding SelectedModeViewModel.TrackDoesNotFit.Item1}" />
+                </mui:ReferenceSwitch.NonNull>
+              </mui:ReferenceSwitch>
+            </Button.ToolTip>
+            <DockPanel>
+              <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                  Visibility="{Binding SelectedModeViewModel.CarOrTrackDoesNotFit, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2 2 4 0"
+                  VerticalAlignment="Center" />
+              <TextBlock Text="{x:Static g:AppStrings.Common_Go}" />
+            </DockPanel>
+          </Button>
+        </mui:SpacingUniformGrid>
+      </mui:Cell>
     </ResourceDictionary>
   </UserControl.Resources>
 
   <Grid Style="{StaticResource ContentRootWithPadding}">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
+      <RowDefinition Height="20" />
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
-    <Grid Grid.Row="0">
+    <Grid Grid.Row="0" x:Name="TopRow">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto" />
         <ColumnDefinition Width="Auto" />
@@ -116,8 +162,8 @@
           </mui:BetterComboBox>
         </DockPanel>
 
-        <mui:Cell Height="120" Background="{DynamicResource CardBackground}" mui:Draggable.Data="{Binding SelectedCar}" AllowDrop="True" Drop="OnCarBlockDrop"
-            MouseLeftButtonUp="OnCarBlockClick" ClipToBounds="True" c:ToolTips.Car="{Binding SelectedCar}">
+        <mui:Cell x:Name="CarCellBase" Height="120" Background="{DynamicResource CardBackground}" mui:Draggable.Data="{Binding SelectedCar}" AllowDrop="True"
+            Drop="OnCarBlockDrop" MouseLeftButtonUp="OnCarBlockClick" ClipToBounds="True" c:ToolTips.Car="{Binding SelectedCar}">
           <TextBlock Style="{StaticResource Title}" Text="{x:Static g:AppStrings.QuickDrive_NoCarSelected}"
               Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 20"
               Visibility="{Binding SelectedCar, Converter={StaticResource NullToVisibilityConverter}}" />
@@ -178,7 +224,9 @@
 
       </DockPanel>
 
-      <DockPanel x:Name="TrackCell" Grid.Column="1" Width="160" Margin="0 0 20 0">
+      <DockPanel x:Name="TrackCell" Grid.Column="1" Width="160" Margin="0 0 6 0">
+        <mui:ModernTabSplitter Foreground="Transparent" Width="8" DragDelta="OnCarTrackSeparatorDrag" Panel.ZIndex="-1" DockPanel.Dock="Right" Margin="6 0 0 0" />
+
         <DockPanel x:Name="TrackCellExtra" Margin="0 8 0 0" DockPanel.Dock="Bottom"
             IsEnabled="{Binding SelectedTrack, Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}">
           <mui:ReferenceSwitch Value="{Binding SelectedTrack.MainTrackObject.MultiLayouts}">
@@ -300,8 +348,8 @@
           </mui:BetterComboBox>
         </DockPanel>
 
-        <mui:Cell Height="120" Background="{DynamicResource CardBackground}" mui:Draggable.Data="{Binding SelectedTrack}" AllowDrop="True"
-            Drop="OnTrackBlockDrop" MouseLeftButtonUp="OnTrackBlockClick">
+        <mui:Cell x:Name="TrackCellBase" Height="120" Background="{DynamicResource CardBackground}" mui:Draggable.Data="{Binding SelectedTrack}"
+            AllowDrop="True" Drop="OnTrackBlockDrop" MouseLeftButtonUp="OnTrackBlockClick">
           <TextBlock Style="{StaticResource Title}" Text="{x:Static g:AppStrings.QuickDrive_NoTrackSelected}"
               Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 20"
               Visibility="{Binding SelectedTrack, Converter={StaticResource NullToVisibilityConverter}}" />
@@ -369,7 +417,7 @@
           <RowDefinition />
         </Grid.RowDefinitions>
 
-        <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="0" IsEnabled="{Binding ManualTime}">
+        <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="0" IsEnabled="{Binding ManualTime}" VerticalAlignment="Center">
           <DockPanel>
             <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
               <c:ModernPopup Padding="16 12 16 16">
@@ -432,19 +480,19 @@
               IsEnabled="{Binding RandomTime, Converter={StaticResource InvertBooleanConverter}}" />
         </StackPanel>
 
-        <DockPanel Grid.Row="1" Grid.Column="0" Margin="8 0 0 0" Background="Transparent">
+        <DockPanel Grid.Row="1" Grid.Column="0" Margin="8 0 0 0" Background="Transparent" VerticalAlignment="Center">
           <mui:ContextMenuButton DockPanel.Dock="Right" Padding="8" Click="OnConditionsContextMenu" />
-          <UniformGrid Rows="2" Columns="1">
+          <StackPanel>
             <CheckBox IsChecked="{Binding RealConditions}" ToolTip="{Binding RealWeather.FullDescription}">
               <Label Content="{x:Static g:AppStrings.Drive_RealConditions}" />
             </CheckBox>
-            <CheckBox IsChecked="{Binding IdealConditions}">
+            <CheckBox IsChecked="{Binding IdealConditions}" Margin="0 14 0 0">
               <Label Content="{x:Static g:AppStrings.QuickDrive_IdealConditions}" />
             </CheckBox>
-          </UniformGrid>
+          </StackPanel>
         </DockPanel>
 
-        <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="1" IsEnabled="{Binding ManualConditions}">
+        <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="1" IsEnabled="{Binding ManualConditions}" VerticalAlignment="Center">
           <DockPanel Margin="0 0 0 4">
             <Border DockPanel.Dock="Right" Width="16" Height="16" Margin="0 0 0 -4" HorizontalAlignment="Right" Background="Transparent"
                 Visibility="{Binding IsWeatherNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -467,7 +515,7 @@
               c:ToolTips.Weather="{Binding SelectedWeatherObject}" UseWeatherFX="True" />
         </StackPanel>
 
-        <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1">
+        <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
           <StackPanel.IsEnabled>
             <MultiBinding Converter="{StaticResource AndConverter}">
               <Binding Path="ManualConditions" />
@@ -573,7 +621,7 @@
           </mui:Cell>
         </StackPanel>
 
-        <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="2">
+        <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">
           <DockPanel DataContext="{Binding AssistsViewModel}" Margin="0 0 0 4">
             <mui:ContextMenuButton DockPanel.Dock="Right" Padding="4 0">
               <c:ModernPopup Padding="16 12 16 16">
@@ -588,7 +636,7 @@
           <!--<ComboBox Margin="4 0 4 0" ItemsSource="{Binding TrackPropertiesPresets}" SelectedItem="{Binding SelectedTrackPropertiesPreset}" />-->
         </StackPanel>
 
-        <DockPanel Grid.Row="1" Grid.Column="2" Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
+        <DockPanel Grid.Row="1" Grid.Column="2" Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True" VerticalAlignment="Center">
           <DockPanel.IsEnabled>
             <MultiBinding Converter="{StaticResource AndConverter}">
               <Binding Path="ManualWind" />
@@ -692,7 +740,11 @@
       </Grid>
     </Grid>
 
-    <Grid Grid.Row="1" Margin="0 20 0 0">
+    <mui:Cell Grid.Row="1">
+      <mui:ModernTabSplitter Foreground="Transparent" Height="8" DragDelta="OnTopRowSeparatorDrag" Panel.ZIndex="-1" DockPanel.Dock="Right" Margin="0 6 0 6" />
+    </mui:Cell>
+
+    <Grid Grid.Row="2">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto" />
         <ColumnDefinition />
@@ -760,13 +812,9 @@
           </CheckBox>
         </DockPanel>
 
-        <Border
+        <Border ToolTip="This feature is experimental. If you’d experience any issues with online servers after using it, please run Steam integrity check."
             Visibility="{Binding QuickDriveAllowExtendedPhysics, Source={x:Static t:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}}">
           <DockPanel c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureFullDay}">
-            <c:MessageBlock Margin="0 8 0 0" DockPanel.Dock="Bottom">
-              <mui:BbCodeBlock Style="{StaticResource BbCodeBlock.Small}"
-                  Text="This feature is experimental. If you’d experience any issues with online servers after using it, please run Steam integrity check." />
-            </c:MessageBlock>
             <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
               <ContextMenu>
                 <MenuItem Header="Use extended physics (global)" IsCheckable="True" IsChecked="{Binding SelectedCar.UseExtendedPhysicsGlobal}" />
@@ -807,7 +855,7 @@
       </mui:ModernTab>
     </Grid>
 
-    <StackPanel Grid.Row="2" Margin="0 16 0 0" HorizontalAlignment="Right" Orientation="Horizontal">
+    <StackPanel Grid.Row="3" Margin="0 16 0 0" HorizontalAlignment="Right" Orientation="Horizontal">
       <c:UserPresetsControl x:Name="UserPresetsControl" Margin="0 0 4 0" UserPresetable="{Binding}" MinWidth="300" />
       <Button Command="{Binding ShareCommand}" Margin="0 0 4 0" ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}"
           Content="{x:Static g:AppStrings.Common_Share}" />
@@ -833,8 +881,8 @@
         </Button.ToolTip>
         <DockPanel>
           <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
-              Visibility="{Binding SelectedModeViewModel.CarOrTrackDoesNotFit, Converter={StaticResource BooleanToVisibilityConverter}}"
-              Margin="2 2 4 0" VerticalAlignment="Center" />
+              Visibility="{Binding SelectedModeViewModel.CarOrTrackDoesNotFit, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2 2 4 0"
+              VerticalAlignment="Center" />
           <TextBlock Text="{x:Static g:AppStrings.Common_Go}" />
         </DockPanel>
       </Button>

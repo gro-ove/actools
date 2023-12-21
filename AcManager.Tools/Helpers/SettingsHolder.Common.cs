@@ -198,6 +198,18 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private bool? _lowerPriorityInBackground;
+
+            public bool LowerPriorityInBackground {
+                get => _lowerPriorityInBackground ?? (_lowerPriorityInBackground = ValuesStorage.Get("Settings.CommonSettings.LowerPriorityInBackground", true)).Value;
+                set {
+                    if (Equals(value, _lowerPriorityInBackground)) return;
+                    _lowerPriorityInBackground = value;
+                    ValuesStorage.Set("Settings.CommonSettings.LowerPriorityInBackground", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static CommonSettings _common;

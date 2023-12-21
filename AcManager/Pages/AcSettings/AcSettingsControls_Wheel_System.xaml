@@ -192,30 +192,12 @@
           <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.AcSettings_Controls_Wheel_System_Options}" />
           <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
 
-            <mui:BooleanSwitch Value="{Binding IsOverlayAvailable}">
-              <mui:BooleanSwitch.False>
-                <!-- ¯\_(ツ)_/¯ -->
-                <StackPanel>
-                  <CheckBox IsChecked="False" IsEnabled="False">
-                    <Label Content="Delay race-terminating commands by half a second" />
-                  </CheckBox>
-                  <CheckBox IsChecked="False" IsEnabled="False" ToolTip="Not available with fullscreen enabled">
-                    <Label Content="Show overlay progress while delaying" />
-                  </CheckBox>
-                </StackPanel>
-              </mui:BooleanSwitch.False>
-              <mui:BooleanSwitch.True>
-                <StackPanel>
-                  <CheckBox IsChecked="{Binding DelaySpecificSystemCommands}">
-                    <Label Content="Delay race-terminating commands by half a second" />
-                  </CheckBox>
-                  <CheckBox IsChecked="{Binding ShowSystemDelays}" IsEnabled="{Binding DelaySpecificSystemCommands}">
-                    <Label Content="Show overlay progress while delaying" />
-                  </CheckBox>
-                </StackPanel>
-              </mui:BooleanSwitch.True>
-            </mui:BooleanSwitch>
-
+            <CheckBox IsChecked="{Binding DelaySpecificSystemCommands}">
+              <Label Content="Delay race-terminating commands by half a second" />
+            </CheckBox>
+            <CheckBox IsChecked="{Binding ShowSystemDelays}" IsEnabled="{Binding DelaySpecificSystemCommands}">
+              <Label Content="Show overlay progress while delaying" />
+            </CheckBox>
             <CheckBox IsChecked="{Binding SystemIgnorePovInPits}" ToolTip="To avoid conflicts with pits menu">
               <Label Content="Ignore POV1 buttons in pits" />
             </CheckBox>

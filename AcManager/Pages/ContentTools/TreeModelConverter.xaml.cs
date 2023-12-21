@@ -43,7 +43,11 @@ namespace AcManager.Pages.ContentTools {
             public KnownEntry(string origin, string destination) {
                 Origin = origin;
                 Destination = destination;
-                TreeParams = @"[SHADING]
+                TreeParams = @"[BASIC]
+CACHE_RESOLUTION=256,512
+VERTICAL_OFFSET=0
+
+[SHADING]
 SPECULAR=1.0
 SUBSCATTERING=1.0
 REFLECTIVITY=1.0

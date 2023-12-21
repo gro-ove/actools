@@ -37,7 +37,7 @@
             </ContentControl.ToolTip>
             <ContentControl.Resources>
               <DataTemplate DataType="{x:Type t:PythonAppConfigBoolValue}">
-                <StackPanel Margin="{StaticResource ElementMargin}">
+                <StackPanel Margin="{StaticResource ElementMargin}" Height="42">
                   <CheckBox Margin="8 8 0 0" IsChecked="{Binding Value}" mui:NewMarkService.New="{Binding IsNew}">
                     <Label Content="{Binding DisplayName}" />
                   </CheckBox>
@@ -45,7 +45,7 @@
               </DataTemplate>
 
               <DataTemplate DataType="{x:Type t:PythonAppConfigRangeValue}">
-                <StackPanel Margin="{StaticResource ElementMargin}">
+                <StackPanel Margin="{StaticResource ElementMargin}" Height="42">
                   <mui:ValueLabel Content="{Binding DisplayName}" Value="{Binding DisplayValue}" mui:BetterTextBox.Mode="Number"
                       Postfix="{Binding DisplayPostix}" />
                   <Slider Minimum="{Binding Minimum.Value}" Maximum="{Binding Maximum.Value}" Value="{Binding Value}" TickFrequency="{Binding Tick}"
@@ -54,7 +54,7 @@
               </DataTemplate>
 
               <DataTemplate DataType="{x:Type t:PythonAppConfigNumberValue}">
-                <StackPanel Margin="{StaticResource ElementMargin}">
+                <StackPanel Margin="{StaticResource ElementMargin}" Height="42">
                   <TextBlock Style="{StaticResource Label.Padding}"
                       Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" Margin="0 0 0 4" />
                   <mui:BetterTextBox Text="{Binding Value}" Mode="Number" Placeholder="?" Margin="4 0 4 0" mui:NewMarkService.New="{Binding IsNew}" />
@@ -62,7 +62,7 @@
               </DataTemplate>
 
               <DataTemplate DataType="{x:Type t:PythonAppConfigOptionsValue}">
-                <StackPanel Margin="{StaticResource ElementMargin}">
+                <StackPanel Margin="{StaticResource ElementMargin}" Height="42">
                   <TextBlock Style="{StaticResource Label.Padding}"
                       Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" Margin="0 0 0 4" />
                   <mui:BetterComboBox ItemsSource="{Binding Values}" SelectedItem="{Binding Value, Mode=TwoWay}" IsEditable="False" Margin="4 0 4 0"
@@ -86,10 +86,21 @@
               </DataTemplate>
 
               <DataTemplate DataType="{x:Type t:PythonAppConfigValue}">
-                <StackPanel Margin="{StaticResource ElementMargin}">
+                <StackPanel Margin="{StaticResource ElementMargin}" Height="42">
                   <TextBlock Style="{StaticResource Label.Padding}"
                       Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" Margin="0 0 0 4" />
                   <mui:BetterTextBox Text="{Binding Value}" Placeholder="?" Margin="4 0 4 0" mui:NewMarkService.New="{Binding IsNew}" />
+                </StackPanel>
+              </DataTemplate>
+
+              <DataTemplate DataType="{x:Type t:PythonAppConfigFileValue}">
+                <StackPanel Margin="{StaticResource ElementMargin}" Height="42">
+                  <TextBlock Style="{StaticResource Label.Padding}"
+                      Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" Margin="0 0 0 4" />
+                  <DockPanel Margin="4 0 4 0" >
+                    <Button Padding="4 2" Margin="2 0 0 0" Content="…" Command="{Binding ChangeFileCommand}" DockPanel.Dock="Right" />
+                    <mui:PathTrimmingTextBlock MinWidth="1" Text="{Binding Value}" Placeholder="?" mui:NewMarkService.New="{Binding IsNew}" />
+                  </DockPanel>
                 </StackPanel>
               </DataTemplate>
             </ContentControl.Resources>
@@ -140,9 +151,9 @@
       </c:MessageBlock>
       <ContentControl x:Name="ConfigControl" ContentTemplate="{StaticResource PythonAppConfig.Compact.Race}" Content="{Binding Config}"
           Visibility="{Binding Config, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" DockPanel.Dock="Top" />
-      <UniformGrid MaxHeight="128" VerticalAlignment="Top" Height="{Binding ActualHeight, ElementName=Wrapper}" DockPanel.Dock="Top">
+      <UniformGrid Columns="2" VerticalAlignment="Top" DockPanel.Dock="Top">
 
-        <StackPanel Margin="{StaticResource ElementMargin}" Background="Transparent" ToolTip="{Binding RaceDurationEstimate}"
+        <StackPanel Margin="{StaticResource ElementMargin}" Height="42" Background="Transparent" ToolTip="{Binding RaceDurationEstimate}"
             Visibility="{Binding ShowLapsNumber, Converter={StaticResource BooleanToVisibilityConverter}}">
           <mui:ValueLabel Value="{Binding LapsNumber}" Content="{x:Static g:AppStrings.Drive_RaceDuration}"
               Postfix="{Binding LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}" />
@@ -157,13 +168,13 @@
           </mui:FormattedSlider>
         </StackPanel>
 
-        <StackPanel Margin="{StaticResource ElementMargin}" Visibility="{Binding ShowPenalties, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <StackPanel Margin="{StaticResource ElementMargin}" Height="42" Visibility="{Binding ShowPenalties, Converter={StaticResource BooleanToVisibilityConverter}}">
           <CheckBox Margin="8 8 0 0" IsChecked="{Binding Penalties}">
             <Label Content="{x:Static g:AppStrings.Drive_Penalties}" />
           </CheckBox>
         </StackPanel>
 
-        <DockPanel Margin="{StaticResource ElementMargin}" VerticalAlignment="Top"
+        <DockPanel Margin="{StaticResource ElementMargin}" Height="42" VerticalAlignment="Top"
             Visibility="{Binding ShowAiLevel, Converter={StaticResource BooleanToVisibilityConverter}}">
           <mui:DoubleSlider DockPanel.Dock="Bottom" Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100"
               From="{Binding RaceGridViewModel.AiLevelMin, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}"
@@ -206,7 +217,7 @@
               RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" RelativeRangeStringFormat="0.#" />
         </DockPanel>
 
-        <DockPanel Margin="{StaticResource ElementMargin}" VerticalAlignment="Top"
+        <DockPanel Margin="{StaticResource ElementMargin}" Height="42" VerticalAlignment="Top"
             Visibility="{Binding ShowAiLevel, Converter={StaticResource BooleanToVisibilityConverter}}">
           <mui:DoubleSlider DockPanel.Dock="Bottom" Minimum="0" Maximum="100"
               From="{Binding RaceGridViewModel.AiAggressionMin, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}"
@@ -244,32 +255,32 @@
               RelativeRangeStringFormat="0.#" />
         </DockPanel>
 
-        <StackPanel Margin="{StaticResource ElementMargin}"
+        <StackPanel Margin="{StaticResource ElementMargin}" Height="42"
             Visibility="{Binding ShowJumpStartPenalty, Converter={StaticResource BooleanToVisibilityConverter}}">
           <TextBlock Style="{StaticResource Label.Padding}" Text="{x:Static g:AppStrings.Drive_JumpStartPenalty}" Margin="0 0 0 4" />
           <ComboBox Margin="4 0 4 0" ItemsSource="{Binding JumpStartPenaltyTypes}" SelectedItem="{Binding JumpStartPenalty}"
               mui:ComboBoxAdvancement.DisplayConverter="{x:Static drive:QuickDrive_Race+ViewModel.JumpStartPenaltyTypeToStringConverter}" />
         </StackPanel>
 
-        <StackPanel Margin="{StaticResource ElementMargin}"
+        <StackPanel Margin="{StaticResource ElementMargin}" Height="42"
             Visibility="{Binding AiLimit, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1}">
           <TextBlock Style="{StaticResource Label.Padding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Margin="0 0 0 4" />
           <mui:HierarchicalComboBox Margin="4 0 4 0" ItemsSource="{Binding RaceGridViewModel.Modes}" SelectedItem="{Binding RaceGridViewModel.Mode}"
               FixedMode="False" PreviewProvider="{Binding}" />
         </StackPanel>
 
-        <StackPanel Margin="{StaticResource ElementMargin}" IsEnabled="{Binding RaceGridViewModel.Mode.CandidatesMode}"
+        <StackPanel Margin="{StaticResource ElementMargin}" Height="42" IsEnabled="{Binding RaceGridViewModel.Mode.CandidatesMode}"
             Visibility="{Binding AiLimit, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1}">
           <StackPanel.ToolTip>
             <ToolTip Content="{Binding RaceGridViewModel.TrackPitsNumber}"
                 ContentStringFormat="{x:Static g:AppStrings.Drive_OpponentsMaximumLimitation_Tooltip}" />
           </StackPanel.ToolTip>
-          <mui:ValueLabel Value="{Binding RaceGridViewModel.OpponentsNumberLimited}"
-              Postfix="{Binding RaceGridViewModel.OpponentsNumberLimited, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}" />
+          <mui:ValueLabel x:Name="OpponentNounLabel" Value="{Binding RaceGridViewModel.OpponentsNumberLimited}"
+              Postfix="{Binding RaceGridViewModel.OpponentsNumberLimited, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static drive:QuickDrive_Custom.OpponentNoun}}" />
           <Slider Minimum="1" Maximum="{Binding RaceGridViewModel.OpponentsNumberLimit}" Value="{Binding RaceGridViewModel.OpponentsNumberLimited}" />
         </StackPanel>
 
-        <StackPanel Margin="{StaticResource ElementMargin}"
+        <StackPanel Margin="{StaticResource ElementMargin}" Height="42"
             Visibility="{Binding ShowStartingPositionSelection, Converter={StaticResource BooleanToVisibilityConverter}}">
           <StackPanel.ToolTip>
             <TextBlock Margin="0 0 0 4">

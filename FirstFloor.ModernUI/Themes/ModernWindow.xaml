@@ -50,7 +50,8 @@
                 <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
                 <c:Cell Margin="{TemplateBinding BorderThickness}">
                   <!-- Window background content -->
-                  <ContentControl Content="{TemplateBinding BackgroundContent}" />
+                  <ContentControl Content="{TemplateBinding BackgroundContent}" 
+                      Visibility="{TemplateBinding BackgroundContent, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"/>
 
                   <!-- Title bar -->
                   <DockPanel VerticalAlignment="Top" Panel.ZIndex="10" x:Name="PART_TitleBar" Visibility="{TemplateBinding TitleButtonsVisibility}">
@@ -113,6 +114,9 @@
                       </ItemsControl.ItemsPanel>
                     </ItemsControl>
 
+                    <ContentControl DockPanel.Dock="Right" Content="{TemplateBinding TitleLinksPrefix}"
+                        Visibility="{TemplateBinding TitleLinksPrefix, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+
                     <!-- Title -->
                     <TextBlock x:Name="PART_TitleTextBlock" Text="{TemplateBinding Title}" Margin="8,0" VerticalAlignment="Center"
                         Style="{StaticResource ModernWindowTitle}" DataContext="{TemplateBinding IsTitleVisible}" />
@@ -134,8 +138,7 @@
                         <c:ModernButton DockPanel.Dock="Left" Margin="8 10 10 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="24"
                             IconWidth="12" IconHeight="12" IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z"
                             Command="NavigationCommands.BrowseBack" CommandTarget="{Binding ElementName=ContentFrame}" ToolTip="{x:Static mui:UiStrings.Back}"
-                            WindowChrome.IsHitTestVisibleInChrome="True" Visibility="{TemplateBinding BackButtonVisibility}"
-                            x:Name="WindowBackButton" />
+                            WindowChrome.IsHitTestVisibleInChrome="True" Visibility="{TemplateBinding BackButtonVisibility}" x:Name="WindowBackButton" />
 
                         <!-- Main menu -->
                         <c:ModernMenu LinkGroups="{TemplateBinding MenuLinkGroups}" x:Name="PART_Menu" SaveKey="{TemplateBinding SaveKey}"
@@ -204,6 +207,9 @@
               </MultiDataTrigger.Conditions>
               <Setter TargetName="LayoutRoot" Property="Margin" Value="7 11 7 7" />
             </MultiDataTrigger>
+            <Trigger Property="IsRootMarginEven" Value="True">
+              <Setter TargetName="LayoutRoot" Property="Margin" Value="0" />
+            </Trigger>
             <Trigger Property="IsTitleVisible" Value="False">
               <Setter TargetName="PART_TitleTextBlock" Property="Visibility" Value="Collapsed" />
             </Trigger>

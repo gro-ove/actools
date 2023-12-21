@@ -89,6 +89,13 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private bool _passwordIsMissing;
+
+        public bool PasswordIsMissing {
+            get => _passwordIsMissing;
+            set => Apply(value, ref _passwordIsMissing);
+        }
+
         private string KeyPasswordStorage => $@"__smt_pw_{Id}";
 
         private string _password;

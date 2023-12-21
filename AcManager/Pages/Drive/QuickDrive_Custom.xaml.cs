@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
+using AcManager.Controls;
 using AcManager.Tools.Data;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.GameProperties;
@@ -24,6 +26,8 @@ using StringBasedFilter;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Custom : IQuickDriveModeControl {
+        public static string OpponentNoun { get; set; } = ControlsStrings.Common_OpponentsPostfix;
+        
         public QuickDrive_Custom() {
             InitializeComponent();
         }
@@ -37,6 +41,11 @@ namespace AcManager.Pages.Drive {
             if (ActualModel.AiLimit == 0 && Wrapper.ColumnDefinitions.Count == 2) {
                 Wrapper.ColumnDefinitions.RemoveAt(1);
             }
+
+            OpponentNounLabel.SetBinding(ValueLabel.PostfixProperty, new Binding("RaceGridViewModel.OpponentsNumberLimited") {
+                Converter = (IValueConverter)FindResource("PluralizingConverter"),
+                ConverterParameter = OpponentNoun
+            });
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {
@@ -150,6 +159,9 @@ namespace AcManager.Pages.Drive {
                 } else {
                     Penalties = penalties == 1;
                 }
+
+                var opponentNoun = manifest["DISPLAY"].GetNonEmpty("OPPONENT_NOUN");
+                OpponentNoun = opponentNoun != null ? $" {opponentNoun}" : ControlsStrings.Common_OpponentsPostfix;
 
                 if (_sessionType == SessionType.Practice) {
                     AiLimit = 0;

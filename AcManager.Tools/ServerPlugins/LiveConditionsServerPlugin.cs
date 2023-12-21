@@ -319,7 +319,7 @@ namespace AcManager.Tools.ServerPlugins {
 
             // Second version would affect conditions physics, so it’s optional, active only if server requires CSP v1643 or newer
             return _useV2
-                    ? new CommandWeatherSetV2 {
+                    ? new CommandWeatherSetV3 {
                         Timestamp = (ulong)date.ToUnixTimestamp(),
                         TimeToApply = (Half)_broadcastPeriod.TotalSeconds,
                         WeatherCurrent = (CommandWeatherType)current.Type,
@@ -396,18 +396,18 @@ namespace AcManager.Tools.ServerPlugins {
                                 GetRoadTemperatureCoefficient(next?.Type ?? WeatherType.Clear)));
 
                 if (_rainIntensity > 0d) {
-                    _rainWetness = Math.Min(1d, _rainWetness + _rainIntensity.Lerp(0.3, 1.7d)
+                    _rainWetness = Math.Min(_rainIntensity, _rainWetness + _rainIntensity.Lerp(0.3, 1.7d)
                             * UpdateRainPeriod.TotalSeconds / Math.Max(1d, _liveParams.RainWetnessIncreaseTime.TotalSeconds * _liveParams.RainTimeMultiplier));
                 } else {
-                    _rainWetness = Math.Max(0d, _rainWetness - roadTemperature.LerpInvSat(10d, 35d).Lerp(0.3, 1.7d)
+                    _rainWetness = Math.Max(_rainIntensity, _rainWetness - roadTemperature.LerpInvSat(10d, 35d).Lerp(0.3, 1.7d)
                             * UpdateRainPeriod.TotalSeconds / Math.Max(1d, _liveParams.RainWetnessDecreaseTime.TotalSeconds * _liveParams.RainTimeMultiplier));
                 }
 
                 if (_rainWater < _rainIntensity) {
-                    _rainWater = Math.Min(_rainIntensity, _rainWater + _rainIntensity.Lerp(0.3, 1.7d)
+                    _rainWater = Math.Min(1d, _rainWater + _rainIntensity.Lerp(0.3, 1.7d)
                             * UpdateRainPeriod.TotalSeconds / Math.Max(1d, _liveParams.RainWaterIncreaseTime.TotalSeconds * _liveParams.RainTimeMultiplier));
                 } else {
-                    _rainWater = Math.Max(_rainIntensity, _rainWater - roadTemperature.LerpInvSat(10d, 35d).Lerp(0.3, 1.7d)
+                    _rainWater = Math.Max(0d, _rainWater - roadTemperature.LerpInvSat(10d, 35d).Lerp(0.3, 1.7d)
                             * UpdateRainPeriod.TotalSeconds / Math.Max(1d, _liveParams.RainWaterDecreaseTime.TotalSeconds * _liveParams.RainTimeMultiplier));
                 }
 
@@ -652,35 +652,35 @@ namespace AcManager.Tools.ServerPlugins {
                 case WeatherType.HeavyThunderstorm:
                     return 0.7;
                 case WeatherType.LightDrizzle:
-                    return 0.1;
+                    return 0.01;
                 case WeatherType.Drizzle:
-                    return 0.2;
+                    return 0.02;
                 case WeatherType.HeavyDrizzle:
-                    return 0.3;
+                    return 0.03;
                 case WeatherType.LightRain:
-                    return 0.3;
+                    return 0.05;
                 case WeatherType.Rain:
-                    return 0.4;
+                    return 0.1;
                 case WeatherType.HeavyRain:
-                    return 0.5;
-                case WeatherType.LightSnow:
                     return 0.2;
+                case WeatherType.LightSnow:
+                    return 0.02;
                 case WeatherType.Snow:
-                    return 0.3;
+                    return 0.03;
                 case WeatherType.HeavySnow:
-                    return 0.4;
+                    return 0.04;
                 case WeatherType.LightSleet:
-                    return 0.3;
+                    return 0d;
                 case WeatherType.Sleet:
-                    return 0.4;
+                    return 0.05;
                 case WeatherType.HeavySleet:
-                    return 0.5;
+                    return 0.1;
                 case WeatherType.Squalls:
                     return 0.6;
                 case WeatherType.Tornado:
-                    return 0.5;
+                    return 0d;
                 case WeatherType.Hurricane:
-                    return 0.6;
+                    return 1d;
                 default:
                     return 0d;
             }

@@ -51,6 +51,9 @@ namespace AcManager.Tools {
                 case SharedEntryType.AudioSettingsPreset:
                     return ProcessSharedSettingsPreset(AcSettingsHolder.AudioPresets, shared, data, justGo);
 
+                case SharedEntryType.InGameAppsPreset:
+                    return ProcessSharedSettingsPreset(AcSettingsHolder.AppsPresets, shared, data, justGo);
+
                 case SharedEntryType.AssistsSetupPreset:
                     return ProcessSharedAssistsSetupPreset(shared, data, justGo);
 
@@ -163,6 +166,7 @@ namespace AcManager.Tools {
             var result = ShowDialog(shared, justGo, applyable: false);
             switch (result) {
                 case Choise.Save:
+                    if (WeatherManager.Instance.Directories == null) return ArgumentHandleResult.Failed;
                     var directory = WeatherManager.Instance.Directories.GetLocation(WeatherManager.Instance.Directories.GetUniqueId(shared.GetFileName()), true);
                     Directory.CreateDirectory(directory);
 
@@ -481,6 +485,7 @@ namespace AcManager.Tools {
             switch (result) {
                 case Choise.Save:
                 case Choise.ApplyAndSave:
+                    if (PpFiltersManager.Instance.Directories == null) return ArgumentHandleResult.Failed;
                     var filename = PpFiltersManager.Instance.Directories.GetLocation(PpFiltersManager.Instance.Directories.GetUniqueId(shared.GetFileName()),
                             true);
                     Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");

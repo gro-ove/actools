@@ -10,9 +10,9 @@ using AcTools.Utils.Helpers;
 using SystemHalf;
 
 namespace AcManager.Tools.ServerPlugins {
-    // More advanced version, uses v2 weather description with all conditions. Most important values are fixed or generated randomly and
+    // More advanced version, uses v3 weather description with all conditions. Most important values are fixed or generated randomly and
     // poorly, whole thing is mostly meant for testing.
-    public class DynamicConditionsV2ServerPlugin : AcServerPlugin {
+    public class DynamicConditionsV3ServerPlugin : AcServerPlugin {
         // Values are way too low for testing, in real usage set them much higher
         private static readonly TimeSpan UpdatePeriod = TimeSpan.FromSeconds(3d);
         private static readonly TimeSpan UpdateRainPeriod = TimeSpan.FromSeconds(0.5d);
@@ -24,15 +24,18 @@ namespace AcManager.Tools.ServerPlugins {
         }
 
         private static readonly Dictionary<CommandWeatherType, WeatherInfo> WeatherInfos = new Dictionary<CommandWeatherType, WeatherInfo> {
-            { CommandWeatherType.LightDrizzle, new WeatherInfo { RainIntensity = 0.1 } },
-            { CommandWeatherType.Drizzle, new WeatherInfo { RainIntensity = 0.2 } },
-            { CommandWeatherType.HeavyDrizzle, new WeatherInfo { RainIntensity = 0.3 } },
-            { CommandWeatherType.LightRain, new WeatherInfo { RainIntensity = 0.3 } },
-            { CommandWeatherType.Rain, new WeatherInfo { RainIntensity = 0.5 } },
-            { CommandWeatherType.HeavyRain, new WeatherInfo { RainIntensity = 0.6 } },
-            { CommandWeatherType.LightSleet, new WeatherInfo { RainIntensity = 0.3 } },
-            { CommandWeatherType.Sleet, new WeatherInfo { RainIntensity = 0.4 } },
-            { CommandWeatherType.HeavySleet, new WeatherInfo { RainIntensity = 0.5 } },
+            { CommandWeatherType.LightDrizzle, new WeatherInfo { RainIntensity = 0.01 } },
+            { CommandWeatherType.Drizzle, new WeatherInfo { RainIntensity = 0.02 } },
+            { CommandWeatherType.HeavyDrizzle, new WeatherInfo { RainIntensity = 0.03 } },
+            { CommandWeatherType.LightRain, new WeatherInfo { RainIntensity = 0.05 } },
+            { CommandWeatherType.Rain, new WeatherInfo { RainIntensity = 0.1 } },
+            { CommandWeatherType.HeavyRain, new WeatherInfo { RainIntensity = 0.2 } },
+            { CommandWeatherType.LightThunderstorm, new WeatherInfo { RainIntensity = 0.3 } },
+            { CommandWeatherType.Thunderstorm, new WeatherInfo { RainIntensity = 0.5 } },
+            { CommandWeatherType.HeavyThunderstorm, new WeatherInfo { RainIntensity = 0.6 } },
+            { CommandWeatherType.LightSleet, new WeatherInfo { RainIntensity = 0 } },
+            { CommandWeatherType.Sleet, new WeatherInfo { RainIntensity = 0.05 } },
+            { CommandWeatherType.HeavySleet, new WeatherInfo { RainIntensity = 0.1 } },
             { CommandWeatherType.Clear, new WeatherInfo { RainIntensity = 0d } },
             { CommandWeatherType.FewClouds, new WeatherInfo { RainIntensity = 0d } },
             { CommandWeatherType.ScatteredClouds, new WeatherInfo { RainIntensity = 0d } },
@@ -43,7 +46,7 @@ namespace AcManager.Tools.ServerPlugins {
             { CommandWeatherType.Cold, new WeatherInfo { RainIntensity = 0d } },
             { CommandWeatherType.Hot, new WeatherInfo { RainIntensity = 0d } },
             { CommandWeatherType.Windy, new WeatherInfo { RainIntensity = 0d } },
-            { CommandWeatherType.Hail, new WeatherInfo { RainIntensity = 0.4 } }
+            { CommandWeatherType.Hail, new WeatherInfo { RainIntensity = 0.2 } }
         };
 
         private bool _disposed;
@@ -86,7 +89,7 @@ namespace AcManager.Tools.ServerPlugins {
             return (Half)transition.Lerp(WeatherInfos[_currentWeather].RainIntensity, WeatherInfos[_nextWeather].RainIntensity);
         }
 
-        private CommandWeatherSetV2 GetCspCommand() {
+        private CommandWeatherSetV3 GetCspCommand() {
             if (_weatherTransitionTimePassed.Elapsed >= _weatherTransitionDuration) {
                 _weatherTransitionDuration = MathUtils.Random(TimeBetweenWeatherChangesMin, TimeBetweenWeatherChangesMax);
                 _weatherTransitionTimePassed.Restart();
@@ -103,7 +106,7 @@ namespace AcManager.Tools.ServerPlugins {
             }
 
             var transition = (_weatherTransitionTimePassed.Elapsed.TotalSeconds / _weatherTransitionDuration.TotalSeconds).Saturate().SmoothStep();
-            return new CommandWeatherSetV2 {
+            return new CommandWeatherSetV3 {
                 Timestamp = (ulong)(_startingDate + _timePassedTotal.Elapsed).ToUnixTimestamp(),
                 TimeToApply = (Half)UpdatePeriod.TotalSeconds,
                 WeatherCurrent = _currentWeather,
@@ -134,8 +137,8 @@ namespace AcManager.Tools.ServerPlugins {
         private async Task SimulateRainAsync() {
             while (!_disposed) {
                 _rainIntensity = CalculateRainIntensity();
-                _rainWetness += ((_rainIntensity > 0 ? 1d : 0d) - _rainWetness) * (_rainIntensity > 0 ? _rainIntensity.Lerp(0.02, 0.1) : 0.05);
-                _rainWater += (_rainIntensity - _rainWater) * 0.05;
+                _rainWetness += (_rainIntensity - _rainWetness) * (_rainIntensity > 0 ? _rainIntensity.Lerp(0.02, 1d) : 0.05);
+                _rainWater += (Math.Pow(_rainIntensity, 0.1) - _rainWater) * (_rainIntensity > 0 ? _rainIntensity.Lerp(0.02, 1d) : 0.05) * 0.01;
                 await Task.Delay(UpdateRainPeriod);
             }
         }

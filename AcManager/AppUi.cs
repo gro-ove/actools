@@ -164,6 +164,36 @@ namespace AcManager {
                     LocationAndSizeKey = @".ServerManagerWindow"
                 }.ShowAndWaitAsync();
             }
+            if (AppArguments.Has(AppFlag.SimpleQuickDriveMode)) {
+                return new ModernWindow {
+                    Title = "Content Manager Quick Drive",
+                    BackButtonVisibility = Visibility.Collapsed,
+                    TitleButtonsVisibility = Visibility.Collapsed,
+                    MenuTopRowVisibility = Visibility.Collapsed,
+                    IsRootMarginEven = true,
+                    MenuLinkGroups = {
+                        new LinkGroup {
+                            Links = {
+                                new Link {
+                                    DisplayName = string.Empty,
+                                    Source = new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative),
+                                }
+                            },
+                            GroupKey = "drive",
+                            DisplayName = string.Empty
+                        }
+                    },
+                    DefaultContentSource = new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative),
+                    MinHeight = 400,
+                    MinWidth = 600,
+                    MaxHeight = DpiAwareWindow.UnlimitedSize,
+                    MaxWidth = DpiAwareWindow.UnlimitedSize,
+                    Padding = new Thickness(0),
+                    SizeToContent = SizeToContent.Manual,
+                    ResizeMode = ResizeMode.CanResizeWithGrip,
+                    LocationAndSizeKey = @".SimpleQuickDriveWindow"
+                }.ShowAndWaitAsync();
+            }
             return new MainWindow().ShowAndWaitAsync();
         }
 

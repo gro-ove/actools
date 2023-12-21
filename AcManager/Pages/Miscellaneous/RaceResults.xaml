@@ -71,7 +71,7 @@
                       <mui:SpacingUniformGrid VerticalStackMode="True" HorizontalStackMode="True" Columns="2" Rows="4" VerticalSpacing="2"
                           HorizontalSpacing="20" HorizontalAlignment="Left">
                         <TextBlock Text="{Binding SessionNames}" Style="{StaticResource Heading2}" Margin="0 0 0 -2" Width="200" />
-                        <DockPanel VerticalAlignment="Center">
+                        <DockPanel VerticalAlignment="Center" c:ContextMenus.Track="{Binding Track.Value}" c:ToolTips.Track="{Binding Track.Value}">
                           <mui:BetterImage Width="14" Height="14" DockPanel.Dock="Left" Margin="0 0 6 0" Filename="{Binding Track.Value.OutlineImage}"
                               CropTransparentAreas="True" Effect="{DynamicResource TrackOutlineAloneEffect}" />
                           <TextBlock VerticalAlignment="Center">
@@ -85,7 +85,7 @@
                         </DockPanel>
 
                         <TextBlock Text="{Binding Summary}" VerticalAlignment="Center" />
-                        <DockPanel VerticalAlignment="Center">
+                        <DockPanel VerticalAlignment="Center" c:ContextMenus.Car="{Binding PlayerCar.Value}" c:ToolTips.Car="{Binding PlayerCar.Value}">
                           <mui:BetterImage Width="14" Height="14" DockPanel.Dock="Left" Margin="0 0 6 0" Filename="{Binding PlayerCar.Value.BrandBadge}" />
                           <TextBlock Text="{Binding PlayerCar.Value.DisplayName}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                         </DockPanel>

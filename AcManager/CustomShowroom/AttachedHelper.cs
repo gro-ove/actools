@@ -27,6 +27,8 @@ namespace AcManager.CustomShowroom {
 
         private static readonly WeakList<AttachedHelper> Instances = new WeakList<AttachedHelper>();
 
+        public static bool AnyRunning => Instances.Count != 0;
+
         [CanBeNull]
         public static AttachedHelper GetInstance(Window window) {
             Instances.Purge();

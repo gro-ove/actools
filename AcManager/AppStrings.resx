@@ -457,7 +457,7 @@ Author: [b]{3}[/b]</value>
     <comment>Settings@Invariant</comment>
   </data>
   <data name="Main_Apps" xml:space="preserve">
-    <value>Apps</value>
+    <value>Python Apps</value>
   </data>
   <data name="Main_LuaApps" xml:space="preserve">
     <value>Lua Apps</value>
@@ -4993,5 +4993,8 @@ anyway while it’s waiting for disk to get the data, and there will much less d
     </data>
     <data name="QuickDrive_Mode_More" xml:space="preserve">
         <value>More</value>
+    </data>
+    <data name="Online_DriversOnServer" xml:space="preserve">
+        <value>{0} {driver} on server</value>
     </data>
 </root>

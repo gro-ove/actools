@@ -78,7 +78,6 @@ namespace AcManager.Tools.Objects {
             if (comments?.Length > 1 && comments[1].StartsWith(@"; section tweaks")) {
                 var description = comments[1].Trim().WrapQuoted(out var unwrap);
                 PythonAppConfigValue.CreateTestingFunctions(ref IsEnabledTest, ref IsHiddenTest, ref description, unwrap);
-                Logging.Debug($"comments={description}, fn1={IsEnabledTest}, fn2={IsHiddenTest}");
             }
         }
 

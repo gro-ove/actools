@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -166,10 +167,31 @@ namespace AcManager.Pages.Drive {
             _selectNextForceAssistsLoading = false;
             _selectNextTime = null;
 
-            this.AddSizeCondition(x => x.ActualHeight > 600 && SettingsHolder.Drive.ShowExtraComboBoxes).Add(CarCellExtra).Add(TrackCellExtra);
-            this.AddSizeCondition(x => 180 + ((x.ActualWidth - 800) / 2d).Clamp(0, 60).Round()).Add(x => LeftPanel.Width = x);
-            this.AddSizeCondition(x => (((ActualWidth - 720) / 440).Saturate() * 93 + 120).Round()).Add(x => CarCell.Width = TrackCell.Width = x);
+            if (AppArguments.Has(AppFlag.SimpleQuickDriveMode)) {
+                Content = FindResource("SimpleVersion");
+            } else {
+                this.AddSizeCondition(x => x.ActualHeight > 600 && SettingsHolder.Drive.ShowExtraComboBoxes).Add(CarCellExtra).Add(TrackCellExtra).Add(x => {
+                    if (!_loaded && ValuesStorage.Contains(".qd.rz.h")) {
+                        CarCellBase.Height = TrackCellBase.Height = ValuesStorage.Get(".qd.rz.h", CarCellBase.Height);
+                    }  else {
+                        CarCellBase.Height = TrackCellBase.Height = 120d;
+                        ValuesStorage.Remove(".qd.rz.h");
+                    } 
+                });
+                this.AddSizeCondition(x => (((ActualWidth - 720) / 440).Saturate() * 93 + 120).Round()).Add(x => {
+                    if (!_loaded && ValuesStorage.Contains(".qd.rz.w")) {
+                        CarCell.Width = TrackCell.Width = ValuesStorage.Get(".qd.rz.w", CarCell.Width);
+                    } else {
+                        CarCell.Width = TrackCell.Width = x;
+                        ValuesStorage.Remove(".qd.rz.w");
+                    }
+                });
+                this.AddSizeCondition(x => 180 + ((x.ActualWidth - 800) / 2d).Clamp(0, 60).Round()).Add(x => LeftPanel.Width = x);
+                Loaded += (sender, args) => _loaded = true;
+            }
         }
+
+        private bool _loaded = false;
 
         private void OnTrackStateChanged(object sender, PropertyChangedEventArgs e) {
             Model.SaveLater();
@@ -1344,6 +1366,18 @@ namespace AcManager.Pages.Drive {
                         break;
                 }
             });
+        }
+
+        private void OnCarTrackSeparatorDrag(object sender, DragDeltaEventArgs e) {
+            CarCell.Width = (CarCell.Width + e.HorizontalChange / 2).Clamp(80d, (ActualWidth - 400d) / 2d);
+            TrackCell.Width = CarCell.Width;
+            ValuesStorage.Set(".qd.rz.w", TrackCell.Width);
+        }
+
+        private void OnTopRowSeparatorDrag(object sender, DragDeltaEventArgs e) {
+            CarCellBase.Height = (CarCellBase.Height + e.VerticalChange).Clamp(120d, 400d);
+            TrackCellBase.Height = CarCellBase.Height;
+            ValuesStorage.Set(".qd.rz.h", CarCellBase.Height);
         }
     }
 }

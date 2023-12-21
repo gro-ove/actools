@@ -6353,7 +6353,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apps.
+        ///   Looks up a localized string similar to Python Apps.
         /// </summary>
         public static string Main_Apps {
             get {
@@ -7422,6 +7422,15 @@ namespace AcManager {
         public static string Online_DriversOnlineLabel {
             get {
                 return ResourceManager.GetString("Online_DriversOnlineLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} {driver} on server.
+        /// </summary>
+        public static string Online_DriversOnServer {
+            get {
+                return ResourceManager.GetString("Online_DriversOnServer", resourceCulture);
             }
         }
         

@@ -164,8 +164,20 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernWindow));
 
         public object BackgroundContent {
-            get => GetValue(BackgroundContentProperty);
+            get => GetValue(BackgroundContentProperty); // TODO: Optimize?
             set => SetValue(BackgroundContentProperty, value);
+        }
+
+        public static readonly DependencyProperty TitleLinksPrefixProperty = DependencyProperty.Register(nameof(TitleLinksPrefix), typeof(object),
+                typeof(ModernWindow), new PropertyMetadata(null, (o, e) => {
+                    ((ModernWindow)o)._titleLinksPrefix = e.NewValue;
+                }));
+
+        private object _titleLinksPrefix;
+
+        public object TitleLinksPrefix {
+            get => _titleLinksPrefix;
+            set => SetValue(TitleLinksPrefixProperty, value);
         }
 
         public static readonly DependencyProperty MenuLinkGroupsProperty = DependencyProperty.Register(nameof(MenuLinkGroups), typeof(LinkGroupCollection),
@@ -199,6 +211,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public bool IsTitleVisible {
             get => GetValue(IsTitleVisibleProperty) as bool? == true;
             set => SetValue(IsTitleVisibleProperty, value);
+        }
+
+        public static readonly DependencyProperty IsRootMarginEvenProperty = DependencyProperty.Register(nameof(IsRootMarginEven), typeof(bool),
+                typeof(ModernWindow), new PropertyMetadata(false, (o, e) => {
+                    ((ModernWindow)o)._isRootMarginEven = (bool)e.NewValue;
+                }));
+
+        private bool _isRootMarginEven;
+
+        public bool IsRootMarginEven {
+            get => _isRootMarginEven;
+            set => SetValue(IsRootMarginEvenProperty, value);
         }
 
         public static readonly DependencyProperty DefaultContentSourceProperty = DependencyProperty.Register(nameof(DefaultContentSource), typeof(Uri),

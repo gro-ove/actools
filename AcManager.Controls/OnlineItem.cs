@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,7 @@ using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -1284,7 +1286,11 @@ namespace AcManager.Controls {
                     return;
             }
 
-            InvalidateVisual();
+            if (Application.Current?.Dispatcher.Thread == Thread.CurrentThread) {
+                InvalidateVisual();
+            } else {
+                ActionExtension.InvokeInMainThreadAsync(() => InvalidateVisual());
+            }
         }
 
         // TODO: Replace warning triangles with download icons if content is available to download

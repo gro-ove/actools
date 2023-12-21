@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Controls.ViewModels {
@@ -15,6 +17,8 @@ namespace AcManager.Controls.ViewModels {
         public static CupViewModel Instance { get; } = new CupViewModel();
 
         private readonly Queue<CupEventArgs> _cupToProcess = new Queue<CupEventArgs>();
+        private readonly Busy _refreshBusy = new Busy();
+        private readonly Dictionary<CupContentType, bool> _listening = new Dictionary<CupContentType, bool>();
         private bool _cupProcessing;
 
         private ChangeableObservableCollection<ICupSupportedObject> CupSupportedObjects { get; } = new ChangeableObservableCollection<ICupSupportedObject>();
@@ -30,6 +34,19 @@ namespace AcManager.Controls.ViewModels {
                 Filter = x => (x as ICupSupportedObject)?.IsCupUpdateAvailable == true
             };
             ToUpdate.SortDescriptions.Add(new SortDescription(nameof(AcObjectNew.DisplayName), ListSortDirection.Ascending));
+        }
+
+        private void RefreshToUpdate() {
+            _refreshBusy.DoDelay(() => {
+                for (var i = CupSupportedObjects.Count - 1; i >= 0; --i) {
+                    var entry = CupSupportedObjects[i];
+                    var manager = CupClient.Instance?.GetAssociatedManager(entry.CupContentType);
+                    var existing = manager?.GetWrapperById(entry.Id);
+                    if (existing == null || !existing.IsLoaded) {
+                        CupSupportedObjects.RemoveAt(i);
+                    }
+                }
+            }, 100);
         }
 
         private void OnCupSupportedObjectPropertyChanged(object sender, PropertyChangedEventArgs args) {
@@ -58,6 +75,11 @@ namespace AcManager.Controls.ViewModels {
             if (await manager.GetObjectByIdAsync(e.Key.Id) is ICupSupportedObject obj && !CupSupportedObjects.Contains(obj)) {
                 CupSupportedObjects.Add(obj);
                 if (obj.IsCupUpdateAvailable) {
+                    if (!_listening.ContainsKey(e.Key.Type)) {
+                        _listening[e.Key.Type] = true;
+                        manager.WrappersAsIList.CollectionChanged += (sender, args) => RefreshToUpdate();
+                        manager.WrappersAsIList.WrappedValueChanged += (sender, args) => RefreshToUpdate();
+                    }
                     NewUpdate?.Invoke(this, EventArgs.Empty);
                 }
             }

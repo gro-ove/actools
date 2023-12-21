@@ -2,7 +2,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:w="clr-namespace:AcManager.Pages.Windows" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_Title}"
+    xmlns:c="http://acstuff.ru/app/controls" xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
+    mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_Title}"
     IsTitleVisible="False" MinWidth="800" MinHeight="640" Width="960" Height="800" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True"
     Drop="OnDrop" DragEnter="OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded" Unloaded="OnUnloaded" Closing="OnClosing"
     Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown" MouseDown="OnMouseUp" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
@@ -311,10 +313,32 @@
           </Button>
         </mui:SpacingUniformGrid>
       </DockPanel>
-
+      
+      <mui:Cell x:Key="RunningInstances" Height="28" Width="80" Margin="0 0 20 0" VerticalAlignment="Top" WindowChrome.IsHitTestVisibleInChrome="True">
+        <ToggleButton Padding="0" Height="28" Width="80" BorderThickness="0" Click="OnRunningInstancesButtonClick">
+          <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Path Width="8" Height="8" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Stretch="Uniform"
+                Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource PlayIconData}" />
+            <TextBlock Text="Running" FontSize="{StaticResource SmallFontSize}"></TextBlock>
+          </DockPanel>
+        </ToggleButton>
+      </mui:Cell>
+      
+      <ListBox x:Key="RunningInstancesPopupContent" VirtualizingPanel.IsVirtualizing="False" 
+          ItemsSource="{Binding Source={x:Static dialogs:GameDialog.HiddenInstances}}" SelectionChanged="OnRunningInstancesItemClick">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <StackPanel Width="200" Margin="8 4 8 4">
+              <TextBlock Text="{Binding DisplayState}" />
+              <TextBlock Text="{Binding DisplayDetails}" FontSize="{StaticResource SmallFontSize}" />
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+      
     </ResourceDictionary>
   </mui:ModernWindow.Resources>
-
+  
   <mui:ModernWindow.TitleButtons>
 
     <mui:Cell Width="45">

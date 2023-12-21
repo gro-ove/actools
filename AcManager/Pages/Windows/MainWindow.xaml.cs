@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,12 +15,12 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Threading;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.QuickSwitches;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
+using AcManager.CustomShowroom;
 using AcManager.DiscordRpc;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
@@ -220,12 +219,38 @@ namespace AcManager.Pages.Windows {
             // LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
 #endif
 
+            GameDialog.HiddenInstances.CollectionChanged += (sender, args) => {
+                if (GameDialog.HiddenInstances.Count == 0) {
+                    TitleLinksPrefix = null;
+                    if (_runningInstancesPopup != null) {
+                        _runningInstancesPopup.IsOpen = false;
+                    }
+                } else if (TitleLinksPrefix == null) {
+                    TitleLinksPrefix = FindResource(@"RunningInstances");
+                    (TitleLinksPrefix as FrameworkElement)?.ResetElementNameBindings();
+                }
+            };
+
+            SettingsHolder.Common.PropertyChanged += (sender, args) => {
+                if (args.PropertyName == nameof(SettingsHolder.Common.LowerPriorityInBackground)) {
+                    Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
+                }
+            };
+
             Deactivated += (sender, args) => {
-                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
+                if (SettingsHolder.Common.LowerPriorityInBackground && !AttachedHelper.AnyRunning) {
+                    Task.Delay(TimeSpan.FromSeconds(3d)).ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => {
+                        if (!IsActive) {
+                            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
+                        }
+                    }));
+                }
             };
 
             Activated += (sender, args) => {
-                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
+                if (SettingsHolder.Common.LowerPriorityInBackground) {
+                    Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
+                }
             };
         }
 
@@ -789,7 +814,9 @@ namespace AcManager.Pages.Windows {
                         } else {
                             presets.SwitchToNext();
                         }
-                        ShowQuickSwitchesPopup(presets.IconData, $@"{presets.CurrentUserPreset.DisplayName}", child.ToolTip);
+                        if (presets.CurrentUserPreset != null) {
+                            ShowQuickSwitchesPopup(presets.IconData, presets.CurrentUserPreset.DisplayName, child.ToolTip);
+                        }
                         break;
                     }
 
@@ -1177,6 +1204,33 @@ namespace AcManager.Pages.Windows {
         private void OnDownloadsButtonClick(object sender, MouseButtonEventArgs e) {
             var glow = this.FindChild<FrameworkElement>("UpdateMarkGlow");
             (glow?.Parent as Panel)?.Children.Remove(glow);
+        }
+
+        private ModernPopup _runningInstancesPopup;
+
+        private void OnRunningInstancesButtonClick(object sender, RoutedEventArgs e) {
+            var button = (ToggleButton)sender;
+            button.IsHitTestVisible = false;
+            if (_runningInstancesPopup != null) {
+                _runningInstancesPopup.IsOpen = false;
+            }
+            _runningInstancesPopup = new ModernPopup {
+                Content = (UIElement)FindResource("RunningInstancesPopupContent"),
+                PlacementTarget = (UIElement)sender,
+                Placement = PlacementMode.Bottom,
+                StaysOpen = false,
+            };
+            _runningInstancesPopup.Closed += (o, args) => {
+                button.IsChecked = false;
+                button.IsHitTestVisible = true;
+                _runningInstancesPopup = null;
+            };
+            _runningInstancesPopup.IsOpen = true;
+        }
+
+        private void OnRunningInstancesItemClick(object sender, RoutedEventArgs e) {
+            var list = (ListBox)sender;
+            (list.SelectedItem as GameDialog.DialogHolder)?.RestoreCommand.Execute();
         }
     }
 }

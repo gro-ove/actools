@@ -1726,7 +1726,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("FF_POST_PROCESS", AcSettingsHolder.FfPostProcess.Export().ToCutBase64());
             section.Set("SYSTEM", AcSettingsHolder.System.ExportFfb().ToCutBase64());
             section.Set("AUTO_ADJUST_SCALE", WheelSteerScaleAutoAdjust);
-            section.Set("DELAY_SPECIFIC_SYSTEM_COMMANDS", DelaySpecificSystemCommands);
+            section.Set("DELAY_SPECIFIC_SYSTEM_COMMANDS", DelaySpecificSystemCommands ? 2 : 0);
             section.Set("SHOW_SYSTEM_DELAYS", ShowSystemDelays);
             section.Set("SYSTEM_IGNORE_POV_IN_PITS", SystemIgnorePovInPits);
             section.Set("HARDWARE_LOCK", HardwareLock);

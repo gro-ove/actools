@@ -62,6 +62,12 @@ namespace AcManager {
 
         /// <summary>
         /// Hide everything but server management.
+        /// Example: --simple-quick-drive-mode.
+        /// </summary>
+        SimpleQuickDriveMode,
+
+        /// <summary>
+        /// Hide everything but server management.
         /// Example: --server-management-mode.
         /// </summary>
         ServerManagementMode,

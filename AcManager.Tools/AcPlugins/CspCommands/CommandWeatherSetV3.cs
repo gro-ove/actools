@@ -5,7 +5,7 @@ using SystemHalf;
 
 namespace AcManager.Tools.AcPlugins.CspCommands {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct CommandWeatherSetV2 : ICspCommand {
+    public struct CommandWeatherSetV3 : ICspCommand {
         public ulong Timestamp;
         public CommandWeatherType WeatherCurrent;
         public CommandWeatherType WeatherNext;
@@ -23,7 +23,7 @@ namespace AcManager.Tools.AcPlugins.CspCommands {
         }
 
         ushort ICspCommand.GetMessageType() {
-            return 1001;
+            return 1002;
         }
     }
 }

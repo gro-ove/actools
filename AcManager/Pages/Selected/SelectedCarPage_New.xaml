@@ -155,8 +155,12 @@
               </i:Interaction.Behaviors>
               <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type t:CarSkinObject}">
-                  <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding LiveryImage}" Width="32" Height="32" ClearOnChange="True"
-                      PreviewMouseRightButtonUp="OnPreviewRightClick" c:ToolTips.CarSkin="{Binding}" />
+                  <mui:Cell>
+                    <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding LiveryImage}" Width="32" Height="32" ClearOnChange="True"
+                        PreviewMouseRightButtonUp="OnPreviewRightClick" c:ToolTips.CarSkin="{Binding}" />
+                    <Ellipse Width="4" Height="4" VerticalAlignment="Top" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 -1 -1 0"
+                        IsHitTestVisible="False" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                  </mui:Cell>
                 </DataTemplate>
               </ListBox.ItemTemplate>
             </ListBox>

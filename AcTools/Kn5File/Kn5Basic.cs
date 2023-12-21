@@ -324,7 +324,7 @@ namespace AcTools.Kn5File {
             xml.WriteAttributeStringSafe("name", texture.Name);
 
             xml.WriteStartElement("init_from");
-            xml.WriteString("file://texture/" + texture.Name);
+            xml.WriteString("file://texture/" + Uri.EscapeUriString(texture.Name));
             xml.WriteEndElement();
 
             xml.WriteEndElement();

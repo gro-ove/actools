@@ -184,7 +184,7 @@
     <Compile Include="AcPlugins\CspCommands\CommandSignatureVerificationIn.cs" />
     <Compile Include="AcPlugins\CspCommands\CommandSignatureVerificationOut.cs" />
     <Compile Include="AcPlugins\CspCommands\CommandWeatherSetV1.cs" />
-    <Compile Include="AcPlugins\CspCommands\CommandWeatherSetV2.cs" />
+    <Compile Include="AcPlugins\CspCommands\CommandWeatherSetV3.cs" />
     <Compile Include="AcPlugins\CspCommands\CommandWeatherType.cs" />
     <Compile Include="AcPlugins\CspCommands\CspCommandsUtils.cs" />
     <Compile Include="AcPlugins\CspCommands\ICspCommand.cs" />

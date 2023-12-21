@@ -678,8 +678,12 @@
   </DataTemplate>
 
   <DataTemplate x:Key="CarSkinItemTemplate" DataType="{x:Type t:CarSkinObject}">
-    <mui:BetterImage c:ToolTips.CarSkin="{Binding}" Width="32" Height="32" Filename="{Binding LiveryImage}" ClearOnChange="True"
-        c:ContextMenus.CarSkin="{Binding}" />
+    <mui:Cell>
+      <mui:BetterImage c:ToolTips.CarSkin="{Binding}" Width="32" Height="32" Filename="{Binding LiveryImage}" ClearOnChange="True"
+          c:ContextMenus.CarSkin="{Binding}" />
+      <Ellipse Width="4" Height="4" VerticalAlignment="Top" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 -1 -1 0"
+          IsHitTestVisible="False" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}" />
+    </mui:Cell>
   </DataTemplate>
 
   <DataTemplate x:Key="AcItemWrapperSpecific.CarSkinItemTemplate" DataType="{x:Type t:AcItemWrapper}">
@@ -692,7 +696,11 @@
 
         <!-- AccommonObject -->
         <DataTemplate DataType="{x:Type t:CarSkinObject}">
-          <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding LiveryImage}" Width="32" Height="32" ClearOnChange="True" />
+          <mui:Cell>
+            <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding LiveryImage}" Width="32" Height="32" ClearOnChange="True" />
+            <Ellipse Width="4" Height="4" VerticalAlignment="Top" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 -1 -1 0"
+                IsHitTestVisible="False" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}" />
+          </mui:Cell>
         </DataTemplate>
       </ContentControl.Resources>
     </ContentControl>

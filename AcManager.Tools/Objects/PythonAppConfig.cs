@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
@@ -269,6 +269,8 @@ namespace AcManager.Tools.Objects {
 
         public void ApplyChangesFromIni() {
             Changed = true;
+
+            var hasPlugins = false;
             foreach (var section in _sectionsOwn) {
                 if (section.Key == @"ℹ") continue;
                 var iniSection = _valuesIniFile[section.Key];
@@ -277,6 +279,24 @@ namespace AcManager.Tools.Objects {
                         p.Value = iniSection.GetPossiblyEmpty(p.Id);
                     } else {
                         p.Reset();
+                    }
+                }
+                hasPlugins = hasPlugins || section.PluginSettings?.Count >= 2;
+            }
+
+            if (!hasPlugins) return;
+            PythonAppConfigProvider provider = null;
+            foreach (var s in _sectionsOwn) {
+                if (s.PluginSettings?.Count >= 2) {
+                    if (provider == null) {
+                        provider = new PythonAppConfigProvider(this);
+                    }
+                    if (provider.GetItem(s.PluginSettings[0]) is PythonAppConfigPluginValue v 
+                        && !string.IsNullOrWhiteSpace(v.Value) && v.IsEnabled && v.SelectedPlugin != null) {
+                        var value = _valuesIniFile["__PLUGINS"].GetNonEmpty(s.Id)?.FromCutBase64();
+                        if (value != null) {
+                            GetPluginConfig(s.PluginSettings[0], v.SelectedPlugin.Location, s.PluginSettings[1])?.Import(Encoding.UTF8.GetString(value));
+                        }
                     }
                 }
             }
@@ -311,7 +331,23 @@ namespace AcManager.Tools.Objects {
             if (Changed) {
                 ApplyChangesToIni();
             }
-            return _valuesIniFile;
+            IniFile cloned = null;
+            PythonAppConfigProvider provider = null;
+            foreach (var s in _sectionsOwn) {
+                if (s.PluginSettings?.Count >= 2) {
+                    if (provider == null) {
+                        provider = new PythonAppConfigProvider(this);
+                    }
+                    if (provider.GetItem(s.PluginSettings[0]) is PythonAppConfigPluginValue v 
+                        && !string.IsNullOrWhiteSpace(v.Value) && v.IsEnabled && v.SelectedPlugin != null) {
+                        if (cloned == null) {
+                            cloned = _valuesIniFile.Clone();
+                        }
+                        cloned["__PLUGINS"].Set(s.Id, GetPluginConfig(s.PluginSettings[0], v.SelectedPlugin.Location, s.PluginSettings[1])?.Export().ToString().ToCutBase64());
+                    }
+                }
+            }
+            return cloned ?? _valuesIniFile;
         }
 
         public string Serialize() {

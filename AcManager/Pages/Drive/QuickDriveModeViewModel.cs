@@ -96,7 +96,8 @@ namespace AcManager.Pages.Drive {
         public event EventHandler Changed;
 
         protected void SaveLater() {
-            if (Saveable.SaveLater()) {
+            // Sometimes Saveable might not be yet created, for example when populating defaults during initialization of a custom mode
+            if (Saveable?.SaveLater() == true) {
                 Changed?.Invoke(this, EventArgs.Empty);
             }
         }
