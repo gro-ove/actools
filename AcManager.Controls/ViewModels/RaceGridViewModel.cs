@@ -1394,7 +1394,7 @@ namespace AcManager.Controls.ViewModels {
 
             var takenNames = new List<string>(opponentsNumber);
             return final.Select((entry, i) => {
-                var level = entry.AiLevel ?? aiLevels?[i] ?? AiLevel;
+                var level = entry.AiLevel ?? aiLevels?[i] ?? (AiLevelFixed ? 100d : AiLevel);
                 var aggression = entry.AiAggression ?? aiAggressions?[i] ?? AiAggression;
 
                 CarSkinObject skin;

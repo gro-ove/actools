@@ -53,21 +53,29 @@ namespace AcManager.Pages.Dialogs {
 
             Buttons = new[] {
                 CreateExtraDialogButton(UiStrings.Ok,
-                        new CombinedCommand(Model.ApplyCommand, new DelegateCommand(() => { CloseWithResult(MessageBoxResult.OK); }))),
+                        new CombinedCommand(Model.ApplyCommand, new DelegateCommand(() => CloseWithResult(MessageBoxResult.OK)))),
                 CancelButton
             };
 
             EntryPoint.HandleSecondInstanceMessages(this, ProcessArguments);
+            AppUi.AppUiMessageInterception = ProcessArguments;
             PluginsManager.Instance.UpdateIfObsolete().Ignore();
+        }
+
+        protected override void OnClosingOverride(CancelEventArgs e) {
+            AppUi.AppUiMessageInterception = null;
+            base.OnClosingOverride(e);
         }
 
         private bool ProcessArguments(IEnumerable<string> arguments) {
             foreach (var message in arguments) {
                 var request = CustomUriRequest.TryParse(message);
+                Logging.Debug($"Request: {request?.Path ?? @"<no path>"}");
                 if (request == null) continue;
 
                 switch (request.Path) {
                     case "setsteamid":
+                        Logging.Debug("Packed code: " + request.Params.Get(@"code"));
                         Model.SetPacked(request.Params.Get(@"code"));
                         return true;
                 }
@@ -194,55 +202,60 @@ namespace AcManager.Pages.Dialogs {
                 }
             }));
 
-            private AsyncCommand _getSteamIdCommand;
+            private AsyncCommand<CancellationToken?> _getSteamIdCommand;
 
-            public ICommand GetSteamIdCommand => _getSteamIdCommand ?? (_getSteamIdCommand = new AsyncCommand(async () => {
-                var acRoot = IsValueAcceptable ? Value : AcRootDirectory.Instance.Value;
-                if (acRoot == null) return;
+            public AsyncCommand<CancellationToken?> GetSteamIdCommand
+                => _getSteamIdCommand ?? (_getSteamIdCommand = new AsyncCommand<CancellationToken?>(async t => {
+                    var acRoot = IsValueAcceptable ? Value : AcRootDirectory.Instance.Value;
+                    if (acRoot == null) return;
 
-                if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) {
-                    var id = await Prompt.ShowAsync("Enter new Steam ID:", "Change Steam ID", SteamIdHelper.Instance.Value);
-                    if (id != null) {
-                        SetSteamId(id);
+                    if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) {
+                        var id = await Prompt.ShowAsync("Enter new Steam ID:", "Change Steam ID", SteamIdHelper.Instance.Value);
+                        if (id != null) {
+                            SetSteamId(id);
+                        }
+                        return;
                     }
-                    return;
-                }
 
-                if (OptionUseCustomSteamIdApproach && ShowMessage(
-                        "Your Steam ID is not in the list? In that case, Content Manager would need to replace official launcher. There are other benefits to this as well: races will launch faster and more reliably, Content Manager will be able to check challenges progress more directly, it would get Steam overlay. Or, you could always get the original launcher back by simply renaming “AssettoCorsa_original.exe” back to “AssettoCorsa.exe”.[br][br]So, replace it now?",
-                        "Fix Steam ID", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
-                    try {
-                        var acLauncher = AcPaths.GetAcLauncherFilename(acRoot);
-                        if (File.Exists(acLauncher)) {
-                            var acLauncherNewPlace = Path.Combine(acRoot, "AssettoCorsa_original.exe");
-                            if (!File.Exists(acLauncherNewPlace)) {
-                                File.Move(acLauncher, acLauncherNewPlace);
-                            } else {
-                                FileUtils.Recycle(acLauncher);
+                    if (OptionUseCustomSteamIdApproach && ShowMessage(
+                            "Your Steam ID is not in the list? In that case, Content Manager would need to replace official launcher. There are other benefits to this as well: races will launch faster and more reliably, Content Manager will be able to check challenges progress more directly, it would get Steam overlay. Or, you could always get the original launcher back by simply renaming “AssettoCorsa_original.exe” back to “AssettoCorsa.exe”.[br][br]So, replace it now?",
+                            "Fix Steam ID", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                        try {
+                            var acLauncher = AcPaths.GetAcLauncherFilename(acRoot);
+                            if (File.Exists(acLauncher)) {
+                                var acLauncherNewPlace = Path.Combine(acRoot, "AssettoCorsa_original.exe");
+                                if (!File.Exists(acLauncherNewPlace)) {
+                                    File.Move(acLauncher, acLauncherNewPlace);
+                                } else {
+                                    FileUtils.Recycle(acLauncher);
+                                }
                             }
+                            File.Copy(MainExecutingFile.Location, acLauncher, true);
+                            ProcessExtension.Start(acLauncher, new[] { @"--restart", @"--move-app=" + MainExecutingFile.Location });
+                            Environment.Exit(0);
+                        } catch (Exception e) {
+                            NonfatalError.Notify("Failed to move Content Manager executable", "I’m afraid you’ll have to do it manually.", e);
                         }
-                        File.Copy(MainExecutingFile.Location, acLauncher, true);
-                        ProcessExtension.Start(acLauncher, new[] { @"--restart", @"--move-app=" + MainExecutingFile.Location });
-                        Environment.Exit(0);
-                    } catch (Exception e) {
-                        NonfatalError.Notify("Failed to move Content Manager executable", "I’m afraid you’ll have to do it manually.", e);
+                        return;
                     }
-                    return;
-                }
 
-                using (_cancellationTokenSource = new CancellationTokenSource()) {
-                    try {
-                        var packed = await OAuth.GetCode("Steam", $"{InternalUtils.MainApiDomain}/u/steam?s={AdditionalSalt}", null,
-                                @"CM Steam ID Helper: (\w+)", description: "Enter the authentication code:", title: "Steam (via acstuff.ru)");
-                        if (!_cancellationTokenSource.IsCancellationRequested && packed.Code != null) {
-                            SetPacked(packed.Code);
+                    using (_cancellationTokenSource = new CancellationTokenSource())
+                    using (var combinedToken = CancellationTokenSource.CreateLinkedTokenSource(t ?? default(CancellationToken), _cancellationTokenSource.Token)) {
+                        try {
+                            Logging.Debug("SteamID: OAuth route");
+                            var packed = await OAuth.GetCode("Steam", $"{InternalUtils.MainApiDomain}/u/steam?s={AdditionalSalt}", null,
+                                    @"CM Steam ID Helper: (\w+)", description: "Enter the authentication code:", title: "Steam (via acstuff.ru)",
+                                    cancellation: combinedToken.Token);
+                            Logging.Debug($"SteamID: OAuth route result={packed.Code ?? @"<nil>"}");
+                            if (!combinedToken.IsCancellationRequested && packed.Code != null) {
+                                SetPacked(packed.Code);
+                            }
+                        } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
+                            NonfatalError.Notify("Can’t get Steam ID", e);
                         }
-                    } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
-                        NonfatalError.Notify("Can’t get Steam ID", e);
                     }
-                }
-                _cancellationTokenSource = null;
-            }, () => IsValueAcceptable ? Value != null : AcRootDirectory.Instance.Value != null));
+                    _cancellationTokenSource = null;
+                }, mainCancellationToken => IsValueAcceptable ? Value != null : AcRootDirectory.Instance.Value != null));
 
             private DelegateCommand _applyCommand;
 

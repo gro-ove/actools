@@ -10,7 +10,7 @@
     </StackPanel>
   </mui:ReferenceSwitch.Null>
   <mui:ReferenceSwitch.NonNull>
-    <Grid Style="{StaticResource ContentRootWithPadding}">
+    <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
@@ -22,8 +22,8 @@
         <mui:BbCodeBlock Text="{x:Static g:AppStrings.Rsr_Commentary}" />
       </DockPanel>-->
 
-      <c:WebBlock Grid.Row="1" x:Name="WebBrowser" StartPage="{Binding StartPage}" SaveKey="Rsr:Address" PageLoaded="OnPageLoaded" KeepAliveKey="Rsr" />
-      <Grid Grid.Row="2" Margin="0 16 0 0">
+      <c:WebBlock Grid.Row="1" x:Name="WebBrowser" StartPage="{Binding StartPage}" SaveKey="Rsr:Address" PageLoaded="OnPageLoaded" KeepAliveKey="Rsr" Margin="0 4 0 0" />
+      <Grid Grid.Row="2" Style="{StaticResource ContentRootWithPadding}">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition />

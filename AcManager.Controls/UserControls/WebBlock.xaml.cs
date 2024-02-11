@@ -20,6 +20,9 @@ using JetBrains.Annotations;
 namespace AcManager.Controls.UserControls {
     public partial class WebBlock {
         [CanBeNull]
+        public static Action<string> CmCommandHandler;
+        
+        [CanBeNull]
         public static IWebDownloadListener DefaultDownloadListener { get; set; }
 
         public static event EventHandler<NewWindowEventArgs> NewTabGlobal;

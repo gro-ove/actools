@@ -177,7 +177,7 @@ namespace AcManager.Tools.Managers.Online {
         private double? _maxContactsPerKm;
 
         public double? MaxContactsPerKm {
-            get => _maxContactsPerKm;
+            get => _maxContactsPerKm < 0d ? null : _maxContactsPerKm;
             set => Apply(value, ref _maxContactsPerKm);
         }
 

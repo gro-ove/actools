@@ -42,6 +42,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using DataGrid = System.Windows.Controls.DataGrid;
@@ -110,6 +111,25 @@ namespace AcManager.Pages.Dialogs {
             };
             Activated += (sender, args) => ProgressRing.IsActive = true;
             Deactivated += (sender, args) => ProgressRing.IsActive = false;
+            
+            // Helping CSP by cleaning obsolete caches
+            var cef = Path.Combine(AcRootDirectory.Instance.RequireValue, "cache\\cef\\readme.txt");
+            if (File.Exists(cef)) {
+                var file = FilesStorage.Instance.GetContentFile(ContentCategory.Miscellaneous, @"CompatibilityTable.json");
+                try {
+                    string[] items = {@"check out for “"};
+                    if (file.Exists) {
+                        items = JsonConvert.DeserializeObject<string[]>(File.ReadAllText(file.Filename));
+                    }
+                    var data = File.ReadAllText(cef);
+                    if (items.Any(x => data.Contains(x, StringComparison.Ordinal))) {
+                        FileUtils.TryToDelete(Path.Combine(AcRootDirectory.Instance.RequireValue, "cache\\cef\\assetto corsa cef.exe"));
+                        Task.Run(() => FileUtils.TryToDeleteDirectory(Path.GetDirectoryName(cef))).Ignore();
+                    }
+                } catch (Exception e) {
+                    Logging.Error(e);
+                }
+            }
         }
 
         public GameDialog(Game.Result readyResult) {

@@ -562,7 +562,7 @@
                 <ItemsControl ItemsSource="{Binding CurrentDrivers}">
                   <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                      <mui:SpacingUniformGrid Columns="2" VerticalAlignment="Top" HorizontalSpacing="8" Margin="0 0 0 20" />
+                      <mui:SpacingUniformGrid Columns="2" VerticalAlignment="Top" HorizontalSpacing="8" Margin="0 0 0 20" VerticalStackMode="True" />
                     </ItemsPanelTemplate>
                   </ItemsControl.ItemsPanel>
                   <ItemsControl.ItemContainerStyle>

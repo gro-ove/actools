@@ -38,8 +38,9 @@ namespace AcManager.Tools.Miscellaneous {
     public static class OAuth {
         private const string SubUrl = "Temporary_Listen_Addresses/Cm_Auth";
 
-        private static string DefaultResponseCallback(bool success) {
-            return string.Format($@"<!DOCTYPE html><html><head><title>Content Manager</title><base href=""{InternalUtils.MainApiDomain}/"">
+        private static string DefaultResponseCallback(bool success, string key) {
+            key = key != null ? $"CM Steam ID Helper: {key}" : "Content Manager";
+            return string.Format($@"<!DOCTYPE html><html><head><title>{key}</title><base href=""{InternalUtils.MainApiDomain}/"">
 <meta http-equiv=""content-type"" content=""text/html; charset=UTF-8""><link rel=""stylesheet"" href=""/s/style.css"" />
 <link rel=""shortcut icon"" type=""image/x-icon"" href=""/app/icon.ico"" sizes=""16x16"" />
 <link rel=""icon"" type=""image/x-icon"" href=""/app/icon_48.png"" sizes=""16x16"" />
@@ -87,15 +88,18 @@ namespace AcManager.Tools.Miscellaneous {
             if (server != null) {
                 Logging.Debug("Registering module…");
                 server.RegisterModule(new WebApiModule());
+
+                string codeReady = null;
                 server.Module<WebApiModule>().RegisterController(() => new IndexPageController(responseError, responseCode, (e, s) => {
                     Logging.Debug($"Result: error={e}, code={s}");
                     if (e != null || s == null) {
                         tcs.TrySetException(new Exception(e == null ? "Code is missing" : "Authentication went wrong: " + e));
                     } else {
+                        codeReady = s;
                         tcs.TrySetResult(new OAuthCode(false, s, redirectUri));
                     }
                     DisposeLater();
-                }, responseCallback ?? DefaultResponseCallback));
+                }, responseCallback ?? (x => DefaultResponseCallback(x, codeReady))));
 
                 cancellation.Register(() => {
                     Logging.Debug("Cancellation token");
@@ -112,6 +116,7 @@ namespace AcManager.Tools.Miscellaneous {
                     Logging.Debug(url);
 #endif
                     WindowsHelper.ViewInBrowser(url);
+                    Logging.Debug("Waiting for a response from a web server");
                     return tcs.Task;
                 } catch (Exception e) {
                     Logging.Warning(e);
@@ -156,6 +161,7 @@ namespace AcManager.Tools.Miscellaneous {
                 async void Handler(object sender, EventArgs args) {
                     if (!waiting) return;
                     waiting = false;
+                    Logging.Debug("Opening OAuth prompt");
 
                     // ReSharper disable once AccessToModifiedClosure
                     code = await Prompt.ShowAsync(title, description, code, watermark, toolTip,

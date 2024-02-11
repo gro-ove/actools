@@ -575,8 +575,6 @@
         <mui:Link x:Name="RaceULink" DisplayName="RaceU" Source="/Pages/Drive/RaceU.xaml" />
         <mui:Link x:Name="RsrLink" DisplayName="{x:Static g:AppStrings.Main_Rsr}" Source="/Pages/Drive/Rsr.xaml" />
         <mui:Link x:Name="Srs2Link" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs2.xaml" />
-        <mui:Link x:Name="TrackTitanLink" DisplayName="Track Titan" Source="/Pages/Drive/TrackTitan.xaml" />
-        <mui:Link x:Name="UnitedRacingDataLink" DisplayName="United Racing Data" Source="/Pages/Drive/UnitedRacingData.xaml" />
         <mui:Link x:Name="WorldSimSeriesLink" DisplayName="World Sim Series" Source="/Pages/Drive/WorldSimSeries.xaml" />
         <mui:Link DisplayName="Configure" Source="/Pages/Settings/SettingsLive.xaml?Separate=True">
           <mui:Link.Icon>

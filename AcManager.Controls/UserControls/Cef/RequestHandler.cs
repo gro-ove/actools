@@ -5,6 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Media;
 using AcManager.Controls.UserControls.Web;
+using AcManager.Internal;
 using AcTools.Utils.Helpers;
 using CefSharp;
 using FirstFloor.ModernUI.Helpers;
@@ -20,6 +21,13 @@ namespace AcManager.Controls.UserControls.Cef {
 
         bool IRequestHandler.OnBeforeBrowse(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, bool userGesture, bool isRedirect) {
             // if (request.TransitionType.HasFlag(TransitionType.ForwardBack)) return true;
+            if (request.Url.StartsWith("mailto:")) return true;
+            if (request.Url.StartsWith("acmanager:") 
+                || request.Url.StartsWith($"http://{InternalUtils.MainApiDomain}/s/q:")
+                || request.Url.StartsWith($"https://{InternalUtils.MainApiDomain}/s/q:")) {
+                WebBlock.CmCommandHandler?.Invoke(request.Url);
+                return true;  
+            }
             return RequestsFiltering.ShouldBeBlocked(request.Url);
         }
 
@@ -51,10 +59,6 @@ namespace AcManager.Controls.UserControls.Cef {
 
             Logging.Warning(requestUrl);
             return false;
-        }
-
-        void IRequestHandler.OnPluginCrashed(IWebBrowser browserControl, IBrowser browser, string pluginPath) {
-            Logging.Warning(pluginPath);
         }
 
         ICookieAccessFilter IResourceRequestHandler.GetCookieAccessFilter(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request) {
@@ -98,14 +102,6 @@ namespace AcManager.Controls.UserControls.Cef {
 
         void IRequestHandler.OnRenderProcessTerminated(IWebBrowser browserControl, IBrowser browser, CefTerminationStatus status) {
             Logging.Warning(status);
-        }
-
-        bool IRequestHandler.OnQuotaRequest(IWebBrowser browserControl, IBrowser browser, string originUrl, long newSize, IRequestCallback callback) {
-            if (!callback.IsDisposed) {
-                callback.Dispose();
-            }
-
-            return true;
         }
 
         void IResourceRequestHandler.OnResourceRedirect(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response,

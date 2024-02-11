@@ -5,6 +5,7 @@ using System.Windows.Media;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -37,10 +38,22 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _LfmEnabled;
+
+            public bool LfmEnabled {
+                get => _LfmEnabled ?? (_LfmEnabled = ValuesStorage.Get("Settings.LiveSettings.LfmEnabled", true)).Value;
+                set {
+                    if (Equals(value, _LfmEnabled)) return;
+                    _LfmEnabled = value;
+                    ValuesStorage.Set("Settings.LiveSettings.LfmEnabled", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _trackTitanEnabled;
 
             public bool TrackTitanEnabled {
-                get => _trackTitanEnabled ?? (_trackTitanEnabled = ValuesStorage.Get("Settings.LiveSettings.TrackTitanEnabled", true)).Value;
+                get => _trackTitanEnabled ?? (_trackTitanEnabled = ValuesStorage.Get("Settings.LiveSettings.TrackTitanEnabled", false)).Value;
                 set {
                     if (Equals(value, _trackTitanEnabled)) return;
                     _trackTitanEnabled = value;
@@ -52,7 +65,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _UnitedRacingDataEnabled;
 
             public bool UnitedRacingDataEnabled {
-                get => _UnitedRacingDataEnabled ?? (_UnitedRacingDataEnabled = ValuesStorage.Get("Settings.LiveSettings.UnitedRacingDataEnabled", true)).Value;
+                get => _UnitedRacingDataEnabled ?? (_UnitedRacingDataEnabled = ValuesStorage.Get("Settings.LiveSettings.UnitedRacingDataEnabled", false)).Value;
                 set {
                     if (Equals(value, _UnitedRacingDataEnabled)) return;
                     _UnitedRacingDataEnabled = value;
@@ -207,14 +220,14 @@ namespace AcManager.Tools.Helpers {
 
                 public Color? HighlightColor { get; set; }
 
-                public LiveServiceEntry(string s) {
+                public LiveServiceEntry([NotNull] string s) {
                     var obj = JObject.Parse(s);
                     DisplayName = obj.GetStringValueOnly("name") ?? throw new Exception("Missing: name");
                     Url = obj.GetStringValueOnly("url") ?? throw new Exception("Missing: URL");
                     HighlightColor = obj.GetStringValueOnly("color")?.ToColor();
                 }
 
-                public LiveServiceEntry(string url, string name, string color) {
+                public LiveServiceEntry([NotNull] string url, [NotNull] string name, [CanBeNull] string color) {
                     DisplayName = name ?? throw new Exception("Missing: name");
                     Url = url ?? throw new Exception("Missing: URL");
                     HighlightColor = color?.ToColor();

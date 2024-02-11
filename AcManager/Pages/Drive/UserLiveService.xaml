@@ -22,8 +22,7 @@
   <mui:ReferenceSwitch.NonNull>
     <mui:BooleanSwitch Value="{Binding IsReady, Source={x:Static local:UserLiveService.Requirement}}">
       <mui:BooleanSwitch.True>
-        <c:WebBlock x:Name="Browser" UserAgent="AC Content Manager" PreferTransparentBackground="True" NewWindowsBehavior="MultiTab" Margin="0 4 0 0"
-            AlwaysKeepAlive="True" Loaded="OnWebBlockLoaded" />
+        <c:WebBlock x:Name="Browser" NewWindowsBehavior="MultiTab" Margin="0 4 0 0" AlwaysKeepAlive="True" Loaded="OnWebBlockLoaded" />
       </mui:BooleanSwitch.True>
       <mui:BooleanSwitch.False>
         <DockPanel Margin="40 0 40 100" HorizontalAlignment="Center" VerticalAlignment="Center">

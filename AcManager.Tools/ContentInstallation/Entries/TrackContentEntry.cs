@@ -69,16 +69,16 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             }
         }
 
-        public static async Task<TrackContentEntry> Create([NotNull] string path, [NotNull] string id, [CanBeNull] List<string> kn5Files,
+        public static async Task<TrackContentEntry> Create([CanBeNull] string[] cleanup, [NotNull] string path, [NotNull] string id, [CanBeNull] List<string> kn5Files,
                 [CanBeNull] List<string> requiredKn5Files, string name = null, string version = null, byte[] iconData = null) {
             var result = new TrackContentEntry(path, id, kn5Files, requiredKn5Files, name, version, iconData);
-            await result.Initialize().ConfigureAwait(false);
+            await result.Initialize(cleanup).ConfigureAwait(false);
             return result;
         }
 
-        public static async Task<TrackContentEntry> Create([NotNull] string path, [NotNull] string id, [NotNull] IReadOnlyList<TrackContentLayoutEntry> layouts) {
+        public static async Task<TrackContentEntry> Create([CanBeNull] string[] cleanup, [NotNull] string path, [NotNull] string id, [NotNull] IReadOnlyList<TrackContentLayoutEntry> layouts) {
             var result = new TrackContentEntry(path, id, layouts);
-            await result.Initialize().ConfigureAwait(false);
+            await result.Initialize(cleanup).ConfigureAwait(false);
             return result;
         }
 
@@ -97,7 +97,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             set => Apply(value, ref _noLayoutsExistingLayout);
         }
 
-        private async Task Initialize() {
+        private async Task Initialize([CanBeNull] string[] cleanup) {
             TrackObject existing;
             try {
                 existing = await GetExistingAcObjectAsync();
@@ -203,6 +203,10 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                         }
                     }
                 }
+            }
+            
+            if (cleanup?.Length > 0 && UpdateOptions.FirstOrDefault(x => !x.RemoveExisting) is UpdateOption u && u.CleanUp == null) {
+                u.CleanUp = s => cleanup.Select(x => Path.Combine(s, x));
             }
 
             // Good luck with testing, lol

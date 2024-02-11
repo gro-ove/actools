@@ -668,12 +668,20 @@ namespace AcManager {
                     PatchUpdater.Instance.Updated += OnPatchUpdated;
                 }
             });
+
+            WebBlock.CmCommandHandler = s => {
+                ActionExtension.InvokeInMainThreadAsync(() => {
+                    using (GameWrapper.SetPropertiesCallback(p => p.SetAdditional(new LiveServiceMark("Generic")))) {
+                        ArgumentsHandler.ProcessArguments(new[] { s }, true).Ignore();
+                    }
+                });
+            };
         }
 
         private static async Task CheckFaultTolerantHeap() {
             try {
                 await Task.Delay(500);
-                if (ValuesStorage.Get(".fth.shown2", false) && FaultTolerantHeapFix.Check()) {
+                if (ValuesStorage.Get(".fth.shown3", false) && FaultTolerantHeapFix.Check()) {
                     NonfatalError.NotifyBackground("Performance issue detected",
                             "Assetto Corsa performance is negatively affected by FTH. Content Manager can try to fix it.",
                             solutions: new[] {

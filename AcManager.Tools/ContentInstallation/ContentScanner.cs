@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace AcManager.Tools.ContentInstallation {
     internal class ContentScanner {
@@ -127,6 +129,11 @@ namespace AcManager.Tools.ContentInstallation {
                 }
 
                 return _files.GetValueOrDefault(name.ToLowerInvariant());
+            }
+
+            public async Task<string[]> GetCleanUpList() {
+                var cleanup = await (GetSubFile("clean_update.txt")?.Info.ReadAsync() ?? Task.FromResult<byte[]>(null));
+                return cleanup != null ? Encoding.UTF8.GetString(cleanup).Split('\n').Where(x => !x.Contains(@"..")).ToArray() : null;
             }
 
             public bool HasAnySubFile(Func<string, bool> fn) {
@@ -372,13 +379,14 @@ namespace AcManager.Tools.ContentInstallation {
                         Tuple.Create(new List<string>(0), new List<string> { name }));
             }
 
+            var cleanUp = await ui.GetCleanUpList();
             if (uiTrack != null && uiTrackSubs.Count == 0) {
                 // It’s a basic track, no layouts
                 Logging.Write("Basic type of track");
 
                 var nvi = await LoadNameVersionIcon(uiTrack);
                 var models = await LoadMainModelsIni();
-                return await TrackContentEntry.Create(directory.Key ?? "", trackId, models.Item1, models.Item2,
+                return await TrackContentEntry.Create(cleanUp, directory.Key ?? "", trackId, models.Item1, models.Item2,
                         nvi.Item1, nvi.Item2, nvi.Item3);
             }
 
@@ -406,8 +414,8 @@ namespace AcManager.Tools.ContentInstallation {
                 layouts.Add(new TrackContentLayoutEntry("", models.Item1, models.Item2,
                         nvi.Item1, nvi.Item2, nvi.Item3));
             }
-
-            return await TrackContentEntry.Create(directory.Key ?? "", trackId, layouts);
+            
+            return await TrackContentEntry.Create(cleanUp, directory.Key ?? "", trackId, layouts);
         }
 
         [ItemCanBeNull]

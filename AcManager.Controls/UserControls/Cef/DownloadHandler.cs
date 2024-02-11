@@ -39,6 +39,10 @@ namespace AcManager.Controls.UserControls.Cef {
 
         private readonly Dictionary<int, DownloadData> _downloads = new Dictionary<int, DownloadData>();
 
+        bool IDownloadHandler.CanDownload(IWebBrowser chromiumWebBrowser, IBrowser browser, string url, string requestMethod) {
+            return true;
+        }
+
         void IDownloadHandler.OnBeforeDownload(IWebBrowser chromiumWebBrowser, IBrowser browser, DownloadItem downloadItem, IBeforeDownloadCallback callback) {
             if (Listener == null) return;
             try {

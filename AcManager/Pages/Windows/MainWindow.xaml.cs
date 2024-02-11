@@ -46,6 +46,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
@@ -407,10 +408,31 @@ namespace AcManager.Pages.Windows {
             // SrsLink.IsShown = SettingsHolder.Live.SrsEnabled;
             Srs2Link.IsShown = SettingsHolder.Live.SrsEnabled;
             WorldSimSeriesLink.IsShown = SettingsHolder.Live.WorldSimSeriesEnabled;
-            TrackTitanLink.IsShown = SettingsHolder.Live.TrackTitanEnabled;
-            UnitedRacingDataLink.IsShown = SettingsHolder.Live.UnitedRacingDataEnabled;
             foreach (var entry in LiveGroup.Links.Where(x => x.Tag == "user").ToList()) {
                 LiveGroup.Links.Remove(entry);
+            }
+            if (SettingsHolder.Live.LfmEnabled) {
+                LiveGroup.Links.AddSorted(new Link {
+                    DisplayName = "LFM",
+                    Source = new Uri("/Pages/Drive/UserLiveService.xaml", UriKind.Relative)
+                            .AddQueryParam("url", "https://lowfuelmotorsport.com/")
+                            .AddQueryParam("color", Color.FromArgb(255, 0xED, 0x1C, 0x24).As<string>()),
+                    Tag = "user"
+                }, LinkComparer.Instance);
+            }
+            if (SettingsHolder.Live.TrackTitanEnabled) {
+                LiveGroup.Links.AddSorted(new Link {
+                    DisplayName = "Track Titan",
+                    Source = new Uri("/Pages/Drive/UserLiveService.xaml", UriKind.Relative).AddQueryParam("url", "https://www.unitedracingdata.com/"),
+                    Tag = "user"
+                }, LinkComparer.Instance);
+            }
+            if (SettingsHolder.Live.UnitedRacingDataEnabled) {
+                LiveGroup.Links.AddSorted(new Link {
+                    DisplayName = "United Racing Data",
+                    Source = new Uri("/Pages/Drive/UserLiveService.xaml", UriKind.Relative).AddQueryParam("url", "https://www.tracktitan.io/"),
+                    Tag = "user"
+                }, LinkComparer.Instance);
             }
             foreach (var entry in SettingsHolder.Live.UserEntries) {
                 LiveGroup.Links.AddSorted(new Link {

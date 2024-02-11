@@ -70,9 +70,9 @@ namespace AcManager.Tools.Helpers {
             public PeriodEntry[] Periods => _periodEntries ?? (_periodEntries = new[] {
                 PeriodDisabled,
                 PeriodStartup,
-                new PeriodEntry(TimeSpan.FromMinutes(30)),
-                new PeriodEntry(TimeSpan.FromHours(3)),
+                new PeriodEntry(TimeSpan.FromHours(2)),
                 new PeriodEntry(TimeSpan.FromHours(6)),
+                new PeriodEntry(TimeSpan.FromHours(12)),
                 new PeriodEntry(TimeSpan.FromDays(1))
             });
 
@@ -83,7 +83,7 @@ namespace AcManager.Tools.Helpers {
                 get {
                     var saved = ValuesStorage.Get<TimeSpan?>("Settings.CommonSettings.UpdatePeriod");
                     return _updatePeriod ?? (_updatePeriod = Periods.FirstOrDefault(x => x.TimeSpan == saved) ??
-                            Periods.ElementAt(2));
+                            Periods.ElementAt(4));
                 }
                 set {
                     if (Equals(value, _updatePeriod)) return;

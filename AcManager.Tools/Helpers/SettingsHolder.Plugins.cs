@@ -24,7 +24,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _cefWinForms;
 
             public bool CefWinForms {
-                get => _cefWinForms ?? (_cefWinForms = ValuesStorage.Get("Settings.PluginsSettings.CefWinForms", false)).Value;
+                get => _cefWinForms ?? (_cefWinForms = ValuesStorage.Get("Settings.PluginsSettings.CefWinForms", true)).Value;
                 set {
                     if (Equals(value, _cefWinForms)) return;
                     _cefWinForms = value;

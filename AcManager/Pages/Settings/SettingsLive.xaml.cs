@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using AcManager.Tools.Helpers;
@@ -59,10 +60,11 @@ namespace AcManager.Pages.Settings {
                     title = await PageTitleFinder.GetPageTitle(url);
                 }
 
+                await Task.Delay(100);
                 var name = await Prompt.ShowAsync("Live service name:", "Add new live service", title,
                         comment: "Pick a name for its link in Live Services section.");
                 if (name != null) {
-                    Live.UserEntries = Live.UserEntries.Append(new SettingsHolder.LiveSettings.LiveServiceEntry(title)).ToList();
+                    Live.UserEntries = Live.UserEntries.Append(new SettingsHolder.LiveSettings.LiveServiceEntry(url, name, null)).ToList();
                 }
             }));
         }

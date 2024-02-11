@@ -6,6 +6,7 @@ using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.UserControls.Web;
@@ -15,21 +16,29 @@ using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.Drive {
     public partial class UserLiveService : IParametrizedUriContent, ILoadableContent {
-        private SettingsHolder.LiveSettings.LiveServiceEntry _entry;
+        private string _url;
 
         public void OnUri(Uri uri) {
-            _entry = SettingsHolder.Live.UserEntries.GetById(uri.GetQueryParam("url"));
-            if (_entry == null) throw new Exception("Unknown live service");
-            if (_entry.HighlightColor.HasValue) {
-                this.SetCustomAccentColor(_entry.HighlightColor.Value);
+            _url = uri.GetQueryParam("url");
+            var entry = SettingsHolder.Live.UserEntries.GetByIdOrDefault(uri.GetQueryParam("url"));
+            if (entry?.HighlightColor != null) {
+                this.SetCustomAccentColor(entry.HighlightColor.Value);
+            } else {
+                var color = uri.GetQueryParam("color");
+                if (!string.IsNullOrEmpty(color)) {
+                    this.SetCustomAccentColor(color.As(Colors.YellowGreen));
+                } else {
+                    Browser.PreferTransparentBackground = false;
+                }
             }
-            Browser.StartPage = _entry.Url;
-            Browser.KeepAliveKey = "ulsk:" + _entry.Url;
-            Browser.SaveKey = "ulss:" + _entry.Url;
+            Browser.StartPage = _url;
+            Browser.KeepAliveKey = "ulsk:" + _url;
+            Browser.SaveKey = "ulss:" + _url;
         }
 
         private static PluginsRequirement _requirement;
@@ -78,7 +87,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnWebBlockLoaded(object sender, RoutedEventArgs e) {
-            ((WebBlock)sender).SetJsBridge<UserLiveServiceApiBridge>(bridge => bridge.AddAllowedHosts(_entry.Url.GetDomainNameFromUrl()));
+            ((WebBlock)sender).SetJsBridge<UserLiveServiceApiBridge>(bridge => bridge.AddAllowedHosts(_url.GetDomainNameFromUrl()));
         }
     }
 }

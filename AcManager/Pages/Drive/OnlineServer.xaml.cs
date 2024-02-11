@@ -134,9 +134,10 @@ namespace AcManager.Pages.Drive {
         private void ResizingStuff() {
             ShowExtendedInformation = ActualWidth > 600;
 
-            var contentHeight = ErrorsPanel.ActualHeight + PasswordPanel.ActualHeight + DataPanel.ActualHeight;
-            var availableHeight = ScrollViewer.ActualHeight;
-            ScrollableContent = availableHeight - contentHeight < 120;
+            // var contentHeight = ErrorsPanel.ActualHeight + PasswordPanel.ActualHeight + DataPanel.ActualHeight;
+            // var availableHeight = ScrollViewer.ActualHeight;
+            // ScrollableContent = availableHeight - contentHeight < 120;
+            ScrollableContent = true;
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {

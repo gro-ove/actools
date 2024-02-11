@@ -169,8 +169,8 @@
       <Private>True</Private>
       <EmbedInteropTypes>false</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CefSharp, Version=91.1.211.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-91.1.211-$(ActualPlatform)\CefSharp.dll</HintPath>
+    <Reference Include="CefSharp, Version=114.2.120.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-114.2.120-$(ActualPlatform)\CefSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="xxHashSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
@@ -497,12 +497,6 @@
     </Compile>
     <Compile Include="Pages\Drive\TempSurvey.xaml.cs">
       <DependentUpon>TempSurvey.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Drive\TrackTitan.xaml.cs">
-      <DependentUpon>TrackTitan.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Drive\UnitedRacingData.xaml.cs">
-      <DependentUpon>UnitedRacingData.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Drive\UserChampionships_SelectedPage.xaml.cs">
       <DependentUpon>UserChampionships_SelectedPage.xaml</DependentUpon>
@@ -1240,8 +1234,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Drive\TempSurvey.xaml" />
-    <Page Include="Pages\Drive\TrackTitan.xaml" />
-    <Page Include="Pages\Drive\UnitedRacingData.xaml" />
     <Page Include="Pages\Drive\UserChampionships_SelectedPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

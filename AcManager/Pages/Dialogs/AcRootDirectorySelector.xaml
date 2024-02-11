@@ -34,7 +34,7 @@
     <StackPanel Visibility="{Binding ChangeSteamId, Converter={StaticResource BooleanToVisibilityConverter}}">
       <TextBlock Text="{x:Static g:AppStrings.AcRoot_SteamId_Prompt}" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
       <DockPanel Margin="20 8 0 0">
-        <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding GetSteamIdCommand}" DockPanel.Dock="Right" Margin="4 0 0 0" />
+        <mui:AsyncButton Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding GetSteamIdCommand}" DockPanel.Dock="Right" Margin="4 0 0 0" />
         <mui:BetterComboBox ItemsSource="{Binding SteamProfiles}" SelectedItem="{Binding SteamProfile}" Placeholder="?"
             Foreground="{DynamicResource InputText}" DisplayMemberPath="DisplayName" IsEditable="False" />
       </DockPanel>

@@ -94,10 +94,14 @@ namespace AcManager {
                     || arg.EndsWith(".report-launch", StringComparison.OrdinalIgnoreCase);
         }
 
+        public static Func<IEnumerable<string>, bool> AppUiMessageInterception { get; set; }
+
         private bool HandleMessages(IEnumerable<string> obj) {
             if (AcRootDirectory.Instance?.IsReady != true) return false;
 
             var list = obj.ToList();
+            if (AppUiMessageInterception?.Invoke(list) == true) return false;
+            
             Logging.Write(list.Select(x => $"“{x}”").JoinToReadableString());
             HandleMessagesAsync(list).Ignore();
             return list.Count == 0 || !list.All(CanGoWithoutWindow);
