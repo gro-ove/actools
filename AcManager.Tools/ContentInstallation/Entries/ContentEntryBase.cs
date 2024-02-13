@@ -16,8 +16,11 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Entries {
     public abstract class ContentEntryBase : NotifyPropertyChanged {
+        [CanBeNull]
+        private readonly string[] _cleanUp;
+
         public static event EventHandler OnInstallationModeChanged;
-        
+
         [NotNull]
         public string Id { get; }
 
@@ -83,10 +86,12 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public abstract string GenericModTypeName { get; }
 
         public abstract string NewFormat { get; }
+
         public abstract string ExistingFormat { get; }
 
-        protected ContentEntryBase(bool showWarning, [NotNull] string path, [NotNull] string id,
+        protected ContentEntryBase(bool showWarning, [NotNull] string path, [NotNull] string id, [CanBeNull] string[] cleanUp,
                 string name = null, string version = null, byte[] iconData = null, string description = null) {
+            _cleanUp = cleanUp;
             EntryPath = path ?? throw new ArgumentNullException(nameof(path));
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Name = name ?? id;
@@ -103,10 +108,23 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             set => Apply(value, ref _installEntry);
         }
 
+        private IEnumerable<string> CleanUpBase(string location) {
+            return _cleanUp?.Select(x => Path.Combine(x, location)) ?? new string[0];
+        }
+
+        private void SetFallbackCleanUp() {
+            if (_cleanUp != null) {
+                foreach (var option in _updateOptions.Where(x => !x.RemoveExisting && x.CleanUp == null)) {
+                    option.CleanUp = CleanUpBase;
+                }
+            }
+        }
+
         private void InitializeOptions() {
             if (_updateOptions == null) {
                 var oldValue = _selectedOption;
                 _updateOptions = GetUpdateOptions().ToArray();
+                SetFallbackCleanUp();
                 _selectedOption = GetDefaultUpdateOption(_updateOptions);
                 OnSelectedOptionChanged(oldValue, _selectedOption);
             }
@@ -115,6 +133,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         protected void ResetUpdateOptions() {
             var oldValue = _selectedOption;
             _updateOptions = GetUpdateOptions().ToArray();
+            SetFallbackCleanUp();
             _selectedOption = GetDefaultUpdateOption(_updateOptions);
             OnSelectedOptionChanged(oldValue, _selectedOption);
             OnPropertyChanged(nameof(UpdateOptions));
@@ -322,9 +341,9 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     public abstract class ContentEntryBase<T> : ContentEntryBase where T : AcCommonObject {
-        protected ContentEntryBase(bool showWarning, [NotNull] string path, [NotNull] string id, string name = null, string version = null,
-                byte[] iconData = null)
-                : base(showWarning, path, id, name, version, iconData) { }
+        protected ContentEntryBase(bool showWarning, [NotNull] string path, [NotNull] string id, [CanBeNull] string[] cleanUp,
+                string name = null, string version = null, byte[] iconData = null)
+                : base(showWarning, path, id, cleanUp, name, version, iconData) { }
 
         protected sealed override bool GenericModSupportedByDesign => IsNew;
 

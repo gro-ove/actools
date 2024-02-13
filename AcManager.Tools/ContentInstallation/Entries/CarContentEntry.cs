@@ -7,10 +7,15 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Entries {
     public class CarContentEntry : ContentEntryBase<CarObject> {
+        [ItemCanBeNull]
+        private readonly string[] _cleanUp;
+
         private readonly bool _isChild;
 
-        public CarContentEntry([NotNull] string path, [NotNull] string id, bool isChild, string name = null, string version = null, byte[] iconData = null)
-                : base(false, path, id, name, version, iconData) {
+        public CarContentEntry([NotNull] string path, [NotNull] string id, [ItemCanBeNull] string[] cleanUp, bool isChild, string name = null,
+                string version = null, byte[] iconData = null)
+                : base(false, path, id, cleanUp, name, version, iconData) {
+            _cleanUp = cleanUp;
             _isChild = isChild;
         }
 

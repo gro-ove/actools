@@ -13,7 +13,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public override double Priority => 20d;
 
         public FontContentEntry([NotNull] string path, [NotNull] string id, string name = null, byte[] iconData = null)
-                : base(false, path, id, name, iconData: iconData) { }
+                : base(false, path, id, null, name, iconData: iconData) { }
 
         public override string GenericModTypeName => "Font";
         public override string NewFormat => ToolsStrings.ContentInstallation_FontNew;

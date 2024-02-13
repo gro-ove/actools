@@ -14,7 +14,7 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.ContentInstallation.Entries {
     public class CmThemeEntry : ContentEntryBase {
         public CmThemeEntry([NotNull] string path, [NotNull] string id, string version)
-                : base(true, path, id, AcStringValues.NameFromId(id.ApartFromLast(".xaml", StringComparison.OrdinalIgnoreCase)), version) { }
+                : base(true, path, id, null, AcStringValues.NameFromId(id.ApartFromLast(".xaml", StringComparison.OrdinalIgnoreCase)), version) { }
 
         public override double Priority => 120d;
 

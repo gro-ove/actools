@@ -132,7 +132,24 @@
   <DataTemplate x:Key="OnlineDriverEntry" DataType="{x:Type t:ServerEntry+CurrentDriver}" x:Shared="False">
     <DockPanel Width="200">
       <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="4" ClearOnChange="True" />
-      <TextBlock Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" DockPanel.Dock="Top" />
+      <DockPanel DockPanel.Dock="Top">
+        <TextBlock Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"  />
+        <ItemsControl ItemsSource="{Binding Tags}" Height="16" Margin="4 1 0 -1">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <mui:BbCodeBlock Text="{Binding DisplayName}"
+                  Foreground="{Binding Color, Converter={x:Static mui:ColorPicker.ColorToBrushConverter}}"
+                  Background="{DynamicResource ButtonBackground}" FontFamily="{StaticResource CondensedFont}" FontSize="10" Margin="0 0 4 0"
+                  Padding="2 2" />
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel Orientation="Horizontal" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+        </ItemsControl>
+      </DockPanel>
       <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Small}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
     </DockPanel>
   </DataTemplate>

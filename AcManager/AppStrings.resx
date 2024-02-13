@@ -3297,7 +3297,7 @@ But if you don’t want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</valu
 Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="About_Copyright" xml:space="preserve">
-    <value>Copyright © 2016–2020 AcClub.</value>
+    <value>Copyright © 2016–2024 AcClub.</value>
   </data>
   <data name="About_MarkAllAsRead" xml:space="preserve">
     <value>Mark all as read</value>

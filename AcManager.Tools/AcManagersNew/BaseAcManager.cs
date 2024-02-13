@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
@@ -61,6 +62,8 @@ namespace AcManager.Tools.AcManagersNew {
             InnerWrappersList.ListenersChanged += WrappersListListenersChanged;
             SettingsHolder.Content.SubscribeWeak(OnContentSettingChanged);
         }
+
+        public string Id { get; } = Guid.NewGuid().ToString();
 
         private void OnContentSettingChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName != nameof(SettingsHolder.ContentSettings.NewContentPeriod)) return;

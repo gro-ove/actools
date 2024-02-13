@@ -78,7 +78,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copyright © 2016–2020 AcClub..
+        ///   Looks up a localized string similar to Copyright © 2016–2024 AcClub..
         /// </summary>
         public static string About_Copyright {
             get {

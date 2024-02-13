@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcTools.Utils;
@@ -14,6 +15,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Serialization;
+using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
@@ -28,7 +30,8 @@ namespace AcManager.Tools.Helpers {
         public static readonly BatchAction[] AcCommonObjectSet = new BatchAction[] {
             BatchAction_Delete.Instance,
             BatchAction_Enable.Instance,
-            BatchAction_Disable.Instance
+            BatchAction_Disable.Instance,
+            BatchAction_Compress.Instance,
         }.Append(DefaultSet).ToArray();
 
         private static readonly BatchAction[] AcJsonObjectNewSet = new BatchAction[] {
@@ -350,6 +353,42 @@ namespace AcManager.Tools.Helpers {
 
                 var manager = objs.First().FileAcManager;
                 return manager.ToggleAsync(objs.Select(x => x.Id), false);
+            }
+        }
+
+        public class BatchAction_Compress : BatchAction<AcCommonObject> {
+            public static readonly BatchAction_Compress Instance = new BatchAction_Compress();
+
+            public BatchAction_Compress() : base("Compress", "Compress objects", "Files", null) {
+                Priority = -6;
+                DisplayApply = "Compress";
+            }
+
+            public override bool IsAvailable(AcCommonObject obj) {
+                return true;
+            }
+
+            public override Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+                var objs = OfType(list).ToList();
+                if (objs.Count == 0) return Task.Delay(0);
+                var dialog = new ModernDialog {
+                    Title = "Compress files",
+                    SizeToContent = SizeToContent.Manual,
+                    ResizeMode = ResizeMode.CanResizeWithGrip,
+                    LocationAndSizeKey = ".compressBatch",
+                    MinWidth = 800,
+                    MinHeight = 480,
+                    Width = 800,
+                    Height = 640,
+                    MaxWidth = 99999,
+                    MaxHeight = 99999,
+                    Content = new ModernFrame {
+                        Source = new Uri("/Pages/ContentTools/FilesCompressor.xaml", UriKind.Relative)
+                                .AddQueryParam("Type", objs.First().FileAcManager.Id)
+                                .AddQueryParam("Items", objs.Select(x => x.Id).JoinToString("\n"))
+                    }
+                };
+                return dialog.ShowAndWaitAsync();
             }
         }
         #endregion

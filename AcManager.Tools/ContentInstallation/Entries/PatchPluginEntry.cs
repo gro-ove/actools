@@ -16,9 +16,9 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private readonly string _destination;
         private readonly List<string> _toInstall;
 
-        public PatchPluginEntry([NotNull] string path, IEnumerable<string> items, string name, string destination, double priority = 10d,
+        public PatchPluginEntry([NotNull] string path, IEnumerable<string> items, [CanBeNull] string[] cleanUp, string name, string destination, double priority = 10d,
                 string version = null, string description = null)
-                : base(true, path, Path.GetDirectoryName(description) ?? "", name, version, null, description) {
+                : base(true, path, Path.GetDirectoryName(description) ?? "", cleanUp, name, version, null, description) {
             _destination = destination;
             _toInstall = items.ToList();
             Priority = priority;

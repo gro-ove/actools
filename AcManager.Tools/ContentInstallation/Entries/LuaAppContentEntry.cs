@@ -7,8 +7,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     public class LuaAppContentEntry : ContentEntryBase<LuaAppObject> {
         public override double Priority => 46d;
 
-        public LuaAppContentEntry([NotNull] string path, [NotNull] string id, string name = null, string version = null, byte[] iconData = null)
-                : base(true, path, id, name, version, iconData) {
+        public LuaAppContentEntry([NotNull] string path, [NotNull] string id, [CanBeNull] string[] cleanUp, string name = null, string version = null, byte[] iconData = null)
+                : base(true, path, id, cleanUp, name, version, iconData) {
             MoveEmptyDirectories = true;
         }
 

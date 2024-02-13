@@ -870,19 +870,26 @@
       </mui:BooleanSwitch>
       <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}">
         <Button.ToolTip>
-          <mui:ReferenceSwitch Value="{Binding SelectedModeViewModel.TrackDoesNotFit}">
-            <mui:ReferenceSwitch.Null>
-              <TextBlock Text="{x:Static g:AppStrings.Common_Go_RaceTooltip}" />
-            </mui:ReferenceSwitch.Null>
-            <mui:ReferenceSwitch.NonNull>
-              <TextBlock Text="{Binding SelectedModeViewModel.TrackDoesNotFit.Item1}" />
-            </mui:ReferenceSwitch.NonNull>
-          </mui:ReferenceSwitch>
+          <mui:FallbackSwitch>
+            <TextBlock mui:FallbackSwitch.Value="{Binding SelectedModeViewModel.TrackDoesNotFit}" mui:FallbackSwitch.WhenNot="{x:Null}" 
+                Text="{Binding SelectedModeViewModel.TrackDoesNotFit.Item1}" />
+            <TextBlock mui:FallbackSwitch.Value="{Binding SelectedModeViewModel.CarDoesNotFit}" mui:FallbackSwitch.WhenNot="{x:Null}" 
+                Text="{Binding SelectedModeViewModel.CarDoesNotFit.Item1}" />
+            <TextBlock mui:FallbackSwitch.Value="{Binding SelectedModeViewModel.HasAnyRestrictions}" mui:FallbackSwitch.When="True" 
+                Text="Restrictions or ballast are active" />
+          </mui:FallbackSwitch>
         </Button.ToolTip>
         <DockPanel>
-          <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
-              Visibility="{Binding SelectedModeViewModel.CarOrTrackDoesNotFit, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2 2 4 0"
-              VerticalAlignment="Center" />
+          <mui:FallbackSwitch>
+            <Path mui:FallbackSwitch.Value="{Binding SelectedModeViewModel.CarOrTrackDoesNotFit}" mui:FallbackSwitch.When="True" 
+                Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                Visibility="{Binding SelectedModeViewModel.CarOrTrackDoesNotFit, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2 2 4 0"
+                VerticalAlignment="Center" />
+            <Path mui:FallbackSwitch.Value="{Binding SelectedModeViewModel.HasAnyRestrictions}" mui:FallbackSwitch.When="True" 
+                Data="{StaticResource GearIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
+                Visibility="{Binding SelectedModeViewModel.HasAnyRestrictions, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2 2 4 0"
+                VerticalAlignment="Center" />
+          </mui:FallbackSwitch>
           <TextBlock Text="{x:Static g:AppStrings.Common_Go}" />
         </DockPanel>
       </Button>

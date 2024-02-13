@@ -587,7 +587,8 @@
                         <mui:BbCodeBlock Mode="WithoutBbCodes" DockPanel.Dock="Bottom" Text="{Binding Car.DisplayName}" Style="{StaticResource Small}"
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
-                        <ItemsControl ItemsSource="{Binding Tags}" DockPanel.Dock="Left" Height="16" VerticalAlignment="Bottom">
+                        <mui:BbCodeBlock x:Name="DriverName" Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" DockPanel.Dock="Left" />
+                        <ItemsControl ItemsSource="{Binding Tags}" Height="16" Margin="4 1 0 -1">
                           <ItemsControl.ItemTemplate>
                             <DataTemplate>
                               <mui:BbCodeBlock Text="{Binding DisplayName}"
@@ -602,8 +603,6 @@
                             </ItemsPanelTemplate>
                           </ItemsControl.ItemsPanel>
                         </ItemsControl>
-
-                        <mui:BbCodeBlock x:Name="DriverName" Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                       </DockPanel>
 
                       <DataTemplate.Triggers>

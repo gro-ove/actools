@@ -4,10 +4,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
+using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -187,8 +189,30 @@ namespace AcManager.Controls.ViewModels {
             return BitConverter.GetBytes(result).ToHexString().ToLowerInvariant();
         }
 
-        public string Apply() {
-            if (!IsActive || !SettingsHolder.Drive.QuickDriveAiLimitations) return _car.Id;
+        public void Apply(Game.AiCar entry) {
+            if (!IsActive || !SettingsHolder.Drive.QuickDriveAiLimitations) return;
+
+            if (PatchHelper.IsFeatureSupported(PatchHelper.FeatureAiLimitations)) {
+                var e = string.Empty;
+                if (TyresWearMultiplier != 1d) {
+                    e += $@"w{TyresWearMultiplier:F2}";
+                }
+                if (FuelMaxMultiplier != 1d) {
+                    e += $@"f{FuelMaxMultiplier:F2}";
+                }
+                if (_tyres.IsSet && Tyres.Any(x => !x.IsAllowed)) {
+                    foreach (var disabled in Tyres.Where(x => !x.IsAllowed).Select(x => x.DisplayName)) {
+                        e += $@"d{disabled}";
+                    }
+                }
+                if (_finalGearRatio.IsSet && FinalGearRatio?.Value != FinalGearRatio?.DefaultValue && FinalGearRatio != null) {
+                    e += $@"r{FinalGearRatio.Value:F4}";
+                }
+                if (e != string.Empty) {
+                    entry.AiRestrictions = e;
+                }
+                return;
+            }
 
             var newId = $@"__cm_tmp_{_car.Id}_{GetChecksum()}";
             FakeCarsHelper.CreateFakeCar(_car, newId, acd => {
@@ -242,7 +266,7 @@ namespace AcManager.Controls.ViewModels {
                 }
             });
 
-            return newId;
+            entry.CarId = newId;
         }
 
         [CanBeNull]

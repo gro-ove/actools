@@ -16,7 +16,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private readonly string _destination;
 
         public TexturesConfigEntry([NotNull] string path, [NotNull] string id, string name = null)
-                : base(false, path, id, name ?? AcStringValues.NameFromId(id)) {
+                : base(false, path, id, null, name ?? AcStringValues.NameFromId(id)) {
             _destination = Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "texture", id);
         }
 

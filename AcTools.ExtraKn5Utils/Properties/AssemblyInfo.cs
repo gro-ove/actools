@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcTools.ExtraKn5Utils")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2023")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

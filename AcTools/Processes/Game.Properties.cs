@@ -126,6 +126,9 @@ namespace AcTools.Processes {
             [CanBeNull]
             public string CarId, SkinId = "", Setup = "", DriverName = "", Nationality = "", NationCode;
 
+            [CanBeNull]
+            public string AiRestrictions;
+
             public double AiLevel = 100, AiAggression = 0;
             public double Ballast, Restrictor;
         }
@@ -182,7 +185,8 @@ namespace AcTools.Processes {
                         ["BALLAST"] = car.Ballast,
                         ["RESTRICTOR"] = car.Restrictor,
                         ["NATION_CODE"] = car.NationCode ?? GetNationCode(car.Nationality),
-                        ["NATIONALITY"] = car.Nationality
+                        ["NATIONALITY"] = car.Nationality,
+                        ["EXT_AI_RESTRICTIONS"] = car.AiRestrictions,
                     });
             }
         }

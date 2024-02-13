@@ -279,6 +279,8 @@ namespace AcManager.Pages.Drive {
                 LoadSaveable(initialize.Value);
             }
 
+            public override bool HasAnyRestrictions => RaceGridViewModel.PlayerBallast != 0d || RaceGridViewModel.PlayerRestrictor != 0d;
+
             protected void LoadSaveable(bool initialize = true) {
                 InitializeSaveable();
 
@@ -297,6 +299,7 @@ namespace AcManager.Pages.Drive {
 
             private void RaceGridViewModel_Changed(object sender, EventArgs e) {
                 SaveLater();
+                OnPropertyChanged(nameof(HasAnyRestrictions));
             }
 
             public void Load() { }

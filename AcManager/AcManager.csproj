@@ -482,9 +482,11 @@
     <Compile Include="Pages\Drive\GridFinder.xaml.cs">
       <DependentUpon>GridFinder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\IRaceGridModeViewModel.cs" />
     <Compile Include="Pages\Drive\JsGenericProxy.cs" />
     <Compile Include="Pages\Drive\Online.QuickFilters.cs" />
     <Compile Include="Pages\Drive\OnlineServer.AutoJoin.cs" />
+    <Compile Include="Pages\Drive\QuickDriveSingleModeViewModel.cs" />
     <Compile Include="Pages\Drive\QuickDrive_Custom.xaml.cs">
       <DependentUpon>QuickDrive_Custom.xaml</DependentUpon>
     </Compile>

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
     public class Superintendent {
@@ -26,6 +28,11 @@ namespace AcManager.Tools.Managers {
         }
 
         private IReadOnlyList<IAcManagerNew> _managers;
+
+        [CanBeNull]
+        public IAcManagerNew GetManagerById([NotNull] string id) {
+            return _managers.FirstOrDefault(x => x.Id == id);
+        }
 
         private void InnerInitialize() {
             _managers = new IAcManagerNew[] {

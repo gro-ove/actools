@@ -17,6 +17,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -133,7 +134,10 @@ namespace AcManager.Tools.ContentInstallation {
 
             public async Task<string[]> GetCleanUpList() {
                 var cleanup = await (GetSubFile("clean_update.txt")?.Info.ReadAsync() ?? Task.FromResult<byte[]>(null));
-                return cleanup != null ? Encoding.UTF8.GetString(cleanup).Split('\n').Where(x => !x.Contains(@"..")).ToArray() : null;
+                return cleanup != null ? Encoding.UTF8.GetString(cleanup).Split('\n')
+                        .Select(x => FileUtils.EnsureFilenameIsValid(x.Trim(), true))
+                        .Where(x => !x.Contains(@"..") && x.Length > 0)
+                        .ToArray() : null;
             }
 
             public bool HasAnySubFile(Func<string, bool> fn) {
@@ -380,13 +384,15 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             var cleanUp = await ui.GetCleanUpList();
+            cancellation.ThrowIfCancellationRequested();
+            
             if (uiTrack != null && uiTrackSubs.Count == 0) {
                 // It’s a basic track, no layouts
                 Logging.Write("Basic type of track");
 
                 var nvi = await LoadNameVersionIcon(uiTrack);
                 var models = await LoadMainModelsIni();
-                return await TrackContentEntry.Create(cleanUp, directory.Key ?? "", trackId, models.Item1, models.Item2,
+                return await TrackContentEntry.Create(directory.Key ?? "", trackId, cleanUp, models.Item1, models.Item2,
                         nvi.Item1, nvi.Item2, nvi.Item3);
             }
 
@@ -415,11 +421,13 @@ namespace AcManager.Tools.ContentInstallation {
                         nvi.Item1, nvi.Item2, nvi.Item3));
             }
             
-            return await TrackContentEntry.Create(cleanUp, directory.Key ?? "", trackId, layouts);
+            return await TrackContentEntry.Create(directory.Key ?? "", trackId, cleanUp, layouts);
         }
 
         [ItemCanBeNull]
         private async Task<ContentEntryBase> CheckDirectoryNode(DirectoryNode directory, CancellationToken cancellation) {
+            var ui = directory.GetSubDirectory("ui");
+            
             if (directory.Parent?.NameLowerCase == "python" && directory.Parent.Parent?.NameLowerCase == "apps" ||
                     directory.HasSubFile(directory.Name + ".py")) {
                 var id = directory.Name;
@@ -437,8 +445,11 @@ namespace AcManager.Tools.ContentInstallation {
                 var uiAppFound = false;
                 string version = null, name = null;
 
+                var cleanUp = ui != null ? await ui.GetCleanUpList() : null;
+                cancellation.ThrowIfCancellationRequested();
+
                 // Maybe, it’s done nicely?
-                var uiApp = directory.GetSubDirectory("ui")?.GetSubFile("ui_app.json");
+                var uiApp = ui?.GetSubFile("ui_app.json");
                 if (uiApp != null) {
                     uiAppFound = true;
                     var data = await uiApp.Info.ReadAsync();
@@ -488,7 +499,7 @@ namespace AcManager.Tools.ContentInstallation {
                     throw new MissingContentException();
                 }
 
-                return new PythonAppContentEntry(directory.Key ?? "", id,
+                return new PythonAppContentEntry(directory.Key ?? "", id, cleanUp,
                         name ?? id, version, icon, icons?.Select(x => x.Key));
             }
 
@@ -498,6 +509,9 @@ namespace AcManager.Tools.ContentInstallation {
                 if (id == null) {
                     return null;
                 }
+                
+                var cleanUp = await directory.GetCleanUpList();
+                cancellation.ThrowIfCancellationRequested();
 
                 // Collecting values…
                 string version = null, name = null;
@@ -516,14 +530,16 @@ namespace AcManager.Tools.ContentInstallation {
                 var icon = await (directory.GetSubFile("icon.png")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
                 cancellation.ThrowIfCancellationRequested();
 
-                return new LuaAppContentEntry(directory.Key ?? "", id, name ?? id, version, icon);
+                return new LuaAppContentEntry(directory.Key ?? "", id, cleanUp, name ?? id, version, icon);
             }
 
-            var ui = directory.GetSubDirectory("ui");
             if (ui != null) {
                 // Is it a car?
                 var uiCar = ui.GetSubFile("ui_car.json");
                 if (uiCar != null) {
+                    var cleanUp = await ui.GetCleanUpList();
+                    cancellation.ThrowIfCancellationRequested();
+                    
                     var icon = await (ui.GetSubFile("badge.png")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
                     cancellation.ThrowIfCancellationRequested();
 
@@ -534,7 +550,7 @@ namespace AcManager.Tools.ContentInstallation {
                                     .FirstOrDefault(x => x.EndsWith(@".bank") && x.Count('.') == 1 && x != @"common.bank")?.ApartFromLast(@".bank");
 
                     if (carId != null) {
-                        return new CarContentEntry(directory.Key ?? "", carId, parsed.GetStringValueOnly("parent") != null,
+                        return new CarContentEntry(directory.Key ?? "", carId, cleanUp, parsed.GetStringValueOnly("parent") != null,
                                 parsed.GetStringValueOnly("name"), parsed.GetStringValueOnly("version"), icon);
                     }
                 }
@@ -557,7 +573,10 @@ namespace AcManager.Tools.ContentInstallation {
                             directory.Files.Where(x => x.NameLowerCase.EndsWith(@".kn5")).OrderByDescending(x => x.Info.Size)
                                     .FirstOrDefault()?.NameLowerCase.ApartFromLast(@".kn5");
                     if (showroomId != null) {
-                        return new ShowroomContentEntry(directory.Key ?? "", showroomId,
+                        var cleanUp = await ui.GetCleanUpList();
+                        cancellation.ThrowIfCancellationRequested();
+                        
+                        return new ShowroomContentEntry(directory.Key ?? "", showroomId, cleanUp,
                                 parsed.GetStringValueOnly("name"), parsed.GetStringValueOnly("version"), icon);
                     }
                 }
@@ -570,7 +589,7 @@ namespace AcManager.Tools.ContentInstallation {
                             ? await (directory.GetSubFile(@"preview.jpg")?.Info.ReadAsync() ?? throw new MissingContentException())
                             : null;
                     cancellation.ThrowIfCancellationRequested();
-                    return new ShowroomContentEntry(directory.Key ?? "", directory.Name ?? throw new ArgumentException(), iconData: icon);
+                    return new ShowroomContentEntry(directory.Key ?? "", directory.Name ?? throw new ArgumentException(), null, iconData: icon);
                 }
             }
 
@@ -599,7 +618,7 @@ namespace AcManager.Tools.ContentInstallation {
                         var icon = await (directory.GetSubFile("preview.jpg")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
                         cancellation.ThrowIfCancellationRequested();
 
-                        return new ShowroomContentEntry(directory.Key ?? "", id,
+                        return new ShowroomContentEntry(directory.Key ?? "", id, null,
                                 AcStringValues.NameFromId(id), null, icon);
                     }
                 }
@@ -794,7 +813,9 @@ namespace AcManager.Tools.ContentInstallation {
                         version = data.GetNonEmpty("VERSION");
                         description = data.GetNonEmpty("DESCRIPTION");
                     }
-                    return new PatchPluginEntry(directory.Key ?? "", new[] { directory.Key }, $"{displayName} “{name}”",
+                    var cleanUp = await directory.GetCleanUpList();
+                    cancellation.ThrowIfCancellationRequested();
+                    return new PatchPluginEntry(directory.Key ?? "", new[] { directory.Key }, cleanUp, $"{displayName} “{name}”",
                             Path.Combine(AcRootDirectory.Instance.RequireValue, PatchHelper.PatchDirectoryName, directory.Parent?.NameLowerCase ?? "", directoryName), 1e5,
                             version, description);
                 }
@@ -820,12 +841,15 @@ namespace AcManager.Tools.ContentInstallation {
                         description = directory.GetSubDirectory("documentation")?.Files.FirstOrDefault(x => x.NameLowerCase.EndsWith(@".jsgme"));
                     }
 
+                    var cleanUp = await directory.GetCleanUpList();
+                    cancellation.ThrowIfCancellationRequested();
+                    
                     if (description != null) {
                         var data = await description.Info.ReadAsync() ?? throw new MissingContentException();
-                        return new GenericModConfigEntry(directory.Key ?? "", name, data.ToUtf8String());
+                        return new GenericModConfigEntry(directory.Key ?? "", name, cleanUp, data.ToUtf8String());
                     }
 
-                    return new GenericModConfigEntry(directory.Key ?? "", name);
+                    return new GenericModConfigEntry(directory.Key ?? "", name, cleanUp);
                 }
             }
 

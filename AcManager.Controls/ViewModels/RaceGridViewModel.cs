@@ -1449,16 +1449,7 @@ namespace AcManager.Controls.ViewModels {
                 }
 
                 var carId = entry.Car.Id;
-                if (entry.AiLimitationDetails.IsActive) {
-                    // TODO: Async?
-                    try {
-                        carId = entry.AiLimitationDetails.Apply();
-                    } catch (Exception e) {
-                        NonfatalError.Notify("Can’t make AI-specific version of a car", e);
-                    }
-                }
-
-                return new Game.AiCar {
+                var result = new Game.AiCar {
                     AiLevel = level,
                     AiAggression = aggression,
                     CarId = carId,
@@ -1469,6 +1460,16 @@ namespace AcManager.Controls.ViewModels {
                     Setup = "",
                     SkinId = skinId
                 };
+                if (entry.AiLimitationDetails.IsActive) {
+                    // TODO: Async?
+                    try {
+                        entry.AiLimitationDetails.Apply(result);
+                    } catch (Exception e) {
+                        NonfatalError.Notify("Can’t make AI-specific version of a car", e);
+                    }
+                }
+
+                return result;
             }).ToList();
         }
 

@@ -54,6 +54,8 @@ namespace AcManager.Tools.Data {
         public static readonly string WeatherFxLauncherControlled = "WEATHERFX_LAUNCHER_CONTROLLED";
         public static readonly string FeatureSnow = "SNOW";
         public static readonly string FeatureDirectInputExtraGamma = "DIRECTINPUT_EXTRA_GAMMA";
+        public static readonly string FeatureLibrariesPreoptimized = "LIBRARIES_PREOPTIMIZED";
+        public static readonly string FeatureAiLimitations = "AI_LIMITATIONS";
 
         public class AudioDescription : Displayable {
             public string Id { get; set; }

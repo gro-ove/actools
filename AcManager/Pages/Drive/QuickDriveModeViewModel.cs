@@ -13,80 +13,6 @@ using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Drive {
-    public abstract class QuickDriveSingleModeViewModel : QuickDriveModeViewModel {
-        protected void Initialize(string key, bool initialize) {
-            Saveable = CreateSaveable(key);
-            if (initialize) {
-                Saveable.Initialize();
-            } else {
-                Saveable.Reset();
-            }
-        }
-
-        [NotNull]
-        protected virtual ISaveHelper CreateSaveable(string key) {
-            return new SaveHelper<SaveableData>(key, () => Save(new SaveableData()), Load);
-        }
-
-        private bool _penalties;
-
-        public bool Penalties {
-            get => _penalties;
-            set {
-                if (value == _penalties) return;
-                _penalties = value;
-                OnPropertyChanged();
-                SaveLater();
-            }
-        }
-
-        private int _playerBallast;
-
-        public int PlayerBallast {
-            get => _playerBallast;
-            set {
-                if (Equals(value, _playerBallast)) return;
-                _playerBallast = value;
-                OnPropertyChanged();
-                SaveLater();
-            }
-        }
-
-        private int _playerRestrictor;
-
-        public int PlayerRestrictor {
-            get => _playerRestrictor;
-            set {
-                if (Equals(value, _playerRestrictor)) return;
-                _playerRestrictor = value;
-                OnPropertyChanged();
-                SaveLater();
-            }
-        }
-
-        public class SaveableData {
-            public bool Penalties = true;
-            public int PlayerBallast, PlayerRestrictor;
-        }
-
-        protected SaveableData Save(SaveableData data) {
-            data.Penalties = Penalties;
-            data.PlayerBallast = PlayerBallast;
-            data.PlayerRestrictor = PlayerRestrictor;
-            return data;
-        }
-
-        protected void Load(SaveableData data) {
-            Penalties = data.Penalties;
-            PlayerBallast = data.PlayerBallast;
-            PlayerRestrictor = data.PlayerRestrictor;
-        }
-    }
-
-    public interface IRaceGridModeViewModel {
-        void SetRaceGridData([NotNull] string serializedRaceGrid);
-    }
-
     public abstract class QuickDriveModeViewModel : NotifyPropertyChanged {
         public static Action<CarObject> EmptyCarAction = a => { };
         public static Action<TrackObjectBase> EmptyTrackAction = a => { };
@@ -125,6 +51,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public bool CarOrTrackDoesNotFit => _carDoesNotFit != null || _trackDoesNotFit != null;
+        
+        public abstract bool HasAnyRestrictions { get; }
 
         [CanBeNull]
         protected Tuple<string, Action<TrackObjectBase>> TagRequired([Localizable(false), NotNull] string tag, [CanBeNull] TrackObjectBase track) {

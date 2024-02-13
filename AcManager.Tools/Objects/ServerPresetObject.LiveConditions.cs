@@ -131,7 +131,7 @@ weather.rainWaterIncreaseTime={CmPluginLiveConditionsParams.RainWaterIncreaseTim
                 });
                 if (filename == null) return;
 
-                var packedPlugin = await CmApiProvider.GetStaticDataBytesAsync("server_dynamic_conditions_v2", TimeSpan.FromDays(3));
+                var packedPlugin = await CmApiProvider.GetStaticDataBytesAsync("server_dynamic_conditions_v3", TimeSpan.FromDays(3));
                 if (packedPlugin == null) return;
 
                 await Task.Run(() => {

@@ -12,6 +12,7 @@ using AcManager.Controls.Presentation;
 using AcTools.Render.Base;
 using AcTools.Render.Wrapper;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -69,6 +70,7 @@ namespace AcManager.CustomShowroom {
 
         public AttachedHelper([NotNull] FormWrapperBase parent, [NotNull] DpiAwareWindow child, int offset = -1, int padding = 10, bool limitHeight = true,
                 bool verbose = false) {
+            ++WaitingDialog.BlockAttachmentCounter;
             _padding = padding;
             _limitHeight = limitHeight;
             _verbose = verbose;
@@ -167,6 +169,7 @@ namespace AcManager.CustomShowroom {
         }
 
         private void OnClosed(object sender, EventArgs e) {
+            --WaitingDialog.BlockAttachmentCounter;
             _closed = true;
 
             if (_child != null) {

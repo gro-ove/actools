@@ -15,7 +15,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         private readonly string _destination;
 
-        public CrewBrandEntry([NotNull] string path, [NotNull] string id, string name = null) : base(false, path, id, GetName(id, name)) {
+        public CrewBrandEntry([NotNull] string path, [NotNull] string id, string name = null) : base(false, path, id, null, GetName(id, name)) {
             _destination = Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "texture", "crew_brand", id);
         }
 

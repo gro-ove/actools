@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using AcManager.Controls.Graphs;
 using AcManager.Tools;
+using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -123,50 +124,77 @@ namespace AcManager.Pages.ContentTools {
             }
         }
 
+        private IAcManagerNew _targetManager;
+        private AcCommonObject[] _targetObjects;
+
+        protected override void InitializeOverride(Uri uri) {
+            var id = uri.GetQueryParam("Type");
+            if (id != null) {
+                _targetManager = Superintendent.Instance.GetManagerById(id);
+                if (_targetManager != null) {
+                    _targetObjects = uri.GetQueryParam("Items")?.Split('\n').Select(x => _targetManager.GetObjectById(x))
+                            .OfType<AcCommonObject>().ToArray();
+                }
+            }
+        }
+
         protected override async Task<bool> LoadAsyncOverride(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             var contentDirectory = GetContentDirectory();
-
-            progress.Report("Loading cars…", 0.01);
-            await CarsManager.Instance.EnsureLoadedAsync();
-
-            progress.Report("Loading tracks…", 0.02);
-            await CarsManager.Instance.EnsureLoadedAsync();
-
-            progress.Report("Loading showrooms…", 0.03);
-            await ShowroomsManager.Instance.EnsureLoadedAsync();
-
-            var cars = CarsManager.Instance.Loaded.ToList();
-            var tracks = TracksManager.Instance.Loaded.ToList();
-            var showrooms = ShowroomsManager.Instance.Loaded.ToList();
+            var scannedFiles = new List<FileToCompress>();
+            
             var index = new[] { 0 };
             var objectsProgress = progress.Subrange(0.04, 0.9);
 
-            var scannedFiles = new List<FileToCompress>();
-            foreach (var obj in cars) {
-                scannedFiles.AddRange(await ScanObjectFiles(obj, true));
-            }
+            if (_targetObjects?.Length > 0) {
+                foreach (var obj in _targetObjects) {
+                    scannedFiles.AddRange(await ScanObjectFiles(obj, false));
+                }
 
-            foreach (var obj in tracks) {
-                scannedFiles.AddRange(await ScanObjectFiles(obj, false));
-            }
+                Task<List<FileToCompress>> ScanObjectFiles(AcCommonObject obj, bool carMode) {
+                    var info = new DirectoryInfo(obj.Location);
+                    objectsProgress.Report($"Scanning ({obj.Name ?? obj.Id})…", index[0]++, _targetObjects.Length);
+                    return ActualScan(info, carMode);
+                }
+            } else {
+                progress.Report("Loading cars…", 0.01);
+                await CarsManager.Instance.EnsureLoadedAsync();
 
-            foreach (var obj in showrooms) {
-                scannedFiles.AddRange(await ScanObjectFiles(obj, false));
-            }
+                progress.Report("Loading tracks…", 0.02);
+                await CarsManager.Instance.EnsureLoadedAsync();
 
-            scannedFiles.AddRange(await ScanDirectoryFiles(AcPaths.GetWeatherDirectory(AcRootDirectory.Instance.RequireValue), 0.96));
-            scannedFiles.AddRange(await ScanDirectoryFiles(Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "driver"), 0.97));
-            scannedFiles.AddRange(await ScanDirectoryFiles(Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "texture"), 0.98));
-            scannedFiles.AddRange(await ScanDirectoryFiles(Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "objects3D"), 0.99));
+                progress.Report("Loading showrooms…", 0.03);
+                await ShowroomsManager.Instance.EnsureLoadedAsync();
+
+                var cars = CarsManager.Instance.Loaded.ToList();
+                var tracks = TracksManager.Instance.Loaded.ToList();
+                var showrooms = ShowroomsManager.Instance.Loaded.ToList();
+
+                foreach (var obj in cars) {
+                    scannedFiles.AddRange(await ScanObjectFiles(obj, true));
+                }
+
+                foreach (var obj in tracks) {
+                    scannedFiles.AddRange(await ScanObjectFiles(obj, false));
+                }
+
+                foreach (var obj in showrooms) {
+                    scannedFiles.AddRange(await ScanObjectFiles(obj, false));
+                }
+
+                scannedFiles.AddRange(await ScanDirectoryFiles(AcPaths.GetWeatherDirectory(AcRootDirectory.Instance.RequireValue), 0.96));
+                scannedFiles.AddRange(await ScanDirectoryFiles(Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "driver"), 0.97));
+                scannedFiles.AddRange(await ScanDirectoryFiles(Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "texture"), 0.98));
+                scannedFiles.AddRange(await ScanDirectoryFiles(Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "objects3D"), 0.99));
+
+                Task<List<FileToCompress>> ScanObjectFiles(AcCommonObject obj, bool carMode) {
+                    var info = new DirectoryInfo(obj.Location);
+                    objectsProgress.Report($"Scanning ({obj.Name ?? obj.Id})…", index[0]++, cars.Count + tracks.Count + showrooms.Count);
+                    return ActualScan(info, carMode);
+                }
+            }
 
             FilesToCompress.ReplaceEverythingBy_Direct(scannedFiles.OrderBy(x => x.RelativePath));
             return FilesToCompress.Any();
-
-            Task<List<FileToCompress>> ScanObjectFiles(AcCommonObject obj, bool carMode) {
-                var info = new DirectoryInfo(obj.Location);
-                objectsProgress.Report($"Scanning ({obj.Name ?? obj.Id})…", index[0]++, cars.Count + tracks.Count + showrooms.Count);
-                return ActualScan(info, carMode);
-            }
 
             Task<List<FileToCompress>> ScanDirectoryFiles(string directory, double progressValue) {
                 var info = new DirectoryInfo(directory);
@@ -196,8 +224,6 @@ namespace AcManager.Pages.ContentTools {
                 });
             }
         }
-
-        protected override void InitializeOverride(Uri uri) { }
 
         public ChangeableObservableCollection<FileToCompress> FilesToCompress { get; }
 

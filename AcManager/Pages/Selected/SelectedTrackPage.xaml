@@ -275,7 +275,7 @@
             </c:PropertiesGrid>
 
             <!-- Description -->
-            <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap"
+            <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedTrackConfiguration.Description}" AcceptsReturn="True" TextWrapping="Wrap"
                 Placeholder="None" />
           </mui:SpacingStackPanel>
 

@@ -19,7 +19,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private readonly List<string> _toInstall;
 
         public ReshadeSetupEntry([NotNull] string path, string presetName, IEnumerable<string> toInstall)
-                : base(true, path, presetName, presetName) {
+                : base(true, path, presetName, null, presetName) {
             _toInstall = toInstall.Prepend(ReshadeFileName, ReshadeConfigFileName).ToList();
         }
 
