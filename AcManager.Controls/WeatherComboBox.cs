@@ -398,6 +398,7 @@ namespace AcManager.Controls {
                                         args.Handled = true;
                                     }
                                 };
+                                editor.SetResourceReference(TextBlock.ForegroundProperty, "WindowText");
                             
                                 var menuItem = new MenuItem {
                                     ToolTip = item.ControllerRef.GetToolTip(),
@@ -409,6 +410,25 @@ namespace AcManager.Controls {
                                     Path = new PropertyPath(nameof(item.DisplayName)),
                                     Mode = BindingMode.OneWay
                                 });
+                                menuItem.SubmenuOpened += (sender, args) => {
+                                    if (SelectedItem is WeatherTypeWrapped w && w.ControllerId == item.ControllerId) {
+                                        item.ControllerRef.DeserializeSettings(w.ControllerSettings);
+                                        item.ControllerSettings = w.ControllerSettings;
+                                    }
+                                };
+                                menuItem.SubmenuClosed += (sender, args) => {
+                                    if (SelectedItem is WeatherTypeWrapped w1 && w1.ControllerId == item.ControllerId) {
+                                        Logging.Write("OLD: " + w1.ControllerSettings);
+                                        Logging.Write("NEW: " + item.ControllerRef.SerializeSettings());
+                                    }
+                                    string serialized;
+                                    if (SelectedItem is WeatherTypeWrapped w && w.ControllerId == item.ControllerId
+                                        && w.ControllerSettings != (serialized = item.ControllerRef.SerializeSettings())) {
+                                        item.ControllerSettings = serialized;
+                                        SelectedItem = null;
+                                        SelectedItem = item;
+                                    }
+                                };
                                 menuItem.PreviewMouseDown += (sender, args) => {
                                     var selected = (MenuItem)sender;
                                     SelectedItem = item;

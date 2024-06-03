@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
+using AcManager.Internal;
 using AcManager.Pages.Selected;
 using AcManager.Tools;
 using AcManager.Tools.Data;
@@ -133,17 +134,21 @@ namespace AcManager.Pages.Dialogs {
             }
             
             // And by “tuning LuaJIT” if necessary
-            if (PatchHelper.GetActiveBuild().As(0) > 2144 
-                && !PatchHelper.IsFeatureSupported(PatchHelper.FeatureLibrariesPreoptimized)) {
+            if (!PatchHelper.IsFeatureSupported(PatchHelper.FeatureLibrariesPreoptimized)) {
                 try {
-                    File.WriteAllText(Path.Combine(AcRootDirectory.Instance.RequireValue, "extension\\internal\\user.lua"),
-                            @"b2c0123c230dbfe3abbf9fbc64be5c091b0c7bbd7af7f51e1297a7199f89e15e
-=-- A small tweak to slightly improve performance --=
-
-jit.on()
-for trace in load('\6\7\8\136\8\2\64\117\146\1\2\1\5\0\4\0\20\25\2\0\54\1\0\0\41\3\1\0\71\4\1\0\65\1\1\2\6\1\1\0\88\1\10\128\54\1\0\0\41\3\1\0\71\4\1\0\65\1\1\2\18\3\1\0\57\1\2\1\39\4\3\0\66\1\3\2\15\0\1\0\88\2\3\128\18\1\0\0\71\3\1\0\65\1\0\2\76\1\2\0\17\91\125\93\95\91\95\93\101\120\91\59\93\9\102\105\110\100\10\95\95\101\120\42\11\115\101\108\101\99\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\95\0\0\21\0\129\5\3\0\14\0\12\1\107\138\1\0\2\54\0\0\0\54\2\1\0\66\0\2\4\72\3\100\128\58\5\6\3\7\5\2\0\88\5\97\128\52\5\3\0\62\3\1\5\51\6\3\0\62\6\2\5\18\3\5\0\52\5\4\0\58\6\1\3\62\6\1\5\58\6\2\3\18\8\6\0\57\6\4\6\54\9\5\0\54\10\6\0\18\12\4\0\66\10\2\2\58\10\1\10\18\12\10\0\57\10\7\10\41\13\2\0\66\10\3\2\39\11\8\0\38\10\11\10\56\9\10\9\58\10\1\3\58\10\5\10\39\11\9\0\38\10\11\10\56\9\10\9\66\6\3\2\62\6\2\5\58\6\2\3\18\8\6\0\57\6\4\6\54\9\5\0\54\10\6\0\18\12\4\0\66\10\2\2\58\10\1\10\18\12\10\0\57\10\7\10\41\13\2\0\66\10\3\2\39\11\8\0\38\10\11\10\56\9\10\9\58\10\1\3\58\10\5\10\39\11\10\0\38\10\11\10\56\9\10\9\66\6\3\0\63\6\0\0\18\3\5\0\18\5\4\0\44\6\7\0\88\8\3\128\54\9\11\0\18\11\8\0\66\9\2\1\69\8\3\2\82\8\251\127\54\5\5\0\54\6\6\0\18\8\4\0\66\6\2\2\58\6\1\6\18\8\6\0\57\6\7\6\41\9\2\0\66\6\3\2\39\7\8\0\38\6\7\6\56\5\6\5\58\6\1\3\58\6\5\6\39\7\9\0\38\6\7\6\54\7\5\0\54\8\6\0\18\10\4\0\66\8\2\2\58\8\1\8\18\10\8\0\57\8\7\8\41\11\2\0\66\8\3\2\39\9\8\0\38\8\9\8\56\7\8\7\58\8\1\3\58\8\5\8\39\9\10\0\38\8\9\8\58\9\2\3\58\10\3\3\60\10\8\7\60\9\6\5\70\3\3\3\82\3\154\127\75\0\1\0\12\114\101\113\117\105\114\101\8\97\115\116\8\100\101\102\6\105\13\109\117\108\116\105\112\108\121\9\116\121\112\101\7\95\71\9\98\105\110\100\0\6\117\13\95\95\115\99\114\105\112\116\10\112\97\105\114\115\7\128\128\192\153\4\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\2\4\4\103\5\0\103\6\0\103\107\0\1\100\118\0\0\100\4\58\6\5\0\6\6\0\6\95\0\1\3\0\0') do
-  jit.flush(trace)
-end".Replace("\r", ""));
+                    var patch = InternalUtils.GetLibrariesOptimizationTweak(PatchHelper.GetActiveBuild().As(0));
+                    if (patch != null) {
+                        if (patch.Item2 != @"user.lua") {
+                            FileUtils.TryToDelete(Path.Combine(AcRootDirectory.Instance.RequireValue, "extension\\internal\\user.lua"));
+                        }
+                        if (patch.Item2 != @"patch.lua") {
+                            FileUtils.TryToDelete(Path.Combine(AcRootDirectory.Instance.RequireValue, "extension\\internal\\patch.lua"));
+                        }
+                        File.WriteAllText(Path.Combine(AcRootDirectory.Instance.RequireValue, "extension\\internal", patch.Item2), patch.Item1);
+                    } else {
+                        FileUtils.TryToDelete(Path.Combine(AcRootDirectory.Instance.RequireValue, "extension\\internal\\user.lua"));
+                        FileUtils.TryToDelete(Path.Combine(AcRootDirectory.Instance.RequireValue, "extension\\internal\\patch.lua"));
+                    }
                 } catch (Exception e) {
                     Logging.Error(e);
                 }

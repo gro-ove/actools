@@ -587,8 +587,10 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_AnalyzeCar : BatchAction<CarObject> {
             public static readonly BatchAction_AnalyzeCar Instance = new BatchAction_AnalyzeCar();
 
+            public StoredValue<bool> CheckModels { get; } = Stored.Get("BatchAction_AnalyzeCar.CheckModels", true);
+
             public BatchAction_AnalyzeCar()
-                    : base("Analyze", "Check for common issues", null, null) {
+                    : base("Analyze", "Check for common issues", null, "Batch.AnalyzeCar") {
                 DisplayApply = "Analyze";
                 InternalWaitingDialog = true;
                 Priority = 1;
@@ -599,8 +601,8 @@ namespace AcManager.Pages.Lists {
             }
 
             public override Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-                return ToolsListPage.Launch("Analyze cars", UriExtension.Create("/Pages/ContentTools/CarAnalyzer.xaml?Models=True&Rating=True&Filter={0}",
-                        OfType(list).Select(x => $@"""{Filter.Encode(x.Id)}""").JoinToString('|')));
+                return ToolsListPage.Launch("Analyze cars", UriExtension.Create("/Pages/ContentTools/CarAnalyzer.xaml?Models={0}&Rating=True&Filter={1}", 
+                        CheckModels.Value ? @"True" : @"False", OfType(list).Select(x => $@"""{Filter.Encode(x.Id)}""").JoinToString('|')));
             }
         }
 

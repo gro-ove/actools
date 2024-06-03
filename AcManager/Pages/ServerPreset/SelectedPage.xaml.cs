@@ -255,11 +255,12 @@ namespace AcManager.Pages.ServerPreset {
                             SavedDriversFilter = ValuesStorage.Get<string>(KeySavedDriversFilter);
                         }
 
-                        _savedDrivers = new BetterListCollectionView(ServerPresetsManager.Instance.SavedDrivers);
-                        using (_savedDrivers.DeferRefresh()) {
-                            _savedDrivers.SortDescriptions.Add(new SortDescription(nameof(ServerSavedDriver.DriverName), ListSortDirection.Ascending));
-                            _savedDrivers.Filter = SavedDriversFilterFn;
+                        var created = new BetterListCollectionView(ServerPresetsManager.Instance.SavedDrivers);
+                        using (created.DeferRefresh()) {
+                            created.SortDescriptions.Add(new SortDescription(nameof(ServerSavedDriver.DriverName), ListSortDirection.Ascending));
+                            created.Filter = SavedDriversFilterFn;
                         }
+                        _savedDrivers = created;
                     }
 
                     return _savedDrivers;

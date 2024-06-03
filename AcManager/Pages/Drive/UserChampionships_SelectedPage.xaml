@@ -280,9 +280,7 @@
         </DockPanel>
         <DockPanel Grid.Column="1" Grid.Row="1">
           <Label Content="{x:Static g:AppStrings.KunosCareer_WeatherLabel}" />
-          <Viewbox Margin="20 0 4 0" StretchDirection="DownOnly" Stretch="Uniform">
-            <TextBlock Text="{Binding CurrentRoundWeather.DisplayName}" Style="{StaticResource Value}" Margin="0" />
-          </Viewbox>
+          <TextBlock Text="{Binding CurrentRoundWeatherDisplayName}" Style="{StaticResource Value}" />
         </DockPanel>
         <DockPanel Grid.Column="0" Grid.Row="2">
           <Label Content="{x:Static g:AppStrings.KunosCareer_TemperatureLabel}" />

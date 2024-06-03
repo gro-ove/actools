@@ -805,9 +805,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             SetFlatMirrorSide(0);
 
-            if (ShowMovementArrows) {
+            if (ShowAnyMovementArrows) {
                 for (var i = CarSlots.Length - 1; i >= 0; i--) {
-                    CarSlots[i].CarNode?.DrawMovementArrows(DeviceContextHolder, Camera);
+                    CarSlots[i].CarNode?.DrawMovementArrows(DeviceContextHolder, Camera, ShowMovementArrows);
                 }
 
                 if (_complexMode) {
@@ -1115,7 +1115,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _accumulationBaseTexture.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
             }
 
-            if (ShowMovementArrows) {
+            if (ShowAnyMovementArrows) {
                 _realTimeAccumulationSize = 0;
             }
 

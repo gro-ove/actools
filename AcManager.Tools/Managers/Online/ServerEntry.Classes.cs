@@ -331,7 +331,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             private void ReloadTags() {
-                var data = DriverTag.GetTags(Name).ToArray();
+                var data = string.IsNullOrEmpty(Name) ? new DriverTag[0] : DriverTag.GetTags(Name).ToArray();
                 var initial = _tags == null;
                 if (initial || !_tags.SequenceEqual(data)) {
                     _tags = data;

@@ -272,7 +272,7 @@ namespace AcManager {
 
         /// <summary>
         /// Additional IDs for searching for similar data (by default, only Kunos cars
-        /// are checked as potential sources) separated by comma or semicolon.
+        /// are checked as potential sources) separated by commas.
         /// Example: --similar-additional-source-ids=.
         /// </summary>
         SimilarAdditionalSourceIds,

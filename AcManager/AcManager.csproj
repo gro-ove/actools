@@ -407,6 +407,9 @@
       <DependentUpon>CupList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ContentTools\ContentTool.cs" />
+    <Compile Include="Pages\ContentTools\KsAnimSwitchGenerator.xaml.cs">
+      <DependentUpon>KsAnimSwitchGenerator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\ContentTools\TreeModelConverter.xaml.cs">
       <DependentUpon>TreeModelConverter.xaml</DependentUpon>
     </Compile>
@@ -1129,6 +1132,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\ContentTools\KsAnimSwitchGenerator.xaml" />
     <Page Include="Pages\ContentTools\TreeModelConverter.xaml" />
     <Page Include="Pages\ContentTools\Uv2ModelConverter.xaml" />
     <Page Include="Pages\Dialogs\AcErrorSolutionSelector.xaml">

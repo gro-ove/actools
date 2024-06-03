@@ -38,11 +38,13 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using StringBasedFilter;
+using StringBasedFilter.Parsing;
+using StringBasedFilter.TestEntries;
 
 namespace AcManager.Pages.ContentTools {
     public partial class CarAnalyzer {
         public static double OptionSimilarThreshold = 0.95;
-        public static string[] OptionSimilarAdditionalSourceIds = null;
+        public static string OptionSimilarAdditionalSourceIds = null;
 
         static CarAnalyzer() {
             CarRepair.AddType<CarObsoleteTyresRepair>();
@@ -124,12 +126,9 @@ namespace AcManager.Pages.ContentTools {
 
             private DelegateCommand _openInShowroomOptionsCommand;
 
-            public DelegateCommand OpenInShowroomOptionsCommand
-                =>
-                        _openInShowroomOptionsCommand
-                                ?? (_openInShowroomOptionsCommand =
-                                        new DelegateCommand(() => { new CarOpenInShowroomDialog(Car, Car.SelectedSkin?.Id).ShowDialog(); },
-                                                () => Car.Enabled && Car.SelectedSkin != null));
+            public DelegateCommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand =
+                    new DelegateCommand(() => new CarOpenInShowroomDialog(Car, Car.SelectedSkin?.Id).ShowDialog(),
+                            () => Car.Enabled && Car.SelectedSkin != null));
 
             private AsyncCommand _openInCustomShowroomCommand;
 
@@ -147,10 +146,8 @@ namespace AcManager.Pages.ContentTools {
 
             private DelegateCommand _driveOptionsCommand;
 
-            public DelegateCommand DriveOptionsCommand
-                =>
-                        _driveOptionsCommand
-                                ?? (_driveOptionsCommand = new DelegateCommand(() => { QuickDrive.Show(Car, Car.SelectedSkin?.Id); }, () => Car.Enabled));
+            public DelegateCommand DriveOptionsCommand => _driveOptionsCommand
+                    ?? (_driveOptionsCommand = new DelegateCommand(() => QuickDrive.Show(Car, Car.SelectedSkin?.Id), () => Car.Enabled));
             #endregion
 
             #region Rating
@@ -225,7 +222,7 @@ namespace AcManager.Pages.ContentTools {
             }
 
             [ItemNotNull]
-            private static async Task<IReadOnlyList<RatingEntry>> FindSimilarEngine(CarObject car, RulesWrapper rules) {
+            internal static async Task<IReadOnlyList<RatingEntry>> FindSimilarEngine(CarObject car, RulesWrapper rules) {
                 var similar = await FindSimilar(car, rules, "engine", OptionSimilarThreshold);
                 if (similar.Count <= 0) return new RatingEntry[0];
 
@@ -243,7 +240,7 @@ All found similarities:
             }
 
             [ItemNotNull]
-            private static async Task<IReadOnlyList<RatingEntry>> FindSimilarTurbo(CarObject car, RulesWrapper rules) {
+            internal static async Task<IReadOnlyList<RatingEntry>> FindSimilarTurbo(CarObject car, RulesWrapper rules) {
                 if (car.AcdData?.GetIniFile("engine.ini").ContainsKey("TURBO_0") != true) return new RatingEntry[0];
 
                 var similar = await FindSimilar(car, rules, "turbo", OptionSimilarThreshold);
@@ -263,7 +260,7 @@ All found similarities:
             }
 
             [ItemNotNull]
-            private static async Task<IReadOnlyList<RatingEntry>> FindSimilarGearbox(CarObject car, RulesWrapper rules) {
+            internal static async Task<IReadOnlyList<RatingEntry>> FindSimilarGearbox(CarObject car, RulesWrapper rules) {
                 var similar = await FindSimilar(car, rules, "gearbox", OptionSimilarThreshold);
                 if (similar.Count <= 0) return new RatingEntry[0];
 
@@ -281,7 +278,7 @@ All found similarities:
             }
 
             [ItemNotNull]
-            private static async Task<IReadOnlyList<RatingEntry>> FindSimilarAero(CarObject car, RulesWrapper rules) {
+            internal static async Task<IReadOnlyList<RatingEntry>> FindSimilarAero(CarObject car, RulesWrapper rules) {
                 var similar = await FindSimilar(car, rules, "aero", OptionSimilarThreshold);
                 if (similar.Count <= 0) return new RatingEntry[0];
 
@@ -299,7 +296,7 @@ All found similarities:
             }
 
             [ItemNotNull]
-            private static async Task<IReadOnlyList<RatingEntry>> FindSimilarSuspension(CarObject car, RulesWrapper rules) {
+            internal static async Task<IReadOnlyList<RatingEntry>> FindSimilarSuspension(CarObject car, RulesWrapper rules) {
                 var result = new List<RatingEntry>();
 
                 var similarFront = await FindSimilar(car, rules, "suspension_front", OptionSimilarThreshold);
@@ -473,6 +470,23 @@ All found similarities:
                 return sizes.Skip(sizes.Count / 2).Sum() / (sizes.Count - sizes.Count / 2);
             }
 
+            private static RulesWrapper _rulesWrapper;
+
+            public static async Task<RulesWrapper> GetRulesWrapperAsync() {
+                if (_rulesWrapper != null) {
+                    return _rulesWrapper;
+                }
+                
+                await CarsManager.Instance.EnsureLoadedAsync();
+                    
+                var rules = CarDataComparing.GetRules(string.IsNullOrWhiteSpace(OptionSimilarAdditionalSourceIds) ? null 
+                        : CarsManager.Instance.Loaded.Where(Filter.Create(CarObjectTester.Instance, OptionSimilarAdditionalSourceIds).Test)
+                                .Select(x => x.Id).ToArray());
+                await rules.EnsureActualAsync();
+                _rulesWrapper = rules;
+                return rules;
+            }
+
             private bool _collectingRatings;
 
             private async Task CollectRatings() {
@@ -482,8 +496,7 @@ All found similarities:
                 RatingLoading = true;
 
                 try {
-                    var rules = CarDataComparing.GetRules(OptionSimilarAdditionalSourceIds);
-                    await rules.EnsureActualAsync();
+                    var rules = await GetRulesWrapperAsync();
 
                     var result = new List<RatingEntry>();
                     if (Car.Author != AcCommonObject.AuthorKunos) {
@@ -605,22 +618,20 @@ All found similarities:
 
             private DelegateCommand _showInformationCommand;
 
-            public DelegateCommand ShowInformationCommand
-                =>
-                        _showInformationCommand
-                                ?? (_showInformationCommand =
-                                        new DelegateCommand(() => { ModernDialog.ShowMessage(InformationMsg?.Invoke() ?? "?", Message, MessageBoxButton.OK); },
-                                                () => InformationMsg != null));
+            public DelegateCommand ShowInformationCommand => _showInformationCommand ?? (_showInformationCommand =
+                    new DelegateCommand(() => ModernDialog.ShowMessage(InformationMsg?.Invoke() ?? "?", Message, MessageBoxButton.OK),
+                            () => InformationMsg != null));
 
             public bool HasRate => Rate.HasValue;
         }
 
         #region Loading
-        private bool _models, _rating;
+        private bool _models, _rating, _allowEmpty;
         private string _filter, _id;
 
         protected override void InitializeOverride(Uri uri) {
             _models = uri.GetQueryParamBool("Models");
+            _allowEmpty = uri.GetQueryParamBool("AllowEmpty");
             _rating = uri.GetQueryParamBool("Rating") && SettingsHolder.Content.RateCars;
             _filter = uri.GetQueryParam("Filter");
             _id = uri.GetQueryParam("Id");
@@ -628,12 +639,29 @@ All found similarities:
             InitializeComponent();
         }
 
-        [CanBeNull]
-        private static BrokenDetails GetDetails(CarObject car, bool models, bool allowEmpty, bool ratingMode) {
+        [ItemCanBeNull]
+        private static async Task<BrokenDetails> GetDetailsAsync(CarObject car, bool models, bool allowEmpty, bool ratingMode) {
             if (car.AcdData?.IsEmpty != false) return null;
 
-            var list = CarRepair.GetRepairSuggestions(car, models).ToList();
-            return allowEmpty || list.Count > 0 ? new BrokenDetails(car, list, ratingMode) : null;
+            var list = await Task.Run(() => CarRepair.GetRepairSuggestions(car, models).ToList());
+            if (!allowEmpty && list.Count == 0) {
+                if (ratingMode) {
+                    if (car.Author != AcCommonObject.AuthorKunos) {
+                        var rules = await BrokenDetails.GetRulesWrapperAsync();
+                        if ((await BrokenDetails.FindSimilarSuspension(car, rules)).Count > 0 ||
+                                (await BrokenDetails.FindSimilarAero(car, rules)).Count > 0 ||
+                                (await BrokenDetails.FindSimilarEngine(car, rules)).Count > 0 ||
+                                (await BrokenDetails.FindSimilarTurbo(car, rules)).Count > 0 ||
+                                (await BrokenDetails.FindSimilarGearbox(car, rules)).Count > 0) {
+                            goto Fits;
+                        }
+                    }
+                }
+                return null;
+            }
+            
+            Fits:
+            return new BrokenDetails(car, list, ratingMode);
         }
 
         protected override async Task<bool> LoadAsyncOverride(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
@@ -642,7 +670,7 @@ All found similarities:
                 if (car != null) {
                     progress.Report(AsyncProgressEntry.Indetermitate);
                     BrokenCars = new List<BrokenDetails> {
-                        await Task.Run(() => GetDetails(car, _models, true, _rating))
+                        await GetDetailsAsync(car, _models, true, _rating)
                     };
                 } else {
                     BrokenCars = new List<BrokenDetails>();
@@ -665,7 +693,7 @@ All found similarities:
                     progress.Report(new AsyncProgressEntry(car.Name, i, cars.Count));
 
                     try {
-                        var details = await Task.Run(() => GetDetails(car, _models, false, _rating));
+                        var details = await GetDetailsAsync(car, _models, _allowEmpty, _rating);
                         if (details != null) {
                             entries.Add(details);
                         }

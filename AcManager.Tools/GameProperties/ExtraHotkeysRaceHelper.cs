@@ -533,27 +533,31 @@ namespace AcManager.Tools.GameProperties {
                 var delaysAvailable = delayEnabled && (!isAcFullscreen || isCmAppInstalled);
                 _delaysAvailable = delaysAvailable;
 
-                foreach (var n in AcSettingsHolder.Controls.WheelButtonKeys) {
-                    var section = ini[n];
-                    var delay = ShortenDelays.ArrayContains(n) ? OptionSmallInterval : OptionLargeInterval;
+                if (!PatchHelper.IsFeatureSupported(PatchHelper.SecondaryGearButtons)) {
+                    // Note: CSP currently only supports GEARUP and GEARDN
+                    foreach (var n in AcSettingsHolder.Controls.WheelButtonKeys) {
+                        var section = ini[n];
+                        var delay = ShortenDelays.ArrayContains(n) ? OptionSmallInterval : OptionLargeInterval;
 
-                    var joy = section.GetInt("__CM_ALT_JOY", -1);
-                    var button = section.GetInt("__CM_ALT_BUTTON", -1);
-                    var pov = section.GetInt("__CM_ALT__POV", -1);
-                    var povDirection = section.GetIntEnum("__CM_ALT_POV_DIR", DirectInputPovDirection.Up);
-                    var key = section.GetInt("KEY", -1);
-                    var joyModifier = section.GetInt("JOY_MODIFICATOR", -1);
-                    var buttonModifier = section.GetInt("BUTTON_MODIFICATOR", -1);
+                        var joy = section.GetInt("__CM_ALT_JOY", -1);
+                        var button = section.GetInt("__CM_ALT_BUTTON", -1);
+                        var pov = section.GetInt("__CM_ALT__POV", -1);
+                        var povDirection = section.GetIntEnum("__CM_ALT_POV_DIR", DirectInputPovDirection.Up);
+                        var key = section.GetInt("KEY", -1);
+                        var joyModifier = section.GetInt("JOY_MODIFICATOR", -1);
+                        var buttonModifier = section.GetInt("BUTTON_MODIFICATOR", -1);
 
-                    if (joy == -1 || button == -1 && pov == -1 || key == -1) {
-                        continue;
+                        if (joy == -1 || button == -1 && pov == -1 || key == -1) {
+                            continue;
+                        }
+
+                        var joyKey = button != -1
+                                ? new JoyKey(joy, button, joyModifier, buttonModifier) : new JoyKey(joy, pov, povDirection, joyModifier, buttonModifier);
+                        joyToCommand[joyKey] = new HotkeyJoyCommand( /*Keys.RControlKey,*/ (Keys)key) {
+                            MinInterval = delay,
+                            DelayedName = null
+                        };
                     }
-
-                    var joyKey = button != -1 ? new JoyKey(joy, button, joyModifier, buttonModifier) : new JoyKey(joy, pov, povDirection, joyModifier, buttonModifier);
-                    joyToCommand[joyKey] = new HotkeyJoyCommand( /*Keys.RControlKey,*/ (Keys)key) {
-                        MinInterval = delay,
-                        DelayedName = null
-                    };
                 }
 
                 var supportedByPatchFilename = Path.Combine(AcRootDirectory.Instance.RequireValue,

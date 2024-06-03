@@ -35,7 +35,7 @@
             <Label Content="Shifting" />
           </CheckBox>
           <CheckBox IsChecked="{Binding Renderer.CarNode.IsDriverMovable}" IsEnabled="{Binding Renderer.CarNode.IsDriverVisible}">
-            <Label Content="Movable driver" />
+            <Label Content="Movable" />
           </CheckBox>
           <Button Content="Reset" Command="{Binding Renderer.CarNode.ResetDriverMovementCommand}" IsEnabled="{Binding Renderer.CarNode.IsDriverMovable}" />
           <Button Content="Save pos." Command="{Binding Renderer.CarNode.SaveDriverMovementCommand}" ToolTip="Save driver position into “steer.ksanim” file"

@@ -151,7 +151,7 @@ namespace AcTools.Processes {
                 section.Set("PENALTIES", Penalties);
                 section.Set("JUMP_START_PENALTY", JumpStartPenalty);
                 
-                file["HEADER"].Set("__CM_FEATURE_SET", 1);
+                file["HEADER"].Set("__CM_FEATURE_SET", 2);
             }
 
             protected void SetGhostCar(IniFile file, bool playing = false, bool recording = false, double? advantage = null) {

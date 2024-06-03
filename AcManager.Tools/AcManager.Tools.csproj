@@ -305,6 +305,7 @@
     <Compile Include="Data\PatchTracksVaoDataUpdater.cs" />
     <Compile Include="Data\PatchUpdater.cs" />
     <Compile Include="Data\PatchVersionInfo.cs" />
+    <Compile Include="Data\TagsComparer.cs" />
     <Compile Include="Data\TzConvert\DataLoader.cs" />
     <Compile Include="Data\TzConvert\TZConvert.cs" />
     <Compile Include="Data\UserChampionshipProgressEntry.cs" />

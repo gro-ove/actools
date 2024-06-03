@@ -40,12 +40,12 @@
           Text="Convert FBX to KN5 the usual way (with ksEditor) and then select FBX and KN5 files here and UV2 patch will be automatically generated and saved next to KN5 files with “.uv2” extension. If your original FBX file has meshes with more than two UV sets, multiple UV2 patches will be generated: you can move them in skin folder (make sure to change extension to regular “.uv2”) and thus use alternative UV2 mapping for a certain skin." />
       <TextBlock TextWrapping="Wrap" Text="With UV2 patch you can use sticker layers for CSP materials such as car paint, keeping main diffuse texure with AO smaller and getting better quality and performance overall." />
     </mui:SpacingStackPanel>
-    <Button DockPanel.Dock="Bottom" Content="Convert tree model" Command="{Binding ConvertCommand}"></Button>
+    <Button DockPanel.Dock="Bottom" Content="Pack UV2" Command="{Binding ConvertCommand}"></Button>
     <ItemsControl ItemsSource="{Binding KnownEntries}" Style="{StaticResource VirtualizingItemsControl}">
       <ItemsControl.ItemTemplate>
         <DataTemplate>
           <DockPanel Margin="0 0 0 8">
-            <Button DockPanel.Dock="Right" Command="{Binding ForgetCommand}" Content="Forget" ToolTip="Remove this tree from list of tracked conversions"
+            <Button DockPanel.Dock="Right" Command="{Binding ForgetCommand}" Content="Forget" ToolTip="Remove this model from list of tracked conversions"
                 VerticalAlignment="Center" Margin="8 0 0 0" />
             <Button DockPanel.Dock="Right" Command="{Binding RefreshCommand}" Content="Refresh"
                 ToolTip="Tracked conversions refresh automatically when source file changes" VerticalAlignment="Center" Margin="8 0 0 0" />

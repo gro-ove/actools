@@ -13,6 +13,7 @@ using AcManager.Controls.ViewModels;
 using AcManager.DiscordRpc;
 using AcManager.Tools;
 using AcManager.Tools.Data;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -246,7 +247,9 @@ namespace AcManager.Pages.Drive {
                             new UserChampionshipsManager.ChampionshipProperties {
                                 ChampionshipId = _acObject.Id,
                                 RoundIndex = round.Index
-                            }
+                            },
+                            new WeatherDetails(null, round.Weather as WeatherTypeWrapped, 
+                                    WeatherFxControllerData.Instance.Items.FirstOrDefault(x => x.IsSelectedAsBase)?.Id),
                         }
                     });
 
@@ -323,10 +326,13 @@ namespace AcManager.Pages.Drive {
                     _currentSet = true;
                     _currentRoundTemperature = round.Temperature;
                     _currentRoundWeather = WeatherTypeWrapped.Unwrap(round.Weather, _currentRoundTime, _currentRoundTemperature);
+                    _currentRoundWeatherDisplayName = _currentRoundWeather == null
+                            ? WeatherTypeWrapped.UnwrapDisplayName(round.Weather) : null;
                 }
 
                 if (!_acObject.RealConditions) {
                     OnPropertyChanged(nameof(CurrentRoundWeather));
+                    OnPropertyChanged(nameof(CurrentRoundWeatherDisplayName));
                     OnPropertyChanged(nameof(CurrentRoundTemperature));
                     return;
                 }
@@ -363,6 +369,7 @@ namespace AcManager.Pages.Drive {
                         CurrentRoundWeather = weather;
                     } else {
                         OnPropertyChanged(nameof(CurrentRoundWeather));
+                        OnPropertyChanged(nameof(CurrentRoundWeatherDisplayName));
                     }
                 }
 
@@ -403,6 +410,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private WeatherObject _currentRoundWeather;
+            private string _currentRoundWeatherDisplayName;
 
             public WeatherObject CurrentRoundWeather {
                 get => _currentRoundWeather;
@@ -410,9 +418,12 @@ namespace AcManager.Pages.Drive {
                     if (Equals(value, _currentRoundWeather)) return;
                     _currentRoundWeather = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(CurrentRoundWeatherDisplayName));
                     OnPropertyChanged(nameof(CurrentRoundRoadTemperature));
                 }
             }
+
+            public string CurrentRoundWeatherDisplayName => _currentRoundWeather?.DisplayName ?? _currentRoundWeatherDisplayName;
 
             public double CurrentRoundRoadTemperature => Game.ConditionProperties.GetRoadTemperature(CurrentRoundTime, CurrentRoundTemperature,
                     CurrentRoundWeather?.TemperatureCoefficient ?? 0d);

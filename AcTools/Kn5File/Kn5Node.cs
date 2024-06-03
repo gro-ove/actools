@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -41,7 +42,7 @@ namespace AcTools.Kn5File {
         public object Tag;
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct Vertex {
+        public struct Vertex : IEquatable<Vertex> {
             public Vec3 Position, Normal, Tangent;
             public Vec2 Tex;
 

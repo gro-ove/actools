@@ -69,8 +69,9 @@
                   </ComboBox.ItemContainerStyle>
                 </ComboBox>-->
 
+                <!-- TODO: When loaded, settings are reset -->
                 <c:WeatherComboBox AllowRandomWeather="True" AllowWeatherByType="True" SelectedItem="{Binding Weather}"
-                    c:ToolTips.Weather="{Binding WeatherObject, Mode=OneWay}" />
+                    c:ToolTips.Weather="{Binding WeatherObject, Mode=OneWay}" UseWeatherFX="True" />
               </mui:SpacingStackPanel>
 
               <mui:SpacingStackPanel Spacing="4">
@@ -301,7 +302,7 @@
                   <mui:SpacingStackPanel Orientation="Horizontal" Spacing="8">
                     <Path Data="{StaticResource AddIconData}" Stretch="Fill" Width="12" Height="12" VerticalAlignment="Center"
                         Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Margin="0 1 0 -1" />
-                    <TextBlock Text="Create new" VerticalAlignment="Center" Style="{StaticResource Heading2}" />
+                    <TextBlock Text="{x:Static g:AppStrings.UserChampionships_CreateNew}" VerticalAlignment="Center" Style="{StaticResource Heading2}" />
                   </mui:SpacingStackPanel>
                 </Button>
               </Border>

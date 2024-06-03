@@ -303,12 +303,21 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnNewModesChanged(object sender, EventArgs e) {
-            LinksList.Children.ReplaceEverythingBy(LinksList.Children.Where(x => x.Source?.OriginalString.StartsWith(ModeCustomPath) == false)
+            var newModes = LinksList.Children.Where(x => x.Source?.OriginalString.StartsWith(ModeCustomPath) == false)
                     .Concat(NewRaceModeData.Instance.Items.Select(x => new Link {
                         DisplayName = x.DisplayName,
                         Source = new Uri(ModeCustomPath + "?Id=" + x.Id, UriKind.Relative),
                         ToolTip = x.GetToolTip()
-                    })));
+                    }))
+                    .ToList();
+            var selected = Model?.SelectedMode;
+            if (!LinksList.Children.SequenceEqual(newModes)) {
+                Logging.Debug("Refresh new modes list");
+                LinksList.Children.ReplaceEverythingBy(newModes);
+                if (Model != null && selected != null && newModes.Any(x => x.Source == selected)) {
+                    Model.SelectedMode = selected;
+                }
+            }
         }
 
         public partial class ViewModel : NotifyPropertyChanged, IUserPresetable {

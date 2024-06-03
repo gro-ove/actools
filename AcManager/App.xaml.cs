@@ -429,12 +429,6 @@ namespace AcManager {
             PrepareUi();
 
             AppShortcut.Initialize("Content Manager", "Content Manager");
-
-            // If shortcut exists, make sure it has a proper app ID set for notifications
-            if (File.Exists(AppShortcut.ShortcutLocation)) {
-                AppShortcut.CreateShortcut();
-            }
-
             AppIconService.Initialize(new AppIconProvider());
 
             Toast.SetDefaultAction(() => (Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive) ??
@@ -707,6 +701,14 @@ namespace AcManager {
                     Logging.Error(e);
                 }
             });
+            await Task.Delay(5000);
+
+            // If shortcut exists, make sure it has a proper app ID set for notifications
+            var runs = ValuesStorage.Get(".r", 0);
+            if (runs % 16 == 15 && File.Exists(AppShortcut.ShortcutLocation)) {
+                AppShortcut.CreateShortcut();
+            }
+            ValuesStorage.Set(".r", ++runs);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -823,7 +825,7 @@ namespace AcManager {
                 string additional = null;
                 AppArguments.Set(AppFlag.SimilarAdditionalSourceIds, ref additional);
                 if (!string.IsNullOrWhiteSpace(additional)) {
-                    CarAnalyzer.OptionSimilarAdditionalSourceIds = additional.Split(';', ',').Select(x => x.Trim()).Where(x => x.Length > 0).ToArray();
+                    CarAnalyzer.OptionSimilarAdditionalSourceIds = additional;
                 }
 
                 await Task.Delay(500);

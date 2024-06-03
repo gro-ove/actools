@@ -509,18 +509,18 @@ namespace AcManager.Tools.Objects {
                 if (msg?.Contains("\t\t$CSP0:") != false) {
                     return;
                 }
-                if (_localQueue.Count > 200) {
-                    if (!_logDroppingFastRate) {
-                        _logDroppingFastRate = true;
-                        _localQueue.Add(Tuple.Create(LogMessageType.Error, "Too many messages at once, some messages are dropped"));
-                        if (_localQueue.Any(x => x.Item2.EndsWith(@"Error listening %!e(syscall.Errno=536870951)"))) {
-                            _localQueue.Add(Tuple.Create(LogMessageType.Error, "HTTP port is busy"));
-                            _running?.Kill();
-                        }
-                    }
-                    return;
-                }
                 lock (_localQueue) {
+                    if (_localQueue.Count > 200) {
+                        if (!_logDroppingFastRate) {
+                            _logDroppingFastRate = true;
+                            _localQueue.Add(Tuple.Create(LogMessageType.Error, "Too many messages at once, some messages are dropped"));
+                            if (_localQueue.Any(x => x.Item2.EndsWith(@"Error listening %!e(syscall.Errno=536870951)"))) {
+                                _localQueue.Add(Tuple.Create(LogMessageType.Error, "HTTP port is busy"));
+                                _running?.Kill();
+                            }
+                        }
+                        return;
+                    }
                     _localQueue.Add(Tuple.Create(type, msg));
                 }
             }

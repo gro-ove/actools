@@ -72,7 +72,7 @@ namespace AcTools.Render.Wrapper {
         }
 
         protected override void OnMouseMove(MouseButtons button, int dx, int dy) {
-            if (_renderer.ShowMovementArrows) {
+            if (_renderer.ShowAnyMovementArrows) {
                 _renderer.MousePosition = new Vector2(MousePosition.X, MousePosition.Y);
                 _renderer.IsDirty = true;
             }

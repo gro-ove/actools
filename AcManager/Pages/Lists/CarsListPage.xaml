@@ -94,6 +94,17 @@
       </mui:SpacingStackPanel>
     </DataTemplate>
 
+    <DataTemplate x:Key="Batch.AnalyzeCar" DataType="{x:Type li:CarsListPage+BatchAction_AnalyzeCar}">
+      <DataTemplate.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
+      </DataTemplate.Resources>
+      <mui:SpacingStackPanel Spacing="4">
+        <CheckBox IsChecked="{Binding CheckModels.Value}">
+          <Label Content="Check models as well" />
+        </CheckBox>
+      </mui:SpacingStackPanel>
+    </DataTemplate>
+
     <DataTemplate x:Key="Batch.SyncCarLogo" DataType="{x:Type li:CarsListPage+BatchAction_SyncCarLogo}">
       <DataTemplate.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />

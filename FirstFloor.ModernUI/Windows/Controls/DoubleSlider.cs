@@ -262,8 +262,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var thumbSubSize = ThumbSubSize;
             SetValue(RangeLeftWidthPropertyKey, (ActualWidth - thumbSize) * leftLimit / range + thumbSubSize);
             SetValue(RangeRightWidthPropertyKey, (ActualWidth - thumbSize) * rightLimit / range + thumbSubSize);
-            SetValue(RangeLeftWidthPropertyKey, 80d);
-            SetValue(RangeRightWidthPropertyKey, 80d);
         }
 
         private void UpdateThumbValues() {

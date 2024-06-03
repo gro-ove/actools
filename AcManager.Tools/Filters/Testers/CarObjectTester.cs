@@ -138,6 +138,13 @@ namespace AcManager.Tools.Filters.Testers {
                 case "datalods":
                     return value.Test(obj.AcdData?.GetIniFile("lods.ini").GetSections("LOD").Count() ?? 0);
 
+                case "serverlocked":
+                    return value.Test(obj.AcdData?.GetRawFile("script.lua").Content.Contains("getServerIP") ?? false);
+
+                case "suspension":
+                    var suspensionsIni = obj.AcdData?.GetIniFile("suspensions.ini");
+                    return value.Test(suspensionsIni?["FRONT"].GetNonEmpty("TYPE")) || value.Test(suspensionsIni?["REAR"].GetNonEmpty("TYPE"));
+
                 case "skins":
                     return value.Test(obj.SkinsManager.WrappersList.Count);
 
@@ -180,6 +187,7 @@ namespace AcManager.Tools.Filters.Testers {
                 new KeywordDescription("pwratio", "P/W ratio", KeywordType.Number, KeywordPriority.Normal, "pw"),
                 new KeywordDescription("skins", "Skins count", KeywordType.Number, KeywordPriority.Normal),
                 new KeywordDescription("skin", "Skin", KeywordType.Child, KeywordPriority.Normal),
+                new KeywordDescription("serverlocked", "Cars locked to a certain server (very slow)", KeywordType.Flag, KeywordPriority.Obscured),
                 new KeywordDescription("datalods", "Number of LODs (very slow)", KeywordType.Number, KeywordPriority.Obscured),
             }.Concat(AcJsonObjectTester.Instance.GetDescriptions());
         }

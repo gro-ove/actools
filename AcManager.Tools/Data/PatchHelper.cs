@@ -55,6 +55,7 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureSnow = "SNOW";
         public static readonly string FeatureDirectInputExtraGamma = "DIRECTINPUT_EXTRA_GAMMA";
         public static readonly string FeatureLibrariesPreoptimized = "LIBRARIES_PREOPTIMIZED";
+        public static readonly string SecondaryGearButtons = "SECONDARY_GEAR_BUTTONS";
         public static readonly string FeatureAiLimitations = "AI_LIMITATIONS";
 
         public class AudioDescription : Displayable {
@@ -241,13 +242,18 @@ namespace AcManager.Tools.Data {
             return (_active ?? (_active = GetActualConfigValue("general.ini", "BASIC", "ENABLED").As(false))).Value;
         }
 
+        private static bool _wfxActiveOnce;
+        private static bool _rfxActiveOnce;
+
         public static bool IsWeatherFxActive() {
+            if (_wfxActiveOnce) return true;
             if (!IsFeatureSupported(WeatherFxLauncherControlled)) return false;
-            return (_wfxActive ?? (_wfxActive = IsActive() && GetActualConfigValue("weather_fx.ini", "BASIC", "ENABLED").As(false))).Value;
+            return _wfxActiveOnce = (_wfxActive ?? (_wfxActive = IsActive() && GetActualConfigValue("weather_fx.ini", "BASIC", "ENABLED").As(false))).Value;
         }
 
         public static bool IsRainFxActive() {
-            return (_rfxActive ?? (_rfxActive = IsActive() && GetActualConfigValue("rain_fx.ini", "BASIC", "ENABLED").As(false))).Value;
+            if (_rfxActiveOnce) return true;
+            return _rfxActiveOnce = (_rfxActive ?? (_rfxActive = IsActive() && GetActualConfigValue("rain_fx.ini", "BASIC", "ENABLED").As(false))).Value;
         }
 
         private static bool TestQuery(string query, bool emptyFallback = false) {
@@ -263,6 +269,9 @@ namespace AcManager.Tools.Data {
                 if (GetInstalledVersion() == null || !IsActive()) return false;
                 if (featureId == FeatureWindowPosition) return true;
                 var query = GetManifest()?["FEATURES"].GetNonEmpty(featureId);
+                if (query == @"1") {
+                    return true;
+                }
                 return TestQuery(query);
             });
         }

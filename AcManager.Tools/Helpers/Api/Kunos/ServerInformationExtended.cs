@@ -42,6 +42,9 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         [JsonProperty(PropertyName = "loadingImageUrl"), CanBeNull]
         public string LoadingImageUrl { get; set; }
 
+        [JsonProperty(PropertyName = "iconUrl"), CanBeNull]
+        public string IconUrl { get; set; }
+
         [JsonProperty(PropertyName = "frequency")]
         public int? FrequencyHz { get; set; }
 

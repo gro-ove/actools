@@ -46,6 +46,9 @@ namespace AcTools.ExtraKn5Utils.Helpers {
                         for (var i = 0; i < dataIndices.Length; ++i) {
                             var j = dataIndices[i];
                             if (j < 0) {
+                                if (i % 3 != 2) {
+                                    throw new Exception("Mesh is not triangulated");
+                                }
                                 j = -j - 1;
                             }
                                     

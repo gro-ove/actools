@@ -198,12 +198,14 @@
     <Compile Include="Windows\Attached\DataTemplateArgument.cs" />
     <Compile Include="Windows\Attached\DoubleClickEvent.cs" />
     <Compile Include="Windows\Attached\Draggable.cs" />
+    <Compile Include="Windows\Attached\DraggableMovedEventArgs.cs" />
     <Compile Include="Windows\Attached\ExpanderHelper.cs" />
     <Compile Include="Windows\Attached\FancyHint.cs" />
     <Compile Include="Windows\Attached\FancyHintAdorner.cs" />
     <Compile Include="Windows\Attached\FancyHintsService.cs" />
     <Compile Include="Windows\Attached\FancyScroll.cs" />
     <Compile Include="Windows\Attached\HyperlinkHelper.cs" />
+    <Compile Include="Windows\Attached\IDraggableCloneable.cs" />
     <Compile Include="Windows\Attached\IsPressedAdvancement.cs" />
     <Compile Include="Windows\Attached\ListBoxHelper.cs" />
     <Compile Include="Windows\Attached\Resources.cs" />

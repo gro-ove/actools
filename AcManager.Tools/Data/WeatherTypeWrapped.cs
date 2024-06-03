@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -19,7 +20,7 @@ namespace AcManager.Tools.Data {
         public string ControllerId { get; }
         
         [CanBeNull]
-        public string ControllerSettings { get; }
+        public string ControllerSettings { get; set; }
 
         private WeatherFxControllerData _controllerRef;
 
@@ -53,8 +54,17 @@ namespace AcManager.Tools.Data {
             ControllerSettings = controllerSettings;
             _controllerRef = WeatherFxControllerData.Instance.Items.GetByIdOrDefault(controllerId);
             if (_controllerRef != null) {
-                _controllerRef.DeserializeSettings(controllerSettings);
+                // _controllerRef.DeserializeSettings(controllerSettings);
                 _controllerRef.SubscribeWeak(OnControllerChanged);
+            /*} else if (WeatherFxControllerData.Instance.Items.Count == 0) {
+                // TODO: Find a way to have individual settings per box?
+                Task.Delay(200).ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => {
+                    _controllerRef = WeatherFxControllerData.Instance.Items.GetByIdOrDefault(controllerId);
+                    if (_controllerRef != null) {
+                        _controllerRef.DeserializeSettings(controllerSettings);
+                        _controllerRef.SubscribeWeak(OnControllerChanged);
+                    }
+                }));*/
             }
             DisplayName = ControllerRef?.DisplayName ?? controllerName;
         }
@@ -88,7 +98,7 @@ namespace AcManager.Tools.Data {
         }
 
         public static bool operator ==(WeatherTypeWrapped lhs, WeatherTypeWrapped rhs) {
-            return lhs?.TypeOpt == rhs?.TypeOpt && lhs?.ControllerId == rhs?.ControllerId;
+            return lhs?.TypeOpt == rhs?.TypeOpt && lhs?.ControllerId == rhs?.ControllerId && lhs?.ControllerSettings == rhs?.ControllerSettings;
         }
 
         public static bool operator !=(WeatherTypeWrapped lhs, WeatherTypeWrapped rhs) {
@@ -109,10 +119,29 @@ namespace AcManager.Tools.Data {
                 }
                 
                 WeatherManager.Instance.EnsureLoaded();
-                return WeatherManager.Instance.Enabled.Where(x => x.Fits(weatherTypeWrapped.TypeOpt, time, temperature)).RandomElementOrDefault();
+                return WeatherManager.Instance.Enabled.Where(x => x.Fits(weatherTypeWrapped.TypeOpt, time, temperature))
+                        .RandomElementOrDefault();
             }
 
             return obj as WeatherObject;
+        }
+
+        [CanBeNull]
+        public static string UnwrapDisplayName(object obj) {
+            if (obj is WeatherTypeWrapped weatherTypeWrapped) {
+                if (weatherTypeWrapped.ControllerId != null) {
+                    return weatherTypeWrapped.DisplayName; 
+                }
+                if (weatherTypeWrapped.TypeOpt != WeatherType.None) {
+                    return weatherTypeWrapped.TypeOpt.GetDescription();
+                }
+            }
+
+            if (obj == null || obj == RandomWeather) {
+                return ToolsStrings.RaceGrid_OpponentNationality_Random;
+            }
+
+            return (obj as WeatherObject)?.DisplayName;
         }
 
         [CanBeNull]

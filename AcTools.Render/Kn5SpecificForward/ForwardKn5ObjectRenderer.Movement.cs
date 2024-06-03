@@ -41,6 +41,8 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
+        public bool ShowAnyMovementArrows => ShowMovementArrows || CarSlots.Length > 0 && CarSlots[0].CarNode?.IsDriverMovable == true;
+
         public bool MoveObject(Vector2 delta, bool tryToClone) {
             if (!MoveObjectOverride(new Vector2(MousePosition.X / ActualWidth, MousePosition.Y / ActualHeight),
                     new Vector2(delta.X / ActualWidth, delta.Y / ActualHeight), Camera, tryToClone)) return false;

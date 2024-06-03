@@ -121,6 +121,13 @@ namespace AcManager.Tools.Managers.Online {
             OnPropertyChanged(nameof(ErrorsString));
         }
 
+        private string _iconUrl;
+
+        public string IconUrl {
+            get => _iconUrl;
+            set => Apply(value, ref _iconUrl);
+        }
+
         public enum UpdateMode {
             Lite,
             Normal,
@@ -206,6 +213,7 @@ namespace AcManager.Tools.Managers.Online {
                         UpdateValuesExtended(extended);
                         CspFeaturesList = extended.Features?.Length > 0 ? extended.Features : null;
                         _backgroundImage = extended.LoadingImageUrl;
+                        IconUrl = extended.IconUrl;
 
                         driversCount = extended.Clients;
                         carsInformation = extended.Players;

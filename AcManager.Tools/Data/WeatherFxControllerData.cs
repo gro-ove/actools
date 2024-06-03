@@ -254,7 +254,7 @@ namespace AcManager.Tools.Data {
         }
 
         public void DeserializeSettings(string data) {
-            Config?.Import(data);
+            Config?.Import(data ?? string.Empty);
         }
 
         public void PublishSettings() {

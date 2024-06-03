@@ -100,7 +100,7 @@
           </mui:SpacingStackPanel>
         </mui:BooleanSwitch>
 
-        <TextBlock Text="{Binding LeftUnsolved, StringFormat='{}{0} unsolved issues:'}" Style="{StaticResource Label.Padding}" />
+        <TextBlock Text="{Binding LeftUnsolved, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} unsolved {issue}:'}" Style="{StaticResource Label.Padding}" />
 
         <mui:Switch Value="{Binding Aspects.Count}">
           <TextBlock mui:Switch.When="0" Opacity="0.5" Text="{x:Static g:AppStrings.ContentTools_CarAnalyzer_NoIssuesFound}" />
