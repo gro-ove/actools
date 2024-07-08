@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Timers;
 using AcManager.Tools.Helpers;
+using AcTools;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -355,9 +356,18 @@ namespace AcManager.Tools.SharedMemory {
             }
         }
 
+        private Stopwatch _bgStopwatch = Stopwatch.StartNew();
+
         private void Update(object sender, ElapsedEventArgs e) {
             UpdateInner();
+
+            if (Status != AcSharedMemoryStatus.Live && _bgStopwatch.Elapsed.TotalSeconds > 30d) {
+                _bgStopwatch.Restart();
+                BackgroundProcessingOpportunity?.Invoke(this, EventArgs.Empty);
+            }
         }
+        
+        public event EventHandler BackgroundProcessingOpportunity;
 
         /// <summary>
         /// Game started.

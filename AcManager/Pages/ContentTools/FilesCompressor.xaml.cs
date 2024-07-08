@@ -15,6 +15,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
@@ -102,26 +103,26 @@ namespace AcManager.Pages.ContentTools {
 
             public DelegateCommand ViewInExplorerCommand
                 => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(() => { WindowsHelper.ViewFile(FileInfo.FullName); }));
+        }
 
-            private static readonly Dictionary<string, uint> ClusterSizes = new Dictionary<string, uint>();
+        private static readonly Dictionary<string, uint> ClusterSizes = new Dictionary<string, uint>();
 
-            private static long GetFileSizeOnDisk(FileInfo info, out bool isCompressed) {
-                var key = info.Directory?.Root.FullName ?? string.Empty;
+        private static long GetFileSizeOnDisk(FileInfo info, out bool isCompressed) {
+            var key = info.Directory?.Root.FullName ?? string.Empty;
 
-                uint clusterSize;
-                lock (ClusterSizes) {
-                    if (!ClusterSizes.TryGetValue(key, out clusterSize)) {
-                        clusterSize = Kernel32.GetDiskFreeSpaceW(key, out var sectorsPerCluster, out var bytesPerSector, out _, out _) == 0 ? 1
-                                : sectorsPerCluster * bytesPerSector;
-                        ClusterSizes[key] = clusterSize;
-                    }
+            uint clusterSize;
+            lock (ClusterSizes) {
+                if (!ClusterSizes.TryGetValue(key, out clusterSize)) {
+                    clusterSize = Kernel32.GetDiskFreeSpaceW(key, out var sectorsPerCluster, out var bytesPerSector, out _, out _) == 0 ? 1
+                            : sectorsPerCluster * bytesPerSector;
+                    ClusterSizes[key] = clusterSize;
                 }
-
-                var loSize = Kernel32.GetCompressedFileSizeW(info.FullName, out var hoSize);
-                var size = ((long)hoSize << 32) | loSize;
-                isCompressed = info.Length != size;
-                return (size + clusterSize - 1) / clusterSize * clusterSize;
             }
+
+            var loSize = Kernel32.GetCompressedFileSizeW(info.FullName, out var hoSize);
+            var size = ((long)hoSize << 32) | loSize;
+            isCompressed = info.Length != size;
+            return (size + clusterSize - 1) / clusterSize * clusterSize;
         }
 
         private IAcManagerNew _targetManager;
@@ -214,6 +215,8 @@ namespace AcManager.Pages.ContentTools {
                             if (animations.Exists) {
                                 list = list.Concat(animations.GetFiles("*.ksanim"));
                             }
+                        } else {
+                            list = list.Concat(info.GetFiles("*.ai", SearchOption.AllDirectories));
                         }
 
                         return list.Where(x => x.Length > OptionCompressThreshold).Select(x => new FileToCompress(x)).ToList();
@@ -243,16 +246,24 @@ namespace AcManager.Pages.ContentTools {
             this.OnActualUnload(watcher);
         }
 
-        private void OnFileChanged(object o, FileSystemEventArgs e) {
-            var index = e.Name.LastIndexOf('.');
-            if (index == -1) return;
-            switch (e.Name.Substring(index + 1).ToLowerInvariant()) {
+        private static bool IsToBeCompressed(string filename) {
+            var index = filename.LastIndexOf('.');
+            if (index == -1) return false;
+            switch (filename.Substring(index + 1).ToLowerInvariant()) {
                 case "dds":
                 case "kn5":
                 case "knh":
                 case "ksanim":
-                    FilesToCompress.GetByIdOrDefault(FileToCompress.NormalizePath(e.FullPath))?.Refresh();
-                    break;
+                case "ai":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private void OnFileChanged(object o, FileSystemEventArgs e) {
+            if (IsToBeCompressed(e.Name)) {
+                FilesToCompress.GetByIdOrDefault(FileToCompress.NormalizePath(e.FullPath))?.Refresh();
             }
         }
 
@@ -427,7 +438,6 @@ namespace AcManager.Pages.ContentTools {
                                     StandardErrorEncoding = Encoding.UTF8,
                                     WindowStyle = ProcessWindowStyle.Hidden
                                 }, true)) {
-                            process.Start();
                             process.OutputDataReceived += (sender, args) => {
                                 if (args.Data == null) return;
                                 if (args.Data.EndsWith(@" [OK]") && filesIndex < files.Count) {
@@ -455,6 +465,137 @@ namespace AcManager.Pages.ContentTools {
             } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
                 NonfatalError.Notify("Can’t process files", e);
             }
+        }
+
+        private static List<string> _newFilesToBeCompressedLater = new List<string>();
+        private static bool _newFilesAddingEnqueued;
+        private static bool _compressingEnqueued;
+
+        public static void RegisterNewFileToBeCompressedLater(string filename) {
+            if (!IsToBeCompressed(filename)) return;
+
+            filename = filename.ToLowerInvariant();
+            lock (_newFilesToBeCompressedLater) {
+                if (!_newFilesToBeCompressedLater.Contains(filename)) {
+                    _newFilesToBeCompressedLater.Add(filename);
+                }
+
+                if (!_newFilesAddingEnqueued) {
+                    _newFilesAddingEnqueued = true;
+                    Task.Delay(TimeSpan.FromSeconds(5d)).ContinueWith(r => {
+                        var ownList = new HashSet<string>();
+                        lock (_newFilesToBeCompressedLater) {
+                            foreach (var item in _newFilesToBeCompressedLater) {
+                                ownList.Add(item);
+                            }
+                            _newFilesToBeCompressedLater.Clear();
+                        }
+
+                        var listFilename = FilesStorage.Instance.GetTemporaryFilename("To Compress.txt");
+                        try {
+                            foreach (var item in File.ReadLines(listFilename)) {
+                                ownList.Add(item);
+                            }
+                        } catch {
+                            // Do nothing
+                        }
+                        File.WriteAllLines(listFilename, ownList);
+                        _newFilesAddingEnqueued = false;
+                    });
+                }
+            }
+        }
+
+        public static void BackgroundCompressStep() {
+            if (_compressingEnqueued) return;
+            _compressingEnqueued = true;
+
+            Task.Delay(TimeSpan.FromSeconds(5d)).ContinueWith(r => {
+                try {
+                    Logging.Debug("[BgCompression] Launching…");
+                
+                    var contentDirectory = GetContentDirectory();
+                    var listFilename = FilesStorage.Instance.GetTemporaryFilename("To Compress.txt");
+                    string[] lines;
+                    try {
+                        lines = File.ReadAllLines(listFilename);
+                    } catch {
+                        lines = new string[0];
+                    }
+                    Logging.Debug("[BgCompression] In the queue: " + lines.Length);
+                    var candidates = lines.Take(20).Where(x => {
+                        var fileInfo = new FileInfo(x);
+                        if (!fileInfo.Exists || fileInfo.Length < OptionCompressThreshold) return false;
+                        GetFileSizeOnDisk(fileInfo, out var isCompressed);
+                        return !isCompressed;
+                    }).Select(x => FileUtils.GetPathWithin(x, contentDirectory)).ToList();
+                    lines = lines.Skip(20).ToArray();
+
+                    if (candidates.Count == 0 && MathUtils.Random() > 0.9) {
+                        var carMode = MathUtils.Random() > 0.5;
+                        var randomFolder = Path.Combine(contentDirectory, carMode ? @"cars" : @"tracks");
+                        var randomEntity = Directory.GetDirectories(randomFolder).RandomElementOrDefault();
+                        if (randomEntity == null) return;
+                    
+                        Logging.Debug("[BgCompression] Queue is empty, randomly checking: " + randomEntity);
+                        var info = new DirectoryInfo(randomEntity);
+                        IEnumerable<FileInfo> list;
+                        var firstScan = info.GetFiles("*.dds", SearchOption.AllDirectories);
+                        if (firstScan.Length == 0) {
+                            firstScan = info.GetFiles("*.kn5", SearchOption.AllDirectories);
+                            if (firstScan.Length == 0) return;
+                            list = firstScan;
+                        } else {
+                            list = firstScan.Append(info.GetFiles("*.kn5", SearchOption.AllDirectories));
+                        }
+                        if (carMode) {
+                            list = list.Concat(info.GetFiles("*.knh"));
+                            var animations = new DirectoryInfo(Path.Combine(info.FullName, "animations"));
+                            if (animations.Exists) {
+                                list = list.Concat(animations.GetFiles("*.ksanim"));
+                            }
+                        } else {
+                            list = list.Concat(info.GetFiles("*.ai", SearchOption.AllDirectories));
+                        }
+                    
+                        var filtered = list.Where(fileInfo => {
+                            if (!fileInfo.Exists || fileInfo.Length < OptionCompressThreshold) return false;
+                            GetFileSizeOnDisk(fileInfo, out var isCompressed);
+                            return !isCompressed;
+                        }).ToList();
+                        if (filtered.Count > 20) {
+                            lines = lines.Concat(filtered.Skip(20).Select(x => x.FullName)).ToArray();
+                            filtered = filtered.Take(20).ToList();
+                        }
+                        candidates = filtered.Select(x => FileUtils.GetPathWithin(x.FullName, contentDirectory)).ToList();
+                    }
+                
+                    Logging.Debug("[BgCompression] Compression candidates: " + candidates.JoinToString("; "));
+                    if (candidates.Count == 0) return;
+                    using (var process = ProcessExtension.Start(@"compact", candidates.Prepend("/C", "/EXE:LZX"),
+                            new ProcessStartInfo {
+                                WorkingDirectory = contentDirectory,
+                                CreateNoWindow = true,
+                                RedirectStandardInput = true,
+                                RedirectStandardOutput = true,
+                                UseShellExecute = false,
+                                RedirectStandardError = true,
+                                StandardOutputEncoding = Encoding.UTF8,
+                                StandardErrorEncoding = Encoding.UTF8,
+                                WindowStyle = ProcessWindowStyle.Hidden
+                            }, true)) {
+                        process.PriorityClass = ProcessPriorityClass.Idle;
+                        process.WaitForExit();
+                        Logging.Debug($"[BgCompression] Done: {process.ExitCode} ({candidates.JoinToString(@"; ")})");
+                    }
+                
+                    File.WriteAllLines(listFilename, lines);
+                } catch (Exception e) {
+                    Logging.Debug($"[BgCompression] Exception: {e}");
+                } finally {
+                    _compressingEnqueued = false;
+                }
+            });
         }
     }
 }

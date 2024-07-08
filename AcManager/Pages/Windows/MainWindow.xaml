@@ -319,7 +319,7 @@
           <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <Path Width="8" Height="8" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Stretch="Uniform"
                 Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource PlayIconData}" />
-            <TextBlock Text="Running" FontSize="{StaticResource SmallFontSize}"></TextBlock>
+            <TextBlock Text="Races" FontSize="{StaticResource SmallFontSize}"></TextBlock>
           </DockPanel>
         </ToggleButton>
       </mui:Cell>

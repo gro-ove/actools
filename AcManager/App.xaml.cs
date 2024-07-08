@@ -35,6 +35,7 @@ using AcManager.Tools;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Data;
 using AcManager.Tools.Data.GameSpecific;
 using AcManager.Tools.GameProperties;
@@ -570,6 +571,12 @@ namespace AcManager {
 
             InitializeUpdatableStuff();
             BackgroundInitialization();
+            
+            NewFilesReporter.NewFileCreated += (sender, s) => {
+                if (SettingsHolder.Content.CompressFilesInBackground) {
+                    FilesCompressor.RegisterNewFileToBeCompressedLater(s);
+                }
+            };
 
             FatalErrorMessage.Register(new AppRestartHelper());
             ImageUtils.SafeMagickWrapper = fn => {
@@ -868,6 +875,12 @@ namespace AcManager {
 
                 await Task.Delay(1500);
                 ExtraProgressRings.Initialize();
+
+                AcSharedMemory.Instance.BackgroundProcessingOpportunity += (sender, args) => {
+                    if (SettingsHolder.Content.CompressFilesInBackground) {
+                        FilesCompressor.BackgroundCompressStep();
+                    }
+                };
 
                 await Task.Delay(3500);
                 await Task.Run(() => {

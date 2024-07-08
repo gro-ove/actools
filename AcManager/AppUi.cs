@@ -23,6 +23,8 @@ using Application = System.Windows.Application;
 
 namespace AcManager {
     public class AppUi {
+        public static bool NoExitOnTimeout = false;
+        
         [NotNull]
         private readonly Application _application;
 
@@ -39,6 +41,7 @@ namespace AcManager {
         private int _nothing;
 
         private void OnTimer(object sender, EventArgs eventArgs) {
+            if (NoExitOnTimeout) return;
             if (_application.Windows.Count == 0 && System.Windows.Forms.Application.OpenForms.Count == 0) {
                 if (_nothing > 2) {
                     Logging.Write("Nothing shown! Existing…");

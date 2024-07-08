@@ -279,6 +279,7 @@ namespace AcManager.Tools {
             if (!isDirectory && filename.EndsWith(@".kn5", StringComparison.OrdinalIgnoreCase)) {
                 if ((Keyboard.Modifiers == ModifierKeys.Alt || Keyboard.Modifiers == ModifierKeys.Shift) && SettingsHolder.Common.DeveloperMode) {
                     try {
+                        AppUi.NoExitOnTimeout = true;
                         Kn5.FbxConverterLocation = PluginsManager.Instance.GetPluginFilename(KnownPlugins.FbxConverter, "FbxConverter.exe");
                         var kn5 = Kn5.FromFile(filename);
                         var destination = FileUtils.EnsureUnique(Path.Combine(Path.GetDirectoryName(filename) ?? @".",

@@ -38,6 +38,10 @@
           <Label Content="{x:Static g:AppStrings.Settings_Content_MarkObjectsWithNotesWithIcon}" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding Holder.CompressFilesInBackground}" ToolTip="Only when Assetto Corsa is not running">
+          <Label Content="Compress files in background" />
+        </CheckBox>
+
         <!-- Power and torque curves -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Content_PowerAndTorqueCurves}" />
 

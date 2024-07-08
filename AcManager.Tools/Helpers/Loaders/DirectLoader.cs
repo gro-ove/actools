@@ -176,6 +176,10 @@ namespace AcManager.Tools.Helpers.Loaders {
             return false;
         }
 
+        protected virtual string TryToFixHtmlWebpage(HtmlDocument doc) {
+            return null;
+        }
+
         private async Task<string> DownloadResumeSupportAsync([NotNull] CookieAwareWebClient client,
                 [NotNull] FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination,
                 [CanBeNull] FlexibleLoaderReportDestinationCallback reportDestination, [CanBeNull] Func<bool> checkIfPaused,
@@ -228,6 +232,17 @@ namespace AcManager.Tools.Helpers.Loaders {
                             var link = doc.DocumentNode.SelectSingleNode(@"//meta[contains(@http-equiv, 'refresh')]")?.Attributes[@"content"]?.Value;
                             if (link == null) {
                                 Logging.Warning("Redirect is missing: " + loadedData);
+
+                                var fixedUrl = TryToFixHtmlWebpage(doc);
+                                if (fixedUrl != null) {
+                                    loadedData = null;
+                                    remoteData = await client.OpenReadTaskAsync(fixedUrl);
+                                    /*var innerLoader =  await FlexibleLoader.CreateLoaderAsync(fixedUrl, this, cancellation);
+                                    if (innerLoader != null) {
+                                        return await innerLoader.DownloadAsync(client, getPreferredDestination, reportDestination,
+                                                checkIfPaused, progress, cancellation);
+                                    }*/
+                                }
                             } else {
                                 var url = Regex.Match(link, @"\bhttp.+");
                                 if (url.Success) {

@@ -53,6 +53,9 @@ namespace StringBasedFilter.TestEntries {
                 case Operator.Equal:
                     return Math.Abs(value - _value) < 0.0001;
 
+                case Operator.SimilarTo:
+                    return value >= _value && value < _value + 1d;
+
                 default:
                     return false;
             }

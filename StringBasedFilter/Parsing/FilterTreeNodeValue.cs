@@ -45,6 +45,7 @@ namespace StringBasedFilter.Parsing {
                     case FilterComparingOperation.LessThanOrEqualTo:
                     case FilterComparingOperation.MoreThanOrEqualTo:
                     case FilterComparingOperation.EqualTo:
+                    case FilterComparingOperation.SimilarTo:
                         testEntry = new NumberTestEntry((Operator)splitted.ComparingOperation, splitted.PropertyValue);
                         break;
                     default:

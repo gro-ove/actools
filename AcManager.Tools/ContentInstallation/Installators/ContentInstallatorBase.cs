@@ -90,6 +90,7 @@ namespace AcManager.Tools.ContentInstallation.Installators {
                     FileUtils.EnsureFileDirectoryExists(destination);
                     progress?.Report(Path.GetFileName(destination), i, files.Count);
                     await fileInfo.CopyToAsync(destination);
+                    NewFilesReporter.RegisterNewFile(destination);
                     if (cancellation.IsCancellationRequested) return;
                 }
             }

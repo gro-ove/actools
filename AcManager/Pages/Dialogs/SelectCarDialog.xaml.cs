@@ -153,7 +153,7 @@ namespace AcManager.Pages.Dialogs {
 
         public static Uri RatingUri(double rating) {
             return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
-                    $"rating≥{Filter.Encode(rating.FloorToInt().ToInvariantString())} & rating<{Filter.Encode((rating.FloorToInt() + 1).ToInvariantString())}",
+                    $"rating≈{Filter.Encode(rating.FloorToInt().ToInvariantString())}",
                     PluralizingConverter.PluralizeExt(rating.FloorToInt(), ControlsStrings.SelectDialog_RatingTitle));
         }
 

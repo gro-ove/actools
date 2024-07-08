@@ -16,6 +16,7 @@ namespace StringBasedFilter.Parsing {
         MoreThanOrEqualTo = '≥',
         LessThanOrEqualTo = '≤',
         EqualTo = '=',
+        SimilarTo = '≈',
     }
 
     public static class FilterComparingOperations {
@@ -96,10 +97,10 @@ namespace StringBasedFilter.Parsing {
         /// </summary>
         public static readonly FilterParams DefaultStrictNoChildKeys = new FilterParams {
             ValueSplitter = new ValueSplitter(s => {
-                var match = Regex.Match(s, @"^([a-zA-Z_]+)\s*((?:>=|<=|=>|=<|[:<>≥≤=])\s*|[+\-−]\s*$)");
+                var match = Regex.Match(s, @"^([a-zA-Z_]+)\s*((?:>=|<=|=>|=<|[:<>≥≤=≈])\s*|[+\-−]\s*$)");
                 return !match.Success ? null : new FilterPropertyValue(match.Groups[1].Value,
                         FilterComparingOperations.Parse(match.Groups[2].Value.TrimEnd()), s.Substring(match.Length).TrimStart());
-            }, ':', '<', '>', '≥', '≤', '=', '+', '-', '−'),
+            }, ':', '<', '>', '≥', '≤', '=', '≈', '+', '-', '−'),
             CaseInvariant = false,
         };
 
@@ -158,8 +159,8 @@ namespace StringBasedFilter.Parsing {
     }
 
     internal static class DefaultValueSplitFunc {
-        private static readonly Regex ParsingRegex = new Regex(@"^([a-zA-Z]+)(\.[a-zA-Z]+)?\s*((?:>=|<=|=>|=<|[:<>≥≤=])\s*|[+\-−]\s*$)", RegexOptions.Compiled);
-        public static readonly char[] Separators = { ':', '<', '>', '≥', '≤', '=', '+', '-', '−' };
+        private static readonly Regex ParsingRegex = new Regex(@"^([a-zA-Z]+)(\.[a-zA-Z]+)?\s*((?:>=|<=|=>|=<|[:<>≥≤=≈])\s*|[+\-−]\s*$)", RegexOptions.Compiled);
+        public static readonly char[] Separators = { ':', '<', '>', '≥', '≤', '=', '≈', '+', '-', '−' };
 
         public static FilterPropertyValue Default(string s) {
             var match = ParsingRegex.Match(s);

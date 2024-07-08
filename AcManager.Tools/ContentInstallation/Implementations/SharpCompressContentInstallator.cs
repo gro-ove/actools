@@ -239,6 +239,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                                             progress?.Report(Path.GetFileName(destination), i, count);
                                             reader.WriteEntryTo(destination);
                                             if (cancellation.IsCancellationRequested) return;
+                                            NewFilesReporter.RegisterNewFile(destination);
                                         }
                                     }
                                     break;

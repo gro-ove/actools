@@ -486,6 +486,18 @@ namespace AcManager.Tools.Helpers {
             }
 
             public IStorage MegaAuthenticationStorage { get; } = new Substorage(AuthenticationStorage.GeneralStorage, "Mega:");
+
+            private bool? _compressFilesInBackground;
+
+            public bool CompressFilesInBackground {
+                get => _compressFilesInBackground ?? (_compressFilesInBackground = ValuesStorage.Get("Settings.ContentSettings.CompressFilesInBackground", false)).Value;
+                set {
+                    if (Equals(value, _compressFilesInBackground)) return;
+                    _compressFilesInBackground = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CompressFilesInBackground", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static ContentSettings _content;

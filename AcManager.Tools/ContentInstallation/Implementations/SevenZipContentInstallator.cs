@@ -436,6 +436,8 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                                 throw new Exception($"Sizes of {entry.Item1} don’t match: expected {entry.Item3}, but written {written}");
                             }
                         }
+                        
+                        NewFilesReporter.RegisterNewFile(entry.Item4);
                     }
                 }
             }, cancellation);
