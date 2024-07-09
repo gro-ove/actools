@@ -18,13 +18,15 @@ namespace AcManager.Tools.Helpers.Api {
     /// </summary>
     public class ApiCacheThing {
         private readonly TimeSpan _cacheAliveTime;
+        private readonly bool _ignoreAliveTime;
         private readonly string _directory;
 
         private readonly Dictionary<string, Tuple<byte[], DateTime>> _cache =
                 new Dictionary<string, Tuple<byte[], DateTime>>(10);
 
-        public ApiCacheThing(string directoryName, TimeSpan cacheAliveTime) {
+        public ApiCacheThing(string directoryName, TimeSpan cacheAliveTime, bool ignoreAliveTime = false) {
             _cacheAliveTime = cacheAliveTime;
+            _ignoreAliveTime = ignoreAliveTime;
             _directory = FilesStorage.Instance.GetTemporaryDirectory(directoryName);
         }
 
@@ -59,7 +61,7 @@ namespace AcManager.Tools.Helpers.Api {
                     cacheKey = GetTemporaryName(url);
                 }
 
-                var actualAliveTime = aliveTime ?? _cacheAliveTime;
+                var actualAliveTime = _ignoreAliveTime ? _cacheAliveTime : aliveTime ?? _cacheAliveTime;
 
                 Tuple<byte[], DateTime> cache;
                 lock (_cache) {

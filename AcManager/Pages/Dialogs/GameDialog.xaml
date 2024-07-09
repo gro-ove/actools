@@ -158,7 +158,7 @@
                       Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
                 </Border>
 
-                <TextBlock Text="{Binding ModeName}" Style="{StaticResource Heading1}" FontSize="40" DockPanel.Dock="Top" />
+                <TextBlock Text="{Binding ModeName}" Style="{StaticResource Heading1}" FontSize="28" DockPanel.Dock="Top" />
                 <mui:BbCodeBlock Mode="Extended" Text="{Binding Message}" VerticalAlignment="Bottom" Margin="0 12 0 6" TextOptions.TextFormattingMode="Ideal" />
               </DockPanel>
             </StackPanel>

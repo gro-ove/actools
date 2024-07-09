@@ -133,25 +133,22 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
             
-            // And by “tuning LuaJIT” if necessary
+            // And by tuning LuaJIT if necessary
             if (!PatchHelper.IsFeatureSupported(PatchHelper.FeatureLibrariesPreoptimized)) {
                 try {
-                    var patch = InternalUtils.GetLibrariesOptimizationTweak(PatchHelper.GetActiveBuild().As(0));
-                    if (patch != null) {
-                        if (patch.Item2 != @"user.lua") {
-                            FileUtils.TryToDelete(Path.Combine(AcRootDirectory.Instance.RequireValue, "extension\\internal\\user.lua"));
-                        }
-                        if (patch.Item2 != @"patch.lua") {
-                            FileUtils.TryToDelete(Path.Combine(AcRootDirectory.Instance.RequireValue, "extension\\internal\\patch.lua"));
-                        }
-                        File.WriteAllText(Path.Combine(AcRootDirectory.Instance.RequireValue, "extension\\internal", patch.Item2), patch.Item1);
-                    } else {
-                        FileUtils.TryToDelete(Path.Combine(AcRootDirectory.Instance.RequireValue, "extension\\internal\\user.lua"));
-                        FileUtils.TryToDelete(Path.Combine(AcRootDirectory.Instance.RequireValue, "extension\\internal\\patch.lua"));
-                    }
+                    var versionID = PatchHelper.GetActiveBuild().As(0);
+                    InstallCspTweak(versionID);
+                    InstallCspTweak(2700);
                 } catch (Exception e) {
                     Logging.Error(e);
                 }
+            }
+        }
+
+        private static void InstallCspTweak(int versionID) {
+            var patch = InternalUtils.GetLibrariesOptimizationTweak(versionID);
+            if (patch != null) {
+                File.WriteAllText(Path.Combine(AcRootDirectory.Instance.RequireValue, "extension\\internal", patch.Item2), patch.Item1);
             }
         }
 

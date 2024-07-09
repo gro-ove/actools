@@ -6,7 +6,7 @@ using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.Helpers.Loaders {
     internal class DropboxLoader : DirectLoader {
-        public static bool Test(string url) => Regex.IsMatch(url, @"^https?://(?:www\.)?dropbox\.com/s/", RegexOptions.IgnoreCase);
+        public static bool Test(string url) => Regex.IsMatch(url, @"^https?://(?:www\.)?dropbox\.com/(?:s|scl)/", RegexOptions.IgnoreCase);
 
         public DropboxLoader(string url) : base(url) {}
 

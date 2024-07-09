@@ -19,7 +19,7 @@ using Newtonsoft.Json.Linq;
 namespace AcManager.Tools.Miscellaneous {
     public class CupClient {
         private static ApiCacheThing _cache;
-        private static ApiCacheThing Cache => _cache ?? (_cache = new ApiCacheThing("CUP", TimeSpan.FromHours(3)));
+        private static ApiCacheThing Cache => _cache ?? (_cache = new ApiCacheThing("CUP", TimeSpan.FromHours(3), true));
 
         [CanBeNull]
         public static CupClient Instance { get; private set; }

@@ -418,6 +418,34 @@ namespace AcManager.Pages.Selected {
             public AsyncCommand ClearStatsAllCommand => SelectedObject.ClearStatsAllCommand;
         }
 
+        protected class LayoutProvider : ISelectedAcObjectViewModel {
+            private readonly TrackObjectBase _trackLayout;
+            private readonly ISelectedAcObjectViewModel _parent;
+
+            public LayoutProvider(TrackObjectBase trackLayout, ISelectedAcObjectViewModel parent) {
+                _trackLayout = trackLayout;
+                _parent = parent;
+            }
+
+            public TrackObjectBase SelectedObject => _trackLayout;
+
+            AcCommonObject ISelectedAcObjectViewModel.SelectedAcObject => _trackLayout;
+
+            void ISelectedAcObjectViewModel.Load() {
+                _parent.Load();
+            }
+
+            void ISelectedAcObjectViewModel.Unload() {
+                _parent.Unload();
+            }
+
+            public ICommand FindInformationCommand => _parent.FindInformationCommand;
+            
+            public ICommand ChangeIdCommand => _parent.ChangeIdCommand;
+            
+            public ICommand CloneCommand => _parent.CloneCommand;
+        }
+
         protected override void OnVersionInfoBlockClick(object sender, MouseButtonEventArgs e) {
             /*if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 e.Handled = true;
@@ -435,7 +463,9 @@ namespace AcManager.Pages.Selected {
 
                 if (Keyboard.Modifiers != ModifierKeys.Control) {
                     new ModernPopup {
-                        Content = new PopupAuthor((ISelectedAcObjectViewModel)DataContext),
+                        Content = new PopupAuthor(_model.SelectedObject.MultiLayoutMode && _model.SelectedTrackConfiguration != null
+                                ? new LayoutProvider(_model.SelectedTrackConfiguration, (ISelectedAcObjectViewModel)DataContext) 
+                                : (ISelectedAcObjectViewModel)DataContext),
                         PlacementTarget = sender as UIElement,
                         StaysOpen = false
                     }.IsOpen = true;
