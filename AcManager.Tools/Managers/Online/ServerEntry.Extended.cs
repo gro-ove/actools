@@ -61,7 +61,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public string Description {
             get => _description;
-            set => Apply(value, ref _description);
+            set => Apply(ProcessDescription(value, true), ref _description);
         }
 
         private string _trackBaseId;
@@ -553,6 +553,32 @@ namespace AcManager.Tools.Managers.Online {
             IsAbleToInstallMissingContentState_Extended = state;
             return missingSomething ? ServerStatus.MissingContent : (ServerStatus?)null;
         }
+        #endregion
+
+        #region Server description filtering
+
+        private const string IMG_TAG = "img";
+
+        private string ProcessDescription(string description, bool removeImage = false)
+        {
+            string displayDescr = description;
+
+            if (removeImage) displayDescr = RemoveTag(displayDescr, IMG_TAG);
+
+            return displayDescr;
+        }
+
+        private string RemoveTag(string text, string tag)
+        {
+            // RegEx to find the opening and closing tags
+            string imgTagPattern = $@"\[{tag}=""[^""]*""\](.*?)\[/{tag}\]";
+
+            // Replace by the content inside the opening and closing tag
+            string result = Regex.Replace(text, imgTagPattern, "$1", RegexOptions.IgnoreCase);
+
+            return result;
+        }
+
         #endregion
     }
 }
