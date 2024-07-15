@@ -61,7 +61,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public string Description {
             get => _description;
-            set => Apply(ProcessDescription(value, true), ref _description);
+            set => Apply(ProcessDescription(value, SettingsHolder.Online.HideImagesInServersDescription), ref _description);
         }
 
         private string _trackBaseId;
