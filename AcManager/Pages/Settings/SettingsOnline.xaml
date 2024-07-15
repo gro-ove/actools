@@ -47,6 +47,10 @@
           <Label Content="{x:Static g:AppStrings.Settings_Online_ShowBrandBadges}" set:Search.Keywords="appearance;ui" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding Online.HideImagesInServersDescription}">
+          <Label Content="{x:Static g:AppStrings.Settings_Online_HideImagesInServerDescription}" set:Search.Keywords="appearance;ui" />
+        </CheckBox>
+
         <!-- Passwords -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Online_Passwords}" />
 

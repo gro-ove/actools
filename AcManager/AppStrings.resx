@@ -1,128 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-    <!--
-      Microsoft ResX Schema
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
 
-      Version 2.0
-
-      The primary goals of this format is to allow a simple XML format
-      that is mostly human readable. The generation and parsing of the
-      various data types are done through the TypeConverter classes
-      associated with the data types.
-
-      Example:
-
-      ... ado.net/XML headers & schema ...
-      <resheader name="resmimetype">text/microsoft-resx</resheader>
-      <resheader name="version">2.0</resheader>
-      <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-      <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-      <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-      <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-      <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-          <value>[base64 mime encoded serialized .NET Framework object]</value>
-      </data>
-      <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-          <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-          <comment>This is a comment</comment>
-      </data>
-
-      There are any number of "resheader" rows that contain simple
-      name/value pairs.
-
-      Each data row contains a name, and value. The row also contains a
-      type or mimetype. Type corresponds to a .NET class that support
-      text/value conversion through the TypeConverter architecture.
-      Classes that don’t support this are serialized and stored with the
-      mimetype set.
-
-      The mimetype is used for serialized objects, and tells the
-      ResXResourceReader how to depersist the object. This is currently not
-      extensible. For a given mimetype the value must be set accordingly:
-
-      Note - application/x-microsoft.net.object.binary.base64 is the format
-      that the ResXResourceWriter will generate, however the reader can
-      read any of the formats listed below.
-
-      mimetype: application/x-microsoft.net.object.binary.base64
-      value   : The object must be serialized with
-              : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-              : and then encoded with base64 encoding.
-
-      mimetype: application/x-microsoft.net.object.soap.base64
-      value   : The object must be serialized with
-              : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-              : and then encoded with base64 encoding.
-
-      mimetype: application/x-microsoft.net.object.bytearray.base64
-      value   : The object must be serialized into a byte array
-              : using a System.ComponentModel.TypeConverter
-              : and then encoded with base64 encoding.
-      -->
-    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-        <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-        <xsd:element name="root" msdata:IsDataSet="true">
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
             <xsd:complexType>
-                <xsd:choice maxOccurs="unbounded">
-                    <xsd:element name="metadata">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
-                            </xsd:sequence>
-                            <xsd:attribute name="name" use="required" type="xsd:string"/>
-                            <xsd:attribute name="type" type="xsd:string"/>
-                            <xsd:attribute name="mimetype" type="xsd:string"/>
-                            <xsd:attribute ref="xml:space"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="assembly">
-                        <xsd:complexType>
-                            <xsd:attribute name="alias" type="xsd:string"/>
-                            <xsd:attribute name="name" type="xsd:string"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="data">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
-                            </xsd:sequence>
-                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-                            <xsd:attribute ref="xml:space"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="resheader">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                            </xsd:sequence>
-                            <xsd:attribute name="name" type="xsd:string" use="required"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                </xsd:choice>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
-        </xsd:element>
-    </xsd:schema>
-    <resheader name="resmimetype">
-        <value>text/microsoft-resx</value>
-    </resheader>
-    <resheader name="version">
-        <value>2.0</value>
-    </resheader>
-    <resheader name="reader">
-        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
-            PublicKeyToken=b77a5c561934e089
-        </value>
-    </resheader>
-    <resheader name="writer">
-        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
-            PublicKeyToken=b77a5c561934e089
-        </value>
-    </resheader>
-    <data name="Main_UnhandledException" xml:space="preserve">
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Main_UnhandledException" xml:space="preserve">
     <value>Unhandled exception:
 
 {0}</value>
@@ -189,7 +184,8 @@ Author: [b]{3}[/b]</value>
   </data>
   <data name="Arguments_SharedMessage_Id" xml:space="preserve">
     <value>ID</value>
-  <comment>@Invariant</comment></data>
+    <comment>@Invariant</comment>
+  </data>
   <data name="Arguments_SharedMessage_For" xml:space="preserve">
     <value>For</value>
   </data>
@@ -473,10 +469,12 @@ Author: [b]{3}[/b]</value>
   </data>
   <data name="Main_Rsr" xml:space="preserve">
     <value>RSR</value>
-  <comment>@Invariant</comment></data>
+    <comment>@Invariant</comment>
+  </data>
   <data name="Main_Srs" xml:space="preserve">
     <value>SRS</value>
-  <comment>@Invariant</comment></data>
+    <comment>@Invariant</comment>
+  </data>
   <data name="Main_QuickDrive" xml:space="preserve">
     <value>Quick</value>
   </data>
@@ -989,30 +987,6 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
   <data name="Settings_Replays_NameFormat_Tooltip" xml:space="preserve">
     <value>Used for saving or autosaving replays after the race.
 
-Values for replacement:
- [b][mono]{type}[/mono][/b] — type of race;
- [b][mono]{car}[/mono][/b] — car’s name;
- [b][mono]{car.id}[/mono][/b] — car’s id;
- [b][mono]{track}[/mono][/b] — track’s name;
- [b][mono]{track.id}[/mono][/b] — track’s id;
- [b][mono]{date}[/mono][/b] — date and time in proper format;
- [b][mono]{date_ac}[/mono][/b] — date and time in AC format.
-
-Modifiers:
- [b][mono]{…:l}[/mono][/b] — lowercase;
- [b][mono]{…:u}[/mono][/b] — uppercase;
- [b][mono]{…:0}[/mono][/b] — only first symbol.
-
-Examples:
- [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — default Kunos format;
- [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — something like “[w] bmw m3 e30 on brands hatch.acreplay”.
-
-If you need some other values, please, contact us and we’ll add them.
-
-[b]Warning[/b]:
- Don’t use symbols like “[” or “]”!</value>
-      <!--Used for saving or autosaving replays after the race.
-
   Values for replacement:
    [b][mono]{type}[/mono][/b] — type of race;
    [b][mono]{car}[/mono][/b] — car’s name;
@@ -1034,8 +1008,8 @@ If you need some other values, please, contact us and we’ll add them.
   If you need some other values, please, contact us and we’ll add them.
 
   [b]Warning[/b]:
-   Don’t use symbols like “[” or “]”!-->
-</data>
+   Don’t use symbols like “[” or “]”!</value>
+  </data>
   <data name="Settings_AcSettingsHeader" xml:space="preserve">
     <value>AC settings:</value>
   </data>
@@ -2137,7 +2111,6 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   </data>
   <data name="Common_Go_RaceTooltip" xml:space="preserve">
     <value>Start race (Ctrl+G)</value>
-      <!--Start race (Ctrl+G)-->
   </data>
   <data name="Rsr_AppIsMissing" xml:space="preserve">
     <value>RSR app is missing</value>
@@ -2168,7 +2141,8 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   </data>
   <data name="Srs_IpLabel" xml:space="preserve">
     <value>IP:</value>
-  <comment>@Invariant</comment></data>
+    <comment>@Invariant</comment>
+  </data>
   <data name="Srs_PortLabel" xml:space="preserve">
     <value>Port:</value>
   </data>
@@ -2200,7 +2174,8 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   <data name="AcError_StackTrace" xml:space="preserve">
     <value>Stack trace:
 [mono]{0}[/mono]</value>
-  <comment>@Invariant</comment></data>
+    <comment>@Invariant</comment>
+  </data>
   <data name="AcError_SolutionsNotFound" xml:space="preserve">
     <value>None of solutions are available.</value>
   </data>
@@ -3201,7 +3176,8 @@ But if you don’t want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</valu
   </data>
   <data name="AcSettings_Video_Fxaa" xml:space="preserve">
     <value>FXAA</value>
-  <comment>@Invariant</comment></data>
+    <comment>@Invariant</comment>
+  </data>
   <data name="AcSettings_Video_ReflectionsHeader" xml:space="preserve">
     <value>Reflections:</value>
   </data>
@@ -3225,7 +3201,8 @@ But if you don’t want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</valu
   </data>
   <data name="AcSettings_Video_OculusHeader" xml:space="preserve">
     <value>Oculus:</value>
-  <comment>@Invariant</comment></data>
+    <comment>@Invariant</comment>
+  </data>
   <data name="AcSettings_Video_PixelsPerDisplay" xml:space="preserve">
     <value>Pixels per display</value>
   </data>
@@ -3396,8 +3373,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Cache brands</value>
   </data>
   <data name="Settings_Drive_AlwaysRecordGhost" xml:space="preserve">
-    <value>Always record ghost in hot lap mode</value>
-      <!--Always record ghost in hotlap mode-->
+    <value>Always record ghost in hotlap mode</value>
   </data>
   <data name="Settings_Drive_WeatherParticles" xml:space="preserve">
     <value>Use custom weather particles</value>
@@ -3406,8 +3382,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Use custom weather PP-filter</value>
   </data>
   <data name="Settings_Drive_ExtendedWeatherHeader" xml:space="preserve">
-    <value>Extended weather:</value>
-      <!--Extended Weather-->
+    <value>Extended Weather</value>
   </data>
   <data name="Settings_Drive_WeatherPpFilter_Tooltip" xml:space="preserve">
     <value>PP-filter will be switched back later</value>
@@ -3431,8 +3406,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>In car selection dialog</value>
   </data>
   <data name="Settings_Drive_AlwaysRecordGhost_Tooltip" xml:space="preserve">
-    <value>Record ghost while hot lapping even if it’s hidden</value>
-      <!--Record ghost while hotlapping even if it’s hidden-->
+    <value>Record ghost while hotlapping even if it’s hidden</value>
   </data>
   <data name="About_ThanksForTranslationHeader" xml:space="preserve">
     <value>Special thanks for translation to:</value>
