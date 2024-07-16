@@ -121,6 +121,20 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _hideImagesInServersDescription;
+
+            public bool HideImagesInServersDescription
+            {
+                get => _hideImagesInServersDescription ?? (_hideImagesInServersDescription = ValuesStorage.Get("Settings.OnlineSettings.HideImagesInServersDescription", false)).Value;
+                set
+                {
+                    if (Equals(value, _hideImagesInServersDescription)) return;
+                    _hideImagesInServersDescription = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.HideImagesInServersDescription", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _rememberPasswords;
 
             public bool RememberPasswords {
