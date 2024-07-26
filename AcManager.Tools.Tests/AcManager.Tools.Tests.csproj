@@ -98,7 +98,6 @@
   <ItemGroup>
     <Compile Include="AcEnabledOnlyCollectionTest.cs" />
     <Compile Include="FlexibleLoaderTest.cs" />
-    <Compile Include="CarLodGeneratorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SharedLocaleReaderTest.cs" />
     <Compile Include="TelemetryListenerTest.cs" />

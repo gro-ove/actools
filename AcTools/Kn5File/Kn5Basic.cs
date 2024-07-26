@@ -232,6 +232,10 @@ namespace AcTools.Kn5File {
 
         private bool _uniqueNamesSet;
 
+        public void Refresh() {
+            _uniqueNamesSet = false;
+        }
+
         private void EnsureUniqueNamesSet() {
             if (_uniqueNamesSet) return;
             _uniqueNamesSet = true;

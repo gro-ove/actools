@@ -275,9 +275,9 @@ namespace AcManager {
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 
             Acd.Factory = new AcdFactory();
-            //#if !DEBUG
+            #if !DEBUG
             Kn5.Factory = Kn5New.GetFactoryInstance();
-            //#endif
+            #endif
             Lazier.SyncAction = ActionExtension.InvokeInMainThreadAsync;
             KeyboardListenerFactory.Register<KeyboardListener>();
 

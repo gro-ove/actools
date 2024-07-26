@@ -945,7 +945,7 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
     <value>Enable Quick Switches</value>
   </data>
   <data name="Settings_QuickSwitches_Description" xml:space="preserve">
-    <value>Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or click middle mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you need some new option, [url="https://acstuff.ru/app/#contacts"]please contact us[/url].</value>
+    <value>Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or click middle mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you need some new option, [url="https://acstuff.club/app/#contacts"]please contact us[/url].</value>
   </data>
   <data name="Settings_QuickSwitches_AddedLabel" xml:space="preserve">
     <value>Added:</value>
@@ -3266,7 +3266,7 @@ But if you don’t want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</valu
     <value>Report an issue</value>
   </data>
   <data name="About_ContactInformation" xml:space="preserve">
-    <value>If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please [url="https://acstuff.ru/app/#contacts"]contact us[/url].</value>
+    <value>If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please [url="https://acstuff.club/app/#contacts"]contact us[/url].</value>
   </data>
   <data name="About_ContactUsHeader" xml:space="preserve">
     <value>Contact us:</value>
@@ -3958,7 +3958,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <value>No configurable apps found</value>
     </data>
     <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
-      <value>Changes will be saved automatically. If you want to optimize the way configuration files are shown, you can find more information about them [url=&quot;https://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url].</value>
+      <value>Changes will be saved automatically. If you want to optimize the way configuration files are shown, you can find more information about them [url=&quot;https://acstuff.club/f/d/19-content-manager-python-app-configs&quot;]here[/url].</value>
     </data>
     <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
       <value>Use Custom Showroom instead of the original one in some cases</value>

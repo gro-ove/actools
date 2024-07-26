@@ -152,7 +152,9 @@
     <Compile Include="LodGenerator\CarLodGeneratorProgressUpdate.cs" />
     <Compile Include="LodGenerator\CarLodGeneratorResultCallback.cs" />
     <Compile Include="LodGenerator\CarLodGeneratorStageParams.cs" />
+    <Compile Include="LodGenerator\CarLodGeneratorToolParams.cs" />
     <Compile Include="LodGenerator\ICarLodGeneratorService.cs" />
+    <Compile Include="LodGenerator\ICarLodGeneratorStage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

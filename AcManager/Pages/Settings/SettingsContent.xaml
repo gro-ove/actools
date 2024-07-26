@@ -75,7 +75,7 @@
 
         <c:MessageBlock set:Search.Include="False">
           <mui:BbCodeBlock>
-            <mui:BbCodeBlock.Text>If you’re making mods and want your icon to be shown there as well, please, [url=&quot;https://acstuff.ru/app/#contacts&quot;]contact us[/url] or send a pull request [url=&quot;https://github.com/gro-ove/actools-data/tree/master/Origin%20Icons&quot;]here[/url].</mui:BbCodeBlock.Text>
+            <mui:BbCodeBlock.Text>If you’re making mods and want your icon to be shown there as well, please, [url=&quot;https://acstuff.club/app/#contacts&quot;]contact us[/url] or send a pull request [url=&quot;https://github.com/gro-ove/actools-data/tree/master/Origin%20Icons&quot;]here[/url].</mui:BbCodeBlock.Text>
           </mui:BbCodeBlock>
         </c:MessageBlock>
 
@@ -164,6 +164,12 @@
         <CheckBox set:Search.Keywords="cars;specs;display;ui" IsChecked="{Binding Holder.DisplaySteerLock}">
           <Label Content="{x:Static g:AppStrings.Settings_Content_DisplaySteerLock}" />
         </CheckBox>
+
+        <DockPanel set:Search.Keywords="cars;model">
+          <Label Content="LOD generation tool" />
+          <mui:BetterComboBox ItemsSource="{Binding Holder.CarsLODGeneratorTool}" SelectedItem="{Binding Holder.CarsLODGeneratorTool.SelectedItem}"
+              DisplayMemberPath="DisplayName" IsEditable="False" />
+        </DockPanel>
 
         <!-- Car skins specific -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Content_CarSkins}" />

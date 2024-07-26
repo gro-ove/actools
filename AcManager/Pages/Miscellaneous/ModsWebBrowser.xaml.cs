@@ -425,7 +425,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                 ClipboardHelper.SetText(piece);
                 Toast.Show(string.Format(AppStrings.WebSource_SharedDescriptionTitle, Name),
                         AppStrings.WebSource_SharedMessageCopiedTitle,
-                        () => WindowsHelper.ViewInBrowser(@"https://acstuff.ru/f/d/24-content-manager-websites-with-mods"));
+                        () => WindowsHelper.ViewInBrowser(@"https://acstuff.club/f/d/24-content-manager-websites-with-mods"));
             }));
 
             [CanBeNull]

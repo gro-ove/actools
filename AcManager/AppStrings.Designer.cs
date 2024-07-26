@@ -60,7 +60,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please [url=&quot;https://acstuff.ru/app/#contacts&quot;]contact us[/url]..
+        ///   Looks up a localized string similar to If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please [url=&quot;https://acstuff.club/app/#contacts&quot;]contact us[/url]..
         /// </summary>
         public static string About_ContactInformation {
             get {
@@ -11632,7 +11632,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Changes will be saved automatically. If you want to optimize the way configuration files are shown, you can find more information about them [url=&quot;https://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url]..
+        ///   Looks up a localized string similar to Changes will be saved automatically. If you want to optimize the way configuration files are shown, you can find more information about them [url=&quot;https://acstuff.club/f/d/19-content-manager-python-app-configs&quot;]here[/url]..
         /// </summary>
         public static string Settings_PythonApps_ChangedWillBeSavedAutomatically {
             get {
@@ -11668,7 +11668,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or click middle mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you need some new option, [url=&quot;https://acstuff.ru/app/#contacts&quot;]please contact us[/url]..
+        ///   Looks up a localized string similar to Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or click middle mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you need some new option, [url=&quot;https://acstuff.club/app/#contacts&quot;]please contact us[/url]..
         /// </summary>
         public static string Settings_QuickSwitches_Description {
             get {

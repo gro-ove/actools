@@ -18,7 +18,7 @@ namespace AcManager.Tools.Helpers {
 
             public string CupRegistries {
                 get => _cupRegistries ?? (_cupRegistries =
-                        ValuesStorage.Get("Settings.ContentSettings.CupRegistries", "https://acstuff.ru/cup/"));
+                        ValuesStorage.Get("Settings.ContentSettings.CupRegistries", "https://acstuff.club/cup/"));
                 set {
                     value = value.Trim();
                     if (Equals(value, _cupRegistries)) return;
@@ -243,6 +243,12 @@ namespace AcManager.Tools.Helpers {
                 new SettingEntry(0, "Weight-to-power (kg/cv)"),
                 new SettingEntry(1, "Power-to-weight (hp/kg)"),
                 new SettingEntry(2, "Power-to-weight (hp/tonne)"),
+            };
+
+            public SettingEntryStored CarsLODGeneratorTool { get; } = new SettingEntryStored("/Settings.ContentSettings.CarsLODGeneratorTool") {
+                new SettingEntry(0, "Polygon Cruncher"),
+                new SettingEntry(1, "Simplygon"),
+                // new SettingEntry(2, "MeshLab (requires Python and PyMeshLab installed)"),
             };
 
             private bool? _changeBrandIconAutomatically;

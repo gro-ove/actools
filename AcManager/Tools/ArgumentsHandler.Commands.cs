@@ -39,6 +39,8 @@ namespace AcManager.Tools {
         public static bool IsCmCommand(Uri uri) {
             return uri.IsAbsoluteUri && (uri.OriginalString.StartsWith(@"https://acstuff.ru/s/", StringComparison.OrdinalIgnoreCase)
                     || uri.OriginalString.StartsWith(@"http://acstuff.ru/s/", StringComparison.OrdinalIgnoreCase)
+                    || uri.OriginalString.StartsWith(@"https://acstuff.club/s/", StringComparison.OrdinalIgnoreCase)
+                    || uri.OriginalString.StartsWith(@"http://acstuff.club/s/", StringComparison.OrdinalIgnoreCase)
                     || string.Equals(uri.Scheme, @"acmanager", StringComparison.OrdinalIgnoreCase));
         }
 
@@ -391,7 +393,8 @@ namespace AcManager.Tools {
             if (build <= 0) {
                 throw new Exception("Invalid build ID");
             }
-            if (url.GetDomainNameFromUrl() != @"files.acstuff.ru") {
+            if (url.GetDomainNameFromUrl() != @"files.acstuff.ru"
+                && url.GetDomainNameFromUrl() != @"files.acstuff.club") {
                 throw new Exception("This URL is not supported");
             }
             if (ModernDialog.ShowMessage(

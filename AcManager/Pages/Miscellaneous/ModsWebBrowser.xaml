@@ -131,7 +131,7 @@
                       </DockPanel>
                     </Button>
                     <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink"
-                        CommandParameter="https://acstuff.ru/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically">
+                        CommandParameter="https://acstuff.club/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically">
                       <DockPanel IsHitTestVisible="False">
                         <Path Data="{StaticResource WebIconData}" Width="10" Height="10"
                             Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left"
@@ -160,7 +160,7 @@
             </DockPanel>
 
             <mui:BbCodeBlock VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="20"
-                Text="If you would want to see your website on the list of quickly added, please [url=&quot;https://acstuff.ru/app/#contacts&quot;]contact me[/url]."
+                Text="If you would want to see your website on the list of quickly added, please [url=&quot;https://acstuff.club/app/#contacts&quot;]contact me[/url]."
                 Style="{StaticResource BbCodeBlock.Small}" />
           </mui:Cell>
 
@@ -325,7 +325,7 @@
                       </DockPanel>
                       <c:MessageBlock Margin="0 0 0 8" IsEnabled="{Binding CaptureDownloads}">
                         <mui:BbCodeBlock LinkNavigator="{Binding}"
-                            Text="To set that rule easily, just start a download (for example, by pasting link to a file into CM via Ctrl+V) and go from there. Or, you can find some ready-to-use rules [url=&quot;https://acstuff.ru/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically&quot;]here[/url]. Also, click [url=&quot;cmd://shareSettings?format=link&quot;]here[/url] if you want to share your settings as a link, or [url=&quot;cmd://shareSettings?format=markdown&quot;]here[/url] if you want to share them in that thread and help other users." />
+                            Text="To set that rule easily, just start a download (for example, by pasting link to a file into CM via Ctrl+V) and go from there. Or, you can find some ready-to-use rules [url=&quot;https://acstuff.club/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically&quot;]here[/url]. Also, click [url=&quot;cmd://shareSettings?format=link&quot;]here[/url] if you want to share your settings as a link, or [url=&quot;cmd://shareSettings?format=markdown&quot;]here[/url] if you want to share them in that thread and help other users." />
                       </c:MessageBlock>
                     </StackPanel>
                   </mui:BooleanSwitch.True>

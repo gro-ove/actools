@@ -70,5 +70,7 @@ namespace AcTools.Kn5File {
 
         [CanBeNull]
         string GetParentPath([NotNull] Kn5Node node);
+
+        void Refresh();
     }
 }

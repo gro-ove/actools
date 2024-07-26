@@ -16,7 +16,7 @@
   <mui:Switch Value="{Binding Apps.Count}">
     <DockPanel mui:Switch.When="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{StaticResource ContentMarginWithPadding}">
       <TextBlock Text="{x:Static g:AppStrings.Settings_PythonApps_NoConfigurableAppsFound}" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
-      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.ru/f/d/19-content-manager-python-app-configs">
+      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.club/f/d/19-content-manager-python-app-configs">
         <DockPanel IsHitTestVisible="False">
           <Path Data="{StaticResource QuestionMarkIconData}" Width="10" Height="10"
               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"

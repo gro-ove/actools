@@ -91,7 +91,7 @@
     <DockPanel>
       <mui:SpacingStackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right" HorizontalAlignment="Right">
         <mui:BooleanSwitch Value="{Binding IsReady, Source={x:Static di:CarGenerateLodsDialog.Plugins}}"
-            Visibility="{Binding SimplygonAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+            Visibility="{Binding ToolAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
           <mui:SpacingStackPanel Orientation="Horizontal" Spacing="8">
             <Button MinWidth="160" Content="Save LODs" Command="{Binding FinalSaveCommand}"
                 Visibility="{Binding HasDataToSave, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -147,16 +147,16 @@
         </mui:Switch>
       </DockPanel>
 
-      <!-- Simplygon is missing -->
-      <DockPanel mui:FallbackSwitch.Value="{Binding SimplygonAvailable}" mui:FallbackSwitch.When="False" Margin="40 0 40 100" HorizontalAlignment="Center"
+      <!-- The tool is missing -->
+      <DockPanel mui:FallbackSwitch.Value="{Binding ToolAvailable}" mui:FallbackSwitch.When="False" Margin="40 0 40 100" HorizontalAlignment="Center"
           VerticalAlignment="Center" MaxWidth="400">
         <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" DockPanel.Dock="Top" Margin="0 0 0 8" />
         <mui:BbCodeBlock TextWrapping="Wrap" DockPanel.Dock="Top" Margin="0 0 0 8"
-            Text="Couldn’t find Simplygon installation. Please locate its file manually. You can get Simplygon [url=&quot;https://simplygon.com/&quot;]here[/url]." />
+            Text="Couldn’t find LOD generator tool installation. Please locate its file manually." />
         <DockPanel>
-          <TextBlock Text="Simplygon location:" Style="{StaticResource Label}" Width="120" />
-          <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding SimplygonLocateCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
-          <mui:PathTrimmingTextBlock Text="{Binding SimplygonLocation.Value}" />
+          <TextBlock Text="Tool location:" Style="{StaticResource Label}" Width="120" />
+          <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding ToolLocateCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
+          <mui:PathTrimmingTextBlock Text="{Binding ToolLocation.Value}" />
         </DockPanel>
       </DockPanel>
 
@@ -311,8 +311,8 @@
                               ToolTip="LODs generator will keep some files for caching, but remove others unless this option is active" />
                           <Separator />
                           <MenuItem Header="View prepared model" Click="OnViewPreparedModelClick" />
-                          <MenuItem Header="View Simplygon configuration" Command="{Binding ViewSimplygonConfigurationCommand}"
-                              ToolTip="Currently, Simplygon configuration, as well as all the other files, are not included with presets and sharing URLs" />
+                          <MenuItem Header="View tool configuration" Command="{Binding ViewToolConfigurationCommand}"
+                              ToolTip="Currently, tool configuration, as well as all the other files, are not included with presets and sharing URLs" />
                         </ContextMenu>
                       </mui:ContextMenuButton>
                       <CheckBox IsChecked="{Binding IsUserActive}" IsEnabled="{Binding IsAvailable}">

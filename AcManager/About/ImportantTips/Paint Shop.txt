@@ -4,6 +4,6 @@ Now, CM got a feature allowing to quickly create new skins. It’s still WIP, mo
 
  [img="http://i.imgur.com/tnUTPwn.png|320"]Example[/img]
 
-By default, CM tries to detect editable textures automatically by textures names and shaders used, and, for [url="https://github.com/MadMat13/CM-Paint-Shop/"]some cars[/url], it would use a remote storage providing rules to skin them. But, if you want, either for car you’re working on or for any other car, you can specify custom rules using a wide range of options. Full description is available [url="https://acstuff.ru/f/d/16-content-manager-paint-shop"]here[/url].
+By default, CM tries to detect editable textures automatically by textures names and shaders used, and, for [url="https://github.com/MadMat13/CM-Paint-Shop/"]some cars[/url], it would use a remote storage providing rules to skin them. But, if you want, either for car you’re working on or for any other car, you can specify custom rules using a wide range of options. Full description is available [url="https://acstuff.club/f/d/16-content-manager-paint-shop"]here[/url].
 
  [img="http://i.imgur.com/MJgaHWv.png|320"]For patterns, even gradients are available[/img]

@@ -76,7 +76,7 @@
         </Button>
         <Button Content="Generate LODs" Command="{Binding GenerateLodsCommand}"
             Visibility="{Binding CanEditDetails, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <Button.ToolTip>Improve performance by generating LODs using Simplygon</Button.ToolTip>
+          <Button.ToolTip>Improve performance by generating LODs</Button.ToolTip>
         </Button>
       </ToolBar>
       <ToolBar Band="1" BandIndex="1">

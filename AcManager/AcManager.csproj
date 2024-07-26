@@ -845,6 +845,10 @@
     <Compile Include="Tools\GameSessionNameProvider.cs" />
     <Compile Include="Tools\LargeFileUploaderParams.cs" />
     <Compile Include="Tools\LiveryIconEditor.cs" />
+    <Compile Include="Tools\LodsTools\MeshLabToolDetails.cs" />
+    <Compile Include="Tools\LodsTools\PolygonCruncherToolDetails.cs" />
+    <Compile Include="Tools\LodsTools\ILodsToolDetails.cs" />
+    <Compile Include="Tools\LodsTools\SimplygonToolDetails.cs" />
     <Compile Include="Tools\NeutralColorGradingLut.cs" />
     <Compile Include="Tools\KeyboardListener.cs" />
     <Compile Include="Tools\QuickDriveButtonModel.cs" />

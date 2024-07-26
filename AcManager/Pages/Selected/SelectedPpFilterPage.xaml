@@ -39,7 +39,7 @@
     <DockPanel>
       <c:MessageBlock CloseKey="csp-info" Margin="0 0 0 20" DockPanel.Dock="Top">
         <mui:BbCodeBlock
-            Text="With [url=&quot;https://acstuff.ru/patch/&quot;]Custom Shaders Patch[/url] you can create and edit filters in-game, seeing changes live." />
+            Text="With [url=&quot;https://acstuff.club/patch/&quot;]Custom Shaders Patch[/url] you can create and edit filters in-game, seeing changes live." />
       </c:MessageBlock>
       <av:TextEditor c:AvalonExtension.Text="{Binding SelectedObject.Content}" c:AvalonExtension.Mode="Ini" />
     </DockPanel>

@@ -27,7 +27,7 @@
             <TextBlock Text="Install" />
           </DockPanel>
         </Button>
-        <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.ru/patch">
+        <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.club/patch">
           <DockPanel IsHitTestVisible="False">
             <Path Data="{StaticResource WebIconData}" Width="10" Height="10"
                 Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
@@ -50,7 +50,7 @@
             <TextBlock Text="Yes, please" />
           </DockPanel>
         </Button>
-        <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.ru/patch">
+        <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.club/patch">
           <DockPanel IsHitTestVisible="False">
             <Path Data="{StaticResource WebIconData}" Width="10" Height="10"
                 Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"

@@ -137,6 +137,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 _rootObject = value;
 
                 InvalidateModelMatrixInverted();
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (_rootObject != null) {
                     _rootObject.MatrixChanged += OnRootObjectMatrixChanged;
                 }
