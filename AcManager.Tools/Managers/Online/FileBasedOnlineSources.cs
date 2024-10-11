@@ -88,8 +88,10 @@ namespace AcManager.Tools.Managers.Online {
             return _sources.Where(x => x.Key != HiddenKey && x.Key != FavouritesKey && x.Key != RecentKey).Select(x => x.Value);
         }
 
-        [NotNull]
+        [CanBeNull]
         public IOnlineSource GetSource([NotNull] string key) {
+            if (key.IndexOf(':') != -1) return null;
+            Logging.Write($"Loading file source: {key}");
             return GetInternalSource(key);
         }
 

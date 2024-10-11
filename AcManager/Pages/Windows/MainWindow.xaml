@@ -2,12 +2,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:w="clr-namespace:AcManager.Pages.Windows" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:system="clr-namespace:System;assembly=mscorlib"
-    xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
-    mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_Title}"
-    IsTitleVisible="False" MinWidth="800" MinHeight="640" Width="960" Height="800" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True"
-    Drop="OnDrop" DragEnter="OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded" Unloaded="OnUnloaded" Closing="OnClosing"
-    Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown" MouseDown="OnMouseUp" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
+    xmlns:c="http://acstuff.ru/app/controls" xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
+    mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_Title}" IsTitleVisible="False" MinWidth="800" MinHeight="640" Width="960" Height="800"
+    AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter"
+    DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded" Unloaded="OnUnloaded" Closing="OnClosing" Closed="OnClosed"
+    MouseRightButtonUp="OnMouseRightButtonDown" MouseDown="OnMouseUp" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
     PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" FrameNavigating="OnFrameNavigating"
     mui:ModernMenu.Initialize="OnMainMenuInitialize" mui:ModernMenu.SelectedChange="OnMainMenuSelectedChange"
     d:DataContext="{d:DesignInstance w:MainWindow+ViewModel}" SaveKey="MainWindow" LocationAndSizeKey="MainWindow_LS" x:Name="Window" ShowErrorsButton="False"
@@ -313,18 +312,18 @@
           </Button>
         </mui:SpacingUniformGrid>
       </DockPanel>
-      
+
       <mui:Cell x:Key="RunningInstances" Height="28" Width="80" Margin="0 0 20 0" VerticalAlignment="Top" WindowChrome.IsHitTestVisibleInChrome="True">
         <ToggleButton Padding="0" Height="28" Width="80" BorderThickness="0" Click="OnRunningInstancesButtonClick">
           <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Path Width="8" Height="8" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Stretch="Uniform"
-                Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource PlayIconData}" />
+            <Path Width="8" Height="8" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource PlayIconData}" />
             <TextBlock Text="Races" FontSize="{StaticResource SmallFontSize}"></TextBlock>
           </DockPanel>
         </ToggleButton>
       </mui:Cell>
-      
-      <ListBox x:Key="RunningInstancesPopupContent" VirtualizingPanel.IsVirtualizing="False" 
+
+      <ListBox x:Key="RunningInstancesPopupContent" VirtualizingPanel.IsVirtualizing="False"
           ItemsSource="{Binding Source={x:Static dialogs:GameDialog.HiddenInstances}}" SelectionChanged="OnRunningInstancesItemClick">
         <ListBox.ItemTemplate>
           <DataTemplate>
@@ -335,10 +334,10 @@
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
-      
+
     </ResourceDictionary>
   </mui:ModernWindow.Resources>
-  
+
   <mui:ModernWindow.TitleButtons>
 
     <mui:Cell Width="45">
@@ -592,8 +591,6 @@
         Source="/Pages/Drive/Online.xaml" FilterHint="{x:Static c:FilterHints.ServerEntries}">
       <mui:LinkGroupFilterable.FixedLinks>
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Online_KunosLobbySection}" Source="/Pages/Drive/Online.xaml?Filter=@kunos&amp;Special=1" />
-        <!--<mui:Link x:Name="MinoratingLink" DisplayName="Minorating" Source="/Pages/Drive/Online.xaml?Filter=@minorating&amp;Special=1" />-->
-        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Online_LAN}" Source="/Pages/Drive/Online.xaml?Filter=@lan&amp;Special=1" />
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
 

@@ -32,6 +32,12 @@ namespace AcManager {
 
         /// <summary>
         /// For development purposes.
+        /// Example: --dev-lobbies.
+        /// </summary>
+        DevLobbies,
+
+        /// <summary>
+        /// For development purposes.
         /// Example: --ring-debug.
         /// </summary>
         RingDebug,

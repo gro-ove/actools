@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -15,6 +16,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers {
     public class CookieAwareWebClient : WebClient {
@@ -182,7 +184,7 @@ namespace AcManager.Tools.Helpers {
             if (request is HttpWebRequest webRequest) {
                 var cookie = _container[address];
                 if (cookie != null) {
-                    ((HttpWebRequest)request).Headers.Set("Cookie", cookie);
+                    webRequest.Headers.Set("Cookie", cookie);
                 }
 
                 if (_debugMode) {
@@ -207,9 +209,9 @@ namespace AcManager.Tools.Helpers {
 
                 if (_range != null && _range.Item1 >= 0) {
                     if (_range.Item2 < 0) {
-                        ((HttpWebRequest)request).AddRange(_range.Item1);
+                        webRequest.AddRange(_range.Item1);
                     } else {
-                        ((HttpWebRequest)request).AddRange(_range.Item1, _range.Item2);
+                        webRequest.AddRange(_range.Item1, _range.Item2);
                     }
                 }
 
@@ -268,7 +270,7 @@ namespace AcManager.Tools.Helpers {
             ResponseUri = response?.ResponseUri;
             ResponseLocation = response?.Headers?.GetValues("Location")?.FirstOrDefault();
 
-            var cookies = response?.Headers?.GetValues("Set-Cookie");
+            var cookies = response?.Headers?.GetValues("Set-Cookie"); 
             if (cookies != null) {
                 foreach (var c in cookies) {
                     _container[response.ResponseUri] = c;
@@ -322,7 +324,87 @@ namespace AcManager.Tools.Helpers {
             return new ActionAsDisposable(() => UploadProgressChanged -= Handler);
         }
 
-        public async Task<string> GetFinalRedirectAsync(string url, int maxRedirectCount = 8) {
+        private static bool TryDecode5987(string input, out string output) {
+            output = null;
+
+            var quoteIndex = input.IndexOf('\'');
+            if (quoteIndex == -1) {
+                return false;
+            }
+
+            var lastQuoteIndex = input.LastIndexOf('\'');
+            if (quoteIndex == lastQuoteIndex || input.IndexOf('\'', quoteIndex + 1) != lastQuoteIndex) {
+                return false;
+            }
+
+            var encodingString = input.Substring(0, quoteIndex);
+            var dataString = input.Substring(lastQuoteIndex + 1, input.Length - (lastQuoteIndex + 1));
+
+            var decoded = new StringBuilder();
+            try {
+                var encoding = Encoding.GetEncoding(encodingString);
+                var unescapedBytes = new byte[dataString.Length];
+                var unescapedBytesCount = 0;
+                for (var index = 0; index < dataString.Length; index++) {
+                    if (Uri.IsHexEncoding(dataString, index)) {
+                        unescapedBytes[unescapedBytesCount++] = (byte)Uri.HexUnescape(dataString, ref index);
+                        index--;
+                    } else {
+                        if (unescapedBytesCount > 0) {
+                            decoded.Append(encoding.GetString(unescapedBytes, 0, unescapedBytesCount));
+                            unescapedBytesCount = 0;
+                        }
+                        decoded.Append(dataString[index]);
+                    }
+                }
+
+                if (unescapedBytesCount > 0) {
+                    decoded.Append(encoding.GetString(unescapedBytes, 0, unescapedBytesCount));
+                }
+            } catch (ArgumentException) {
+                return false;
+            }
+
+            output = decoded.ToString();
+            return true;
+        }
+
+        public bool TryGetFileName(out string filename) {
+            try {
+                var headers = ResponseHeaders;
+                if (headers == null) {
+                    filename = null;
+                    return false;
+                }
+                var contentDisposition = headers["Content-Disposition"]?.Split(';').Select(x => x.Split(new[] { '=' }, 2)).Where(x => x.Length == 2)
+                        .ToDictionary(x => x[0].Trim().ToLowerInvariant(), x => x[1].Trim());
+                if (contentDisposition != null) {
+                    if (contentDisposition.TryGetValue("filename", out var value)) {
+                        filename = JsonConvert.DeserializeObject<string>(value);
+                        return true;
+                    }
+
+                    if (contentDisposition.TryGetValue("filename*", out var filenameStar)) {
+                        filename = TryDecode5987(filenameStar, out var decoded) ? decoded : null;
+                        return true;
+                    }
+                }
+
+                var bzFileName = headers[@"x-bz-file-name"];
+                if (bzFileName != null) {
+                    var match = Regex.Match(bzFileName, @"^c/[^\/]+/([^\/]+)\.\w+$");
+                    filename = (match.Success && match.Groups.Count == 2 ? match.Groups[1].Value : null).Or(Path.GetFileName(bzFileName));
+                    return true;
+                }
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
+
+            filename = null;
+            return false;
+        }
+        
+        public async Task<string> GetFinalRedirectAsync(string url, int maxRedirectCount = 8, Action<string> fileNameCallback = null) {
             using (SetAutoRedirect(false))
             using (SetMethod(@"GET")) {
                 var newUrl = url;
@@ -344,6 +426,11 @@ namespace AcManager.Tools.Helpers {
                                     // Doesn't have a URL Schema, meaning it's a relative or absolute URL
                                     var u = new Uri(new Uri(url), newUrl);
                                     newUrl = u.ToString();
+
+                                    if (fileNameCallback != null) {
+                                        TryGetFileName(out var fileName);
+                                        fileNameCallback(fileName);
+                                    }
                                 }
                                 break;
                             default:

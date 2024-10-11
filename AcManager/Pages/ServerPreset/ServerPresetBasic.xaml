@@ -96,7 +96,11 @@
           </DockPanel>
           <CheckBox IsChecked="{Binding SelectedObject.ShowOnLobby}"
               ToolTip="Disable if you want for users to join directly through IP (or using LAN connection)">
-            <Label Content="Make server public (show on lobby)" />
+            <Label Content="Public server (show in the lobby)" />
+          </CheckBox>
+          <CheckBox IsChecked="{Binding SelectedObject.ShowOnCmLobby}" ToolTip="Might be less crowded than the main lobby"
+              Visibility="{Binding HasCmLobbies, Source={x:Static t:ThirdPartyOnlineSourcesManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Label Content="CM public server (show in the CM lobby)" />
           </CheckBox>
           <CheckBox IsChecked="{Binding SelectedObject.DisableChecksums}"
               ToolTip="With integrity verification disabled clients will be able to modify their versions of cars and tracks and get an unfair advantage">

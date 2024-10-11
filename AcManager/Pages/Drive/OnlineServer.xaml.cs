@@ -36,6 +36,7 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 using CarEntry = AcManager.Tools.Managers.Online.ServerEntry.CarEntry;
 
@@ -696,6 +697,26 @@ namespace AcManager.Pages.Drive {
 
         private void OnDriveButtonMouseDown(object sender, MouseButtonEventArgs e) {
             Model.QuickDriveButton.Initialize();
+        }
+
+        private async void OnErrorsBlockLoaded(object sender, RoutedEventArgs e) {
+            if (Model.Entry.IsAbleToInstallMissingContentState_Cup == ServerEntry.IsAbleToInstallMissingContent.NoMissingContent
+                    || FancyHints.CupV2IndexedContent.Shown) {
+                return;
+            }
+
+            await Task.Yield();
+            var self = (SelectableBbCodeBlock)sender;
+            var downloadIcon = BbCodeBlock.IconsDictionary[@"DownloadIconData"] as Geometry;
+            foreach (var child in self.FindVisualChildren<Path>()) {
+                if (child.Data == downloadIcon) {
+                    var pos = child.TranslatePoint(new Point(0, 0), self);
+                    FancyHintsService.SetOffsetX(self, pos.X + child.ActualWidth / 2d);
+                    FancyHintsService.SetOffsetY(self, pos.Y + child.ActualHeight / 2d);
+                    FancyHints.CupV2IndexedContent.Trigger(TimeSpan.FromSeconds(1d));
+                    break;
+                }
+            }
         }
     }
 }

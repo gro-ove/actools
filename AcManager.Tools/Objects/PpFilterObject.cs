@@ -12,7 +12,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Objects {
-    public class PpFilterObject : AcCommonSingleFileObject {
+    public partial class PpFilterObject : AcCommonSingleFileObject {
         public const string FileExtension = ".ini";
 
         public override string Extension => FileExtension;
@@ -54,6 +54,9 @@ namespace AcManager.Tools.Objects {
                 _content = value;
                 OnPropertyChanged();
                 Changed = true;
+                if (_versionInfoApplied) {
+                    ApplyVersionInfo(value);
+                }
             }
         }
 
@@ -96,7 +99,7 @@ namespace AcManager.Tools.Objects {
             }
 
             protected override PackedDescription GetDescriptionOverride(PpFilterObject t) {
-                return new PackedDescription(t.Id, t.Name, null, PpFiltersManager.Instance.Directories.GetMainDirectory(), true);
+                return new PackedDescription(t.AcId, t.Name, null, PpFiltersManager.Instance.Directories.GetMainDirectory(), true);
             }
         }
 

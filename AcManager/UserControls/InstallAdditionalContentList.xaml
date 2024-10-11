@@ -19,10 +19,10 @@
       <!-- ReSharper disable once Xaml.UnexpectedTextToken -->
       <sys:TimeSpan x:Key="IconFadeDelay">0:0:0.11</sys:TimeSpan>
 
-      <Duration x:Key="ExpandDuration">0:0:0.27</Duration>
-      <Duration x:Key="SlideUpDuration">0:0:0.21</Duration><!-- 23 px -->
-      <Duration x:Key="SlideRightDuration">0:0:0.21</Duration><!-- 24 px -->
-      <Duration x:Key="SlideLeftDuration">0:0:0.15</Duration><!-- 16 px -->
+      <Duration x:Key="ExpandDuration">0:0:0.21</Duration>
+      <Duration x:Key="SlideUpDuration">0:0:0.15</Duration><!-- 23 px -->
+      <Duration x:Key="SlideRightDuration">0:0:0.15</Duration><!-- 24 px -->
+      <Duration x:Key="SlideLeftDuration">0:0:0.13</Duration><!-- 16 px -->
       <Duration x:Key="IconFadeDuration">0:0:0.1</Duration>
 
       <!--<sys:TimeSpan x:Key="ResetTime">0:0:5.0</sys:TimeSpan>
@@ -581,34 +581,33 @@
 
                       <Border SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
                         <Border.LayoutTransform>
-                          <TransformGroup>
-                            <ScaleTransform x:Name="PART_ExpandScale" ScaleX="1" ScaleY="0" />
-                          </TransformGroup>
+                          <ScaleTransform x:Name="PART_ExpandScale" ScaleX="1" ScaleY="0.2" />
                         </Border.LayoutTransform>
 
                         <DockPanel
                             RenderTransform="{Binding Path=(FrameworkElement.LayoutTransform).Inverse, RelativeSource={RelativeSource AncestorType=Border}}">
-                          <ItemsControl ItemsSource="{Binding ExtraOptions}" DockPanel.Dock="Bottom"
-                              Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}">
-                            <ItemsControl.ItemsPanel>
-                              <ItemsPanelTemplate>
-                                <mui:SpacingStackPanel Spacing="8" />
-                              </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                              <DataTemplate>
-                                <DockPanel>
-                                  <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left" />
-                                  <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
-                                  <mui:BbCodeBlock Text="{Binding Description}" DockPanel.Dock="Top" Style="{StaticResource Small}" />
-                                </DockPanel>
-                              </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                          </ItemsControl>
-                          <TextBlock Text="{x:Static g:AppStrings.DownloadList_ExtraOptions}" DockPanel.Dock="Bottom" Margin="0 20 0 4"
-                              Style="{StaticResource Label}" Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}" />
+                          <StackPanel DockPanel.Dock="Bottom" Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}">
+                            <TextBlock Text="{x:Static g:AppStrings.DownloadList_ExtraOptions}" Margin="0 20 0 4" Style="{StaticResource Label}" />
+                            <ItemsControl ItemsSource="{Binding ExtraOptions}"
+                                Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}">
+                              <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                  <mui:SpacingStackPanel Spacing="8" />
+                                </ItemsPanelTemplate>
+                              </ItemsControl.ItemsPanel>
+                              <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                  <DockPanel>
+                                    <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left" />
+                                    <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
+                                    <mui:BbCodeBlock Text="{Binding Description}" DockPanel.Dock="Top" Style="{StaticResource Small}" />
+                                  </DockPanel>
+                                </DataTemplate>
+                              </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                          </StackPanel>
 
-                          <ItemsControl ItemsSource="{Binding Entries}" Style="{StaticResource VirtualizingItemsControl}" MaxHeight="400" Margin="0 0 0 -12">
+                          <ItemsControl ItemsSource="{Binding Entries}" Style="{StaticResource ScrollingItemsControl}" MaxHeight="400" Margin="0 0 0 -12">
                             <ItemsControl.ItemTemplateSelector>
                               <uc:AdditionalContentEntryTemplateSelector BasicTemplate="{StaticResource EntryDataTemplate}"
                                   FontTemplate="{StaticResource FontEntryDataTemplate}" TrackTemplate="{StaticResource TrackEntryDataTemplate}" />

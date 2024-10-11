@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -27,6 +29,7 @@ using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Exception = System.Exception;
 
 namespace AcManager.Tools.Objects {
     public enum ServerPresetPackMode {
@@ -539,49 +542,128 @@ namespace AcManager.Tools.Objects {
         private bool _logDroppingFastRate;
         private bool _logDroppingCount;
 
-        private async Task LaunchRunningUpdateAsync(Process process) {
-            while (process == _running) {
-                await Task.Delay(50);
-                if (_localQueue.Count > 0) {
-                    if (_logDroppingCount) {
-                        lock (_localQueue) {
-                            _localQueue.Clear();
-                        }
-                        continue;
+        private class LobbyRegisteree : IDisposable {
+            private string _url;
+            private readonly Action<string> _callback;
+
+            public LobbyRegisteree(string url, int httpPort, TimeSpan period, Action<string> callback) {
+                _url = $"{url.TrimEnd('/')}/register/self:{httpPort}";
+                _callback = callback;
+                LoopAsync(period).Ignore();
+                Logging.Debug($"Lobby registree: {_url}");
+            }
+
+            private async Task LoopAsync(TimeSpan period) {
+                await Task.Delay(TimeSpan.FromSeconds(2d));
+                var errorMessage = await AnnounceAsync();
+                _callback(errorMessage);
+                if (errorMessage != null) {
+                    _url = null;
+                    return;
+                }
+                while (_url != null) {
+                    await Task.Delay(period);
+                    if (_url == null) break;
+                    await AnnounceAsync();
+                }
+            }
+
+            private async Task<string> AnnounceAsync(bool alive = true) {
+                try {
+                    var response = await (alive
+                            ? HttpClientHolder.Get().PostAsync(_url, null)
+                            : HttpClientHolder.Get().DeleteAsync(_url));
+                    // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+                    switch (response.StatusCode) {
+                        case HttpStatusCode.NoContent:
+                            return null;
+                        case HttpStatusCode.BadRequest:
+                            try {
+                                return await response.Content.ReadAsStringAsync();
+                            } catch {
+                                return "Failed to get the error message";
+                            }
+                        default:
+                            return "Unexpected error";
                     }
-                    using (var stream = _logFilename != null ? new FileStream(_logFilename, FileMode.Append, FileAccess.Write, FileShare.ReadWrite) : null)
-                    using (var writer = stream != null ? new StreamWriter(stream, Encoding.UTF8, 1024, false) : null) {
-                        List<Tuple<LogMessageType, string>> items;
-                        lock (_localQueue) {
-                            items = _localQueue.ToList();
-                            _localQueue.Clear();
-                        }
+                } catch (Exception e) {
+                    return $"Failed to connect to lobby: {e}";
+                }
+            }
 
-                        if (RunningLog?.Count > 100000) {
-                            if (!_logDroppingCount) {
-                                _logDroppingCount = true;
-                                items.Add(Tuple.Create(LogMessageType.Error, "Too many messages, subsequent messages are dropped"));
+            public void Quit() {
+                if (_url != null) {
+                    AnnounceAsync(false).Ignore();
+                    _url = null;
+                }
+            }
+
+            public void Dispose() {
+                _url = null;
+            }
+        }
+
+        private async Task LaunchRunningUpdateAsync(Process process) {
+            async Task AddLogEntry(LogMessageType type, string msg, StreamWriter logWriter = null) {
+                var t = DateTime.Now;
+                var prepared = $@"{t.Hour:D2}:{t.Minute:D2}:{t.Second:D2}.{t.Millisecond:D3}: {(char)type} {msg.Replace("\n", "\n  ")}";
+                RunningLog?.Add(prepared);
+                if (logWriter != null) {
+                    await logWriter.WriteLineAsync(SettingsHolder.Online.ServerLogsCmFormat ? prepared : msg);
+                }
+            }
+            
+            var registerees = ShowOnCmLobby ? ThirdPartyOnlineSourcesManager.Instance.List
+                    .Where(x => x.HasFlag("cm-lobby-v1"))
+                    .Select(lobby => new LobbyRegisteree(lobby.Url, HttpPort, TimeSpan.FromMinutes(1d),
+                            err => AddLogEntry(err == null ? LogMessageType.Info : LogMessageType.Warning, 
+                                    err == null ? "Registered in CM lobby" : $"Failed to registered in CM lobby: {err}").Ignore()))
+                    .ToList() : null;
+            using (new ActionAsDisposable(() => registerees?.DisposeEverything())) {
+                while (process == _running) {
+                    await Task.Delay(50);
+                    if (_localQueue.Count > 0) {
+                        if (_logDroppingCount) {
+                            lock (_localQueue) {
+                                _localQueue.Clear();
                             }
-                            return;
+                            continue;
                         }
-
-                        foreach (var item in items) {
-                            var type = item.Item1;
-                            var msg = item.Item2;
-
-                            if (type == LogMessageType.Message
-                                    && (msg.StartsWith(@"Warning", StringComparison.OrdinalIgnoreCase)
-                                            || msg.StartsWith(@"RESPONSE: ERROR", StringComparison.OrdinalIgnoreCase))) {
-                                type = LogMessageType.Warning;
+                        using (var stream = _logFilename != null ? new FileStream(_logFilename, FileMode.Append, FileAccess.Write, FileShare.ReadWrite) : null)
+                        using (var writer = stream != null ? new StreamWriter(stream, Encoding.UTF8, 1024, false) : null) {
+                            List<Tuple<LogMessageType, string>> items;
+                            lock (_localQueue) {
+                                items = _localQueue.ToList();
+                                _localQueue.Clear();
                             }
 
-                            var t = DateTime.Now;
-                            var prepared = $@"{t.Hour:D2}:{t.Minute:D2}:{t.Second:D2}.{t.Millisecond:D3}: {(char)type} {msg.Replace("\n", "\n  ")}";
-                            RunningLog?.Add(prepared);
-                            if (writer != null) {
-                                await writer.WriteLineAsync(SettingsHolder.Online.ServerLogsCmFormat ? prepared : msg);
+                            if (RunningLog?.Count > 100000) {
+                                if (!_logDroppingCount) {
+                                    _logDroppingCount = true;
+                                    items.Add(Tuple.Create(LogMessageType.Error, "Too many messages, subsequent messages are dropped"));
+                                }
+                                return;
+                            }
+
+                            foreach (var item in items) {
+                                var type = item.Item1;
+                                var msg = item.Item2;
+
+                                if (type == LogMessageType.Message
+                                        && (msg.StartsWith(@"Warning", StringComparison.OrdinalIgnoreCase)
+                                                || msg.StartsWith(@"RESPONSE: ERROR", StringComparison.OrdinalIgnoreCase))) {
+                                    type = LogMessageType.Warning;
+                                }
+
+                                await AddLogEntry(type, msg, writer);
                             }
                         }
+                    }
+                }
+
+                if (_running == null && registerees != null) {
+                    foreach (var registeree in registerees) {
+                        registeree.Quit();
                     }
                 }
             }
@@ -595,7 +677,7 @@ namespace AcManager.Tools.Objects {
                         + "• Verify ports forwarding parameters in your router settings (usually you can find them [url=\"http://192.168.1.1\"]here[/url]);\n"
                         + $"• Add TCP ({HttpPort}, {TcpPort}) and UDP ({UdpPort}) ports in Windows Firewall exceptions.\n\n"
                         + "Alternatively, for a private server you can try services like Hamachi or Radmin to set a LAN Assetto Corsa server "
-                        + "(make sure to uncheck “Make server public (show on lobby)” option for it to work).",
+                        + "(make sure to uncheck “Public server (show in the lobby)” option for it to work).",
                         "Failed to register server to the lobby", MessageDialogButton.OK, @".serverFailure.lobby");
             } else if (log.Any(x => x.EndsWith(@"invalid memory address or nil pointer dereference")) && log.Any(x => x.Contains(@".ReadFromUDP("))
                     || log.Any(x => x.EndsWith(@"HTTP port is busy"))) {
@@ -907,7 +989,8 @@ namespace AcManager.Tools.Objects {
 
         private Process _running;
 
-        private void SetRunning(Process running) {
+        private void SetRunning([CanBeNull] Process running) {
+            Logging.Debug("Server process: " + running?.GetHashCode());
             _running = running;
             OnPropertyChanged(nameof(IsRunning));
             _stopServerCommand?.RaiseCanExecuteChanged();
@@ -916,7 +999,9 @@ namespace AcManager.Tools.Objects {
 
             DisposeHelper.Dispose(ref _pluginManager);
             CmPlugin = null;
-            LaunchRunningUpdateAsync(running).Ignore();
+            if (running != null) {
+                LaunchRunningUpdateAsync(running).Ignore();
+            }
         }
 
         public override void Reload() {

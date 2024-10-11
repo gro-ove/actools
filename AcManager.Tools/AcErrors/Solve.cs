@@ -39,19 +39,33 @@ namespace AcManager.Tools.AcErrors {
 
         [ItemCanBeNull]
         public static async Task<ISolution> TryToFindMissingCarAsync(string carId) {
-            if (await IndexDirectDownloader.IsCarAvailableAsync(carId)) {
-                return new AsyncSolution("Install missing car", "Link to missing car found, open it? Hold Ctrl to start downloading immediately.",
+            var found = await IndexDirectDownloader.IsCarAvailableAsync(carId);
+            if (found == IndexDirectDownloader.ContentState.Available) {
+                return new AsyncSolution("Install missing car", 
+                        "The missing car is found, do you want to try to download it?",
+                        (error, token) => IndexDirectDownloader.DownloadCarAsync(carId));
+            }
+            if (found == IndexDirectDownloader.ContentState.Limited) {
+                return new AsyncSolution("Try to download missing car", 
+                        "Link to the missing car found, would you like to open it?",
                         (error, token) => IndexDirectDownloader.DownloadCarAsync(carId));
             }
 
-            Logging.Warning($"Car “{carId}” not found!");
+            Logging.Warning($"Car “{carId}” has not been found!");
             return null;
         }
 
         [ItemCanBeNull]
         public static async Task<ISolution> TryToFindMissingTrackAsync(string trackId) {
-            if (await IndexDirectDownloader.IsTrackAvailableAsync(trackId)) {
-                return new AsyncSolution("Install missing track", "Link to missing track found, open it? Hold Ctrl to start downloading immediately.",
+            var found = await IndexDirectDownloader.IsTrackAvailableAsync(trackId);
+            if (found == IndexDirectDownloader.ContentState.Available) {
+                return new AsyncSolution("Install missing track", 
+                        "The missing track is found, do you want to try to download it?",
+                        (error, token) => IndexDirectDownloader.DownloadTrackAsync(trackId));
+            }
+            if (found == IndexDirectDownloader.ContentState.Limited) {
+                return new AsyncSolution("Try to download missing track", 
+                        "Link to the missing track found, would you like to open it?",
                         (error, token) => IndexDirectDownloader.DownloadTrackAsync(trackId));
             }
 

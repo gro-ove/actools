@@ -91,6 +91,10 @@ namespace FirstFloor.ModernUI.Helpers {
             } else {
                 s = o?.ToString().Replace("\n", "\n\t") ?? "<NULL>";
 
+                if (o is Exception ex && s.Contains(".Kn5New.")) {
+                    s = ex.Message;
+                }
+
                 if (s.IndexOf("%FROM%", StringComparison.OrdinalIgnoreCase) != -1) {
                     var frame = new StackTrace().GetFrame(3);
                     s = Regex.Replace(s, @"%(?:CALLEE|FROM)%",

@@ -1,6 +1,7 @@
 ﻿using System;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 
@@ -12,6 +13,10 @@ namespace AcManager.Tools.Managers {
 
         protected override ShowroomObject CreateAcObject(string id, bool enabled) {
             return new ShowroomObject(this, id, enabled);
+        }
+
+        private ShowroomsManager() {
+            CupClient.Register(this, CupContentType.Showroom);
         }
 
         public override IAcDirectories Directories => AcRootDirectory.Instance.ShowroomsDirectories;

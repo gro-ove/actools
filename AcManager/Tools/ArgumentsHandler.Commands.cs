@@ -17,6 +17,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.TheSetupMarket;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -153,6 +154,22 @@ namespace AcManager.Tools {
                 return ArgumentHandleResult.Failed;
             }
 
+            string ParamURL(string key) {
+                var ret = custom.Params.Get(key)?.Trim();
+                if (!ret.IsWebUrl()) throw new Exception($"Parameter {key} should be an URL");
+                return ret;
+            }
+
+            string ParamRequire(string key) {
+                var ret = custom.Params.Get(key)?.Trim();
+                if (string.IsNullOrEmpty(ret)) throw new Exception($"Parameter {key} is required");
+                return ret;
+            }
+
+            string ParamOpt(string key) {
+                return custom.Params.Get(key)?.Trim().Or(null);
+            }
+
             try {
                 switch (custom.Path.ToLowerInvariant()) {
                     case "batch":
@@ -188,7 +205,7 @@ namespace AcManager.Tools {
                         return ArgumentHandleResult.Ignore; // TODO?
 
                     case "loadgooglespreadsheetslocale":
-                        return await ProcessGoogleSpreadsheetsLocale(custom.Params.Get(@"id"), custom.Params.Get(@"locale"), custom.Params.GetFlag(@"around"));
+                        return await ProcessGoogleSpreadsheetsLocale(ParamRequire(@"id"), ParamRequire(@"locale"), custom.Params.GetFlag(@"around"));
 
                     case "install":
                         var urls = custom.Params.GetValues(@"url") ?? new string[0];
@@ -206,32 +223,35 @@ namespace AcManager.Tools {
                         return await ProcessImportWebsite(custom.Params.GetValues(@"data") ?? new string[0]);
 
                     case "cup/registry":
-                        return await ProcessCupRegistry(custom.Params.Get(@"url"));
+                        return await ProcessCupRegistry(ParamURL(@"url"));
 
                     case "live":
-                        return await ProcessLiveService(custom.Params.Get(@"url"), custom.Params.Get(@"name"), custom.Params.Get(@"color"));
+                        return await ProcessLiveService(ParamURL(@"url"), ParamRequire(@"name"), ParamOpt(@"color"));
+
+                    case "lobby":
+                        return await ProcessOnlineLobby(ParamURL(@"url"), ParamRequire(@"name"), ParamOpt(@"description"), ParamOpt(@"flags"));
 
                     case "csp/install":
-                        return await ProcessCspInstall(custom.Params.Get(@"version"));
+                        return await ProcessCspInstall(ParamRequire(@"version"));
 
                     case "csp/preview":
-                        return await ProcessShadersPatchBuild(custom.Params.Get(@"url"), custom.Params.Get(@"version"), 
+                        return await ProcessShadersPatchBuild(ParamURL(@"url"), ParamRequire(@"version"), 
                                 custom.Params.Get(@"build").As(0));
 
                     case "replay":
-                        return await ProcessReplay(custom.Params.Get(@"url"), custom.Params.Get(@"uncompressed") == null);
+                        return await ProcessReplay(ParamURL(@"url"), ParamOpt(@"uncompressed") == null);
 
                     case "rsr":
-                        return await ProcessRsrEvent(custom.Params.Get(@"id"));
+                        return await ProcessRsrEvent(ParamRequire(@"id"));
 
                     case "rsr/setup":
-                        return await ProcessRsrSetup(custom.Params.Get(@"id"));
+                        return await ProcessRsrSetup(ParamRequire(@"id"));
 
                     case "thesetupmarket/setup":
-                        return await ProcessTheSetupMarketSetup(custom.Params.Get(@"id"));
+                        return await ProcessTheSetupMarketSetup(ParamRequire(@"id"));
 
                     case "tool/update-car-preview":
-                        var car = await CarsManager.Instance.GetByIdAsync(custom.Params.Get(@"car"));
+                        var car = await CarsManager.Instance.GetByIdAsync(ParamRequire(@"car"));
                         if (car == null) return ArgumentHandleResult.Failed;
                         await new ToUpdatePreview(car, custom.Params.GetValues(@"skin")).Run(presetFilename: custom.Params.Get(@"preset"));
                         return ArgumentHandleResult.Successful;
@@ -306,7 +326,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private static async Task<ArgumentHandleResult> ProcessCupRegistry(string url) {
+        private static async Task<ArgumentHandleResult> ProcessCupRegistry([NotNull] string url) {
             await Task.Delay(0);
 
             if (SettingsHolder.Content.CupRegistriesList.Contains(url)) {
@@ -329,7 +349,7 @@ namespace AcManager.Tools {
             await Task.Delay(0);
 
             if (SettingsHolder.Live.UserEntries.Any(x => x.Url == url)) {
-                Toast.Show("Nothing to import", "This CUP registry is already added");
+                Toast.Show("Nothing to import", "This live service is already added");
                 return ArgumentHandleResult.Successful;
             }
 
@@ -339,6 +359,30 @@ namespace AcManager.Tools {
                 SettingsHolder.Live.UserEntries =
                         SettingsHolder.Live.UserEntries.Append(new SettingsHolder.LiveSettings.LiveServiceEntry(url, name, color)).ToList();
                 Toast.Show("New Live Service", "New live service has been added");
+                return ArgumentHandleResult.Successful;
+            }
+
+            return ArgumentHandleResult.Failed;
+        }
+
+        private static async Task<ArgumentHandleResult> ProcessOnlineLobby(string url, string name, [CanBeNull] string description, [CanBeNull] string flags) {
+            await Task.Delay(0);
+
+            ThirdPartyOnlineSourcesManager.Instance.Initialize();
+            if (ThirdPartyOnlineSourcesManager.Instance.List.Any(x => x.Url == url)) {
+                Toast.Show("Nothing to import", "This online lobby is already added");
+                return ArgumentHandleResult.Successful;
+            }
+
+            if (ModernDialog.ShowMessage(
+                    $"Do you want to add “{url}” as a new online lobby server?",
+                    "New online lobby server", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                ThirdPartyOnlineSourcesManager.Instance.List.Add(new ThirdPartyOnlineSource(false, url, name) {
+                    Description = description,
+                    Flags = flags
+                });
+                ThirdPartyOnlineSourcesManager.Instance.SaveUserLobbies();
+                Toast.Show("New Online Lobby", "New online lobby server has been added");
                 return ArgumentHandleResult.Successful;
             }
 

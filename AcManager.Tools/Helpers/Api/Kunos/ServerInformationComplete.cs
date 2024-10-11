@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Net.Http.Headers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -87,7 +88,7 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         private const int AverageServersCount = 1200;
         private static bool _failed;
 
-        public static ServerInformationComplete[] Deserialize(Stream stream) {
+        public static ServerInformationComplete[] Deserialize(Stream stream, HttpResponseHeaders headers) {
             // if parsing failed before, let’s do it the other way
             if (_failed) {
                 return DeserializeSafe(stream);

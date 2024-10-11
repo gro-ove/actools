@@ -2,7 +2,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:networkInformation="clr-namespace:System.Net.NetworkInformation;assembly=System"
     xmlns:set="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance set:SettingsOnline+ViewModel}">
+    xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance set:SettingsOnline+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
@@ -54,7 +55,8 @@
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Online.AlwaysAllowToUsePassword}">
-          <Label Content="{x:Static g:AppStrings.Settings_Online_AlwaysAllowToUsePassword}" ToolTip="{x:Static g:AppStrings.Settings_Online_AlwaysAllowToUsePassword_Tooltip}" />
+          <Label Content="{x:Static g:AppStrings.Settings_Online_AlwaysAllowToUsePassword}"
+              ToolTip="{x:Static g:AppStrings.Settings_Online_AlwaysAllowToUsePassword_Tooltip}" />
         </CheckBox>
 
         <!-- Connection -->
@@ -64,8 +66,7 @@
           <ComboBox ItemsSource="{Binding Online.OnlineServers}" SelectedItem="{Binding Online.OnlineServer}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
-        <CheckBox IsChecked="{Binding Online.UseCachingServer}" IsEnabled="{Binding Online.CachingServerAvailable}" 
-            ToolTipService.ShowOnDisabled="True">
+        <CheckBox IsChecked="{Binding Online.UseCachingServer}" IsEnabled="{Binding Online.CachingServerAvailable}" ToolTipService.ShowOnDisabled="True">
           <CheckBox.ToolTip>
             <DockPanel MaxWidth="300">
               <TextBlock Text="Might be faster. Better to use with direct information loading to speed things up even more." TextWrapping="Wrap"
@@ -95,10 +96,58 @@
           <Label Content="{x:Static g:AppStrings.Settings_Online_ShowExtendedInformationIfContentIsMissing}" />
         </CheckBox>
 
-        <!--<CheckBox IsChecked="{Binding Online.SearchForMissingContent}">
-          <CheckBox.ToolTip>Please, keep in mind that some content found might not be exactly legal (for example, models might be ported)</CheckBox.ToolTip>
-          <Label Content="Search for links to missing content automatically" />
-        </CheckBox>-->
+        <DockPanel>
+          <Label Content="Search for missing content" ToolTip="Uses CUPv2 database" />
+          <ComboBox ItemsSource="{Binding Online.SearchContentModes}" SelectedItem="{Binding Online.SearchContentMode}" DisplayMemberPath="DisplayName" />
+        </DockPanel>
+
+        <c:MessageBlock CloseKey="search-hint" Margin="0 0 0 20">
+          <mui:BbCodeBlock
+              Text="CM uses [url=&quot;https://cup.acstuff.club/&quot;]CUPv2 database[/url] to look for missing content. Please feel free to request an invite if you would like to register your content there as well." />
+        </c:MessageBlock>
+
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Lobby servers:" />
+
+        <DockPanel Visibility="{Binding LobbiesBuiltIn.Count, Converter={StaticResource MoreToVisibilityConverter}}">
+          <Label Content="Extra built-in lobbies:" />
+          <ItemsControl ItemsSource="{Binding LobbiesBuiltIn}" DockPanel.Dock="Top">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate DataType="{x:Type t:ThirdPartyOnlineSource}">
+                <CheckBox Margin="20 4" IsChecked="{Binding IsEnabled}">
+                  <StackPanel>
+                    <TextBlock Text="{Binding DisplayName}" />
+                    <mui:BbCodeBlock Text="{Binding Description}" Style="{StaticResource Small}" />
+                  </StackPanel>
+                </CheckBox>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </DockPanel>
+
+        <DockPanel>
+          <Label Content="User lobbies:" />
+          <ListBox SelectedItem="{Binding SelectedUserLobby}" ItemsSource="{Binding LobbiesUser}" DockPanel.Dock="Top"
+              ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}">
+            <ListBox.ItemTemplate>
+              <DataTemplate DataType="{x:Type t:ThirdPartyOnlineSource}">
+                <StackPanel Margin="20 4">
+                  <mui:BetterTextBox Placeholder="Name" Text="{Binding DisplayName}" Style="{StaticResource Borderless.Small}"
+                      TextChanged="OnUserLinkTextChanged" />
+                  <mui:BetterTextBox Placeholder="Description" Text="{Binding Description}" Style="{StaticResource Borderless}"
+                      TextChanged="OnUserLinkTextChanged" />
+                  <mui:BetterTextBox Text="{Binding Url, Mode=OneWay}" Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" />
+                </StackPanel>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+          <mui:SpacingUniformGrid Rows="1" Columns="3" HorizontalSpacing="0" Margin="0 8 0 0">
+            <Button Content="Add lobby" Command="{Binding AddUserLobbyCommand}" />
+            <Button Content="Delete lobby" Command="{Binding DeleteSelectedUserLobbyCommand}"
+                IsEnabled="{Binding SelectedUserLobby, Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}" />
+            <Button Content="Share lobby" Command="{Binding ShareSelectedUserLobbyCommand}"
+                IsEnabled="{Binding SelectedUserLobby, Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}" />
+          </mui:SpacingUniformGrid>
+        </DockPanel>
 
       </StackPanel>
       <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Online}" Style="{StaticResource SettingsPanel}" set:Search.Keywords="online;servers">
@@ -106,28 +155,34 @@
         <!-- Pinging -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.Settings_Online_PingingHeader}" />
 
-        <CheckBox IsChecked="{Binding Online.ThreadsPing}" ToolTip="{x:Static g:AppStrings.Settings_Online_PingWithThreads_Tooltip}">
-          <Label Content="{x:Static g:AppStrings.Settings_Online_PingWithThreads}" />
+        <CheckBox IsChecked="{Binding Online.PingingSingleSocket}" ToolTip="Might work faster, pings 500 servers at once">
+          <Label Content="Ping with a single socket" />
         </CheckBox>
 
-        <DockPanel IsEnabled="{Binding Online.ThreadsPing, Converter={StaticResource InvertBooleanConverter}}"
-            ToolTip="{x:Static g:AppStrings.Settings_Online_PingConcurrency_Tooltip}">
-          <mui:ValueLabel Value="{Binding Online.PingConcurrency}" mui:BetterTextBox.Minimum="1"
-              Content="{x:Static g:AppStrings.Settings_Online_PingConcurrency}" />
-          <Slider Minimum="5" Maximum="50" Value="{Binding Online.PingConcurrency}" TickFrequency="29" TickPlacement="BottomRight" />
-        </DockPanel>
+        <StackPanel Visibility="{Binding Online.PingingSingleSocket, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+          <CheckBox IsChecked="{Binding Online.ThreadsPing}" ToolTip="{x:Static g:AppStrings.Settings_Online_PingWithThreads_Tooltip}">
+            <Label Content="{x:Static g:AppStrings.Settings_Online_PingWithThreads}" />
+          </CheckBox>
 
-        <DockPanel>
-          <mui:ValueLabel Value="{Binding Online.PingTimeout}" mui:BetterTextBox.Minimum="1" Postfix="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}"
-              Content="{x:Static g:AppStrings.Settings_Online_PingTimeout}" />
-          <Slider Minimum="200" Maximum="5000" Value="{Binding Online.PingTimeout}" TickFrequency="480" TickPlacement="BottomRight" />
-        </DockPanel>
+          <DockPanel IsEnabled="{Binding Online.ThreadsPing, Converter={StaticResource InvertBooleanConverter}}"
+              ToolTip="{x:Static g:AppStrings.Settings_Online_PingConcurrency_Tooltip}">
+            <mui:ValueLabel Value="{Binding Online.PingConcurrency}" mui:BetterTextBox.Minimum="1"
+                Content="{x:Static g:AppStrings.Settings_Online_PingConcurrency}" />
+            <Slider Minimum="5" Maximum="50" Value="{Binding Online.PingConcurrency}" TickFrequency="29" TickPlacement="BottomRight" />
+          </DockPanel>
 
-        <DockPanel>
-          <mui:ValueLabel Value="{Binding Online.PingAttempts}" mui:BetterTextBox.Minimum="1" mui:BetterTextBox.Maximum="1000" mui:BetterTextBox.Mode="Integer"
-              Content="{x:Static g:AppStrings.Settings_Online_PingAttempts}" />
-          <Slider Minimum="1" Maximum="20" Value="{Binding Online.PingAttempts}" TickFrequency="2" TickPlacement="BottomRight" />
-        </DockPanel>
+          <DockPanel>
+            <mui:ValueLabel Value="{Binding Online.PingTimeout}" mui:BetterTextBox.Minimum="1"
+                Postfix="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}" Content="{x:Static g:AppStrings.Settings_Online_PingTimeout}" />
+            <Slider Minimum="200" Maximum="5000" Value="{Binding Online.PingTimeout}" TickFrequency="480" TickPlacement="BottomRight" />
+          </DockPanel>
+
+          <DockPanel>
+            <mui:ValueLabel Value="{Binding Online.PingAttempts}" mui:BetterTextBox.Minimum="1" mui:BetterTextBox.Maximum="1000"
+                mui:BetterTextBox.Mode="Integer" Content="{x:Static g:AppStrings.Settings_Online_PingAttempts}" />
+            <Slider Minimum="1" Maximum="20" Value="{Binding Online.PingAttempts}" TickFrequency="2" TickPlacement="BottomRight" />
+          </DockPanel>
+        </StackPanel>
 
         <!-- Adding by IP -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Online_AddingByIpHeader}" />
@@ -193,8 +248,8 @@
         </DockPanel>
         <DockPanel IsEnabled="{Binding Online.ServerLogsSave}">
           <Label Content="Keep old logs for" />
-          <mui:BetterComboBox ItemsSource="{Binding Online.ServerKeepLogsDurations}" SelectedItem="{Binding Online.ServerKeepLogsDuration}" DisplayMemberPath="DisplayName"
-              IsEditable="False" mui:LimitedService.Limited="True" />
+          <mui:BetterComboBox ItemsSource="{Binding Online.ServerKeepLogsDurations}" SelectedItem="{Binding Online.ServerKeepLogsDuration}"
+              DisplayMemberPath="DisplayName" IsEditable="False" mui:LimitedService.Limited="True" />
         </DockPanel>
         <CheckBox IsChecked="{Binding Online.ServerPresetsUpdateDataAutomatically}" mui:LimitedService.Limited="True">
           <Label Content="Update server’s data automatically before starting server" />

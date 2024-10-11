@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -40,7 +39,7 @@ namespace AcManager.Controls.ViewModels {
             _refreshBusy.DoDelay(() => {
                 for (var i = CupSupportedObjects.Count - 1; i >= 0; --i) {
                     var entry = CupSupportedObjects[i];
-                    var manager = CupClient.Instance?.GetAssociatedManager(entry.CupContentType);
+                    var manager = CupClient.Instance?.GetAssociatedManager(entry.CupContentType, true);
                     var existing = manager?.GetWrapperById(entry.Id);
                     if (existing == null || !existing.IsLoaded) {
                         CupSupportedObjects.RemoveAt(i);
@@ -69,8 +68,17 @@ namespace AcManager.Controls.ViewModels {
         }
 
         private async Task RunCupItem(CupEventArgs e) {
-            var manager = CupClient.Instance?.GetAssociatedManager(e.Key.Type);
-            if (manager == null) return;
+            var client = CupClient.Instance;
+            if (client == null) {
+                return;
+            }
+            var manager = client.GetAssociatedManager(e.Key.Type, false);
+            if (manager == null) {
+                if (client.IsPostponed(e.Key.Type)) {
+                    Task.Delay(3000).ContinueWithInMainThread(r => AddItem(e)).Ignore();
+                }
+                return;
+            }
             // Logging.Debug($"ID: {e.Key.Id}, manager: {manager}, item: {await manager.GetObjectByIdAsync(e.Key.Id)}");
             if (await manager.GetObjectByIdAsync(e.Key.Id) is ICupSupportedObject obj && !CupSupportedObjects.Contains(obj)) {
                 CupSupportedObjects.Add(obj);

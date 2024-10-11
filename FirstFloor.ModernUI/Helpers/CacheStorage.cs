@@ -8,7 +8,9 @@ namespace FirstFloor.ModernUI.Helpers {
         private static bool _disableCompression;
 
         private static Storage _storage;
-        public static Storage Storage => _storage ?? (_storage = new Storage(_filename, "", _disableCompression, sizeLimit: 1000000));
+
+        public static Storage Storage => _storage ?? (_storage
+                = new Storage(_filename, "", _disableCompression, sizeLimit: 1000000, withoutBackups: true));
 
         public static void Initialize(string filename, bool disableCompression = false) {
             Debug.Assert(_storage == null);

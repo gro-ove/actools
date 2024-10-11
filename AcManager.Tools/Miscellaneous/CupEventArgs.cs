@@ -13,5 +13,9 @@ namespace AcManager.Tools.Miscellaneous {
             Key = key;
             Information = information;
         }
+
+        public override string ToString() {
+            return $"CupEventArgs<{Key.Type}, {Key.Id}, v={Information?.Version ?? @"?"}>";
+        }
     }
 }

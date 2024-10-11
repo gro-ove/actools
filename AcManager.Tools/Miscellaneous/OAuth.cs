@@ -59,71 +59,74 @@ namespace AcManager.Tools.Miscellaneous {
                 [CanBeNull] string successCodeRegex = @"Success code=(\S+)", string redirectUrlKey = "redirect_uri",
                 string responseError = "error", string responseCode = "code",
                 string description = null, string title = null, Func<bool, string> responseCallback = null,
+                bool serverless = false,
                 CancellationToken cancellation = default) {
             Logging.Debug("Name: " + name);
             Logging.Debug("Request URL: " + requestUrl);
             Logging.Debug("Manual mode supported: " + (successCodeRegex != null));
 
-            var tcs = new TaskCompletionSource<OAuthCode>();
+            if (!serverless) {
+                var tcs = new TaskCompletionSource<OAuthCode>();
 
-            // Try to use web server and localhost to redirect
-            WebServer server = null;
-            var redirectUri = "http://localhost/" + SubUrl;
+                // Try to use web server and localhost to redirect
+                WebServer server = null;
+                var redirectUri = "http://localhost/" + SubUrl;
 
-            async void DisposeLater() {
-                await Task.Delay(2000);
+                async void DisposeLater() {
+                    await Task.Delay(2000);
 
-                Logging.Debug("Stopping server…");
-                // ReSharper disable once AccessToModifiedClosure
-                server?.Dispose();
-                server = null;
-            }
-
-            Logging.Debug("Prepating web-server, URL prefix: http://+:80/" + SubUrl);
-            server = new WebServer("http://+:80/" + SubUrl, new Log(e => {
-                tcs.TrySetException(e);
-                DisposeLater();
-            }), Unosquare.Labs.EmbedIO.RoutingStrategy.Wildcard);
-
-            if (server != null) {
-                Logging.Debug("Registering module…");
-                server.RegisterModule(new WebApiModule());
-
-                string codeReady = null;
-                server.Module<WebApiModule>().RegisterController(() => new IndexPageController(responseError, responseCode, (e, s) => {
-                    Logging.Debug($"Result: error={e}, code={s}");
-                    if (e != null || s == null) {
-                        tcs.TrySetException(new Exception(e == null ? "Code is missing" : "Authentication went wrong: " + e));
-                    } else {
-                        codeReady = s;
-                        tcs.TrySetResult(new OAuthCode(false, s, redirectUri));
-                    }
-                    DisposeLater();
-                }, responseCallback ?? (x => DefaultResponseCallback(x, codeReady))));
-
-                cancellation.Register(() => {
-                    Logging.Debug("Cancellation token");
-                    tcs.TrySetCanceled();
-                    DisposeLater();
-                });
-
-                try {
-                    Logging.Debug($"Launching web-server…");
-                    server.RunAsync();
-
-                    var url = requestUrl + $"&{redirectUrlKey}={Uri.EscapeDataString(redirectUri)}";
-#if DEBUG
-                    Logging.Debug(url);
-#endif
-                    WindowsHelper.ViewInBrowser(url);
-                    Logging.Debug("Waiting for a response from a web server");
-                    return tcs.Task;
-                } catch (Exception e) {
-                    Logging.Warning(e);
+                    Logging.Debug("Stopping server…");
+                    // ReSharper disable once AccessToModifiedClosure
+                    server?.Dispose();
+                    server = null;
                 }
-            }
 
-            DisposeLater();
+                Logging.Debug("Prepating web-server, URL prefix: http://+:80/" + SubUrl);
+                server = new WebServer("http://+:80/" + SubUrl, new Log(e => {
+                    tcs.TrySetException(e);
+                    DisposeLater();
+                }), Unosquare.Labs.EmbedIO.RoutingStrategy.Wildcard);
+
+                if (server != null) {
+                    Logging.Debug("Registering module…");
+                    server.RegisterModule(new WebApiModule());
+
+                    string codeReady = null;
+                    server.Module<WebApiModule>().RegisterController(() => new IndexPageController(responseError, responseCode, (e, s) => {
+                        Logging.Debug($"Result: error={e}, code={s}");
+                        if (e != null || s == null) {
+                            tcs.TrySetException(new Exception(e == null ? "Code is missing" : "Authentication went wrong: " + e));
+                        } else {
+                            codeReady = s;
+                            tcs.TrySetResult(new OAuthCode(false, s, redirectUri));
+                        }
+                        DisposeLater();
+                    }, responseCallback ?? (x => DefaultResponseCallback(x, codeReady))));
+
+                    cancellation.Register(() => {
+                        Logging.Debug("Cancellation token");
+                        tcs.TrySetCanceled();
+                        DisposeLater();
+                    });
+
+                    try {
+                        Logging.Debug($"Launching web-server…");
+                        server.RunAsync();
+
+                        var url = requestUrl + $"&{redirectUrlKey}={Uri.EscapeDataString(redirectUri)}";
+#if DEBUG
+                        Logging.Debug(url);
+#endif
+                        WindowsHelper.ViewInBrowser(url);
+                        Logging.Debug("Waiting for a response from a web server");
+                        return tcs.Task;
+                    } catch (Exception e) {
+                        Logging.Warning(e);
+                    }
+                }
+
+                DisposeLater();
+            }
 
             description = description ?? ToolsStrings.Uploader_EnterGoogleDriveAuthenticationCode.Replace("Google Drive", name);
             title = title ?? ToolsStrings.Uploader_GoogleDrive.Replace("Google Drive", name);

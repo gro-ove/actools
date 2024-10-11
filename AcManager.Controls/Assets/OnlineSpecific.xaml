@@ -23,6 +23,10 @@
     <Path Data="{StaticResource MinoratingIconData}" Fill="#FF0000" Width="21" Height="10" Stretch="Uniform" />
   </Border>
 
+  <Border x:Key="ThirdPartyIcon" Padding="4" Background="{DynamicResource ButtonBackground}" ToolTip="Custom lobby" x:Shared="False">
+    <Path Data="{StaticResource ListGearIconData}" Fill="#FFFF00" Width="21" Height="10" Stretch="Uniform" />
+  </Border>
+
   <Border x:Key="LanIcon" Padding="4 3 4 0" Background="{DynamicResource ButtonBackground}" ToolTip="Server from LAN" x:Shared="False">
     <TextBlock Foreground="#00FFFF" Height="15" Text="LAN" FontSize="11" FontStyle="Normal" FontFamily="{StaticResource CondensedFont}" />
   </Border>
@@ -51,6 +55,12 @@
   <InlineUIContainer x:Key="MinoratingIconInline" x:Shared="False">
     <Border Margin="{StaticResource InlineIconMargin}">
       <StaticResource ResourceKey="MinoratingIcon" />
+    </Border>
+  </InlineUIContainer>
+
+  <InlineUIContainer x:Key="ThirdPartyIconInline" x:Shared="False">
+    <Border Margin="{StaticResource InlineIconMargin}">
+      <StaticResource ResourceKey="ThirdPartyIcon" />
     </Border>
   </InlineUIContainer>
 
@@ -133,14 +143,12 @@
     <DockPanel Width="200">
       <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="4" ClearOnChange="True" />
       <DockPanel DockPanel.Dock="Top">
-        <TextBlock Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"  />
+        <mui:PlaceholderTextBlock Text="{Binding Name}" Placeholder="Empty slot" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
         <ItemsControl ItemsSource="{Binding Tags}" Height="16" Margin="4 1 0 -1">
           <ItemsControl.ItemTemplate>
             <DataTemplate>
-              <mui:BbCodeBlock Text="{Binding DisplayName}"
-                  Foreground="{Binding Color, Converter={x:Static mui:ColorPicker.ColorToBrushConverter}}"
-                  Background="{DynamicResource ButtonBackground}" FontFamily="{StaticResource CondensedFont}" FontSize="10" Margin="0 0 4 0"
-                  Padding="2 2" />
+              <mui:BbCodeBlock Text="{Binding DisplayName}" Foreground="{Binding Color, Converter={x:Static mui:ColorPicker.ColorToBrushConverter}}"
+                  Background="{DynamicResource ButtonBackground}" FontFamily="{StaticResource CondensedFont}" FontSize="10" Margin="0 0 4 0" Padding="2 2" />
             </DataTemplate>
           </ItemsControl.ItemTemplate>
           <ItemsControl.ItemsPanel>
@@ -150,7 +158,8 @@
           </ItemsControl.ItemsPanel>
         </ItemsControl>
       </DockPanel>
-      <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Small}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+      <mui:PlaceholderTextBlock Text="{Binding Car.DisplayName}" Placeholder="{Binding CarId}" 
+          Style="{StaticResource Small}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
     </DockPanel>
   </DataTemplate>
 

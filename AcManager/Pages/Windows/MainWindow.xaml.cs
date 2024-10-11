@@ -207,6 +207,7 @@ namespace AcManager.Pages.Windows {
             }
 
             FileBasedOnlineSources.Instance.Update += OnOnlineSourcesUpdate;
+            ThirdPartyOnlineSourcesManager.Instance.Update += OnOnlineSourcesUpdate;
             if (CupClient.Instance != null) CupClient.Instance.NewLatestVersion += OnNewLatestVersion;
             Activated += OnActivated;
 
@@ -312,12 +313,34 @@ namespace AcManager.Pages.Windows {
                 list.RemoveAt(i);
             }
 
+            foreach (var source in ThirdPartyOnlineSourcesManager.Instance.List.Where(x => x.IsEnabled)
+                    .OrderBy(x => x.DisplayName)) {
+                list.Add(new Link {
+                    DisplayName = $@"{source.DisplayName}",
+                    Source = UriExtension.Create("/Pages/Drive/Online.xaml?Filter=@{0}&Special=1", source.Id),
+                    ToolTip = string.IsNullOrEmpty(source.Description) ? null : new ToolTip {
+                        Content = new BbCodeBlock {
+                            Mode = EmojiSupport.Extended,
+                            Text = source.Description
+                        }
+                    }
+                });
+            }
+
             foreach (var source in FileBasedOnlineSources.Instance.GetVisibleSources().OrderBy(x => x.DisplayName)) {
                 list.Add(new Link {
                     DisplayName = $@"{source.DisplayName}",
                     Source = UriExtension.Create("/Pages/Drive/Online.xaml?Filter=@{0}&Special=1", source.Id)
                 });
             }
+
+            // <!--<mui:Link x:Name="MinoratingLink" DisplayName="Minorating" Source="/Pages/Drive/Online.xaml?Filter=@minorating&amp;Special=1" />-->
+            // <mui:Link DisplayName="{x:Static g:AppStrings.Main_Online_LAN}" Source="/Pages/Drive/Online.xaml?Filter=@lan&amp;Special=1" />
+
+            list.Add(new Link {
+                DisplayName = AppStrings.Main_Online_LAN,
+                Source = UriExtension.Create("/Pages/Drive/Online.xaml?Filter=@lan&Special=1")
+            });
         }
 
         public void UpdateRaceULinks(IEnumerable<Link> links) {
@@ -709,6 +732,7 @@ namespace AcManager.Pages.Windows {
 
         private void OnClosing(object sender, CancelEventArgs e) {
             if (_closed) return;
+            Logging.Debug("Closing main window…");
 
             try {
                 if (ServerPresetsManager.Instance.IsScanned) {
@@ -1216,7 +1240,7 @@ namespace AcManager.Pages.Windows {
         }
 
         private async void OnNewLatestVersion(object sender, CupEventArgs e) {
-            var manager = CupClient.Instance?.GetAssociatedManager(e.Key.Type);
+            var manager = CupClient.Instance?.GetAssociatedManager(e.Key.Type, false);
             if (manager == null) return;
             if (await manager.GetObjectByIdAsync(e.Key.Id) is ICupSupportedObject obj && obj.IsCupUpdateAvailable) {
                 FancyHints.ContentUpdatesArrived.Trigger();

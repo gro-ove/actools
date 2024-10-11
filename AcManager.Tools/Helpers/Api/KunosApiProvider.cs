@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -6,6 +8,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -112,7 +115,7 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [NotNull]
-        private static T[] LoadList<T>(string uri, TimeSpan timeout, CancellationToken cancellation, Func<Stream, T[]> deserializationFn)
+        private static T[] LoadList<T>(string uri, TimeSpan timeout, CancellationToken cancellation, Func<Stream, HttpResponseHeaders, T[]> deserializationFn)
                 where T : ServerInformation {
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
             try {
@@ -120,7 +123,7 @@ namespace AcManager.Tools.Helpers.Api {
                 using (var cancellationLocal = CancellationTokenSource.CreateLinkedTokenSource(cancellationTimer.Token, cancellation))
                 using (var response = HttpClientHolder.Get().SendAsync(request, cancellationLocal.Token).Result)
                 using (var stream = response.Content.ReadAsStreamAsync().Result) {
-                    return deserializationFn(stream);
+                    return deserializationFn(stream, response.Headers);
                 }
             } catch (Exception e) when (e.IsCancelled()) {
                 throw new WebException("Timeout exceeded", WebExceptionStatus.Timeout);
@@ -139,9 +142,16 @@ namespace AcManager.Tools.Helpers.Api {
                 try {
                     var watch = Stopwatch.StartNew();
                     var ret = LoadList($@"{InternalUtils.GetKunosServerCompressedProxyUri()}?{CacheKey()}",
-                            OptionWebRequestTimeout, cancellation, stream => {
+                            OptionWebRequestTimeout, cancellation, (stream, headers) => {
+                                /*Logging.Debug("List headers:");
+                                foreach (var p in headers) {
+                                    Logging.Debug($"\t{p.Key}: {p.Value.JoinToString("; ")}");
+                                }
+                                if (headers.TryGetValues("x-cache-stats", out var stats)) {
+                                    Logging.Debug("Cache stats: " + stats.JoinToString());
+                                }*/
                                 using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
-                                    return ServerInformationComplete.Deserialize(deflateStream);
+                                    return ServerInformationComplete.Deserialize(deflateStream, headers);
                                 }
                             });
 
@@ -225,6 +235,55 @@ namespace AcManager.Tools.Helpers.Api {
                 if (passwordsForEverything) {
                     for (var i = 0; i < parsed.Length; i++) {
                         parsed[i].Password = false;
+                    }
+                }
+
+                Logging.Write($"{watch.Elapsed.TotalMilliseconds:F1} ms");
+                return parsed;
+            } catch (Exception e) {
+                Logging.Warning(e.Message);
+                return null;
+            }
+        }
+
+        [Flags]
+        public enum ThirdPartyFlags {
+            None = 1,
+            SlashTrackIDSeparator = 1,
+            Deflated = 2,
+        }
+
+        [CanBeNull]
+        public static ServerInformationComplete[] TryToGetThirdPartyList(string url, CancellationToken cancellation = default) {
+            try {
+                ThirdPartyFlags flags = ThirdPartyFlags.None;
+                var watch = Stopwatch.StartNew();
+                var parsed = LoadList(url, OptionWebRequestTimeout,
+                        cancellation, (stream, headers) => {
+                            if (headers.TryGetValues("x-flags", out var flagsList)) {
+                                foreach (var flag in flagsList) {
+                                    if (flag == @"deflate") flags |= ThirdPartyFlags.Deflated;
+                                    if (flag == @"slashedTrackID") flags |= ThirdPartyFlags.SlashTrackIDSeparator;
+                                }
+                            }
+                            if (flags.HasFlag(ThirdPartyFlags.Deflated)) {
+                                using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
+                                    return ServerInformationComplete.Deserialize(deflateStream, headers);
+                                }
+                            }
+                            return ServerInformationComplete.Deserialize(stream, headers);
+                        });
+
+                if (flags.HasFlag(ThirdPartyFlags.SlashTrackIDSeparator)) {
+                    for (var i = 0; i < parsed.Length; i++) {
+                        var information = parsed[i];
+                        var track = information.TrackId;
+                        if (track != null) {
+                            var index = track.IndexOf('/');
+                            if (index != -1) {
+                                information.TrackId = track.Substring(0, index) + "/" + track.Substring(index + 1);
+                            }
+                        }
                     }
                 }
 
@@ -446,8 +505,229 @@ namespace AcManager.Tools.Helpers.Api {
                     TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
+        public class PingResponse {
+            public readonly int? PortHttp;
+            public readonly TimeSpan PingTime;
+            public readonly string Error;
+
+            public PingResponse(int portHttp, TimeSpan time) {
+                PortHttp = portHttp;
+                PingTime = time;
+            }
+
+            public PingResponse(string error) {
+                Error = error;
+            }
+        }
+
+        private class PingingSocket {
+            private enum WaitingState : byte {
+                Waiting,
+                Complete,
+                Errored,
+                Timeouted
+            }
+
+            private class WaitingRecord {
+                public readonly TaskCompletionSource<PingResponse> TaskSource = new TaskCompletionSource<PingResponse>();
+                public readonly DateTime Start = DateTime.Now;
+                public WaitingState State = WaitingState.Waiting;
+            }
+
+            private class WaitingComplete {
+                public readonly EndPoint Origin;
+                public readonly int Mark;
+                public readonly DateTime TimePoint;
+                public readonly string Error;
+
+                public WaitingComplete(EndPoint origin, int mark, DateTime date) {
+                    Origin = origin;
+                    Mark = mark;
+                    TimePoint = date;
+                }
+
+                public WaitingComplete(EndPoint origin, string error) {
+                    Origin = origin;
+                    Mark = int.MaxValue;
+                    Error = error;
+                }
+
+                public bool IsFailed => Mark == int.MaxValue;
+            }
+
+            private readonly Socket _socket;
+            private readonly Dictionary<int, WaitingRecord> _waiting = new Dictionary<int, WaitingRecord>();
+            private readonly ConcurrentQueue<WaitingComplete> _received = new ConcurrentQueue<WaitingComplete>();
+            private int _loopIndex;
+            private bool _loopActive;
+
+            public PingingSocket() {
+                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp) {
+                    SendTimeout = 5000,
+                    ReceiveTimeout = 5000
+                };
+                _socket.Bind(new IPEndPoint(IPAddress.Any, 0));
+                Receive();
+            }
+
+            private async Task Loop() {
+                Logging.Warning($"[NewPing] New loop");
+                try {
+                    _loopActive = true;
+                    var index = ++_loopIndex;
+                    var toTimeout = new List<WaitingRecord>();
+                    var toRemove = new List<int>();
+                    var emptyCounter = 0;
+                    while (index == _loopIndex) {
+                        // ReSharper disable once InconsistentlySynchronizedField
+                        if (_waiting.Count > 0) {
+                            emptyCounter = 0;
+                            toRemove.Clear();
+                            toTimeout.Clear();
+                            lock (_waiting) {
+                                var timeoutPoint = DateTime.Now - TimeSpan.FromSeconds(2d);
+                                var removalPoint = timeoutPoint - TimeSpan.FromSeconds(5d);
+                                foreach (var p in _waiting) {
+                                    if (p.Value.State == WaitingState.Waiting && p.Value.Start < timeoutPoint) {
+                                        p.Value.State = WaitingState.Timeouted;
+                                        toTimeout.Add(p.Value);
+                                    } else if (p.Value.Start < removalPoint) {
+                                        toRemove.Add(p.Key);
+                                    }
+                                }
+                                foreach (var r in toRemove) {
+                                    _waiting.Remove(r);
+                                }
+                            }
+                            foreach (var record in toTimeout) {
+                                record.TaskSource.TrySetResult(null);
+                            }
+                        } else if (++emptyCounter > 10) {
+                            break;
+                        }
+                        while (_received.TryDequeue(out var item)) {
+                            FinishResponse(item);
+                        }
+                        await Task.Delay(100).ConfigureAwait(false);
+                    }
+                } finally {
+                    _loopActive = false;
+                    Logging.Warning($"[NewPing] Loop has been completed");
+                }
+            }
+
+            private class ReceiveState {
+                public byte[] Buffer = new byte[4];
+                public EndPoint EndPoint = new IPEndPoint(IPAddress.Any, 0);
+            }
+
+            private void Receive() {
+                var state = new ReceiveState();
+                _socket.BeginReceiveFrom(state.Buffer, 0, 4, SocketFlags.None, ref state.EndPoint, ReceiveCallback, state);
+            }
+
+            private void FinishResponse(WaitingComplete complete) {
+                var key = complete.Origin.GetHashCode();
+                WaitingRecord existing;
+                bool needsCompletion;
+                lock (_waiting) {
+                    if (_waiting.TryGetValue(key, out existing)) {
+                        needsCompletion = existing.State == WaitingState.Waiting;
+                        if (needsCompletion) {
+                            existing.State = complete.IsFailed ? WaitingState.Errored : WaitingState.Complete;
+                        }
+                    } else {
+                        needsCompletion = false;
+                    }
+                }
+                if (existing == null) {
+                    Logging.Warning($"[NewPing] {complete.Origin}: Unexpected weirdo reply: {complete.Error ?? @"<valid>"}");
+                } else if (complete.IsFailed) {
+                    Logging.Warning($"[NewPing] {complete.Origin}: Receive failure: {complete.Error ?? @"<unknown>"}");
+                    if (needsCompletion) {
+                        existing.TaskSource.TrySetResult(complete.Error != null ? new PingResponse(complete.Error) : null);
+                    }
+                } else if (!needsCompletion) {
+                    Logging.Warning(existing.State == WaitingState.Timeouted
+                            ? $"[NewPing] {complete.Origin}: Timeouted before response ({(existing.Start - DateTime.Now).TotalMilliseconds:F0} ms)"
+                            : existing.State == WaitingState.Errored
+                                    ? $"[NewPing] {complete.Origin}: Already failed"
+                                    : $"[NewPing] {complete.Origin}: Already completed");
+                } else {
+                    existing.TaskSource.TrySetResult(new PingResponse(complete.Mark, complete.TimePoint - existing.Start));
+                }
+            }
+
+            private void ReceiveCallback(IAsyncResult ar) {
+                var timePoint = DateTime.Now;
+                var args = (ReceiveState)ar.AsyncState;
+
+                var receivedBytes = 0;
+                string receiveError = null;
+                try {
+                    receivedBytes = _socket.EndReceiveFrom(ar, ref args.EndPoint);
+                } catch (SocketException e) when (e.SocketErrorCode == SocketError.MessageSize) {
+                    receivedBytes = -1;
+                } catch (Exception e) {
+                    receiveError = e.Message;
+                }
+
+                // Continue receiving data
+                Receive();
+
+                _received.Enqueue(receivedBytes == 3 && args.Buffer[0] == 200
+                        ? new WaitingComplete(args.EndPoint, BitConverter.ToInt16(args.Buffer, 1), timePoint)
+                        : new WaitingComplete(args.EndPoint, receiveError
+                                ?? $"Malformed response, {(receivedBytes == -1 ? "too many" : receivedBytes.ToInvariantString())} bytes, data: {args.Buffer.JoinToString(@", ")}"));
+            }
+
+            public Task<PingResponse> SendAsync(EndPoint destination) {
+                var bytes = BitConverter.GetBytes((byte)200);
+                var key = destination.GetHashCode();
+                bool created;
+                WaitingRecord record;
+                lock (_waiting) {
+                    if (!_waiting.TryGetValue(key, out record)) {
+                        _waiting.Add(key, record = new WaitingRecord());
+                        created = true;
+                    } else {
+                        created = false;
+                    }
+                }
+                if (created) {
+                    try {
+                        _socket.BeginSendTo(bytes, 0, bytes.Length, SocketFlags.None, destination, ar => _socket.EndSendTo(ar), null);
+                    } catch (Exception e) {
+                        _received.Enqueue(new WaitingComplete(destination, $"BeginSendTo(): {e.Message}"));
+                    }
+                }
+                if (!_loopActive) {
+                    Loop().Ignore();
+                }
+                return record.TaskSource.Task;
+            }
+        }
+
+        private static PingingSocket _pingSocket;
+
         [ItemCanBeNull]
-        public static async Task<Tuple<int, TimeSpan>> TryToPingServerAsync(string ip, int port, int timeout, bool logging = false) {
+        public static Task<PingResponse> TryToPingServerAsync(string ip, int port) {
+            if (_pingSocket == null) {
+                _pingSocket = new PingingSocket();
+            }
+
+            if (ip.IndexOf(':') != -1 || _ipRegex.IsMatch(ip)) {
+                return _pingSocket.SendAsync(new IPEndPoint(IPAddress.Parse(ip), port));
+            }
+            return ((Func<Task<PingResponse>>)(async () => {
+                var endpoint = new IPEndPoint((await Dns.GetHostEntryAsync(ip).ConfigureAwait(false))
+                        .AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork), port);
+                return await _pingSocket.SendAsync(endpoint).ConfigureAwait(false);
+            }))();
+        }
+
+        [ItemCanBeNull]
+        public static async Task<PingResponse> TryToPingServerAsyncOld(string ip, int port, int timeout, bool logging = false) {
             using (var order = KillerOrder.Create(new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp) {
                 SendTimeout = timeout,
                 ReceiveTimeout = timeout
@@ -474,6 +754,7 @@ namespace AcManager.Tools.Helpers.Api {
                     var elapsed = TimeSpan.Zero;
 
                     if (logging) Logging.Debug("Receiving response…");
+                    if (order.Killed || !socket.Connected) return null;
                     var begin = socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, a => { elapsed = timer.Elapsed; }, socket);
                     if (begin == null) {
                         if (logging) Logging.Warning("Failed to begin receiving response");
@@ -481,6 +762,7 @@ namespace AcManager.Tools.Helpers.Api {
                     }
 
                     if (logging) Logging.Debug("Waiting for the end of response");
+                    if (order.Killed || !socket.Connected) return null;
                     await Task.Factory.FromAsync(begin, socket.EndReceive);
                     if (order.Killed) {
                         if (logging) Logging.Warning("Timeout exceeded");
@@ -494,7 +776,7 @@ namespace AcManager.Tools.Helpers.Api {
                     }
 
                     if (logging) Logging.Write("Pinging is a success");
-                    return new Tuple<int, TimeSpan>(BitConverter.ToInt16(buffer, 1), elapsed);
+                    return new PingResponse(BitConverter.ToInt16(buffer, 1), elapsed);
                 } catch (Exception e) {
 #if DEBUG
                     Logging.Warning(e);
@@ -507,7 +789,7 @@ namespace AcManager.Tools.Helpers.Api {
         /*private static Queue<Socket> _socketsPool = new Queue<Socket>();
 
         [ItemCanBeNull]
-        public static async Task<Tuple<int, TimeSpan>> TryToPingServerAsync(string ip, int port, int timeout, bool logging = false) {
+        public static async Task<PingResponse> TryToPingServerAsync(string ip, int port, int timeout, bool logging = false) {
             var socket = _socketsPool.Count > 0 ? _socketsPool.Dequeue() : new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp) {
                 SendTimeout = timeout,
                 ReceiveTimeout = timeout
@@ -517,7 +799,7 @@ namespace AcManager.Tools.Helpers.Api {
             if (logging) Logging.Debug("Socket created");
 
             void Callback(object sender, SocketAsyncEventArgs args) {
-                return new Tuple<int, TimeSpan>(BitConverter.ToInt16(buffer, 1), elapsed);
+                return new PingResponse(BitConverter.ToInt16(buffer, 1), elapsed);
             }
 
             try {
@@ -564,7 +846,7 @@ namespace AcManager.Tools.Helpers.Api {
                 }
 
                 if (logging) Logging.Write("Pinging is a success");
-                return new Tuple<int, TimeSpan>(BitConverter.ToInt16(buffer, 1), elapsed);
+                return new PingResponse(BitConverter.ToInt16(buffer, 1), elapsed);
             } catch (Exception) {
                 return null;
             } finally {
@@ -573,7 +855,7 @@ namespace AcManager.Tools.Helpers.Api {
         }*/
 
         [CanBeNull]
-        public static Tuple<int, TimeSpan> TryToPingServer(string ip, int port, int timeout, bool logging = false) {
+        public static PingResponse TryToPingServer(string ip, int port, int timeout, bool logging = false) {
             using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp) {
                 SendTimeout = timeout,
                 ReceiveTimeout = timeout
@@ -600,7 +882,7 @@ namespace AcManager.Tools.Helpers.Api {
                     }
 
                     if (logging) Logging.Write("Pinging is a success");
-                    return new Tuple<int, TimeSpan>(BitConverter.ToInt16(buffer, 1), elapsed);
+                    return new PingResponse(BitConverter.ToInt16(buffer, 1), elapsed);
                 } catch (Exception e) {
                     if (logging) Logging.Warning(e);
                     return null;

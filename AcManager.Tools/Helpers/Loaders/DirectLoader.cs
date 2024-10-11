@@ -16,6 +16,8 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers.Loaders {
     public class DirectLoader : ILoader {
+        public static bool OptionUseHeadRequests = false;
+        
         public int BufferSize { get; set; } = 65536;
 
         private readonly string _keyDestination;
@@ -29,6 +31,21 @@ namespace AcManager.Tools.Helpers.Loaders {
         public string Version { get; protected set; }
         public string FileName { get; protected set; }
 
+        private static string GetFileNameFromUrl(string url) {
+            var p = url.LastIndexOf('/');
+            if (p != -1) {
+                var fileName = url.Substring(p + 1);
+                p = fileName.IndexOfAny(new[] { '?', '#' });
+                if (p != -1) {
+                    fileName = fileName.Substring(0, p);
+                }
+                if (Regex.IsMatch(fileName, @"^[\w()[\] ~.-]+\.\w+$")) {
+                    return fileName;
+                }
+            }
+            return null;
+        }
+
         public DirectLoader(string url) {
             _keyDestination = ".DirectLoader.Destination:" + url;
             _keyPartiallyLoadedFilename = ".DirectLoader.PartiallyLoadedFilename:" + url;
@@ -36,8 +53,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             _keyLastWriteDate = ".DirectLoader.LastWriteDate:" + url;
 
             if (GetType() == typeof(DirectLoader)) {
-                FileName = Path.GetFileName(url)?.Split('?', '&')[0];
-                if (FileName == "") FileName = null;
+                FileName = GetFileNameFromUrl(url);
             }
 
             Url = url;
@@ -52,74 +68,6 @@ namespace AcManager.Tools.Helpers.Loaders {
                 FlexibleLoaderReportDestinationCallback reportDestination = null, Func<bool> checkIfPaused = null,
                 IProgress<long> progress = null, CancellationToken cancellation = default) {
             return DownloadAsyncInner(client, getPreferredDestination, reportDestination, checkIfPaused, progress, cancellation);
-        }
-
-        private static bool TryDecode5987(string input, out string output) {
-            output = null;
-
-            var quoteIndex = input.IndexOf('\'');
-            if (quoteIndex == -1) {
-                return false;
-            }
-
-            var lastQuoteIndex = input.LastIndexOf('\'');
-            if (quoteIndex == lastQuoteIndex || input.IndexOf('\'', quoteIndex + 1) != lastQuoteIndex) {
-                return false;
-            }
-
-            var encodingString = input.Substring(0, quoteIndex);
-            var dataString = input.Substring(lastQuoteIndex + 1, input.Length - (lastQuoteIndex + 1));
-
-            var decoded = new StringBuilder();
-            try {
-                var encoding = Encoding.GetEncoding(encodingString);
-                var unescapedBytes = new byte[dataString.Length];
-                var unescapedBytesCount = 0;
-                for (var index = 0; index < dataString.Length; index++) {
-                    if (Uri.IsHexEncoding(dataString, index)) {
-                        unescapedBytes[unescapedBytesCount++] = (byte)Uri.HexUnescape(dataString, ref index);
-                        index--;
-                    } else {
-                        if (unescapedBytesCount > 0) {
-                            decoded.Append(encoding.GetString(unescapedBytes, 0, unescapedBytesCount));
-                            unescapedBytesCount = 0;
-                        }
-                        decoded.Append(dataString[index]);
-                    }
-                }
-
-                if (unescapedBytesCount > 0) {
-                    decoded.Append(encoding.GetString(unescapedBytes, 0, unescapedBytesCount));
-                }
-            } catch (ArgumentException) {
-                return false;
-            }
-
-            output = decoded.ToString();
-            return true;
-        }
-
-        private static bool TryGetFileName(WebHeaderCollection headers, out string filename) {
-            try {
-                var contentDisposition = headers["Content-Disposition"]?.Split(';').Select(x => x.Split(new[] { '=' }, 2)).Where(x => x.Length == 2)
-                        .ToDictionary(x => x[0].Trim().ToLowerInvariant(), x => x[1].Trim());
-                if (contentDisposition != null) {
-                    if (contentDisposition.TryGetValue("filename", out var value)) {
-                        filename = JsonConvert.DeserializeObject<string>(value);
-                        return true;
-                    }
-
-                    if (contentDisposition.TryGetValue("filename*", out var filenameStar)) {
-                        filename = TryDecode5987(filenameStar, out var decoded) ? decoded : null;
-                        return true;
-                    }
-                }
-            } catch (Exception e) {
-                Logging.Error(e);
-            }
-
-            filename = null;
-            return false;
         }
 
         public bool UsesClientToDownload => false;
@@ -160,7 +108,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             // RAR archive v1.5+
             if (bytes.StartsWith((byte)'R', (byte)'a', (byte)'r', (byte)'!', 0x1A, 0x07, 0x00)) return true;
 
-            // RAR archive v1.5+
+            // 7-Zip archive
             if (bytes.StartsWith((byte)'7', (byte)'z', 0xBC, 0xAF, 0x27, 0x1C)) return true;
 
             // GZIP
@@ -180,13 +128,35 @@ namespace AcManager.Tools.Helpers.Loaders {
             return null;
         }
 
+        private class HeadedStream {
+            public Stream Data;
+            public bool FromHead;
+        }
+
+        private static async Task<HeadedStream> TryHeadFirst(CookieAwareWebClient client, bool useHead, string targetUrl) {
+            if (useHead && OptionUseHeadRequests) {
+                var domain = targetUrl.GetDomainNameFromUrl();
+                if (CacheStorage.Get($".hdlssdmn.{domain}", 0) != 1) {
+                    try {
+                        using (client.SetMethod(@"HEAD")) {
+                            return new HeadedStream { Data = await client.OpenReadTaskAsync(targetUrl).ConfigureAwait(false), FromHead = true };
+                        }
+                    } catch (Exception e) when (e.IsWebException()) {
+                        Logging.Debug($"Headless domain: {domain}, {e}");
+                        CacheStorage.Set($".hdlssdmn.{domain}", 1);
+                    }
+                }
+            }
+            return new HeadedStream { Data = await client.OpenReadTaskAsync(targetUrl).ConfigureAwait(false), FromHead = false };
+        }
+
         private async Task<string> DownloadResumeSupportAsync([NotNull] CookieAwareWebClient client,
                 [NotNull] FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination,
                 [CanBeNull] FlexibleLoaderReportDestinationCallback reportDestination, [CanBeNull] Func<bool> checkIfPaused,
                 IProgress<long> progress, CancellationToken cancellation) {
             // Common variables
             string filename = null, selectedDestination = null, actualFootprint = null;
-            Stream remoteData = null;
+            HeadedStream remoteData = null;
             string loadedData = null;
 
             var resumeSupported = ResumeSupported;
@@ -203,13 +173,44 @@ namespace AcManager.Tools.Helpers.Loaders {
                 var information = FlexibleLoaderMetaInformation.FromLoader(this);
 
                 // Opening stream to read…
-                var headRequest = HeadRequestSupported && resumeDestination != null;
-                using (headRequest ? client.SetMethod("HEAD") : null) {
-                    Logging.Warning($"Initial request: {(headRequest ? "HEAD" : "GET")}");
-                    remoteData = await client.OpenReadTaskAsync(Url);
-                }
+                {
+                    var targetUrl = Url;
+                    using (client.SetAutoRedirect(false)) {
+                        for (var i = 0;; ++i) {
+                            remoteData = await TryHeadFirst(client, HeadRequestSupported && resumeDestination != null, targetUrl);
+                            cancellation.ThrowIfCancellationRequested();
 
-                cancellation.ThrowIfCancellationRequested();
+                            if (string.IsNullOrWhiteSpace(client.ResponseLocation)) break;
+                            remoteData.Data.Dispose();
+
+                            if (targetUrl == client.ResponseLocation) throw new Exception("Looping redirect");
+                            if (i == 20) throw new Exception("Too many redirects");
+
+                            Logging.Debug($"Redirect from {targetUrl} to {client.ResponseLocation}");
+                            
+                            var supported = await FlexibleLoader.IsSupportedAsync(client.ResponseLocation, cancellation);
+                            cancellation.ThrowIfCancellationRequested();
+
+                            if (supported) {
+                                throw new RestartLoadingException(client.ResponseLocation);
+                            }
+                            
+                            targetUrl = client.ResponseLocation;
+                            if (client.TryGetFileName(out var fileName) && fileName != FileName) {
+                                FileName = information.FileName = fileName;
+                                progress?.Report(long.MinValue);
+                                Logging.Debug($"[DLOADER] Updating file name: {fileName}");
+                            } else {
+                                fileName = GetFileNameFromUrl(targetUrl);
+                                if (fileName != null && fileName != FileName) {
+                                    FileName = fileName;
+                                    progress?.Report(long.MinValue);
+                                    Logging.Debug($"[DLOADER] Updating file name to file name from URL: {fileName}");
+                                }
+                            }
+                        }
+                    }
+                }
 
                 // Maybe we’ll be lucky enough to load the most accurate data
                 if (client.ResponseHeaders != null) {
@@ -218,14 +219,14 @@ namespace AcManager.Tools.Helpers.Loaders {
                         if (client.ResponseHeaders[HttpResponseHeader.ContentType]?.StartsWith("text/html") == true
                                 && length < 256 * 1024) {
                             Logging.Debug("HTML webpage detected, checking for redirect");
-                            if (headRequest) {
+                            if (remoteData.FromHead) {
                                 Logging.Warning("Re-open request to be GET");
-                                remoteData.Dispose();
-                                remoteData = await client.OpenReadTaskAsync(Url);
+                                remoteData.Data.Dispose();
+                                remoteData.Data = await client.OpenReadTaskAsync(Url);
                             }
 
-                            loadedData = remoteData.ReadAsStringAndDispose();
-                            remoteData = null;
+                            loadedData = remoteData.Data.ReadAsStringAndDispose();
+                            remoteData.Data = null;
                             var doc = new HtmlDocument();
                             doc.LoadHtml(loadedData);
 
@@ -236,7 +237,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                                 var fixedUrl = TryToFixHtmlWebpage(doc);
                                 if (fixedUrl != null) {
                                     loadedData = null;
-                                    remoteData = await client.OpenReadTaskAsync(fixedUrl);
+                                    remoteData.Data = await client.OpenReadTaskAsync(fixedUrl);
                                     /*var innerLoader =  await FlexibleLoader.CreateLoaderAsync(fixedUrl, this, cancellation);
                                     if (innerLoader != null) {
                                         return await innerLoader.DownloadAsync(client, getPreferredDestination, reportDestination,
@@ -247,7 +248,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                                 var url = Regex.Match(link, @"\bhttp.+");
                                 if (url.Success) {
                                     Logging.Debug("Redirect to " + url.Value);
-                                    var innerLoader =  await FlexibleLoader.CreateLoaderAsync(url.Value, this, cancellation);
+                                    var innerLoader = await FlexibleLoader.CreateLoaderAsync(url.Value, this, cancellation);
                                     if (innerLoader != null) {
                                         return await innerLoader.DownloadAsync(client, getPreferredDestination, reportDestination,
                                                 checkIfPaused, progress, cancellation);
@@ -259,8 +260,9 @@ namespace AcManager.Tools.Helpers.Loaders {
                         TotalSize = information.TotalSize = length;
                     }
 
-                    if (TryGetFileName(client.ResponseHeaders, out var fileName)) {
+                    if (client.TryGetFileName(out var fileName)) {
                         FileName = information.FileName = fileName;
+                        Logging.Debug($"[DLOADER] Updating file name (final): {fileName}");
                     }
 
                     // For example, Google Drive responds with “none” and yet allows to download file partially,
@@ -274,7 +276,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                         }
                     }
 
-                    client.LogResponseHeaders();
+                    // client.LogResponseHeaders();
                 }
 
                 // Was the file partially loaded before?
@@ -286,7 +288,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
                 // Does it still exist
                 if (partiallyLoaded?.Exists != true) {
-                    Logging.Warning($"Partially downloaded file “{partiallyLoaded?.FullName}” does not exist");
+                    Logging.Warning($"Partially downloaded file “{partiallyLoaded?.FullName ?? "<null>"}” does not exist");
                     partiallyLoaded = null;
                 }
 
@@ -327,22 +329,22 @@ namespace AcManager.Tools.Helpers.Loaders {
                     using (client.SetRange(new Tuple<long, long>(rangeFrom, -1))) {
                         Logging.Warning($"Trying to resume download from {rangeFrom} bytes…");
 
-                        remoteData.Dispose();
-                        remoteData = await client.OpenReadTaskAsync(Url);
+                        remoteData.Data.Dispose();
+                        remoteData.Data = await client.OpenReadTaskAsync(Url);
                         cancellation.ThrowIfCancellationRequested();
                         // client.LogResponseHeaders();
 
                         // It’s unknown if resume is supported or not at this point
                         if (resumeSupported == null) {
                             var bytes = new byte[16];
-                            var firstBytes = await remoteData.ReadAsync(bytes, 0, bytes.Length);
+                            var firstBytes = await remoteData.Data.ReadAsync(bytes, 0, bytes.Length);
                             cancellation.ThrowIfCancellationRequested();
 
                             if (CouldBeBeginningOfAFile(bytes)) {
                                 using (var file = File.Create(filename)) {
                                     Logging.Warning("File beginning found, restart download");
                                     file.Write(bytes, 0, firstBytes);
-                                    await CopyToAsync(remoteData, file, checkIfPaused, progress, cancellation);
+                                    await CopyToAsync(remoteData.Data, file, checkIfPaused, progress, cancellation);
                                     cancellation.ThrowIfCancellationRequested();
                                 }
 
@@ -354,22 +356,22 @@ namespace AcManager.Tools.Helpers.Loaders {
                         }
 
                         using (var file = new FileStream(filename, FileMode.Append, FileAccess.Write)) {
-                            await CopyToAsync(remoteData, file, checkIfPaused, new Progress<long>(v => { progress?.Report(v + rangeFrom); }), cancellation);
+                            await CopyToAsync(remoteData.Data, file, checkIfPaused, new Progress<long>(v => { progress?.Report(v + rangeFrom); }), cancellation);
                             cancellation.ThrowIfCancellationRequested();
                         }
                     }
                 } else if (loadedData != null) {
                     File.WriteAllText(filename, loadedData);
                 } else {
-                    if (headRequest) {
+                    if (remoteData.FromHead) {
                         Logging.Warning("Re-open request to be GET");
-                        remoteData.Dispose();
-                        remoteData = await client.OpenReadTaskAsync(Url);
+                        remoteData.Data.Dispose();
+                        remoteData.Data = await client.OpenReadTaskAsync(Url);
                     }
 
                     using (var file = File.Create(filename)) {
                         Logging.Debug("Downloading the whole file…");
-                        await CopyToAsync(remoteData, file, checkIfPaused, progress, cancellation);
+                        await CopyToAsync(remoteData.Data, file, checkIfPaused, progress, cancellation);
                         cancellation.ThrowIfCancellationRequested();
                     }
                 }
@@ -377,22 +379,21 @@ namespace AcManager.Tools.Helpers.Loaders {
                 Logging.Write("Download finished");
                 return filename;
             } catch (Exception e) when (e is WebException || e.IsCancelled()) {
-                Logging.Write("Download is interrupted! Saving details to resume later…");
                 var download = filename == null ? null : new FileInfo(filename);
-                if (download?.Exists == true && filename.Length > 0) {
+                if (download?.Exists == true && download.Length > 0) {
+                    Logging.Write("Download is interrupted! Saving details to resume later…");
                     CacheStorage.Set(_keyDestination, selectedDestination);
                     CacheStorage.Set(_keyPartiallyLoadedFilename, filename);
                     CacheStorage.Set(_keyFootprint, actualFootprint);
                     CacheStorage.Set(_keyLastWriteDate, download.LastWriteTime);
                 } else {
+                    Logging.Write("Download is interrupted, but nothing has been downloaded, can’t resume later");
                     ClearResumeData();
                 }
 
                 throw;
             } finally {
-                if (remoteData != null) {
-                    remoteData.Dispose();
-                }
+                remoteData?.Data?.Dispose();
             }
         }
 

@@ -2,6 +2,7 @@
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using JetBrains.Annotations;
 
@@ -16,7 +17,11 @@ namespace AcManager.Tools.Managers {
             return GetById(v + PpFilterObject.FileExtension);
         }
 
-        public string DefaultFilename => Directories.GetLocation("default.ini", true);
+        private PpFiltersManager() {
+            CupClient.Register(this, CupContentType.Filter);
+        }
+
+        public string DefaultFilename => Directories?.GetLocation("default.ini", true);
 
         public override string SearchPattern => @"*.ini";
 

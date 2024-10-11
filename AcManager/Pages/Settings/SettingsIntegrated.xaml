@@ -147,9 +147,11 @@
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
-          <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" Margin="0 8 0 0">
+          <mui:SpacingUniformGrid Rows="1" Columns="3" HorizontalSpacing="0" Margin="0 8 0 0">
             <Button Content="Add service" Command="{Binding LiveModel.AddLiveServiceCommand}" />
             <Button Content="Delete service" Command="{Binding LiveModel.DeleteSelectedServiceCommand}"
+                IsEnabled="{Binding LiveModel.SelectedLiveService, Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}" />
+            <Button Content="Share service" Command="{Binding LiveModel.ShareSelectedServiceCommand}"
                 IsEnabled="{Binding LiveModel.SelectedLiveService, Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}" />
           </mui:SpacingUniformGrid>
         </DockPanel>

@@ -24,6 +24,7 @@ namespace FirstFloor.ModernUI.Helpers {
         private readonly bool _disableCompression;
         private readonly bool _useDeflate;
         private readonly int _sizeLimit;
+        private readonly bool _withoutBackups;
 
         public Storage(string filename = null, string encryptionKey = null, bool disableCompression =
 #if DEBUG
@@ -31,13 +32,14 @@ namespace FirstFloor.ModernUI.Helpers {
 #else
                 false,
 #endif
-                bool useDeflate = false, int sizeLimit = int.MaxValue) {
+                bool useDeflate = false, int sizeLimit = int.MaxValue, bool withoutBackups = false) {
             _storage = new Dictionary<string, string>();
             _filename = filename;
             _encryptionKey = encryptionKey;
             _disableCompression = disableCompression;
             _useDeflate = useDeflate;
             _sizeLimit = sizeLimit;
+            _withoutBackups = withoutBackups;
 
             Load();
             Exit += OnExit;
@@ -426,7 +428,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         [CanBeNull]
         private string GetBackupFilename() {
-            return TemporaryBackupsDirectory == null || _filename == null ? null : Path.Combine(TemporaryBackupsDirectory, Path.GetFileName(_filename));
+            return TemporaryBackupsDirectory == null || _filename == null || _withoutBackups ? null : Path.Combine(TemporaryBackupsDirectory, Path.GetFileName(_filename));
         }
 
         private void SaveData(string data) {

@@ -572,6 +572,7 @@
     <Compile Include="Managers\LuaAppsManager.cs" />
     <Compile Include="Managers\Online\FileBasedOnlineSources.cs" />
     <Compile Include="Managers\Online\LanOnlineSource.cs" />
+    <Compile Include="Managers\Online\MinoratingOnlineSource.cs" />
     <Compile Include="Managers\Online\OnlineManager.Sources.cs" />
     <Compile Include="Managers\Online\OnlineManager.Pinging.cs" />
     <Compile Include="Managers\Online\OnlineManager.cs" />
@@ -590,6 +591,8 @@
     <Compile Include="Managers\Online\ServerEntry.Origins.cs" />
     <Compile Include="Managers\Online\SourcesPack.cs" />
     <Compile Include="IJsonSerializable.cs" />
+    <Compile Include="Managers\Online\ThirdPartyOnlineSource.cs" />
+    <Compile Include="Managers\Online\ThirdPartyOnlineSourcesManager.cs" />
     <Compile Include="Managers\Plugins\AssemblyResolvingWrapper.cs" />
     <Compile Include="Managers\Plugins\KnownPlugins.cs" />
     <Compile Include="Managers\Plugins\PluginEventArgs.cs" />
@@ -627,6 +630,7 @@
     <Compile Include="Objects\IPythonAppConfigValue.cs" />
     <Compile Include="Objects\IPythonAppConfigValueProvider.cs" />
     <Compile Include="Objects\LuaAppObject.cs" />
+    <Compile Include="Objects\PpFilterObject.Cup.cs" />
     <Compile Include="Objects\PythonAppConfig.cs" />
     <Compile Include="Objects\PythonAppConfigBoolValue.cs" />
     <Compile Include="Objects\PythonAppConfigFileValue.cs" />
@@ -651,6 +655,7 @@
     <Compile Include="Objects\ServerPresetObject.LegalTyres.cs" />
     <Compile Include="Objects\ServerPresetObject.LiveConditions.cs" />
     <Compile Include="Objects\ServerPresetObject.Setups.cs" />
+    <Compile Include="Objects\ShowroomObject.Cup.cs" />
     <Compile Include="Objects\TrackObject.Extra.cs" />
     <Compile Include="Objects\TrackObject.Skins.cs" />
     <Compile Include="Objects\CarObject.Stats.cs" />

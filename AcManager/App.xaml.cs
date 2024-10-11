@@ -275,9 +275,9 @@ namespace AcManager {
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 
             Acd.Factory = new AcdFactory();
-            #if !DEBUG
+#if !DEBUG || true
             Kn5.Factory = Kn5New.GetFactoryInstance();
-            #endif
+#endif
             Lazier.SyncAction = ActionExtension.InvokeInMainThreadAsync;
             KeyboardListenerFactory.Register<KeyboardListener>();
 
@@ -351,6 +351,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.PatchSupport, ref PatchHelper.OptionPatchSupport);
             AppArguments.Set(AppFlag.CspReportsLocation, ref CspReportUtils.OptionLocation);
             AppArguments.Set(AppFlag.RingDebug, ref ExtraProgressRings.OptionAnimationDevelopment);
+            AppArguments.Set(AppFlag.DevLobbies, ref ThirdPartyOnlineSourcesManager.OptionDevLobbies);
 #if INCLUDE_WORKSHOP
             AppArguments.Set(AppFlag.CmWorkshop, ref WorkshopClient.OptionUserAvailable);
             AppArguments.Set(AppFlag.CmWorkshopCreator, ref WorkshopClient.OptionCreatorAvailable);
@@ -418,6 +419,11 @@ namespace AcManager {
             }
 
             CupClient.Initialize();
+            CupClient.Instance?.RegisterPostponed(CupContentType.App, () => PythonAppsManager.Instance);
+            CupClient.Instance?.RegisterPostponed(CupContentType.LuaApp, () => LuaAppsManager.Instance);
+            CupClient.Instance?.RegisterPostponed(CupContentType.Showroom, () => ShowroomsManager.Instance);
+            CupClient.Instance?.RegisterPostponed(CupContentType.Filter, () => PpFiltersManager.Instance);
+            
             CupViewModel.Initialize();
             Superintendent.Initialize();
             ModsWebBrowser.Initialize();
@@ -435,6 +441,9 @@ namespace AcManager {
             Toast.SetDefaultAction(() => (Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive) ??
                     Current.MainWindow as ModernWindow)?.BringToFront());
             BbCodeBlock.ImageClicked += OnBbImageClick;
+            BbCodeBlock.IconsDictionary = new SharedResourceDictionary {
+                Source = new Uri("/AcManager.Controls;component/Assets/IconData.xaml", UriKind.Relative)
+            };
             BbCodeBlock.OptionEmojiProvider = new EmojiProvider();
             BbCodeBlock.OptionImageCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Images");
             BbCodeBlock.OptionEmojiCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Emoji");
@@ -571,7 +580,7 @@ namespace AcManager {
 
             InitializeUpdatableStuff();
             BackgroundInitialization();
-            
+
             NewFilesReporter.NewFileCreated += (sender, s) => {
                 if (SettingsHolder.Content.CompressFilesInBackground) {
                     FilesCompressor.RegisterNewFileToBeCompressedLater(s);

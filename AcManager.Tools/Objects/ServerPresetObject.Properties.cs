@@ -279,6 +279,20 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private bool _showOnCmLobby;
+
+        public bool ShowOnCmLobby {
+            get => _showOnCmLobby;
+            set {
+                if (Equals(value, _showOnCmLobby)) return;
+                _showOnCmLobby = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
         private bool _disableChecksums;
 
         public bool DisableChecksums {

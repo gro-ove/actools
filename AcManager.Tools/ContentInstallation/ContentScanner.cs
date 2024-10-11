@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Xaml;
 using AcManager.Tools.ContentInstallation.Entries;
 using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Data;
@@ -385,7 +386,7 @@ namespace AcManager.Tools.ContentInstallation {
 
             var cleanUp = await ui.GetCleanUpList();
             cancellation.ThrowIfCancellationRequested();
-            
+
             if (uiTrack != null && uiTrackSubs.Count == 0) {
                 // It’s a basic track, no layouts
                 Logging.Write("Basic type of track");
@@ -420,14 +421,14 @@ namespace AcManager.Tools.ContentInstallation {
                 layouts.Add(new TrackContentLayoutEntry("", models.Item1, models.Item2,
                         nvi.Item1, nvi.Item2, nvi.Item3));
             }
-            
+
             return await TrackContentEntry.Create(directory.Key ?? "", trackId, cleanUp, layouts);
         }
 
         [ItemCanBeNull]
         private async Task<ContentEntryBase> CheckDirectoryNode(DirectoryNode directory, CancellationToken cancellation) {
             var ui = directory.GetSubDirectory("ui");
-            
+
             if (directory.Parent?.NameLowerCase == "python" && directory.Parent.Parent?.NameLowerCase == "apps" ||
                     directory.HasSubFile(directory.Name + ".py")) {
                 var id = directory.Name;
@@ -509,7 +510,7 @@ namespace AcManager.Tools.ContentInstallation {
                 if (id == null) {
                     return null;
                 }
-                
+
                 var cleanUp = await directory.GetCleanUpList();
                 cancellation.ThrowIfCancellationRequested();
 
@@ -539,7 +540,7 @@ namespace AcManager.Tools.ContentInstallation {
                 if (uiCar != null) {
                     var cleanUp = await ui.GetCleanUpList();
                     cancellation.ThrowIfCancellationRequested();
-                    
+
                     var icon = await (ui.GetSubFile("badge.png")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
                     cancellation.ThrowIfCancellationRequested();
 
@@ -575,7 +576,7 @@ namespace AcManager.Tools.ContentInstallation {
                     if (showroomId != null) {
                         var cleanUp = await ui.GetCleanUpList();
                         cancellation.ThrowIfCancellationRequested();
-                        
+
                         return new ShowroomContentEntry(directory.Key ?? "", showroomId, cleanUp,
                                 parsed.GetStringValueOnly("name"), parsed.GetStringValueOnly("version"), icon);
                     }
@@ -758,7 +759,7 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             PatchPluginEntry ret;
-            
+
             // Extra scripts: weather
             if ((ret = await CheckPatchPlugin("weather.lua", "CSP Weather FX script", @"weather")) != null) {
                 return ret;
@@ -766,7 +767,7 @@ namespace AcManager.Tools.ContentInstallation {
             if ((ret = await CheckPatchPlugin("controller.lua", "CSP Weather FX controller", @"weather-controllers")) != null) {
                 return ret;
             }
-            
+
             // Extra scripts: extension/lua
             if ((ret = await CheckPatchPlugin("config.ini", "CSP car script", @"cars")) != null) {
                 return ret;
@@ -792,9 +793,9 @@ namespace AcManager.Tools.ContentInstallation {
             if ((ret = await CheckPatchPlugin("tool.lua", "CSP tool script", @"tools")) != null) {
                 return ret;
             }
-            
+
             // Extra scripts: Android Auto
-            if ((ret = await CheckPatchPluginRe("app.lua", "CSP Android Auto app", 
+            if ((ret = await CheckPatchPluginRe("app.lua", "CSP Android Auto app",
                     new Regex(@"^lua\\cars\\\w+\\apps$"))) != null) {
                 return ret;
             }
@@ -816,7 +817,8 @@ namespace AcManager.Tools.ContentInstallation {
                     var cleanUp = await directory.GetCleanUpList();
                     cancellation.ThrowIfCancellationRequested();
                     return new PatchPluginEntry(directory.Key ?? "", new[] { directory.Key }, cleanUp, $"{displayName} “{name}”",
-                            Path.Combine(AcRootDirectory.Instance.RequireValue, PatchHelper.PatchDirectoryName, directory.Parent?.NameLowerCase ?? "", directoryName), 1e5,
+                            Path.Combine(AcRootDirectory.Instance.RequireValue, PatchHelper.PatchDirectoryName, directory.Parent?.NameLowerCase ?? "",
+                                    directoryName), 1e5,
                             version, description);
                 }
                 return null;
@@ -843,7 +845,7 @@ namespace AcManager.Tools.ContentInstallation {
 
                     var cleanUp = await directory.GetCleanUpList();
                     cancellation.ThrowIfCancellationRequested();
-                    
+
                     if (description != null) {
                         var data = await description.Info.ReadAsync() ?? throw new MissingContentException();
                         return new GenericModConfigEntry(directory.Key ?? "", name, cleanUp, data.ToUtf8String());

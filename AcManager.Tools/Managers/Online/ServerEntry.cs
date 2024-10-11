@@ -62,17 +62,28 @@ namespace AcManager.Tools.Managers.Online {
             set => Apply(value, ref _actualName);
         }
 
-        private string ErrorMessageMissingCars() {
+        private string ErrorMessageMissingCars(ref IsAbleToInstallMissingContent stateCup) {
             if (Cars == null) return null;
 
             var list = Cars.Where(x => !x.CarExists).Select(x => x.Id).ToList();
-            return list.Any() ? (list.Count == 1
+            if (list.Count == 0) return null;
+
+            var countInCup = list.Count(x => IndexDirectDownloader.IsCarAvailable(x) == IndexDirectDownloader.ContentState.Available);
+            if (countInCup == list.Count) stateCup = IsAbleToInstallMissingContent.AllOfIt;
+            else if (countInCup > 0) stateCup = IsAbleToInstallMissingContent.Partially;
+            
+            return list.Count == 1
                     ? string.Format(ToolsStrings.Online_Server_CarIsMissing, IdToBb(list[0]))
-                    : string.Format(ToolsStrings.Online_Server_CarsAreMissing, list.Select(x => IdToBb(x)).JoinToReadableString())) : null;
+                    : string.Format(ToolsStrings.Online_Server_CarsAreMissing, list.Select(x => IdToBb(x)).JoinToReadableString());
         }
 
-        private string ErrorMessageMissingTrack() {
+        private string ErrorMessageMissingTrack(ref IsAbleToInstallMissingContent stateCup) {
             if (TrackId == null || Track != null) return null;
+            // Triggered after ErrorMessageMissingCars()
+            if (stateCup != IsAbleToInstallMissingContent.Partially
+                    && IndexDirectDownloader.IsTrackAvailable(TrackId) == IndexDirectDownloader.ContentState.Available) {
+                stateCup = IsAbleToInstallMissingContent.AllOfIt;
+            }
             return string.Format(ToolsStrings.Online_Server_TrackIsMissing, IdToBb(TrackId, false));
         }
 
@@ -243,10 +254,9 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private string IdToBb(string id, bool car = true) {
-            const string searchIcon =
-                    "F1 M 42.5,22C 49.4036,22 55,27.5964 55,34.5C 55,41.4036 49.4036,47 42.5,47C 40.1356,47 37.9245,46.3435 36,45.2426L 26.9749,54.2678C 25.8033,55.4393 23.9038,55.4393 22.7322,54.2678C 21.5607,53.0962 21.5607,51.1967 22.7322,50.0251L 31.7971,40.961C 30.6565,39.0755 30,36.8644 30,34.5C 30,27.5964 35.5964,22 42.5,22 Z M 42.5,26C 37.8056,26 34,29.8056 34,34.5C 34,39.1944 37.8056,43 42.5,43C 47.1944,43 51,39.1944 51,34.5C 51,29.8056 47.1944,26 42.5,26 Z";
-            const string linkIcon =
-                    "F1 M 23.4963,46.1288L 25.0796,48.8712L 29.4053,50.0303L 33.519,47.6553L 34.8902,46.8636L 37.6326,45.2803L 38.4242,46.6515L 37.2652,50.9772L 30.4091,54.9356L 21.7577,52.6174L 18.591,47.1326L 20.9091,38.4811L 27.7652,34.5227L 32.0909,35.6818L 32.8826,37.053L 30.1402,38.6364L 28.769,39.428L 24.6553,41.803L 23.4963,46.1288 Z M 38.7348,28.1895L 45.5908,24.2311L 54.2423,26.5493L 57.409,32.0341L 55.0908,40.6856L 48.2348,44.6439L 43.9091,43.4848L 43.1174,42.1136L 45.8598,40.5303L 47.231,39.7386L 51.3446,37.3636L 52.5037,33.0379L 50.9204,30.2955L 46.5946,29.1364L 42.481,31.5114L 41.1098,32.3031L 38.3674,33.8864L 37.5757,32.5152L 38.7348,28.1895 Z M 33.9006,45.1496L 31.7377,44.5701L 30.5502,42.5133L 31.1298,40.3504L 42.0994,34.0171L 44.2623,34.5966L 45.4498,36.6534L 44.8702,38.8163L 33.9006,45.1496 Z";
+            const string searchIcon = ".MagnifyIconData";
+            const string linkIcon = ".DownloadIconData";
+            const string webIcon = ".WebIconData";
 
             if (!car) {
                 id = Regex.Replace(id, @"-([^-]+)$", "/$1");
@@ -260,14 +270,17 @@ namespace AcManager.Tools.Managers.Online {
                     BbCodeBlock.EncodeAttribute(searchIcon), typeLocalized);
 
             var version = car ? GetRequiredCarVersion(id) : GetRequiredTrackVersion();
-            if (OptionIgnoreIndexIfServerProvidesSpecificVersion && version != null ||
-                    (car ? !IndexDirectDownloader.IsCarAvailable(id) : !IndexDirectDownloader.IsTrackAvailable(id))) {
+            var foundState = OptionIgnoreIndexIfServerProvidesSpecificVersion && version != null
+                    ? IndexDirectDownloader.ContentState.Unknown
+                    : car ? IndexDirectDownloader.IsCarAvailable(id) : IndexDirectDownloader.IsTrackAvailable(id);
+            if (foundState == IndexDirectDownloader.ContentState.Unknown) {
                 return $@"{name} \[{searchLink}]";
             }
 
             var downloadUrl = $"cmd://downloadMissing/{(car ? "car" : "track")}?param={(string.IsNullOrWhiteSpace(version) ? id : $@"{id}|{version}")}";
-            var downloadLink = string.Format(@"[url={0}][ico={1}]{2} is found; click to open its page or hold Ctrl and click to start downloading[/ico][/url]",
-                    BbCodeBlock.EncodeAttribute(downloadUrl), BbCodeBlock.EncodeAttribute(linkIcon), typeLocalized.ToTitle());
+            var downloadLink = foundState == IndexDirectDownloader.ContentState.Limited
+                    ? $@"[url={BbCodeBlock.EncodeAttribute(downloadUrl)}][ico={BbCodeBlock.EncodeAttribute(webIcon)}]Missing {typeLocalized} is found; click to open its webpage[/ico][/url]"
+                    : $@"[url={BbCodeBlock.EncodeAttribute(downloadUrl)}][ico={BbCodeBlock.EncodeAttribute(linkIcon)}]Missing {typeLocalized} is found; click to download[/ico][/url]";
             return $@"“{BbCodeBlock.Encode(id)}” \[{searchLink}, {downloadLink}]";
         }
 

@@ -512,7 +512,7 @@ namespace AcManager.Pages.ContentTools {
 
             Task.Delay(TimeSpan.FromSeconds(5d)).ContinueWith(r => {
                 try {
-                    Logging.Debug("[BgCompression] Launching…");
+                    // Logging.Debug("[BgCompression] Launching…");
                 
                     var contentDirectory = GetContentDirectory();
                     var listFilename = FilesStorage.Instance.GetTemporaryFilename("To Compress.txt");
@@ -522,7 +522,9 @@ namespace AcManager.Pages.ContentTools {
                     } catch {
                         lines = new string[0];
                     }
-                    Logging.Debug("[BgCompression] In the queue: " + lines.Length);
+                    if (lines.Length > 0) {
+                        Logging.Debug("[BgCompression] In the queue: " + lines.Length);
+                    }
                     var candidates = lines.Take(20).Where(x => {
                         var fileInfo = new FileInfo(x);
                         if (!fileInfo.Exists || fileInfo.Length < OptionCompressThreshold) return false;
@@ -531,7 +533,7 @@ namespace AcManager.Pages.ContentTools {
                     }).Select(x => FileUtils.GetPathWithin(x, contentDirectory)).ToList();
                     lines = lines.Skip(20).ToArray();
 
-                    if (candidates.Count == 0 && MathUtils.Random() > 0.9) {
+                    if (candidates.Count == 0 && MathUtils.Random() > 0.95) {
                         var carMode = MathUtils.Random() > 0.5;
                         var randomFolder = Path.Combine(contentDirectory, carMode ? @"cars" : @"tracks");
                         var randomEntity = Directory.GetDirectories(randomFolder).RandomElementOrDefault();
@@ -570,8 +572,8 @@ namespace AcManager.Pages.ContentTools {
                         candidates = filtered.Select(x => FileUtils.GetPathWithin(x.FullName, contentDirectory)).ToList();
                     }
                 
-                    Logging.Debug("[BgCompression] Compression candidates: " + candidates.JoinToString("; "));
                     if (candidates.Count == 0) return;
+                    Logging.Debug("[BgCompression] Compression candidates: " + candidates.JoinToString("; "));
                     using (var process = ProcessExtension.Start(@"compact", candidates.Prepend("/C", "/EXE:LZX"),
                             new ProcessStartInfo {
                                 WorkingDirectory = contentDirectory,

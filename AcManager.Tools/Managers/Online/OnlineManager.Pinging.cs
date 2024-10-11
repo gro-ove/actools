@@ -70,7 +70,7 @@ namespace AcManager.Tools.Managers.Online {
                                         SetPinged(Pinged + 1);
                                         pingedNow++;
                                     }
-                                }).WhenAll(SettingsHolder.Online.PingConcurrency, linked.Token);
+                                }).WhenAll(SettingsHolder.Online.PingingSingleSocket ? 500 : SettingsHolder.Online.PingConcurrency, linked.Token);
                         SetPinged(List.Count(x => x.Status != ServerStatus.Unloaded));
                     }
 

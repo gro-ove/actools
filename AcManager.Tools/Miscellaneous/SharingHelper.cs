@@ -285,7 +285,7 @@ namespace AcManager.Tools.Miscellaneous {
             }
         }
 
-        private void SaveHistory() {
+        public void SaveHistory() {
             ValuesStorage.Storage.SetStringList(Key, History.Select(x => x.Serialize()));
         }
 

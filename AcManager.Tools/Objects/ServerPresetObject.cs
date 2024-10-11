@@ -10,6 +10,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Online;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -42,6 +43,8 @@ namespace AcManager.Tools.Objects {
             PluginEntries.CollectionChanged += OnPluginEntriesCollectionChanged;
             PluginEntries.ItemPropertyChanged += OnPluginEntriesPropertyChanged;
             CmPluginLiveConditionsParams.PropertyChanged += (sender, args) => Changed = true;
+            
+            ThirdPartyOnlineSourcesManager.Instance.Initialize();
         }
 
         protected override IniFileMode IniFileMode => IniFileMode.ValuesWithSemicolons;
@@ -141,6 +144,7 @@ namespace AcManager.Tools.Objects {
             Password = section.GetNonEmpty("PASSWORD");
             AdminPassword = section.GetNonEmpty("ADMIN_PASSWORD");
             ShowOnLobby = section.GetBool("REGISTER_TO_LOBBY", true);
+            ShowOnCmLobby = cmSection.GetBool("REGISTER_TO_CM_LOBBY", ShowOnLobby);
             DisableChecksums = cmSection.GetBool("DISABLE_CHECKSUMS", false);
             LoopMode = section.GetBool("LOOP_MODE", true);
             PickupMode = section.GetBool("PICKUP_MODE_ENABLED", true);
@@ -281,6 +285,7 @@ namespace AcManager.Tools.Objects {
             section.Set("ADMIN_PASSWORD", AdminPassword);
             section.Set("REGISTER_TO_LOBBY", ShowOnLobby);
             cmSection.Set("DISABLE_CHECKSUMS", DisableChecksums);
+            cmSection.Set("REGISTER_TO_CM_LOBBY", ShowOnCmLobby);
             section.Set("LOOP_MODE", LoopMode);
             section.Set("PICKUP_MODE_ENABLED", PickupMode);
             section.Set("LOCKED_ENTRY_LIST", PickupModeLockedEntryList);

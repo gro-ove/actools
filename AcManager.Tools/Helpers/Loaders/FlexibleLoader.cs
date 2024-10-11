@@ -79,7 +79,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         }
 
         [ItemCanBeNull]
-        public static async Task<ILoaderFactory> GetFactoryAsync(string url, CancellationToken cancellation) {
+        private static async Task<ILoaderFactory> GetFactoryAsync(string url, CancellationToken cancellation) {
             try {
                 foreach (var factory in Factories) {
                     if (await factory.TestAsync(url, cancellation).ConfigureAwait(false)) return factory;
@@ -173,49 +173,34 @@ namespace AcManager.Tools.Helpers.Loaders {
                 Action<FlexibleLoaderMetaInformation> reportMetaInformation = null, Func<bool> checkIfPaused = null,
                 IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Finding fitting loader…"));
-            var loader = await CreateLoaderAsync(argument, cancellation) ?? throw new OperationCanceledException();
-            try {
-                using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10))) {
-                    var client = order.Victim;
+            while (true) {
+                var loader = await CreateLoaderAsync(argument, cancellation) ?? throw new OperationCanceledException();
+                try {
+                    using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10))) {
+                        var client = order.Victim;
 
-                    if (_proxy != null) {
-                        client.Proxy = _proxy;
-                    }
+                        if (_proxy != null) {
+                            client.Proxy = _proxy;
+                        }
 
-                    progress?.Report(AsyncProgressEntry.Indetermitate);
+                        progress?.Report(AsyncProgressEntry.Indetermitate);
 
-                    cancellation.ThrowIfCancellationRequested();
-                    cancellation.Register(client.CancelAsync);
+                        cancellation.ThrowIfCancellationRequested();
+                        cancellation.Register(client.CancelAsync);
 
-                    if (!await loader.PrepareAsync(client, cancellation)) {
-                        throw new InformativeException("Can’t load file", "Loader preparation failed.");
-                    }
+                        if (!await loader.PrepareAsync(client, cancellation)) {
+                            throw new InformativeException("Can’t load file", "Loader preparation failed.");
+                        }
 
-                    cancellation.ThrowIfCancellationRequested();
-                    reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
+                        cancellation.ThrowIfCancellationRequested();
+                        reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
 
-                    var initialProgressCallback = true;
-                    var reportStopwatch = Stopwatch.StartNew();
-                    var progressStopwatch = new AsyncProgressBytesStopwatch();
+                        var initialProgressCallback = true;
+                        var reportStopwatch = Stopwatch.StartNew();
+                        var progressStopwatch = new AsyncProgressBytesStopwatch();
 
-                    if (loader.UsesClientToDownload) {
-                        client.DownloadProgressChanged += (sender, args) => {
-                            if (initialProgressCallback) {
-                                reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
-                                initialProgressCallback = false;
-                            }
-
-                            if (reportStopwatch.Elapsed.TotalMilliseconds < 20) return;
-                            order.Delay();
-                            reportStopwatch.Restart();
-                            progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, args.TotalBytesToReceive == -1
-                                    && loader.TotalSize.HasValue ? Math.Max(loader.TotalSize.Value, args.BytesReceived) : args.TotalBytesToReceive,
-                                    progressStopwatch));
-                        };
-                    }
-
-                    var loaded = await loader.DownloadAsync(client, getPreferredDestination, reportDestination, checkIfPaused,
-                            loader.UsesClientToDownload ? null : new Progress<long>(p => {
+                        if (loader.UsesClientToDownload) {
+                            client.DownloadProgressChanged += (sender, args) => {
                                 if (initialProgressCallback) {
                                     reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
                                     initialProgressCallback = false;
@@ -224,21 +209,50 @@ namespace AcManager.Tools.Helpers.Loaders {
                                 if (reportStopwatch.Elapsed.TotalMilliseconds < 20) return;
                                 order.Delay();
                                 reportStopwatch.Restart();
-                                progress?.Report(loader.TotalSize.HasValue ? AsyncProgressEntry.CreateDownloading(p, loader.TotalSize.Value, progressStopwatch)
-                                        : new AsyncProgressEntry(string.Format(UiStrings.Progress_Downloading, p.ToReadableSize(1)), null));
-                            }), cancellation);
+                                progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, args.TotalBytesToReceive == -1
+                                        && loader.TotalSize.HasValue ? Math.Max(loader.TotalSize.Value, args.BytesReceived) : args.TotalBytesToReceive,
+                                        progressStopwatch));
+                            };
+                        }
 
-                    cancellation.ThrowIfCancellationRequested();
-                    Logging.Write("Loaded: " + loaded);
-                    return loaded;
+                        var loaded = await loader.DownloadAsync(client, getPreferredDestination, reportDestination, checkIfPaused,
+                                loader.UsesClientToDownload ? null : new Progress<long>(p => {
+                                    if (initialProgressCallback || p == long.MinValue) {
+                                        reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
+                                        initialProgressCallback = false;
+                                        if (p == long.MinValue) return;
+                                    }
+
+                                    if (reportStopwatch.Elapsed.TotalMilliseconds < 20) return;
+                                    order.Delay();
+                                    reportStopwatch.Restart();
+                                    progress?.Report(loader.TotalSize.HasValue
+                                            ? AsyncProgressEntry.CreateDownloading(p, loader.TotalSize.Value, progressStopwatch)
+                                            : new AsyncProgressEntry(string.Format(UiStrings.Progress_Downloading, p.ToReadableSize(1)), null));
+                                }), cancellation);
+
+                        cancellation.ThrowIfCancellationRequested();
+                        Logging.Write("Loaded: " + loaded);
+                        return loaded;
+                    }
+                } catch (Exception e) when (cancellation.IsCancellationRequested || e.IsCancelled()) {
+                    Logging.Warning("Cancelled");
+                    throw new OperationCanceledException();
+                } catch (RestartLoadingException e) {
+                    argument = e.Url;
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                    throw;
                 }
-            } catch (Exception e) when (cancellation.IsCancellationRequested || e.IsCancelled()) {
-                Logging.Warning("Cancelled");
-                throw new OperationCanceledException();
-            } catch (Exception e) {
-                Logging.Warning(e);
-                throw;
             }
+        }
+    }
+
+    public class RestartLoadingException : Exception {
+        public string Url { get; }
+
+        public RestartLoadingException(string url) {
+            Url = url;
         }
     }
 }

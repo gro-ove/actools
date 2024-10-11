@@ -467,6 +467,7 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
 
         private async Task<IKn5> GenerateLodAsync(string temporaryFilenamePrefix, CarLodGeneratorMergeRules mergeRules, IKn5 kn5, 
                 ICarLodGeneratorToolParams toolParams, CarLodGeneratorStageParams stage, IProgress<double?> progress, CancellationToken cancellationToken) {
+            GCHelper.CleanUp();
             string temporaryOutputFilename;
             if (toolParams.SplitPriorities) {
                 var grouped = kn5.RootNode.AllChildren().Where(x => x.NodeClass == Kn5NodeClass.Mesh)

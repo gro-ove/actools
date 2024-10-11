@@ -53,7 +53,12 @@ namespace FirstFloor.ModernUI.Helpers {
                 exception = i.InnerException;
             }
 
-            Logging.Write('•', exception == null ? message : $"{message}:\n{exception}", m, p, l);
+            string exceptionString = exception?.ToString(); 
+            if (exceptionString?.Contains(".Kn5New.") == true) {
+                exceptionString = exception.Message;
+            }
+
+            Logging.Write('•', exception == null ? message : $"{message}:\n{exceptionString}", m, p, l);
 
             var entry = new NonfatalErrorEntry(message, commentary, exception,
                     solutions?.Where(x => x != null) ?? new NonfatalErrorSolution[0]);

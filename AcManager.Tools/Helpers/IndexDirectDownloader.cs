@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using AcManager.Internal;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers.Api;
+using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -16,16 +18,57 @@ namespace AcManager.Tools.Helpers {
 
         public static event EventHandler AvailableIdsLoaded;
 
+        // TODO: Use CUP URLs
+#if DEBUG
+        private static string Registry => "http://127.0.0.1:12033/registry";
+#else
+        private static string Registry => InternalUtils.GetContentRegistryUrl();
+#endif
+
+        public class RegistryTypeData {
+            [JsonProperty("car")]
+            public string[] Cars;
+
+            [JsonProperty("track")]
+            public string[] Tracks;
+        }
+
+        public class RegistryData {
+            [JsonProperty("base")]
+            public RegistryTypeData BaseEntries;
+
+            [JsonProperty("limited")]
+            public RegistryTypeData LimitedEntries;
+        }
+
+        public enum ContentState {
+            Unknown,
+            Available,
+            Limited
+        }
+
+        private static Dictionary<string, ContentState> Populate([CanBeNull] string[] baseList, [CanBeNull] string[] limitedList) {
+            var dst = new Dictionary<string, ContentState>();
+            if (baseList != null) {
+                foreach (var id in baseList) {
+                    dst[id] = ContentState.Available;
+                }
+            }
+            if (limitedList != null) {
+                foreach (var id in limitedList) {
+                    dst[id] = ContentState.Limited;
+                }
+            }
+            return dst;
+        }
+
         private static async Task LoadAvailableIdsAsyncInner() {
             try {
-                var ids = await CmApiProvider.GetContentAsync<Dictionary<string, string[]>>();
-                if (ids == null) {
-                    Logging.Warning("Can’t load lists of available-to-download IDs");
-                    return;
-                }
-
-                AvailableCarIds = ids.GetValueOrDefault("cars");
-                AvailableTrackIds = ids.GetValueOrDefault("tracks");
+                var data = JsonConvert.DeserializeObject<RegistryData>(await HttpClientHolder.Get()
+                        .GetStringAsync(SettingsHolder.Online.SearchContentMode.IntValue == 1
+                                ? $"{Registry}/index/original" : $"{Registry}/index/all"));
+                AvailableCarIds = Populate(data.BaseEntries?.Cars, data.LimitedEntries?.Cars);
+                AvailableTrackIds = Populate(data.BaseEntries?.Tracks, data.LimitedEntries?.Tracks);
                 AvailableIdsLoaded?.Invoke(null, EventArgs.Empty);
             } catch (Exception e) {
                 Logging.Warning(e);
@@ -41,105 +84,68 @@ namespace AcManager.Tools.Helpers {
             return _availableLoadingTask = LoadAvailableIdsAsyncInner();
         }
 
-        private static string[] AvailableCarIds { get; set; }
-        private static string[] AvailableTrackIds { get; set; }
+        private static Dictionary<string, ContentState> AvailableCarIds { get; set; }
+        private static Dictionary<string, ContentState> AvailableTrackIds { get; set; }
 
-        public static async Task<bool> IsCarAvailableAsync(string carId) {
+        public static async Task<ContentState> IsCarAvailableAsync(string carId) {
             await LoadAvailableIdsAsyncInner();
-            return AvailableCarIds != null && Array.IndexOf(AvailableCarIds, carId) != -1;
+            return IsCarAvailable(carId);
         }
 
-        public static async Task<bool> IsTrackAvailableAsync(string trackId) {
+        public static async Task<ContentState> IsTrackAvailableAsync(string trackId) {
             await LoadAvailableIdsAsyncInner();
-            return AvailableTrackIds != null && Array.IndexOf(AvailableCarIds, trackId.Replace(@"/", @"-")) != -1;
+            return IsTrackAvailable(trackId);
         }
 
-        public static bool IsCarAvailable(string carId) {
-            return AvailableCarIds != null && Array.IndexOf(AvailableCarIds, carId) != -1;
+        public static ContentState IsCarAvailable(string carId) {
+            return AvailableCarIds?.GetValueOrDefault(carId) ?? ContentState.Unknown;
         }
 
-        public static bool IsTrackAvailable(string trackId) {
-            return AvailableTrackIds != null && Array.IndexOf(AvailableTrackIds, trackId.Replace(@"/", @"-")) != -1;
+        public static ContentState IsTrackAvailable(string trackId) {
+            // TODO: trackId uses / as separator, check the layout as well!
+            // return AvailableTrackIds != null && Array.IndexOf(AvailableTrackIds, trackId.Replace(@"/", @"-")) != -1;
+            return AvailableCarIds?.GetValueOrDefault(trackId.Split('/')[0]) ?? ContentState.Unknown;
         }
 
-        public static async Task DownloadCarAsync([NotNull] string id, string version = null) {
+        private static async Task DownloadSomethingAsync(CupContentType type,
+                [NotNull] string id, string version = null) {
+            if (CupClient.Instance == null) return;
+            var displayType = type.GetDescription().ToSentenceMember();
             try {
-                var entry = await CmApiProvider.GetContentAsync<AcContentEntry>($"car/{id}");
+                var entry = await CupClient.Instance.LoadCupEntryAsync(Registry,
+                        new CupClient.CupKey(type, id));
                 if (entry != null) {
-                    if (version != null && entry.UiVersion != version && entry.OriginVersion != version) {
-                        throw new InformativeException($"Can’t download car “{id}”",
-                                $"Not the required version: indexed is {entry.UiVersion ?? entry.OriginVersion}, while required is {version}.");
+                    if (version != null && entry.Version != version) {
+                        throw new InformativeException($"Can’t download {displayType} “{id}”",
+                                $"Not the required version: indexed is {entry.Version}, while required is {version}.");
                     }
 
-                    if (!entry.ImmediateDownload && entry.OriginUrl != null && (Keyboard.Modifiers & ModifierKeys.Control) == 0) {
-                        WindowsHelper.ViewInBrowser(entry.OriginUrl);
+                    var redirect = await CupClient.Instance.GetUpdateUrlFromAsync(Registry, type, id);
+                    if (entry.IsToUpdateManually) {
+                        WindowsHelper.ViewInBrowser(redirect.Item1);
                     } else {
-                        await ContentInstallationManager.Instance.InstallAsync(entry.DownloadUrl, new ContentInstallationParams(false) {
-                            DisplayName = entry.UiName,
-                            Version = entry.UiVersion,
-                            InformationUrl = entry.OriginUrl
+                        await ContentInstallationManager.Instance.InstallAsync(redirect.Item1, new ContentInstallationParams(false) {
+                            ForcedFileName = redirect.Item2,
+                            DisplayName = entry.Name,
+                            Version = entry.Version,
+                            InformationUrl = entry.InformationUrl
                         });
                     }
                 } else {
-                    throw new InformativeException($"Can’t download car “{id}”", "Attempt to find a description failed.");
+                    throw new InformativeException($"Can’t download {displayType} “{id}”", "Attempt to find a description failed.");
                 }
             } catch (Exception e) {
-                NonfatalError.Notify($"Can’t download car “{id}”", e);
+                NonfatalError.Notify($"Can’t download {displayType} “{id}”", e);
             }
         }
 
-        public static async Task DownloadTrackAsync([NotNull] string id, string version = null) {
-            id = id.Replace(@"/", @"-");
-
-            try {
-                var entry = await CmApiProvider.GetContentAsync<AcContentEntry>($"track/{id}");
-                if (entry != null) {
-                    if (version != null && entry.UiVersion != version && entry.OriginVersion != version) {
-                        throw new InformativeException($"Can’t download track “{id}”",
-                                $"Not the required version: indexed is {entry.UiVersion ?? entry.OriginVersion}, while required is {version}.");
-                    }
-
-                    if (entry.OriginUrl != null && (Keyboard.Modifiers & ModifierKeys.Control) == 0) {
-                        WindowsHelper.ViewInBrowser(entry.OriginUrl);
-                    } else {
-                        await ContentInstallationManager.Instance.InstallAsync(entry.DownloadUrl, new ContentInstallationParams(false) {
-                            DisplayName = entry.UiName ?? entry.OriginName,
-                            Version = entry.UiVersion,
-                            InformationUrl = entry.OriginUrl
-                        });
-                    }
-                } else {
-                    NonfatalError.Notify($"Can’t download track “{id}”", "Attempt to find a description failed.");
-                }
-            } catch (Exception e) {
-                NonfatalError.Notify($"Can’t download track “{id}”", e);
-            }
+        public static Task DownloadCarAsync([NotNull] string id, string version = null) {
+            return DownloadSomethingAsync(CupContentType.Car, id, version);
         }
 
-        private class AcContentEntry {
-            [JsonConstructor]
-            public AcContentEntry(string id, string uiName, string originName, string uiVersion, string originVersion, string originUrl, string authorUrl,
-                    string downloadUrl, bool immediateDownload) {
-                Id = id;
-                UiName = uiName;
-                OriginName = originName;
-                UiVersion = uiVersion;
-                OriginVersion = originVersion;
-                OriginUrl = originUrl;
-                AuthorUrl = authorUrl;
-                DownloadUrl = downloadUrl;
-                ImmediateDownload = immediateDownload;
-            }
-
-            public string Id { get; }
-            public string UiName { get; }
-            public string OriginName { get; }
-            public string UiVersion { get; }
-            public string OriginVersion { get; }
-            public string OriginUrl { get; }
-            public string AuthorUrl { get; }
-            public string DownloadUrl { get; }
-            public bool ImmediateDownload { get; }
+        public static Task DownloadTrackAsync([NotNull] string id, string version = null) {
+            // id = id.Replace(@"/", @"-");
+            return DownloadSomethingAsync(CupContentType.Track, id.Split('/')[0], version);
         }
     }
 }

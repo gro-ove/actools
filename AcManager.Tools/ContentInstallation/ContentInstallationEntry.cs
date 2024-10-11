@@ -46,7 +46,7 @@ namespace AcManager.Tools.ContentInstallation {
         public string DisplayUpdateFor { get; }
 
         public bool PreferCleanInstallation { get; }
-        
+
         public bool Virtual { get; set; }
 
         [NotNull]
@@ -61,7 +61,7 @@ namespace AcManager.Tools.ContentInstallation {
             Version = InstallationParams.Version;
 
             if (InstallationParams.CupType.HasValue) {
-                var manager = CupClient.Instance?.GetAssociatedManager(InstallationParams.CupType.Value);
+                var manager = CupClient.Instance?.GetAssociatedManager(InstallationParams.CupType.Value, true);
                 DisplayUpdateFor = InstallationParams.IdsToUpdate?.Select(x => manager?.GetObjectById(x)?.ToString()).JoinToReadableString();
                 if (string.IsNullOrWhiteSpace(DisplayUpdateFor)) {
                     DisplayUpdateFor = null;
@@ -581,18 +581,26 @@ namespace AcManager.Tools.ContentInstallation {
                         try {
                             Logging.Debug("Loading: " + Source);
                             var properDisplayNameSet = false;
+                            if (!string.IsNullOrWhiteSpace(InstallationParams.ForcedFileName)) {
+                                properDisplayNameSet = true;
+                                DisplayName = InstallationParams.ForcedFileName;
+                                FileName = InstallationParams.ForcedFileName;
+                            }
                             localFilename = await FlexibleLoader.LoadAsyncTo(Source,
                                     (url, information) => new FlexibleLoaderDestination(Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue,
                                             information.FileName ?? GetFileNameFromUrl(url)), true),
                                     destination => {
+                                        Logging.Debug($"[DLOADER] Destination is known: {destination}");
                                         DisplayName = Path.GetFileName(destination) ?? DisplayName;
                                         FileIcon = IconManager.FindIconForFilename(DisplayName, true);
                                         properDisplayNameSet = true;
                                     },
                                     information => {
+                                        Logging.Debug(
+                                                $"[DLOADER] Meta-information arrived: {information.FileName}, {information.Version}, properDisplayNameSet={properDisplayNameSet}");
                                         CanPause = information.CanPause;
-                                        FileName = information.FileName ?? information.FileName;
-                                        Version = information.Version ?? information.Version;
+                                        FileName = information.FileName ?? FileName;
+                                        Version = information.Version ?? Version;
                                         if (FileName != null && !properDisplayNameSet) {
                                             DisplayName = FileName;
                                         }
@@ -615,7 +623,7 @@ namespace AcManager.Tools.ContentInstallation {
                             CheckCancellation(true);
                             return false;
                         } catch (WebException e) when (e.Response is HttpWebResponse webResponse) {
-                            FailedMessage = $"Can’t download file: {webResponse.StatusDescription.ToLower()}";
+                            FailedMessage = $"Failed, {webResponse.StatusDescription.ToLower().Or(e.Message.ToSentenceMember())}";
                             return false;
                         } catch (WebException) when (cancellation.IsCancellationRequested) {
                             CheckCancellation(true);
@@ -1000,7 +1008,7 @@ namespace AcManager.Tools.ContentInstallation {
             set => Apply(value, ref _displayFound);
         }
 
-        public ExtraOption[] ExtraOptions { get; set; }
+        public ExtraOption[] ExtraOptions { get; set; } = new ExtraOption[0];
         #endregion
 
         public void Report(AsyncProgressEntry value) {

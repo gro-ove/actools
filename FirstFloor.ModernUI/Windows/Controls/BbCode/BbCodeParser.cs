@@ -80,6 +80,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
 
         [CanBeNull]
         private readonly FrameworkElement _source;
+
         private readonly List<Tuple<Uri, string>> _imageUrls = new List<Tuple<Uri, string>>();
 
         /// <inheritdoc />
@@ -146,7 +147,9 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 if (start) {
                     var token = La(1);
                     if (token.TokenType != BbCodeLexer.TokenAttribute) return;
-                    context.IconGeometry = Geometry.Parse(token.Value);
+                    context.IconGeometry = token.Value.StartsWith(@".")
+                            ? BbCodeBlock.IconsDictionary[token.Value.Substring(1)] as Geometry
+                            : Geometry.Parse(token.Value);
                     Consume();
                 } else {
                     context.IconGeometry = null;
@@ -239,7 +242,6 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                             parent.Inlines.Add(new InlineUIContainer { Child = border });
                             continue;
                         } {
-
                         Uri url;
                         ImageSource imageSource = null;
                         double maxSize;

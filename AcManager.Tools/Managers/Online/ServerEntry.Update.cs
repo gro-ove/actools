@@ -37,14 +37,16 @@ namespace AcManager.Tools.Managers.Online {
 
         private Exception _updateException;
         private WebException _updateWebException;
-        private bool _updatePingFailed, _updateDriversMissing;
+        private string _updatePingFailed;
+        private bool _updateDriversMissing;
         private readonly List<string> _updateCurrentErrors = new List<string>();
         private readonly List<string> _updateMissingExtendedErrors = new List<string>();
         private bool _errorMissingCars, _errorMissingTrack;
 
         private void PrepareErrorsList() {
             _updateException = _updateWebException = null;
-            _updatePingFailed = _updateDriversMissing = false;
+            _updatePingFailed = null;
+            _updateDriversMissing = false;
             _updateCurrentErrors.Clear();
             _errorMissingCars = _errorMissingTrack = false;
             _updateMissingExtendedErrors.Clear();
@@ -57,12 +59,9 @@ namespace AcManager.Tools.Managers.Online {
         private List<string> GetErrorsList() {
             var errors = new List<string>(_updateCurrentErrors);
 
-            const string iconBulb =
-                    "F1 M 34.8333,60.1667L 34.8333,57.3958L 41.1667,58.5833L 41.1667,60.1667L 34.8333,60.1667 Z M 31.6666,55.0209L 31.6666,52.25L 44.3333,53.8334L 44.3333,56.6042L 31.6666,55.0209 Z M 44.3333,51.8542L 31.6666,50.2709L 31.6666,47.5L 44.3333,49.0834L 44.3333,51.8542 Z M 38,17.4167C 44.9956,17.4167 50.6667,23.4422 50.6667,30.875C 50.6667,35.8565 44.3333,40.7324 44.3333,42.5329L 44.3333,47.5L 31.6667,45.9167L 31.6667,42.5329C 31.6667,41.1667 25.3333,35.8565 25.3333,30.875C 25.3333,23.4422 31.0044,17.4167 38,17.4167 Z";
-            const string iconUpgrade =
-                    "F1 M 37.8516,35.625L 34.6849,38.7917L 23.6016,50.2708L 23.6016,39.9792L 37.8516,24.9375L 52.1016,39.9792L 52.1016,50.2708L 41.0182,38.7917L 37.8516,35.625 Z";
-            const string iconDisable =
-                    "F1 M 36.4167,36.4167L 36.4167,17.4167L 41.1667,17.4167L 41.1667,36.4167L 36.4167,36.4167 Z M 57,39.5833C 57,50.0767 48.4934,58.5833 38,58.5833C 27.5066,58.5833 19,50.0767 19,39.5833C 19,30.7301 25.0552,23.2911 33.25,21.1819L 33.25,27.8374C 28.6079,29.7165 25.3333,34.2675 25.3333,39.5833C 25.3333,46.5789 31.0044,52.25 38,52.25C 44.9956,52.25 50.6667,46.5789 50.6667,39.5833C 50.6667,34.8949 48.1194,30.8014 44.3333,28.6113L 44.3333,21.6645C 51.7129,24.2728 57,31.3106 57,39.5833 Z";
+            const string iconBulb = ".BulbIconData";
+            const string iconUpgrade = ".UpdateIconData";
+            const string iconDisable = ".DisableIconData";
 
             if (CspRequiredMissing) {
                 if (RequiredCspVersion == PatchHelper.NonExistentVersion) {
@@ -92,21 +91,23 @@ namespace AcManager.Tools.Managers.Online {
                 errors.Add($"Can’t load any information: {GetFailedReason(_updateWebException).ToSentenceMember()}.");
             }
 
-            if (_updatePingFailed) {
-                errors.Add(ToolsStrings.Online_Server_CannotPing);
+            if (_updatePingFailed != null) {
+                errors.Add(_updatePingFailed != string.Empty ? $"Failed to ping: {_updatePingFailed.ToSentenceMember()}" : ToolsStrings.Online_Server_CannotPing);
             }
 
             if (_updateDriversMissing) {
                 errors.Add("Data is missing");
             }
 
+            var cupInstall = IsAbleToInstallMissingContent.NoMissingContent;
             if (_errorMissingCars) {
-                errors.Add(ErrorMessageMissingCars());
+                errors.Add(ErrorMessageMissingCars(ref cupInstall));
             }
 
             if (_errorMissingTrack) {
-                errors.Add(ErrorMessageMissingTrack());
+                errors.Add(ErrorMessageMissingTrack(ref cupInstall));
             }
+            IsAbleToInstallMissingContentState_Cup = cupInstall;
 
             if (HasDetails) {
                 errors.AddRange(_updateMissingExtendedErrors);
@@ -219,7 +220,7 @@ namespace AcManager.Tools.Managers.Online {
                         carsInformation = extended.Players;
                         informationLoadedExtended = true;
                     } catch (Exception e) {
-                        Logging.Warning($"<{Ip}:{PortHttp}> {(e.IsWebException() ? e.Message : e.ToString())}");
+                        // Logging.Warning($"<{Ip}:{PortHttp}> {(e.IsWebException() ? e.Message : e.ToString())}");
                         DetailsPort = null;
                         UpdateValuesExtended(null);
                         return;
@@ -234,7 +235,7 @@ namespace AcManager.Tools.Managers.Online {
                         }
                         UpdateValuesExtended(extended);
                     } catch (Exception e) {
-                        Logging.Warning($"<{Ip}:{PortHttp}> {(e.IsWebException() ? e.Message : e.ToString())}");
+                        // Logging.Warning($"<{Ip}:{PortHttp}> {(e.IsWebException() ? e.Message : e.ToString())}");
                         UpdateValuesExtended(null);
                         return;
                     }
@@ -420,7 +421,7 @@ namespace AcManager.Tools.Managers.Online {
                     }
                 }
             } catch (Exception e) {
-                Logging.Warning($"<{Ip}:{PortHttp}> {(e.IsWebException() ? e.Message : e.ToString())}");
+                // Logging.Warning($"<{Ip}:{PortHttp}> {(e.IsWebException() ? e.Message : e.ToString())}");
                 _updateException = e;
                 resultStatus = ServerStatus.Error;
             } finally {
@@ -453,32 +454,40 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 UpdateProgress = new AsyncProgressEntry("Pinging server…", 0.3);
-                var pair = SettingsHolder.Online.ThreadsPing
-                        ? await Task.Run(() => KunosApiProvider.TryToPingServer(Ip, Port, SettingsHolder.Online.PingTimeout, debugPinging))
-                        : await KunosApiProvider.TryToPingServerAsync(Ip, Port, SettingsHolder.Online.PingTimeout, debugPinging);
+                var pair = SettingsHolder.Online.PingingSingleSocket
+                        ? await KunosApiProvider.TryToPingServerAsync(Ip, Port)
+                        : SettingsHolder.Online.ThreadsPing
+                                ? await Task.Run(() => KunosApiProvider.TryToPingServer(Ip, Port, SettingsHolder.Online.PingTimeout, debugPinging))
+                                : await KunosApiProvider.TryToPingServerAsyncOld(Ip, Port, SettingsHolder.Online.PingTimeout, debugPinging);
                 if (pingId != _pingId) return;
 
                 if (debugPinging) {
-                    if (pair == null) {
-                        Logging.Warning("Result: FAILED");
+                    if (pair?.PortHttp == null) {
+                        Logging.Warning($"Result: FAILED ({pair?.Error ?? "<unknown>"})");
                     } else {
-                        Logging.Debug($"Result: {pair.Item2.TotalMilliseconds:F1} ms");
+                        Logging.Debug($"Result: {pair.PingTime.TotalMilliseconds:F1} ms");
                     }
                 }
 
-                if (pair != null) {
-                    Ping = (long)pair.Item2.TotalMilliseconds;
-                    _updatePingFailed = false;
+                if (pair?.Error != null) {
+                    Ping = null;
+                    _updatePingFailed = pair.Error;
+                    break;
+                }
+
+                if (pair?.PortHttp != null) {
+                    Ping = (long)pair.PingTime.TotalMilliseconds;
+                    _updatePingFailed = null;
                     break;
                 }
 
                 if (lastAttempt) {
                     Ping = null;
-                    _updatePingFailed = true;
+                    _updatePingFailed = string.Empty;
                     // resultStatus = ServerStatus.Error;
                     // return;
                 } else {
-                    await Task.Delay(150);
+                    await Task.Delay(TimeSpan.FromSeconds(10d));
                     if (pingId != _pingId) return;
                 }
             }

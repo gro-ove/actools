@@ -22,14 +22,14 @@ namespace AcManager.Tools.Managers.Directories {
             var watcher = Watchers.FirstOrDefault(x => x.TargetDirectory.Equals(directory, StringComparison.OrdinalIgnoreCase));
             if (watcher != null) return watcher;
 
-            Logging.Debug($"Creating directory watcher: " + directory);
+            // Logging.Debug($"Creating directory watcher: " + directory);
             watcher = new DirectoryWatcher(directory);
             Watchers.Add(watcher);
             return watcher;
         }
 
         public override void Subscribe(IDirectoryListener listener) {
-            Debug.WriteLine($"LISTENER SUBSCRIBED: {GetType()}, {listener.GetType()}");
+            // Debug.WriteLine($"LISTENER SUBSCRIBED: {GetType()}, {listener.GetType()}");
 
             CreateOrReuseWatcher(EnabledDirectory).Subscribe(listener);
             if (DisabledDirectory != null) {

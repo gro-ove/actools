@@ -519,6 +519,7 @@ namespace AcManager.Controls {
         }
 
         private static readonly Lazier<BitmapSource> MinoratingIcon = Lazier.Create(() => ToBitmap(@"MinoratingIcon", 0, ReferenceIconSize));
+        private static readonly Lazier<BitmapSource> ThirdPartyIcon = Lazier.Create(() => ToBitmap(@"ThirdPartyIcon", 0, ReferenceIconSize));
         private static readonly Lazier<BitmapSource> LanIcon = Lazier.Create(() => ToBitmap(@"LanIcon", ReferenceIconSize));
         private static readonly Lazier<BitmapSource> FavouritesIcon = Lazier.Create(() => ToBitmap(@"FavouriteIcon", ReferenceIconSize));
         private static readonly Lazier<BitmapSource> HiddenIcon = Lazier.Create(() => ToBitmap(@"HiddenIcon", ReferenceIconSize));
@@ -527,6 +528,7 @@ namespace AcManager.Controls {
 
         private static void ResetIcons() {
             MinoratingIcon.Reset();
+            ThirdPartyIcon.Reset();
             LanIcon.Reset();
             FavouritesIcon.Reset();
             HiddenIcon.Reset();
@@ -561,6 +563,10 @@ namespace AcManager.Controls {
                     toolTip = null;
                     return null;
                 default:
+                    if (originId.StartsWith(ThirdPartyOnlineSource.Prefix)) {
+                        toolTip = "Third-party lobby";
+                        return ThirdPartyIcon.Value;
+                    }
                     if (!CustomIcons.TryGetValue(originId, out var result)) {
                         var information = FileBasedOnlineSources.Instance.GetInformation(originId);
                         if (string.IsNullOrWhiteSpace(information?.Label)) {

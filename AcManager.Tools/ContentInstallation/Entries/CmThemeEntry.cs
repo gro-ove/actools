@@ -24,16 +24,21 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public override string ExistingFormat => "Update for CM theme {0}";
 
         public static string GetVersion(string data, out bool isTheme) {
-            var doc = XDocument.Parse(data);
-            var n = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml/presentation");
+            try {
+                var doc = XDocument.Parse(data);
+                var n = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml/presentation");
 
-            isTheme = doc.Root?.Name == n + "ResourceDictionary";
-            if (!isTheme) return null;
+                isTheme = doc.Root?.Name == n + "ResourceDictionary";
+                if (!isTheme) return null;
 
-            var nx = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml");
-            var ns = XNamespace.Get("clr-namespace:System;assembly=mscorlib");
-            return doc.Descendants(ns + "String")
-                    .FirstOrDefault(x => x.Attribute(nx + "Key")?.Value == "Version")?.Value;
+                var nx = XNamespace.Get("http://schemas.microsoft.com/winfx/2006/xaml");
+                var ns = XNamespace.Get("clr-namespace:System;assembly=mscorlib");
+                return doc.Descendants(ns + "String")
+                        .FirstOrDefault(x => x.Attribute(nx + "Key")?.Value == "Version")?.Value;
+            } catch (Exception) {
+                isTheme = false;
+                return null;
+            }
         }
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {

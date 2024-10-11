@@ -9,6 +9,7 @@ using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -19,7 +20,7 @@ using Newtonsoft.Json.Linq;
 namespace AcManager.Tools.Miscellaneous {
     public class CupClient {
         private static ApiCacheThing _cache;
-        private static ApiCacheThing Cache => _cache ?? (_cache = new ApiCacheThing("CUP", TimeSpan.FromHours(3), true));
+        private static ApiCacheThing Cache => _cache ?? (_cache = new ApiCacheThing("CUP", TimeSpan.FromHours(1), true));
 
         [CanBeNull]
         public static CupClient Instance { get; private set; }
@@ -36,21 +37,56 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         private readonly Dictionary<CupContentType, IAcManagerNew> _managers = new Dictionary<CupContentType, IAcManagerNew>();
+        private readonly Dictionary<CupContentType, Func<IAcManagerNew>> _postponed = new Dictionary<CupContentType, Func<IAcManagerNew>>();
 
         [CanBeNull]
-        public IAcManagerNew GetAssociatedManager(CupContentType type) {
-            return _managers.TryGetValue(type, out var result) ? result : null;
+        public IAcManagerNew GetAssociatedManager(CupContentType type, bool createMissing) {
+            if (_managers.TryGetValue(type, out var result)) return result;
+            if (createMissing && _postponed.TryGetValue(type, out var factory)) return factory();
+            return null;
         }
 
-        public void Register<T>(BaseAcManager<T> manager, CupContentType type) where T : AcObjectNew, ICupSupportedObject {
-            if (Instance == null) return;
-            _managers.Add(type, manager);
+        public static void Register<T>(BaseAcManager<T> manager, CupContentType type) where T : AcObjectNew, ICupSupportedObject {
+            // Logging.Debug($"REGISTERING : {type}, {manager}, {Instance}");
+            if (Instance == null) {
+#if DEBUG
+                throw new Exception("Nowhere to register: " + manager);
+#endif
+                return;
+            }
+            Instance._managers.Add(type, manager);
             Instance.NewLatestVersion += (sender, args) => {
                 if (args.Key.Type != type) return;
                 var obj = manager.GetWrapperById(args.Key.Id);
                 if (obj == null || !obj.IsLoaded) return;
                 ((ICupSupportedObject)obj.Value).OnCupUpdateAvailableChanged();
             };
+        }
+
+        private int _postponedDelay = 3;
+
+        public void RegisterPostponed<T>(CupContentType type, Func<BaseAcManager<T>> factory) where T : AcObjectNew, ICupSupportedObject {
+            var postponed = new List<CupEventArgs>();
+            EventHandler<CupEventArgs> h = (sender, args) => {
+                if (args.Key.Type != type) return;
+                postponed.Add(args);
+            };
+            _postponed.Add(type, factory);
+            NewLatestVersion += h;
+            Task.Delay(TimeSpan.FromSeconds(++_postponedDelay)).ContinueWithInMainThread(r => {
+                var manager = factory();
+                foreach (var args in postponed) {
+                    var obj = manager.GetWrapperById(args.Key.Id);
+                    if (obj == null || !obj.IsLoaded) return;
+                    ((ICupSupportedObject)obj.Value).OnCupUpdateAvailableChanged();
+                }
+                _postponed.Remove(type);
+                NewLatestVersion -= h;
+            });
+        }
+
+        public bool IsPostponed(CupContentType type) {
+            return _postponed.ContainsKey(type);
         }
 
         private readonly TaskCache _loadCache = new TaskCache();
@@ -66,7 +102,7 @@ namespace AcManager.Tools.Miscellaneous {
         private async Task CheckRegistriesAsync() {
             foreach (var registry in SettingsHolder.Content.CupRegistriesList) {
                 try {
-                    await LoadList(registry);
+                    await LoadList(registry.ApartFromLast(@"/"));
                 } catch (Exception e) {
                     NonfatalError.NotifyBackground("Can’t check registry for content updates", e);
                 }
@@ -107,9 +143,6 @@ namespace AcManager.Tools.Miscellaneous {
 
         [JsonObject(MemberSerialization.OptIn)]
         public class CupInformation : NotifyPropertyChanged {
-            [NotNull]
-            public string Version { get; }
-
             public bool IsToUpdateManually { get; }
 
             internal string SourceRegistry;
@@ -118,6 +151,9 @@ namespace AcManager.Tools.Miscellaneous {
             #region Extra properties
             [CanBeNull, JsonProperty("name")]
             public string Name { get; private set; }
+
+            [CanBeNull, JsonProperty("version")]
+            public string Version { get; private set; }
 
             [CanBeNull, JsonProperty("author")]
             public string Author { get; private set; }
@@ -131,17 +167,16 @@ namespace AcManager.Tools.Miscellaneous {
             [CanBeNull, JsonProperty("informationUrl")]
             public string InformationUrl { get; private set; }
 
-            [CanBeNull, JsonProperty("updateUrl")]
-            // ReSharper disable once InconsistentNaming
-            internal string _updateUrl { get; set; }
-
             [CanBeNull, JsonProperty("alternativeIds")]
             public string[] AlternativeIds { get; private set; }
+
+            [CanBeNull, JsonIgnore]
+            // ReSharper disable once InconsistentNaming
+            internal Tuple<string, string> _updateUrlAndName { get; set; }
             #endregion
 
             [JsonConstructor]
-            private CupInformation(string version, bool limited) {
-                Version = version;
+            private CupInformation(bool limited) {
                 IsToUpdateManually = limited;
             }
 
@@ -160,16 +195,13 @@ namespace AcManager.Tools.Miscellaneous {
             return _versions.TryGetValue(new CupKey(type, id), out var information) && information.Version.IsVersionNewerThan(installedVersion);
         }
 
-        private async Task LoadExtendedInformation(CupKey key, string registry) {
-            try {
-                var data = JsonConvert.DeserializeObject<CupInformation>(
-                        await Cache.GetStringAsync($@"{registry}/{key.Type.ToString().ToLowerInvariant()}/{key.Id}"));
-                data.SourceRegistry = registry.ApartFromLast("/");
-                data.IsExtendedLoaded = true;
-                RegisterLatestVersion(key, data);
-            } catch (Exception e) {
-                Logging.Warning(e);
-            }
+        public async Task<CupInformation> LoadCupEntryAsync(string registry, CupKey key) {
+            var data = JsonConvert.DeserializeObject<CupInformation>(
+                    await Cache.GetStringAsync($@"{registry}/{key.Type.CupID()}/{CmIDToCupContentID(key.Type, key.Id)}"));
+            data.SourceRegistry = registry.ApartFromLast("/");
+            data.IsExtendedLoaded = true;
+            RegisterLatestVersion(key, data);
+            return data;
         }
 
         [CanBeNull]
@@ -179,7 +211,11 @@ namespace AcManager.Tools.Miscellaneous {
 
             if (!data.IsExtendedLoaded) {
                 data.IsExtendedLoaded = true;
-                LoadExtendedInformation(key, data.SourceRegistry).Ignore();
+                LoadCupEntryAsync(data.SourceRegistry, key).ContinueWith(r => {
+                    if (r.IsFaulted) {
+                        NonfatalError.NotifyBackground("Failed to load CUP entry", r.Exception);
+                    }
+                });
             }
 
             return data;
@@ -187,26 +223,30 @@ namespace AcManager.Tools.Miscellaneous {
 
         private readonly TaskCache _installationUrlTaskCache = new TaskCache();
 
-        [ItemCanBeNull]
-        public Task<string> GetUpdateUrlAsync(CupContentType type, [NotNull] string id) {
-            var information = GetInformation(type, id);
-            if (information == null || information._updateUrl != null) return Task.FromResult(information?._updateUrl);
-
+        public Task<Tuple<string, string>> GetUpdateUrlFromAsync(string registry, CupContentType type, [NotNull] string id) {
             return _installationUrlTaskCache.Get(async () => {
                 try {
-                    var url = $@"{information.SourceRegistry}/{type.ToString().ToLowerInvariant()}/{id}/get";
+                    var url = $@"{registry}/{type.CupID()}/{CmIDToCupContentID(type, id)}/get";
                     using (var client = new CookieAwareWebClient()) {
-                        var updateUrl = await client.GetFinalRedirectAsync(url, 1);
-                        if (updateUrl != null) {
-                            information._updateUrl = updateUrl;
-                        }
-                        return updateUrl;
+                        string fileName = null;
+                        var ret = await client.GetFinalRedirectAsync(url, 1, s => fileName = s);
+                        return Tuple.Create(ret, fileName);
                     }
                 } catch (Exception e) {
                     NonfatalError.NotifyBackground("Can’t download an update", e);
                     return null;
                 }
-            }, type, id);
+            }, registry, type, id);
+        }
+
+        [ItemCanBeNull]
+        public async Task<Tuple<string, string>> GetUpdateUrlAsync(CupContentType type, [NotNull] string id) {
+            var information = GetInformation(type, id);
+            if (information == null || information._updateUrlAndName != null) return information?._updateUrlAndName;
+
+            var ret = await GetUpdateUrlFromAsync(information.SourceRegistry, type, id);
+            information._updateUrlAndName = ret;
+            return ret;
         }
 
         private readonly TaskCache _reportTaskCache = new TaskCache();
@@ -217,7 +257,7 @@ namespace AcManager.Tools.Miscellaneous {
 
             return _reportTaskCache.Get(async () => {
                 try {
-                    var url = $@"{information.SourceRegistry}/{type.ToString().ToLowerInvariant()}/{id}/complain";
+                    var url = $@"{information.SourceRegistry}/{type.CupID()}/{CmIDToCupContentID(type, id)}/complain";
                     using (var client = new CookieAwareWebClient()) {
                         await client.UploadStringTaskAsync(url, "");
                         IgnoreUpdate(type, id);
@@ -245,17 +285,18 @@ namespace AcManager.Tools.Miscellaneous {
                 Logging.Debug(updateUrl);
 
                 if (information.IsToUpdateManually) {
-                    WindowsHelper.ViewInBrowser(updateUrl ?? information.InformationUrl);
+                    WindowsHelper.ViewInBrowser(updateUrl?.Item1 ?? information.InformationUrl);
                     return false;
                 }
 
                 var idsToUpdate = new[] { id }.Append(information.AlternativeIds ?? new string[0]).ToArray();
-                return updateUrl != null && await ContentInstallationManager.Instance.InstallAsync(updateUrl,
+                return updateUrl != null && await ContentInstallationManager.Instance.InstallAsync(updateUrl.Item1,
                         new ContentInstallationParams(true) {
                             // Actual installation params
                             PreferCleanInstallation = information.PreferCleanInstallation,
 
                             // For displaying stuff
+                            ForcedFileName = updateUrl.Item2,
                             DisplayName = information.Name,
                             IdsToUpdate = idsToUpdate,
 
@@ -270,7 +311,9 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         private ICupSupportedObject GetLoaded(CupContentType type, [NotNull] string id) {
-            return GetAssociatedManager(type)?.WrappersAsIList.OfType<AcItemWrapper>().GetByIdOrDefault(id, StringComparison.InvariantCultureIgnoreCase)?.Value as ICupSupportedObject;
+            return GetAssociatedManager(type, true)?.WrappersAsIList.OfType<AcItemWrapper>()
+                    .GetByIdOrDefault(id, StringComparison.InvariantCultureIgnoreCase)?.Value
+                    as ICupSupportedObject;
         }
 
         public void IgnoreUpdate(CupContentType type, [NotNull] string id) {
@@ -294,8 +337,6 @@ namespace AcManager.Tools.Miscellaneous {
         public event EventHandler<CupEventArgs> NewLatestVersion;
 
         private void RegisterLatestVersion([NotNull] CupKey key, [NotNull] CupInformation information) {
-            // Logging.Debug("New update: " + key + information);
-
             if (_storage.Get<bool>($"ignore:{key}") || _storage.Get<bool>($"ignore:{key}:{information.Version}") ||
                     _versions.TryGetValue(key, out var existing) && existing.Version.IsVersionNewerThan(information.Version)) {
                 return;
@@ -305,8 +346,20 @@ namespace AcManager.Tools.Miscellaneous {
             NewLatestVersion?.Invoke(this, new CupEventArgs(key, information));
         }
 
+        private static string CupContentIDToCmID(CupContentType type, string id) {
+            // TODO: Do this one better
+            if (type == CupContentType.Filter) return id + @".ini";
+            return id;
+        }
+
+        private static string CmIDToCupContentID(CupContentType type, string id) {
+            // TODO: Do this one better
+            if (type == CupContentType.Filter) return id.ApartFromLast(@".ini");
+            return id;
+        }
+
         private async Task LoadList(string registry) {
-            var data = await Cache.GetStringAsync($@"{registry}/list");
+            var data = await Cache.GetStringAsync(registry);
             JObject list;
             try {
                 list = JObject.Parse(data);
@@ -327,7 +380,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                 foreach (var item in obj) {
                     try {
-                        var key = new CupKey(type, item.Key);
+                        var key = new CupKey(type, CupContentIDToCmID(type, item.Key));
                         if (item.Value.Type == JTokenType.String) {
                             RegisterLatestVersion(key, new CupInformation((string)item.Value, false, registry));
                         } else if (item.Value is JObject details) {

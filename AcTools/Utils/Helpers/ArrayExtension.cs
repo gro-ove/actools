@@ -100,15 +100,23 @@ namespace AcTools.Utils.Helpers {
         [Pure, CanBeNull]
         public static byte[] FromCutBase64([CanBeNull] this string encoded) {
             if (!string.IsNullOrWhiteSpace(encoded)) {
+                var input = encoded;
+                if (encoded[encoded.Length - 1] == '=') {
+                    encoded = encoded.TrimEnd('=');
+                }
                 try {
                     var padding = 4 - encoded.Length % 4;
                     if (padding > 0 && padding < 4) {
-                        encoded = encoded + "=".RepeatString(padding);
+                        if (padding == 3) {
+                            return null;
+                        }
+                        encoded += "=".RepeatString(padding);
                     }
 
                     return Convert.FromBase64String(encoded);
                 } catch (Exception e) {
-                    AcToolsLogging.Write(">" + encoded + "<");
+                    AcToolsLogging.Write(">INPUT:" + input + "<");
+                    AcToolsLogging.Write(">PADDED:" + encoded + "<");
                     AcToolsLogging.Write(e);
                 }
             }

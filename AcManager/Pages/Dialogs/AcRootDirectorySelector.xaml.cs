@@ -244,8 +244,8 @@ namespace AcManager.Pages.Dialogs {
                         try {
                             Logging.Debug("SteamID: OAuth route");
                             var packed = await OAuth.GetCode("Steam", $"{InternalUtils.MainApiDomain}/u/steam?s={AdditionalSalt}", null,
-                                    @"CM Steam ID Helper: (\w+)", description: "Enter the authentication code:", title: "Steam (via acstuff.ru)",
-                                    cancellation: combinedToken.Token);
+                                    @"CM Steam ID Helper: (\w+)", description: "Enter the authentication code:", title: "Steam (via acstuff.club)",
+                                    serverless: true, cancellation: combinedToken.Token);
                             Logging.Debug($"SteamID: OAuth route result={packed.Code ?? @"<nil>"}");
                             if (!combinedToken.IsCancellationRequested && packed.Code != null) {
                                 SetPacked(packed.Code);

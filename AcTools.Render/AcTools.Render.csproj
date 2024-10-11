@@ -353,6 +353,8 @@
     <Compile Include="Utils\PreferredDdsFormatExtension.cs" />
     <Compile Include="Wrapper\BaseKn5FormWrapper.cs" />
     <Compile Include="Wrapper\FormWrapperBase.cs" />
+    <Compile Include="Wrapper\FormWrapperMouseBase.cs" />
+    <Compile Include="Wrapper\Kn5WrapperCameraControlHelper.cs" />
     <Compile Include="Wrapper\LiteShowroomFormWrapper.cs" />
   </ItemGroup>
   <ItemGroup>

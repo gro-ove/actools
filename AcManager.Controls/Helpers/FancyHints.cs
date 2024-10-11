@@ -132,5 +132,11 @@ namespace AcManager.Controls.Helpers {
                 "Try with extended physics enabled",
                 "With it, CSP can use rain physics properly and will generate rain tyres for cars that need them.",
                 startupsDelay: 0, probability: 1d, forced: true);
+
+        public static readonly FancyHint CupV2IndexedContent = new FancyHint(
+                "cup-v2-indexed-content",
+                "Missing content has been found",
+                "A modder added their content to [b]CUP v2[/b] for you to download it directly from Content Manager, give it a try.[br][br]If you wouldn’t want to see these download icons, or only see it for original content, you can change the setting in [b]Settings/Content Manager/Online[/b].",
+                startupsDelay: 0, probability: 1d, forced: true);
     }
 }

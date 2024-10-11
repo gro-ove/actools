@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Net.Http.Headers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using Newtonsoft.Json;
@@ -25,7 +26,7 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         private const int AverageServersCount = 250;
         private static bool _failed;
 
-        public new static MinoratingServerInformation[] Deserialize(Stream stream) {
+        public new static MinoratingServerInformation[] Deserialize(Stream stream, HttpResponseHeaders headers) {
             if (_failed) {
                 return DeserializeSafe(stream);
             }
