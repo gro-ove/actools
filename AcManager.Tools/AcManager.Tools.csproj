@@ -155,9 +155,12 @@
     <Compile Include="AcManagersNew\FileAcManager.cs" />
     <Compile Include="AcManagersNew\IAcManagerNew.cs" />
     <Compile Include="AcManagersNew\IAcManagerScanWrapper.cs" />
+    <Compile Include="AcManagersNew\IAcWrapperLoader.cs" />
     <Compile Include="AcManagersNew\IFileAcManager.cs" />
     <Compile Include="AcManagersNew\IgnoringHolder.cs" />
     <Compile Include="AcManagersNew\IIgnorer.cs" />
+    <Compile Include="AcManagersNew\WrappedValueChangedEventArgs.cs" />
+    <Compile Include="AcManagersNew\WrappedValueChangedEventHandler.cs" />
     <Compile Include="AcObjectsNew\AcCommonObject.cs" />
     <Compile Include="AcObjectsNew\AcCommonObject.Pack.cs" />
     <Compile Include="AcObjectsNew\AcCommonSingleFileObject.cs" />

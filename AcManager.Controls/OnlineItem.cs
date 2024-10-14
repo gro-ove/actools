@@ -891,6 +891,9 @@ namespace AcManager.Controls {
                         TextAlignment = textAlignment,
                         MaxLineCount = 1
                     };
+            if (isLabel) {
+                formattedText.LineHeight = 18d;
+            }
             if (!double.IsNaN(maxWidth)) {
                 formattedText.MaxTextWidth = maxWidth;
             }

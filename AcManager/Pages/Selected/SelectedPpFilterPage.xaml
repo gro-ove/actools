@@ -37,10 +37,20 @@
     </c:AcObjectBase.ToolBars>
 
     <DockPanel>
-      <c:MessageBlock CloseKey="csp-info" Margin="0 0 0 20" DockPanel.Dock="Top">
-        <mui:BbCodeBlock
-            Text="With [url=&quot;https://acstuff.club/patch/&quot;]Custom Shaders Patch[/url] you can create and edit filters in-game, seeing changes live." />
-      </c:MessageBlock>
+      <mui:BooleanSwitch Value="{Binding SelectedObject.IsKunosName}" DockPanel.Dock="Top">
+        <mui:BooleanSwitch.False>
+          <c:MessageBlock CloseKey="csp-info" Margin="0 0 0 20">
+            <mui:BbCodeBlock
+                Text="With [url=&quot;https://acstuff.club/patch/&quot;]Custom Shaders Patch[/url] you can create and edit filters in-game, seeing changes live." />
+          </c:MessageBlock>
+        </mui:BooleanSwitch.False>
+        <mui:BooleanSwitch.True>
+          <c:MessageBlock CloseKey="kunos-pp-filter" Margin="0 0 0 20">
+            <mui:BbCodeBlock
+                Text="This is one of built-in PP-filters. Instead of editing it, please consider making a copy and editing it." />
+          </c:MessageBlock>
+        </mui:BooleanSwitch.True>
+      </mui:BooleanSwitch>
       <av:TextEditor c:AvalonExtension.Text="{Binding SelectedObject.Content}" c:AvalonExtension.Mode="Ini" />
     </DockPanel>
 

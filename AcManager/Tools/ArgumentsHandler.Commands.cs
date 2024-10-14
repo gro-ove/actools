@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -33,6 +34,7 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using SharpCompress.Archives.Zip;
 
 namespace AcManager.Tools {
@@ -254,6 +256,27 @@ namespace AcManager.Tools {
                         var car = await CarsManager.Instance.GetByIdAsync(ParamRequire(@"car"));
                         if (car == null) return ArgumentHandleResult.Failed;
                         await new ToUpdatePreview(car, custom.Params.GetValues(@"skin")).Run(presetFilename: custom.Params.Get(@"preset"));
+                        return ArgumentHandleResult.Successful;
+
+                    case "tool/script":
+                        var process = ProcessExtension.Start(FilesStorage.Instance.GetContentFile("Scripts", ParamRequire("script") + ".bat").Filename,
+                                JsonConvert.DeserializeObject<string[]>(ParamRequire("args")), new ProcessStartInfo {
+                                    RedirectStandardError = true,
+                                    RedirectStandardOutput = true,
+                                    WindowStyle = ProcessWindowStyle.Hidden,
+                                    CreateNoWindow = true,
+                                    UseShellExecute = false
+                                });
+                        var outputStringBuilder = new StringBuilder();
+                        process.OutputDataReceived += (sender, eventArgs) => outputStringBuilder.AppendLine(eventArgs.Data);
+                        process.ErrorDataReceived += (sender, eventArgs) => outputStringBuilder.AppendLine(eventArgs.Data);
+                        process.BeginOutputReadLine();
+                        process.BeginErrorReadLine();
+                        process.WaitForExitAsync().ContinueWithInMainThread(_ => {
+                            var r = outputStringBuilder.ToString().Trim();
+                            if (string.IsNullOrEmpty(r)) return;
+                            ModernDialog.ShowMessage(r, "Script result", MessageBoxButton.OK);
+                        }).Ignore();
                         return ArgumentHandleResult.Successful;
 
                     case "shared":

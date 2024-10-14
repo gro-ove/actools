@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using AcManager.Tools.Profile;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
@@ -36,5 +37,9 @@ namespace AcManager.Tools.Objects {
                 RaiseTotalDrivenDistanceChanged();
             }
         }));
+
+        private bool? _isTrafficPlannerReady;
+
+        public bool IsTrafficPlannerReady => _isTrafficPlannerReady ?? (_isTrafficPlannerReady = File.Exists(Path.Combine(DataDirectory, "traffic.json"))).Value;
     }
 }

@@ -10,6 +10,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.ContentInstallation.Installators;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
@@ -144,8 +145,10 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         public void SetInstallationParams([NotNull] ContentInstallationParams installationParams) {
             _installationParams = installationParams;
-            if (_installationParams.CupType.HasValue && _installationParams.Version != null) {
+            if (_installationParams.CupType.HasValue && _installationParams.Version != null && _installationParams.Version != Version) {
                 Version = _installationParams.Version;
+                OnPropertyChanged(nameof(Version));
+                CompareVersions();
             }
         }
 
@@ -285,8 +288,12 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             IsNew = tuple == null;
             ExistingName = tuple?.Item1;
             ExistingVersion = tuple?.Item2;
+        }
+
+        private void CompareVersions() {
             IsNewer = Version.IsVersionNewerThan(ExistingVersion);
             IsOlder = Version.IsVersionOlderThan(ExistingVersion);
+            Logging.Debug($"Existing: {ExistingVersion}, new: {Version}, newer: {IsNewer}, older: {IsOlder}");
         }
 
         [NotNull, ItemCanBeNull]
@@ -305,6 +312,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                 _existingVersion = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(DisplayName));
+                CompareVersions();
             }
         }
 

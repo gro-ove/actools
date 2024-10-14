@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Miscellaneous;
 using AcTools.DataFile;
@@ -29,8 +30,34 @@ namespace AcManager.Tools.Objects {
             OnPropertyChanged(propertyName);
         }
 
+        private static readonly Dictionary<string, uint> KunosContent = new Dictionary<string, uint> {
+            [@"b&w.ini"] = 0x2D15CDE5,
+            [@"blue_steel.ini"] = 0xE7661BBC,
+            [@"default.ini"] = 0x34A7F6E4,
+            [@"default_bright.ini"] = 0x1A9A4B76,
+            [@"default_dark.ini"] = 0xCA6FF8EF,
+            [@"movie.ini"] = 0x886391E4,
+            [@"natural.ini"] = 0xA05EB1B,
+            [@"photographic.ini"] = 0xFBB4DB5,
+            [@"sepia.ini"] = 0x6559CA3,
+            [@"vintage.ini"] = 0x14C74CCE,
+        };
+
+        private static unsafe uint GetKey(string s) {
+            var k = s.GetHashCode();
+            return *(uint*)&k;
+        }
+
         private void ApplyVersionInfo(string content) {
             if (string.IsNullOrEmpty(content)) return;
+
+            if (KunosContent.TryGetValue(Id, out var key) && key == GetKey(content)) {
+                _author = AuthorKunos;
+                _version = null;
+                _url = null;
+                return;
+            }
+
             var i = content.IndexOf("[ABOUT]", StringComparison.Ordinal);
             var j = content.IndexOf("[", i + 8, StringComparison.Ordinal);
             if (i == -1) {
@@ -54,15 +81,15 @@ namespace AcManager.Tools.Objects {
             } else {
                 var piece = IniFile.Parse(content.Substring(i, (j == -1 ? content.Length : j) - i));
                 piece["ABOUT"].Set(field, value);
-                Content = content.Substring(0, i) + piece.Stringify() 
+                Content = content.Substring(0, i) + piece.Stringify()
                         + (j == -1 ? string.Empty : "\n\n" + content.Substring(j));
             }
         }
 
         private void LoadVersionInfo() {
             if (_versionInfoApplied) return;
-            _versionInfoApplied = true;
             PrepareForEditing();
+            _versionInfoApplied = true;
             ApplyVersionInfo(Content);
         }
 

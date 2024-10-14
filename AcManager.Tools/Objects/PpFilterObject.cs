@@ -18,9 +18,13 @@ namespace AcManager.Tools.Objects {
         public override string Extension => FileExtension;
 
         public PpFilterObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) { }
+                : base(manager, id, enabled) {
+            IsKunosName = KunosContent.ContainsKey(id);
+        }
 
         public string AcId => Id.ApartFromLast(FileExtension);
+        
+        public bool IsKunosName { get; }
 
         public override bool HasData => true;
 

@@ -34,6 +34,8 @@ namespace AcTools.Render.Wrapper {
             return Task.Delay(StopCurrent() ? 200 : 0);
         }
 
+        private int _closeFixCounter;
+
         protected FormWrapperBase(BaseRenderer renderer, string title, int width, int height) {
             if (StopCurrent()) {
                 throw new Exception("Can’t have two renderers running at the same time");
@@ -65,9 +67,10 @@ namespace AcTools.Render.Wrapper {
             // around, tried a few things, but there are no exceptions, no warning messages, nothing. There might be a proper fix, but I can’t
             // really be bothered to go deeper into this rabbit hole at this minute. Missing C++ and how straightforward it is, that’s for sure. 
             Form.Closing += async (sender, args) => {
-                if (!Form.Focused) {
+                if (!Form.Focused && ++_closeFixCounter < 10) {
                     args.Cancel = true;
-                    await Task.Delay(100);
+                    Form.Focus();
+                    await Task.Delay(50);
                     Form.Close();
                 }
             };

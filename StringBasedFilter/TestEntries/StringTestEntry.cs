@@ -52,6 +52,8 @@ namespace StringBasedFilter.TestEntries {
             return "=" + _str;
         }
 
+        public string UnderlyingValue => _str;
+
         public void Set(ITestEntryFactory factory) {}
 
         public bool Test(string value) {
