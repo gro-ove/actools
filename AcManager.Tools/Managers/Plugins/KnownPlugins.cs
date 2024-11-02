@@ -9,5 +9,6 @@ namespace AcManager.Tools.Managers.Plugins {
         public static readonly string SevenZip = @"7Zip";
         public static readonly string ImageMontage = @"ImageMontage";
         public static readonly string FbxConverter = @"FbxConverter";
+        public static readonly string Bc7Tool = @"Bc7Tool";
     }
 }

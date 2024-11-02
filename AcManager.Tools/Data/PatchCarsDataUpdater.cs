@@ -75,7 +75,7 @@ namespace AcManager.Tools.Data {
         }
 
         public override string GetBaseUrl() {
-            return "/patch/cars-configs/";
+            return "/cars-configs";
         }
 
         public override string GetCacheDirectoryName() {

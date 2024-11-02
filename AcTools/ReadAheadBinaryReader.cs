@@ -361,7 +361,7 @@ namespace AcTools {
                 stream.Write(_buffer, _total - _left, _left);
                 count -= _left;
 
-                var read =  StreamExtension.CopyTo(_stream, stream, count);
+                var read =  StreamExtension.CopyToLimited(_stream, stream, count);
                 if (read != count) throw new EndOfStreamException("Unexpected end");
 
                 _left = _total = 0;

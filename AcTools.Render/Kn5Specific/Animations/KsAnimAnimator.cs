@@ -77,7 +77,7 @@ namespace AcTools.Render.Kn5Specific.Animations {
             _skipFixed = skipFixed;
             _filename = filename;
             _original = File.Exists(_filename) ? KsAnim.FromFile(_filename) : KsAnim.CreateEmpty();
-            _watcher = SimpleDirectoryWatcher.WatchFile(filename, Reload);
+            _watcher = SimpleDirectoryWatcher.WatchFile(filename, (Action)Reload);
         }
 
         private void Reload() {

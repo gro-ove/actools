@@ -77,7 +77,7 @@ namespace AcTools.Utils.Helpers {
             return ReadAsBytesAndDispose(s).ToUtf8String();
         }
 
-        public static int CopyTo(this Stream input, Stream output, int bytes, int bufferSize = 81920) {
+        public static int CopyToLimited(this Stream input, Stream output, int bytes, int bufferSize = 81920) {
             var buffer = new byte[bufferSize];
             int read, totalRead = 0;
             while (bytes > 0 && (read = input.Read(buffer, 0, Math.Min(buffer.Length, bytes))) > 0) {

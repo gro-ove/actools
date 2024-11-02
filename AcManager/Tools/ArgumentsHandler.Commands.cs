@@ -259,7 +259,11 @@ namespace AcManager.Tools {
                         return ArgumentHandleResult.Successful;
 
                     case "tool/script":
-                        var process = ProcessExtension.Start(FilesStorage.Instance.GetContentFile("Scripts", ParamRequire("script") + ".bat").Filename,
+                        if (!OptionAllowDataScripts) {
+                            throw new Exception("Data scripts can’t run without “--allow-data-scripts” argument");
+                        }
+                        var process = ProcessExtension.Start(FilesStorage.Instance.GetContentFile("Scripts", 
+                                        FileUtils.EnsureFileNameIsValid(ParamRequire("script"), false) + ".bat").Filename,
                                 JsonConvert.DeserializeObject<string[]>(ParamRequire("args")), new ProcessStartInfo {
                                     RedirectStandardError = true,
                                     RedirectStandardOutput = true,

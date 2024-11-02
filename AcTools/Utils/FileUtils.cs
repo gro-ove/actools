@@ -496,7 +496,15 @@ namespace AcTools.Utils {
             return EnsureUnique(holdPlace, filename, postfix, false);
         }
 
-        public static void CopyRecursive(string source, string destination) {
+        public static void TryCopy(string source, string destination, bool overwrite) {
+            try {
+                File.Copy(source, destination, overwrite);
+            } catch {
+                // ignored
+            }
+        }
+
+        public static void CopyRecursive(string source, string destination, bool overwrite = true) {
             if (File.GetAttributes(source).HasFlag(FileAttributes.Directory)) {
                 Directory.CreateDirectory(destination);
 
@@ -505,10 +513,10 @@ namespace AcTools.Utils {
                 }
 
                 foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
-                    File.Copy(filePath, Path.Combine(destination, GetPathWithin(filePath, source) ?? source), true);
+                    TryCopy(filePath, Path.Combine(destination, GetPathWithin(filePath, source) ?? source), overwrite);
                 }
             } else {
-                File.Copy(source, destination, true);
+                TryCopy(source, destination, overwrite);
             }
         }
 

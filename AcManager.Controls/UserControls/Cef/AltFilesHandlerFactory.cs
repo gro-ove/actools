@@ -96,7 +96,7 @@ namespace AcManager.Controls.UserControls.Cef {
                     return false;
                 }
 
-                bytesRead = _data.CopyTo(dataOut, (int)dataOut.Length, 8192);
+                bytesRead = _data.CopyToLimited(dataOut, (int)dataOut.Length, 8192);
                 return bytesRead > 0;
             }
 
@@ -110,7 +110,7 @@ namespace AcManager.Controls.UserControls.Cef {
                     return false;
                 }
 
-                bytesRead = _data.CopyTo(dataOut, (int)dataOut.Length, 8192);
+                bytesRead = _data.CopyToLimited(dataOut, (int)dataOut.Length, 8192);
                 return bytesRead > 0;
             }
 

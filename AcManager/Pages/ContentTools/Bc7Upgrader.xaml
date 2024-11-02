@@ -1,0 +1,152 @@
+<tools:ContentTool x:Class="AcManager.Pages.ContentTools.Bc7Upgrader" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:tools="clr-namespace:AcManager.Pages.ContentTools"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance tools:Bc7Upgrader}">
+  <tools:ContentTool.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Plugins.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </tools:ContentTool.Resources>
+
+  <mui:Cell mui:Switch.When="{x:Static tools:Stage.Loading}" Width="400" HorizontalAlignment="Center">
+    <mui:SpacingStackPanel Spacing="8" VerticalAlignment="Center">
+      <ProgressBar IsIndeterminate="{Binding ProgressValue.IsIndeterminate}" Maximum="1" Value="{Binding ProgressValue.Progress, Mode=OneWay}" Height="4" />
+      <TextBlock Text="{Binding ProgressValue.Message}" />
+    </mui:SpacingStackPanel>
+    <mui:SelectableBbCodeBlock VerticalAlignment="Bottom" Style="{StaticResource RichTextBox.Small.ReadOnly}"
+        Text="{x:Static g:AppStrings.ContentTools_FilesCompressor_Description}" />
+  </mui:Cell>
+
+  <DockPanel mui:Switch.When="{x:Static tools:Stage.Empty}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <TextBlock Text="{x:Static g:AppStrings.Online_NothingToDisplay}" Style="{StaticResource Heading1}" />
+  </DockPanel>
+
+  <DockPanel mui:Switch.When="{x:Static tools:Stage.Error}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <TextBlock Text="{x:Static g:AppStrings.ContentTools_BatchPreviewsUpdater_SomeErrorHappened}" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+    <TextBlock Text="{Binding Error}" Margin="0 20 0 0" />
+  </DockPanel>
+
+  <mui:BooleanSwitch mui:Switch.When="{x:Static tools:Stage.Ready}" Value="{Binding IsReady, Source={x:Static tools:Bc7Encoder.Requirement}}">
+    <mui:BooleanSwitch.False>
+      <DockPanel Margin="40 0 40 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" DockPanel.Dock="Top" Margin="0 0 0 8" />
+        <mui:Switch Value="{Binding ListView.Count}" DataContext="{Binding Source={x:Static tools:Bc7Encoder.Requirement}}">
+          <DockPanel mui:Switch.When="0">
+            <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" Margin="0 0 8 0" />
+            <TextBlock Text="BC7 plugin is required for the tool to work." TextWrapping="Wrap" />
+          </DockPanel>
+          <mui:SpacingStackPanel Spacing="4">
+            <DockPanel mui:Switch.When="0">
+              <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" Margin="0 0 8 0" />
+              <TextBlock Text="Plugin is required for the tool to work:" TextWrapping="Wrap" />
+            </DockPanel>
+            <ItemsControl ItemsSource="{Binding ListView}" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" Margin="0 8 0 -12" />
+          </mui:SpacingStackPanel>
+        </mui:Switch>
+      </DockPanel>
+    </mui:BooleanSwitch.False>
+    <mui:BooleanSwitch.True>
+      <DockPanel>
+        <mui:RememberingExpander DefaultValue="False" Key="bc7info" Style="{StaticResource Expander.Animated}" Margin="0 0 0 20" DockPanel.Dock="Top">
+          <Expander.Header>
+            <Label Content="About the tool" Background="Transparent" />
+          </Expander.Header>
+          <mui:SpacingStackPanel Spacing="8" Margin="16 12 0 0">
+            <TextBlock TextWrapping="Wrap"
+                Text="BC7 format uses 1 byte per pixel to store color and alpha information. Similar to DXT5 (aka BC5), but with much better quality. Original Assetto Corsa (or ksEditor) can’t read this format, but Custom Shaders Patch adds support for it, so if you’re working on a piece of content requiring CSP, using that encoding might be a viable option to save on disk space and VRAM without sacrificing quality." />
+            <TextBlock TextWrapping="Wrap"
+                Text="To use, save KN5 in ksEditor using regular RGBA8888 encoding with MIPs and then select a saved KN5 in this tool. Once model is updated, this tool will re-encode all the textures. Note, for BC7 (or DXT1/DXT5) to work, texture dimensions should be divisible by 4." />
+            <TextBlock TextWrapping="Wrap"
+                Text="JPG, PNG and such formats will also be re-encoded. If MIPs are missing, they will be generated as well to save some loading time (AC/CSP have to generate missing MIPs on loading)." />
+            <TextBlock TextWrapping="Wrap"
+                Text="If you’re not making mods, while this tool could help with loading speed and VRAM consumption, new CSP versions have an option to automatically convert textures to BC7 in background to speed up subsequent loadings, so using this tool is not necessary." />
+          </mui:SpacingStackPanel>
+        </mui:RememberingExpander>
+        <Button DockPanel.Dock="Bottom" Content="Encode textures" Command="{Binding ConvertCommand}" />
+        <ItemsControl ItemsSource="{Binding KnownEntries}" Style="{StaticResource VirtualizingItemsControl}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <DockPanel Margin="0 0 0 8">
+                <mui:SpacingStackPanel Spacing="4" DockPanel.Dock="Right" Margin="8 0 0 0" VerticalAlignment="Center">
+                  <Button DockPanel.Dock="Right" Command="{Binding RefreshCommand}" Content="Refresh"
+                      ToolTip="Tracked conversions refresh automatically when source file changes" />
+                  <Button DockPanel.Dock="Right" Command="{Binding ForgetCommand}" Content="Forget"
+                      ToolTip="Remove this model from list of tracked conversions" />
+                  <Button DockPanel.Dock="Right" Command="{Binding RevertCommand}" Content="Revert and forget"
+                      ToolTip="Remove this model from list of tracked conversions" />
+                </mui:SpacingStackPanel>
+                <mui:FallbackSwitch Width="10" Height="10" Margin="0 0 8 0" VerticalAlignment="Center" DockPanel.Dock="Left">
+                  <Path Data="{StaticResource AlertIconData}" Width="10" Height="10" VerticalAlignment="Center" Fill="{DynamicResource Error}"
+                      Stretch="Uniform" mui:FallbackSwitch.Value="{Binding LastError}" mui:FallbackSwitch.WhenNot="{x:Null}" />
+                  <Path Data="{StaticResource CheckIconData}" Width="10" Height="10" VerticalAlignment="Center" Fill="{DynamicResource Go}" Stretch="Uniform"
+                      mui:FallbackSwitch.Value="{Binding RefreshCommand.IsAbleToExecute}" mui:FallbackSwitch.When="True" />
+                  <Path Data="{StaticResource RefreshIconData}" Width="10" Height="10" VerticalAlignment="Center"
+                      Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Stretch="Uniform" RenderTransformOrigin="0.5, 0.5">
+                    <Path.RenderTransform>
+                      <RotateTransform />
+                    </Path.RenderTransform>
+                    <Path.Triggers>
+                      <EventTrigger RoutedEvent="Ellipse.Loaded">
+                        <BeginStoryboard>
+                          <Storyboard RepeatBehavior="Forever" TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)">
+                            <DoubleAnimationUsingKeyFrames>
+                              <DiscreteDoubleKeyFrame KeyTime="0:0:0.000" Value="0" />
+                              <DiscreteDoubleKeyFrame KeyTime="0:0:0.200" Value="0" />
+                              <EasingDoubleKeyFrame KeyTime="0:0:1.000" Value="180" EasingFunction="{StaticResource StandardEase}" />
+                            </DoubleAnimationUsingKeyFrames>
+                          </Storyboard>
+                        </BeginStoryboard>
+                      </EventTrigger>
+                    </Path.Triggers>
+                  </Path>
+                </mui:FallbackSwitch>
+
+
+                <TextBlock Text="{Binding Origin, StringFormat='Model: {0}'}" DockPanel.Dock="Top" />
+                <mui:SpacingStackPanel Spacing="4" DockPanel.Dock="Top" Margin="20 8 0 8">
+                  <TextBlock Text="Settings:" Style="{StaticResource Label}" />
+                  <CheckBox IsChecked="{Binding ConvertBc}"
+                      ToolTip="Textures saved in formats such as DXT1 and DXT5 are already damaged due to compression, so processing them wouldn’t make much benefit (unless they miss MIPs, so converted textures wouldn’t have to have their MIPs regenerated during loading).">
+                    <Label Content="Convert all BC… textures (not recommended)" />
+                  </CheckBox>
+                  <CheckBox IsChecked="{Binding ConvertAny}" ToolTip="Use carefully, might change the look">
+                    <Label Content="Convert non-RGBA8888 textures (excluding HDR textures)" />
+                  </CheckBox>
+                  <DockPanel DockPanel.Dock="Top"
+                      ToolTip="This option can fix issues with textures with sizes not divisible by 4, but generally speaking it would be beneficial to just save the textures correctly to begin with.">
+                    <Label DockPanel.Dock="Left" Width="100" Content="Resize mode:" VerticalAlignment="Center" />
+                    <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ResizeMode}" ItemsSource="{Binding ResizeModes}">
+                      <mui:BetterComboBox.ItemTemplate>
+                        <DataTemplate>
+                          <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                        </DataTemplate>
+                      </mui:BetterComboBox.ItemTemplate>
+                    </mui:BetterComboBox>
+                  </DockPanel>
+                </mui:SpacingStackPanel>
+
+                <c:MessageBlock Height="40">
+                  <mui:FallbackSwitch VerticalAlignment="Center">
+                    <DockPanel mui:FallbackSwitch.Value="{Binding ProcessingNow}" mui:FallbackSwitch.When="True">
+                      <TextBlock Text="{Binding ProgressValue.Message, StringFormat='Converting: {0}'}" DockPanel.Dock="Top" VerticalAlignment="Top"></TextBlock>
+                      <ProgressBar Maximum="1" IsIndeterminate="{Binding ProgressValue.IsIndeterminate}" Value="{Binding ProgressValue.Progress, Mode=OneWay}"
+                          DockPanel.Dock="Bottom" Height="4" />
+                    </DockPanel>
+                    <TextBlock mui:FallbackSwitch.Value="{Binding LastError}" mui:FallbackSwitch.WhenNot="{x:Null}"
+                        Text="{Binding LastError, StringFormat='Error: {0}'}" />
+                    <TextBlock mui:FallbackSwitch.Value="{Binding Status}" mui:FallbackSwitch.WhenNot="{x:Null}" Text="{Binding Status}" />
+                  </mui:FallbackSwitch>
+                </c:MessageBlock>
+
+              </DockPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </DockPanel>
+    </mui:BooleanSwitch.True>
+  </mui:BooleanSwitch>
+
+</tools:ContentTool>

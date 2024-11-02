@@ -27,6 +27,7 @@ using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 namespace AcManager.Tools {
     public static partial class ArgumentsHandler {
         public static bool OptionUserChampionshipExtMode = true;
+        public static bool OptionAllowDataScripts = false;
 
         private static async Task<ArgumentHandleResult> ProcessSharedEntry(SharedEntry shared, bool justGo) {
             var data = shared?.Data;

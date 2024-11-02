@@ -5,6 +5,12 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Changes target frame rate for CM UI. Default value: 60.
+        /// Example: --desired-frame-rate=30.
+        /// </summary>
+        DesiredFrameRate,
+        
+        /// <summary>
         /// Changes maximum number of skins to be rendered at once using AC CSP. Default value: 10.
         /// Example: --csp-previews-batch-size=100.
         /// </summary>
@@ -24,6 +30,12 @@ namespace AcManager {
         CspPreviewsKeepPositions,
         
         /// <summary>
+        /// For development purposes.
+        /// Example: --allow-data-scripts.
+        /// </summary>
+        AllowDataScripts,
+        
+        /// <summary>
         /// Size of cache for cars LOD generator. Default value: 100 MB.
         /// Example: --car-lod-generator-cache-size=50MB.
         /// </summary>
@@ -31,7 +43,7 @@ namespace AcManager {
         CarLodGeneratorCacheSize,
 
         /// <summary>
-        /// For development purposes.
+        /// Use developer list of extra online lobbies.
         /// Example: --dev-lobbies.
         /// </summary>
         DevLobbies,

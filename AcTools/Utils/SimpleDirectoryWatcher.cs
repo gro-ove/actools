@@ -112,7 +112,7 @@ namespace AcTools.Utils {
             });
         }
 
-        public static IDisposable WatchFile(string filename, Action reloadAction) {
+        public static IDisposable WatchFile(string filename, Func<Task> reloadAction) {
             var reloading = false;
             return SetWatcher(Path.GetDirectoryName(filename), async s => {
                 if (reloading || s == null || !FileUtils.ArePathsEqual(s, filename)) return;
@@ -121,8 +121,8 @@ namespace AcTools.Utils {
                 try {
                     for (var i = 0; i < 3; i++) {
                         try {
-                            await Task.Delay(300);
-                            reloadAction();
+                            await Task.Delay(300).ConfigureAwait(false);
+                            await reloadAction().ConfigureAwait(false);
                             break;
                         } catch (IOException e) {
                             AcToolsLogging.Write(e);
@@ -131,6 +131,13 @@ namespace AcTools.Utils {
                 } finally {
                     reloading = false;
                 }
+            });
+        }
+
+        public static IDisposable WatchFile(string filename, Action reloadAction) {
+            return WatchFile(filename, () => {
+                reloadAction();
+                return Task.Delay(0);
             });
         }
 

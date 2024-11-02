@@ -29,7 +29,7 @@ namespace AcManager.Tools.Data {
         }
 
         public override string GetBaseUrl() {
-            return "/patch/cars-vao/";
+            return "/cars-vao";
         }
 
         public override string GetCacheDirectoryName() {

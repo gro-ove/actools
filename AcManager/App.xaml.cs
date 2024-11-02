@@ -140,8 +140,16 @@ namespace AcManager {
                 ValuesStorage.Set(AppAppearanceManager.KeySoftwareRendering, true);
             }
 
-            if (IsSoftwareRenderingModeEnabled()) {
-                SwitchToSoftwareRendering();
+            var softwareRenderingModeIsEnabled = IsSoftwareRenderingModeEnabled();
+            if (AppArguments.GetDouble(AppFlag.DesiredFrameRate) is double v && v > 0d) {
+                Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline), new FrameworkPropertyMetadata(v));
+                if (softwareRenderingModeIsEnabled) {
+                    RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+                    ModernFrame.OptionDisableTransitionAnimation = true;
+                }
+            } else if (softwareRenderingModeIsEnabled) {
+                RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+                Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline), new FrameworkPropertyMetadata(30));
             }
 
             var app = new App();
@@ -194,11 +202,6 @@ namespace AcManager {
         public static bool IsSoftwareRenderingModeEnabled() {
             return AppArguments.GetBool(AppFlag.SoftwareRendering) || ValuesStorage.Get<bool>(AppAppearanceManager.KeySoftwareRendering)
                     || MainExecutingFile.Name.IndexOf(@"safe", StringComparison.OrdinalIgnoreCase) != -1;
-        }
-
-        private static void SwitchToSoftwareRendering() {
-            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
-            Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline), new FrameworkPropertyMetadata(30));
         }
 
         private AppHibernator _hibernator;
@@ -554,6 +557,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.CspPreviewsBatchSize, ref CmPreviewsTools.OptionBatchSize);
             AppArguments.Set(AppFlag.CspPreviewsRunVisible, ref DarkPreviewsAcUpdater.OptionRunVisible);
             AppArguments.Set(AppFlag.CspPreviewsKeepPositions, ref DarkPreviewsAcUpdater.OptionKeepPositions);
+            AppArguments.Set(AppFlag.AllowDataScripts, ref ArgumentsHandler.OptionAllowDataScripts);
             SlimDX.Configuration.DetectDoubleDispose = true;
             SlimDX.Configuration.EnableObjectTracking = true;
             Filter.OptionSimpleMatching = true;
@@ -564,6 +568,21 @@ namespace AcManager {
             SettingsHolder.Content.OldLayout = AppArguments.GetBool(AppFlag.CarsOldLayout);
 
             var acRootIsFine = Superintendent.Instance.IsReady && !AcRootDirectorySelector.IsReviewNeeded();
+            
+            // Initializing AC configs 
+            if (acRootIsFine) {
+                var sourceCfg = Path.Combine(AcRootDirectory.Instance.Value ?? string.Empty, "cfg");
+                if (File.Exists(Path.Combine(sourceCfg, "templates\\tracks.ini"))) {
+                    var documentsCfg = AcPaths.GetDocumentsCfgDirectory();
+                    if (!Directory.Exists(sourceCfg)) {
+                        FileUtils.CopyRecursive(sourceCfg, documentsCfg);
+                    } else if (!File.Exists(Path.Combine(documentsCfg, "templates\\tracks.ini"))) {
+                        FileUtils.CopyRecursive(sourceCfg, documentsCfg, false);
+                    }
+                }
+            }
+            
+            // Preparing Steam starter thing
             if (acRootIsFine && SteamStarter.Initialize(AcRootDirectory.Instance.Value, false)) {
                 if (SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
                     SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.SteamStarterType;

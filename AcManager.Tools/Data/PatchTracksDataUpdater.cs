@@ -56,7 +56,7 @@ namespace AcManager.Tools.Data {
         }
 
         public override string GetBaseUrl() {
-            return "/patch/tracks-configs/";
+            return "/tracks-configs";
         }
 
         public override string GetCacheDirectoryName() {
