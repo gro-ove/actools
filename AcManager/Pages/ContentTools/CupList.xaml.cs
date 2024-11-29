@@ -13,7 +13,7 @@ namespace AcManager.Pages.ContentTools {
             if (CupClient.Instance == null) return false;
 
             progress.Report("Loading list of updates…", 0.01);
-            await CupClient.Instance.LoadRegistries();
+            await CupClient.Instance.LoadRegistries(true);
 
             // Used by the tool, so forcing to create all the managers here
             var list = CupClient.Instance.List.Select(x => {
