@@ -1,5 +1,5 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mi="clr-namespace:AcManager.Pages.Miscellaneous" xmlns:c="http://acstuff.ru/app/controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:mi="clr-namespace:AcManager.Pages.Miscellaneous" xmlns:c="http://acstuff.club/app/controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
   <Style x:Key="MostPageStyle" TargetType="mui:SpacingUniformGrid">

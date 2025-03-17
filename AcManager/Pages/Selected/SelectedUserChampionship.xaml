@@ -2,8 +2,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:se="clr-namespace:AcManager.Pages.Selected" xmlns:g="clr-namespace:AcManager"
-    xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls"
-    xmlns:a="clr-namespace:AcTools;assembly=AcTools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+    xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:t="http://acstuff.club/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls"
+    xmlns:a="clr-namespace:AcTools;assembly=AcTools" xmlns:c="http://acstuff.club/app/controls" mc:Ignorable="d"
     mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance se:SelectedUserChampionship+ViewModel}"
     Loaded="OnLoaded" Unloaded="OnUnloaded" x:Name="This">
   <UserControl.Resources>

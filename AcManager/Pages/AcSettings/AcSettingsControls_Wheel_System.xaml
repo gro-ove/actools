@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsControls_Wheel_System" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:acset="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:acset="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools" xmlns:c="http://acstuff.club/app/controls"
     xmlns:acs="clr-namespace:AcManager.Tools.Helpers.AcSettingsControls;assembly=AcManager.Tools" xmlns:acsc="clr-namespace:AcManager.Pages.AcSettings"
     xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" Loaded="OnLoaded" Unloaded="OnUnloaded">
   <UserControl.Resources>

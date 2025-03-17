@@ -2,7 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:g="clr-namespace:AcManager"
-    xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" Loaded="OnLoaded"
+    xmlns:t="http://acstuff.club/app/tools" xmlns:c="http://acstuff.club/app/controls" mc:Ignorable="d" Loaded="OnLoaded"
     Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance dr:KunosCareer+ViewModel}" x:Name="ThisControl">
   <UserControl.Resources>
     <ResourceDictionary>

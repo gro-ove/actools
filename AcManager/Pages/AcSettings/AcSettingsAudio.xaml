@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsAudio" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:set="clr-namespace:AcManager.Pages.Settings" xmlns:t="http://acstuff.ru/app/tools" xmlns:na="clr-namespace:NAudio.CoreAudioApi;assembly=NAudio"
+    xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.club/app/controls"
+    xmlns:set="clr-namespace:AcManager.Pages.Settings" xmlns:t="http://acstuff.club/app/tools" xmlns:na="clr-namespace:NAudio.CoreAudioApi;assembly=NAudio"
     mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acset:AcSettingsAudio+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />

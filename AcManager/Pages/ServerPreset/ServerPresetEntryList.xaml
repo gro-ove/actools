@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.ServerPreset.ServerPresetEntryList" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:l="clr-namespace:AcManager.Pages.ServerPreset"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:userControls="clr-namespace:AcManager.UserControls" xmlns:sel="clr-namespace:AcManager.Pages.Selected"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.club/app/tools"
+    xmlns:c="http://acstuff.club/app/controls" xmlns:userControls="clr-namespace:AcManager.UserControls" xmlns:sel="clr-namespace:AcManager.Pages.Selected"
     mc:Ignorable="d" d:DataContext="{d:DesignInstance l:SelectedPage+ViewModel}" x:Name="This">
   <UserControl.Resources>
     <ResourceDictionary>

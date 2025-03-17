@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsGeneral" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:t="http://acstuff.ru/app/tools" xmlns:in="clr-namespace:AcManager.Internal;assembly=AcManager.Internal"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.club/app/controls"
+    xmlns:t="http://acstuff.club/app/tools" xmlns:in="clr-namespace:AcManager.Internal;assembly=AcManager.Internal"
     xmlns:at="clr-namespace:AcTools;assembly=AcTools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance set:SettingsGeneral+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
   <UserControl.Resources>

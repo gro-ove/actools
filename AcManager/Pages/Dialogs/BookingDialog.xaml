@@ -1,7 +1,7 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.BookingDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:loc="clr-namespace:AcManager.Pages.Dialogs"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.club/app/controls" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
     Title="{Binding ServerEntry.DisplayName}" d:DataContext="{d:DesignInstance loc:BookingDialog}" MaxWidth="320" Padding="0"
     LocationAndSizeKey=".BookingDialog.LS" WindowStartupLocation="Manual">
   <mui:ModernDialog.Resources>

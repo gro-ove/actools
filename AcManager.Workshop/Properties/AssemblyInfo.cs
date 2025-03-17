@@ -36,9 +36,9 @@ using System.Windows.Markup;
 [assembly: AssemblyVersion("1.0.1.462")]
 [assembly: AssemblyFileVersion("1.0.1.462")]
 
-[assembly: XmlnsDefinition("http://acstuff.ru/app/workshop", "AcManager.Workshop")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/workshop", "AcManager.Workshop.Data")]
-[assembly: XmlnsPrefix("http://acstuff.ru/app/workshop", "ws")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/workshop", "AcManager.Workshop")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/workshop", "AcManager.Workshop.Data")]
+[assembly: XmlnsPrefix("http://acstuff.club/app/workshop", "ws")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
 // Modified at: 5/7/2022 12:43:18 AM

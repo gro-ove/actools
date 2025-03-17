@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="AcManager.Pages.Miscellaneous.ModsWebBrowser" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:l="clr-namespace:AcManager.Pages.Miscellaneous"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.club/app/controls" xmlns:t="http://acstuff.club/app/tools" mc:Ignorable="d"
     d:DataContext="{d:DesignInstance l:ModsWebBrowser+ListViewModel}" mui:InputBindingBehavior.PropagateToWindow="True">
   <UserControl.Resources>
     <ResourceDictionary>

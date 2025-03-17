@@ -2,7 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:tools="clr-namespace:AcManager.Pages.ContentTools" xmlns:g="clr-namespace:AcManager"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DataContext="{d:DesignInstance tools:TreeModelConverter}">
+    xmlns:c="http://acstuff.club/app/controls" mc:Ignorable="d" d:DataContext="{d:DesignInstance tools:TreeModelConverter}">
   <FrameworkElement.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

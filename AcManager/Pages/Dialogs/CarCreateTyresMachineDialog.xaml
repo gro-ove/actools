@@ -1,8 +1,8 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.CarCreateTyresMachineDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit" mc:Ignorable="d" Title="Tyres machine editor"
+    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.club/app/tools"
+    xmlns:c="http://acstuff.club/app/controls" xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit" mc:Ignorable="d" Title="Tyres machine editor"
     SizeToContent="Manual" Width="1400" Height="800" MinWidth="1200" MinHeight="600" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
     MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" LocationAndSizeKey=".CarCreateTyresMachineDialog" ResizeMode="CanResizeWithGrip"
     d:DataContext="{d:DesignInstance di:CarCreateTyresMachineDialog+ViewModel}" x:Name="This" DoNotAttachToWaitingDialogs="True" ContentMargin="0 0 0 -42">

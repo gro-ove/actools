@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="AcManager.UserControls.InstallAdditionalContentList" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:g="clr-namespace:AcManager" xmlns:in="http://acstuff.ru/app/internal"
-    xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:g="clr-namespace:AcManager" xmlns:in="http://acstuff.club/app/internal"
+    xmlns:t="http://acstuff.club/app/tools" xmlns:c="http://acstuff.club/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d"
     ClipToBounds="True" Background="Transparent" d:DataContext="{d:DesignInstance uc:InstallAdditionalContentList}" VerticalContentAlignment="Center">
   <UserControl.Resources>
     <ResourceDictionary>

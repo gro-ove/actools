@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.Drive.OnlineServer" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls"
+    xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.club/app/controls"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.club/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls"
     xmlns:p="clr-namespace:AcTools.Processes;assembly=AcTools" Loaded="OnLoaded" Unloaded="OnUnloaded" mc:Ignorable="d"
     mui:InputBindingBehavior.PropagateToWindow="True" MouseRightButtonUp="OnMouseRightButtonUp" d:DataContext="{d:DesignInstance dr:OnlineServer+ViewModel}"
     x:Name="This" SizeChanged="OnSizeChanged">

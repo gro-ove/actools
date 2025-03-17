@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsControls_Wheel_ForceFeedback" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:с="http://acstuff.ru/app/controls"
+    xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:с="http://acstuff.club/app/controls"
     xmlns:set="clr-namespace:AcManager.Pages.Settings" xmlns:w="clr-namespace:AcTools.WheelAngles.Implementations.Options;assembly=AcTools.WheelAngles"
     mc:Ignorable="d" d:DataContext="{d:DesignInstance acset:AcSettingsControls_Wheel_ForceFeedback+ViewModel}">
   <UserControl.Resources>
