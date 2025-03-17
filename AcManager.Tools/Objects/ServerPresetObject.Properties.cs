@@ -129,6 +129,17 @@ namespace AcManager.Tools.Objects {
             });
         }
 
+        private bool _cspIcePhysics;
+
+        public bool CspIcePhysics {
+            get => _cspIcePhysics;
+            set => Apply(value, ref _cspIcePhysics, () => {
+                if (Loaded) {
+                    Changed = true;
+                }
+            });
+        }
+
         private string _cspExtraConfig;
 
         public string CspExtraConfig {

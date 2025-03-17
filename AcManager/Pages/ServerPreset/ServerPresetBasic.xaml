@@ -168,12 +168,19 @@
               IsEnabled="{Binding SelectedObject.RequiredCspVersion, Converter={StaticResource MoreConverter}, ConverterParameter=1999}">
             <Label Content="Use extended physics for tracks" />
           </CheckBox>
-          <CheckBox IsChecked="{Binding SelectedObject.CspHidePitCrew}" ToolTip="Available starting with build 2000" ToolTipService.ShowOnDisabled="True"
-              IsEnabled="{Binding SelectedObject.RequiredCspVersion, Converter={StaticResource MoreConverter}, ConverterParameter=1999}">
-            <Label Content="Hide pit crew (speeds up loading)" />
-          </CheckBox>
           <DockPanel Margin="0 0 0 8"
               ToolTip="{Binding Source={x:Static t:PatchHelper.MinimumTestOnlineVersion}, StringFormat='{}Version ID is a single number, minimum version is {0} (previous builds do not support this filtering system)'}">
+            <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
+              <ContextMenu>
+                <MenuItem Header="Hide pit crew (speeds up loading)" IsCheckable="True" IsChecked="{Binding SelectedObject.CspHidePitCrew}"
+                    ToolTip="Available starting with build 2000" ToolTipService.ShowOnDisabled="True"
+                    IsEnabled="{Binding SelectedObject.RequiredCspVersion, Converter={StaticResource MoreConverter}, ConverterParameter=1999}" />
+                <MenuItem Header="Icy surfaces" IsCheckable="True" IsChecked="{Binding SelectedObject.CspIcePhysics}"
+                    ToolTip="Available starting with build 3214" ToolTipService.ShowOnDisabled="True"
+                    IsEnabled="{Binding SelectedObject.RequiredCspVersion, Converter={StaticResource MoreConverter}, ConverterParameter=3213}" />
+              </ContextMenu>
+            </mui:ContextMenuButton>
+            
             <Label Content="Minimum version:" />
             <Button x:Name="CspVersionAutoFill" Click="CspVersionAutoFillClick" Content="Auto-fill" DockPanel.Dock="Right" Margin="8 0 0 0"
                 ToolTip="Use version of CSP you have installed" />

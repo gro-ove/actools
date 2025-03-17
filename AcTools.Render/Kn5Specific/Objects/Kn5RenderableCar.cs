@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using AcTools.DataFile;
 using AcTools.Kn5File;
+using AcTools.Numerics;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
@@ -833,7 +834,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
                 if (_colliderMesh == null) {
                     try {
-                        _colliderMesh = new Kn5RenderableCollider(Kn5.FromFile(Path.Combine(RootDirectory, "collider.kn5")), Matrix.Identity);
+                        // var graphicMatrix = Matrix.Invert(_carData.GetGraphicMatrix());
+                        var kn5 = Kn5.FromFile(Path.Combine(RootDirectory, "collider.kn5"));
+                        foreach (var kn5Node in kn5.Nodes) {
+                            kn5Node.Transform = Mat4x4.Identity;
+                        }
+                        _colliderMesh = new Kn5RenderableCollider(kn5, RootObject.LocalMatrix);
                     } catch (Exception e) {
                         AcToolsLogging.Write(e);
                         _colliderMesh = new InvisibleObject();

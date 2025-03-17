@@ -155,7 +155,7 @@
         <!-- Pinging -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.Settings_Online_PingingHeader}" />
 
-        <CheckBox IsChecked="{Binding Online.PingingSingleSocket}" ToolTip="Might work faster, pings 500 servers at once">
+        <CheckBox IsChecked="{Binding Online.PingingSingleSocket}" ToolTip="Might work faster, pings 25 servers at once">
           <Label Content="Ping with a single socket" />
         </CheckBox>
 

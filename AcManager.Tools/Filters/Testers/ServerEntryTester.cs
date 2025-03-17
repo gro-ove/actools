@@ -32,6 +32,9 @@ namespace AcManager.Tools.Filters.Testers {
                 case "cphystrack":
                     return nameof(ServerEntry.CspExtendedTrackPhysics);
 
+                case "cphysice":
+                    return nameof(ServerEntry.CspIcePhysics);
+
                 case "d":
                 case "drivers":
                 case "players":
@@ -159,6 +162,9 @@ namespace AcManager.Tools.Filters.Testers {
 
                 case "cphystrack":
                     return value.Test(obj.CspExtendedTrackPhysics);
+
+                case "cphysice":
+                    return value.Test(obj.CspIcePhysics);
 
                 case "c":
                 case "car":

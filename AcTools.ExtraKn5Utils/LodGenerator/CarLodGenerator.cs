@@ -256,48 +256,91 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
             }
         }
 
+        private struct VertexRef {
+            public int I;
+            public int VertexI;
+            public int PolygonI;
+            public int PolygonVertexI;
+        }
+
+        private enum MappingInformationType {
+            ByIndex,
+            ByVertex,
+            ByPolygon,
+            ByPolygonVertex,
+            AllSame,
+        }
+
         private class GenDataAccessor {
             private float[] _data;
             private int[] _indices;
-            private readonly bool _mappingByVertex;
+            private readonly MappingInformationType _mappingType;
+
+            private FbxNode _layer;
             
             public GenDataAccessor(FbxNode geometry, string layerKey, string typeKey, string indexKey) {
                 var layer = geometry.GetRelative(layerKey);
                 if (layer == null) {
-                    throw new Exception($"Data layer missing: {layerKey}");
+                    return;
                 }
                 var mappingType = layer.GetRelative("MappingInformationType").Value.GetAsString();
                 var referenceType = layer.GetRelative("ReferenceInformationType").Value.GetAsString();
                 _data = layer.GetRelative(typeKey).Value.GetAsFloatArray();
                 _indices = referenceType == "IndexToDirect" ? layer.GetRelative(indexKey).Value.GetAsIntArray() : null;
-                _mappingByVertex = mappingType == "ByVertex";
+                _mappingType = mappingType == "ByVertex" || mappingType == "ByVertice" ? MappingInformationType.ByVertex 
+                        : mappingType == "ByPolygonVertex" ? MappingInformationType.ByPolygonVertex 
+                        : mappingType == "ByPolygon" ? MappingInformationType.ByPolygon 
+                        : mappingType == "AllSame" ? MappingInformationType.AllSame 
+                        : MappingInformationType.ByIndex;
+                // AcToolsLogging.Write($"MappingType:{mappingType}, ReferenceType:{referenceType}");
+                _layer = layer;
             }
 
-            public Vec2 GetUv(int i, int j) {
-                if (_mappingByVertex) i = j;
-                if (_indices != null) i = _indices[i];
+            private int GetDataIndex(VertexRef vertexRef) {
+                if (_data == null) return -1;
+                var i = vertexRef.I;
+                switch (_mappingType) {
+                    case MappingInformationType.ByVertex:
+                        i = vertexRef.VertexI;
+                        break;
+                    case MappingInformationType.ByPolygonVertex:
+                        i = vertexRef.PolygonVertexI;
+                        break;
+                    case MappingInformationType.ByPolygon:
+                        i = vertexRef.PolygonI;
+                        break;
+                    case MappingInformationType.AllSame:
+                        i = 0;
+                        break;
+                }
+                if (_indices != null) {
+                    if (i >= _indices.Length) return -1;
+                    i = _indices[i];
+                }
+                return i;
+            }
+
+            public Vec2 GetUv(VertexRef vertexRef) {
+                var i = GetDataIndex(vertexRef);
+                if (i < 0) return Vec2.Zero;
                 return new Vec2(_data[i * 2], 1f - _data[i * 2 + 1]);
             }
 
-            public Vec3 GetVec3(int i, int j) {
-                if (_mappingByVertex) i = j;
-                if (_indices != null) i = _indices[i];
+            public Vec3 GetVec3(VertexRef vertexRef) {
+                var i = GetDataIndex(vertexRef);
+                if (i < 0) return new Vec3(0f, 1f, 0f);
                 return new Vec3(_data[i * 3], _data[i * 3 + 1], _data[i * 3 + 2]);
             }
 
-            public Vec4 GetVec4(int i, int j) {
-                if (_mappingByVertex) i = j;
-                if (_indices != null) i = _indices[i];
+            public Vec4 GetVec4(VertexRef vertexRef) {
+                var i = GetDataIndex(vertexRef);
+                if (i < 0) return Vec4.Zero;
                 return new Vec4(_data[i * 4], _data[i * 4 + 1], _data[i * 4 + 2], _data[i * 4 + 3]);
             }
 
             public int GetDataLength() {
                 return _data?.Length ?? -1;
             }
-        }
-
-        private struct VertexRef {
-            public int I, J;
         }
 
         private class GeometryInfo {
@@ -361,21 +404,27 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
                     var offset = MoveAsideDistance(geometry.Item2, stage);
                     var scale = (float)(1d / geometry.Item2);
                     void AddVertex(VertexRef r) {
-                        var uv2 = fbxUv1?.GetVec4(r.I, r.J);
+                        var uv2 = fbxUv1?.GetVec4(r);
                         builder.AddVertex(new Kn5Node.Vertex {
                             Position = new Vec3(
-                                    (fbxVertices[r.J * 3] - offset.X) * scale,
-                                    (fbxVertices[r.J * 3 + 1] - offset.Y) * scale,
-                                    (fbxVertices[r.J * 3 + 2] - offset.Z) * scale),
-                            Normal = fbxNormals.GetVec3(r.I, r.J),
-                            Tex = fbxUv0.GetUv(r.I, r.J)
+                                    (fbxVertices[r.VertexI * 3] - offset.X) * scale,
+                                    (fbxVertices[r.VertexI * 3 + 1] - offset.Y) * scale,
+                                    (fbxVertices[r.VertexI * 3 + 2] - offset.Z) * scale),
+                            Normal = fbxNormals.GetVec3(r),
+                            Tex = fbxUv0.GetUv(r)
                         }, uv2.HasValue ? new Vec2(uv2.Value.X, uv2.Value.Y) : (Vec2?)null);
                     }
                     
                     var collected = new List<VertexRef>();
+                    var polygonIndex = 0;
                     for (var i = 0; i < fbxIndices.Length; ++i) {
                         var v = fbxIndices[i];
-                        collected.Add(new VertexRef{I = i, J = v < 0 ? -v - 1 : v});
+                        collected.Add(new VertexRef {
+                            I = i, 
+                            VertexI = v < 0 ? -v - 1 : v,
+                            PolygonVertexI = i,
+                            PolygonI = polygonIndex
+                        });
                         if (v < 0) {
                             if (builder.IsCloseToLimit) {
                                 builder.SetTo(mesh);
@@ -398,6 +447,7 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
                                 AddVertex(collected[j + 1]); 
                             }
                             collected.Clear();
+                            ++polygonIndex;
                         }
                     }
                 }
