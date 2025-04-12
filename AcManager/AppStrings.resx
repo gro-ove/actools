@@ -4970,4 +4970,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <data name="UserChampionships_CreateNew" xml:space="preserve">
         <value>Create new</value>
     </data>
+    <data name="Settings_Online_HideImagesInServerDescription" xml:space="preserve">
+      <value>Hide images render in servers description</value>
+      <comment>(Added by MrXANA91)</comment>
+    </data>
 </root>
