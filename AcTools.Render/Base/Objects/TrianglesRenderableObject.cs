@@ -154,10 +154,12 @@ namespace AcTools.Render.Base.Objects {
                 _temporary = new Vector3[_positions.Length];
             }
 
-            Vector3.TransformCoordinate(_positions, ref parentMatrix, _temporary);
-            var b = new BoundingBox(_temporary[0], _temporary[0]);
+            // Vector3.TransformCoordinate(_positions, ref parentMatrix, _temporary);
+            var o = Vector3.TransformCoordinate(_positions[0], parentMatrix);
+            var b = new BoundingBox(o, o);
             for (var i = 1; i < _temporary.Length; i++) {
-                SlimDxExtension.Extend(ref b, ref _temporary[i]);
+                var v = Vector3.TransformCoordinate(_positions[i], parentMatrix);
+                SlimDxExtension.Extend(ref b, ref v);
             }
 
             BoundingBox = b;

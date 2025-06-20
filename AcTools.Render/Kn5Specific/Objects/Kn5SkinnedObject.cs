@@ -10,6 +10,7 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -54,7 +55,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private void UpdateNodes() {
             if (_bonesNodes == null) return;
 
-            var fix = Matrix.Invert(ParentMatrix * ModelMatrixInverted);
+            var fix = (ParentMatrix * ModelMatrixInverted).Invert_v2();
             var bones = OriginalNode.Bones;
             for (var i = 0; i < bones.Length; i++) {
                 var node = _bonesNodes[i];

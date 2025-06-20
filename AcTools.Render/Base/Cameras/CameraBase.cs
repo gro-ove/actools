@@ -1,4 +1,5 @@
-﻿using AcTools.Utils;
+﻿using AcTools.Render.Utils;
+using AcTools.Utils;
 using JetBrains.Annotations;
 using SlimDX;
 
@@ -69,7 +70,7 @@ namespace AcTools.Render.Base.Cameras {
         public Matrix ViewProj => _viewProj ?? (_viewProj = View * Proj).Value;
         private Matrix? _viewProj;
 
-        public Matrix ViewProjInvert => _viewProjInvert ?? (_viewProjInvert = Matrix.Invert(ViewProj)).Value;
+        public Matrix ViewProjInvert => _viewProjInvert ?? (_viewProjInvert = ViewProj.Invert_v2()).Value;
         private Matrix? _viewProjInvert;
 
         protected CameraBase(float fov) {
@@ -110,8 +111,8 @@ namespace AcTools.Render.Base.Cameras {
 
         public virtual void SetLens(float aspect) {
             Aspect = aspect;
-            SetProj(RhMode ? Matrix.PerspectiveFovRH(FovY, Aspect, NearZValue, FarZValue) :
-                    Matrix.PerspectiveFovLH(FovY, Aspect, NearZValue, FarZValue));
+            SetProj(RhMode ? MatrixFix.PerspectiveFovRH(FovY, Aspect, NearZValue, FarZValue) :
+                    MatrixFix.PerspectiveFovLH(FovY, Aspect, NearZValue, FarZValue));
         }
 
         public Ray GetPickingRay(Vector2 sp, Vector2 screenDims) {

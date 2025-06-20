@@ -92,13 +92,13 @@ namespace AcManager.Tools.Managers.Online {
         public async Task<bool> LoadAsync(ListAddAsyncCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress,
                 CancellationToken cancellation) {
             var data = await Task.Run(() => KunosApiProvider.TryToGetThirdPartyList(Url), cancellation);
-            Logging.Debug($"Third-party source {Url}: {data.Length}");
             // if (cancellation.IsCancellationRequested) return false;
 
             if (data == null) {
                 throw new InformativeException(ToolsStrings.Online_CannotLoadData, ToolsStrings.Common_MakeSureInternetWorks);
             }
 
+            Logging.Debug($"Third-party source {Url}: {data.Length}");
             await callback(data).ConfigureAwait(false);
             return true;
         }

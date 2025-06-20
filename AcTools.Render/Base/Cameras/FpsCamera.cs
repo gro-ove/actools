@@ -1,4 +1,5 @@
 ﻿using AcTools.Render.Base.Utils;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using SlimDX;
 
@@ -51,8 +52,8 @@ namespace AcTools.Render.Base.Cameras {
 
         public override void UpdateViewMatrix() {
             var target = Position + Look;
-            SetView(RhMode ? Matrix.LookAtRH(Position, target, GetUpTilt(target, Up)) :
-                    Matrix.LookAtLH(Position, target, GetUpTilt(target, Up)));
+            SetView(RhMode ? MatrixFix.LookAtRH(Position, target, GetUpTilt(target, Up)) :
+                    MatrixFix.LookAtLH(Position, target, GetUpTilt(target, Up)));
             Right = new Vector3(View.M11, View.M21, View.M31);
             Right.Normalize();
         }

@@ -13,6 +13,7 @@ using AcTools.Render.Data;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForwardDark.Lights;
 using AcTools.Render.Shaders;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -673,7 +674,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     } else {
                         if (l.AttachedToObject == null) {
                             l.AttachedToObject = car.GetByName(l.AttachedTo) ?? (IRenderableObject)car.RootObject;
-                            l.AttachedToRelativeMatrix = Matrix.Invert(FindOriginalMatrix(l.AttachedToObject, car.RootObject, Matrix.Identity));
+                            l.AttachedToRelativeMatrix = FindOriginalMatrix(l.AttachedToObject, car.RootObject, Matrix.Identity).Invert_v2();
                             if (l.AttachedToObject == null) continue;
                         }
 

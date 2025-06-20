@@ -107,12 +107,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                         return new Kn5MaterialDarkSkinnedGl(description);
                     }
 
-                    if (description.Material.TextureMappings.Any(x => x.Name == "txMaps")) {
-                        return new Kn5MaterialDarkMaps(description);
-                    }
+                    if (description.Material != null) {
+                        if (description.Material.TextureMappings.Any(x => x.Name == "txMaps")) {
+                            return new Kn5MaterialDarkMaps(description);
+                        }
 
-                    if (description.Material.TextureMappings.Any(x => x.Name == "txNormal")) {
-                        return new Kn5MaterialDarkNm(description);
+                        if (description.Material.TextureMappings.Any(x => x.Name == "txNormal")) {
+                            return new Kn5MaterialDarkNm(description);
+                        }
                     }
 
                     return new Kn5MaterialDark(description);

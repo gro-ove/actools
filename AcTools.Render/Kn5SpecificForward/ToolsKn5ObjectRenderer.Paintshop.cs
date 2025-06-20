@@ -629,9 +629,9 @@ namespace AcTools.Render.Kn5SpecificForward {
             var angle = ((float)p.Angle).ToRadians();
             var scale = new Vector2(size.Width / width, size.Height / height);
             var translate = new Vector2(scale.X * (-pos.X / size.Width + 0.5f), scale.Y * (-pos.Y / size.Height + 0.5f));
-            e.FxTransform.SetMatrix(Matrix.Transformation2D(new Vector2(0.5f), 0f, scale, new Vector2(0.5f), 0f, translate) *
-                    Matrix.AffineTransformation2D(1f, new Vector2(0.5f, 0.5f), angle, Vector2.Zero) *
-                    Matrix.Transformation2D(new Vector2(0.5f), 0f, new Vector2(1f, 1f / aspect), Vector2.Zero, 0f, Vector2.Zero));
+            e.FxTransform.SetMatrix(MatrixFix.Transformation2D(new Vector2(0.5f), 0f, scale, new Vector2(0.5f), 0f, translate) *
+                    MatrixFix.AffineTransformation2D(1f, new Vector2(0.5f, 0.5f), angle, Vector2.Zero) *
+                    MatrixFix.Transformation2D(new Vector2(0.5f), 0f, new Vector2(1f, 1f / aspect), Vector2.Zero, 0f, Vector2.Zero));
             e.FxColor.Set(new Color4(color));
             source.Set(e.FxInputMap, e.FxInputParams);
             e.TechPiece.DrawAllPasses(DeviceContext, 6);

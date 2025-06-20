@@ -1,6 +1,7 @@
 ﻿using AcTools.KsAnimFile;
 using AcTools.ExtraKn5Utils.Kn5Utils;
 using AcTools.Numerics;
+using AcTools.Render.Utils;
 using JetBrains.Annotations;
 using SlimDX;
 
@@ -8,7 +9,7 @@ namespace AcTools.Render.Kn5Specific.Animations {
     // TODO: Properly interpolate quaterninons?
     public static class KsAnimExtension {
         public static KsAnimKeyframe ToKeyFrame(this Matrix matrix) {
-            matrix.Decompose(out var scale, out var rotation, out var translation);
+            matrix.Decompose_v2(out var scale, out var rotation, out var translation);
             return new KsAnimKeyframe(rotation.ToQuat(), translation.ToVec3(), scale.ToVec3());
         }
 

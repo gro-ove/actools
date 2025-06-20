@@ -18,6 +18,7 @@ using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark.Lights;
 using AcTools.Render.Kn5SpecificForwardDark.Materials;
 using AcTools.Render.Shaders;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -871,7 +872,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                     _aoShadowEffect.FxShadowPosition.Set(m.GetTranslationVector());
                     _aoShadowEffect.FxShadowSize.Set(new Vector2(1f / b.X, 1f / b.Z));
-                    _aoShadowEffect.FxShadowViewProj.SetMatrix(Matrix.Invert(m) * new Matrix {
+                    _aoShadowEffect.FxShadowViewProj.SetMatrix(m.Invert_v2() * new Matrix {
                         M11 = -0.5f,
                         M22 = 0.5f,
                         M33 = 0.5f,

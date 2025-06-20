@@ -241,7 +241,7 @@ namespace AcManager.Pages.Selected {
                 }
 
                 _object = _carObject?.SkinsManager.GetById(_id);
-            } while (_carObject.Outdated);
+            } while (_carObject?.Outdated == true);
         }
 
         void ILoadableContent.Initialize() {

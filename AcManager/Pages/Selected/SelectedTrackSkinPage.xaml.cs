@@ -132,7 +132,7 @@ namespace AcManager.Pages.Selected {
                 }
 
                 _object = _trackObject?.SkinsManager.GetById(_id);
-            } while (_trackObject.Outdated);
+            } while (_trackObject?.Outdated == true);
         }
 
         void ILoadableContent.Initialize() {

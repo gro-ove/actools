@@ -102,6 +102,7 @@ namespace AcManager.Tools.AcManagersNew {
                             $"    ORIGINAL FILENAME: {change.FullFilename}\n" +
                             $"    NEW LOCATION: {change.NewLocation}");
 #endif
+            if (Directories == null) return;
             string id;
             try {
                 id = Directories.GetId(dir);
@@ -211,7 +212,7 @@ namespace AcManager.Tools.AcManagersNew {
             }
 
             var objectLocation = GetLocationByFilename(fullPath, out var inner)?.ToLowerInvariant();
-            if (objectLocation == null) return;
+            if (objectLocation == null || Directories == null) return;
 
             var objectId = Directories.GetId(objectLocation);
             if (!Filter(objectId, objectLocation)) {
@@ -234,7 +235,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         private void OnCreated(string fullPath) {
             var objectLocation = GetLocationByFilename(fullPath, out var inner)?.ToLowerInvariant();
-            if (objectLocation == null) return;
+            if (objectLocation == null || Directories == null) return;
 
             var objectId = Directories.GetId(objectLocation);
             if (!Filter(objectId, objectLocation)) {
@@ -276,7 +277,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         private void OnDeleted(string fullPath) {
             var objectLocation = GetLocationByFilename(fullPath, out var inner)?.ToLowerInvariant();
-            if (objectLocation == null) return;
+            if (objectLocation == null || Directories == null) return;
 
             var objectId = Directories.GetId(objectLocation);
             if (!Filter(objectId, objectLocation)) {
@@ -293,7 +294,7 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         void IDirectoryListener.FileOrDirectoryDeleted(object sender, FileSystemEventArgs e) {
-            if (ShouldIgnoreChanges()) return;
+            if (ShouldIgnoreChanges() || Directories == null) return;
 
             // special case for whole directory being deleted
             if (e.Name == null) {

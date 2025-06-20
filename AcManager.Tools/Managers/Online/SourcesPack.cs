@@ -74,10 +74,12 @@ namespace AcManager.Tools.Managers.Online {
             var waiting = false;
             var loading = false;
             var background = false;
+            var errorless = 0;
 
             foreach (var source in _sources) {
                 switch (source.Status) {
                     case OnlineManagerStatus.Loading:
+                        ++errorless;
                         if (source.BackgroundLoading) {
                             background = true;
                         } else {
@@ -88,9 +90,19 @@ namespace AcManager.Tools.Managers.Online {
                         error = source.Error;
                         break;
                     case OnlineManagerStatus.Waiting:
+                        ++errorless;
                         waiting = true;
                         break;
+                    case OnlineManagerStatus.Ready:
+                        ++errorless;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
+            }
+
+            if (errorless > 0) {
+                error = null;
             }
 
             if (loading) {

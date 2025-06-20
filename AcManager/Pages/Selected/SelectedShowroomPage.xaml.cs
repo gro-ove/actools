@@ -13,6 +13,7 @@ using AcManager.Tools.Objects;
 using AcTools.ExtraKn5Utils.Kn5Utils;
 using AcTools.Kn5File;
 using AcTools.Processes;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
@@ -30,7 +31,7 @@ namespace AcManager.Pages.Selected {
                     FixVertices(child, localMatrix);
                 }
             } else {
-                var normal = Vector3.TransformNormal(Vector3.UnitY, Matrix.Invert(parentMatrix));
+                var normal = Vector3.TransformNormal(Vector3.UnitY, parentMatrix.Invert_v2());
                 for (var i = 0; i < node.Vertices.Length; i++) {
                     FixVertice(ref node.Vertices[i], normal);
                 }

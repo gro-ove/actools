@@ -9,6 +9,7 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
+using AcTools.Render.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
@@ -65,7 +66,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public void SetMatricesAo(Matrix objectTransform) {
             _effect.FxWorld.SetMatrix(objectTransform);
-            _effect.FxWorldInvTranspose.SetMatrix(Matrix.Invert(Matrix.Transpose(objectTransform)));
+            _effect.FxWorldInvTranspose.SetMatrix(Matrix.Transpose(objectTransform).Invert_v2());
         }
 
         public void DrawAo(IDeviceContextHolder contextHolder, int indices) {

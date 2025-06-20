@@ -8,7 +8,7 @@ namespace AcManager.Pages.ServerPreset {
         }
 
         private void OnAddNewRoundButtonClick(object sender, RoutedEventArgs e) {
-            ((SelectedPage.ViewModel)DataContext).SelectedObject.Weather.Add(new ServerWeatherEntry());
+            ((SelectedPage.ViewModel)DataContext).SelectedObject.Weather?.Add(new ServerWeatherEntry());
         }
     }
 }

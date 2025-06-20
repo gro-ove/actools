@@ -9,6 +9,7 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
+using AcTools.Render.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
@@ -169,7 +170,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         public static void UpdateModelMatrixInverted(RenderableList root) {
-            var inverted = Matrix.Invert(root.Matrix);
+            var inverted = root.Matrix.Invert_v2();
             foreach (var dummy in root.GetAllChildren().OfType<Kn5RenderableList>()) {
                 dummy.ModelMatrixInverted = inverted;
             }
@@ -183,7 +184,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (!_modelMatrixInvertedDirty) return;
             _modelMatrixInvertedDirty = false;
 
-            var inverted = Matrix.Invert(RootObject.Matrix);
+            var inverted = RootObject.Matrix.Invert_v2();
             foreach (var dummy in Dummies) {
                 dummy.ModelMatrixInverted = inverted;
             }

@@ -41,7 +41,7 @@ namespace AcManager.Tools.Managers {
         private bool _showIntro;
 
         public bool ShowIntro {
-            get { return _showIntro; }
+            get => _showIntro;
             set {
                 if (Equals(value, _showIntro)) return;
                 _showIntro = value;
@@ -184,7 +184,7 @@ namespace AcManager.Tools.Managers {
         private double _progress;
 
         public double Progress {
-            get { return _progress; }
+            get => _progress;
             set {
                 if (Equals(value, _progress)) return;
                 _progress = value;
@@ -198,7 +198,7 @@ namespace AcManager.Tools.Managers {
         private string _currentId;
 
         public string CurrentId {
-            get { return _currentId; }
+            get => _currentId;
             set {
                 if (Equals(value, _currentId)) return;
                 _currentId = value;
@@ -211,8 +211,8 @@ namespace AcManager.Tools.Managers {
         }
 
         public KunosCareerObject Current {
-            get { return GetById(CurrentId); }
-            set { CurrentId = value.Id; }
+            get => GetById(CurrentId);
+            set => CurrentId = value.Id;
         }
 
         protected override bool ShouldSkipFile(string objectLocation, string filename) {
@@ -232,6 +232,7 @@ namespace AcManager.Tools.Managers {
         }
 
         protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
+            if (Directories == null) return new List<AcPlaceholderNew>();
             return Directories.GetContentDirectories(@"series*").Select(dir => {
                 var id = Directories.GetId(dir);
                 return Filter(id, dir) ? CreateAcPlaceholder(id, Directories.CheckIfEnabled(dir)) : null;

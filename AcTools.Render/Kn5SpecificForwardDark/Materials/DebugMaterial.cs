@@ -9,6 +9,7 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
+using AcTools.Render.Utils;
 using JetBrains.Annotations;
 using SlimDX;
 
@@ -118,7 +119,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public void SetMatrices(Matrix objectTransform, ICamera camera) {
             _effect.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj);
-            _effect.FxWorldInvTranspose.SetMatrix(Matrix.Invert(Matrix.Transpose(objectTransform)));
+            _effect.FxWorldInvTranspose.SetMatrix(Matrix.Transpose(objectTransform).Invert_v2());
             _effect.FxWorld.SetMatrix(objectTransform);
         }
 

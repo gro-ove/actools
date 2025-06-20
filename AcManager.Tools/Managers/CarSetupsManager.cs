@@ -41,6 +41,10 @@ namespace AcManager.Tools.Managers {
         }
 
         protected override string GetLocationByFilename(string filename, out bool inner) {
+            if (Directories == null) {
+                inner = false;
+                return null;
+            }
             return Directories.GetLocationByFilename(filename, out inner);
         }
 
@@ -53,6 +57,9 @@ namespace AcManager.Tools.Managers {
                 .IsMatch(id);
 
         protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
+            if (Directories == null) {
+                return new List<AcPlaceholderNew>();
+            }
             return Directories.GetContentFiles(SearchPattern).Select(dir => {
                 var id = Directories.GetId(dir);
                 return Filter(id, dir) ? CreateAcPlaceholder(id, Directories.CheckIfEnabled(dir)) : null;

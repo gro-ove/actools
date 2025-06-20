@@ -6,6 +6,7 @@ using AcTools.ExtraKn5Utils.Kn5Utils;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Data;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -83,11 +84,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
             baseMatrix = _currentLodObject.GetOriginalRelativeToModelMatrix(node);
 
             BaseMatrixSet:
-            baseMatrix.Decompose(out var scale, out var rotation, out var position);
+            baseMatrix.Decompose_v2(out var scale, out var rotation, out var position);
 
             var rotationAxis = Vector3.Normalize(axis.Item2 - axis.Item1);
             var p = new Plane(position, rotationAxis);
-            if (!Plane.Intersects(p, axis.Item1 - rotationAxis * 10f, axis.Item2 + rotationAxis * 10f, out var con)) {
+            if (!p.Intersects_v2(axis.Item1 - rotationAxis * 10f, axis.Item2 + rotationAxis * 10f, out var con)) {
                 AcToolsLogging.Write("10f is not enough!?");
                 return null;
             }
@@ -148,13 +149,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 AcToolsLogging.Write("parent: " + node.ParentMatrix);
                 AcToolsLogging.Write("mmi: " + node.ModelMatrixInverted);
                 AcToolsLogging.Write("parent×mmi: " + node.ParentMatrix * node.ModelMatrixInverted);
-                AcToolsLogging.Write("inv: " + Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted));
+                AcToolsLogging.Write("inv: " + MatrixFix.Invert_v2(node.ParentMatrix * node.ModelMatrixInverted));
                 AcToolsLogging.Write("res: " + (callback(node) ?? wheelMatrix.Value) *
-                        Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted));*/
+                        MatrixFix.Invert_v2(node.ParentMatrix * node.ModelMatrixInverted));*/
 
                 names.Remove(node.Name);
                 node.LocalMatrix = /*Matrix.Scaling(node.GetOriginalScale()) **/ (callback(node) ?? wheelMatrix.Value) *
-                        Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted);
+                        (node.ParentMatrix * node.ModelMatrixInverted).Invert_v2();
                 /*AcToolsLogging.Write(node.LocalMatrix);*/
 
                 if (collectNodes) {
@@ -432,7 +433,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private CarData.WheelDescription _wheelLfDesc, _wheelRfDesc;
 
         private void UpdateWheelsMatrices() {
-            var graphicMatrix = Matrix.Invert(_carData.GetGraphicMatrix());
+            var graphicMatrix = _carData.GetGraphicMatrix().Invert_v2();
 
             if (AlignWheelsByData) {
                 UpdateModelMatrixInverted();

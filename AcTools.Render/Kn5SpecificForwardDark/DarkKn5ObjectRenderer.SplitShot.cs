@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using AcTools.Render.Base;
 using AcTools.Render.Special;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -49,7 +50,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             Height = extraHeight;
 
             var baseCut = expand ?
-                    Matrix.Transformation2D(Vector2.Zero, 0f, new Vector2(1f / OptionGBufferExtra), Vector2.Zero, 0f, Vector2.Zero) :
+                    MatrixFix.Transformation2D(Vector2.Zero, 0f, new Vector2(1f / OptionGBufferExtra), Vector2.Zero, 0f, Vector2.Zero) :
                     Matrix.Identity;
 
             try {
@@ -118,7 +119,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             if (cuts > 1) {
                 var xR = 2f * x / (cuts - 1) - 1f;
                 var yR = 1f - 2f * y / (cuts - 1);
-                Camera.CutProj = Matrix.Transformation2D(new Vector2(xR, yR), 0f, new Vector2(cuts), Vector2.Zero, 0f, Vector2.Zero) * baseCut;
+                Camera.CutProj = MatrixFix.Transformation2D(new Vector2(xR, yR), 0f, new Vector2(cuts), Vector2.Zero, 0f, Vector2.Zero) * baseCut;
             } else {
                 Camera.CutProj = baseCut;
             }

@@ -11,6 +11,7 @@ using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -308,8 +309,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 }
 
                 public void SetMatrices(Matrix objectTransform, ICamera camera) {
-                    var toUv = Matrix.Transformation2D(Vector2.Zero, 0f, new Vector2(0.5f), Vector2.Zero, 0f, new Vector2(0.5f));
-                    _effect.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj * toUv * Matrix * Matrix.Invert(toUv));
+                    var toUv = MatrixFix.Transformation2D(Vector2.Zero, 0f, new Vector2(0.5f), Vector2.Zero, 0f, new Vector2(0.5f));
+                    _effect.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj * toUv * Matrix * toUv.Invert_v2());
                 }
 
                 public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
@@ -380,10 +381,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     holder.PrepareQuad(effect.LayoutPT);
                 } else {
                     // local transformation matrix: global×local offset (calculated from map.ini)×local scale
-                    var localScale = Matrix.Transformation2D(Vector2.Zero, 0f,
+                    var localScale = MatrixFix.Transformation2D(Vector2.Zero, 0f,
                             new Vector2(max.DataSize.X / DataSize.X, max.DataSize.Y / DataSize.Y) / DataScale,
                             Vector2.Zero, 0f, Vector2.Zero);
-                    var localOffset = Matrix.AffineTransformation2D(1f, Vector2.Zero, 0f, new Vector2(
+                    var localOffset = MatrixFix.AffineTransformation2D(1f, Vector2.Zero, 0f, new Vector2(
                             (DataOffset.X - max.DataOffset.X) / max.DataSize.X,
                             (DataOffset.Y - max.DataOffset.Y) / max.DataSize.Y));
                     effect.FxMatrix.SetMatrix(mapMatrix * localOffset * localScale);
@@ -606,26 +607,26 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             {
                 // first of all fix aspect to match map.png and scale
                 var mapScale = UseAiLanes ?
-                        Matrix.Transformation2D(new Vector2(0.5f), 0f,
+                        MatrixFix.Transformation2D(new Vector2(0.5f), 0f,
                                 new Vector2(max.MapSize.X, max.MapSize.Y) / maxSize * Scale,
                                 Vector2.Zero, 0f, Vector2.Zero) :
-                        Matrix.Transformation2D(new Vector2(0.5f), 0f,
+                        MatrixFix.Transformation2D(new Vector2(0.5f), 0f,
                                 new Vector2(1f / max.MapSize.X, 1f / max.MapSize.Y) * maxSize / Scale,
                                 Vector2.Zero, 0f, Vector2.Zero);
 
                 // fix aspect (without it, maps will be stretched to Renderer dimensions)
                 var minSide = (float)Math.Min(Width, Height);
                 var scale = UseAiLanes ?
-                        Matrix.Transformation2D(new Vector2(0.5f), 0f, new Vector2(minSide / Width, minSide / Height), Vector2.Zero, 0f, Vector2.Zero) :
-                        Matrix.Transformation2D(new Vector2(0.5f), 0f, new Vector2(Width, Height) / minSide, Vector2.Zero, 0f, Vector2.Zero);
+                        MatrixFix.Transformation2D(new Vector2(0.5f), 0f, new Vector2(minSide / Width, minSide / Height), Vector2.Zero, 0f, Vector2.Zero) :
+                        MatrixFix.Transformation2D(new Vector2(0.5f), 0f, new Vector2(Width, Height) / minSide, Vector2.Zero, 0f, Vector2.Zero);
 
                 // rotate if needed
-                var rotation = Matrix.Transformation2D(Vector2.Zero, 0f, new Vector2(1f), new Vector2(0.5f), -Rotation, Vector2.Zero);
+                var rotation = MatrixFix.Transformation2D(Vector2.Zero, 0f, new Vector2(1f), new Vector2(0.5f), -Rotation, Vector2.Zero);
 
                 // optional offset
                 var offset = UseAiLanes ?
-                        Matrix.AffineTransformation2D(1f, Vector2.Zero, 0f, new Vector2(-OffsetX / Width, OffsetY / Height)) :
-                        Matrix.AffineTransformation2D(1f, Vector2.Zero, 0f, new Vector2(OffsetX / Width, OffsetY / Height));
+                        MatrixFix.AffineTransformation2D(1f, Vector2.Zero, 0f, new Vector2(-OffsetX / Width, OffsetY / Height)) :
+                        MatrixFix.AffineTransformation2D(1f, Vector2.Zero, 0f, new Vector2(OffsetX / Width, OffsetY / Height));
 
                 global = UseAiLanes ? mapScale * rotation * scale * offset : offset * scale * rotation * mapScale;
             }
@@ -655,7 +656,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 if (bgScale.X > 1f) bgScale /= bgScale.X;
                 if (bgScale.Y > 1f) bgScale /= bgScale.Y;
 
-                _effect.FxMatrix.SetMatrix(Matrix.Transformation2D(new Vector2(0.5f), 0f, bgScale, Vector2.Zero, 0f, Vector2.Zero));
+                _effect.FxMatrix.SetMatrix(MatrixFix.Transformation2D(new Vector2(0.5f), 0f, bgScale, Vector2.Zero, 0f, Vector2.Zero));
                 _effect.TechFinalBg.DrawAllPasses(DeviceContext, 6);
             } else {
                 _effect.TechFinalCheckers.DrawAllPasses(DeviceContext, 6);

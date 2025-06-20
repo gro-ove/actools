@@ -13,6 +13,7 @@ using AcTools.Render.Base.Sprites;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Data;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -471,7 +472,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         #region Colliders from colliders.ini
         private readonly CarDebugLinesWrapper _colliderLines = new CarDebugLinesWrapper((car, data) => {
-            var graphicMatrix = Matrix.Invert(data.GetGraphicMatrix());
+            var graphicMatrix = data.GetGraphicMatrix().Invert_v2();
             return data.GetColliders().Select(x => new CarDebugLinesObject(x.Name, DebugLinesObject.GetLinesBox(
                     Matrix.Translation(x.Center) * graphicMatrix,
                     x.Size, new Color4(1f, 1f, 0f, 0f))));
@@ -493,7 +494,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         private readonly CarDebugLinesWrapper _wheelsLines = new CarDebugLinesWrapper((car, data) => {
-            var graphicMatrix = Matrix.Invert(data.GetGraphicMatrix());
+            var graphicMatrix = data.GetGraphicMatrix().Invert_v2();
             return data.GetWheels().Select(x => {
                 var a = DebugLinesObject.GetLinesCircle(Matrix.Translation(-Vector3.UnitX * x.Width / 2f),
                         Vector3.UnitX, new Color4(1f, 0f, 1f, 0f), radius: x.Radius);
@@ -536,7 +537,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var side = volume.Pow(1f / 3f);
             var proportions = new Vector3(2f, 0.5f, 1f);
             return new CarDebugLinesObject("Fuel tank",
-                    DebugLinesObject.GetLinesBox(Matrix.Translation(data.GetFuelTankPosition()) * Matrix.Invert(data.GetGraphicMatrix()),
+                    DebugLinesObject.GetLinesBox(Matrix.Translation(data.GetFuelTankPosition()) * data.GetGraphicMatrix().Invert_v2(),
                             proportions * side, new Color4(1f, 0.5f, 1f, 0f))) {
                                 AllowScaling = false
                             };
@@ -581,7 +582,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private static Matrix GetFlameMatrix(CarData.FlameDescription x) {
             var side = Vector3.Cross(x.Direction, Math.Abs(x.Direction.Y) > 0.5 ? -Vector3.UnitZ : Vector3.UnitY);
-            return Matrix.Invert(Matrix.LookAtRH(Vector3.Zero, -x.Direction, Vector3.Normalize(Vector3.Cross(x.Direction, side))))
+            return MatrixFix.LookAtRH(Vector3.Zero, -x.Direction, Vector3.Normalize(Vector3.Cross(x.Direction, side))).Invert_v2()
                     * Matrix.Translation(x.Position);
         }
 
@@ -617,7 +618,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         private readonly CarDebugLinesWrapper _wingsLines = new CarDebugLinesWrapper((car, data) => {
-            var graphicMatrix = Matrix.Invert(data.GetGraphicMatrix());
+            var graphicMatrix = data.GetGraphicMatrix().Invert_v2();
 
             CarDebugLinesObject GetWingLines(CarData.WingDescription x, int i) {
                 var plane = DebugLinesObject.GetLinesPlane(
@@ -638,7 +639,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private void UpdateWingLineAngle(int wing, float angle) {
             if (_wingsLines.GetSource(wing) is CarData.WingDescription x) {
-                var graphicMatrix = Matrix.Invert(_carData.GetGraphicMatrix());
+                var graphicMatrix = _carData.GetGraphicMatrix().Invert_v2();
                 _wingsLines.SetMatrix(wing, Matrix.RotationX(angle) * Matrix.Translation(x.Position) * graphicMatrix);
             }
         }

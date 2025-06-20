@@ -12,6 +12,7 @@ using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Shaders;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -321,7 +322,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             foreach (var entry in list) {
                 using (var replacement = FileUtils.RecycleOriginal(Path.Combine(outputDirectory, entry.FileName))) {
-                    var m = Matrix.Invert(entry.GlobalMatrix);
+                    var m = entry.GlobalMatrix.Invert_v2();
                     _flattenNodes = list.SelectMany(x => {
                         x.Node.ParentMatrix = Matrix.Identity;
                         x.Node.LocalMatrix = entry.Matrix * x.GlobalMatrix * m;

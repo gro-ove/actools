@@ -543,7 +543,7 @@ namespace AcManager.Tools.Helpers {
                             new SkipResultsCategory(@"Settings.DriveSettings.SkipDragResults", ToolsStrings.Session_Drag),
                             new SkipResultsCategory(@"Settings.DriveSettings.SkipOnlineResults", ToolsStrings.Settings_Drive_SessionClass_Online),
                             new SkipResultsCategory(@"Settings.DriveSettings.SkipLiveResults", ToolsStrings.Settings_Drive_SessionClass_Live),
-                            new SkipResultsCategory(@"Settings.DriveSettings.SkipNewModes", ToolsStrings.ettings_Drive_SessionClass_NewModes),
+                            new SkipResultsCategory(@"Settings.DriveSettings.SkipNewModes", ToolsStrings.Settings_Drive_SessionClass_NewModes),
                         };
                         _skipCategories.ItemPropertyChanged += (sender, args) => OnPropertyChanged(nameof(DisplaySkipCategories));
                     }
@@ -554,9 +554,7 @@ namespace AcManager.Tools.Helpers {
             public string DisplaySkipCategories => _skipCategories.Where(x => x.Value).Select(x => x.ShortName)
                     .JoinToReadableString().Or(ToolsStrings.Common_None);
 
-            public bool SkipResults(Game.Result result, Game.StartProperties startProperties) {
-                if (result == null || result.GetExtraByType<Game.ResultExtraCustomMode>() != null) return false;
-
+            public bool SkipResults([CanBeNull] Game.Result result, [NotNull] Game.StartProperties startProperties) {
                 if (startProperties.HasAdditional<LiveServiceMark>()) {
                     return SkipCategories.GetById(@"Settings.DriveSettings.SkipLiveResults").Value;
                 }
@@ -572,6 +570,8 @@ namespace AcManager.Tools.Helpers {
                 if (startProperties.ModeProperties is Game.TrackdayProperties) {
                     return SkipCategories.GetById(@"Settings.DriveSettings.SkipTrackDayResults").Value;
                 }
+
+                if (result == null) return false;
 
                 if (result.NumberOfSessions == 3 && result.Sessions?.Length == 3) {
                     return SkipCategories.GetById(@"Settings.DriveSettings.SkipWeekendResults").Value;

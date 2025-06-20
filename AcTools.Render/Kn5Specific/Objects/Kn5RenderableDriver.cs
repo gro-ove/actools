@@ -8,6 +8,7 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Animations;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -115,7 +116,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private Vector3 Pivot => _pivot.Get(() => {
             UpdateBoundingBox();
             return Vector3.TransformCoordinate(BoundingBox?.GetCenter() ?? Vector3.Zero,
-                    Matrix.Invert(Matrix));
+                    Matrix.Invert_v2());
         });
 
         private MoveableHelper _movable;
@@ -149,12 +150,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         void IMoveable.Move(Vector3 delta) {
-            DeltaMatrix(Matrix.Translation(Vector3.TransformNormal(delta, Matrix.Invert(ParentMatrix))));
+            DeltaMatrix(Matrix.Translation(Vector3.TransformNormal(delta, ParentMatrix.Invert_v2())));
         }
 
         void IMoveable.Rotate(Quaternion delta) {
             var pivot = Matrix.Translation(Pivot);
-            DeltaMatrix(Matrix.Invert(pivot) * Matrix.RotationQuaternion(delta) * pivot);
+            DeltaMatrix(pivot.Invert_v2() * Matrix.RotationQuaternion(delta) * pivot);
         }
 
         void IMoveable.Scale(Vector3 scale) {

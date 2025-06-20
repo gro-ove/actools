@@ -1,4 +1,5 @@
-﻿using SlimDX;
+﻿using AcTools.Render.Utils;
+using SlimDX;
 
 namespace AcTools.Render.Base.Cameras {
     public class CameraOrtho : CameraBase {
@@ -15,7 +16,7 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         public override void UpdateViewMatrix() {
-            SetView(Matrix.LookAtRH(Position, Target, Up));
+            SetView(MatrixFix.LookAtRH(Position, Target, Up));
         }
 
         public virtual void Save() {
@@ -38,7 +39,7 @@ namespace AcTools.Render.Base.Cameras {
 
         // ReSharper disable once OptionalParameterHierarchyMismatch
         public sealed override void SetLens(float aspect = 0f) {
-            SetProj(Matrix.OrthoRH(Width, Height, NearZValue, FarZValue));
+            SetProj(MatrixFix.OrthoRH(Width, Height, NearZValue, FarZValue));
             UpdateViewMatrix();
         }
 

@@ -2778,15 +2778,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New Modes (added by CSP).
-        /// </summary>
-        public static string ettings_Drive_SessionClass_NewModes {
-            get {
-                return ResourceManager.GetString("ettings_Drive_SessionClass_NewModes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Delete font.
         /// </summary>
         public static string FontObject_DeleteFont {
@@ -4108,6 +4099,15 @@ namespace AcManager.Tools {
         public static string Settings_Drive_SessionClass_Live {
             get {
                 return ResourceManager.GetString("Settings_Drive_SessionClass_Live", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Modes (added by CSP).
+        /// </summary>
+        public static string Settings_Drive_SessionClass_NewModes {
+            get {
+                return ResourceManager.GetString("Settings_Drive_SessionClass_NewModes", resourceCulture);
             }
         }
         

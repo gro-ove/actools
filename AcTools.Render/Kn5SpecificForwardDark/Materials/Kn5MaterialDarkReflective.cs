@@ -66,7 +66,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         public override void SetMatrices(Matrix objectTransform, ICamera camera) {
             if (_debugReflectionsMode) {
                 _debugReflections.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj);
-                _debugReflections.FxWorldInvTranspose.SetMatrix(Matrix.Invert(Matrix.Transpose(objectTransform)));
+                _debugReflections.FxWorldInvTranspose.SetMatrix(MatrixFix.Invert_v2(Matrix.Transpose(objectTransform)));
                 _debugReflections.FxWorld.SetMatrix(objectTransform);
                 return;
             }

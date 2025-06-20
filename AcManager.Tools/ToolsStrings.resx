@@ -1874,7 +1874,7 @@ Would you like to pack it before starting the server? But don’t forget to shar
   <data name="Settings_Drive_SessionClass_Live" xml:space="preserve">
       <value>Live (SRS, World Sim Series, etc.)</value>
   </data>
-  <data name="ettings_Drive_SessionClass_NewModes" xml:space="preserve">
+  <data name="Settings_Drive_SessionClass_NewModes" xml:space="preserve">
       <value>New Modes (added by CSP)</value>
   </data>
 </root>
