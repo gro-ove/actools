@@ -138,12 +138,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected override void OnMouseEnter(MouseEventArgs e) {
             base.OnMouseEnter(e);
 
-            if (_previewInitialized || _view == null) return;
+            if (_previewInitialized) return;
             _previewInitialized = true;
 
-            if (_view.PreviewProvider != null) {
+            if (_view?.PreviewProvider != null) {
                 SetValue(PreviewValuePropertyKey, _view.PreviewProvider.GetPreview(OriginalValue));
                 SetValue(ToolTipPlacementPropertyKey, _view.PreviewProvider.GetPlacementMode(OriginalValue));
+            } else if (ToolTip != null) {
+                SetValue(PreviewValuePropertyKey, ToolTip);
             }
         }
 

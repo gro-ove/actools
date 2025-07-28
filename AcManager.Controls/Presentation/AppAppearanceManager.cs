@@ -720,7 +720,7 @@ namespace AcManager.Controls.Presentation {
             get => _popupToolBars ?? false;
             set {
                 if (_loading) {
-                    ToolbarsApparanceManager.PopupToolBars = value;
+                    ToolbarsAppearanceManager.PopupToolBars = value;
                     _popupToolBars = value;
                     return;
                 }
@@ -728,12 +728,28 @@ namespace AcManager.Controls.Presentation {
                 if (Equals(value, _popupToolBars)) return;
                 _popupToolBars = value;
                 OnPropertyChanged();
-                ToolbarsApparanceManager.PopupToolBars = value;
+                ToolbarsAppearanceManager.PopupToolBars = value;
                 ValuesStorage.Set(KeyPopupToolBars, value);
             }
         }
 
-        private static class ToolbarsApparanceManager {
+        
+        private bool? _LimitWindowWidth;
+
+        public bool CenterContent {
+            get => _LimitWindowWidth ?? (_LimitWindowWidth = ValuesStorage.Get("Settings.AppAppearanceManager.LimitWindowWidth", false)).Value;
+            set {
+                if (Equals(value, _LimitWindowWidth)) return;
+                _LimitWindowWidth = value;
+                ValuesStorage.Set("Settings.AppAppearanceManager.LimitWindowWidth", value);
+                OnPropertyChanged();
+                if (Application.Current.MainWindow is ModernWindow modernWindow) {
+                    modernWindow.MaxRootWidth = value ? 1300d : double.PositiveInfinity;
+                }
+            }
+        }
+
+        private static class ToolbarsAppearanceManager {
             private static readonly Uri FixedToolBarsSource = new Uri("/AcManager.Controls;component/Assets/SelectedObjectToolBarTray/Fixed.xaml",
                     UriKind.Relative);
 

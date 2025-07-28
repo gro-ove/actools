@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -59,7 +60,12 @@ namespace AcManager.Tools.Objects {
             }
 
             return _values.GetValueOrSet(key, () => {
-                Parse(key, out var param, out var section, out _);
+                Parse(key, out var param, out var section, out var file);
+                #if DEBUG
+                if (file != null) {
+                    Logging.Warning($"FILE={file}, section={section}, key={key}");
+                }
+                #endif
 
                 var sections = _root.SectionsOwn;
                 var values = section == null ? _section

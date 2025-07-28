@@ -11,8 +11,8 @@
 
       <StackPanel set:Search.Keywords="appearance;ui" set:Search.Category="{x:Static g:AppStrings.Settings_Appearance}" x:Name="Panel"
           Style="{StaticResource SettingsPanel}">
-        <ListBox set:Search.LinkedTo="{Binding ElementName=AccentColorPicker}" ItemsSource="{Binding AppAppearanceManager.AccentColors}"
-            SelectedItem="{Binding AppAppearanceManager.AccentColor, Mode=TwoWay}" Margin="0 0 0 16">
+        <ListBox mui:ScrollPropagation.Fix="True" set:Search.LinkedTo="{Binding ElementName=AccentColorPicker}"
+            ItemsSource="{Binding AppAppearanceManager.AccentColors}" SelectedItem="{Binding AppAppearanceManager.AccentColor, Mode=TwoWay}" Margin="0 0 0 16">
           <ListBox.ItemsPanel>
             <ItemsPanelTemplate>
               <WrapPanel MaxWidth="{Binding ActualWidth, ElementName=Panel}" />
@@ -53,6 +53,10 @@
 
         <CheckBox IsChecked="{Binding AppAppearanceManager.SmallFont}" set:Search.Keywords="font;text">
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_SmallFont}" />
+        </CheckBox>
+        <CheckBox IsChecked="{Binding AppAppearanceManager.CenterContent}" ToolTip="Improves layout in maximized state on large screens"
+            mui:NewMarkService.New="True">
+          <Label Content="Center content" />
         </CheckBox>
 
         <DockPanel>
@@ -129,7 +133,7 @@
 
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_Links}" />
-          <ListBox ItemsSource="{Binding AppAppearanceManager.TitleLinkEntries}" DisplayMemberPath="DisplayName"
+          <ListBox mui:ScrollPropagation.Fix="True" ItemsSource="{Binding AppAppearanceManager.TitleLinkEntries}" DisplayMemberPath="DisplayName"
               VirtualizingPanel.IsContainerVirtualizable="False" mui:ListBoxHelper.ProperMultiSelectionMode="True"
               ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemContainerStyle>

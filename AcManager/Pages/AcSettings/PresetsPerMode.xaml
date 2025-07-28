@@ -61,6 +61,10 @@
             </mui:HierarchicalComboBox>
           </DockPanel>
 
+          <DockPanel Margin="0 0 0 8" Visibility="{Binding ScriptParamVisibility}" ToolTip="{Binding ScriptParamName}">
+            <mui:BetterTextBox Text="{Binding ScriptParam}" Placeholder="{Binding ScriptParamShortName}" />
+          </DockPanel>
+
           <CheckBox IsChecked="{Binding Enabled}" Style="{StaticResource CheckBox.Separate}">
             <Label Content="{x:Static g:AppStrings.AcSettings_PresetsPerMode_Enabled}" />
           </CheckBox>
@@ -134,7 +138,7 @@
     </CheckBox>
 
     <ListBox mui:Draggable.Enabled="True" mui:Draggable.Destination="{x:Static t:PresetPerMode.DraggableFormat}" ScrollViewer.CanContentScroll="False"
-        ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="360" VerticalAlignment="Top"
+        ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="400" VerticalAlignment="Top"
         mui:FancyScroll.Outside="True">
       <ListBox.ItemTemplateSelector>
         <c:FlexibleDataTemplateSelector DataTemplate="{StaticResource EntryDataTemplate}" />

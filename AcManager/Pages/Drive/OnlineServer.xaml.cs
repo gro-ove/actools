@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -463,11 +464,11 @@ namespace AcManager.Pages.Drive {
         public static string EncryptSharedPassword(string id, string password) {
             var data = Encoding.UTF8.GetBytes(password);
             Xor(data, Encoding.UTF8.GetBytes(id + EncryptKey));
-            return Convert.ToBase64String(data);
+            return HttpUtility.UrlEncode(Convert.ToBase64String(data));
         }
 
         public static string EncryptSharedPassword(string ip, int httpPort, string password) {
-            return EncryptSharedPassword($@"{ip}:{httpPort.ToInvariantString()}", password);
+            return HttpUtility.UrlEncode(EncryptSharedPassword($@"{ip}:{httpPort.ToInvariantString()}", password));
         }
 
         public static string DecryptSharedPassword(string id, string encryptedPassword) {

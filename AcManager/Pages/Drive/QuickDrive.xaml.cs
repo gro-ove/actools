@@ -170,6 +170,11 @@ namespace AcManager.Pages.Drive {
             if (AppArguments.Has(AppFlag.SimpleQuickDriveMode)) {
                 Content = FindResource("SimpleVersion");
             } else {
+                /*this.AddWidthCondition(1300d).Add(x => {
+                    MainGrid.HorizontalAlignment = x ? HorizontalAlignment.Center : HorizontalAlignment.Stretch;
+                    MainGrid.MinWidth = x ? 1300d - 20d * 2d : 0d;
+                });*/
+                
                 this.AddSizeCondition(x => x.ActualHeight > 600 && SettingsHolder.Drive.ShowExtraComboBoxes).Add(CarCellExtra).Add(TrackCellExtra).Add(x => {
                     if (!_loaded && ValuesStorage.Contains(".qd.rz.h")) {
                         CarCellBase.Height = TrackCellBase.Height = ValuesStorage.Get(".qd.rz.h", CarCellBase.Height);

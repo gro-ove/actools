@@ -186,7 +186,8 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                         // parse uri value for optional parameter and/or target, eg [url=cmd://foo|parameter|target]
                         if (NavigationHelper.TryParseUriWithParameters(context.NavigateUri, out var parsedUri, out var parsedParameter,
                                 out var parsedTargetName, out var parsedToolTip)) {
-                            var link = new Hyperlink { ToolTip = parsedToolTip ?? context.NavigateUri, Tag = context.NavigateUri };
+                            // if (parsedUri)
+                            var link = new Hyperlink { Tag = context.NavigateUri };
 
                             if (context.IconGeometry != null) {
                                 link.TextDecorations.Clear();
@@ -194,12 +195,16 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
 
                             // assign ICommand instance if available, otherwise set NavigateUri
                             if (Commands != null && Commands.TryGetValue(parsedUri, out var command)) {
+                                if (command is ICommandWithToolTip ctt && ctt.ToolTip != null) {
+                                    link.ToolTip = ctt.ToolTip;
+                                }
                                 link.Command = command;
                                 link.CommandParameter = parsedParameter;
                                 if (parsedTargetName != null) {
                                     link.CommandTarget = _source?.FindName(parsedTargetName) as IInputElement;
                                 }
                             } else {
+                                link.ToolTip = parsedToolTip ?? parsedUri.ToString();
                                 link.NavigateUri = parsedUri;
                                 link.TargetName = parsedParameter;
                             }

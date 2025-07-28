@@ -97,6 +97,12 @@ namespace AcManager {
         HideRaceCancelButton,
 
         /// <summary>
+        /// Skip any race result entirely.
+        /// Example: --skip-all-results.
+        /// </summary>
+        SkipAllResults,
+
+        /// <summary>
         /// For development purposes.
         /// </summary>
         WeatherExtMode,

@@ -150,6 +150,7 @@ namespace AcManager.Pages.Windows {
 
             InitializeComponent();
             ModsWebBrowser.Instance.RebuildLinksNow();
+            MaxRootWidth = AppAppearanceManager.Instance.CenterContent ? 1300d : double.PositiveInfinity;
             ArgumentsHandler.HandlePasteEvent(this);
 
 #if INCLUDE_WORKSHOP

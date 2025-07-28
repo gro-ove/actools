@@ -265,7 +265,18 @@ namespace AcManager {
                     LogError(ex.Message);
 
                     try {
-                        MessageBox.Show(text, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        if (text.Contains("SlimDX")) {
+                            var ret = MessageBox.Show(
+                                    "Seems like SlimDX has failed to initialize. Usually, it could be due to Visual Studio 2015 32-bit component "
+                                            + "missing or being damaged. Do you want to open the webpage for you to download the package from and install manually? Just "
+                                            + "make sure to download and install 32-bit/x86 version.\n\n" + text, "Fatal Error",
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                            if (ret == DialogResult.Yes) {
+                                WindowsHelper.ViewInBrowser("https://www.microsoft.com/en-us/download/details.aspx?id=48145");
+                            }
+                        } else {
+                            MessageBox.Show(text, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     } catch (Exception) {
                         // ignored
                     }

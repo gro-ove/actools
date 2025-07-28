@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
@@ -25,7 +27,7 @@ namespace AcManager.Tools.Objects {
         public string Value { get; set; }
     }
 
-    public sealed class PythonAppConfig : Displayable, IWithId {
+    public sealed class PythonAppConfig : Displayable, IWithId, IDisposable {
         public PythonAppObject Parent { get; }
 
         [NotNull]
@@ -56,11 +58,20 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _hasAnythingNew);
         }
 
+        private bool _isVisible = true;
+
+        public bool IsVisible {
+            get => _isVisible;
+            set => Apply(value, ref _isVisible);
+        }
+
         private readonly bool _hasDynamicSections;
+        
+        public IniFile ValuesIniFileAccess => _valuesIniFile;
 
         private PythonAppConfig([NotNull] PythonAppConfigParams configParams, string filename, IniFile ini,
-                [CanBeNull] Func<string, bool> sectionFilter, string name, PythonAppObject parent,
-                IniFile values = null) {
+                [CanBeNull] Func<string, string, bool> sectionFilter, string name, PythonAppObject parent,
+                IniFile values = null, IniFileSection infoOverride = null) {
             IsResettable = values != null;
             _valuesIniFile = values ?? ini;
 
@@ -76,11 +87,20 @@ namespace AcManager.Tools.Objects {
 
             DisplayName = name.Trim();
             _sectionsOwn = new List<PythonAppConfigSection>(ini
-                    .Where(x => sectionFilter?.Invoke(x.Key) != false)
-                    .Select(x => new PythonAppConfigSection(filename, configParams, x, values?[x.Key]))
+                    .Select(x => {
+                        if (x.Key == "ℹ") {
+                            return new PythonAppConfigSection(filename, configParams, infoOverride != null
+                                    ? new KeyValuePair<string, IniFileSection>(x.Key, infoOverride) : x, null);
+                        }
+                        if (sectionFilter?.Invoke(x.Key, x.Value.Commentary) == false) {
+                            return null;
+                        }
+                        return new PythonAppConfigSection(filename, configParams, x, values?[x.Key]);
+                    })
+                    .NonNull()
                     .Where(x => x.DisplayName != @"hidden"));
             _hasDynamicSections = _sectionsOwn.Any(x => x.PluginSettings != null || x.IsHiddenTest != null);
-            IsSingleSection = !_hasDynamicSections && _sectionsOwn.Count == 1 
+            IsSingleSection = !_hasDynamicSections && _sectionsOwn.Count == 1
                     && IsSectionNameUseless(_sectionsOwn[0].DisplayName, configParams.PythonAppLocation);
             if (IsSingleSection) {
                 _sectionsOwn[0].IsSingleSection = true;
@@ -105,6 +125,46 @@ namespace AcManager.Tools.Objects {
             }
 
             SectionsDisplay = new BetterObservableCollection<PythonAppConfigSection>(_sectionsOwn.Where(x => x.PluginSettings == null));
+
+            var infoSection = _sectionsOwn.GetByIdOrDefault("ℹ");
+            if (infoSection != null) {
+                _visRequire = infoSection.GetByIdOrDefault("REQUIRE")?.Value;
+                if (_visRequire != null) {
+                    PatchHelper.FeaturesInvalidated += OnPatchFeaturesChanged;
+                }
+                _devConfig = infoSection.GetByIdOrDefault("DEVELOPER")?.Value.As(false) == true;
+                if (_devConfig) {
+                    SettingsHolder.Common.PropertyChanged += OnSettingsPropertyChanged;
+                }
+                UpdateVisibility();
+            }
+        }
+
+        private void OnPatchFeaturesChanged(object sender, EventArgs args) {
+            UpdateVisibility();
+        }
+
+        private string _visRequire;
+        private bool _devConfig;
+
+        private void UpdateVisibility() {
+            IsVisible = (_visRequire == null || PatchHelper.TestQuery(_visRequire))
+                    && (!_devConfig || SettingsHolder.Common.DeveloperMode);
+        }
+
+        private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs args) {
+            if (args.PropertyName == nameof(SettingsHolder.Common.DeveloperMode)) {
+                UpdateVisibility();
+            }
+        }
+
+        public void Dispose() {
+            if (_visRequire != null) {
+                PatchHelper.FeaturesInvalidated -= OnPatchFeaturesChanged;
+            }
+            if (_devConfig) {
+                SettingsHolder.Common.PropertyChanged -= OnSettingsPropertyChanged;
+            }
         }
 
         private static bool IsSectionNameUseless(string sectionName, string appDirectory) {
@@ -183,14 +243,14 @@ namespace AcManager.Tools.Objects {
         private PythonAppConfig GetPluginConfig(string key, [NotNull] string pluginLocation, string userSettingsPath) {
             var item = _activePluginConfigs.GetValueOrSet(key, () => null);
             if (item?.Item1 != pluginLocation) {
-                var userSettingsFilename = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), 
+                var userSettingsFilename = Path.Combine(AcPaths.GetDocumentsCfgDirectory(),
                         string.Format(userSettingsPath, Path.GetFileName(pluginLocation)));
                 var ret = new PythonAppConfigs(new PythonAppConfigParams(pluginLocation) {
                     FilesRelativeDirectory = AcRootDirectory.Instance.RequireValue,
                     ScanFunc = d => Directory.GetFiles(d, "settings.ini"),
                     ConfigFactory = (p, f) => {
                         try {
-                            return PythonAppConfig.Create(p, f, true, userSettingsFilename);
+                            return new[] { PythonAppConfig.Create(p, f, true, userSettingsFilename) };
                         } catch (Exception e) {
                             Logging.Warning(e);
                             return null;
@@ -261,7 +321,7 @@ namespace AcManager.Tools.Objects {
                     section[k].UpdateReferenced(provider);
                 }
             }
-            
+
             if (_hasDynamicSections) {
                 UpdateSectionsDisplay(provider);
             }
@@ -291,8 +351,8 @@ namespace AcManager.Tools.Objects {
                     if (provider == null) {
                         provider = new PythonAppConfigProvider(this);
                     }
-                    if (provider.GetItem(s.PluginSettings[0]) is PythonAppConfigPluginValue v 
-                        && !string.IsNullOrWhiteSpace(v.Value) && v.IsEnabled && v.SelectedPlugin != null) {
+                    if (provider.GetItem(s.PluginSettings[0]) is PythonAppConfigPluginValue v
+                            && !string.IsNullOrWhiteSpace(v.Value) && v.IsEnabled && v.SelectedPlugin != null) {
                         var value = _valuesIniFile["__PLUGINS"].GetNonEmpty(s.Id)?.FromCutBase64();
                         if (value != null) {
                             GetPluginConfig(s.PluginSettings[0], v.SelectedPlugin.Location, s.PluginSettings[1])?.Import(Encoding.UTF8.GetString(value));
@@ -338,12 +398,13 @@ namespace AcManager.Tools.Objects {
                     if (provider == null) {
                         provider = new PythonAppConfigProvider(this);
                     }
-                    if (provider.GetItem(s.PluginSettings[0]) is PythonAppConfigPluginValue v 
-                        && !string.IsNullOrWhiteSpace(v.Value) && v.IsEnabled && v.SelectedPlugin != null) {
+                    if (provider.GetItem(s.PluginSettings[0]) is PythonAppConfigPluginValue v
+                            && !string.IsNullOrWhiteSpace(v.Value) && v.IsEnabled && v.SelectedPlugin != null) {
                         if (cloned == null) {
                             cloned = _valuesIniFile.Clone();
                         }
-                        cloned["__PLUGINS"].Set(s.Id, GetPluginConfig(s.PluginSettings[0], v.SelectedPlugin.Location, s.PluginSettings[1])?.Export().ToString().ToCutBase64());
+                        cloned["__PLUGINS"].Set(s.Id,
+                                GetPluginConfig(s.PluginSettings[0], v.SelectedPlugin.Location, s.PluginSettings[1])?.Export().ToString().ToCutBase64());
                     }
                 }
             }
@@ -362,21 +423,21 @@ namespace AcManager.Tools.Objects {
         }
 
         internal bool IsAffectedBy(string changed) {
-            return FileUtils.IsAffectedBy(Filename, changed) 
+            return FileUtils.IsAffectedBy(Filename, changed)
                     || _defaultsFilename != null && FileUtils.IsAffectedBy(_defaultsFilename, changed);
         }
 
         private readonly List<PythonAppConfigSection> _sectionsOwn;
-        
+
         public IReadOnlyList<PythonAppConfigSection> SectionsOwn => _sectionsOwn;
 
         [NotNull]
         public BetterObservableCollection<PythonAppConfigSection> SectionsDisplay { get; }
 
         [CanBeNull, ContractAnnotation(@"force:true => notnull")]
-        public static PythonAppConfig Create([NotNull] PythonAppConfigParams configParams, string filename, bool force, string userEditedFile = null,
-                Func<string, bool> sectionFilter = null) {
-            var relative = FileUtils.GetRelativePath(filename, configParams.PythonAppLocation);
+        public static PythonAppConfig Create([NotNull] PythonAppConfigParams configParams, string valuesFilename, bool force, string userEditedFile = null,
+                Func<string, string, bool> sectionFilter = null, IniFile valuesIniOverride = null, IniFileSection infoOverride = null) {
+            var relative = FileUtils.GetRelativePath(valuesFilename, configParams.PythonAppLocation);
             if (!force && !Regex.IsMatch(relative, @"^(?:(?:cfg|config|params|options|settings)[/\\])?[\w-]+\.ini$", RegexOptions.IgnoreCase)) {
                 return null;
             }
@@ -389,26 +450,28 @@ namespace AcManager.Tools.Objects {
                     const string defaultsPostfix = @"_defaults" + extension;
 
                     if (relative.EndsWith(defaultsPostfix, StringComparison.OrdinalIgnoreCase)) {
-                        var original = filename.ApartFromLast(defaultsPostfix) + extension;
+                        var original = valuesFilename.ApartFromLast(defaultsPostfix) + extension;
                         if (File.Exists(original)) return null;
-                        filename = original;
+                        valuesFilename = original;
                     }
-                    defaults = filename.ApartFromLast(extension, StringComparison.OrdinalIgnoreCase) + defaultsPostfix;
+                    defaults = valuesFilename.ApartFromLast(extension, StringComparison.OrdinalIgnoreCase) + defaultsPostfix;
                 } else {
-                    defaults = filename;
-                    filename = userEditedFile;
+                    defaults = valuesFilename;
+                    valuesFilename = userEditedFile;
                 }
 
                 var defaultsMode = File.Exists(defaults);
-                var ini = defaultsMode ? new IniFile(defaults, IniFileMode.Comments) : new IniFile(filename, IniFileMode.Comments);
-                if (!force && (!ini.Any() || ini.Any(x => !Regex.IsMatch(x.Key, @"^[\w -]+$")))) return null;
-                return new PythonAppConfig(configParams, filename, ini, sectionFilter,
-                        (ini.ContainsKey("ℹ") ? ini["ℹ"].GetNonEmpty("FULLNAME") : null)
+                var ini = defaultsMode ? new IniFile(defaults, IniFileMode.Comments) : new IniFile(valuesFilename, IniFileMode.Comments);
+                if (!force && (!ini.Any() || ini.Any(x => !Regex.IsMatch(x.Key, @"^[\w -]+$")))) {
+                    return null;
+                }
+                return new PythonAppConfig(configParams, valuesFilename, ini, sectionFilter,
+                        (ini.ContainsKey("ℹ") ? (infoOverride ?? ini["ℹ"]).GetNonEmpty("FULLNAME") : null)
                                 ?? relative.ApartFromLast(extension, StringComparison.OrdinalIgnoreCase)
                                         .Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries)
                                         .Select(AcStringValues.NameFromId).JoinToString('/'),
                         PythonAppsManager.Instance.FirstOrDefault(x => x.Location == configParams.PythonAppLocation),
-                        defaultsMode ? new IniFile(filename) : null);
+                        valuesIniOverride ?? (defaultsMode ? new IniFile(valuesFilename) : null), infoOverride);
             } catch (Exception e) when (!force) {
                 Logging.Warning(e);
                 return null;

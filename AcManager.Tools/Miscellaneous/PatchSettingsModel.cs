@@ -75,6 +75,7 @@ namespace AcManager.Tools.Miscellaneous {
 
             Pages = new BetterObservableCollection<PatchPage>();
             PagesView = new BetterListCollectionView(Pages);
+            PagesView.Filter += o => !(o is PatchPage p) || p.Config?.IsVisible != false;
             PagesView.GroupDescriptions?.Add(new PropertyGroupDescription(nameof(PatchPage.Group)));
 
             _isLive = false;
@@ -338,6 +339,7 @@ namespace AcManager.Tools.Miscellaneous {
         private void CreateConfigs() {
             if (Configs != null) {
                 Configs.ValueChanged -= OnConfigsValueChanged;
+                Configs.ItemPropertyChanged -= OnConfigsItemPropertyChanged;
                 Configs.Dispose();
             }
 
@@ -353,26 +355,7 @@ namespace AcManager.Tools.Miscellaneous {
             Configs = new PythonAppConfigs(new PythonAppConfigParams(_dir) {
                 FilesRelativeDirectory = AcRootDirectory.Instance.Value ?? _dir,
                 ScanFunc = d => Directory.GetFiles(d, "*.ini").Where(x => !Path.GetFileName(x).StartsWith(@"data_")),
-                ConfigFactory = (p, f) => {
-                    try {
-                        var fileName = Path.GetFileName(f);
-                        if (fileName == null) {
-                            return null;
-                        }
-
-                        var userEditedFile = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), PatchHelper.PatchDirectoryName, fileName);
-                        var cfg = PythonAppConfig.Create(p, f, true, userEditedFile);
-                        if (_isLive && cfg.SectionsOwn.GetByIdOrDefault("ℹ")?.GetByIdOrDefault("LIVE_SUPPORT")?.Value == @"0") {
-                            return null;
-                        }
-
-                        cfg.ValueChanged += (s, e) => PatchHelper.OnConfigPropertyChanged(Path.GetFileName(e.Source.Filename), e.Section, e.Key);
-                        return string.IsNullOrWhiteSpace(cfg.ShortDescription) ? null : cfg;
-                    } catch (Exception e) {
-                        Logging.Warning(e);
-                        return null;
-                    }
-                },
+                ConfigFactory = PatchConfigFactory,
                 SaveOnlyNonDefault = true,
                 Flags = new Dictionary<string, string> {
                     [@"IS_LIVE__"] = _isLive.As<string>()
@@ -382,14 +365,79 @@ namespace AcManager.Tools.Miscellaneous {
 
             var configPages = Configs?.Select(x =>
                     Pages.FirstOrDefault(y => y.Config == x) ?? new PatchPage(x)) ?? new PatchPage[0];
-            Pages.ReplaceEverythingBy(PatchHelper.OptionPatchSupport ? BasePages.Concat(configPages) : configPages);
+            Pages.ReplaceEverythingBy(PatchHelper.OptionPatchSupport 
+                    ? PatchHelper.IsFeatureSupported(PatchHelper.FeatureGroupedModules) 
+                            ? BasePages.Take(1).Concat(configPages).Concat(BasePages.Skip(1)) 
+                            : BasePages.Concat(configPages) 
+                    : configPages);
 
             SelectedPage = Pages.GetByIdOrDefault(selectedPageId) ?? Pages.FirstOrDefault();
             if (Configs != null) {
                 Configs.ValueChanged += OnConfigsValueChanged;
+                Configs.ItemPropertyChanged += OnConfigsItemPropertyChanged;
             }
 
             PagesView.Refresh();
+        }
+
+        private void OnConfigsItemPropertyChanged(object sender, PropertyChangedEventArgs args) {
+            if (args.PropertyName == nameof(PythonAppConfig.IsVisible)) {
+                PagesView.Refresh();
+            }
+        }
+
+        private class RemappedConfig {
+            public List<string> Sections = new List<string>();
+            public IniFileSection Info = new IniFileSection(null);
+        }
+
+        private IEnumerable<PythonAppConfig> PatchConfigFactory(PythonAppConfigParams p, string f) {
+            try {
+                var fileName = Path.GetFileName(f);
+                if (fileName == null) {
+                    return null;
+                }
+
+                var userEditedFile = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), PatchHelper.PatchDirectoryName, fileName);
+                var remapped = new Dictionary<string, RemappedConfig>();
+                var cfg = PythonAppConfig.Create(p, f, true, userEditedFile, (sectionName, comment) => {
+                    int j;
+                    if (comment != null && ((j = comment.IndexOf("\n; module: ", StringComparison.Ordinal))) != -1) {
+                        var pieces = comment.Substring(j + 11).Split(new[] { '\n' }, 2)[0].Split(';');
+                        var rem = remapped.GetValueOrSet(pieces[0], () => new RemappedConfig {
+                            Info = {
+                                ["FULLNAME"] = pieces[0]
+                            }
+                        });
+                        for (var i = 1; i < pieces.Length; ++i) {
+                            var kv = pieces[i].Split(new[]{'='}, 2);
+                            if (kv.Length == 2) {
+                                rem.Info[kv[0].Trim()] = kv[1].Trim();
+                            }
+                        }
+                        rem.Sections.Add(sectionName);
+                        return false;
+                    }
+                    return true;
+                });
+                if (_isLive && cfg.SectionsOwn.GetByIdOrDefault("ℹ")?.GetByIdOrDefault("LIVE_SUPPORT")?.Value == @"0"
+                    || string.IsNullOrWhiteSpace(cfg.ShortDescription)) {
+                    return null;
+                }
+                
+                var ret = new List<PythonAppConfig>{cfg};
+                foreach (var config in remapped) {
+                    ret.Add(PythonAppConfig.Create(p, f, true, userEditedFile, 
+                            (sectionName, comment) => config.Value.Sections.Contains(sectionName), cfg.ValuesIniFileAccess, config.Value.Info));
+                }
+                foreach (var i in ret.NonNull()) {
+                    i.ValueChanged += (s, e) => PatchHelper.OnConfigPropertyChanged(Path.GetFileName(e.Source.Filename), e.Section, e.Key);
+                }
+                return ret;
+            } catch (Exception e) {
+                Logging.Warning(e);
+                return null;
+            }
         }
 
         private readonly string _dir;
@@ -405,14 +453,19 @@ namespace AcManager.Tools.Miscellaneous {
 
         public sealed class PatchPage : Displayable, IWithId {
             public PatchPage([NotNull] string name, [NotNull] string description, [NotNull] Uri source)
-                    : this(name, description, source.OriginalString, source) { }
+                    : this(name, description, source.OriginalString, source, false) { }
 
-            public PatchPage([NotNull] string name, [NotNull] string description, [NotNull] string pageId, [NotNull] Uri source) {
+            public PatchPage([NotNull] string name, [NotNull] string description, [NotNull] string pageId, [NotNull] Uri source,
+                    bool mainPage = true) {
                 DisplayName = name;
                 Description = description;
                 Id = pageId ?? throw new ArgumentNullException(nameof(pageId));
                 Source = source;
-                Group = "Patch";
+                if (PatchHelper.IsFeatureSupported(PatchHelper.FeatureGroupedModules)) {
+                    Group = mainPage ? "Patch" : "Downloadable";
+                } else {
+                    Group = "Patch";
+                }
             }
 
             public PatchPage([NotNull] PythonAppConfig config) {
@@ -423,7 +476,17 @@ namespace AcManager.Tools.Miscellaneous {
                 Description = config.ShortDescription;
                 Config = config;
                 Id = config.Id;
-                Group = "Extensions";
+                if (PatchHelper.IsFeatureSupported(PatchHelper.FeatureGroupedModules)) {
+                    var g = DisplayName.Split(':');
+                    if (g.Length == 2) {
+                        Group = g[0];
+                        DisplayName = g[1].TrimStart();
+                    } else {
+                        Group = "Patch";
+                    }
+                } else {
+                    Group = "Extensions";
+                }
             }
 
             [NotNull]

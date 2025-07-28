@@ -57,6 +57,9 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureLibrariesPreoptimized = "LIBRARIES_PREOPTIMIZED";
         public static readonly string SecondaryGearButtons = "SECONDARY_GEAR_BUTTONS";
         public static readonly string FeatureAiLimitations = "AI_LIMITATIONS";
+        public static readonly string FeatureGroupedModules = "GROUPED_MODULES";
+        public static readonly string InclusiveFullscreen = "INCLUSIVE_FULLSCREEN";
+        public static readonly string CustomVotingBinding = "CUSTOM_VOTING_BINDINGS";
 
         public class AudioDescription : Displayable {
             public string Id { get; set; }
@@ -165,7 +168,9 @@ namespace AcManager.Tools.Data {
             var instance = PatchSettingsModel.GetExistingInstance();
             if (instance != null) {
                 var config = instance.Configs?.FirstOrDefault(x => x.Filename.EndsWith(configName));
-                return config?.SectionsOwn.GetByIdOrDefault(section)?.GetByIdOrDefault(key)?.Value;
+                if (config != null) {
+                    return config.SectionsOwn.GetByIdOrDefault(section)?.GetByIdOrDefault(key)?.Value;
+                }
             }
 
             return TryGetConfig(configName)?[section].GetNonEmpty(key);
@@ -192,11 +197,10 @@ namespace AcManager.Tools.Data {
         }
 
         public static void InvalidateFeatures() {
-                _featuresInvalidatedBusy.Delay(() => {
-                    _customVideoModes = null;
-                    FeaturesInvalidated?.Invoke(null, EventArgs.Empty);
-                }, 100);
-
+            _featuresInvalidatedBusy.Delay(() => {
+                _customVideoModes = null;
+                FeaturesInvalidated?.Invoke(null, EventArgs.Empty);
+            }, 100);
         }
 
         public static void OnConfigPropertyChanged(string configName, string section, string key) {
@@ -256,9 +260,33 @@ namespace AcManager.Tools.Data {
             return _rfxActiveOnce = (_rfxActive ?? (_rfxActive = IsActive() && GetActualConfigValue("rain_fx.ini", "BASIC", "ENABLED").As(false))).Value;
         }
 
-        private static bool TestQuery(string query, bool emptyFallback = false) {
+        internal static class RefValueSplitFunc {
+            private static readonly Regex ParsingRegex = new Regex(@"^([a-zA-Z]+)(\.[a-zA-Z]+)?\s*((?:>=|<=|=>|=<|[<>≥≤=≈])\s*|[+\-−]\s*$)", RegexOptions.Compiled);
+            public static readonly char[] Separators = { '<', '>', '≥', '≤', '=', '≈', '+', '-', '−' };
+
+            public static FilterPropertyValue Default(string s) {
+                var match = ParsingRegex.Match(s);
+                if (!match.Success) return null;
+
+                var key = match.Groups[1].Value.ToLower();
+                var operation = FilterComparingOperations.Parse(match.Groups[3].Value.TrimEnd());
+                var value = s.Substring(match.Length).TrimStart();
+
+                if (match.Groups[2].Success) {
+                    var actualKey = match.Groups[2].Value.Substring(1).ToLower();
+                    return new FilterPropertyValue(actualKey, operation, value) { ChildKey = key };
+                }
+
+                return new FilterPropertyValue(key, operation, value);
+            }
+        }
+        
+        public static bool TestQuery(string query, bool emptyFallback = false) {
             if (string.IsNullOrWhiteSpace(query)) return emptyFallback;
-            var filter = Filter.Create(query, new FilterParams { CustomTestEntryFactory = FeatureTestEntryFactory });
+            var filter = Filter.Create(query, new FilterParams {
+                CustomTestEntryFactory = FeatureTestEntryFactory,
+                ValueSplitter = new ValueSplitter(RefValueSplitFunc.Default, RefValueSplitFunc.Separators),
+            });
             return filter.Test(new FeatureTester(), new object());
         }
 

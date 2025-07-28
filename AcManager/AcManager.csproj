@@ -2351,10 +2351,11 @@
     <EditBinLocation Condition="'$(Configuration)|$(Platform)' != 'Debug|x86'">NUL</EditBinLocation>
   </PropertyGroup>
   <PropertyGroup Condition="Exists('$(EditBinLocation)')">
+    <!-- Disable if you rename vcruntime140.dll in C:\Windows\SysWOW64 to test SlimDX issue -->
     <PostBuildEvent>"$(EditBinLocation)" /largeaddressaware /nologo "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <!-- This command deliberetely breaks SlimDX to debug how CM works without it. -->
+    <!-- This command deliberately breaks SlimDX to debug how CM works without it. -->
     <!--<PostBuildEvent>cp "$(TargetDir)\Content Manager.exe.manifest" "$(TargetDir)\SlimDX.dll"</PostBuildEvent>-->
   </PropertyGroup>
   <Import Project="..\packages\Fody.3.0.0\build\Fody.targets" Condition="'$(UseCosturaToPack)' == 'true'" />

@@ -33,11 +33,9 @@
           Text="Custom Shaders Patch is specially prepared DLL file, which, when placed in AC root folder, adds new features such as dynamic lighting, 24h day, new physics features, various optimizations and a lot more. Most of it is split into extensions you can turn on and off, and configure them to fit your needs."
           DockPanel.Dock="Top" Margin="0 20 0 0" TextWrapping="Wrap" />
       <WrapPanel Orientation="Horizontal" Margin="0 8 0 0">
-        <mui:BbCodeBlock Text="[url=&quot;https://acstuff.club/patch/&quot;]More details &amp; list of features[/url]" DockPanel.Dock="Top"
-            TextWrapping="Wrap" />
+        <mui:BbCodeBlock Text="[url=&quot;https://acstuff.club/patch/&quot;]More details &amp; list of features[/url]" DockPanel.Dock="Top" TextWrapping="Wrap" />
         <Line X1=".5" Y1="3" X2=".5" Y2="12" Margin="5 0" VerticalAlignment="Center" Stroke="{DynamicResource SeparatorBackground}" />
-        <mui:BbCodeBlock Text="[url=&quot;/Pages/ShadersPatch/ShadersCredits.xaml&quot;]Credits[/url]" DockPanel.Dock="Top"
-            TextWrapping="Wrap" />
+        <mui:BbCodeBlock Text="[url=&quot;/Pages/ShadersPatch/ShadersCredits.xaml&quot;]Credits[/url]" DockPanel.Dock="Top" TextWrapping="Wrap" />
       </WrapPanel>
     </DockPanel>
 
@@ -186,66 +184,63 @@
               </ListBox.ItemContainerStyle>
               <ListBox.ItemTemplate>
                 <DataTemplate DataType="t:PatchVersionInfo">
-                  <DockPanel x:Name="PART_CorePanel" Margin="8 4 20 4" Background="Transparent" ToolTipService.ShowOnDisabled="True">
+                  <DockPanel x:Name="PART_CorePanel" Margin="8 4 20 4" Background="Transparent" ToolTipService.ShowOnDisabled="True"
+                      PreviewMouseRightButtonDown="OnItemRightMouseButtonDown">
                     <DockPanel.ToolTip>
-                      <mui:BbCodeBlock Text="{Binding Changelog}" MaxWidth="440" FontSize="{DynamicResource SmallFontSize}" />
+                      <StackPanel>
+                        <TextBlock Text="{Binding Build, StringFormat='{}Build number: {0}'}" Style="{StaticResource Small}" />
+                        <TextBlock Text="{Binding DisplaySize, StringFormat='{}Core size: {0}'}" Style="{StaticResource Small}" />
+                        <TextBlock Text="{Binding DisplayChunkSize, StringFormat='{}Resources size: {0}'}" Style="{StaticResource Small}" />
+                      </StackPanel>
                     </DockPanel.ToolTip>
+                    <DockPanel.ContextMenu>
+                      <ContextMenu>
+                        <MenuItem Header="View changelog" Command="{Binding ViewChangelogCommand}" />
+                        <Separator />
+                        <MenuItem Header="Switch to this version" Command="{Binding InstallCommand}" />
+                        <MenuItem Header="Forget this version" Command="{Binding DeleteCustomBuildCommand}" />
+                      </ContextMenu>
+                    </DockPanel.ContextMenu>
                     <Button x:Name="PART_UrlButton" VerticalAlignment="Center" Padding="4 2 4 4" Command="mui:LinkCommands.NavigateLink"
                         CommandParameter="{Binding Url}" DockPanel.Dock="Right">
                       <Path Width="8" Height="8" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 2 0 0" Data="{StaticResource LinkIconData}"
                           DockPanel.Dock="Left" Stretch="Uniform" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
                     </Button>
-                    <ItemsControl x:Name="PART_Tags" ItemsSource="{Binding Tags}" DockPanel.Dock="Bottom" Margin="0 4 0 0"
-                        TextBlock.Foreground="{DynamicResource ButtonText}">
-                      <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                          <mui:SpacingStackPanel Orientation="Horizontal" Spacing="4" />
-                        </ItemsPanelTemplate>
-                      </ItemsControl.ItemsPanel>
-                      <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                          <Border BorderThickness="1" BorderBrush="{DynamicResource ButtonBorder}" Background="{DynamicResource ButtonBackground}"
-                              Padding="4 2">
-                            <TextBlock x:Name="PART_Text" Text="{Binding}" Background="{DynamicResource ButtonBackground}" Style="{StaticResource Small}" />
-                          </Border>
-                          <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding}" Value="buggy">
-                              <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource Error}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding}" Value="untested">
-                              <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource RatingBrush}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding}" Value="preview">
-                              <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource Hyperlink}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding}" Value="recommended">
-                              <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource Go}" />
-                            </DataTrigger>
-                          </DataTemplate.Triggers>
-                        </DataTemplate>
-                      </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <TextBlock Text="{Binding Version}" DockPanel.Dock="Top" Margin="0 0 0 4" FontWeight="Bold" />
+                    <DockPanel DockPanel.Dock="Top" Margin="0 0 0 4">
+                      <TextBlock Text="{Binding Version}" FontWeight="Bold" Margin="0 0 8 0" />
+                      <ItemsControl x:Name="PART_Tags" ItemsSource="{Binding Tags}" DockPanel.Dock="Bottom" Margin="0 -2 0 -2" 
+                          TextBlock.Foreground="{DynamicResource ButtonText}">
+                        <ItemsControl.ItemsPanel>
+                          <ItemsPanelTemplate>
+                            <mui:SpacingStackPanel Orientation="Horizontal" Spacing="4" />
+                          </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                          <DataTemplate>
+                            <Border BorderThickness="1" BorderBrush="{DynamicResource ButtonBorder}" Background="{DynamicResource ButtonBackground}"
+                                Padding="4 2">
+                              <TextBlock x:Name="PART_Text" Text="{Binding}" Background="{DynamicResource ButtonBackground}" Style="{StaticResource Small}" />
+                            </Border>
+                            <DataTemplate.Triggers>
+                              <DataTrigger Binding="{Binding}" Value="buggy">
+                                <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource Error}" />
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding}" Value="untested">
+                                <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource RatingBrush}" />
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding}" Value="preview">
+                                <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource Hyperlink}" />
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding}" Value="recommended">
+                                <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource Go}" />
+                              </DataTrigger>
+                            </DataTemplate.Triggers>
+                          </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                      </ItemsControl>
+                    </DockPanel>
                     <TextBlock x:Name="PART_NA" Text="Not available to install" FontWeight="Normal" Style="{StaticResource Small}" Visibility="Collapsed" />
-                    <TextBlock x:Name="PART_DisplaySize" Text="{Binding DisplayTotalSize}" FontWeight="Normal" Style="{StaticResource Small}">
-                      <TextBlock.ToolTip>
-                        <StackPanel>
-                          <TextBlock Text="{Binding DisplaySize, StringFormat='{}Patch size: {0}'}" Style="{StaticResource Small}" />
-                          <TextBlock Text="{Binding DisplayChunkSize, StringFormat='{}Chunk size: {0}'}" Style="{StaticResource Small}" />
-                          <TextBlock Text="{Binding ChunkVersion, StringFormat='{}Chunk version: {0}'}" Style="{StaticResource Small}" />
-                        </StackPanel>
-                      </TextBlock.ToolTip>
-                    </TextBlock>
-                    <TextBlock x:Name="PART_Downloaded" Text="{Binding DisplayTotalSize, StringFormat='{}{0} (already downloaded)'}" FontWeight="Normal"
-                        Style="{StaticResource Small}" Visibility="Collapsed">
-                      <TextBlock.ToolTip>
-                        <StackPanel>
-                          <TextBlock Text="{Binding DisplaySize, StringFormat='{}Patch size: {0}'}" Style="{StaticResource Small}" />
-                          <TextBlock Text="{Binding DisplayChunkSize, StringFormat='{}Chunk size: {0}'}" Style="{StaticResource Small}" />
-                          <TextBlock Text="{Binding ChunkVersion, StringFormat='{}Chunk version: {0}'}" Style="{StaticResource Small}" />
-                        </StackPanel>
-                      </TextBlock.ToolTip>
-                    </TextBlock>
+                    <mui:BbCodeBlock Mode="Extended" x:Name="PART_DisplaySize" Text="{Binding DisplayInfoRow}" FontWeight="Normal" Style="{StaticResource Small}" />
                   </DockPanel>
                   <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding AvailableToDownload}" Value="False">
@@ -262,14 +257,9 @@
                       <Setter TargetName="PART_NA" Property="Visibility" Value="Visible" />
                       <Setter TargetName="PART_DisplaySize" Property="Visibility" Value="Collapsed" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Size}" Value="0">
-                      <Setter TargetName="PART_DisplaySize" Property="Text" Value="Preview build" />
-                      <Setter TargetName="PART_DisplaySize" Property="ToolTip" Value="Loaded not from the main registry, but from an URL added earlier" />
-                    </DataTrigger>
                     <DataTrigger Binding="{Binding IsDownloaded}" Value="True">
-                      <Setter TargetName="PART_DisplaySize" Property="Visibility" Value="Collapsed" />
+                      <Setter TargetName="PART_DisplaySize" Property="Visibility" Value="Visible" />
                       <Setter TargetName="PART_NA" Property="Visibility" Value="Collapsed" />
-                      <Setter TargetName="PART_Downloaded" Property="Visibility" Value="Visible" />
                     </DataTrigger>
                   </DataTemplate.Triggers>
                 </DataTemplate>

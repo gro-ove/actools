@@ -1878,7 +1878,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} (Recommended).
+        ///   Looks up a localized string similar to {0} (recommended).
         /// </summary>
         public static string Common_Recommended {
             get {

@@ -48,16 +48,16 @@
 
       <DockPanel>
         <Border DockPanel.Dock="Top" Height="100">
-          <c:PropertiesGrid Columns="1" VerticalAlignment="Top">
-            <mui:BetterTextBox c:PropertiesGrid.Label="Files:" Style="{StaticResource Borderless}" IsReadOnly="True"
-                Text="{Binding DecompressedCount, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {file} to compress', Mode=OneWay}"
+          <c:PropertiesGrid Columns="1" VerticalAlignment="Top" LabelWidth="100">
+            <mui:BetterTextBox c:PropertiesGrid.Label="Uncompressed:" Style="{StaticResource Borderless}" IsReadOnly="True"
+                Text="{Binding DecompressedCount, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {file}', Mode=OneWay}"
                 Visibility="{Binding DecompressedCount, Converter={StaticResource MoreToVisibilityConverter}}" />
             <mui:BetterTextBox c:PropertiesGrid.Label="Compressed:" Style="{StaticResource Borderless}" IsReadOnly="True"
-                Text="{Binding CompressedCount, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {file} compressed', Mode=OneWay}"
+                Text="{Binding CompressedCount, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {file}', Mode=OneWay}"
                 Visibility="{Binding CompressedCount, Converter={StaticResource MoreToVisibilityConverter}}" />
             <mui:BetterTextBox c:PropertiesGrid.Label="Size:" Style="{StaticResource Borderless}" IsReadOnly="True"
                 Text="{Binding TotalSize, Converter={StaticResource FileSizeConverter}, Mode=OneWay}" />
-            <mui:BetterTextBox c:PropertiesGrid.Label="Compressed:" Style="{StaticResource Borderless}" IsReadOnly="True"
+            <mui:BetterTextBox c:PropertiesGrid.Label="On disk:" Style="{StaticResource Borderless}" IsReadOnly="True"
                 Text="{Binding CompressedSize, Converter={StaticResource FileSizeConverter}, Mode=OneWay}"
                 Visibility="{Binding CompressedCount, Converter={StaticResource MoreToVisibilityConverter}}" />
             <mui:BetterTextBox c:PropertiesGrid.Label="Ratio:" Style="{StaticResource Borderless}" IsReadOnly="True"
@@ -83,7 +83,9 @@
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
-          <DataGridTemplateColumn Width="110" Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_Original}" SortMemberPath="FileInfo.Length">
+          <DataGridTemplateColumn Width="80" Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_Original}" SortMemberPath="FileInfo.Length" 
+              HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}"
+              CellStyle="{StaticResource DataGridCell.RightAlignment}">
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type tools:FilesCompressor+FileToCompress}">
                 <Border Background="Transparent" ContextMenu="{StaticResource FileContextMenu}" mui:ContextMenuAdvancement.PropagateToChildren="True">
@@ -92,7 +94,9 @@
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
-          <DataGridTemplateColumn Width="110" Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_Compressed}" SortMemberPath="CompressedSize">
+          <DataGridTemplateColumn Width="80" Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_Compressed}" SortMemberPath="CompressedSize" 
+              HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}"
+              CellStyle="{StaticResource DataGridCell.RightAlignment}">
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type tools:FilesCompressor+FileToCompress}">
                 <Border Background="Transparent" ContextMenu="{StaticResource FileContextMenu}" mui:ContextMenuAdvancement.PropagateToChildren="True">
@@ -101,8 +105,9 @@
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
-          <DataGridTemplateColumn Width="110" Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_Ratio}"
-              SortMemberPath="{x:Static g:AppStrings.ContentTools_FilesCompressor_Ratio}">
+          <DataGridTemplateColumn Width="80" Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_Ratio}"
+              SortMemberPath="{x:Static g:AppStrings.ContentTools_FilesCompressor_Ratio}" HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}"
+              CellStyle="{StaticResource DataGridCell.RightAlignment}">
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type tools:FilesCompressor+FileToCompress}">
                 <Border Background="Transparent" ContextMenu="{StaticResource FileContextMenu}" mui:ContextMenuAdvancement.PropagateToChildren="True">

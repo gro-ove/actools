@@ -90,6 +90,8 @@ namespace AcManager.Pages.AcSettings {
             public GraphicsSettings Graphics => AcSettingsHolder.Graphics;
             public IUserPresetable Presets => AcSettingsHolder.VideoPresets;
 
+            public bool InclusiveFullscreenSupported => PatchHelper.IsFeatureSupported(PatchHelper.InclusiveFullscreen);
+            
             private DelegateCommand _manageFiltersCommand;
 
             public DelegateCommand ManageFiltersCommand => _manageFiltersCommand ?? (_manageFiltersCommand = new DelegateCommand(() => {

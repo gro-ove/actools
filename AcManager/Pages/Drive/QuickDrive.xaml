@@ -103,7 +103,7 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <Grid Style="{StaticResource ContentRootWithPadding}">
+  <Grid Style="{StaticResource ContentRootWithPadding}" x:Name="MainGrid">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="20" />

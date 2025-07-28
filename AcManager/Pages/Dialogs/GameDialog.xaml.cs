@@ -78,6 +78,7 @@ namespace AcManager.Pages.Dialogs {
         
         public static bool OptionBenchmarkReplays = false;
         public static bool OptionHideCancelButton = false;
+        public static bool OptionSkipAllResults = false;
 
         public const int DefinitelyNonPrizePlace = 99999;
         private static GoodShuffle<string> _progressStyles;
@@ -713,9 +714,9 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            var skipResults = _properties?.ReplayProperties != null || _properties?.BenchmarkProperties != null
+            var skipResults = OptionSkipAllResults || (_properties?.ReplayProperties != null || _properties?.BenchmarkProperties != null
                     ? _properties?.GetAdditional<WhatsGoingOn>() == null
-                    : !_resultsViewMode && SettingsHolder.Drive.SkipResults(result, _properties);
+                    : !_resultsViewMode && _properties != null && SettingsHolder.Drive.SkipResults(result, _properties));
             if (skipResults) {
                 if (IsLoaded) {
                     Close();

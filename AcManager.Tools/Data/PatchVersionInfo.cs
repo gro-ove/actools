@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -19,6 +20,8 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -49,14 +52,50 @@ namespace AcManager.Tools.Data {
 
         [JsonProperty("build")]
         public int Build { get; set; }
-        
+
         public bool CustomBuild { get; set; }
+
+        private DelegateCommand _deleteCustomBuildCommand;
+
+        public DelegateCommand DeleteCustomBuildCommand => _deleteCustomBuildCommand ?? (_deleteCustomBuildCommand = new DelegateCommand(() => {
+            PatchUpdater.Instance.Versions.Remove(this);
+            RemovePreviewBuild(Build);
+        }, () => CustomBuild));
 
         public long TotalSize => Size + ChunkSize;
 
         public string DisplaySize => Size.ToReadableSize();
+        
         public string DisplayChunkSize => ChunkSize.ToReadableSize();
+        
         public string DisplayTotalSize => TotalSize.ToReadableSize();
+
+        private int CountChanges() {
+            if (string.IsNullOrWhiteSpace(Changelog)) return 0;
+            var r = 0;
+            for (var j = Changelog.IndexOf("•", StringComparison.Ordinal); j != -1; j = Changelog.IndexOf("•", j + 1, StringComparison.Ordinal)) {
+                ++r;
+            }
+            return r;
+        }
+
+        public string DisplayInfoRow {
+            get {
+                var changes = CountChanges();
+                string basePiece;
+                if (Size == 0) {
+                    basePiece = "Manually added";
+                } else if (IsDownloaded) {
+                    basePiece = $"{DisplayTotalSize} (downloaded)";
+                } else {
+                    basePiece = DisplayTotalSize;
+                }
+                if (changes > 0) {
+                    basePiece = $"{basePiece} • [url=\"cmd://csp/changelog?param={Build}\"]{changes} {PluralizingConverter.Pluralize(changes, "change")}[/url]";
+                }
+                return basePiece;
+            }
+        }
 
         public bool IsRecommended => Tags?.Contains(@"recommended") == true;
         public bool IsTested => Tags?.Contains(@"tested") == true;
@@ -70,7 +109,7 @@ namespace AcManager.Tools.Data {
                 }
                 return (bool)_isDownloaded;
             }
-            set => Apply(value, ref _isDownloaded);
+            set => Apply(value, ref _isDownloaded, () => OnPropertyChanged(nameof(DisplayInfoRow)));
         }
 
         public bool AvailableToDownload => Size > 0 || CustomBuild;
@@ -143,9 +182,9 @@ namespace AcManager.Tools.Data {
                                 var entry = archive.Entries[i];
                                 if (entry.FullName == @"dwrite.dll" || entry.FullName.StartsWith(@"extension/")) {
                                     var relativePath = entry.FullName;
-                                    #if DEBUG
+#if DEBUG
                                     relativePath = relativePath.Replace(@"extension/", PatchHelper.PatchDirectoryName + @"/");
-                                    #endif
+#endif
                                     var destination = Path.GetFullPath(Path.Combine(AcRootDirectory.Instance.RequireValue, relativePath));
                                     ExtractFile(archive.Entries[i], destination,
                                             () => subProgress.Report($"Extracting {_stageName} file: {entry.Name}",
@@ -272,7 +311,8 @@ namespace AcManager.Tools.Data {
                         File.WriteAllBytes(destination, unpackedStream.ToArray());
                     })) {
                         if (entry.FullName != @"dwrite.dll") {
-                            _installationLog?.WriteLine($@"file: {relative}:{checksum}:{entry.Length}:{new FileInfo(destination).LastWriteTime.ToUnixTimestamp()}");
+                            _installationLog?.WriteLine(
+                                    $@"file: {relative}:{checksum}:{entry.Length}:{new FileInfo(destination).LastWriteTime.ToUnixTimestamp()}");
                         }
                     }
                 }
@@ -501,7 +541,7 @@ namespace AcManager.Tools.Data {
         private AsyncCommand<CancellationToken?> _installCommand;
 
         public AsyncCommand<CancellationToken?> InstallCommand => _installCommand ??
-                (_installCommand = new AsyncCommand<CancellationToken?>(c => PatchUpdater.Instance.InstallAsync(this, c ?? default)));
+                (_installCommand = new AsyncCommand<CancellationToken?>(c => PatchUpdater.Instance.InstallAsync(this, c ?? CancellationToken.None)));
 
         public async Task InstallAsync(IProgress<AsyncProgressEntry> progress = null) {
             if (_installing) throw new InformativeException("Can’t update patch", "Another update is in process.");
@@ -515,7 +555,7 @@ namespace AcManager.Tools.Data {
             using (var cancellationSource = new CancellationTokenSource()) {
                 var cancellation = cancellationSource.Token;
                 installationEntry.CancellationTokenSource = cancellationSource;
-                
+
                 var progressBak = progress;
                 progress = new Progress<AsyncProgressEntry>(p => {
                     installationEntry.Progress = p;
@@ -523,7 +563,7 @@ namespace AcManager.Tools.Data {
                 });
                 ContentInstallationManager.Instance.DownloadList.Add(installationEntry);
                 ContentInstallationManager.Instance.UpdateBusyStates();
-                
+
                 try {
                     if (!AvailableToDownload) {
                         throw new InformativeException("Can’t update patch", "This version is not available.");
@@ -600,7 +640,7 @@ namespace AcManager.Tools.Data {
                                     }
                                 }
                             }
-                            
+
                             // TODO: If chunk is being reused, does it show up in InstalledLog?
                             File.WriteAllBytes(PatchHelper.TryGetInstalledLog() ?? string.Empty, installedLogStream.ToArray());
                         }
@@ -619,6 +659,12 @@ namespace AcManager.Tools.Data {
         private static string ExtraVersionsFilename() {
             return FilesStorage.Instance.GetFilename("CSP Previews.json");
         }
+        
+        private DelegateCommand _ViewChangelogCommand;
+
+        public DelegateCommand ViewChangelogCommand => _ViewChangelogCommand ?? (_ViewChangelogCommand = new DelegateCommand(() => {
+            ModernDialog.ShowMessage(Changelog, $"Changelog for {Version}", MessageBoxButton.OK);
+        }, () => !string.IsNullOrWhiteSpace(Changelog)));
 
         public static event EventHandler NewPreviewBuild;
 
@@ -665,15 +711,24 @@ namespace AcManager.Tools.Data {
             } catch (Exception e) {
                 Logging.Warning($"Failed to read CSP previews: {e}");
             }
-           return _previewBuilds = new Dictionary<int, string[]>();
+            return _previewBuilds = new Dictionary<int, string[]>();
         }
 
         public static void RegisterPreviewBuild(int build, string version, string url) {
             var filename = ExtraVersionsFilename();
             var existingList = LoadPreviewBuilds();
-            existingList[build] = new[]{ version, url };
+            existingList[build] = new[] { version, url };
             NewPreviewBuild?.Invoke(null, EventArgs.Empty);
             File.WriteAllText(filename, JsonConvert.SerializeObject(existingList));
+        }
+
+        public static void RemovePreviewBuild(int build) {
+            var filename = ExtraVersionsFilename();
+            var existingList = LoadPreviewBuilds();
+            if (existingList.Remove(build)) {
+                NewPreviewBuild?.Invoke(null, EventArgs.Empty);
+                File.WriteAllText(filename, JsonConvert.SerializeObject(existingList));
+            }
         }
 
         private static string TagRegexCallback(Match m) {
@@ -725,7 +780,7 @@ namespace AcManager.Tools.Data {
         private static readonly Regex TagRegex = new Regex(@"(?!<\\)([*~`])([\s\S]+?)(?!<\\)\1", RegexOptions.Compiled | RegexOptions.Multiline);
 
         public static string ChangelogPrepare(string s) {
-            s = Regex.Replace(s, @"(?<=\n)###+\s*(.+)", "[b]$1[/b]").Trim();
+            s = Regex.Replace(s, @"(?<=\n|^)#+\s*(.+)", "[b]$1[/b]").Trim();
             s = NextCursiveFixRegex.Replace(s, m => $"{m.Groups[1].Value}{m.Groups[2].Value}   {RepeatString("  ", m.Groups[1].Length)}");
             s = CursiveFixRegex.Replace(s, m => $"{m.Groups[1].Value}{m.Groups[2].Value}   {RepeatString("  ", m.Groups[1].Length)}");
             s = ListRegex.Replace(s, m => $" {RepeatString("  ", m.Groups[1].Length)}{(m.Groups[1].Length < 2 ? "•" : "◦")}");

@@ -11,7 +11,7 @@ using System.Windows.Markup;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcManager.Workshop")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2024")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,12 +33,12 @@ using System.Windows.Markup;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.462")]
-[assembly: AssemblyFileVersion("1.0.1.462")]
+[assembly: AssemblyVersion("1.0.1.463")]
+[assembly: AssemblyFileVersion("1.0.1.463")]
 
 [assembly: XmlnsDefinition("http://acstuff.club/app/workshop", "AcManager.Workshop")]
 [assembly: XmlnsDefinition("http://acstuff.club/app/workshop", "AcManager.Workshop.Data")]
 [assembly: XmlnsPrefix("http://acstuff.club/app/workshop", "ws")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
-// Modified at: 5/7/2022 12:43:18 AM
+// Modified at: 25/06/20 12:55:56 PM

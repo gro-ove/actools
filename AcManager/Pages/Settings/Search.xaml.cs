@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using AcManager.Internal;
+using AcManager.Tools.Miscellaneous;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -158,6 +159,61 @@ namespace AcManager.Pages.Settings {
             return GetSubCategory(textBlock) ?? textBlock.Text;
         }
 
+        private static SharedResourceDictionary _settingsDictionary;
+
+        private static SharedResourceDictionary SettingsDictionary => _settingsDictionary ?? (_settingsDictionary = new SharedResourceDictionary {
+            Source = new Uri("/AcManager.Controls;component/Assets/AcSettingsSpecific.xaml", UriKind.Relative)
+        });
+
+        private class SettingCategoryPanel : IDisposable {
+            private readonly List<Panel> _resultPanels;
+            private readonly FrameworkElement _parent;
+            private readonly StackPanel _panelItems;
+
+            string currentSubCategory;
+
+            private void SetSubCategory(string value) {
+                if (value == currentSubCategory || value == null) return;
+
+                var first = _panelItems.Children.Count <= 1;
+                currentSubCategory = value;
+
+                _panelItems.Children.Add(new TextBlock {
+                    Text = currentSubCategory,
+                    Style = _parent.TryFindResource(first ? "SettingsPanel.Heading2.First" : "SettingsPanel.Heading2") as Style
+                });
+            }
+            
+            public SettingCategoryPanel(List<Panel> resultPanels, string category, FrameworkElement parent) {
+                this._resultPanels = resultPanels;
+                this._parent = parent;
+                _panelItems = new StackPanel {
+                    Margin = new Thickness(20, 0, 0, 0),
+                    Children = {
+                        new TextBlock {
+                            Text = category,
+                            Style = parent.TryFindResource("Heading1") as Style,
+                            Margin = new Thickness(-20, resultPanels.Count == 0 ? 0 : 20, 0, 8)
+                        }
+                    }
+                };
+            }
+
+            public void Add(string subCategory, FrameworkElement item) {
+                SetSubCategory(subCategory);
+                if (item.Parent is Panel parent) {
+                    parent.Children.Remove(item);
+                    if (item.DataContext == null) item.DataContext = parent.DataContext;
+                }
+                item.Margin = new Thickness(item.Margin.Left, 0, 0, 8);
+                _panelItems.Children.Add(item);
+            }
+
+            public void Dispose() {
+                _resultPanels.Add(_panelItems);
+            }
+        }
+        
         public async Task LoadAsync(CancellationToken cancellationToken) {
             var s = Stopwatch.StartNew();
 
@@ -206,40 +262,31 @@ namespace AcManager.Pages.Settings {
             s.Restart();
             var resultPanels = new List<Panel>();
             foreach (var category in filtered.Where(x => x.Blocks.Count > 0)) {
-                var panelItems = new StackPanel {
-                    Margin = new Thickness(20, 0, 0, 0),
-                    Children = {
-                        new TextBlock {
-                            Text = category.Category,
-                            Style = TryFindResource("Heading1") as Style,
-                            Margin = new Thickness(-20, resultPanels.Count == 0 ? 0 : 20, 0, 8)
+                using (var dst = new SettingCategoryPanel(resultPanels, category.Category, this)) {
+                    foreach (var item in category.Blocks) {
+                        dst.Add(GetSubCategoryFromHeader(item), item);
+                    }
+                }
+            }
+
+            using (var settings = PatchSettingsModel.Create()) {
+                if (settings.Configs != null) {
+                    foreach (var config in settings.Configs) {
+                        var sections = config.SectionsOwn
+                                .SelectMany(category => category.Where(y => _filter.Test(y.DisplayName) || _filter.Test(y.ToolTip))
+                                        .Select(item => new { item, category })).ToList();
+                        if (sections.Count > 0) {
+                            using (var dst = new SettingCategoryPanel(resultPanels, $"CSP/{config.DisplayName}", this)) {
+                                foreach (var section in sections) {
+                                    dst.Add(section.category.DisplayName, new ContentPresenter {
+                                        ContentTemplate = (DataTemplate)SettingsDictionary["PythonAppConfig.ItemTemplate"],
+                                        Content = section.item,
+                                    });
+                                }
+                            }
                         }
                     }
-                };
-
-                string currentSubCategory = null;
-                void SetSubCategory(string value) {
-                    if (value == currentSubCategory || value == null) return;
-
-                    var first = panelItems.Children.Count <= 1;
-                    currentSubCategory = value;
-
-                    panelItems.Children.Add(new TextBlock {
-                        Text = currentSubCategory,
-                        Style = TryFindResource(first ? "SettingsPanel.Heading2.First" : "SettingsPanel.Heading2") as Style
-                    });
                 }
-
-                foreach (var item in category.Blocks) {
-                    SetSubCategory(GetSubCategoryFromHeader(item));
-                    var panel = (Panel)item.Parent;
-                    panel.Children.Remove(item);
-                    item.DataContext = item.DataContext ?? panel.DataContext;
-                    item.Margin = new Thickness(item.Margin.Left, 0, 0, 8);
-                    panelItems.Children.Add(item);
-                }
-
-                resultPanels.Add(panelItems);
             }
 
             Logging.Debug($"Added: {s.Elapsed.TotalMilliseconds:F1} ms ({resultPanels.Count} children)");

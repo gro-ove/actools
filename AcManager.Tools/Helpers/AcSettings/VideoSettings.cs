@@ -380,6 +380,13 @@ namespace AcManager.Tools.Helpers.AcSettings {
             set => Apply(value, ref _verticalSynchronization);
         }
 
+        private bool _tripleBuffer;
+
+        public bool TripleBuffer {
+            get => _tripleBuffer;
+            set => Apply(value, ref _tripleBuffer);
+        }
+
         private bool _framerateLimitEnabled;
 
         public bool FramerateLimitEnabled {
@@ -710,6 +717,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             ShadowMapSize = section.ContainsKey(@"__CM_ORIGINAL_SHADOW_MAP_SIZE")
                     ? section.GetEntry("__CM_ORIGINAL_SHADOW_MAP_SIZE", ShadowMapSizes, "2048")
                     : section.GetEntry("SHADOW_MAP_SIZE", ShadowMapSizes, "2048");
+            TripleBuffer = Ini.ContainsKey("TRIPLE_BUFFER") && Ini["TRIPLE_BUFFER"].GetBool("ENABLED", false);
 
             var limit = section.GetDouble("FPS_CAP_MS", 0);
             FramerateLimitEnabled = Math.Abs(limit) >= 0.1;
@@ -767,6 +775,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("SHADOW_MAP_SIZE", ShadowMapSize);
             section.Remove("__CM_ORIGINAL_SHADOW_MAP_SIZE");
             section.Set("FPS_CAP_MS", FramerateLimitEnabled ? 1e3 / FramerateLimit : 0d);
+
+            if (TripleBuffer) {
+                ini["TRIPLE_BUFFER"].Set("ENABLED", true);
+            } else {
+                ini.Remove("TRIPLE_BUFFER");
+            }
 
             ini["CAMERA"].Set("MODE", CameraMode);
 

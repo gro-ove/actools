@@ -144,7 +144,7 @@ namespace AcManager.Tools.Data {
                 ScanFunc = d => Directory.GetFiles(d, "settings.ini"),
                 ConfigFactory = (p, f) => {
                     try {
-                        return PythonAppConfig.Create(p, f, true, _userSettingsFilename);
+                        return new []{ PythonAppConfig.Create(p, f, true, _userSettingsFilename) };
                     } catch (Exception e) {
                         Logging.Warning(e);
                         return null;

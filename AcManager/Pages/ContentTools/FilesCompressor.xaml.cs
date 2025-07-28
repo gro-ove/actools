@@ -357,7 +357,7 @@ namespace AcManager.Pages.ContentTools {
                 TotalRatio = (double)CompressedSize / (TotalSize == 0 ? 1 : TotalSize);
 
                 var savedLabel = string.Format(TotalRatio < 0.9 ? ColonConverter.FormatBoth : "{0}", "Saved", (TotalSize - CompressedSize).ToReadableSize());
-                var compressedLabel = string.Format(TotalRatio < 0.9 ? ColonConverter.FormatBoth : "{0}", "Compressed", CompressedSize.ToReadableSize());
+                var compressedLabel = string.Format(TotalRatio < 0.9 ? ColonConverter.FormatBoth : "{0}", "On disk", CompressedSize.ToReadableSize());
 
                 if (_savedSlide == null) {
                     var color = this.ToOxyColor("WindowText");
@@ -413,15 +413,29 @@ namespace AcManager.Pages.ContentTools {
                 () => CompressedCount > 0));
 
         private static async Task Process(string title, IEnumerable<FileToCompress> items, params string[] flags) {
-            const int step = 20;
+            const int step = 10;
             var directory = GetContentDirectory();
 
             try {
                 using (var waiting = new WaitingDialog(title)) {
+                    waiting.SetMultiline(true);
+                    waiting.CancellationText = "Stop";
+                    
                     var queue = items.ToList();
+                    var start = Stopwatch.StartNew();
                     for (var i = 0; i < queue.Count && !waiting.CancellationToken.IsCancellationRequested; i += step) {
                         var files = queue.Skip(i).Take(step).ToList();
+                        var speed = (i + step / 2d) / start.Elapsed.TotalMinutes;
+                        var remainingItems = queue.Count - i;
+                        var remainingTime = speed < 0.0001 || speed > 1e5 ? "Unknown" : $"About {TimeSpan.FromMinutes(remainingItems / speed).ToReadableTime()}";
                         waiting.Report(files[0].RelativePath, i, queue.Count);
+                        waiting.SetDetails(new[] {
+                            $"Speed: {speed:F1} files/min",
+                            $"Time remaining: {remainingTime}",
+                            $"Files remaining: {remainingItems}",
+                            string.Empty,
+                            "[i]Can’t wait? You can always stop and come back to resume the compression later.[/i]"
+                        }.NonNull());
 
                         var filesOffset = i;
                         var filesIndex = 1;
@@ -457,8 +471,6 @@ namespace AcManager.Pages.ContentTools {
                                 throw new InformativeException("Can’t compress files",
                                         $"Tool compact.exe failed to run: {process.ExitCode}. More information in CM logs.");
                             }
-
-                            Logging.Debug(output.ToString());
                         }
                     }
                 }

@@ -131,7 +131,7 @@
 
                   <AdornerDecorator>
                     <!-- Real margin value is in triggers -->
-                    <DockPanel x:Name="LayoutRoot" Margin="7 35 7 7">
+                    <DockPanel x:Name="LayoutRoot" Margin="7 35 7 7" MaxWidth="{TemplateBinding MaxRootWidth}">
                       <!-- Menu -->
                       <DockPanel DockPanel.Dock="Top">
                         <!-- Back button -->

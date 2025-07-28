@@ -126,6 +126,7 @@
     <Compile Include="Commands\DelegateCommandExtensions.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\IAsyncCommand.cs" />
+    <Compile Include="Commands\SimpleLinkCommand.cs" />
     <Compile Include="Commands\UnavailableCommand.cs" />
     <Compile Include="Dialogs\AsyncProgressEntry.cs" />
     <Compile Include="Dialogs\ErrorMessage.cs" />
@@ -481,9 +482,11 @@
     <Compile Include="Windows\Navigation\FragmentNavigationEventArgs.cs" />
     <Compile Include="Windows\IContent.cs" />
     <Compile Include="Windows\IContentLoader.cs" />
+    <Compile Include="Windows\Navigation\ICommandWithToolTip.cs" />
     <Compile Include="Windows\Navigation\ILinkNavigator.cs" />
     <Compile Include="Windows\Media\VisualTreeHelperEx.cs" />
     <Compile Include="Windows\Controls\ModernFrame.cs" />
+    <Compile Include="Windows\Navigation\NavigateEventArgs.cs" />
     <Compile Include="Windows\Navigation\NavigatingCancelEventArgs.cs" />
     <Compile Include="Windows\Navigation\NavigationBaseEventArgs.cs" />
     <Compile Include="Windows\Navigation\LinkCommands.cs" />

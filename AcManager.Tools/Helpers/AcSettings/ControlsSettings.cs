@@ -225,10 +225,17 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new SystemButtonEntryCombined("REV", "Rewind", defaultKey: Keys.D),
             };
 
-            SystemOnlineButtonEntries = new[] {
-                new SystemButtonEntryCombined("__CM_ONLINE_POLL_YES", "Poll: vote Yes", fixedValueCallback: x => new[] { Keys.Y }, delayed: true),
-                new SystemButtonEntryCombined("__CM_ONLINE_POLL_NO", "Poll: vote No", fixedValueCallback: x => new[] { Keys.N }, delayed: true)
-            };
+            if (PatchHelper.IsFeatureSupported(PatchHelper.CustomVotingBinding)) {
+                SystemOnlineButtonEntries = new[] {
+                    new SystemButtonEntryCombined("__CM_ONLINE_POLL_YES", "Poll: vote Yes", defaultKey: Keys.Y),
+                    new SystemButtonEntryCombined("__CM_ONLINE_POLL_NO", "Poll: vote No", defaultKey: Keys.N)
+                };
+            } else {
+                SystemOnlineButtonEntries = new[] {
+                    new SystemButtonEntryCombined("__CM_ONLINE_POLL_YES", "Poll: vote Yes", fixedValueCallback: x => new[] { Keys.Y }, delayed: true),
+                    new SystemButtonEntryCombined("__CM_ONLINE_POLL_NO", "Poll: vote No", fixedValueCallback: x => new[] { Keys.N }, delayed: true)
+                };
+            }
 
             SystemDiscordButtonEntries = new[] {
                 new SystemButtonEntryCombined("__CM_DISCORD_REQUEST_ACCEPT", "Accept join request", fixedValueCallback: x => new[] { Keys.Enter }, delayed: true),

@@ -85,7 +85,8 @@
 
           <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_RenderingModeLabel}" />
-            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.CameraModes}" SelectedItem="{Binding Video.CameraMode}" DisplayMemberPath="DisplayName" />
+            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.CameraModes}" SelectedItem="{Binding Video.CameraMode}"
+                DisplayMemberPath="DisplayName" />
           </DockPanel>
 
           <c:MessageBlock CloseKey="oculusRiftWarningBlock" Margin="0 0 0 8">
@@ -99,7 +100,8 @@
 
           <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_ResolutionLabel}" />
-            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.Resolutions}" SelectedItem="{Binding Video.Resolution, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
+            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.Resolutions}" SelectedItem="{Binding Video.Resolution, Mode=TwoWay}"
+                DisplayMemberPath="DisplayName" />
           </DockPanel>
 
           <CheckBox IsChecked="{Binding FixResolutionAutomatically, Source={x:Static t:SettingsHolder.Common}}" IsEnabled="{Binding Video.Fullscreen}">
@@ -126,6 +128,10 @@
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_VerticalSyncronization}" />
           </CheckBox>
 
+          <CheckBox IsChecked="{Binding Video.TripleBuffer}" ToolTip="Smoothes out FPS, but increases input lag by about 15 ms">
+            <Label Content="Triple buffering" />
+          </CheckBox>
+
           <CheckBox IsChecked="{Binding Video.FramerateLimitEnabled}">
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_LimitFramerate}" />
           </CheckBox>
@@ -137,8 +143,13 @@
           </DockPanel>
 
           <DockPanel c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureWindowPosition}"
-              IsEnabled="{Binding Video.Fullscreen, Converter={StaticResource InvertBooleanConverter}}"
               ToolTip="Requires Custom Shaders Patch, available only without fullscreen mode" ToolTipService.ShowOnDisabled="True">
+            <DockPanel.IsEnabled>
+              <MultiBinding Converter="{StaticResource OrConverter}">
+                <Binding Path="Video.Fullscreen" Converter="{StaticResource InvertBooleanConverter}" />
+                <Binding Path="InclusiveFullscreenSupported" />
+              </MultiBinding>
+            </DockPanel.IsEnabled>
             <Label Content="Show on screen:" />
             <mui:BetterComboBox ItemsSource="{Binding Screens}" SelectedItem="{Binding ForceScreen, Mode=TwoWay}" Nullable="True" IsEditable="False">
               <mui:BetterComboBox.ItemTemplate>
@@ -160,25 +171,29 @@
           <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_AntiAliasingLabel}" />
             <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionMsaaCommand}" />
-            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.AntiAliasingLevels}" SelectedItem="{Binding Video.AntiAliasingLevel}" DisplayMemberPath="DisplayName" />
+            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.AntiAliasingLevels}" SelectedItem="{Binding Video.AntiAliasingLevel}"
+                DisplayMemberPath="DisplayName" />
           </DockPanel>
 
           <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_AnitrosopicFilteringLabel}" />
             <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionAnisotropicCommand}" />
-            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.AnisotropicLevels}" SelectedItem="{Binding Video.AnisotropicLevel}" DisplayMemberPath="DisplayName" />
+            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.AnisotropicLevels}" SelectedItem="{Binding Video.AnisotropicLevel}"
+                DisplayMemberPath="DisplayName" />
           </DockPanel>
 
           <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_WorldDetalLabel}" />
             <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionWorldCommand}" />
-            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.WorldDetailsLevels}" SelectedItem="{Binding Video.WorldDetails}" DisplayMemberPath="DisplayName" />
+            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.WorldDetailsLevels}" SelectedItem="{Binding Video.WorldDetails}"
+                DisplayMemberPath="DisplayName" />
           </DockPanel>
 
           <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_ShadowResolutionLabel}" />
             <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionShadowCommand}" />
-            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.ShadowMapSizes}" SelectedItem="{Binding Video.ShadowMapSize}" DisplayMemberPath="DisplayName" />
+            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.ShadowMapSizes}" SelectedItem="{Binding Video.ShadowMapSize}"
+                DisplayMemberPath="DisplayName" />
           </DockPanel>
 
           <CheckBox x:Name="PatchAcToDisableShadows" IsChecked="{Binding PatchAcToDisableShadows, Source={x:Static t:SettingsHolder.Drive}}"
@@ -189,7 +204,8 @@
 
           <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_SmokeGenerationLabel}" />
-            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.SmokeLevels}" SelectedItem="{Binding Video.SmokeLevel}" DisplayMemberPath="DisplayName" />
+            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.SmokeLevels}" SelectedItem="{Binding Video.SmokeLevel}"
+                DisplayMemberPath="DisplayName" />
           </DockPanel>
 
           <CheckBox IsChecked="{Binding Video.SmokeInMirrors}">
@@ -202,14 +218,15 @@
           <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_ReflectionsResolutionLabel}" />
             <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionCubemapResolutionCommand}" />
-            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.CubemapResolutions}" SelectedItem="{Binding Video.CubemapResolution}" DisplayMemberPath="DisplayName" />
+            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.CubemapResolutions}" SelectedItem="{Binding Video.CubemapResolution}"
+                DisplayMemberPath="DisplayName" />
           </DockPanel>
 
           <StackPanel Visibility="{Binding Video.CubemapResolution.Value, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}">
             <DockPanel>
               <Label Content="{x:Static g:AppStrings.AcSettings_Video_RenderingFrequencyLabel}" />
-              <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.CubemapRenderingFrequencies}" SelectedItem="{Binding Video.CubemapRenderingFrequency}"
-                  DisplayMemberPath="DisplayName" />
+              <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.CubemapRenderingFrequencies}"
+                  SelectedItem="{Binding Video.CubemapRenderingFrequency}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <DockPanel>
@@ -254,13 +271,15 @@
             <DockPanel>
               <Label Content="{x:Static g:AppStrings.AcSettings_Video_GlareQualityLabel}" />
               <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionGlareCommand}" />
-              <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.GlareQualities}" SelectedItem="{Binding Video.GlareQuality}" DisplayMemberPath="DisplayName" />
+              <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.GlareQualities}" SelectedItem="{Binding Video.GlareQuality}"
+                  DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <DockPanel>
               <Label Content="{x:Static g:AppStrings.AcSettings_Video_DepthOfFieldLabel}" />
               <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionDofCommand}" />
-              <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.DepthOfFieldQualities}" SelectedItem="{Binding Video.DepthOfFieldQuality}" DisplayMemberPath="DisplayName" />
+              <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.DepthOfFieldQualities}" SelectedItem="{Binding Video.DepthOfFieldQuality}"
+                  DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <DockPanel>
@@ -303,7 +322,8 @@
           <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_MirrorResolutionLabel}" />
             <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionMirrorsResolutionCommand}" />
-            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.MirrorsResolutions}" SelectedItem="{Binding Video.MirrorsResolution}" DisplayMemberPath="DisplayName" />
+            <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Video.MirrorsResolutions}" SelectedItem="{Binding Video.MirrorsResolution}"
+                DisplayMemberPath="DisplayName" />
           </DockPanel>
 
           <DockPanel Visibility="{Binding Video.MirrorsResolution.Value, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}">

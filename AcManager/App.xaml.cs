@@ -351,6 +351,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.ShowroomUiVerbose, ref LiteShowroomFormWrapperWithTools.OptionAttachedToolsVerboseMode);
             AppArguments.Set(AppFlag.BenchmarkReplays, ref GameDialog.OptionBenchmarkReplays);
             AppArguments.Set(AppFlag.HideRaceCancelButton, ref GameDialog.OptionHideCancelButton);
+            AppArguments.Set(AppFlag.SkipAllResults, ref GameDialog.OptionSkipAllResults);
             AppArguments.Set(AppFlag.PatchSupport, ref PatchHelper.OptionPatchSupport);
             AppArguments.Set(AppFlag.CspReportsLocation, ref CspReportUtils.OptionLocation);
             AppArguments.Set(AppFlag.RingDebug, ref ExtraProgressRings.OptionAnimationDevelopment);
@@ -451,7 +452,7 @@ namespace AcManager {
             BbCodeBlock.OptionImageCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Images");
             BbCodeBlock.OptionEmojiCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Emoji");
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://csp/enable"), new DelegateCommand(() => {
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://csp/enable"), new SimpleLinkCommand(() => {
                 using (var model = PatchSettingsModel.Create()) {
                     var item = model.Configs?
                             .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.SectionsOwn.GetByIdOrDefault("BASIC")?
@@ -460,9 +461,9 @@ namespace AcManager {
                         item.Value = @"1";
                     }
                 }
-            }));
+            }, "Enable Custom Shaders Patch"));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://csp/disable"), new DelegateCommand(() => {
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://csp/disable"), new SimpleLinkCommand(() => {
                 using (var model = PatchSettingsModel.Create()) {
                     var item = model.Configs?
                             .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.SectionsOwn.GetByIdOrDefault("BASIC")?
@@ -471,12 +472,11 @@ namespace AcManager {
                         item.Value = @"0";
                     }
                 }
-            }));
+            }, "Disable Custom Shaders Patch"));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://csp/update"), new DelegateCommand<string>(id => {
-                var version = id.As(0);
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://csp/update"), new SimpleLinkCommand<int>(version => {
                 if (version == 0) {
-                    Logging.Error($"Wrong parameter: {id}");
+                    Logging.Error($"Wrong parameter: {version}");
                     return;
                 }
 
@@ -487,34 +487,53 @@ namespace AcManager {
                 }
 
                 PatchUpdater.Instance.InstallAsync(versionInfo, CancellationToken.None);
-            }));
+            }, "Update Custom Shaders Patch"));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://findMissing/car"), new DelegateCommand<string>(
-                    id => { WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Car)); }));
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://csp/changelog"), new SimpleLinkCommand<int>(version => {
+                if (version == 0) {
+                    Logging.Error($"Wrong parameter: {version}");
+                    return;
+                }
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://findMissing/track"), new DelegateCommand<string>(
-                    id => { WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Track)); }));
+                var versionInfo = PatchUpdater.Instance.Versions.FirstOrDefault(x => x.Build == version);
+                if (versionInfo == null) {
+                    Logging.Error($"Version {version} is missing");
+                    return;
+                }
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadMissing/car"), new DelegateCommand<string>(id => {
+                versionInfo.ViewChangelogCommand.Execute();
+            }, "View changelog"));
+
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://findMissing/car"), new SimpleLinkCommand<string>(
+                    id => { WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Car)); },
+                    "Look for the missing car"));
+
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://findMissing/track"), new SimpleLinkCommand<string>(
+                    id => { WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Track)); },
+                    "Look for the missing track"));
+
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadMissing/car"), new SimpleLinkCommand<string>(id => {
                 var s = id.Split('|');
                 IndexDirectDownloader.DownloadCarAsync(s[0], s.ArrayElementAtOrDefault(1)).Ignore();
-            }));
+            }, "Download missing car"));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadMissing/track"), new DelegateCommand<string>(id => {
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadMissing/track"), new SimpleLinkCommand<string>(id => {
                 var s = id.Split('|');
                 IndexDirectDownloader.DownloadTrackAsync(s[0], s.ArrayElementAtOrDefault(1)).Ignore();
-            }));
+            }, "Download missing track"));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://createNeutralLut"), new DelegateCommand<string>(id =>
-                    NeutralColorGradingLut.CreateNeutralLut(id.As(16))));
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://createNeutralLut"), new SimpleLinkCommand<string>(id =>
+                    NeutralColorGradingLut.CreateNeutralLut(id.As(16)), "Create a neutral LUT"));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://openPage/importantTips"), new DelegateCommand<string>(id =>
-                    LinkCommands.NavigateLinkMainWindow.Execute(new Uri($"/Pages/About/ImportantTipsPage.xaml?Key={id}", UriKind.Relative))));
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://openPage/importantTips"), new SimpleLinkCommand<string>(id =>
+                    LinkCommands.NavigateLinkMainWindow.Execute(new Uri($"/Pages/About/ImportantTipsPage.xaml?Key={id}", UriKind.Relative)), 
+                    "View important tips"));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://openCarLodGeneratorDefinitions"), new DelegateCommand<string>(id =>
-                    WindowsHelper.ViewFile(FilesStorage.Instance.GetContentFile(ContentCategory.CarLodsGeneration, "CommonDefinitions.json").Filename)));
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://openCarLodGeneratorDefinitions"), new SimpleLinkCommand<string>(id =>
+                    WindowsHelper.ViewFile(FilesStorage.Instance.GetContentFile(ContentCategory.CarLodsGeneration, "CommonDefinitions.json").Filename),
+                    "View common definitions"));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://findSrsServers"), new DelegateCommand(() => new ModernDialog {
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://findSrsServers"), new SimpleLinkCommand(() => new ModernDialog {
                 ShowTitle = false,
                 ShowTopBlob = false,
                 Title = "Connect to SimRacingSystem",
@@ -530,7 +549,7 @@ namespace AcManager {
                 SizeToContent = SizeToContent.Manual,
                 ResizeMode = ResizeMode.CanResizeWithGrip,
                 LocationAndSizeKey = @".SrsJoinDialog"
-            }.ShowDialog()));
+            }.ShowDialog(), "Find SRS servers"));
 
             BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += (sender, args) => {
                 if (ArgumentsHandler.IsCmCommand(args.Uri)) {
@@ -558,8 +577,6 @@ namespace AcManager {
             AppArguments.Set(AppFlag.CspPreviewsRunVisible, ref DarkPreviewsAcUpdater.OptionRunVisible);
             AppArguments.Set(AppFlag.CspPreviewsKeepPositions, ref DarkPreviewsAcUpdater.OptionKeepPositions);
             AppArguments.Set(AppFlag.AllowDataScripts, ref ArgumentsHandler.OptionAllowDataScripts);
-            SlimDX.Configuration.DetectDoubleDispose = true;
-            SlimDX.Configuration.EnableObjectTracking = true;
             Filter.OptionSimpleMatching = true;
 
             GameResultExtension.RegisterNameProvider(new GameSessionNameProvider());
@@ -650,7 +667,7 @@ namespace AcManager {
 
             // Discord
             if (AppArguments.Has(AppFlag.DiscordCmd)) {
-                // Do not show main window and wait for futher instructions?
+                // Do not show main window and wait for further instructions?
             }
 
             if (SettingsHolder.Integrated.DiscordIntegration) {
@@ -710,7 +727,7 @@ namespace AcManager {
         private static async Task CheckFaultTolerantHeap() {
             try {
                 await Task.Delay(500);
-                if (ValuesStorage.Get(".fth.shown3", false) && FaultTolerantHeapFix.Check()) {
+                if (ValuesStorage.Get(".fth.shown4", false) && FaultTolerantHeapFix.Check()) {
                     NonfatalError.NotifyBackground("Performance issue detected",
                             "Assetto Corsa performance is negatively affected by FTH. Content Manager can try to fix it.",
                             solutions: new[] {
@@ -749,6 +766,8 @@ namespace AcManager {
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void SetRenderersOptions() {
             AppArguments.Set(AppFlag.TrackMapGeneratorMaxSize, ref TrackMapRenderer.OptionMaxSize);
+            SlimDX.Configuration.DetectDoubleDispose = true;
+            SlimDX.Configuration.EnableObjectTracking = true;
         }
 
         protected override void OnStartup(StartupEventArgs e) {

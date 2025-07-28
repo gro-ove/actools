@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
@@ -394,8 +397,12 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
             set {
                 if (value == _conditionFn) return;
                 _conditionFn = value;
+                _scriptUsesParam = null;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(Serialized));
+                OnPropertyChanged(nameof(ScriptParamName));
+                OnPropertyChanged(nameof(ScriptParamShortName));
+                OnPropertyChanged(nameof(ScriptParamVisibility));
                 OnConditionChanged();
             }
         }
@@ -414,6 +421,21 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
             }
         }
 
+        private string _scriptUsesParam;
+
+        public string ScriptParamName => _scriptUsesParam ?? (_scriptUsesParam = ModeSpecificPresetsHelper.UseScriptParam(this) ?? string.Empty);
+        
+        public string ScriptParamShortName => ScriptParamName.Split('(').First().Trim();
+        
+        public Visibility ScriptParamVisibility => ScriptParamName == string.Empty ? Visibility.Hidden : Visibility.Visible;
+
+        private string _scriptParam;
+
+        public string ScriptParam {
+            get => _scriptParam;
+            set => Apply(value, ref _scriptParam, () => OnPropertyChanged(nameof(Serialized)));
+        }
+
         private bool _deleted;
 
         public bool Deleted {
@@ -429,6 +451,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
             var jObject = JObject.Parse(serialized);
             ConditionId = jObject.GetStringValueOnly("id");
             ConditionFn = jObject.GetStringValueOnly("fn");
+            ScriptParam = jObject.GetStringValueOnly("param");
             Enabled = jObject.GetBoolValueOnly("enabled") ?? true;
             RearViewMirror = jObject.GetBoolValueOnly("mirror");
             Controls.Import(jObject["controls"] as JObject);
@@ -441,6 +464,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         public string Serialized => new JObject {
             ["id"] = ConditionId,
             ["fn"] = ConditionFn,
+            ["param"] = ScriptParam,
             ["enabled"] = Enabled,
             ["mirror"] = RearViewMirror,
             ["controls"] = Controls.Export(),

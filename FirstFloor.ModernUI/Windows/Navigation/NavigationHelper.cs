@@ -3,6 +3,7 @@ using FirstFloor.ModernUI.Windows.Media;
 using System;
 using System.Linq;
 using System.Windows;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Navigation {
     /// <summary>
@@ -147,26 +148,42 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
             if (value == null) {
                 return false;
             }
+            
+            if (value.IsWebUrl()) {
+                uri = new Uri(value, UriKind.Absolute);
+                return true;
+            }
+
+            if (value.StartsWith("cmd://")) {
+                var i = value.IndexOf("?param=", StringComparison.Ordinal);
+                if (i != -1) {
+                    uri = new Uri(value.Substring(0, i), UriKind.Absolute);
+                    parameter = value.Substring(i + 7);
+                    return true;
+                }
+            }
 
             // parse uri value for optional parameter and/or target, eg 'cmd://foo|parameter|target'
             var uriString = value;
-            var parts = uriString.Split(new [] { '|' }, 4);
-            switch (parts.Length) {
-                case 4:
-                    uriString = parts[0];
-                    parameter = parts[1] == string.Empty ? null : Uri.UnescapeDataString(parts[1]);
-                    targetName = parts[2] == string.Empty ? null : Uri.UnescapeDataString(parts[2]);
-                    toolTip = parts[3] == string.Empty ? null : Uri.UnescapeDataString(parts[3]);
-                    break;
-                case 3:
-                    uriString = parts[0];
-                    parameter = parts[1] == string.Empty ? null : Uri.UnescapeDataString(parts[1]);
-                    targetName = parts[2] == string.Empty ? null : Uri.UnescapeDataString(parts[2]);
-                    break;
-                case 2:
-                    uriString = parts[0];
-                    parameter = parts[1] == string.Empty ? null : Uri.UnescapeDataString(parts[1]);
-                    break;
+            if (value.IndexOf('|') != -1) {
+                var parts = uriString.Split(new[] { '|' }, 4);
+                switch (parts.Length) {
+                    case 4:
+                        uriString = parts[0];
+                        parameter = parts[1] == string.Empty ? null : Uri.UnescapeDataString(parts[1]);
+                        targetName = parts[2] == string.Empty ? null : Uri.UnescapeDataString(parts[2]);
+                        toolTip = parts[3] == string.Empty ? null : Uri.UnescapeDataString(parts[3]);
+                        break;
+                    case 3:
+                        uriString = parts[0];
+                        parameter = parts[1] == string.Empty ? null : Uri.UnescapeDataString(parts[1]);
+                        targetName = parts[2] == string.Empty ? null : Uri.UnescapeDataString(parts[2]);
+                        break;
+                    case 2:
+                        uriString = parts[0];
+                        parameter = parts[1] == string.Empty ? null : Uri.UnescapeDataString(parts[1]);
+                        break;
+                }
             }
 
             return Uri.TryCreate(uriString, UriKind.RelativeOrAbsolute, out uri);

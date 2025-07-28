@@ -237,7 +237,7 @@ namespace AcManager.Pages.Drive {
                     ScanFunc = d => Directory.GetFiles(d, "settings.ini"),
                     ConfigFactory = (p, f) => {
                         try {
-                            return PythonAppConfig.Create(p, f, true, _mode.GetUserSettingsFilename());
+                            return new []{ PythonAppConfig.Create(p, f, true, _mode.GetUserSettingsFilename()) };
                         } catch (Exception e) {
                             Logging.Warning(e);
                             return null;

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Data;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
@@ -34,7 +35,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public override string NewFormat => "Custom Shaders Patch";
         public override string ExistingFormat => "Update for Custom Shaders Patch";
 
-        private static readonly UpdateOption CleanOption = new UpdateOption("Clean old configs and shaders first", false);
+        private static readonly UpdateOption CleanOption = new UpdateOption("Clean old configs first", false);
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {
             yield return new UpdateOption(ToolsStrings.Installator_UpdateEverything, false);
@@ -52,6 +53,12 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             var installedLogStream = new MemoryStream();
             var installedLog = new StreamWriter(installedLogStream);
             IsBusy = true;
+
+            if (SettingsHolder.Common.DeveloperMode
+                && File.Exists(Path.Combine(AcRootDirectory.Instance.RequireValue, ".dev.csp"))) {
+                // My dev folder is in AC root folder, so installing a CSP build here could be kinda disastrous
+                throw new Exception("Careful please");
+            }
 
             Logging.Debug("Installing CSP");
             return new CopyCallback(info => {

@@ -3648,7 +3648,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Compressed.
+        ///   Looks up a localized string similar to On disk.
         /// </summary>
         public static string ContentTools_FilesCompressor_Compressed {
             get {
@@ -3675,8 +3675,8 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CM scans for all models and textures (KN5 and DDS files) — those files can be compressed properly, sometimes even reducing their size several times. There is not much benefit in compressing files such as soundbanks or PNG images: those formats already have a decent compression, and it will only slightly slow down AC loading.
-        ///[br][br]I recommend to use the best compression algorithm, LZX. It will add some CPU overhead during loading, but CPU has nothing to do while it’s waiting for disk to get the data anywa [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to Scanning for well compressable files, such as DDS textures and KN5 models (other formats, such as soundbanks or PNG images, are already well compressed).
+        ///[br][br]Note: while this compression adds some extra CPU usage during loading, it wouldn’t affect FPS at all. If you don’t want to return to this tool again and again, there is an option in CM/Content settings for compressing files in background..
         /// </summary>
         public static string ContentTools_FilesCompressor_Description {
             get {
@@ -3694,7 +3694,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Original.
+        ///   Looks up a localized string similar to Size.
         /// </summary>
         public static string ContentTools_FilesCompressor_Original {
             get {

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    public class PythonAppConfigs : ObservableCollection<PythonAppConfig>, IDisposable {
+    public class PythonAppConfigs : ChangeableObservableCollection<PythonAppConfig>, IDisposable {
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
         [NotNull]
@@ -27,7 +29,9 @@ namespace AcManager.Tools.Objects {
                 : base((configParams.ScanFunc ?? GetConfigFiles)(configParams.PythonAppLocation)
                         .Select(x => configParams.ConfigFactory != null
                                 ? configParams.ConfigFactory(configParams, x)
-                                : PythonAppConfig.Create(configParams, x, false))
+                                : new []{ PythonAppConfig.Create(configParams, x, false) })
+                        .NonNull()
+                        .SelectMany(x => x)
                         .Where(x => x?.SectionsOwn.Any(y => y.Count > 0) == true)
                         .OrderBy(x => x.Order.As(0d)).ThenBy(x => x.DisplayName)) {
             ConfigParams = configParams;
@@ -76,6 +80,9 @@ namespace AcManager.Tools.Objects {
 
         public void Dispose() {
             ConfigParams.DisposalAction?.Invoke();
+            foreach (var config in Items) {
+                config.Dispose();
+            }
         }
     }
 }

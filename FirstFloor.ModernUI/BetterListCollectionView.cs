@@ -22,7 +22,7 @@ namespace FirstFloor.ModernUI {
 
             if (Dispatcher != Application.Current.Dispatcher) {
 #if DEBUG
-                MessageDialog.Show(@"Incorrectly created BetterListCollectionView. Use debugger to trace where it comes from.");
+                MessageBox.Show(@"Incorrectly created BetterListCollectionView. Use debugger to trace where it comes from.");
 #endif
             }
         }
