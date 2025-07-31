@@ -408,6 +408,7 @@
     <Compile Include="Helpers\AcSettings\FanatecSettings.cs" />
     <Compile Include="Helpers\AcSettings\LauncherSettings.cs" />
     <Compile Include="Helpers\AcSettings\MessagesSettings.cs" />
+    <Compile Include="Helpers\AcSettings\MouseHiderSettings.cs" />
     <Compile Include="Helpers\AcSettings\PitMenuSettings.cs" />
     <Compile Include="Helpers\Api\ApiCacheThing.cs" />
     <Compile Include="Helpers\Api\HttpClientHolder.cs" />

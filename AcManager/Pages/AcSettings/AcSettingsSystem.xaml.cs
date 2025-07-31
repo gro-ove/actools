@@ -20,6 +20,7 @@ namespace AcManager.Pages.AcSettings {
             public SystemSettings System => AcSettingsHolder.System;
             public CameraOrbitSettings CameraOrbit => AcSettingsHolder.CameraOrbit;
             public PitMenuSettings PitMenu => AcSettingsHolder.PitMenu;
+            public MouseHiderSettings MouseHider => AcSettingsHolder.MouseHider;
             public SystemOptionsSettings SystemOptions => AcSettingsHolder.SystemOptions;
             public GhostSettings Ghost => AcSettingsHolder.Ghost;
 

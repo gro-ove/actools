@@ -63,6 +63,15 @@ namespace AcManager.Tools.Helpers.AcLog {
         [Description("Car’s blurred objects definitions (blurred_objects.ini) are incorrect: object {0} is missing")]
         IncorrectBlurredObjects,
 
+        [Description("Engine LUT of {0} might be broken")]
+        EngineCurveIsDamaged,
+
+        [Description("Some LUT of {0} might be broken")]
+        SomeCurveIsDamaged,
+
+        [Description("Engine of {0} might be broken")]
+        EngineIsDamaged,
+
         [Description("Drivetrain of {0} might be broken")]
         DrivetrainIsDamaged,
 

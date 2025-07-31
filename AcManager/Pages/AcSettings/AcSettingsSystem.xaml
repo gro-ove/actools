@@ -40,6 +40,11 @@
           <Label Content="Automatically recover car if flipped" />
         </CheckBox>
         
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding MouseHider.HideTimeout}" Postfix=" s" Content="Hide mouse after" />
+          <Slider Minimum="1" Maximum="15" Value="{Binding MouseHider.HideTimeout}" TickFrequency="1" TickPlacement="BottomRight" />
+        </DockPanel>
+        
         <!--<CheckBox IsChecked="{Binding SystemOptions.IgnoreResultTeleport}">
           <Label Content="Disable teleporting at the end of race" />
         </CheckBox>-->

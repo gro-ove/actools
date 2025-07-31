@@ -744,7 +744,7 @@ namespace AcManager.Controls.Presentation {
                 ValuesStorage.Set("Settings.AppAppearanceManager.LimitWindowWidth", value);
                 OnPropertyChanged();
                 if (Application.Current.MainWindow is ModernWindow modernWindow) {
-                    modernWindow.MaxRootWidth = value ? 1300d : double.PositiveInfinity;
+                    modernWindow.MaxRootWidth = value ? 1400d : double.PositiveInfinity;
                 }
             }
         }
