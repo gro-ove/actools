@@ -18,7 +18,7 @@ using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Objects {
     public sealed class Kn5SkinnedObject : TrianglesRenderableObject<InputLayouts.VerticePNTGW4B>, IKn5RenderableObject {
-        public readonly bool IsCastingShadows;
+        public bool IsCastingShadows;
 
         public Kn5Node OriginalNode { get; }
 
@@ -103,6 +103,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public void SetTransparent(bool? isTransparent) {
             _isTransparent = isTransparent ?? OriginalNode.IsTransparent;
+        }
+
+        public void SetCastShadows(bool? castShadows) {
+            IsCastingShadows = castShadows ?? OriginalNode.CastShadows;
         }
 
         [CanBeNull]

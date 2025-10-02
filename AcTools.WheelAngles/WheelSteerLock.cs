@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcTools.WheelAngles {
@@ -19,12 +20,12 @@ namespace AcTools.WheelAngles {
         [CanBeNull]
         public static IWheelSteerLockSetter Get([CanBeNull] string productGuid) {
             Initialize();
-            return _instances.FirstOrDefault(x => x.Test(productGuid));
+            return _instances.Select(x => x.Test(productGuid)).NonNull().FirstOrDefault();
         }
 
         public static bool IsSupported([CanBeNull] string productGuid) {
             Initialize();
-            return _instances.Any(x => x.Test(productGuid));
+            return _instances.Any(x => x.Test(productGuid) != null);
         }
 
         public static bool IsSupported([CanBeNull] string productGuid, [CanBeNull] out WheelOptionsBase options) {

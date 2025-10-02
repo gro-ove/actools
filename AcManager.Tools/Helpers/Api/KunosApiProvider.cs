@@ -622,8 +622,19 @@ namespace AcManager.Tools.Helpers.Api {
             }
 
             private void Receive() {
-                var state = new ReceiveState();
-                _socket.BeginReceiveFrom(state.Buffer, 0, 4, SocketFlags.None, ref state.EndPoint, ReceiveCallback, state);
+                try {
+                    var state = new ReceiveState();
+                    _socket.BeginReceiveFrom(state.Buffer, 0, 4, SocketFlags.None, ref state.EndPoint, ar => {
+                        try {
+                            ReceiveCallback(ar);
+                        } finally {
+                            Receive();
+                        }
+                    }, state);
+                } catch (Exception e) {
+                    Logging.Warning($"Receive error: {e.Message}");
+                    Task.Delay(1000).ContinueWith(r => Receive());
+                }
             }
 
             private void FinishResponse(WaitingComplete complete) {
@@ -671,9 +682,6 @@ namespace AcManager.Tools.Helpers.Api {
                 } catch (Exception e) {
                     receiveError = e.Message;
                 }
-
-                // Continue receiving data
-                Receive();
 
                 _received.Enqueue(receivedBytes == 3 && args.Buffer[0] == 200
                         ? new WaitingComplete(args.EndPoint, BitConverter.ToInt16(args.Buffer, 1), timePoint)

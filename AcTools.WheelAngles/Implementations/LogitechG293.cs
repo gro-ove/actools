@@ -6,8 +6,8 @@ namespace AcTools.WheelAngles.Implementations {
     internal abstract class LogitechG923 : LogitechG25 {
         public override string ControllerName => "Logitech G923";
 
-        public override bool Test(string productGuid) {
-            return string.Equals(productGuid, "C266046D-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase);
+        public override IWheelSteerLockSetter Test(string productGuid) {
+            return string.Equals(productGuid, "C266046D-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase) ? this : null;
         }
 
         protected override string GetRegistryPath() {

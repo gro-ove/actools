@@ -950,6 +950,13 @@ namespace AcManager.CustomShowroom {
                 set => Apply(value, ref _selectedObjectTransparent);
             }
 
+            private string _selectedObjectCastsShadow;
+
+            public string SelectedObjectCastsShadow {
+                get => _selectedObjectCastsShadow;
+                set => Apply(value, ref _selectedObjectCastsShadow);
+            }
+
             private void OnRendererPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(Renderer.MagickOverride):
@@ -992,6 +999,7 @@ namespace AcManager.CustomShowroom {
                             var kn5Node = Renderer?.SelectedObject?.OriginalNode;
                             SelectedObjectPath = kn5Node != null ? kn5?.GetParentPath(kn5Node) : null;
                             SelectedObjectTransparent = (kn5Node?.IsTransparent == true ? UiStrings.Yes : UiStrings.No).ToSentenceMember();
+                            SelectedObjectCastsShadow = (kn5Node?.CastShadows == true ? UiStrings.Yes : UiStrings.No).ToSentenceMember();
                             _viewObjectCommand?.RaiseCanExecuteChanged();
                         });
                         break;
@@ -1216,10 +1224,10 @@ namespace AcManager.CustomShowroom {
                 }
             }, () => Renderer?.GetKn5(Renderer.SelectedObject)?.IsEditable == true));
 
-            private AsyncCommand _ToggleMeshTransparencyCommand;
+            private AsyncCommand _toggleMeshTransparencyCommand;
 
             public AsyncCommand ToggleMeshTransparencyCommand
-                => _ToggleMeshTransparencyCommand ?? (_ToggleMeshTransparencyCommand = new AsyncCommand(async () => {
+                => _toggleMeshTransparencyCommand ?? (_toggleMeshTransparencyCommand = new AsyncCommand(async () => {
                     try {
                         var selected = Renderer?.SelectedObject;
                         if (selected == null) return;
@@ -1236,6 +1244,26 @@ namespace AcManager.CustomShowroom {
                         NonfatalError.Notify("Unexpected exception", e);
                     }
                 }, () => Renderer?.GetKn5(Renderer.SelectedObject)?.IsEditable == true));
+
+            private AsyncCommand _ToggleMeshCastShadowCommand;
+
+            public AsyncCommand ToggleMeshCastShadowCommand => _ToggleMeshCastShadowCommand ?? (_ToggleMeshCastShadowCommand = new AsyncCommand(async () => {
+                try {
+                    var selected = Renderer?.SelectedObject;
+                    if (selected == null) return;
+
+                    var kn5 = Renderer?.GetKn5(Renderer.SelectedObject);
+                    if (kn5 == null) return;
+
+                    selected.OriginalNode.CastShadows = !selected.OriginalNode.CastShadows;
+                    selected.SetTransparent(selected.OriginalNode.IsTransparent);
+                    using (WaitingDialog.Create("Updating model…")) {
+                        await kn5.UpdateKn5(_renderer, _skin);
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Unexpected exception", e);
+                }
+            }, () => Renderer?.GetKn5(Renderer.SelectedObject)?.IsEditable == true));
 
             private DelegateCommand<ToolsKn5ObjectRenderer.TextureInformation> _viewTextureCommand;
 

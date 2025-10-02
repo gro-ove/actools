@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using HidLibrary;
@@ -8,16 +9,23 @@ namespace AcTools.WheelAngles.Implementations {
     [UsedImplicitly]
     internal class SimuCube : IWheelSteerLockSetter {
         public virtual string ControllerName => "SimuCUBE";
+        private int _lockedPid;
 
         public WheelOptionsBase GetOptions() {
             return null;
         }
 
-        public virtual bool Test(string productGuid) {
-            return string.Equals(productGuid, "0D5A16D0-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(productGuid, "0D5F16D0-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(productGuid, "0D6016D0-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(productGuid, "0D6116D0-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase);
+        private static readonly Dictionary<string, int> KnownGuiDs =new Dictionary<string, int> {
+            ["0D5A16D0-0000-0000-0000-504944564944"] = 0x0D5A,
+            ["0D5F16D0-0000-0000-0000-504944564944"] = 0X0D5F,
+            ["0D6016D0-0000-0000-0000-504944564944"] = 0x0D60,
+            ["0D6116D0-0000-0000-0000-504944564944"] = 0x0D61,
+        };
+
+        public virtual IWheelSteerLockSetter Test(string productGuid) {
+            return KnownGuiDs.Where(p => string.Equals(p.Key, productGuid, StringComparison.CurrentCultureIgnoreCase))
+                    .Select(p => new SimuCube { _lockedPid = p.Value })
+                    .FirstOrDefault();
         }
 
         public int MaximumSteerLock => 65535;
@@ -62,14 +70,13 @@ namespace AcTools.WheelAngles.Implementations {
             Marshal.Copy(ptr, data, 0, CommandPacket.Size);
             Marshal.FreeHGlobal(ptr);
 
-            var result = HidDevices.Enumerate(0x16d0, 0x0d5a, 0x0d5f, 0x0d60, 0x0d61).Aggregate(false, (a, b) => {
-                using (b) {
-                    AcToolsLogging.Write($"Set to {steerLock}: " + b.DevicePath);
-                    return a | b.Write(data);
-                }
-            });
-
-            return result;
+            return HidDevices.Enumerate(0x16d0, _lockedPid != 0 ? new[] { _lockedPid } : KnownGuiDs.Values.ToArray())
+                    .Aggregate(false, (a, b) => {
+                        using (b) {
+                            AcToolsLogging.Write($"Set to {steerLock}: " + b.DevicePath);
+                            return a | b.Write(data);
+                        }
+                    });
         }
     }
 }

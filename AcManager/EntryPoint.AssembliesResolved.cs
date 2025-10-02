@@ -239,7 +239,7 @@ namespace AcManager {
 
             if (!_initialized) {
                 try {
-                    MessageBox.Show(text, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(text, "Fatal Error (1)", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } catch (Exception) {
                     // ignored
                 }
@@ -256,7 +256,7 @@ namespace AcManager {
             }
 
             if (e is AccessViolationException) {
-                MessageBox.Show(text, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(text, "Fatal Error (2)", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else {
                 try {
                     UnhandledExceptionFancyHandler(e);
@@ -275,7 +275,7 @@ namespace AcManager {
                                 WindowsHelper.ViewInBrowser("https://www.microsoft.com/en-us/download/details.aspx?id=48145");
                             }
                         } else {
-                            MessageBox.Show(text, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(text, "Fatal Error (3)", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     } catch (Exception) {
                         // ignored

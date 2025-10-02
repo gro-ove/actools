@@ -347,6 +347,7 @@
                   <Label Content="Full path:" />
                   <mui:SelectableTextBlock Text="{Binding SelectedObjectPath}" Placeholder="?" />
                 </DockPanel>
+                
                 <DockPanel Style="{StaticResource DockPanel}">
                   <mui:ContextMenuButton DockPanel.Dock="Right" CommandParameter="{Binding}" Height="20" Margin="4 0 0 0" Padding="4 0"
                       Visibility="{Binding ToggleMeshTransparencyCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}">
@@ -356,6 +357,16 @@
                   </mui:ContextMenuButton>
                   <Label Content="Transparent:" />
                   <mui:SelectableTextBlock Text="{Binding SelectedObjectTransparent}" Placeholder="?" />
+                </DockPanel>
+                <DockPanel Style="{StaticResource DockPanel}">
+                  <mui:ContextMenuButton DockPanel.Dock="Right" CommandParameter="{Binding}" Height="20" Margin="4 0 0 0" Padding="4 0"
+                      Visibility="{Binding ToggleMeshCastShadowCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}">
+                    <ContextMenu>
+                      <MenuItem Header="Toggle cast shadow flag and update KN5" Command="{Binding ToggleMeshCastShadowCommand}" />
+                    </ContextMenu>
+                  </mui:ContextMenuButton>
+                  <Label Content="Casts shadows:" />
+                  <mui:SelectableTextBlock Text="{Binding SelectedObjectCastsShadow}" Placeholder="?" />
                 </DockPanel>
 
                 <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />

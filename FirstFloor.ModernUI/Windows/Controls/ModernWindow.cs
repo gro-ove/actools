@@ -42,8 +42,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public LinkGroup CurrentLinkGroup => _menu?.SelectedLinkGroup;
 
-        private byte _sizeState;
-
         public override void OnApplyTemplate() {
             base.OnApplyTemplate();
 
@@ -60,9 +58,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             _menu = GetTemplateChild(@"PART_Menu") as ModernMenu;
-
-            _sizeState = 0;
-            // OnUpdateSize();
         }
 
         private void OnFrameNavigated(object sender, NavigationEventArgs navigationEventArgs) {

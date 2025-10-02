@@ -23,8 +23,8 @@ namespace AcTools.WheelAngles.Implementations {
             return _options;
         }
 
-        public override bool Test(string productGuid) {
-            return string.Equals(productGuid, "C24F046D-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase);
+        public override IWheelSteerLockSetter Test(string productGuid) {
+            return string.Equals(productGuid, "C24F046D-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase) ? this : null;
         }
 
         protected override string GetRegistryPath() {

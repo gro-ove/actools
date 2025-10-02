@@ -100,6 +100,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         int IKn5RenderableObject.TrianglesCount => GetTrianglesCount();
 
         public void SetTransparent(bool? isTransparent) { }
+        public void SetCastShadows(bool? castShadows) { }
 
         private TrianglesRenderableObject<InputLayouts.VerticePNTG> _pntgObject;
 

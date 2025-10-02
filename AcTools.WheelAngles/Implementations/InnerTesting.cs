@@ -19,15 +19,15 @@ namespace AcTools.WheelAngles.Implementations {
             return null;
         }
 
-        public virtual bool Test(string productGuid) {
+        public virtual IWheelSteerLockSetter Test(string productGuid) {
             if (string.Equals(productGuid.Substring(4), "0EB7-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase)) {
                 AcToolsLogging.Write("F. device detected");
 
                 var isSupported = KnownDeviceIDs.Any(x => string.Equals(productGuid.Substring(0, 4), x.ToString("X4")));
                 AcToolsLogging.Write("F. device supported: " + isSupported);
-                return isSupported;
+                return isSupported ? this : null;
             }
-            return false;
+            return null;
             // return string.Equals(productGuid.Substring(4), "0EB7-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase)
             //        && KnownDeviceIDs.Any(x => string.Equals(productGuid.Substring(0, 4), x.ToString("X4")));
         }

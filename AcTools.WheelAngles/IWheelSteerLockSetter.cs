@@ -7,7 +7,8 @@ namespace AcTools.WheelAngles {
         [CanBeNull]
         WheelOptionsBase GetOptions();
 
-        bool Test(string productGuid);
+        IWheelSteerLockSetter Test(string productGuid);
+        
         bool Apply(int angle, bool isReset, out int appliedValue);
 
         int MaximumSteerLock { get; }

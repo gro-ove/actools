@@ -13,8 +13,8 @@ namespace AcTools.WheelAngles.Implementations {
             return null;
         }
 
-        public virtual bool Test(string productGuid) {
-            return string.Equals(productGuid, "0FFBF055-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase);
+        public virtual IWheelSteerLockSetter Test(string productGuid) {
+            return string.Equals(productGuid, "0FFBF055-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase) ? this : null;
         }
 
         public int MaximumSteerLock => 65535;

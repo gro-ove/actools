@@ -6,8 +6,8 @@ namespace AcTools.WheelAngles.Implementations {
     internal class ThrustmasterTMX : ThrustmasterT500 {
         public override string ControllerName => "Thrustmaster TMX";
 
-        public override bool Test(string productGuid) {
-            return string.Equals(productGuid, "B67F044F-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase);
+        public override IWheelSteerLockSetter Test(string productGuid) {
+            return string.Equals(productGuid, "B67F044F-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase) ? this : null;
         }
 
         protected override int ProductId => 0xb67f;
