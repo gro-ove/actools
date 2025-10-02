@@ -20,6 +20,7 @@ namespace AcTools.WheelAngles.Implementations {
             ["0D5F16D0-0000-0000-0000-504944564944"] = 0X0D5F,
             ["0D6016D0-0000-0000-0000-504944564944"] = 0x0D60,
             ["0D6116D0-0000-0000-0000-504944564944"] = 0x0D61,
+            ["0D6616D0-0000-0000-0000-504944564944"] = 0x0D66,
         };
 
         public virtual IWheelSteerLockSetter Test(string productGuid) {
