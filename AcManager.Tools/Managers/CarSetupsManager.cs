@@ -73,7 +73,6 @@ namespace AcManager.Tools.Managers {
 
     public enum CarSetupsRemoteSource {
         None = 0,
-        TheSetupMarket
     }
 
     public class RemoteSetupsManager : BaseAcManager<RemoteCarSetupObject> {

@@ -421,7 +421,6 @@
     <Compile Include="Helpers\Api\Kunos\ServerInformationExtra.cs" />
     <Compile Include="Helpers\Api\PositionStackApiProvider.cs" />
     <Compile Include="Helpers\Api\RemoteSetupInformation.cs" />
-    <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
     <Compile Include="Helpers\AudioDevice.cs" />
     <Compile Include="Helpers\AudioDevices.cs" />
     <Compile Include="Helpers\BatchAction.cs" />
