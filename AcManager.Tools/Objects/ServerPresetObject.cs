@@ -409,7 +409,7 @@ namespace AcManager.Tools.Objects {
                 section.Remove("WELCOME_MESSAGE");
             }
 
-            section.Set("UDP_PLUGIN_LOCAL_PORT", PluginUdpPort);
+            section.Set("UDP_PLUGIN_LOCAL_PORT", PluginUdpPort?.ToInvariantString() ?? "");
             section.Set("UDP_PLUGIN_ADDRESS", PluginUdpAddress);
             section.Set("AUTH_PLUGIN_ADDRESS", PluginAuthAddress);
 
