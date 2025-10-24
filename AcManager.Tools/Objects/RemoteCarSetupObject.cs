@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
-using AcManager.Tools.Helpers.Api.TheSetupMarket;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -57,17 +56,7 @@ namespace AcManager.Tools.Objects {
         private string _loadedData;
 
         private async Task EnsureDataLoadedInner() {
-            try {
-                _loadedData = await TheSetupMarketApiProvider.GetSetup(_information.Id) ?? "";
-                _iniFile = IniFile.Parse(_loadedData);
-
-                Tyres = _iniFile["TYRES"].GetInt("VALUE", 0);
-                Logging.Debug(Tyres);
-                OnPropertyChanged(nameof(Values));
-            } finally {
-                _loaded = true;
-                _loadingTask = null;
-            }
+            throw new NotImplementedException();
         }
 
         public override int CompareTo(AcPlaceholderNew o) {

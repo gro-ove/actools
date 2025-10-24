@@ -16,7 +16,6 @@ using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.Api.TheSetupMarket;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Miscellaneous;
@@ -248,9 +247,6 @@ namespace AcManager.Tools {
 
                     case "rsr/setup":
                         return await ProcessRsrSetup(ParamRequire(@"id"));
-
-                    case "thesetupmarket/setup":
-                        return await ProcessTheSetupMarketSetup(ParamRequire(@"id"));
 
                     case "tool/update-car-preview":
                         var car = await CarsManager.Instance.GetByIdAsync(ParamRequire(@"car"));
@@ -546,39 +542,6 @@ namespace AcManager.Tools {
         private static async Task<ArgumentHandleResult> ProcessRsrEvent(string id) {
             Logging.Write("RSR Event: " + id);
             return await Rsr.RunAsync(id) ? ArgumentHandleResult.SuccessfulShow : ArgumentHandleResult.Failed;
-        }
-
-        private static async Task<ArgumentHandleResult> ProcessTheSetupMarketSetup(string id) {
-            var details = await TheSetupMarketApiProvider.GetSetupFullInformation(id);
-            if (details == null) {
-                throw new InformativeException(AppStrings.Arguments_CannotInstallCarSetup, "The Setup Market is unavailable or has changed.");
-            }
-
-            var car = CarsManager.Instance.GetById(details.Item1.CarId);
-            var track = details.Item1.TrackKunosId == null ? null : TracksManager.Instance.GetLayoutByKunosId(details.Item1.TrackKunosId);
-            var setupId = details.Item1.FileName;
-
-            var result = ShowDialog(new SharedEntry {
-                Author = details.Item1.Author,
-                Name = setupId.ApartFromLast(".ini", StringComparison.OrdinalIgnoreCase),
-                Data = new byte[0],
-                EntryType = SharedEntryType.CarSetup,
-                Id = setupId,
-                Target = car?.DisplayName ?? details.Item1.CarId
-            }, false, applyable: false, additionalButton: AppStrings.Arguments_SaveAsGeneric);
-
-            switch (result) {
-                case Choise.Save:
-                case Choise.Extra:
-                    var filename = FileUtils.EnsureUnique(Path.Combine(AcPaths.GetCarSetupsDirectory(details.Item1.CarId),
-                            result == Choise.Save
-                                    ? (track?.Id ?? details.Item1.TrackKunosId ?? CarSetupObject.GenericDirectory) : CarSetupObject.GenericDirectory, setupId));
-                    FileUtils.EnsureFileDirectoryExists(filename);
-                    File.WriteAllText(filename, details.Item2);
-                    return ArgumentHandleResult.SuccessfulShow;
-                default:
-                    return ArgumentHandleResult.Failed;
-            }
         }
 
         private static async Task<ArgumentHandleResult> ProcessRsrSetup(string id) {

@@ -521,8 +521,10 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_PackCarData : BatchAction<CarObject> {
             public static readonly BatchAction_PackCarData Instance = new BatchAction_PackCarData();
 
+            public StoredValue<bool> OverrideExisting { get; } = Stored.Get("BatchAction_AnalyzeCar.OverrideExisting", false);
+
             public BatchAction_PackCarData()
-                    : base("Pack car data", "Pack “data” folder into “data.acd” if there is no such file", "Developer", null) {
+                    : base("Pack car data", "Pack “data” folder into “data.acd” if there is no such file", "Developer", "Batch.PackCarData") {
                 DisplayApply = "Unpack";
             }
 
@@ -534,8 +536,11 @@ namespace AcManager.Pages.Lists {
                 try {
                     var destination = Path.Combine(obj.Location, "data.a" + "cd");
                     var dataDirectory = Path.Combine(obj.Location, "data");
-                    if (!Directory.Exists(dataDirectory) || File.Exists(destination)) {
+                    if (!Directory.Exists(dataDirectory) || !OverrideExisting.Value && File.Exists(destination)) {
                         return;
+                    }
+                    if (OverrideExisting.Value && File.Exists(destination)) {
+                        FileUtils.Recycle(destination);
                     }
                     Acd.FromDirectory(dataDirectory).Save(destination);
                 } catch (Exception e) {

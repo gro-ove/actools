@@ -454,14 +454,6 @@
                   </FrameworkElement.ContextMenu>
                 </c:NotesBlock>
 
-                <mui:BooleanSwitch Value="{Binding TheSetupMarketCounter, Source={x:Static t:SettingsHolder.Integrated}}" CollapseOnFalse="True"
-                    c:PropertiesGrid.Label="Setups on TSM:">
-                  <DockPanel Background="Transparent" ToolTip="{x:Static g:AppStrings.Selected_CarPage_New_TSMSetups_Tooltip}">
-                    <Button Content="…" Padding="4 0" DockPanel.Dock="Right" Margin="4 0 1 0" Click="OnTsmSetupsButtonClick" />
-                    <mui:PlaceholderTextBlock Placeholder="…" Text="{Binding SelectedObject.TsmSetupsCount}" />
-                  </DockPanel>
-                </mui:BooleanSwitch>
-
                 <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
                     Text="{Binding SelectedObject.TotalDrivenDistanceKm, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.DistanceFormat}}">
                   <FrameworkElement.ContextMenu>

@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using AcManager.Tools.Helpers.Api.TheSetupMarket;
 using AcManager.Tools.Profile;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
@@ -41,24 +40,5 @@ namespace AcManager.Tools.Objects {
                 RaiseTotalDrivenDistanceChanged();
             }
         }));
-
-        private bool _tsmSetupsCountLoaded;
-        private int? _tsmSetupsCount;
-
-        public int? TsmSetupsCount {
-            get {
-                if (!_tsmSetupsCountLoaded) {
-                    _tsmSetupsCountLoaded = true;
-                    UpdateTsmSetupsCount();
-                }
-
-                return _tsmSetupsCount;
-            }
-            set => Apply(value, ref _tsmSetupsCount);
-        }
-
-        private async void UpdateTsmSetupsCount() {
-            TsmSetupsCount = (await TheSetupMarketApiProvider.GetAvailableSetups(Id))?.Count;
-        }
     }
 }

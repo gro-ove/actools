@@ -911,9 +911,5 @@ namespace AcManager.Pages.Selected {
                         ToolsStrings.Common_Warning, MessageBoxButton.OK);
             }
         }
-
-        private void OnTsmSetupsButtonClick(object sender, RoutedEventArgs e) {
-            CarSetupsListPage.Open(_object, CarSetupsRemoteSource.TheSetupMarket);
-        }
     }
 }

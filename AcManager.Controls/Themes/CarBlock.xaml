@@ -30,13 +30,6 @@
                 <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0" LabelWidth="100" VerticalSpacing="4">
                   <c:RatingBar c:PropertiesGrid.Label="Rating:" Rating="{Binding Rating}" HorizontalAlignment="Left" />
                   <c:NotesBlock c:PropertiesGrid.Label="Notes:" AcObject="{Binding}" />
-                  <mui:BooleanSwitch Value="{Binding TheSetupMarketCounter, Source={x:Static t:SettingsHolder.Integrated}}" CollapseOnFalse="True"
-                      c:PropertiesGrid.Label="Setups on TSM:">
-                    <DockPanel Background="Transparent" ToolTip="Number of ready to be installed setups on The Setup Market">
-                      <Button x:Name="PART_TsmSetupsButton" Content="…" Padding="4 0" DockPanel.Dock="Right" Margin="4 0 0 0" />
-                      <mui:PlaceholderTextBlock Placeholder="…" Text="{Binding TsmSetupsCount}" />
-                    </DockPanel>
-                  </mui:BooleanSwitch>
                   <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
                       Text="{Binding TotalDrivenDistanceKm, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.DistanceFormat}}" />
                   <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Speed achieved:" Placeholder="…"
@@ -159,13 +152,6 @@
                       <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0" LabelWidth="100" VerticalSpacing="4">
                         <c:RatingBar c:PropertiesGrid.Label="Rating:" Rating="{Binding Rating}" HorizontalAlignment="Left" />
                         <c:NotesBlock AcObject="{Binding}" c:PropertiesGrid.Label="Notes:" />
-                        <mui:BooleanSwitch Value="{Binding TheSetupMarketCounter, Source={x:Static t:SettingsHolder.Integrated}}" CollapseOnFalse="True"
-                            c:PropertiesGrid.Label="Setups on TSM:">
-                          <DockPanel Background="Transparent" ToolTip="Number of ready to be installed setups on The Setup Market">
-                            <Button x:Name="PART_TsmSetupsButton" Content="…" Padding="4 0" DockPanel.Dock="Right" Margin="4 0 0 0" />
-                            <mui:PlaceholderTextBlock Placeholder="…" Text="{Binding TsmSetupsCount}" />
-                          </DockPanel>
-                        </mui:BooleanSwitch>
                         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
                             Text="{Binding TotalDrivenDistanceKm, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.DistanceFormat}}" />
                         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Speed achieved:" Placeholder="…"

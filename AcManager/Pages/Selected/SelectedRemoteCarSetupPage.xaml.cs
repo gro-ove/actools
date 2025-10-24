@@ -41,8 +41,7 @@ namespace AcManager.Pages.Selected {
             private DelegateCommand _shareCommand;
 
             public DelegateCommand ShareCommand => _shareCommand ?? (_shareCommand = new DelegateCommand(() => {
-                var link = $@"{InternalUtils.MainApiDomain}/s/q:thesetupmarket/setup?id={SelectedObject.Id}";
-                SharingUiHelper.ShowShared("The Setup Market link", link, true);
+                throw new NotImplementedException();
             }));
         }
 

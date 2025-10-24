@@ -85,40 +85,5 @@ namespace AcManager.Tools.Helpers.Api {
                 return null;
             }
         }
-
-        [CanBeNull]
-        public static RemoteSetupInformation FromTheSetupMarketJToken(JToken token, string targetCarId = null) {
-            var o = token as JObject;
-            if (o == null) return null;
-
-            if ((string)o["sim"]?["code"] != "ac") return null;
-
-            var carId = (string)o["car"]?["ac_code"];
-            if (string.IsNullOrEmpty(carId) || targetCarId != null && carId != targetCarId) {
-                return null;
-            }
-
-            var id = (string)o["_id"];
-            if (string.IsNullOrEmpty(id)) {
-                return null;
-            }
-
-            var trackId = (string)o["track"]?["ac_code"];
-            if (string.IsNullOrWhiteSpace(trackId)) trackId = null;
-
-            var url = $@"http://thesetupmarket.com/#/setups/Assetto%20Corsa/{(string)o["author"]?["_id"]}/{id}";
-            var ratings = o["ratings"] as JArray;
-            return new RemoteSetupInformation(id,
-                    (string)o["file_name"], ((string)o["downloads"]).As<int>(),
-                    DateTime.TryParse((string)o["added_date"]?["timestamp"] ?? "", CultureInfo.InvariantCulture,
-                            DateTimeStyles.None, out var v) ? v : (DateTime?)null,
-                    carId, trackId,
-                    (string)o["author"]?["display_name"],
-                    (string)o["version"],
-                    ratings?.Count > 0 ? ratings.Average(x => ((string)x["rating"]).As<double>()) : (double?)null,
-                    (string)o["type"],
-                    TryParse((string)o["best_time"]),
-                    url);
-        }
     }
 }

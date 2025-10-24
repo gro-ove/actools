@@ -65,7 +65,7 @@ namespace AcManager.Controls {
         public Border Footer { get; private set; }
 
         private FrameworkElement _previewImage;
-        private Button _showroomButton, _tsmSetupsButton;
+        private Button _showroomButton;
 
         public override void OnApplyTemplate() {
             base.OnApplyTemplate();
@@ -80,13 +80,8 @@ namespace AcManager.Controls {
                 _showroomButton.PreviewMouseRightButtonDown -= OnShowroomContextMenu;
             }
 
-            if (_tsmSetupsButton != null) {
-                _tsmSetupsButton.Click -= OnTsmSetupsButtonClick;
-            }
-
             _previewImage = GetTemplateChild("PART_PreviewImage") as FrameworkElement;
             _showroomButton = GetTemplateChild("PART_ShowroomButton") as Button;
-            _tsmSetupsButton = GetTemplateChild("PART_TsmSetupsButton") as Button;
 
             if (_previewImage != null) {
                 _previewImage.MouseUp += OnPreviewImageClick;
@@ -96,11 +91,7 @@ namespace AcManager.Controls {
                 _showroomButton.Click += OnShowroomButtonClick;
                 _showroomButton.PreviewMouseRightButtonDown += OnShowroomContextMenu;
             }
-
-            if (_tsmSetupsButton != null) {
-                _tsmSetupsButton.Click += OnTsmSetupsButtonClick;
-            }
-
+            
             // Various areas and footer
             TagsList = GetTemplateChild("PART_TagsList") as TagsList;
             BrandArea = GetTemplateChild("PART_BrandArea") as FrameworkElement;
@@ -364,10 +355,6 @@ namespace AcManager.Controls {
 
         private void OnShowroomButtonClick(object sender, EventArgs e) {
             OnShowroomButtonClick(Car, SelectedSkin);
-        }
-
-        private void OnTsmSetupsButtonClick(object sender, RoutedEventArgs e) {
-            CarSetupsView?.Open(Car, CarSetupsRemoteSource.TheSetupMarket);
         }
     }
 }

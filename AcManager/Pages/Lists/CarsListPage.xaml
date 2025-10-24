@@ -94,6 +94,17 @@
       </mui:SpacingStackPanel>
     </DataTemplate>
 
+    <DataTemplate x:Key="Batch.PackCarData" DataType="{x:Type li:CarsListPage+BatchAction_PackCarData}">
+      <DataTemplate.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
+      </DataTemplate.Resources>
+      <mui:SpacingStackPanel Spacing="4">
+        <CheckBox IsChecked="{Binding OverrideExisting.Value}">
+          <Label Content="Override existing “data.acd”" ToolTip="If “data.acd” already exists, with this option active it’ll be recycled and replaced. Without it, car will be skipped." />
+        </CheckBox>
+      </mui:SpacingStackPanel>
+    </DataTemplate>
+
     <DataTemplate x:Key="Batch.AnalyzeCar" DataType="{x:Type li:CarsListPage+BatchAction_AnalyzeCar}">
       <DataTemplate.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
