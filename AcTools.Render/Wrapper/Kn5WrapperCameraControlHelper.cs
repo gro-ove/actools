@@ -63,7 +63,7 @@ namespace AcTools.Render.Wrapper {
             if (renderer.LockCamera) return;
 
             var speed = 0.1f;
-            if (IsPressed(Keys.LShiftKey) || IsPressed(Keys.RShiftKey)) speed *= 0.2f;
+            if (IsPressed(Keys.LShiftKey) || IsPressed(Keys.RShiftKey)) speed *= 0.1f;
             if (IsPressed(Keys.LControlKey) || IsPressed(Keys.RControlKey)) speed = 5.0f;
 
             if (IsPressed(Keys.Up)) {

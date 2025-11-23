@@ -82,6 +82,7 @@ namespace AcManager.Tools.ContentInstallation.Installators {
             var list = (await GetFileEntriesAsync(cancellation))?.ToList();
             if (list == null) return;
 
+            var copyTime = DateTime.Now;
             var files = list.OfType<IFileInfo>().ToList();
             for (var i = 0; i < files.Count; i++) {
                 var fileInfo = files[i];
@@ -90,6 +91,7 @@ namespace AcManager.Tools.ContentInstallation.Installators {
                     FileUtils.EnsureFileDirectoryExists(destination);
                     progress?.Report(Path.GetFileName(destination), i, files.Count);
                     await fileInfo.CopyToAsync(destination);
+                    File.SetLastWriteTime(destination, fileInfo.LastModified ?? copyTime);
                     NewFilesReporter.RegisterNewFile(destination);
                     if (cancellation.IsCancellationRequested) return;
                 }

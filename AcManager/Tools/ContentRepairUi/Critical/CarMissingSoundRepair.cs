@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.ContentRepair;
+using AcManager.Tools.Data;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
@@ -37,6 +38,12 @@ namespace AcManager.Tools.ContentRepairUi.Critical {
         [CanBeNull]
         private ContentRepairSuggestion CheckMissingSound(CarObject car) {
             if (car.Author == "Kunos" || File.Exists(car.SoundbankFilename)) {
+                return null;
+            }
+
+            if (PatchHelper.IsActive() 
+                && !Directory.Exists(Path.GetDirectoryName(car.SoundbankFilename) ?? ".")
+                && File.Exists(Path.Combine(car.Location, "extension\\ext_config.ini"))) {
                 return null;
             }
 

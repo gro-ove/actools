@@ -52,6 +52,8 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             }
 
             public string Key => FileUtils.GetRelativePath(_filename, _directory);
+            
+            public DateTime? LastModified => new FileInfo(_filename).LastWriteTime;
 
             private long? _size;
             public long Size {

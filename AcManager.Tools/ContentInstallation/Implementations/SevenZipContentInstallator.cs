@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -144,11 +145,12 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
         #region Parsing
         private class SevenZipEntry {
             public string Key;
+            public string Date;
             public bool IsDirectory;
             public long Size;
         }
 
-        private static readonly Regex RegexParseLine = new Regex(@"^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d (\S{5})\s+(\d+)\s{1,12}\d*\s+(.+)$", RegexOptions.Compiled);
+        private static readonly Regex RegexParseLine = new Regex(@"^(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d) (\S{5})\s+(\d+)\s{1,12}\d*\s+(.+)$", RegexOptions.Compiled);
 
         private static SevenZipEntry ParseListOfFiles_Line(string line) {
             if (line.Length < 20) return null;
@@ -156,11 +158,12 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             var m = RegexParseLine.Match(line);
             if (!m.Success) return null;
 
-            var key = m.Groups[3].Value;
+            var key = m.Groups[4].Value;
             return new SevenZipEntry {
                 Key = key.Trim(),
-                IsDirectory = m.Groups[1].Value.StartsWith("D"),
-                Size = FlexibleParser.TryParseLong(m.Groups[2].Value) ?? 0L
+                Date = m.Groups[1].Value.Trim(),
+                IsDirectory = m.Groups[2].Value.StartsWith("D"),
+                Size = FlexibleParser.TryParseLong(m.Groups[3].Value) ?? 0L
             };
         }
 
@@ -283,7 +286,19 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             }
 
             public string Key => _archiveEntry.Key.Replace('/', '\\');
+
             public long Size => _archiveEntry.Size;
+
+            public DateTime? LastModified {
+                get {
+                    try {
+                        return DateTime.ParseExact(_archiveEntry.Date, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None);
+                    } catch (Exception e) {
+                        Logging.Error($"Failed to parse date: {_archiveEntry.Date}, {e.Message}");
+                        return null;
+                    }
+                }
+            }
 
             public async Task<byte[]> ReadAsync() {
                 if (_reader == null) throw new NotSupportedException();
@@ -436,7 +451,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                                 throw new Exception($"Sizes of {entry.Item1} don’t match: expected {entry.Item3}, but written {written}");
                             }
                         }
-                        
+
                         NewFilesReporter.RegisterNewFile(entry.Item4);
                     }
                 }

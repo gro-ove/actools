@@ -75,6 +75,8 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             public SimpleFileInfo(IEntry archiveEntry) {
                 _archiveEntry = archiveEntry;
             }
+            
+            public DateTime? LastModified => _archiveEntry.LastModifiedTime ?? _archiveEntry.CreatedTime;
 
             public string Key => _archiveEntry.Key.Replace('/', '\\');
             public long Size => _archiveEntry.Size;
