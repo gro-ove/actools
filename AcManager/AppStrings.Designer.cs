@@ -3694,11 +3694,7 @@ namespace AcManager {
         }
         
         /// <summary>
-<<<<<<< HEAD
-        ///   Looks up a localized string similar to Size.
-=======
-        ///   Recherche une chaîne localisée semblable à Original.
->>>>>>> 553b8ef8 (New boolean setting 'HideImagesInServerDescription' in Online/Display + default english text in AppStrings)
+        ///   Recherche une chaîne localisée semblable à Size.
         /// </summary>
         public static string ContentTools_FilesCompressor_Original {
             get {
