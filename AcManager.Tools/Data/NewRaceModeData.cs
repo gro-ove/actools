@@ -33,6 +33,12 @@ namespace AcManager.Tools.Data {
             private bool _updating;
             private bool _needsAnotherUpdate;
 
+            public async Task WaitUntilReadyAsync() {
+                for (var i = 0; i < 20; ++i) {
+                    if (_updating) await Task.Delay(50).ConfigureAwait(false);
+                }
+            }
+
             private async Task Rescan() {
                 if (_updating) {
                     _needsAnotherUpdate = true;

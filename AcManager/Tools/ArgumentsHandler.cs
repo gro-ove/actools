@@ -18,6 +18,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Loaders;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.SemiGui;
+using AcManager.Tools.Starters;
 using AcTools.Kn5File;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -120,6 +121,14 @@ namespace AcManager.Tools {
             var list = arguments.Select(FixProxiedRequest).ToList();
             if (_previousArguments?.SequenceEqual(list) == true) return ShowMainWindow.No;
             if (list.Count == 0) return ShowMainWindow.Immediately;
+
+            if (list.Count == 2 && list[0] == "+connect_lobby") {
+                list = new[] { await SteamStarter.GetLobbyInviteUrlAsync(list[1]) }.Where(x => !string.IsNullOrEmpty(x)).ToList();
+                if (list.Count == 0) {
+                    NonfatalError.Notify("Failed to get information about the Steam lobby to join",
+                            "Make sure your Steam DLLs are not altered.");
+                }
+            }
 
             try {
                 // Why it’s here?

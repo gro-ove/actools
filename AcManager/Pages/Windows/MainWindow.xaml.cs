@@ -80,16 +80,34 @@ namespace AcManager.Pages.Windows {
                 new TitleLinkEnabledEntry("server", AppStrings.Main_Server, false),
                 new TitleLinkEnabledEntry("settings", AppStrings.Main_Settings),
                 new TitleLinkEnabledEntry("about", AppStrings.Main_About),
-                new TitleLinkEnabledEntry("originalLauncher", AppStrings.Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter),
+                new TitleLinkEnabledEntry("originalLauncher", AppStrings.Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter, false),
                 new TitleLinkEnabledEntry("settings/video", AppStrings.Windows_MainWindow_VideoSettingsFPSCounter, false),
             }.NonNull().ToArray();
         }
 
         public static readonly Uri OriginalLauncherUrl = new Uri("cmd://originalLauncher");
         public static readonly Uri EnterKeyUrl = new Uri("cmd://enterKey");
+        public static object EnterKeyLabel = "switch to full version";
+        public static bool EnterKeyAccent = true;
 
         private readonly bool _cancelled;
+        private bool _steamOverlayFixApplied;
+        private FrameworkElement _steamOverlayFix;
         // private readonly string _testGameDialog = null;
+
+        private void UpdateSteamOverlayFix() {
+            
+            if (_steamOverlayFixApplied == SteamStarter.IsOverlayVisible) return;
+            _steamOverlayFixApplied = !_steamOverlayFixApplied;
+            if (_steamOverlayFix == null) {
+                _steamOverlayFix = (FrameworkElement)FindResource(@"SteamOverlayFix");
+            }
+            if (_steamOverlayFixApplied) {
+                OverlayContentCell.Children.Add(_steamOverlayFix);
+            } else {
+                OverlayContentCell.Children.Remove(_steamOverlayFix);
+            }
+        }
 
         public MainWindow() {
             Owner = null;
@@ -165,8 +183,17 @@ namespace AcManager.Pages.Windows {
 #endif
 
             if (SteamStarter.IsInitialized) {
-                OverlayContentCell.Children.Add((FrameworkElement)FindResource(@"SteamOverlayFix"));
+                if (_steamOverlayFix == null) {
+                    _steamOverlayFix = (FrameworkElement)FindResource(@"SteamOverlayFix");
+                }
+                OverlayContentCell.Children.Add(_steamOverlayFix);
+                _steamOverlayFixApplied = true;
+                Task.Delay(TimeSpan.FromSeconds(15d)).ContinueWithInMainThread(t => UpdateSteamOverlayFix());
             }
+            
+            SteamStarter.SteamOverlayShown += (sender, b) => {
+                Task.Delay(b ? TimeSpan.Zero : TimeSpan.FromSeconds(5d)).ContinueWithInMainThread(t => UpdateSteamOverlayFix());
+            };
 
             LinkNavigator.Commands.Add(new Uri("cmd://enterKey"), Model.EnterKeyCommand);
             if (SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
@@ -468,7 +495,7 @@ namespace AcManager.Pages.Windows {
             LiveGroup.IsShown = LiveGroup.Links.Any(x => x.IsShown && x.Icon == null);
             // ShortSurveyLink.IsShown = !Stored.Get<bool>("surveyHide").Value;
 
-            RaceULink.IsShown = SettingsHolder.Live.RaceUEnabled;
+            // RaceULink.IsShown = SettingsHolder.Live.RaceUEnabled;
         }
 
         /// <summary>

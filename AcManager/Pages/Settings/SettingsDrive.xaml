@@ -13,15 +13,10 @@
       <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Drive}" Style="{StaticResource SettingsPanel}">
         <DockPanel x:Name="Starter" set:Search.Keywords="starter;steam">
           <Label>
-            <DockPanel Style="{x:Null}">
-              <TextBlock
-                  Text="{Binding Source={x:Static g:AppStrings.Settings_Drive_Starter}, Converter={StaticResource ColonConverter},
+            <TextBlock
+                Text="{Binding Source={x:Static g:AppStrings.Settings_Drive_Starter}, Converter={StaticResource ColonConverter},
                   ConverterParameter=trim, Mode=OneTime}" />
-              <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters" />
-            </DockPanel>
           </Label>
-          <Button Command="{Binding SwitchToSteamStarterCommand}" Content="{x:Static g:AppStrings.Settings_Drive_SwitchToSteamStarter}"
-              Visibility="{Binding SwitchToSteamStarterCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
           <ComboBox ItemsSource="{Binding Drive.StarterTypes}" SelectedItem="{Binding Drive.SelectedStarterType}" DisplayMemberPath="DisplayName">
             <ComboBox.ItemContainerStyle>
               <Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
@@ -34,9 +29,9 @@
           </ComboBox>
         </DockPanel>
 
-        <c:MessageBlock Margin="0 0 0 8" set:Search.LinkedTo="{Binding ElementName=Starter}">
+        <!--<c:MessageBlock Margin="0 0 0 8" set:Search.LinkedTo="{Binding ElementName=Starter}">
           <mui:BbCodeBlock Text="{Binding Drive.SelectedStarterType.Description, Converter={StaticResource ToSentenceConverter}}" TextWrapping="Wrap" />
-        </c:MessageBlock>
+        </c:MessageBlock>-->
 
         <CheckBox IsChecked="{Binding Drive.StarterFallbackIfNotAvailable}"
             Visibility="{Binding Drive.SelectedStarterType.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='UI Module'}">

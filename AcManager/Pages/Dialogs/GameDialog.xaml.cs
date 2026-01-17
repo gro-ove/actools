@@ -280,7 +280,7 @@ namespace AcManager.Pages.Dialogs {
                             var newLocation = FilesStorage.Instance.GetFilename(MainExecutingFile.Name);
                             File.Copy(MainExecutingFile.Location, newLocation, true);
                             WindowsHelper.ViewFile(newLocation);
-                            ProcessExtension.Start(newLocation, new[] { @"--restart", @"--move-app=" + MainExecutingFile.Location });
+                            ProcessExtension.Start(newLocation, new[] { @"--restart", @"--move-app=" + MainExecutingFile.Location, @"--oculus-fix-applied" });
                             Environment.Exit(0);
                         } catch (Exception e) {
                             NonfatalError.Notify("Failed to move Content Manager executable", "I’m afraid you’ll have to do it manually.", e);

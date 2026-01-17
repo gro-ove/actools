@@ -173,18 +173,20 @@ namespace AcManager {
                     if (FileUtils.TryToDelete(move) || !File.Exists(move)) break;
                     Thread.Sleep(100);
                 }
-                Toast.Show("App moved", $"App moved from AC root folder, now Oculus Rift should work better", () => {
-                    var originalRemoved = File.Exists(move) ? "failed to remove original file" : "original file removed";
-                    if (MessageDialog.Show(
-                            $"New location is “{MainExecutingFile.Location}”, {originalRemoved}. Please don’t forget to recreate any shortcuts you might have created.",
-                            "Content Manager is moved",
-                            new MessageDialogButton {
-                                [MessageBoxResult.Yes] = "View new location",
-                                [MessageBoxResult.No] = UiStrings.Ok
-                            }) == MessageBoxResult.Yes) {
-                        WindowsHelper.ViewFile(MainExecutingFile.Location);
-                    }
-                });
+                if (AppArguments.GetBool(AppFlag.OculusFixApplied)) {
+                    Toast.Show("App moved", $"App moved from AC root folder, now Oculus Rift should work better", () => {
+                        var originalRemoved = File.Exists(move) ? "failed to remove original file" : "original file removed";
+                        if (MessageDialog.Show(
+                                $"New location is “{MainExecutingFile.Location}”, {originalRemoved}. Please don’t forget to recreate any shortcuts you might have created.",
+                                "Content Manager is moved",
+                                new MessageDialogButton {
+                                    [MessageBoxResult.Yes] = "View new location",
+                                    [MessageBoxResult.No] = UiStrings.Ok
+                                }) == MessageBoxResult.Yes) {
+                            WindowsHelper.ViewFile(MainExecutingFile.Location);
+                        }
+                    });
+                }
             }
 
             app.Run();
@@ -279,7 +281,10 @@ namespace AcManager {
 
             Acd.Factory = new AcdFactory();
 #if !DEBUG || true
-            Kn5.Factory = Kn5New.GetFactoryInstance();
+            Kn5.Factory = Kn5New.GetFactoryInstance(msg => {
+                AcManager.Pages.Windows.MainWindow.EnterKeyLabel = new TextBlock { Text = msg, FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(Colors.Yellow) };
+                AcManager.Pages.Windows.MainWindow.EnterKeyAccent = false;
+            });
 #endif
             Lazier.SyncAction = ActionExtension.InvokeInMainThreadAsync;
             KeyboardListenerFactory.Register<KeyboardListener>();
@@ -599,19 +604,24 @@ namespace AcManager {
                 }
             }
             
+            /*DiscordRichPresence.PresenceUpdate += (sender, presence) => {
+                SteamStarter.PushRichPresence(presence?.State, presence?.Details);
+            };*/
+
+            SteamStarter.SteamInvite += (sender, args) => {
+                Logging.Debug($"Steam invite: {args.SteamId}, {args.InviteUrl}");
+                if (args.InviteUrl.StartsWith("acmanager://race/")) {
+                    ActionExtension.InvokeInMainThreadAsync(() => ArgumentsHandler.ProcessArguments(new[] { args.InviteUrl }, false).Ignore());
+                }
+            };
+            
             // Preparing Steam starter thing
-            if (acRootIsFine && SteamStarter.Initialize(AcRootDirectory.Instance.Value, false)) {
-                if (SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
+            if (acRootIsFine && SteamStarter.Initialize(AcRootDirectory.Instance.Value, SettingsHolder.Integrated.SteamIntegration)) {
+                Logging.Debug("Steam is ready");
+                if (SteamStarter.IsFullyIntegrated && SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
                     SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.SteamStarterType;
                     Toast.Show("Starter changed to replacement", "Enjoy Steam being included into CM");
                 }
-            } else if (SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.SteamStarterType) {
-                SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.DefaultStarterType;
-                Toast.Show($"Starter changed to {SettingsHolder.Drive.SelectedStarterType.DisplayName}", "Steam Starter is unavailable", () => {
-                    ModernDialog.ShowMessage(
-                            "To use Steam Starter, please make sure CM is taken place of the official launcher and AC root directory is valid.",
-                            "Steam Starter is unavailable", MessageBoxButton.OK);
-                });
             }
 
             InitializeUpdatableStuff();

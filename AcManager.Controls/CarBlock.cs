@@ -210,7 +210,7 @@ namespace AcManager.Controls {
 
                 item.Inlines.Add(string.IsNullOrEmpty(carDescription) ?
                         PlaceholderTextBlock.GetPlaceholder(textBox, "Description is missing.") :
-                        new Run(carDescription));
+                        BbCodeBlock.ParseEmoji(carDescription, BbCodeBlock.AllowBbCodes.Limited, false, this));
 
                 textBox.Document.Blocks.Add(item);
 

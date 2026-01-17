@@ -7,28 +7,73 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Media;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
+using Microsoft.VisualBasic.Logging;
 using Steamworks;
 
 namespace AcManager.Tools.Starters {
     public class SteamStarter : StarterBase {
+        public class SteamInviteArgs {
+            public string SteamId;
+            public string InviteUrl;
+
+            public SteamInviteArgs(string steamId, string inviteUrl) {
+                SteamId = steamId;
+                InviteUrl = inviteUrl;
+            }
+        }
+
+        public static event EventHandler<SteamInviteArgs> SteamInvite;
+        
+        public static event EventHandler<bool> SteamOverlayShown;
+
+        public static Callback<GameRichPresenceJoinRequested_t> InviteListener { get; private set; }
+
+        public static Callback<GameLobbyJoinRequested_t> LobbyListener { get; private set; }
+
+        public static Callback<LobbyDataUpdate_t> LobbyDataCallback { get; private set; }
+
+        public static Callback<GameOverlayActivated_t> OverlayListener { get; private set; }
+
         private static bool _running;
         private static string _acRoot;
         private static string _dllsPath;
+
+        public SteamStarter() {
+            Logging.Debug("Creating Steam starter…");
+            Initialize(AcRootDirectory.Instance.RequireValue, true);
+        }
 
         private static async Task RunCallbacks() {
             _running = true;
             while (_running) {
                 SteamAPI.RunCallbacks();
-                await Task.Delay(500);
+                await Task.Delay(_fpsBoosted ? 20 : 250);
             }
         }
+
+        private static async void BoostCallbacks() {
+            try {
+                for (var i = 0; i < 100; ++i) {
+                    SteamAPI.RunCallbacks();
+                    await Task.Delay(20);
+                }
+            } catch (Exception e) {
+                // ignored
+            }
+        }
+
+        public static bool IsOverlayVisible => _fpsBoosted;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void InitializeInner() {
@@ -48,16 +93,30 @@ namespace AcManager.Tools.Starters {
             }
 
             if (!initialized) {
-                Logging.Write("Still not initialized…");
-
+                Logging.Write("Still not initialized, asking Steam to restart AC…");
                 if (!SteamAPI.RestartAppIfNecessary(new AppId_t(244210u))) {
                     MessageBox.Show("Steam can’t be initialized.", "Steam Inactive", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 }
-
                 Environment.Exit(0);
             }
 
+            Logging.Debug($"Steam API is ready: {SteamUser.GetSteamID()}");
             RunCallbacks().Ignore();
+            InviteListener = Callback<GameRichPresenceJoinRequested_t>.Create(t =>
+                    SteamInvite?.Invoke(null, new SteamInviteArgs(t.m_steamIDFriend.ToString(), t.m_rgchConnect)));
+            LobbyListener = Callback<GameLobbyJoinRequested_t>.Create(t => GetLobbyInviteUrlTyped(t.m_steamIDLobby).ContinueWith(v => {
+                if (v.IsCompleted && !string.IsNullOrEmpty(v.Result)) {
+                    SteamInvite?.Invoke(null, new SteamInviteArgs(t.m_steamIDFriend.ToString(), v.Result));
+                }
+            }));
+            OverlayListener = Callback<GameOverlayActivated_t>.Create(t => {
+                Logging.Debug($"Overlay: {t.m_bActive}");
+                BoostCallbacks();
+                if ((t.m_bActive != 0) != _fpsBoosted) {
+                    _fpsBoosted = !_fpsBoosted;
+                    SteamOverlayShown?.Invoke(null, _fpsBoosted);
+                }
+            });
             SteamUtils.SetOverlayNotificationPosition(ENotificationPosition.k_EPositionBottomLeft);
 
             try {
@@ -69,6 +128,124 @@ namespace AcManager.Tools.Starters {
             }
 
             AppDomain.CurrentDomain.ProcessExit += (sender, args) => SteamAPI.Shutdown();
+        }
+
+        private static bool _fpsBoosted; 
+        private static readonly EventHandler OverlayFpsBoost = (sender, args) => { };
+
+        private static Task<string> GetLobbyInviteUrlTyped(CSteamID lobbyId) {
+            var directlyAccessed = SteamMatchmaking.GetLobbyData(lobbyId, "cm.invite.race");
+            Logging.Debug($"Trying to get invite URL from lobby: {lobbyId}, directly accessed: {directlyAccessed}");
+            if (!string.IsNullOrEmpty(directlyAccessed)) {
+                return Task.FromResult("acmanager://race/" + directlyAccessed);
+            }
+
+            var tcs = new TaskCompletionSource<string>();
+            LobbyDataCallback?.Unregister();
+            ActionExtension.InvokeInMainThreadAsync(() => BoostCallbacks());
+            LobbyDataCallback = Callback<LobbyDataUpdate_t>.Create(t => {
+                if (tcs != null) {
+                    var inviteData = t.m_bSuccess != 0 ? SteamMatchmaking.GetLobbyData(lobbyId, "cm.invite.race") : null;
+                    Logging.Debug($"Lobby invite argument: {lobbyId}, {inviteData}");
+                    tcs.SetResult(string.IsNullOrEmpty(inviteData) ? null : "acmanager://race/" + inviteData);
+                    tcs = null;
+                    LobbyDataCallback?.Unregister();
+                }
+            });
+            if (!SteamMatchmaking.RequestLobbyData(lobbyId)) {
+                Logging.Warning("Failed to get lobby data");
+                LobbyDataCallback?.Unregister();
+                return Task.FromResult<string>(null);
+            }
+
+            Task.Delay(5000).ContinueWith(r => {
+                if (tcs != null) {
+                    tcs.SetResult(string.Empty);
+                    tcs = null;
+                    LobbyDataCallback?.Unregister();
+                }
+            });
+            return tcs.Task;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static Task<string> GetLobbyInviteUrlAsyncInner(string lobbyId) {
+            Initialize(AcRootDirectory.Instance.RequireValue, true);
+            Logging.Debug("Trying to get invite URL from lobby (string): " + lobbyId);
+            var lobbyIdTyped = new CSteamID(lobbyId.As(0ul));
+            return GetLobbyInviteUrlTyped(lobbyIdTyped);
+        }
+
+        [ItemCanBeNull]
+        public static async Task<string> GetLobbyInviteUrlAsync(string lobbyId) {
+            try {
+                return await GetLobbyInviteUrlAsyncInner(lobbyId).ConfigureAwait(false);
+            } catch (Exception e) {
+                Logging.Error(e);
+                return null;
+            }
+        }
+        
+        private static readonly List<object> AwaitedCalls = new List<object>();
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static Task<T> ToTask<T>(SteamAPICall_t apiCall) {
+            var completionSource = new TaskCompletionSource<T>();
+            Logging.Debug($"apiCall={apiCall}");
+            var obj = new CallResult<T>[1];
+            obj[0] = CallResult<T>.Create((callResult, failure) => {
+                Logging.Debug($"callResult={callResult}, failure={failure}");
+                if (failure) {
+                    completionSource.TrySetException(new InformativeException("Steam API exception",
+                            "Please make sure Steam API DLLs in your Assetto Corsa folder are original. Running integrity check on Steam might help."));
+                } else {
+                    completionSource.TrySetResult(callResult);
+                }
+                if (AwaitedCalls.Count == 0) {
+                    Logging.Warning("Should not be happening");
+                }
+                AwaitedCalls.Remove(obj[0]);
+            });
+            obj[0].Set(apiCall);
+            AwaitedCalls.Add(obj[0]);
+            return completionSource.Task;
+        }
+
+        private static ulong _previousLobbyId;
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static async Task InviteFriendAsyncInner(string inviteLinkBase) {
+            Initialize(AcRootDirectory.Instance.RequireValue, true);
+            ActionExtension.InvokeInMainThreadAsync(() => BoostCallbacks());
+            var curLobbyId = new CSteamID(_previousLobbyId);
+            if (!curLobbyId.IsValid() || SteamMatchmaking.GetLobbyOwner(curLobbyId) != SteamUser.GetSteamID()) {
+                Logging.Debug("Creating new lobby");
+
+                /*var result = CallResult<LobbyCreated_t>.Create((callResult, failure) => {
+                    Logging.Debug($"callResult={callResult}, failure={failure}");
+                });
+                var callId = SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePrivate, 2);
+                result.Set(callId);
+                for (var i = 0; i < 1000; ++i) {
+                    Logging.Debug("Result: " + result);
+                    await Task.Delay(50);
+                }*/
+                
+                var lobby = await ToTask<LobbyCreated_t>(SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePrivate, 2));
+                Logging.Debug("Lobby created: " + lobby.m_eResult);
+                if (lobby.m_eResult != EResult.k_EResultOK) {
+                    throw new InformativeException($"Failed to create Steam lobby for an invite ({lobby})",
+                            "Please make sure Steam API DLLs in your Assetto Corsa folder are original. Running integrity check on Steam might help.");
+                }
+                curLobbyId = new CSteamID(lobby.m_ulSteamIDLobby);
+                _previousLobbyId = curLobbyId.m_SteamID; 
+                SteamMatchmaking.SetLobbyData(curLobbyId, "cm.invite.race", inviteLinkBase);
+            }
+            SteamFriends.ActivateGameOverlayInviteDialog(curLobbyId);
+        }
+
+        public static async Task InviteFriendAsync(string inviteLinkBase) {
+            await InviteFriendAsyncInner(inviteLinkBase).ConfigureAwait(false);
         }
 
         private static bool AreFilesSame(string a, string b) {
@@ -84,7 +261,7 @@ namespace AcManager.Tools.Starters {
 
         private static bool? _isAvailable;
 
-        public static bool IsAvailable {
+        public static bool IsFullyIntegrated {
             get {
                 if (_isAvailable == null) {
                     _isAvailable = AreFilesSame(MainExecutingFile.Location, LauncherFilename);
@@ -97,7 +274,7 @@ namespace AcManager.Tools.Starters {
         public static bool IsInitialized { get; private set; }
 
         private static void InitializeLibraries() {
-            Kernel32.AddDllDirectory(_dllsPath);
+            Kernel32.AddDllDirectory(_dllsPath); // not really needed, seems like steamworks DLL loads DLL from its location
             AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
             AppDomain.CurrentDomain.ProcessExit += OnExit;
         }
@@ -110,7 +287,7 @@ namespace AcManager.Tools.Starters {
             _acRoot = acRoot;
             _dllsPath = Path.Combine(_acRoot, "launcher", "support");
 
-            if (!force && !IsAvailable) {
+            if (!force && !IsFullyIntegrated) {
                 Logging.Write("Wrong location, SteamStarter won’t work");
                 return false;
             }
@@ -121,6 +298,17 @@ namespace AcManager.Tools.Starters {
                 Logging.Error(e);
             }
 
+            var steamAppId = Path.Combine(MainExecutingFile.Directory, "steam_appid.txt");
+            var steamTagNeeded = !FileUtils.ArePathsEqual(MainExecutingFile.Directory, acRoot)
+                    || !File.Exists(steamAppId);
+            try {
+                if (steamTagNeeded) {
+                    File.WriteAllText(steamAppId, @"244210");
+                }
+            } catch (Exception e) {
+                Logging.Warning($"Failed to create Steam ID file: {e}");
+            }
+
             try {
                 InitializeInner();
                 IsInitialized = true;
@@ -128,6 +316,10 @@ namespace AcManager.Tools.Starters {
             } catch (Exception e) {
                 Logging.Warning(e);
                 return false;
+            } finally {
+                if (steamTagNeeded) {
+                    FileUtils.TryToDelete(steamAppId);
+                }
             }
         }
 
@@ -141,9 +333,6 @@ namespace AcManager.Tools.Starters {
                         && name[name.Length - 2] == '_' && char.IsDigit(name[name.Length - 1])) {
                     var key = name.Substring(0, name.Length - 2);
                     var value = name[name.Length - 1] - '0';
-                    Logging.Debug("NAME: " + name);
-                    Logging.Debug("BY: " + SteamUserStats.GetAchievementAchievedPercent(name, out var percent));
-                    Logging.Debug("PERCENT: " + percent);
                     if (!tiers.TryGetValue(key, out var prev) || value > prev) {
                         tiers[key] = Math.Max(prev, value);
                     }
@@ -165,9 +354,24 @@ namespace AcManager.Tools.Starters {
             return tiers;
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void PushRichPresenceInner([CanBeNull] string state, [CanBeNull] string details) {
+            // Doesn’t work without localized strings :(
+        }
+
+        public static void PushRichPresence([CanBeNull] string state, [CanBeNull] string details) {
+            if (!IsInitialized) return;
+            try {
+                PushRichPresenceInner(state, details);
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
+        }
+
         [CanBeNull]
         public static Dictionary<string, int> GetAchievements() {
             try {
+                Initialize(AcRootDirectory.Instance.RequireValue, true);
                 return GetAchievementsInner();
             } catch (Exception e) {
                 Logging.Error(e);

@@ -45,7 +45,7 @@ namespace CustomPreviewUpdater {
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static int MainInner(string[] args) {
             Acd.Factory = new AcdFactory();
-            Kn5.Factory = Kn5New.GetFactoryInstance();
+            Kn5.Factory = Kn5New.GetFactoryInstance(null);
 
             var presets = args.Where(x => x.EndsWith(".pu-preset")).ToList();
             var actualList = new List<string>();

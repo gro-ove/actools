@@ -253,6 +253,23 @@ namespace AcManager.Pages.Dialogs {
             return null;
         }
 
+        [CanBeNull]
+        public static CarObject Show([CanBeNull] CarObject car, [CanBeNull] ref CarSkinObject carSkin, string defaultFilter) {
+            var dialog = new SelectCarDialog(car ?? CarsManager.Instance.GetDefault()) {
+                SelectedSkin = carSkin != null && car?.EnabledSkinsListView.Contains(carSkin) == true ? carSkin : car?.SelectedSkin
+            };
+
+            dialog.ApplyDefault(defaultFilter);
+            dialog.ShowDialog();
+
+            if (dialog.IsResultOk) {
+                carSkin = dialog.SelectedSkin;
+                return dialog.SelectedCar;
+            }
+
+            return null;
+        }
+
         private bool _loaded;
         private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded || SelectedCar == null) return;

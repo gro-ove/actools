@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Starters;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
@@ -22,6 +23,22 @@ namespace AcManager.Tools.Helpers {
                 new DelayEntry(TimeSpan.FromHours(12)),
                 new DelayEntry(TimeSpan.FromDays(1))
             });
+
+            private bool? _steamIntegration;
+
+            public bool SteamIntegration {
+                get => _steamIntegration ?? (_steamIntegration = ValuesStorage.Get("Settings.IntegratedSettings.SteamIntegration", false)).Value;
+                set {
+                    if (Equals(value, _steamIntegration)) return;
+                    _steamIntegration = value;
+                    ValuesStorage.Set("Settings.IntegratedSettings.SteamIntegration", value);
+                    OnPropertyChanged();
+
+                    if (value) {
+                        SteamStarter.Initialize(AcRootDirectory.Instance.RequireValue, true);
+                    }
+                }
+            }
 
             private bool? _discordIntegration;
 

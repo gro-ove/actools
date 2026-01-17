@@ -68,7 +68,7 @@ namespace AcManager.Tools.SemiGui {
         }
 
         private static void PrepareRaceModeImmediateStart(Game.StartProperties properties) {
-            if (!SettingsHolder.Drive.ImmediateStart) return;
+            if (!SettingsHolder.Drive.ImmediateStart || PatchHelper.IsActive()) return;
             properties.SetAdditional(new ImmediateStart());
         }
 

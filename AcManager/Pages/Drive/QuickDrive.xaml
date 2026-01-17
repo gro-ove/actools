@@ -539,8 +539,8 @@
                       <c:TemperatureBlock Prefix="{x:Static g:AppStrings.Common_RoadTemperature}" Rounding="0.1" Text="{Binding RoadTemperature}" />
                     </mui:ValueLabel.ToolTip>
                   </c:TemperatureValueLabel>
-                  <Slider IsEnabled="{Binding CustomRoadTemperature}" Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}"
-                      Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" Value="{Binding CustomRoadTemperatureValue}" TickFrequency="6"
+                  <Slider IsEnabled="{Binding CustomRoadTemperature}" Minimum="{x:Static a:CommonAcConsts.RoadTemperatureMinimum}"
+                      Maximum="{x:Static a:CommonAcConsts.RoadTemperatureMaximum}" Value="{Binding CustomRoadTemperatureValue}" TickFrequency="6"
                       IsSnapToTickEnabled="False" TickPlacement="BottomRight" Margin="-5 0 0 0" SmallChange="5" LargeChange="5" />
                   <c:TemperatureBlock Text="{Binding RecommendedRoadTemperature}" Prefix="Recommended: " Style="{StaticResource Small}" />
                 </mui:SpacingStackPanel>

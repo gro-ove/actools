@@ -16,6 +16,36 @@
 
       <StackPanel set:Search.Category="Integrated" Style="{StaticResource SettingsPanel}">
 
+        <!-- Steam -->
+        <TextBlock Text="Steam:" Style="{StaticResource SettingsPanel.Heading2.First}" />
+        <DockPanel Visibility="{Binding IsSteamFullyIntegrated, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+          <Button Visibility="{Binding SteamRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
+              Command="{Binding RestartCommand}" Content="{x:Static g:AppStrings.Common_Restart}" Margin="0 -2" />
+          <Button Visibility="{Binding SteamRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
+              ToolTip="With full integration, Steam will open Content Manager when you’re starting Assetto Corsa, or when you get an invite to a race and Content Manager is closed"
+              Command="{Binding FullIntegrationCommand}" Content="Full integration"  Margin="0 -2" />
+          <CheckBox IsChecked="{Binding Integrated.SteamIntegration}" Margin="0"
+              ToolTip="Use Steam overlay in Content Manager, count is as Assetto Corsa running, send and accept invites for online races">
+            <Label Content="Connect to Steam API at launch (restart required)" />
+          </CheckBox>
+        </DockPanel>
+        <DockPanel Visibility="{Binding IsSteamFullyIntegrated, Converter={StaticResource BooleanToVisibilityConverter}}">
+          <CheckBox IsChecked="True" IsEnabled="False" Margin="0" ToolTipService.ShowOnDisabled="True"
+              ToolTip="To disable full integration, move Content Manager somewhere else and rename “AssettoCorsa_original.exe” back to “AssettoCorsa.exe”">
+            <Label Content="Connect to Steam API at launch (restart required)" />
+          </CheckBox>
+        </DockPanel>
+
+        <!-- Discord -->
+        <TextBlock Text="Discord:" Style="{StaticResource SettingsPanel.Heading2}" />
+        <DockPanel>
+          <Button Visibility="{Binding DiscordRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}}" Command="{Binding RestartCommand}"
+              Content="{x:Static g:AppStrings.Common_Restart}" Margin="0 -2 0 -3" />
+          <CheckBox IsChecked="{Binding Integrated.DiscordIntegration}" Margin="0">
+            <Label Content="Discord Rich Presence (restart required)" />
+          </CheckBox>
+        </DockPanel>
+
         <TextBlock Text="RSR:" Style="{StaticResource SettingsPanel.Heading2}" />
 
         <CheckBox IsChecked="{Binding Integrated.RsrLimitTemperature}"
@@ -121,18 +151,8 @@
       </StackPanel>
       <StackPanel set:Search.Category="Integrated" Style="{StaticResource SettingsPanel}">
 
-        <!-- Discord -->
-        <TextBlock Text="Discord:" Style="{StaticResource SettingsPanel.Heading2.First}" />
-        <DockPanel>
-          <Button Visibility="{Binding DiscordRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}}" Command="{Binding RestartCommand}"
-              Content="{x:Static g:AppStrings.Common_Restart}" Margin="0 -2 0 -3" />
-          <CheckBox IsChecked="{Binding Integrated.DiscordIntegration}" Margin="0">
-            <Label Content="Discord Rich Presence (restart app to apply)" />
-          </CheckBox>
-        </DockPanel>
-
         <!-- Camber Extravaganza -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Camber Extravaganza:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Camber Extravaganza:" />
         <CheckBox IsChecked="{Binding Drive.CamberExtravaganzaIntegration}">
           <Label Content="Add missing tyres information" />
         </CheckBox>

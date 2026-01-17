@@ -26,6 +26,7 @@ using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
+using AcManager.Tools.Starters;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -417,16 +418,30 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private DelegateCommand _inviteCommand;
-
-            public DelegateCommand InviteCommand => _inviteCommand ?? (_inviteCommand = new DelegateCommand(() => {
-                var link = $@"{InternalUtils.MainApiDomain}/s/q:race/online/join?ip={Entry.Ip}&httpPort={Entry.PortHttp}";
+            private string GenerateInviteLinkBase() {
+                var link = $@"online/join?ip={Entry.Ip}&httpPort={Entry.PortHttp}";
                 if (CopyPasswordToInviteLink && !string.IsNullOrWhiteSpace(Entry.Password) && Entry.PasswordRequired) {
                     link += $@"&password={EncryptSharedPassword(Entry.Id, Entry.Password)}";
                 }
+                return link;
+            }
 
+            private DelegateCommand _inviteCommand;
+
+            public DelegateCommand InviteCommand => _inviteCommand ?? (_inviteCommand = new DelegateCommand(() => {
+                var link = $@"{InternalUtils.MainApiDomain}/s/q:race/{GenerateInviteLinkBase()}";
                 SharingUiHelper.ShowShared("Inviting link", link, false);
             }));
+
+            private AsyncCommand _inviteSteamFriendCommand;
+
+            public AsyncCommand InviteSteamFriendCommand => _inviteSteamFriendCommand ?? (_inviteSteamFriendCommand = new AsyncCommand(async () => {
+                try {
+                    await SteamStarter.InviteFriendAsync(GenerateInviteLinkBase()).ConfigureAwait(false);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Failed to invite a friend", e);
+                }
+            }, () => SettingsHolder.Integrated.SteamIntegration));
 
             private string _tsServer;
             private DelegateCommand _joinTsCommand;

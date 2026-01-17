@@ -4175,7 +4175,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Official way from Kunos; might be slow and unreliable, but doesn’t require patching.
+        ///   Looks up a localized string similar to A bit slower, but can help with controllers misbehaving.
         /// </summary>
         public static string Settings_Starter_Official_Description {
             get {

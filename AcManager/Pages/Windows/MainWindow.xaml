@@ -20,25 +20,21 @@
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernWindow.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
-      <mui:BooleanLazySwitch x:Key="SteamOverlayFix" TrueResourceKey="Obj" Value="{Binding IsActive, RelativeSource={RelativeSource AncestorType=Window}}">
-        <mui:BooleanLazySwitch.Resources>
-          <Border x:Key="Obj" Background="#01000000" IsHitTestVisible="False">
-            <Border.Style>
-              <Style>
-                <Style.Triggers>
-                  <EventTrigger RoutedEvent="Border.Loaded">
-                    <BeginStoryboard>
-                      <Storyboard Timeline.DesiredFrameRate="30">
-                        <DoubleAnimation Storyboard.TargetProperty="(Border.Opacity)" Duration="0:0:1" RepeatBehavior="Forever" From="0" To="0.1" />
-                      </Storyboard>
-                    </BeginStoryboard>
-                  </EventTrigger>
-                </Style.Triggers>
-              </Style>
-            </Border.Style>
-          </Border>
-        </mui:BooleanLazySwitch.Resources>
-      </mui:BooleanLazySwitch>
+      <Border x:Key="SteamOverlayFix" Background="#FF00FF00" IsHitTestVisible="False">
+        <Border.Style>
+          <Style>
+            <Style.Triggers>
+              <EventTrigger RoutedEvent="Border.Loaded">
+                <BeginStoryboard>
+                  <Storyboard Timeline.DesiredFrameRate="30">
+                    <DoubleAnimation Storyboard.TargetProperty="(Border.Opacity)" Duration="1:0:0" RepeatBehavior="Forever" From="0" To="0.00001" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </EventTrigger>
+            </Style.Triggers>
+          </Style>
+        </Border.Style>
+      </Border>
 
       <system:Boolean x:Key="SystemButtonActive">True</system:Boolean>
 
@@ -571,7 +567,7 @@
     <mui:LinkGroup x:Name="LiveGroup" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Live}">
       <mui:LinkGroup.Links>
         <mui:Link x:Name="GridFinderLink" DisplayName="Grid Finder" Source="/Pages/Drive/GridFinder.xaml" />
-        <mui:Link x:Name="RaceULink" DisplayName="RaceU" Source="/Pages/Drive/RaceU.xaml" />
+        <!--<mui:Link x:Name="RaceULink" DisplayName="RaceU" Source="/Pages/Drive/RaceU.xaml" />-->
         <mui:Link x:Name="RsrLink" DisplayName="{x:Static g:AppStrings.Main_Rsr}" Source="/Pages/Drive/Rsr.xaml" />
         <mui:Link x:Name="Srs2Link" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs2.xaml" />
         <mui:Link x:Name="WorldSimSeriesLink" DisplayName="World Sim Series" Source="/Pages/Drive/WorldSimSeries.xaml" />
@@ -894,7 +890,7 @@
       </TextBlock>
     </mui:TitleLink>
     <mui:TitleLink x:Name="OriginalLauncher" Content="{x:Static g:AppStrings.Main_OriginalLauncherLink}" Source="{x:Static w:MainWindow.OriginalLauncherUrl}" />
-    <mui:TitleLink Content="switch to full version" Source="{x:Static w:MainWindow.EnterKeyUrl}" IsAccented="True" />
+    <mui:TitleLink Content="{x:Static w:MainWindow.EnterKeyLabel}" Source="{x:Static w:MainWindow.EnterKeyUrl}" IsAccented="{x:Static w:MainWindow.EnterKeyAccent}" />
     <mui:TitleLink GroupKey="settings/video" Source="/Pages/AcSettings/AcSettingsVideo.xaml">
       <mui:ReferenceSwitch Value="{Binding LastSessionPerformanceData, Source={x:Static t:AcSettingsHolder.Video}}">
         <mui:ReferenceSwitch.Null>

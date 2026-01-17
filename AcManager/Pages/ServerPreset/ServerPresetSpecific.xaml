@@ -292,7 +292,7 @@
             RelativeRangeHalf="{Binding RoadTemperatureVariationHalf, StringFormat='{}{0:F1}'}" Background="Transparent" Content="Road temperature" Width="240"
             JoinIfEqual="True" RelativeRange="{mui:Stored 'temperatureRelativeRange=True'}" />
         <mui:DoubleSlider TickFrequency="6" TickPlacement="BottomRight" Value="{Binding BaseRoadTemperature}" Range="{Binding RoadTemperatureVariation}"
-            BindingMode="PositionRange" Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" />
+            BindingMode="PositionRange" Minimum="{x:Static a:CommonAcConsts.RoadTemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.RoadTemperatureMaximum}" />
       </DockPanel>
 
       <DockPanel Margin="0 4 0 0">

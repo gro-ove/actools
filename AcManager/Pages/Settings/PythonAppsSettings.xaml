@@ -63,7 +63,7 @@
             <DockPanel IsEnabled="{Binding Enabled}" Background="Transparent" mui:Draggable.Data="{Binding}" Margin="10 2 2 2">
               <DockPanel.ToolTip>
                 <ToolTip Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                  <TextBlock Text="{Binding Description}" MaxWidth="400" TextWrapping="Wrap" />
+                  <mui:BbCodeBlock Mode="SafeBbCodes" Text="{Binding Description}" MaxWidth="400" TextWrapping="Wrap" />
                 </ToolTip>
               </DockPanel.ToolTip>
               <c:OriginIcon Author="{Binding Author}" MaxWidth="12" MaxHeight="12" DockPanel.Dock="Right" x:Name="PART_OriginIcon" />

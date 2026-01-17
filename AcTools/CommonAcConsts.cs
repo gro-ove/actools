@@ -37,6 +37,6 @@
         public static readonly double TemperatureMaximum = 36d;
 
         public static readonly double RoadTemperatureMinimum = 0d;
-        public static readonly double RoadTemperatureMaximum = 50d;
+        public static readonly double RoadTemperatureMaximum = 60d;
     }
 }

@@ -775,6 +775,9 @@ namespace AcManager.Tools.ContentInstallation {
             if ((ret = await CheckPatchPlugin("camera.lua", "CSP camera script", @"chaser-camera")) != null) {
                 return ret;
             }
+            if ((ret = await CheckPatchPlugin("cockpit.lua", "CSP first person camera script", @"cockpit-camera")) != null) {
+                return ret;
+            }
             if ((ret = await CheckPatchPlugin("ffb.lua", "CSP FFB post-process script", @"ffb-postprocess")) != null) {
                 return ret;
             }
@@ -782,6 +785,12 @@ namespace AcManager.Tools.ContentInstallation {
                 return ret;
             }
             if ((ret = await CheckPatchPlugin("assist.lua", "CSP gamepad script", @"joypad-assist")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("splashscreen.lua", "CSP loading screen script", @"loading-screen")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("assist.lua", "CSP mouse steering script", @"mouse-steering")) != null) {
                 return ret;
             }
             if ((ret = await CheckPatchPlugin("mode.lua", "CSP new mode", @"new-modes")) != null) {

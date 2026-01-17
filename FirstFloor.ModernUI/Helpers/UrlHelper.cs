@@ -11,6 +11,10 @@ namespace FirstFloor.ModernUI.Helpers {
             return s == null ? null : $@"{s}{(s.IndexOf('?') == -1 ? "?" : "&")}{key}{(string.IsNullOrWhiteSpace(value) ? "" : Uri.EscapeDataString(value))}";
         }
 
+        public static bool IsValidQuerySubKey(this string s) {
+            return Regex.IsMatch(s, "\\.");
+        }
+
         [ContractAnnotation(@"s: null => null; s: notnull => notnull")]
         public static string GetWebsiteFromUrl(this string s) {
             return s == null ? null : Regex.Replace(s, @"(?<=\w)/.*$", "", RegexOptions.IgnoreCase);

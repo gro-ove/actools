@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,14 +9,19 @@ using System.Windows.Data;
 using System.Windows.Media;
 using AcManager.Controls;
 using AcManager.Controls.ViewModels;
+using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
+using AcManager.Tools.Data;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Online;
+using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Processes;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -117,7 +123,6 @@ namespace AcManager.Tools {
                 throw new InformativeException("Track is missing");
             }
 
-
             if (!SteamIdHelper.Instance.IsReady && !allowWithoutSteamId) {
                 throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
             }
@@ -161,7 +166,8 @@ namespace AcManager.Tools {
                 remove { }
             }
 
-            public async Task<bool> LoadAsync(ListAddAsyncCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+            public async Task<bool> LoadAsync(ListAddAsyncCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress,
+                    CancellationToken cancellation) {
                 // This source will load provided server, but only once — call .ReloadAsync() and server will be nicely removed.
                 await callback(new[] { _information }.NonNull());
                 _information = null;
@@ -224,6 +230,80 @@ namespace AcManager.Tools {
 
             dlg.ShowDialog();
             await wrapper.ReloadAsync(true);
+        }
+
+        private static async Task<ArgumentHandleResult> ProcessRaceCsp(NameValueCollection p) {
+            // Required arguments
+            var paramValue = p.Get(@"param");
+            var modeId = p.Get(@"mode");
+            var carId = p.Get(@"car") ?? @":";
+            var skinId = p.Get(@"skin");
+            if (carId.StartsWith(":")) {
+                var car = await CarsManager.Instance.GetByIdAsync(ValuesStorage.Get(".cspracecmd.car", string.Empty));
+                var skin = car?.GetSkinById(ValuesStorage.Get(".cspracecmd.skin", string.Empty));
+                car = SelectCarDialog.Show(car, ref skin, carId.Length > 1 ? carId.Substring(1) : null);
+                if (car == null) {
+                    return ArgumentHandleResult.Failed;
+                }
+                carId = car.Id;
+                skinId = skin?.Id;
+                ValuesStorage.Set(".cspracecmd.car", carId);
+                ValuesStorage.Set(".cspracecmd.skin", skinId);
+            }
+
+            var trackId = p.Get(@"track") ?? @":";
+            if (trackId.StartsWith(":")) {
+                var track = await TracksManager.Instance.GetLayoutByIdAsync(ValuesStorage.Get(".cspracecmd.track", string.Empty));
+                track = SelectTrackDialog.Show(track, Tuple.Create(trackId.Length > 1 ? trackId.Substring(1) : null, (string)null));
+                if (track == null) {
+                    return ArgumentHandleResult.Failed;
+                }
+                trackId = track.IdWithLayout;
+                ValuesStorage.Set(".cspracecmd.track", trackId);
+            }
+
+            // &cfg=SECTION[KEY]VALUE[KEY2]VALUE2&cfg=SECTION2[KEY]VALUE;
+            var cfg = p.GetValues(@"cfg");
+            if (cfg != null && cfg.Length > 0) {
+                var iniFile = new IniFile(Path.Combine(AcPaths.GetDocumentsCfgDirectory(), PatchHelper.PatchDirectoryName,
+                        @"state\lua\new_modes", $@"{modeId}__settings.ini"));
+                foreach (var c in cfg) {
+                    var s = c.Split('[');
+                    if (s.Length > 1) {
+                        var section = iniFile[s[0]];
+                        for (var i = 1; i < s.Length; i++) {
+                            var kv = s[i].Split(new[] { ']' }, 2, StringSplitOptions.None);
+                            if (kv.Length == 2) {
+                                section.SetOrRemove(kv[0], kv[1] == string.Empty ? null : kv[1]);
+                            }
+                        }
+                    }
+                }
+                iniFile.Save();
+            }
+
+            Game.BaseModeProperties modeProperties = null;
+            try {
+                await NewRaceModeData.Instance.WaitUntilReadyAsync();
+                modeProperties = new QuickDrive_Custom.ViewModel(modeId, false).GetModePropertiesImpl(new Game.AiCar[0]);
+            } catch (Exception e) {
+                Logging.Warning($"Failed to prepare mode properties: {e}");
+            }
+
+            await GameWrapper.StartAsync(new Game.StartProperties {
+                BasicProperties = new Game.BasicProperties {
+                    CarId = carId,
+                    TrackId = trackId.Split('/')[0],
+                    TrackConfigurationId = trackId.Split('/').ElementAtOrDefault(1),
+                    CarSkinId = skinId,
+                },
+                ModeProperties = modeProperties,
+                AdditionalPropertieses = new object[] {
+                    new NewModeDetails(string.IsNullOrWhiteSpace(paramValue) ? paramValue : $"{modeId}, {paramValue}", null, null, null),
+                }.ToList()
+            });
+
+            return ArgumentHandleResult.Successful;
         }
 
         private static async Task<ArgumentHandleResult> ProcessRaceOnlineJoin(NameValueCollection p) {

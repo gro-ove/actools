@@ -66,7 +66,7 @@ namespace AcManager.Tools.Helpers {
             public static StarterType DefaultStarterType => AppIdStarterType;
 
             public static readonly StarterType OfficialStarterType = new StarterType(
-                    "Official",
+                    "Kunos",
                     ToolsStrings.Settings_Starter_Official,
                     ToolsStrings.Settings_Starter_Official_Description);
 
@@ -74,7 +74,7 @@ namespace AcManager.Tools.Helpers {
                     "AppID",
                     // string.Format(ToolsStrings.Common_Recommended, "AppID"),
                     "AppID",
-                    "Adds “steam_appid.txt” with AC’s Steam ID to AC root folder thus allowing to run “acs.exe” directly. Thanks to [url=\"http://www.assettocorsa.net/forum/index.php?members/zkirtaem.135368/\"]@Zkirtaem[/url] for the idea.");
+                    "Add “steam_appid.txt” allowing to start “acs.exe” directly. Thanks to [url=\"http://www.assettocorsa.net/forum/index.php?members/zkirtaem.135368/\"]@Zkirtaem[/url] for the idea.");
 
             public static readonly StarterType SidePassageStarterType = new StarterType(
                     "AC Service",
@@ -84,8 +84,8 @@ namespace AcManager.Tools.Helpers {
             public static readonly StarterType SteamStarterType = new StarterType(
                     "Steam",
                     "Steam",
-                    "For this starter, you have to replace the original “AssettoCorsa.exe” with “Content Manager.exe”. This way, CM will get an access to Steam as if it is the original launcher.",
-                    nonSelectable: true, requiresSteam: false /* because it is Steam! sort of */);
+                    "Connect to Steam and start AC directly. The best one.",
+                    requiresSteam: false /* because it is Steam! sort of */);
 
             public static readonly StarterType TrickyStarterType = new StarterType(
                     "Tricky",
@@ -168,15 +168,15 @@ namespace AcManager.Tools.Helpers {
 
             public StarterType[] StarterTypes => _starterTypes
                     ?? (_starterTypes = new[] {
+                        SteamStarterType,
                         AppIdStarterType,
                         OfficialStarterType,
                         // SidePassageStarterType,
-                        SteamStarterType,
-                        TrickyStarterType,
+                        // TrickyStarterType,
                         // UiModuleStarterType,
                         // StarterPlusType,
                         // SseStarterType,
-                        NaiveStarterType,
+                        // NaiveStarterType,
                         DeveloperStarterType
                     });
 

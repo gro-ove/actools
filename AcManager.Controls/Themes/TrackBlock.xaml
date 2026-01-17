@@ -89,7 +89,7 @@
                 </Grid>
 
                 <!-- Description -->
-                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                <mui:BbCodeBlock Mode="SafeBbCodes" Text="{Binding Description}" TextWrapping="Wrap" />
               </StackPanel>
             </DockPanel>
           </ScrollViewer>
@@ -189,7 +189,7 @@
                       </Grid>
 
                       <!-- Description -->
-                      <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                      <mui:BbCodeBlock Mode="SafeBbCodes" Text="{Binding Description}" TextWrapping="Wrap" />
                     </StackPanel>
                   </DockPanel>
                 </ScrollViewer>

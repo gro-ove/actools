@@ -193,6 +193,9 @@ namespace AcManager.Tools {
                     case "race/online/join":
                         return await ProcessRaceOnlineJoin(custom.Params);
 
+                    case "race/csp":
+                        return await ProcessRaceCsp(custom.Params);
+
                     case "race/raceu":
                         return await ProcessRaceRaceU(custom.Params);
 

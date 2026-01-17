@@ -271,6 +271,7 @@
     <Compile Include="ContentInstallation\Entries\TrackSkinContentEntry.cs" />
     <Compile Include="ContentInstallation\Entries\TrueTypeFontContentEntry.cs" />
     <Compile Include="ContentInstallation\Entries\WeatherContentEntry.cs" />
+    <Compile Include="ContentInstallation\GlobMatcher.cs" />
     <Compile Include="ContentInstallation\Implementations\DirectoryContentInstallator.cs" />
     <Compile Include="ContentInstallation\Implementations\SevenZipContentInstallator.cs" />
     <Compile Include="ContentInstallation\Implementations\SharpCompressContentInstallator.cs" />

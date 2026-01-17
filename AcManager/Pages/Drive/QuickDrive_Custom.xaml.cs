@@ -118,7 +118,7 @@ namespace AcManager.Pages.Drive {
                         : Tuple.Create(filter, string.Empty);
             }
 
-            public ViewModel(string id, bool initialize = true) : base(null) {
+            public ViewModel(string id, bool initialize = true, bool minimal = false) : base(null) {
                 ID = id;
                 _mode = NewRaceModeData.Instance.Items.GetByIdOrDefault(id) ?? throw new Exception($"Mode {id} is missing");
 
@@ -211,6 +211,7 @@ namespace AcManager.Pages.Drive {
                     }
                 }
 
+                if (minimal) return;
                 LoadSaveable(initialize);
 
                 try {
@@ -257,7 +258,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private void OnConfigChange() {
-                if (Config == null) return;
+                if (Config == null || _settingsKey == null) return;
                 ValuesStorage.Set(_settingsKey, Config.Serialize());
             }
 
@@ -369,6 +370,10 @@ namespace AcManager.Pages.Drive {
 
             protected override Game.BaseModeProperties GetModeProperties(IEnumerable<Game.AiCar> botCars) {
                 _mode.PublishSettings(Config?.Serialize());
+                return GetModePropertiesImpl(botCars);
+            }
+
+            public Game.BaseModeProperties GetModePropertiesImpl(IEnumerable<Game.AiCar> botCars) {
                 if (_sessionType == SessionType.Race) {
                     return new Game.RaceProperties {
                         SessionName = _mode.DisplayName,

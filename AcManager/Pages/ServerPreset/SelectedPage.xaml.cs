@@ -24,6 +24,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcManager.Tools.ServerPlugins;
+using AcManager.Tools.Starters;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -517,26 +518,40 @@ namespace AcManager.Pages.ServerPreset {
 
             public StoredValue<bool> CopyPasswordToInviteLink { get; } = Stored.Get("serverPreset.copyPwToInviteLink", false);
 
+            private async Task<string> GenerateInviteLinkBaseAsync() {
+                var ipInfo = await IpGeoProvider.GetAsync();
+                if (ipInfo == null) {
+                    throw new Exception("Failed to get IP address");
+                }
+
+                var link = $@"online/join?ip={ipInfo.Ip}&httpPort={SelectedObject.HttpPort}";
+                var serverId = $@"{ipInfo.Ip}:{SelectedObject.HttpPort}";
+                if (CopyPasswordToInviteLink.Value && !string.IsNullOrWhiteSpace(SelectedObject.Password)) {
+                    link += $@"&password={OnlineServer.EncryptSharedPassword(serverId, SelectedObject.Password)}";
+                }
+                return link;
+            }
+
             private AsyncCommand _inviteCommand;
 
             public AsyncCommand InviteCommand => _inviteCommand ?? (_inviteCommand = new AsyncCommand(async () => {
                 try {
-                    var ipInfo = await IpGeoProvider.GetAsync();
-                    if (ipInfo == null) {
-                        throw new Exception("Failed to get IP address");
-                    }
-
-                    var link = $@"{InternalUtils.MainApiDomain}/s/q:race/online/join?ip={ipInfo.Ip}&httpPort={SelectedObject.HttpPort}";
-                    var serverId = $@"{ipInfo.Ip}:{SelectedObject.HttpPort}";
-                    if (CopyPasswordToInviteLink.Value && !string.IsNullOrWhiteSpace(SelectedObject.Password)) {
-                        link += $@"&password={OnlineServer.EncryptSharedPassword(serverId, SelectedObject.Password)}";
-                    }
-
+                    var link = $@"{InternalUtils.MainApiDomain}/s/q:race/{await GenerateInviteLinkBaseAsync()}";
                     SharingUiHelper.ShowShared("Inviting link", link, false);
                 } catch (Exception e) {
                     NonfatalError.Notify("Failed to generate invitational link", e);
                 }
             }));
+
+            private AsyncCommand _inviteSteamFriendCommand;
+
+            public AsyncCommand InviteSteamFriendCommand => _inviteSteamFriendCommand ?? (_inviteSteamFriendCommand = new AsyncCommand(async () => {
+                try {
+                    await SteamStarter.InviteFriendAsync(await GenerateInviteLinkBaseAsync()).ConfigureAwait(false);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Failed to invite a friend", e);
+                }
+            }, () => SettingsHolder.Integrated.SteamIntegration));
         }
 
         private string _id;

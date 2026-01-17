@@ -17,9 +17,9 @@
         <Label Content="Enable Grid Finder" />
       </CheckBox>
 
-      <CheckBox IsChecked="{Binding Live.RaceUEnabled}">
+      <!--<CheckBox IsChecked="{Binding Live.RaceUEnabled}">
         <Label Content="Enable RaceU" />
-      </CheckBox>
+      </CheckBox>-->
 
       <CheckBox IsChecked="{Binding Live.RsrEnabled}">
         <Label Content="{x:Static g:AppStrings.Settings_Live_EnableRsr}" />

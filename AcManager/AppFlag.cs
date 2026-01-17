@@ -648,5 +648,10 @@ namespace AcManager {
         /// Definitely only for internal use.
         /// </summary>
         MoveApp,
+
+        /// <summary>
+        /// Definitely only for internal use.
+        /// </summary>
+        OculusFixApplied,
     }
 }

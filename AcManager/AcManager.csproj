@@ -2168,7 +2168,6 @@
     </None>
     <None Include="About\ImportantTips\Thank you!.txt" />
     <None Include="About\ImportantTips\Track Previews How-To.txt" />
-    <None Include="About\ImportantTips\Starters.txt" />
     <None Include="About\ImportantTips\Command-Line Arguments.txt" />
   </ItemGroup>
   <ItemGroup>
