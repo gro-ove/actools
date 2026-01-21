@@ -36,8 +36,8 @@ using System.Windows.Markup;
 [assembly: AssemblyVersion("1.0.1.1426")]
 [assembly: AssemblyFileVersion("1.0.1.1426")]
 
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.ContentRepair")]
-[assembly: XmlnsPrefix("http://acstuff.ru/app/tools", "t")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.ContentRepair")]
+[assembly: XmlnsPrefix("http://acstuff.club/app/tools", "t")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
 // Modified at: 19/03/29 20:02:16

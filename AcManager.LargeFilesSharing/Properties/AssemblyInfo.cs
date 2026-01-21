@@ -36,9 +36,9 @@ using System.Windows.Markup;
 [assembly: AssemblyVersion("1.0.1.209")]
 [assembly: AssemblyFileVersion("1.0.1.209")]
 
-[assembly: XmlnsDefinition("http://acstuff.ru/app/sharing", "AcManager.LargeFilesSharing")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/sharing", "AcManager.LargeFilesSharing.Implementations")]
-[assembly: XmlnsPrefix("http://acstuff.ru/app/sharing", "h")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/sharing", "AcManager.LargeFilesSharing")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/sharing", "AcManager.LargeFilesSharing.Implementations")]
+[assembly: XmlnsPrefix("http://acstuff.club/app/sharing", "h")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
 // Modified at: 18/11/26 23:18:46
