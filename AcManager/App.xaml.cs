@@ -608,9 +608,21 @@ namespace AcManager {
                 SteamStarter.PushRichPresence(presence?.State, presence?.Details);
             };*/
 
-            SteamStarter.SteamInvite += (sender, args) => {
+            SteamStarter.SteamInvite += async (sender, args) => {
                 Logging.Debug($"Steam invite: {args.SteamId}, {args.InviteUrl}");
                 if (args.InviteUrl.StartsWith("acmanager://race/")) {
+                    if (GameWrapper.IsInGame || AcSharedMemory.Instance.IsLive) {
+                        await Task.Delay(500); // give AC chance to handle the invite using its own Steam API
+                        try {
+                            var handledMark = new BetterMemoryMappedAccessor<long>("AcTools.CSP.SteamInviteHandledMark.v0");
+                            if (handledMark.Get() + 5 >= DateTime.Now.ToUnixTimestamp()) {
+                                Logging.Debug("Invite has been handled by CSP");
+                                return;
+                            }
+                        } catch {
+                            // ignored
+                        }
+                    }
                     ActionExtension.InvokeInMainThreadAsync(() => ArgumentsHandler.ProcessArguments(new[] { args.InviteUrl }, false).Ignore());
                 }
             };
@@ -946,6 +958,7 @@ namespace AcManager {
                         let info = new FileInfo(file)
                         where info.LastWriteTime < DateTime.Now - TimeSpan.FromDays(3)
                         select info) {
+                        f.Delete();
                         f.Delete();
                     }
                 });

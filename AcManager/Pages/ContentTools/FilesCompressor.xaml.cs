@@ -535,7 +535,7 @@ namespace AcManager.Pages.ContentTools {
                         lines = new string[0];
                     }
                     if (lines.Length > 0) {
-                        Logging.Debug("[BgCompression] In the queue: " + lines.Length);
+                        // Logging.Debug("[BgCompression] In the queue: " + lines.Length);
                     }
                     var candidates = lines.Take(20).Where(x => {
                         var fileInfo = new FileInfo(x);

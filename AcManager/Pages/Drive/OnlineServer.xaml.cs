@@ -468,17 +468,9 @@ namespace AcManager.Pages.Drive {
         /// </summary>
         private static readonly string EncryptKey = InternalUtils.GetOnlineInviteEncryptionKey();
 
-        private static void Xor(byte[] data, byte[] key) {
-            int dataLength = data.Length, keyLength = key.Length;
-            for (int i = 0, k = 0; i < dataLength; i++, k++) {
-                if (k == keyLength) k = 0;
-                data[i] ^= key[k];
-            }
-        }
-
         public static string EncryptSharedPassword(string id, string password) {
             var data = Encoding.UTF8.GetBytes(password);
-            Xor(data, Encoding.UTF8.GetBytes(id + EncryptKey));
+            data.XorSelf(Encoding.UTF8.GetBytes(id + EncryptKey));
             return HttpUtility.UrlEncode(Convert.ToBase64String(data));
         }
 
@@ -488,7 +480,7 @@ namespace AcManager.Pages.Drive {
 
         public static string DecryptSharedPassword(string id, string encryptedPassword) {
             var data = Convert.FromBase64String(encryptedPassword);
-            Xor(data, Encoding.UTF8.GetBytes(id + EncryptKey));
+            data.XorSelf(Encoding.UTF8.GetBytes(id + EncryptKey));
             return Encoding.UTF8.GetString(data);
         }
 

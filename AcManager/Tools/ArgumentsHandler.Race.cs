@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,11 +17,13 @@ using AcManager.Pages.Drive;
 using AcManager.Tools.Data;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcManager.Tools.Starters;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -231,17 +236,131 @@ namespace AcManager.Tools {
             dlg.ShowDialog();
             await wrapper.ReloadAsync(true);
         }
+        
+        private static void Xor(byte[] data, byte[] key) {
+            int dataLength = data.Length, keyLength = key.Length;
+            for (int i = 0, k = 0; i < dataLength; i++, k++) {
+                if (k == keyLength) k = 0;
+                data[i] ^= key[k];
+            }
+        }
+
+        private static async Task<byte[]> GetParcelDataAsync(string key) {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, $"https://parcel.acstuff.club/{key}")) {
+                request.Headers.Add("Accept", "application/octet-stream");
+                using (var response = await HttpClientHolder.Get().SendAsync(request)) {
+                    response.EnsureSuccessStatusCode();
+                    string xorKey = null;
+                    if (response.Headers.TryGetValues("X-Parcel-Xor-Key", out var values)) {
+                        xorKey = values.FirstOrDefault();
+                    }
+                    var xorKeyBytes = xorKey?.FromCutBase64();
+                    if (xorKeyBytes?.Length != 8) {
+                        throw new Exception("Failed to read parcel key");
+                    }
+                    var responseBytes = await response.Content.ReadAsByteArrayAsync();
+                    responseBytes.XorSelf(xorKeyBytes);
+                    return responseBytes;
+                }
+            }
+        }
 
         private static async Task<ArgumentHandleResult> ProcessRaceCsp(NameValueCollection p) {
             // Required arguments
             var paramValue = p.Get(@"param");
             var modeId = p.Get(@"mode");
-            var carId = p.Get(@"car") ?? @":";
+
+            var trackId = p.Get(@"track");
+            var tracksConstraints = p.GetValues(@"tracks") ?? new string[0];
+            if (trackId == null || tracksConstraints.Length > 0) {
+                HashSet<uint> allowedTracks = null;
+                string tracksFilter = null;
+                foreach (var id in tracksConstraints) {
+                    if (allowedTracks == null) {
+                        allowedTracks = new HashSet<uint>();
+                        CarsManager.Instance.EnsureLoadedAsync().Ignore();
+                    }
+                    if (id.StartsWith(":")) {
+                        tracksFilter = id.Substring(1); 
+                    } else if (id.StartsWith("*")) {
+                        try {
+                            var data = await GetParcelDataAsync(id.Substring(1));
+                            for (var i = 0; i + 3 < data.Length; i += 4) {
+                                allowedTracks.Add(BitConverter.ToUInt32(data, i));
+                            }
+                        } catch (Exception e) {
+                            Logging.Error($"Failed to access list of allowed cars: {e}");
+                        }
+                    } else {
+                        foreach (var allowedCarId in id.Split(',')) {
+                            allowedTracks.Add(Crc32Algorithm.Compute(Encoding.UTF8.GetBytes(allowedCarId)));
+                        }   
+                    }
+                }
+
+                if (allowedTracks != null) {
+                    Logging.Debug($"Allowed tracks: {allowedTracks.Count}");
+                    if (allowedTracks.Count == 0) {
+                        allowedTracks = null;
+                    }
+                    using (WaitingDialog.Create("Loading tracks…")) {
+                        await TracksManager.Instance.EnsureLoadedAsync();
+                    }
+                }
+                
+                var track = await TracksManager.Instance.GetLayoutByIdAsync(ValuesStorage.Get(".cspracecmd.track", string.Empty));
+                track = SelectTrackDialog.Show(track, Tuple.Create(tracksFilter, (string)null), allowedTracks);
+                if (track == null) {
+                    return ArgumentHandleResult.Failed;
+                }
+                trackId = track.IdWithLayout;
+                ValuesStorage.Set(".cspracecmd.track", trackId);
+            } else if (await TracksManager.Instance.GetByIdAsync(trackId) == null) {
+                throw new InformativeException($"Can’t join the invite: track “{trackId}” is missing");
+            }
+
+            var carId = p.Get(@"car");
             var skinId = p.Get(@"skin");
-            if (carId.StartsWith(":")) {
+            var carsConstraints = p.GetValues(@"cars") ?? new string[0];
+            if (carId == null || carsConstraints.Length > 0) {
+                HashSet<uint> allowedCars = null;
+                string carsFilter = null;
+                foreach (var id in carsConstraints) {
+                    if (allowedCars == null) {
+                        allowedCars = new HashSet<uint>();
+                        CarsManager.Instance.EnsureLoadedAsync().Ignore();
+                    }
+                    if (id.StartsWith(":")) {
+                        carsFilter = id.Substring(1); 
+                    } else if (id.StartsWith("*")) {
+                        try {
+                            var data = await GetParcelDataAsync(id.Substring(1));
+                            for (var i = 0; i + 3 < data.Length; i += 4) {
+                                allowedCars.Add(BitConverter.ToUInt32(data, i));
+                            }
+                        } catch (Exception e) {
+                            Logging.Error($"Failed to access list of allowed cars: {e}");
+                        }
+                    } else {
+                        foreach (var allowedCarId in id.Split(',')) {
+                            allowedCars.Add(Crc32Algorithm.Compute(Encoding.UTF8.GetBytes(allowedCarId)));
+                        }   
+                    }
+                }
+
+                if (allowedCars != null) {
+                    Logging.Debug($"Allowed cars: {allowedCars.Count}");
+                    if (allowedCars.Count == 0) {
+                        allowedCars = null;
+                    }
+                    using (WaitingDialog.Create("Loading cars…")) {
+                        await CarsManager.Instance.EnsureLoadedAsync();
+                    }
+                }
+                
                 var car = await CarsManager.Instance.GetByIdAsync(ValuesStorage.Get(".cspracecmd.car", string.Empty));
                 var skin = car?.GetSkinById(ValuesStorage.Get(".cspracecmd.skin", string.Empty));
-                car = SelectCarDialog.Show(car, ref skin, carId.Length > 1 ? carId.Substring(1) : null);
+                car = SelectCarDialog.Show(car, ref skin, carsFilter, allowedCars);
                 if (car == null) {
                     return ArgumentHandleResult.Failed;
                 }
@@ -249,17 +368,8 @@ namespace AcManager.Tools {
                 skinId = skin?.Id;
                 ValuesStorage.Set(".cspracecmd.car", carId);
                 ValuesStorage.Set(".cspracecmd.skin", skinId);
-            }
-
-            var trackId = p.Get(@"track") ?? @":";
-            if (trackId.StartsWith(":")) {
-                var track = await TracksManager.Instance.GetLayoutByIdAsync(ValuesStorage.Get(".cspracecmd.track", string.Empty));
-                track = SelectTrackDialog.Show(track, Tuple.Create(trackId.Length > 1 ? trackId.Substring(1) : null, (string)null));
-                if (track == null) {
-                    return ArgumentHandleResult.Failed;
-                }
-                trackId = track.IdWithLayout;
-                ValuesStorage.Set(".cspracecmd.track", trackId);
+            } else if (await CarsManager.Instance.GetByIdAsync(carId) == null) {
+                throw new InformativeException($"Can’t join the invite: car “{carId}” is missing");
             }
 
             // &cfg=SECTION[KEY]VALUE[KEY2]VALUE2&cfg=SECTION2[KEY]VALUE;

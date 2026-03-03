@@ -423,6 +423,7 @@
     <Compile Include="Pages\ContentTools\Uv2ModelConverter.xaml.cs">
       <DependentUpon>Uv2ModelConverter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\AllowedHelper.cs" />
     <Compile Include="Pages\Dialogs\AppKeyDialog.xaml.cs">
       <DependentUpon>AppKeyDialog.xaml</DependentUpon>
     </Compile>

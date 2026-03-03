@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
@@ -93,15 +94,17 @@ namespace AcManager.Pages.Dialogs {
         /// as well.
         /// </summary>
         [CanBeNull]
-        public static TrackObjectBase Show([CanBeNull] TrackObjectBase track, Tuple<string, string> defaultFilter = null) {
-            if (track == null) {
-                track = TracksManager.Instance.GetDefault();
-                if (track == null) return null;
+        public static TrackObjectBase Show([CanBeNull] TrackObjectBase track, Tuple<string, string> defaultFilter = null,
+                HashSet<uint> allowedTrackIds = null) {
+            using (var allowed = new AllowedHelper<TrackObject>(TracksManager.Instance, allowedTrackIds)) {
+                if (track == null || track.MainTrackObject.NotAllowedToSelect) {
+                    track = allowed.GetDefaultItem();
+                    if (track == null) return null;
+                }
+                var dialog = new SelectTrackDialog(track).ApplyDefault(defaultFilter);
+                dialog.ShowDialog();
+                return !dialog.IsResultOk || dialog.Model.SelectedTrackConfiguration == null ? track : dialog.Model.SelectedTrackConfiguration;
             }
-
-            var dialog = new SelectTrackDialog(track).ApplyDefault(defaultFilter);
-            dialog.ShowDialog();
-            return !dialog.IsResultOk || dialog.Model.SelectedTrackConfiguration == null ? track : dialog.Model.SelectedTrackConfiguration;
         }
 
         [ContractAnnotation(@"=> track:null, false; => track:notnull, true")]

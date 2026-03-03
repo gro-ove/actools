@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Media;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
@@ -18,7 +18,6 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
-using Microsoft.VisualBasic.Logging;
 using Steamworks;
 
 namespace AcManager.Tools.Starters {
@@ -133,11 +132,17 @@ namespace AcManager.Tools.Starters {
         private static bool _fpsBoosted; 
         private static readonly EventHandler OverlayFpsBoost = (sender, args) => { };
 
-        private static Task<string> GetLobbyInviteUrlTyped(CSteamID lobbyId) {
+        private static string TryAccessLobbyData(CSteamID lobbyId) {
             var directlyAccessed = SteamMatchmaking.GetLobbyData(lobbyId, "cm.invite.race");
-            Logging.Debug($"Trying to get invite URL from lobby: {lobbyId}, directly accessed: {directlyAccessed}");
-            if (!string.IsNullOrEmpty(directlyAccessed)) {
-                return Task.FromResult("acmanager://race/" + directlyAccessed);
+            if (string.IsNullOrEmpty(directlyAccessed)) return null;
+            if (SteamMatchmaking.GetLobbyOwner(lobbyId) == SteamUser.GetSteamID()) return "own";
+            return "acmanager://race/" + directlyAccessed;
+        }
+
+        private static Task<string> GetLobbyInviteUrlTyped(CSteamID lobbyId) {
+            var directlyAccessed = TryAccessLobbyData(lobbyId);
+            if (directlyAccessed != null) {
+                return Task.FromResult(directlyAccessed);
             }
 
             var tcs = new TaskCompletionSource<string>();
@@ -145,14 +150,16 @@ namespace AcManager.Tools.Starters {
             ActionExtension.InvokeInMainThreadAsync(() => BoostCallbacks());
             LobbyDataCallback = Callback<LobbyDataUpdate_t>.Create(t => {
                 if (tcs != null) {
-                    var inviteData = t.m_bSuccess != 0 ? SteamMatchmaking.GetLobbyData(lobbyId, "cm.invite.race") : null;
+                    var inviteData = t.m_bSuccess != 0 ? TryAccessLobbyData(lobbyId) : null;
                     Logging.Debug($"Lobby invite argument: {lobbyId}, {inviteData}");
-                    tcs.SetResult(string.IsNullOrEmpty(inviteData) ? null : "acmanager://race/" + inviteData);
+                    SteamMatchmaking.LeaveLobby(lobbyId);
+                    tcs.SetResult(inviteData);
                     tcs = null;
                     LobbyDataCallback?.Unregister();
                 }
             });
             if (!SteamMatchmaking.RequestLobbyData(lobbyId)) {
+                SteamMatchmaking.LeaveLobby(lobbyId);
                 Logging.Warning("Failed to get lobby data");
                 LobbyDataCallback?.Unregister();
                 return Task.FromResult<string>(null);
@@ -160,6 +167,7 @@ namespace AcManager.Tools.Starters {
 
             Task.Delay(5000).ContinueWith(r => {
                 if (tcs != null) {
+                    SteamMatchmaking.LeaveLobby(lobbyId);
                     tcs.SetResult(string.Empty);
                     tcs = null;
                     LobbyDataCallback?.Unregister();
@@ -169,8 +177,7 @@ namespace AcManager.Tools.Starters {
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static Task<string> GetLobbyInviteUrlAsyncInner(string lobbyId) {
-            Initialize(AcRootDirectory.Instance.RequireValue, true);
+        private static Task<string> GetLobbyInviteUrlAsyncInner(string lobbyId) {
             Logging.Debug("Trying to get invite URL from lobby (string): " + lobbyId);
             var lobbyIdTyped = new CSteamID(lobbyId.As(0ul));
             return GetLobbyInviteUrlTyped(lobbyIdTyped);
@@ -179,6 +186,7 @@ namespace AcManager.Tools.Starters {
         [ItemCanBeNull]
         public static async Task<string> GetLobbyInviteUrlAsync(string lobbyId) {
             try {
+                Initialize(AcRootDirectory.Instance.RequireValue, true);
                 return await GetLobbyInviteUrlAsyncInner(lobbyId).ConfigureAwait(false);
             } catch (Exception e) {
                 Logging.Error(e);
@@ -191,7 +199,6 @@ namespace AcManager.Tools.Starters {
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static Task<T> ToTask<T>(SteamAPICall_t apiCall) {
             var completionSource = new TaskCompletionSource<T>();
-            Logging.Debug($"apiCall={apiCall}");
             var obj = new CallResult<T>[1];
             obj[0] = CallResult<T>.Create((callResult, failure) => {
                 Logging.Debug($"callResult={callResult}, failure={failure}");
@@ -215,7 +222,6 @@ namespace AcManager.Tools.Starters {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static async Task InviteFriendAsyncInner(string inviteLinkBase) {
-            Initialize(AcRootDirectory.Instance.RequireValue, true);
             ActionExtension.InvokeInMainThreadAsync(() => BoostCallbacks());
             var curLobbyId = new CSteamID(_previousLobbyId);
             if (!curLobbyId.IsValid() || SteamMatchmaking.GetLobbyOwner(curLobbyId) != SteamUser.GetSteamID()) {
@@ -245,6 +251,7 @@ namespace AcManager.Tools.Starters {
         }
 
         public static async Task InviteFriendAsync(string inviteLinkBase) {
+            Initialize(AcRootDirectory.Instance.RequireValue, true);
             await InviteFriendAsyncInner(inviteLinkBase).ConfigureAwait(false);
         }
 

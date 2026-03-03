@@ -242,7 +242,11 @@ namespace AcManager.Controls {
             InnerItemsSource.CurrentChanged -= OnItemsSourceCurrentChanged;
             using (listView.DeferRefresh()) {
                 if (string.IsNullOrWhiteSpace(filter)) {
-                    listView.Filter = null;
+                    if (AcPlaceholderNew.AnyNotAllowedToSelect) {
+                        listView.Filter = BaseFilterFunc;    
+                    } else {
+                        listView.Filter = null;
+                    }
                 } else {
                     _filter = Filter.Create(UniversalAcObjectTester.Instance, filter);
                     listView.Filter = FilterFunc;
@@ -273,10 +277,15 @@ namespace AcManager.Controls {
             return AcItemWrapper.CompareHelper(x, y);
         }
 
-        private bool FilterFunc(object o) {
-            if (_filter == null || o == null) return false;
+        private bool BaseFilterFunc(object o) { 
             var wrapper = o as AcItemWrapper;
-            return wrapper?.IsLoaded == true && _filter.Test((AcObjectNew)wrapper.Value);
+            return wrapper != null && wrapper.Value.NotAllowedToSelect == false;
+        }
+
+        private bool FilterFunc(object o) {
+            var wrapper = o as AcItemWrapper;
+            if (_filter == null || wrapper == null || wrapper.Value.NotAllowedToSelect) return false;
+            return wrapper.IsLoaded && _filter.Test((AcObjectNew)wrapper.Value);
         }
 
         private void OnItemsSourceCurrentChanged(object sender, EventArgs e) {

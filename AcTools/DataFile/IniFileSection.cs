@@ -57,12 +57,16 @@ namespace AcTools.DataFile {
         public new dynamic this[[NotNull, LocalizationRequired(false)] string key] {
             get => ContainsKey(key) ? base[key] : null;
             set {
-                if (ReferenceEquals(value, IniFile.Nothing)) {
-                    Remove(key);
-                } else if (value == null) {
-                    Set(key, (string)null);
-                } else {
-                    Set(key, value);
+                try {
+                    if (ReferenceEquals(value, IniFile.Nothing)) {
+                        Remove(key);
+                    } else if (value == null) {
+                        Set(key, (string)null);
+                    } else {
+                        Set(key, value);
+                    }
+                } catch (Exception e) {
+                    AcToolsLogging.Write($"Failed to set an INI value: {key}={value?.GetType().FullName} ({value?.ToString() ?? "<null>"}): {e}");
                 }
             }
         }

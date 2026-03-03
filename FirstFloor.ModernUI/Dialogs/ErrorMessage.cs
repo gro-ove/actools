@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -43,6 +44,8 @@ namespace FirstFloor.ModernUI.Dialogs {
                 dlg.Buttons = new[] { dlg.OkButton };
             }
             dlg.Show();
+            dlg.Topmost = true;
+            Task.Delay(100).ContinueWithInMainThread(_ => dlg.Topmost = false);
 
             entry.Unseen = false;
         }

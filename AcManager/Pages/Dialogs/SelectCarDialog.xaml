@@ -166,6 +166,10 @@
 
     <DockPanel Grid.Column="2">
       <DockPanel DockPanel.Dock="Bottom" Margin="0 20 0 0">
+        <c:MessageBlock DockPanel.Dock="Top" Margin="0 0 0 12" FrameworkElement.Visibility="{Binding HiddenCars, Converter={StaticResource MoreToVisibilityConverter}}">
+          <TextBlock Text="{Binding HiddenCars, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {car} are hidden.'}" />
+        </c:MessageBlock>
+        
         <ContentPresenter DockPanel.Dock="Right" Content="{Binding CancelButton}" />
         <ContentPresenter DockPanel.Dock="Right" Content="{Binding OkButton}" />
         <mui:ModernButton Click="OnScrollToSelectedButtonClick" HorizontalAlignment="Left" IconData="{StaticResource CollapsedIconData}"

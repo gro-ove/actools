@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -45,6 +46,17 @@ namespace AcManager.Pages.Dialogs {
                 _selectedSkin = value;
                 OnPropertyChanged();
                 CommandManager.InvalidateRequerySuggested();
+            }
+        }
+
+        private int _hiddenCars;
+
+        public int HiddenCars {
+            get => _hiddenCars;
+            set {
+                if (value == _hiddenCars) return;
+                _hiddenCars = value;
+                OnPropertyChanged();
             }
         }
 
@@ -254,19 +266,21 @@ namespace AcManager.Pages.Dialogs {
         }
 
         [CanBeNull]
-        public static CarObject Show([CanBeNull] CarObject car, [CanBeNull] ref CarSkinObject carSkin, string defaultFilter) {
-            var dialog = new SelectCarDialog(car ?? CarsManager.Instance.GetDefault()) {
-                SelectedSkin = carSkin != null && car?.EnabledSkinsListView.Contains(carSkin) == true ? carSkin : car?.SelectedSkin
-            };
-
-            dialog.ApplyDefault(defaultFilter);
-            dialog.ShowDialog();
-
-            if (dialog.IsResultOk) {
-                carSkin = dialog.SelectedSkin;
-                return dialog.SelectedCar;
+        public static CarObject Show([CanBeNull] CarObject car, [CanBeNull] ref CarSkinObject carSkin, string defaultFilter,
+                HashSet<uint> allowedCarIds = null) {
+            using (var allowed = new AllowedHelper<CarObject>(CarsManager.Instance, allowedCarIds)) {
+                allowed.SetDefaultIfNull(ref car);
+                var dialog = new SelectCarDialog(car) {
+                    SelectedSkin = carSkin != null && car?.EnabledSkinsListView.Contains(carSkin) == true ? carSkin : car?.SelectedSkin,
+                    HiddenCars = allowed.HiddenCount
+                };
+                dialog.ApplyDefault(defaultFilter);
+                dialog.ShowDialog();
+                if (dialog.IsResultOk) {
+                    carSkin = dialog.SelectedSkin;
+                    return dialog.SelectedCar;
+                }
             }
-
             return null;
         }
 

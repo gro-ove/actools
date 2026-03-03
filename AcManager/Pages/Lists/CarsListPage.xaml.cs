@@ -114,6 +114,7 @@ namespace AcManager.Pages.Lists {
             if (SettingsHolder.Common.DeveloperMode) {
                 ret = ret.Append(BatchAction_UnpackCarData.Instance);
                 ret = ret.Append(BatchAction_PackCarData.Instance);
+                ret = ret.Append(BatchAction_ResaveCarModel.Instance);
             }
             return ret;
         }
@@ -491,6 +492,28 @@ namespace AcManager.Pages.Lists {
                 }
                 obj.SpecsWeight = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Weight_FormatTooltip,
                         (weight.Value - CommonAcConsts.DriverWeight).ToString(@"F0", CultureInfo.InvariantCulture));
+            }
+        }
+
+        public class BatchAction_ResaveCarModel : BatchAction<CarObject> {
+            public static readonly BatchAction_ResaveCarModel Instance = new BatchAction_ResaveCarModel();
+
+            public BatchAction_ResaveCarModel()
+                    : base("Re-save car model", "Might help with some damaged models", "Developer", null) {
+                DisplayApply = "Re-save";
+            }
+
+            public override bool IsAvailable(CarObject obj) {
+                return true;
+            }
+
+            protected override void ApplyOverride(CarObject obj) {
+                try {
+                    var kn5 = Kn5.FromFile(AcPaths.GetMainCarFilename(obj.Location, obj.AcdData, false) ?? throw new Exception());
+                    kn5.SaveRecyclingOriginal(kn5.OriginalFilename);
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground("Can’t re-save model", e);
+                }
             }
         }
 

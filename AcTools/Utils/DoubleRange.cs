@@ -1,5 +1,5 @@
 ﻿namespace AcTools.Utils {
-    public class DoubleRange {
+	public class DoubleRange {
         private double _minimum = double.MaxValue;
         private double _maximum = double.MinValue;
 

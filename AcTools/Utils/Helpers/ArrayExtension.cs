@@ -4,6 +4,14 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class ArrayExtension {
+        public static void XorSelf(this byte[] data, byte[] key) {
+            int dataLength = data.Length, keyLength = key.Length;
+            for (int i = 0, k = 0; i < dataLength; i++, k++) {
+                if (k == keyLength) k = 0;
+                data[i] ^= key[k];
+            }
+        }
+
         [CanBeNull]
         public static T[] CreateArrayOfType<T>(int size) where T : new() {
             var result = new T[size];
