@@ -261,17 +261,34 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        private readonly List<IRenderableObject> _hidden = new List<IRenderableObject>(10);
+        private List<IRenderableObject> _hidden = new List<IRenderableObject>(10);
 
-        public void ToggleSelected() {
+        public void ToggleSelected(bool hideAllButSelected) {
             var selected = SelectedObject;
             if (selected == null) return;
 
-            selected.IsEnabled = !selected.IsEnabled;
-            if (selected.IsEnabled) {
-                _hidden.Remove(selected);
+            if (hideAllButSelected) {
+                if (ShowroomNode != null && ShowroomNode.GetAllChildren().Contains(selected)) {
+                    _hidden = ShowroomNode.GetAllChildren().Where(x => x is BaseRenderableObject && x != selected).ToList();
+                    foreach (var o in _hidden) o.IsEnabled = false;
+                    selected.IsEnabled = true;
+                } else {
+                    foreach (var carSlot in CarSlots) {
+                        if (carSlot.CarNode?.ContainsNode(selected) == true) {
+                            _hidden = carSlot.CarNode.GetAllChildren().Where(x => x is BaseRenderableObject && x != selected).ToList();
+                            foreach (var o in _hidden) o.IsEnabled = false;
+                            selected.IsEnabled = true;
+                            break;
+                        }
+                    }
+                }
             } else {
-                _hidden.Add(selected);
+                selected.IsEnabled = !selected.IsEnabled;
+                if (selected.IsEnabled) {
+                    _hidden.Remove(selected);
+                } else {
+                    _hidden.Add(selected);
+                }
             }
 
             IsDirty = true;

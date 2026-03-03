@@ -45,6 +45,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         static ControlsSettings() {
             PresetsDirectory = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "controllers");
             UserPresetsDirectory = Path.Combine(PresetsDirectory, SubUserPresets);
+            Directory.CreateDirectory(UserPresetsDirectory);
         }
 
         private static string CapitalizeFirst(string s) {

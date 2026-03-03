@@ -377,7 +377,7 @@
 
                 <c:MessageBlock CloseKey="showroomSelectionHint" Margin="0 20 0 0">
                   <mui:BbCodeBlock Style="{StaticResource Small}"
-                      Text="Use Alt+H to hide selected mesh, Alt+Shift+H to un-hide all meshes. Might be helpful for stopping some meshes from casting shadows when baking AO." />
+                      Text="Use Alt+H to hide selected mesh, Alt+Shift+H to un-hide all meshes, or Alt+Ctrl+H to hide all but selected mesh. Might help to stop some meshes from casting shadows when baking AO." />
                 </c:MessageBlock>
               </StackPanel>
             </ScrollViewer>

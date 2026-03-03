@@ -84,12 +84,14 @@ namespace AcManager.Pages.Miscellaneous {
         }
 
         public class WrappedCarObject : NotifyPropertyChanged {
-            public WrappedCarObject(CarObject car, bool isPlayerCar) {
+            public WrappedCarObject([NotNull] CarObject car, bool isPlayerCar) {
                 Car = car;
                 IsPlayerCar = isPlayerCar;
             }
 
+            [NotNull]
             public CarObject Car { get; }
+            
             public bool IsPlayerCar { get; }
         }
 
@@ -170,7 +172,9 @@ namespace AcManager.Pages.Miscellaneous {
                         .Distinct()
                         .Select(x => CarsManager.Instance.GetByIdAsync(x ?? ""))
                         .WhenAll() ??
-                        Task.FromResult<IEnumerable<CarObject>>(null)).ConfigureAwait(false)).Select((x, y) => new WrappedCarObject(x, y == 0))
+                        Task.FromResult<IEnumerable<CarObject>>(null)).ConfigureAwait(false))
+                        .NonNull()
+                        .Select((x, y) => new WrappedCarObject(x, y == 0))
                         .OrderBy(x => x.Car.DisplayName).ToList());
                 ModeDetails = Lazier.CreateAsync(GetModeDetails);
             }

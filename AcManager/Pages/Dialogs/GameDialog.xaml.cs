@@ -409,7 +409,7 @@ namespace AcManager.Pages.Dialogs {
                 var sessionBest = sessionBestLap?.Time;
 
                 data.PlayerEntries = (
-                        from player in result.Players
+                        from player in result.Players?.Where(x => x.CarId != "nul")
                         let car = CarsManager.Instance.GetById(player.CarId ?? "")
                         let carSkin = car?.GetSkinById(player.CarSkinId ?? "")
                         select new { Player = player, Car = car, CarSkin = carSkin }
