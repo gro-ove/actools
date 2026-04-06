@@ -43,7 +43,8 @@ namespace AcManager.Tools.Helpers.DirectInput {
         [ContractAnnotation(@"
                 => displayName:null, axes:null, buttons:null, povs:null, false;
                 => displayName:notnull, axes:notnull, buttons:notnull, povs:notnull, true")]
-        public static bool Get([NotNull] string guid, out string displayName, out DisplayInputParams axes, out DisplayInputParams buttons, out DisplayInputParams povs) {
+        public static bool Get([NotNull] string guid, out string displayName, out DisplayInputParams axes, out DisplayInputParams buttons, 
+                out DisplayInputParams povs, out int couldHaveLoadCells) {
             var file = FilesStorage.Instance.GetContentFile(ContentCategory.Controllers, $"{guid}.json");
             if (file.Exists) {
                 try {
@@ -52,6 +53,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
                     axes = new DisplayInputParams(jData["axis"] ?? jData["axes"] ?? jData["axles"]);
                     buttons = new DisplayInputParams(jData["buttons"]);
                     povs = new DisplayInputParams(jData["pov"] ?? jData["povs"] ?? jData["pointOfViews"]);
+                    couldHaveLoadCells = jData.GetBoolValueOnly("loadCells", false) ? 1 : 0;
                     return true;
                 } catch (Exception e) {
                     Logging.Warning(e);
@@ -62,6 +64,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
             axes = null;
             buttons = null;
             povs = null;
+            couldHaveLoadCells = -1;
             return false;
         }
     }

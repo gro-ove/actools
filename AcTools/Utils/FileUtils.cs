@@ -605,17 +605,23 @@ namespace AcTools.Utils {
         [NotNull]
         public static string[] GetFileSiblingHardLinks([NotNull] string filename, [NotNull] string mountPoint) {
             var result = new List<string>();
-            uint stringLength = 256;
-            var sb = new StringBuilder((int)stringLength);
-            var findHandle = Kernel32.FindFirstFileNameW(filename, 0, ref stringLength, sb);
-            if (findHandle.ToInt32() == -1) return new string[0];
-
-            do {
-                result.Add(mountPoint + sb.ToString().Substring(1));
-                sb.Length = 0;
-                stringLength = 256;
-            } while (Kernel32.FindNextFileNameW(findHandle, ref stringLength, sb));
-            Kernel32.FindClose(findHandle);
+            try {
+                uint stringLength = 256;
+                var sb = new StringBuilder((int)stringLength);
+                var findHandle = Kernel32.FindFirstFileNameW(filename, 0, ref stringLength, sb);
+                if (findHandle.ToInt32() == -1) return new string[0];
+                try {
+                    do {
+                        result.Add(mountPoint + sb.ToString().Substring(1));
+                        sb.Length = 0;
+                        stringLength = 256;
+                    } while (Kernel32.FindNextFileNameW(findHandle, ref stringLength, sb));
+                } finally {
+                    Kernel32.FindClose(findHandle);
+                }
+            } catch (Exception e) {
+                AcToolsLogging.Write($"Failed to collect hard links: {e}");
+            }
             return result.ToArray();
         }
 

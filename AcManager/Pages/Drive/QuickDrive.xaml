@@ -848,8 +848,8 @@
           <mui:Link DisplayName="{x:Static t:ToolsStrings.Common_Weekend}" Source="/Pages/Drive/QuickDrive_Weekend.xaml" />
           <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drift}" Source="/Pages/Drive/QuickDrive_Drift.xaml" />
           <mui:LinksList x:Name="LinksList" DisplayName="{x:Static g:AppStrings.QuickDrive_Mode_More}">
-            <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drag}" Source="/Pages/Drive/QuickDrive_Drag.xaml" />
-            <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_TimeAttack}" Source="/Pages/Drive/QuickDrive_TimeAttack.xaml" />
+            <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drag}" Source="/Pages/Drive/QuickDrive_Drag.xaml" ToolTip="Original drag mode by Kunos" />
+            <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_TimeAttack}" Source="/Pages/Drive/QuickDrive_TimeAttack.xaml" ToolTip="Original time attack mode by Kunos" />
           </mui:LinksList>
         </mui:ModernTab.Links>
       </mui:ModernTab>

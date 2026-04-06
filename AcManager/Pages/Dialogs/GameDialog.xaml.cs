@@ -234,6 +234,10 @@ namespace AcManager.Pages.Dialogs {
             Model.SubCancellationCallback = subCancellationCallback;
         }
 
+        public string GetCurrentMessage() {
+            return Model.WaitingStatus;
+        }
+
         private void MonitorExitStatus() {
             if (_shuttingDownTimer == null) {
                 _shuttingDownTimer = new DispatcherTimer(TimeSpan.FromSeconds(0.5d), DispatcherPriority.Background, (s, e) => {

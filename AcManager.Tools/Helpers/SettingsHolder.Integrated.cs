@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Starters;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -35,7 +36,7 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
 
                     if (value) {
-                        SteamStarter.Initialize(AcRootDirectory.Instance.RequireValue, true);
+                        SteamStarter.InitializeAsync().Ignore();
                     }
                 }
             }

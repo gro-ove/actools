@@ -198,7 +198,7 @@ namespace AcManager.Pages.Windows {
             LinkNavigator.Commands.Add(new Uri("cmd://enterKey"), Model.EnterKeyCommand);
             if (SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
                 TitleLinks.Remove(OriginalLauncher);
-            } else {
+            } else if (string.Equals(System.IO.Path.GetFileName(MainExecutingFile.Location), @"assettocorsa.exe", StringComparison.OrdinalIgnoreCase)) {
                 LinkNavigator.Commands.Add(new Uri("cmd://originalLauncher"), new DelegateCommand(SteamStarter.StartOriginalLauncher));
             }
 

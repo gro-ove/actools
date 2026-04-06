@@ -143,6 +143,10 @@ namespace AcManager.Tools.Data {
             }
         }
 
+        private BbCodeBlock _toolTipContent;
+
+        public BbCodeBlock ToolTipContent => _toolTipContent ?? (_toolTipContent = GetToolTip());
+
         public BbCodeBlock GetToolTip() {
             if (Description == null) return null;
             return new BbCodeBlock {

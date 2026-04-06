@@ -11,6 +11,7 @@ namespace AcManager.Tools.SemiGui {
         void OnProgress(Game.ProgressState progress);
         void OnResult([CanBeNull] Game.Result result, [CanBeNull] ReplayHelper replayHelper);
         void OnError(Exception exception);
+        string GetCurrentMessage();
         CancellationToken CancellationToken { get; }
     }
 

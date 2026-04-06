@@ -141,7 +141,7 @@ namespace AcManager.Tools.Managers {
         }
 
         public Task UpdateProgressViaSteamStarter(IProgress<string> progress, CancellationToken cancellation) {
-            return UpdateProgressDirect(c => Task.Run(() => SteamStarter.GetAchievements()), progress, cancellation);
+            return UpdateProgressDirect(c => SteamStarter.GetAchievementsAsync(), progress, cancellation);
         }
 
         public Task UpdateProgressViaAppIdStarter(IProgress<string> progress, CancellationToken cancellation) {

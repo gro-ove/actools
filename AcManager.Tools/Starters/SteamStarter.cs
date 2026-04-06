@@ -80,7 +80,7 @@ namespace AcManager.Tools.Starters {
 
             for (var i = 0; i < 3 && !initialized; i++) {
                 Logging.Write($"Delayed Steam initialization, attempt #{i + 1} {(SteamAPI.IsSteamRunning() ? "" : "(Steam not running)")}");
-                Thread.Sleep(150);
+                Thread.Sleep(50);
 
                 try {
                     SteamAPI.Shutdown();
@@ -92,10 +92,17 @@ namespace AcManager.Tools.Starters {
             }
 
             if (!initialized) {
-                Logging.Write("Still not initialized, asking Steam to restart AC…");
-                if (!SteamAPI.RestartAppIfNecessary(new AppId_t(244210u))) {
-                    MessageBox.Show("Steam can’t be initialized.", "Steam Inactive", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                if (!IsFullyIntegrated) {
+                    MessageBox.Show("Failed to initialize Steam. Make sure Steam is running, or change the starter in Drive settings to something else.",
+                            "Steam in not responding", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                } else {
+                    Logging.Write("Still not initialized, asking Steam to restart AC…");
+                    if (!SteamAPI.RestartAppIfNecessary(new AppId_t(244210u))) {
+                        MessageBox.Show("Failed to initialize Steam. Make sure Steam is running, or change the starter in Drive settings to something else.",
+                                "Steam in not responding", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    }
                 }
+                Logging.Write("Steam failed to initialize, existing.");
                 Environment.Exit(0);
             }
 
@@ -186,7 +193,7 @@ namespace AcManager.Tools.Starters {
         [ItemCanBeNull]
         public static async Task<string> GetLobbyInviteUrlAsync(string lobbyId) {
             try {
-                Initialize(AcRootDirectory.Instance.RequireValue, true);
+                await InitializeAsync();
                 return await GetLobbyInviteUrlAsyncInner(lobbyId).ConfigureAwait(false);
             } catch (Exception e) {
                 Logging.Error(e);
@@ -251,7 +258,7 @@ namespace AcManager.Tools.Starters {
         }
 
         public static async Task InviteFriendAsync(string inviteLinkBase) {
-            Initialize(AcRootDirectory.Instance.RequireValue, true);
+            await InitializeAsync();
             await InviteFriendAsyncInner(inviteLinkBase).ConfigureAwait(false);
         }
 
@@ -266,15 +273,14 @@ namespace AcManager.Tools.Starters {
                     ai.Length == bi.Length;
         }
 
-        private static bool? _isAvailable;
+        private static bool? isFullyIntegrated;
 
         public static bool IsFullyIntegrated {
             get {
-                if (_isAvailable == null) {
-                    _isAvailable = AreFilesSame(MainExecutingFile.Location, LauncherFilename);
+                if (isFullyIntegrated == null) {
+                    isFullyIntegrated = AreFilesSame(MainExecutingFile.Location, LauncherFilename);
                 }
-
-                return _isAvailable.Value;
+                return isFullyIntegrated.Value;
             }
         }
 
@@ -284,6 +290,14 @@ namespace AcManager.Tools.Starters {
             Kernel32.AddDllDirectory(_dllsPath); // not really needed, seems like steamworks DLL loads DLL from its location
             AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
             AppDomain.CurrentDomain.ProcessExit += OnExit;
+        }
+
+        public static Task<bool> InitializeAsync() {
+            if (IsInitialized) {
+                return Task.FromResult(true);
+            }
+
+            return Task.Run(() => Initialize(AcRootDirectory.Instance.RequireValue, true));
         }
 
         public static bool Initialize(string acRoot, bool force) {
@@ -306,8 +320,7 @@ namespace AcManager.Tools.Starters {
             }
 
             var steamAppId = Path.Combine(MainExecutingFile.Directory, "steam_appid.txt");
-            var steamTagNeeded = !FileUtils.ArePathsEqual(MainExecutingFile.Directory, acRoot)
-                    || !File.Exists(steamAppId);
+            var steamTagNeeded = !File.Exists(steamAppId);
             try {
                 if (steamTagNeeded) {
                     File.WriteAllText(steamAppId, @"244210");
@@ -375,10 +388,10 @@ namespace AcManager.Tools.Starters {
             }
         }
 
-        [CanBeNull]
-        public static Dictionary<string, int> GetAchievements() {
+        [ItemCanBeNull]
+        public static async Task<Dictionary<string, int>> GetAchievementsAsync() {
             try {
-                Initialize(AcRootDirectory.Instance.RequireValue, true);
+                await InitializeAsync().ConfigureAwait(false);
                 return GetAchievementsInner();
             } catch (Exception e) {
                 Logging.Error(e);
@@ -386,9 +399,10 @@ namespace AcManager.Tools.Starters {
             }
         }
 
-        [CanBeNull]
-        public static Dictionary<string, double> GetAchievementStats() {
+        [ItemCanBeNull]
+        public static async Task<Dictionary<string, double>> GetAchievementStatsAsync() {
             try {
+                await InitializeAsync().ConfigureAwait(false);
                 return GetAchievementStatsInner();
             } catch (Exception e) {
                 Logging.Error(e);

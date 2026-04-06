@@ -10,6 +10,8 @@ namespace AcManager.Tools.Helpers.DirectInput {
         bool IsVirtual { get; }
 
         bool IsController { get; }
+        
+        bool CouldHaveLoadCells { get; }
 
         string DisplayName { get; }
 

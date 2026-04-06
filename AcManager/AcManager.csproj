@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- There is also a custom packer made for this app, that’s why there is an option. -->
@@ -490,6 +490,9 @@
       <DependentUpon>AppIconEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dialogs\TyresMachineGraphViewer.cs" />
+    <Compile Include="Pages\Drive\CspNewModes.xaml.cs">
+      <DependentUpon>CspNewModes.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\GridFinder.xaml.cs">
       <DependentUpon>GridFinder.xaml</DependentUpon>
     </Compile>
@@ -1246,6 +1249,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Drive\CspNewModes.xaml" />
     <Page Include="Pages\Drive\GridFinder.xaml" />
     <Page Include="Pages\Drive\QuickDrive_Custom.xaml" />
     <Page Include="Pages\Drive\RaceU.xaml" />

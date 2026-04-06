@@ -113,8 +113,13 @@
                 <Slider Minimum="0" Maximum="100" Value="{Binding RangeTo}" />
               </DockPanel>
               <DockPanel Visibility="{Binding GammaMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
-                <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" VerticalAlignment="Center" Padding="0"
-                    Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_GammaAxis}" />
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Width="120">
+                  <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" VerticalAlignment="Center" Padding="0"
+                      Content="{x:Static c:ControlsStrings.Controls_GammaAxis}" />
+                  <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" Fill="{DynamicResource Error}" Stretch="Uniform"
+                      Margin="4 0 0 0" VerticalAlignment="Center" ToolTip="With newer steering wheels with load cells for brakes, gamma should be set to 100%" 
+                      Visibility="{Binding ShowGammaWarning, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </StackPanel>
                 <Slider Minimum="1" Maximum="5" Value="{Binding Gamma}" />
               </DockPanel>
             </StackPanel>

@@ -14,13 +14,15 @@ namespace AcManager.Tools.Helpers.DirectInput {
             IsController = DirectInputDeviceUtils.IsController(displayName);
             OriginalIniIds = new List<int> { index };
 
-            if (productId != null && DisplayInputParams.Get(productId, out var gotDisplayName, out _axesP, out _buttonsP, out _povsP)) {
+            if (productId != null && DisplayInputParams.Get(productId, out var gotDisplayName, out _axesP, out _buttonsP, out _povsP, out _)) {
                 DisplayName = gotDisplayName;
             } else {
-                DisplayInputParams.Get(DirectInputDeviceUtils.GetXboxControllerGuid(), out _, out _axesP, out _buttonsP, out _povsP);
+                DisplayInputParams.Get(DirectInputDeviceUtils.GetXboxControllerGuid(), out _, out _axesP, out _buttonsP, out _povsP, out _);
                 DisplayName = displayName;
             }
         }
+
+        public bool CouldHaveLoadCells => false;
 
         [CanBeNull]
         public string ProductId { get; }
