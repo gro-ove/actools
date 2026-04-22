@@ -4956,6 +4956,15 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <data name="ServerInstallProgress_HeaderMessageDownloading" xml:space="preserve">
         <value>Downloading…</value>
     </data>
+    <data name="ServerInstallProgress_WaitingForConfirmation" xml:space="preserve">
+        <value>Waiting for confirmation</value>
+    </data>
+    <data name="ServerInstallProgress_ManualConfirmationWarning" xml:space="preserve">
+        <value>Downloads that are not cars or tracks are not auto-confirmed to ensure safety. If you want to install this content, click Confirm.</value>
+    </data>
+    <data name="ServerInstallProgress_Confirm" xml:space="preserve">
+        <value>Confirm</value>
+    </data>
     <data name="ServerInstallProgress_PasswordRequired" xml:space="preserve">
         <value>Password required (resolve in downloads panel)</value>
     </data>

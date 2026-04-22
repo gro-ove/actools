@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using AcManager.Tools.ContentInstallation;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -23,6 +24,7 @@ namespace AcManager.Pages.Dialogs {
     public partial class ServerInstallProgressDialog : ModernDialog {
         public enum StatusKindValue {
             None,
+            Warning,
             Success,
             Failure
         }
@@ -149,15 +151,38 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
+        private IEnumerable<ContentInstallationEntry> TrackedEntries => _installationManager.DownloadList.Where(MatchesEntry);
+
+        private IEnumerable<ContentInstallationEntry> WaitingEntries => _model.Entries.Where(x => x.WaitingForConfirmation);
+
         private Control[] CreateWorkingButtons() {
             return new Control[] {
                     CreateExtraDialogButton(UiStrings.Toolbar_Hide, Close),
                     CreateExtraDialogButton(AppStrings.DownloadList_Cancel, () => {
-                        foreach (var entry in _installationManager.DownloadList.Where(MatchesEntry).ToList()) {
+                        foreach (var entry in TrackedEntries.ToList()) {
                             entry.CancelCommand.Execute();
                         }
                         Close();
                     })
+            };
+        }
+
+        private Control[] CreateConfirmationButtons() {
+            return new Control[] {
+                    CreateExtraDialogButton(UiStrings.Toolbar_Hide, Close),
+                    CreateExtraDialogButton(AppStrings.DownloadList_Cancel, () => {
+                        foreach (var entry in TrackedEntries.ToList()) {
+                            entry.CancelCommand.Execute();
+                        }
+                        Close();
+                    }),
+                    CreateExtraDialogButton(AppStrings.ServerInstallProgress_Confirm, new DelegateCommand(() => {
+                        foreach (var entry in WaitingEntries.ToList()) {
+                            if (entry.ConfirmCommand.IsAbleToExecute) {
+                                entry.ConfirmCommand.Execute();
+                            }
+                        }
+                    }, () => WaitingEntries.Any()), true)
             };
         }
 
@@ -181,8 +206,17 @@ namespace AcManager.Pages.Dialogs {
             if (_userClosed) return;
 
             var entries = _model.Entries;
+            var waitingForConfirmation = WaitingEntries.ToList();
             var anyActive = entries.Count == 0 || entries.Any(x => x.State != ContentInstallationEntryState.Finished);
             var anyFailed = entries.Any(x => x.State == ContentInstallationEntryState.Finished && !string.IsNullOrEmpty(x.FailedMessage));
+
+            if (waitingForConfirmation.Count > 0) {
+                _model.IsRingActive = false;
+                _model.StatusKind = StatusKindValue.Warning;
+                _model.StatusMessage = AppStrings.ServerInstallProgress_ManualConfirmationWarning;
+                Buttons = CreateConfirmationButtons();
+                return;
+            }
 
             if (anyActive) {
                 _model.IsRingActive = true;

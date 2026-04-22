@@ -4757,6 +4757,33 @@ namespace AcManager {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Waiting for confirmation.
+        /// </summary>
+        public static string ServerInstallProgress_WaitingForConfirmation {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_WaitingForConfirmation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Downloads that are not cars or tracks are not auto-confirmed to ensure safety. If you want to install this content, click Confirm..
+        /// </summary>
+        public static string ServerInstallProgress_ManualConfirmationWarning {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_ManualConfirmationWarning", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm.
+        /// </summary>
+        public static string ServerInstallProgress_Confirm {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_Confirm", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Password required (resolve in downloads panel).
         /// </summary>
         public static string ServerInstallProgress_PasswordRequired {

@@ -3,7 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:presentation="clr-namespace:FirstFloor.ModernUI.Presentation;assembly=FirstFloor.ModernUI" xmlns:di="clr-namespace:AcManager.Pages.Dialogs"
     xmlns:g="clr-namespace:AcManager"
-    xmlns:t="http://acstuff.club/app/tools" mc:Ignorable="d" Width="480" SizeToContent="Height" MinHeight="40" MaxHeight="640" Padding="24 20 24 0"
+    xmlns:t="http://acstuff.club/app/tools" mc:Ignorable="d" Width="480" SizeToContent="Height" MinHeight="40" MaxHeight="640" Padding="24 20 24 12"
     WindowStyle="None" AllowsTransparency="True" ShowInTaskbar="False" ShowTitle="False" ShowTopBlob="False"
     d:DataContext="{d:DesignInstance di:ServerInstallProgressDialog+ViewModel}">
   <mui:ModernDialog.Resources>
@@ -50,7 +50,11 @@
                 <TextBlock Text="{x:Static g:AppStrings.ServerInstallProgress_PasswordRequired}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" />
               </DockPanel>
 
-              <ProgressBar mui:Switch.When="{x:Static t:ContentInstallationEntryState.WaitingForConfirmation}" Maximum="1" IsIndeterminate="True" Height="6" />
+              <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.WaitingForConfirmation}">
+                <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Accent}" Stretch="Uniform"
+                    Margin="0 1 4 -1" VerticalAlignment="Center" />
+                <TextBlock Text="{x:Static g:AppStrings.ServerInstallProgress_WaitingForConfirmation}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" />
+              </DockPanel>
 
               <mui:ReferenceSwitch mui:Switch.When="{x:Static t:ContentInstallationEntryState.Finished}" Value="{Binding FailedMessage}">
                 <mui:ReferenceSwitch.Null>
@@ -81,6 +85,8 @@
             Fill="{DynamicResource Go}" Stretch="Uniform" />
         <Path mui:Switch.When="{x:Static di:ServerInstallProgressDialog+StatusKindValue.Failure}" Data="{StaticResource AlertIconData}" Width="12" Height="12"
             Fill="{DynamicResource Error}" Stretch="Uniform" />
+        <Path mui:Switch.When="{x:Static di:ServerInstallProgressDialog+StatusKindValue.Warning}" Data="{StaticResource AlertIconData}" Width="12" Height="12"
+            Fill="{DynamicResource Accent}" Stretch="Uniform" />
       </mui:Switch>
       <mui:BbCodeBlock Text="{Binding StatusMessage}" Style="{StaticResource Small}" TextWrapping="Wrap" />
     </DockPanel>
