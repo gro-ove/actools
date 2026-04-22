@@ -421,6 +421,24 @@
     <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="{x:Static g:AppStrings.DownloadList_NoActiveDownloads}" Margin="8 0 0 8"
         VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType=uc:InstallAdditionalContentList}}" />
     <DockPanel>
+      <mui:BooleanSwitch DockPanel.Dock="Top" Value="{Binding PostInstallAutoJoinActive, Source={x:Static t:ContentInstallationManager.Instance}}">
+        <c:MessageBlock Margin="0 0 0 20">
+          <DockPanel>
+            <TextBlock DockPanel.Dock="Top" Text="Automatic rejoin" FontWeight="SemiBold" Margin="0 0 0 6" />
+            <TextBlock Text="{Binding PostInstallAutoJoinMessage, Source={x:Static t:ContentInstallationManager.Instance}}" TextWrapping="Wrap">
+              <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding PostInstallAutoJoinFailed, Source={x:Static t:ContentInstallationManager.Instance}}" Value="True">
+                      <Setter Property="Foreground" Value="{DynamicResource Error}" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </TextBlock.Style>
+            </TextBlock>
+          </DockPanel>
+        </c:MessageBlock>
+      </mui:BooleanSwitch>
       <mui:BooleanSwitch DockPanel.Dock="Top" Value="{Binding Plugins.IsReady, Converter={StaticResource InvertBooleanConverter}}">
         <c:MessageBlock Margin="0 0 0 20">
           <DockPanel>

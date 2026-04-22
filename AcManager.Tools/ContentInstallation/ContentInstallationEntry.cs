@@ -368,6 +368,15 @@ namespace AcManager.Tools.ContentInstallation {
         public DelegateCommand ConfirmCommand
             => _confirmCommand ?? (_confirmCommand = new DelegateCommand(() => { Confirm?.Invoke(this, EventArgs.Empty); }, () => WaitingForConfirmation));
 
+        private bool ShouldAutoConfirmServerInstall() {
+            if (!InstallationParams.AutoConfirmServerInstall) return false;
+            var entries = Entries;
+            if (entries == null || entries.Length == 0) return false;
+            var active = entries.Where(x => x.Active).ToList();
+            if (active.Count == 0) return false;
+            return active.All(x => x is CarContentEntry || x is TrackContentEntry);
+        }
+
         private Task WaitForConfirmation() {
             var tcs = new TaskCompletionSource<bool>();
             _cancellationTokenSource?.Token.Register(() => tcs.TrySetCanceled());
@@ -753,7 +762,11 @@ namespace AcManager.Tools.ContentInstallation {
                             if (CheckCancellation()) return false;
 
                             _taskbar?.Set(TaskbarState.Paused, 0d);
-                            await WaitForConfirmation();
+                            if (ShouldAutoConfirmServerInstall()) {
+                                Logging.Debug("Server-driven install: auto-confirming car/track content");
+                            } else {
+                                await WaitForConfirmation();
+                            }
                             if (CheckCancellation()) return false;
 
                             _taskbar?.Set(TaskbarState.Indeterminate, 0d);

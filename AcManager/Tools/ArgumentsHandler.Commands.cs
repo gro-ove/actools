@@ -11,6 +11,7 @@ using System.Web;
 using System.Windows;
 using AcManager.CustomShowroom;
 using AcManager.Internal;
+using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.ContentInstallation;
@@ -216,10 +217,88 @@ namespace AcManager.Tools {
                             ModsWebBrowser.PrepareForCommand(urls, custom.Params.GetValues(@"websiteData") ?? new string[0]);
                         }
 
-                        return (await urls.Select(
-                                x => ContentInstallationManager.Instance.InstallAsync(x, new ContentInstallationParams(true) {
-                                    CarId = custom.Params.Get(@"car")
-                                })).WhenAll()).Any() ? ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
+                        var installationManager = ContentInstallationManager.Instance;
+                        // Always clear any previous auto-rejoin banner up-front so a stale
+                        // "Rejoined the server" / failure message from a prior install doesn't
+                        // sit on top of an unrelated new download.
+                        installationManager.ClearPostInstallAutoJoinState();
+                        var rejoin = custom.Params.GetFlag("rejoin");
+                        var ip = custom.Params.Get(@"ip")?.Trim();
+                        var httpPort = FlexibleParser.TryParseInt(custom.Params.Get(@"httpPort"));
+                        var carId = custom.Params.Get(@"car")?.Trim();
+                        var skinId = custom.Params.Get(@"skin")?.Trim();
+                        var password = custom.Params.Get(@"plainPassword");
+                        var encryptedPassword = custom.Params.Get(@"password");
+
+                        if (string.IsNullOrWhiteSpace(password) && !string.IsNullOrWhiteSpace(encryptedPassword)
+                                && !string.IsNullOrWhiteSpace(ip) && httpPort.HasValue) {
+                            password = OnlineServer.DecryptSharedPassword(ip, httpPort.Value, encryptedPassword);
+                        }
+
+                        var autoRejoinReady = rejoin && !string.IsNullOrWhiteSpace(ip) && httpPort.HasValue
+                                && !string.IsNullOrWhiteSpace(carId) && !string.IsNullOrWhiteSpace(skinId);
+
+                        if (rejoin) {
+                            if (autoRejoinReady) {
+                                // Suppress the "Practice / Try again / Replay" GameDialog that would
+                                // otherwise pop up when AC closes for the content handoff. The flag
+                                // is one-shot and auto-expires, so a stale rejoin never swallows a
+                                // legit race result later on.
+                                GameDialog.SkipNextResultUntil = DateTime.UtcNow.AddSeconds(30);
+                                installationManager.SetPostInstallAutoJoinState(AppStrings.Arguments_AutoRejoinEnabled_State);
+                                Toast.Show(AppStrings.Arguments_AutoRejoinEnabled_Title, AppStrings.Arguments_AutoRejoinEnabled_Message);
+                            } else {
+                                installationManager.SetPostInstallAutoJoinState(
+                                        AppStrings.Arguments_AutoRejoinSkipped_State, true);
+                                Toast.Show(AppStrings.Arguments_AutoRejoinSkipped_Title, AppStrings.Arguments_AutoRejoinSkipped_Message);
+                            }
+                        }
+
+                        var autoConfirm = custom.Params.GetFlag("autoconfirm");
+                        var installStartedAt = DateTime.Now;
+
+                        // For server-driven installs (auto-confirm and/or auto-rejoin) surface a small
+                        // modal popup so the player gets a focused view of the in-flight downloads
+                        // without having to dig into the downloads panel. Open it with the dialog API
+                        // instead of plain Show() so it is actually modal while visible. Hide just closes
+                        // the popup; the install keeps running and the downloads panel still reflects state.
+                        if (autoConfirm || rejoin) {
+                            try {
+                                new ServerInstallProgressDialog(urls, rejoin, autoConfirm, installStartedAt).ShowDialogAsync().Ignore();
+                            } catch (Exception dialogException) {
+                                Logging.Warning("Failed to open ServerInstallProgressDialog: " + dialogException);
+                            }
+                        }
+
+                        var results = (await urls.Select(
+                                x => installationManager.InstallAsync(x, new ContentInstallationParams(true) {
+                                    CarId = custom.Params.Get(@"car"),
+                                    AutoConfirmServerInstall = autoConfirm
+                                })).WhenAll()).ToArray();
+
+                        var anySucceeded = results.Any(x => x);
+                        var allSucceeded = results.Length > 0 && results.All(x => x);
+
+                        if (autoRejoinReady) {
+                            if (!allSucceeded) {
+                                installationManager.SetPostInstallAutoJoinState(
+                                        AppStrings.Arguments_AutoRejoinCancelled_State, true);
+                                Toast.Show(AppStrings.Arguments_AutoRejoinCancelled_Title, AppStrings.Arguments_AutoRejoinCancelled_Message);
+                            } else {
+                                installationManager.SetPostInstallAutoJoinState(AppStrings.Arguments_AutoRejoinRejoining_State);
+                                try {
+                                    await AutoJoinInvitation(ip, httpPort.Value, carId, skinId, password);
+                                    installationManager.SetPostInstallAutoJoinState(AppStrings.Arguments_AutoRejoinRejoined_State);
+                                    Toast.Show(AppStrings.Arguments_AutoRejoinReconnected_Title, AppStrings.Arguments_AutoRejoinReconnected_Message);
+                                } catch (Exception e) {
+                                    installationManager.SetPostInstallAutoJoinState(
+                                            AppStrings.Arguments_AutoRejoinFailed_State, true);
+                                    NonfatalError.NotifyBackground("Automatic rejoin failed", e.Message, e);
+                                }
+                            }
+                        }
+
+                        return anySucceeded ? ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
 
                     case "importwebsite":
                         return await ProcessImportWebsite(custom.Params.GetValues(@"data") ?? new string[0]);

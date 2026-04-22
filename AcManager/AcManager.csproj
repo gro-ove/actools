@@ -467,6 +467,9 @@
     <Compile Include="Pages\Dialogs\GameDialog.xaml.cs">
       <DependentUpon>GameDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\ServerInstallProgressDialog.xaml.cs">
+      <DependentUpon>ServerInstallProgressDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\LiveryIconEditorDialog.xaml.cs">
       <DependentUpon>LiveryIconEditorDialog.xaml</DependentUpon>
     </Compile>
@@ -1206,6 +1209,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Dialogs\GameDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\ServerInstallProgressDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

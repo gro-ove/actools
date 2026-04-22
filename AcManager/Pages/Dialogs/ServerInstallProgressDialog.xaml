@@ -1,0 +1,88 @@
+<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.ServerInstallProgressDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:presentation="clr-namespace:FirstFloor.ModernUI.Presentation;assembly=FirstFloor.ModernUI" xmlns:di="clr-namespace:AcManager.Pages.Dialogs"
+    xmlns:g="clr-namespace:AcManager"
+    xmlns:t="http://acstuff.club/app/tools" mc:Ignorable="d" Width="480" SizeToContent="Height" MinHeight="40" MaxHeight="640" Padding="24 20 24 0"
+    WindowStyle="None" AllowsTransparency="True" ShowInTaskbar="False" ShowTitle="False" ShowTopBlob="False"
+    d:DataContext="{d:DesignInstance di:ServerInstallProgressDialog+ViewModel}">
+  <mui:ModernDialog.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <presentation:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+        <presentation:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </mui:ModernDialog.Resources>
+
+  <mui:SpacingStackPanel Spacing="16">
+    <DockPanel>
+      <mui:ModernProgressRing DockPanel.Dock="Left" IsActive="{Binding IsRingActive}" Width="32" Height="32" Margin="0 0 14 0" VerticalAlignment="Center" />
+      <mui:SpacingStackPanel Spacing="2" VerticalAlignment="Center">
+        <TextBlock Text="{Binding HeaderTitle}" Style="{StaticResource Title}" />
+        <mui:BbCodeBlock Text="{Binding HeaderMessage}" Style="{StaticResource Small}" TextWrapping="Wrap" />
+      </mui:SpacingStackPanel>
+    </DockPanel>
+
+    <ItemsControl ItemsSource="{Binding Entries}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <mui:SpacingStackPanel Spacing="12" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate DataType="t:ContentInstallationEntry">
+          <DockPanel>
+            <DockPanel DockPanel.Dock="Top">
+              <TextBlock DockPanel.Dock="Right" Style="{StaticResource Label}" Margin="8 1 0 0" Text="{Binding Progress.Message}"
+                  Visibility="{Binding Progress.Message, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+              <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" TextTrimming="CharacterEllipsis" />
+            </DockPanel>
+
+            <mui:Switch Value="{Binding State}" Margin="0 6 0 0">
+              <ProgressBar mui:Switch.When="{x:Static t:ContentInstallationEntryState.Loading}" Maximum="1" Value="{Binding Progress.Progress, Mode=OneWay}"
+                  IsIndeterminate="{Binding Progress.IsIndeterminate}" Height="6" />
+
+              <DockPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.PasswordRequired}">
+                <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                    Margin="0 1 4 -1" VerticalAlignment="Center" />
+                <TextBlock Text="{x:Static g:AppStrings.ServerInstallProgress_PasswordRequired}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" />
+              </DockPanel>
+
+              <ProgressBar mui:Switch.When="{x:Static t:ContentInstallationEntryState.WaitingForConfirmation}" Maximum="1" IsIndeterminate="True" Height="6" />
+
+              <mui:ReferenceSwitch mui:Switch.When="{x:Static t:ContentInstallationEntryState.Finished}" Value="{Binding FailedMessage}">
+                <mui:ReferenceSwitch.Null>
+                  <DockPanel>
+                    <Path Data="{StaticResource CheckIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
+                        Margin="0 1 4 -1" VerticalAlignment="Center" />
+                    <TextBlock Text="{x:Static g:AppStrings.ServerInstallProgress_Installed}" Style="{StaticResource Small}" Foreground="{DynamicResource Go}" TextTrimming="CharacterEllipsis" />
+                  </DockPanel>
+                </mui:ReferenceSwitch.Null>
+                <mui:ReferenceSwitch.NonNull>
+                  <DockPanel>
+                    <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                        Margin="0 1 4 -1" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding FailedMessage}" Style="{StaticResource Small}" Foreground="{DynamicResource Error}" TextTrimming="CharacterEllipsis"
+                        ToolTip="{Binding FailedMessage}" />
+                  </DockPanel>
+                </mui:ReferenceSwitch.NonNull>
+              </mui:ReferenceSwitch>
+            </mui:Switch>
+          </DockPanel>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+    <DockPanel Visibility="{Binding StatusMessage, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+      <mui:Switch DockPanel.Dock="Left" Value="{Binding StatusKind}" VerticalAlignment="Center" Margin="0 1 6 -1">
+        <Path mui:Switch.When="{x:Static di:ServerInstallProgressDialog+StatusKindValue.Success}" Data="{StaticResource CheckIconData}" Width="12" Height="12"
+            Fill="{DynamicResource Go}" Stretch="Uniform" />
+        <Path mui:Switch.When="{x:Static di:ServerInstallProgressDialog+StatusKindValue.Failure}" Data="{StaticResource AlertIconData}" Width="12" Height="12"
+            Fill="{DynamicResource Error}" Stretch="Uniform" />
+      </mui:Switch>
+      <mui:BbCodeBlock Text="{Binding StatusMessage}" Style="{StaticResource Small}" TextWrapping="Wrap" />
+    </DockPanel>
+  </mui:SpacingStackPanel>
+</mui:ModernDialog>
