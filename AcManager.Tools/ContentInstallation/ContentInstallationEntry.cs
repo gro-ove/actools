@@ -370,6 +370,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         private bool ShouldAutoConfirmServerInstall() {
             if (!InstallationParams.AutoConfirmServerInstall) return false;
+            if (!SettingsHolder.Content.ServerDownloadsAutoConfirm) return false;
             var entries = Entries;
             if (entries == null || entries.Length == 0) return false;
             var active = entries.Where(x => x.Active).ToList();
