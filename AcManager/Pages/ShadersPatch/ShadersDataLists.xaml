@@ -64,9 +64,11 @@
                       Command="{Binding ShowUnavailableEntriesCommand}"
                       Visibility="{Binding UnavailableCount, Converter={StaticResource MoreToVisibilityConverter}}" />
                   <Separator Visibility="{Binding UnavailableCount, Converter={StaticResource MoreToVisibilityConverter}}" />
-                  <MenuItem IsChecked="{Binding InstallAutomatically.Value}" IsCheckable="True" Header="Install automatically (recommended)" />
+                  <MenuItem IsChecked="{Binding InstallAutomatically.Value}" IsCheckable="True" Header="Fetch automatically (recommended)"
+                      IsEnabled="{Binding DownloadMissingData.Value, Source={x:Static t:PatchUpdater.Instance}}" 
+                      ToolTip="To enable or disable automatic fetching for all categories of content, check “About &amp; Updates” section" />
                   <MenuItem Command="{Binding InstallEverythingCommand}"
-                      Header="{Binding AvailableToInstall, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}Install {0} {entry}'}"
+                      Header="{Binding AvailableToInstall, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}Fetch {0} {entry}'}"
                       Visibility="{Binding AvailableToInstall, Converter={StaticResource MoreToVisibilityConverter}}" />
                   <MenuItem Command="{Binding ViewInExplorerCommand}" Header="View in Explorer" />
                 </ContextMenu>

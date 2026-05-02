@@ -55,34 +55,31 @@ namespace AcManager.Tools.Helpers.Api {
 
         private Task<byte[]> DoHttpRequestAsync(string url, IProgress<long> progress, CancellationToken token) {
             var tcs = new TaskCompletionSource<byte[]>();
-            var tokenMonitoring = token.Register(() => tcs.SetCanceled());
-            async Task<byte[]> Impl() {
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
-                using (var response = await HttpClientHolder.Get().SendAsync(request,
-                        HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false)) {
-                    token.ThrowIfCancellationRequested();
-                    byte[] data;
-                    if (progress == null) {
-                        data = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                    } else {
-                        using (var memory = new MemoryStream())
-                        using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
-                            await CopyToAsync(stream, memory, progress, token).ConfigureAwait(false);
-                            token.ThrowIfCancellationRequested();
-                            data = memory.ToArray();
+            var tokenMonitoring = token.Register(() => tcs.TrySetCanceled());
+            Task.Run(async () => {
+                try {
+                    var request = new HttpRequestMessage(HttpMethod.Get, url);
+                    using (var response = await HttpClientHolder.Get().SendAsync(request,
+                            HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false)) {
+                        token.ThrowIfCancellationRequested();
+                        byte[] data;
+                        if (progress == null) {
+                            data = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                        } else {
+                            using (var memory = new MemoryStream())
+                            using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
+                                await CopyToAsync(stream, memory, progress, token).ConfigureAwait(false);
+                                token.ThrowIfCancellationRequested();
+                                data = memory.ToArray();
+                            }
                         }
+                        tcs.TrySetResult(data);
                     }
-                    return data;
-                }
-            }
-            Impl().ContinueWith(r => {
-                tokenMonitoring.Dispose();
-                if (r.IsCompleted) {
-                    tcs.SetResult(r.Result);
-                } else if (r.IsFaulted && r.Exception != null) {
-                    tcs.SetException(r.Exception);
-                } else  {
-                    tcs.SetCanceled();
+                } catch (Exception e) {
+                    Logging.Warning("Exception: " + e);
+                    tcs.TrySetException(e);
+                } finally {
+                    tokenMonitoring.Dispose();
                 }
             }, token);
             return tcs.Task;

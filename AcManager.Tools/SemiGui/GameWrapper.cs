@@ -351,14 +351,14 @@ namespace AcManager.Tools.SemiGui {
                             await PrepareReplay(properties, ui, cancellationToken);
                         }
 
-                        if (SettingsHolder.Drive.LoadPatchDataAutomatically && PatchHelper.IsActive()) {
+                        if (PatchHelper.IsActive() && PatchUpdater.Instance.DownloadMissingData.Value) {
                             var trackId = string.IsNullOrWhiteSpace(properties.BasicProperties?.TrackConfigurationId)
                                     ? properties.BasicProperties?.TrackId
                                     : properties.BasicProperties?.TrackId + @"/" + properties.BasicProperties?.TrackConfigurationId;
                             var currentMessage = ui.GetCurrentMessage();
                             try {
                                 using (var cancellation = new CancellationTokenSource()) {
-                                    ui.OnProgress("Loading data for Custom Shaders Patch…", AsyncProgressEntry.Indetermitate, () => {
+                                    ui.OnProgress("Fetching data for Custom Shaders Patch…", AsyncProgressEntry.Indetermitate, () => {
                                         Logging.Debug("Cancelling loading…");
                                         cancellation.Cancel();
                                     });

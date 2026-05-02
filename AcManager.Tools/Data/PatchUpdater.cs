@@ -163,6 +163,7 @@ namespace AcManager.Tools.Data {
         public StoredValue<TimeSpan> AutoUpdatePeriodValue { get; } = Stored.Get("/PatchUpdater.AutoUpdatePeriodValue", TimeSpan.FromMinutes(30));
         public StoredValue<string> AutoUpdateModeValue { get; } = Stored.Get("/PatchUpdater.AutoUpdateMode", "recommended");
         public StoredValue<bool> ForceVersion { get; } = Stored.Get("/PatchUpdater.ForceVersion", true);
+        public StoredValue<bool> DownloadMissingData { get; } = Stored.Get("/PatchUpdater.DownloadMissingData", true);
 
         protected override Task GetCheckDelay() {
             // No need for regular half a second delay: PatchVersionInfo.GetPatchManifestAsync() has its own caching

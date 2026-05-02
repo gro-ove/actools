@@ -155,6 +155,10 @@
               </CheckBox>-->
 
               <TextBlock Text="Other options:" Style="{StaticResource SettingsPanel.Heading2}" Margin="0 40 0 8" />
+              <CheckBox IsChecked="{Binding DownloadMissingData.Value}" 
+                  ToolTip="Automatically fetch missing car and track configs, VAO patches and more">
+                <Label Content="Automatically fetch missing data" />
+              </CheckBox>
               <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="20"
                   IsEnabled="{Binding IsInstalling, Converter={StaticResource InvertBooleanConverter}}">
                 <Button Command="{Binding ReinstallCommand}" Content="Reinstall current version" />

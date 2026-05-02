@@ -564,7 +564,7 @@
             Source="/Pages/Drive/SpecialEvents.xaml?Filter=improvable+&amp;Special=1" />
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
-    <!--<mui:LinkGroupFilterable GroupKey="drive" DisplayName="csp" Source="/Pages/Drive/CspNewModes.xaml" />-->
+    <mui:LinkGroupFilterable GroupKey="drive" DisplayName="csp" Source="/Pages/Drive/CspNewModes.xaml" />
     <mui:LinkGroup x:Name="LiveGroup" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Live}">
       <mui:LinkGroup.Links>
         <mui:Link x:Name="GridFinderLink" DisplayName="Grid Finder" Source="/Pages/Drive/GridFinder.xaml" />

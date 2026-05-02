@@ -442,7 +442,7 @@ namespace AcManager.Tools.Data {
         public Task TriggerAutoLoadAsync([CanBeNull] string id, IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
             if (!PatchHelper.OptionPatchSupport || cancellation.IsCancellationRequested) return Task.Delay(0);
 
-            Logging.Debug($"Auto-loading stuff for “{id}” from {Title.ToSentenceMember()} list");
+            Logging.Debug($"Auto-loading stuff for “{id}” from {Title.ToSentenceMember()} list, enabled: {InstallAutomatically.Value}");
             if (!InstallAutomatically.Value || string.IsNullOrWhiteSpace(id)) return Task.Delay(0);
             return _cache.Get(async () => {
                 try {
