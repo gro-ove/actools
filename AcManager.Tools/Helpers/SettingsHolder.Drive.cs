@@ -749,6 +749,22 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private string _filteredConnectedDrivers;
+            public string FilteredConnectedDrivers
+            {
+                get => _filteredConnectedDrivers
+                        ?? (_filteredConnectedDrivers = ValuesStorage.Get("Settings.DriveSettings.FilteredConnectedDrivers", PlayerName));
+                set
+                {
+                    value = value?.Trim();
+                    if (Equals(value, _filteredConnectedDrivers)) return;
+                    _filteredConnectedDrivers = value;
+                    ValuesStorage.Set("Settings.DriveSettings.FilteredConnectedDrivers", value);
+                    OnPropertyChanged();
+                }
+            }
+            
+
             private bool? _loadAssistsWithQuickDrivePreset;
 
             public bool LoadAssistsWithQuickDrivePreset {

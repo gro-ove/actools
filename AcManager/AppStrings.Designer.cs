@@ -11371,6 +11371,44 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filtered Connected Drivers:.
+        /// </summary>
+        public static string Settings_Online_Filtered_Connected_Drivers {
+            get {
+                return ResourceManager.GetString("Settings_Online_Filtered_Connected_Drivers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VIP Slot
+        ///Reserved
+        ///Not Connected.
+        /// </summary>
+        public static string Settings_Online_Filtered_Connected_Drivers_Placeholder {
+            get {
+                return ResourceManager.GetString("Settings_Online_Filtered_Connected_Drivers_Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List of strings to search for driver names that should be filtered, separated by new-lines.
+        /// </summary>
+        public static string Settings_Online_Filtered_Connected_Drivers_Title {
+            get {
+                return ResourceManager.GetString("Settings_Online_Filtered_Connected_Drivers_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If a server has a driver that matches the string in the pattern, this driver doesn&apos;t count in the sorting of Filtered Connected Drivers. This means if server has 24 people, but all of them contain any pattern from the list (e.g. VIP Slot, Reserved, Unconnected), then this server will not be appearing at the top of server list..
+        /// </summary>
+        public static string Settings_Online_Filtered_Connected_Drivers_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Online_Filtered_Connected_Drivers_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fix names:.
         /// </summary>
         public static string Settings_Online_FixNames {

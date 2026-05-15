@@ -258,6 +258,19 @@
             ToolTip="You might want to enable this option if you run Content Manager fullscreen. Also, just in case, shortcuts Alt+F1…Alt+F5 allow you to switch between those tabs quickly.">
           <Label Content="Combine together main, assists, conditions and sessions tabs" />
         </CheckBox>-->
+
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Online_Filtered_Connected_Drivers}" />
+        <Label ToolTip="{x:Static g:AppStrings.Settings_Online_Filtered_Connected_Drivers_Tooltip}" Content="{x:Static g:AppStrings.Settings_Online_Filtered_Connected_Drivers_Title}" />
+        <mui:BetterTextBox 
+          TextWrapping="Wrap"
+          AcceptsReturn="True"
+          MinLines="3"
+          VerticalScrollBarVisibility="Auto"
+          HorizontalScrollBarVisibility="Disabled"
+          Text="{Binding Drive.FilteredConnectedDrivers}" 
+          Placeholder="{x:Static g:AppStrings.Settings_Online_Filtered_Connected_Drivers_Placeholder}" 
+          IsEnabled="{Binding Drive.FilteredConnectedDrivers}" />
+        
       </StackPanel>
 
     </mui:SpacingUniformGrid>

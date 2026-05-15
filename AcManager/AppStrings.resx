@@ -4996,4 +4996,18 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <data name="UserChampionships_CreateNew" xml:space="preserve">
         <value>Create new</value>
     </data>
+    <data name="Settings_Online_Filtered_Connected_Drivers_Tooltip" xml:space="preserve">
+        <value>If a server has a driver that matches the string in the pattern, this driver doesn't count in the sorting of Filtered Connected Drivers. This means if server has 24 people, but all of them contain any pattern from the list (e.g. VIP Slot, Reserved, Unconnected), then this server will not be appearing at the top of server list.</value>
+    </data>
+    <data name="Settings_Online_Filtered_Connected_Drivers_Placeholder" xml:space="preserve">
+        <value>VIP Slot
+Reserved
+Not Connected</value>
+    </data>
+    <data name="Settings_Online_Filtered_Connected_Drivers" xml:space="preserve">
+        <value>Filtered Connected Drivers:</value>
+    </data>
+    <data name="Settings_Online_Filtered_Connected_Drivers_Title" xml:space="preserve">
+        <value>List of strings to search for driver names that should be filtered, separated by new-lines</value>
+    </data>
 </root>
