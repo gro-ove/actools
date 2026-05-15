@@ -753,7 +753,7 @@ namespace AcManager.Tools.Helpers {
             public string FilteredConnectedDrivers
             {
                 get => _filteredConnectedDrivers
-                        ?? (_filteredConnectedDrivers = ValuesStorage.Get("Settings.DriveSettings.FilteredConnectedDrivers", PlayerName));
+                        ?? (_filteredConnectedDrivers = ValuesStorage.Get("Settings.DriveSettings.FilteredConnectedDrivers"));
                 set
                 {
                     value = value?.Trim();
