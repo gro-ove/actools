@@ -5010,4 +5010,7 @@ Not Connected</value>
     <data name="Settings_Online_Filtered_Connected_Drivers_Title" xml:space="preserve">
         <value>List of strings to search for driver names that should be filtered, separated by new-lines</value>
     </data>
+    <data name="Online_Sorting_FilteredConnectedDrivers" xml:space="preserve">
+        <value>Filtered connected drivers</value>
+    </data>
 </root>

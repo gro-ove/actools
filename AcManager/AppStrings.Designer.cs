@@ -7729,6 +7729,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filtered connected drivers.
+        /// </summary>
+        public static string Online_Sorting_FilteredConnectedDrivers {
+            get {
+                return ResourceManager.GetString("Online_Sorting_FilteredConnectedDrivers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string Online_Sorting_Name {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -82,6 +84,38 @@ namespace AcManager.Pages.Drive {
             }
         }
 
+        private class SortingFilteredConnectedDriversCount : ServerEntrySorter
+        {
+            public override int Compare(ServerEntry x, ServerEntry y)
+            {
+                var filteredPatterns = SettingsHolder.Drive.FilteredConnectedDrivers
+                    .Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(val => val.ToLowerInvariant());
+
+                var xFilteredDriversCount = x.CurrentDrivers?.Count(driver => {
+                    return !filteredPatterns.Any(filteredPattern =>
+                    {
+                        return driver.Name.ToLower().Contains(filteredPattern);
+                    });
+                }) ?? x.ConnectedDrivers;
+
+                var yFilteredDriversCount = y.CurrentDrivers?.Count(driver => {
+                    return !filteredPatterns.Any(filteredPattern =>
+                    {
+                        return driver.Name.ToLower().Contains(filteredPattern);
+                    });
+                }) ?? y.ConnectedDrivers;
+
+                var dif = -xFilteredDriversCount.CompareTo(yFilteredDriversCount);
+                return dif == 0 ? string.Compare(x.SortingName, y.SortingName, StringComparison.Ordinal) : dif;
+            }
+
+            public override bool IsAffectedBy(string propertyName)
+            {
+                return propertyName == nameof(ServerEntry.ConnectedDrivers);
+            }
+        }
+
         private class SortingCapacityCount : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
                 var dif = -x.Capacity.CompareTo(y.Capacity);
@@ -125,6 +159,8 @@ namespace AcManager.Pages.Drive {
                     return new SortingDriversCount();
                 case "connected":
                     return new SortingConnectedDriversCount();
+                case "filteredConnected":
+                    return new SortingFilteredConnectedDriversCount();
                 case "capacity":
                     return new SortingCapacityCount();
                 case "cars":
@@ -146,6 +182,7 @@ namespace AcManager.Pages.Drive {
             new SettingEntry("favourites", AppStrings.Online_Sorting_Favourites),
             new SettingEntry("drivers", AppStrings.Online_Sorting_Drivers),
             new SettingEntry("connected", AppStrings.Online_Sorting_ConnectedDrivers),
+            new SettingEntry("filteredConnected", AppStrings.Online_Sorting_FilteredConnectedDrivers),
             new SettingEntry("capacity", AppStrings.Online_Sorting_Capacity),
             new SettingEntry("cars", AppStrings.Online_Sorting_CarsNumber),
             new SettingEntry("ping", AppStrings.Online_Sorting_Ping)
