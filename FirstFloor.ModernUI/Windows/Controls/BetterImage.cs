@@ -77,7 +77,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// If image’s size is smaller than this, it will be decoded in the UI thread.
         /// Doesn’t do anything if OptionDecodeImageSync is true.
         /// </summary>
-        public static int OptionDecodeImageSyncThreshold = 50 * 1000; // 50 KB
+        public static int OptionDecodeImageSyncThreshold = 0; // 0 KB
 
         // public static int OptionDecodeImageSyncThreshold = 50; // 50 KB
 
