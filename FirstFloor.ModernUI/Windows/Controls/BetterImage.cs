@@ -768,7 +768,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         downsized = true;
                     }
 
-                    bi.CreateOptions = BitmapCreateOptions.None;
+                    bi.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
                     bi.CacheOption = BitmapCacheOption.OnLoad;
                     bi.StreamSource = stream;
                     bi.EndInit();
@@ -1336,13 +1336,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             int w = b.PixelWidth, h = b.PixelHeight, s = (w * b.Format.BitsPerPixel + 7) / 8;
-            if (w > 800 || h > 450) {
+            var data = _transparentCropData.Value;
+            if ((long)s * h > data.Length) {
                 Logging.Warning($"Image is too large to crop: {w}×{h}, tag: {tag}");
                 left = top = right = bottom = 0;
                 return true;
             }
 
-            var data = _transparentCropData.Value;
             b.CopyPixels(data, s, 0);
 
             var k = b.Format.Masks.ElementAtOrDefault(0).Mask;
