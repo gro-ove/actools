@@ -12,17 +12,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static byte[] _icoSignature = { 0x00, 0x00, 0x01, 0x00 };
         private static ConcurrentStack<byte[]> _dataPool = new ConcurrentStack<byte[]>();
 
-        public static Size? GetImageSize(MemoryStream stream, [Localizable(false)] string sourceDebug) {
-            int index = 0, limit = Math.Min((int)stream.Length, 4096);
-            if (limit == 0) return null;
-
-            if (!_dataPool.TryPop(out var data)) {
-                data = new byte[4096];
-            }
+        private static Size? GetImageSize(byte[] data, int limit, [Localizable(false)] string sourceDebug) {
+            var index = 0;
+            if (limit < 8) return null;
             
-            stream.Seek(0, SeekOrigin.Begin);
-            stream.Read(data, 0, limit);
-
             try {
                 if (NextAre(_jpegSignature)) {
                     // JPEG
@@ -53,10 +46,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
             } catch (Exception e) {
                 Logging.Warning(e.Message);
-            } finally {
-                _dataPool.Push(data);
             }
-
+            
 #if DEBUG
             Logging.Warning($"Failed to determine size ({sourceDebug ?? @"?"}): {data}");
 #endif
@@ -88,6 +79,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             bool AnyOf(byte b0, byte b1) {
                 var n = Next();
                 return b0 == n || b1 == n;
+            }
+        }
+
+        private static Size? GetImageSize(MemoryStream stream, [Localizable(false)] string sourceDebug) {
+            int limit = Math.Min((int)stream.Length, 4096);
+            if (limit == 0) return null;
+            if (!_dataPool.TryPop(out var data)) {
+                data = new byte[4096];
+            }
+            stream.Seek(0, SeekOrigin.Begin);
+            stream.Read(data, 0, limit);
+            try {
+                return GetImageSize(data, limit, sourceDebug);
+            } finally {
+                _dataPool.Push(data);
             }
         }
     }

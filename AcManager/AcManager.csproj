@@ -2,7 +2,7 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- There is also a custom packer made for this app, that’s why there is an option. -->
-    <UseCosturaToPack>true</UseCosturaToPack>
+    <UseCosturaToPack>false</UseCosturaToPack>
     <IncludeWorkshop>false</IncludeWorkshop>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -21,6 +21,9 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition="Exists('C:/Development/.x4fab')">
+    <UseCosturaToPack>true</UseCosturaToPack>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>

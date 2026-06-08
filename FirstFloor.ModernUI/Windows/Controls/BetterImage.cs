@@ -10,6 +10,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -74,6 +75,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         public static bool OptionReadFileSync = false;
 
+        /// <summary>
+        /// If image’s size is smaller than this, it will be decoded in the UI thread.
+        /// Doesn’t do anything if OptionDecodeImageSync is true.
+        /// </summary>
+        public static int OptionDecodeImageSyncThreshold = 50 * 1000; // 50 KB
+
+        /// <summary>
+        /// Considering that 30 KB image takes ≈1.8 ms to be decoded and value of
+        /// OptionDecodeImageSyncThreshold, how many of these images are allowed to be
+        /// decoded in UI thread per second before switching to non-UI one?
+        /// </summary>
+        public static int OptionMaxSyncDecodedInSecond = 8;
+        
         /// <summary>
         /// Before loading cached entity, check if according file exists and was not updated.
         /// </summary>
@@ -1105,7 +1119,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Interlocked.MemoryBarrier();
             _resultTasksWaiting = 0;
         }
-
+        
+        private static int _syncDecodeCount;
+        private static long _syncDecodeWindowStart = Stopwatch.GetTimestamp();
+        
+        private static bool TryAcquireSyncDecodeSlot() {
+            var now = Stopwatch.GetTimestamp();
+            var elapsed = now - _syncDecodeWindowStart;
+            if (elapsed >= Stopwatch.Frequency) {
+                _syncDecodeWindowStart = now;
+                _syncDecodeCount = 0;
+            }
+            if (Interlocked.Increment(ref _syncDecodeCount) <= OptionMaxSyncDecodedInSecond) {
+                return true;
+            }
+            Interlocked.Decrement(ref _syncDecodeCount);
+            return false;
+        }
+        
         // Obtains ownership of MemoryStream!
         private void ApplyReloadImage2(string filename, int curLoadingID, MemoryStream data) {
             if (curLoadingID != _lastLoadingID || Filename != filename) return;
@@ -1118,6 +1149,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var decodeWidth = InnerDecodeWidth;
             var decodeHeight = InnerDecodeHeight;
 
+            if (data.Length < OptionDecodeImageSyncThreshold && TryAcquireSyncDecodeSlot()) {
+                using (data) {
+                    SetCurrent(LoadBitmapSourceFromMemoryStream(data, decodeWidth, decodeHeight, sourceDebug: filename));
+                }
+                return;
+            }
+            
             if (AsyncDecode) {
                 _currentTask = ThreadPool.Run(() => {
                     Image current;
