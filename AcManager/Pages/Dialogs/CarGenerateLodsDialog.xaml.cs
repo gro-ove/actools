@@ -108,7 +108,7 @@ namespace AcManager.Pages.Dialogs {
         protected override void OnClosingOverride(CancelEventArgs e) {
             if (_closingGracefully) return;
             e.Cancel = e.Cancel
-                    || (!Model.GenerateCommand.IsAbleToExecute || Model.HasDataToSave) && ShowMessage(Model.HasDataToSave
+                    || (Model.GenerateCommand.IsInProcess || Model.HasDataToSave) && ShowMessage(Model.HasDataToSave
                             ? "Are you sure you want to abandon generated models?"
                             : "Are you sure you want to terminate generation?",
                             ControlsStrings.Common_AreYouSure, MessageBoxButton.YesNo) != MessageBoxResult.Yes;
@@ -201,6 +201,14 @@ namespace AcManager.Pages.Dialogs {
             public int TrianglesCount {
                 get => Stage.Triangles.Count;
                 set => Apply(value.Round(100), ref Stage.Triangles.Count);
+            }
+            
+            
+            private bool _canWeld;
+
+            public bool CanWeld {
+                get => _canWeld;
+                set => Apply(value, ref _canWeld);
             }
 
             private Tuple<int, int> _trianglesRecommendedCount;
@@ -581,6 +589,9 @@ namespace AcManager.Pages.Dialogs {
                     OnPropertyChanged(nameof(ToolLocation));
                     OnPropertyChanged(nameof(ToolName));
                     CheckToolLocation();
+                    foreach (var stage in Stages) {
+                        stage.CanWeld = _toolDetails.CanWeld;
+                    }
                 }
             }
 
@@ -610,7 +621,9 @@ namespace AcManager.Pages.Dialogs {
 
                 Stages = new ChangeableObservableCollection<StageParams>(
                         FilesStorage.Instance.GetContentFilesFiltered(@"Stage.*.json", ContentCategory.CarLodsGeneration)
-                                .Select(x => new StageParams(x.Filename, definitions, _userDefined)));
+                                .Select(x => new StageParams(x.Filename, definitions, _userDefined) {
+                                    CanWeld = _toolDetails.CanWeld
+                                }));
                 Stages.ItemPropertyChanged += OnStagePropertyChanged;
                 if (Stages.Count == 0) {
                     throw new InformativeException("Stage defitions are missing", "Make sure to have latest app data installed.");
@@ -1125,7 +1138,8 @@ namespace AcManager.Pages.Dialogs {
             private async Task GenerateAsync([CanBeNull] IProgress<double> progress, CancellationToken cancellationToken) {
                 try {
                     Kn5.FbxConverterLocation = PluginsManager.Instance.GetPluginFilename(KnownPlugins.FbxConverter, "FbxConverter.exe");
-                    if (!File.Exists(Kn5.FbxConverterLocation) && _toolDetails.UseFbx) {
+                    var selectedTool = _toolDetails;
+                    if (!File.Exists(Kn5.FbxConverterLocation) && selectedTool.UseFbx) {
                         throw new Exception("FbxConverter is not available");
                     }
 
@@ -1164,11 +1178,11 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                     using (var taskbarProgress = TaskbarService.Create("Generating LODs", 1e5)) {
                         taskbarProgress?.Set(TaskbarState.Normal, 0.001d);
                         var generator = new CarLodGenerator(Stages.Where(x => x.IsAvailableAndActive).Select(x => x.Stage),
-                                _toolDetails.Create(ToolLocation?.Value, Stages), Car.Location,
+                                selectedTool.Create(ToolLocation?.Value, Stages), Car.Location,
                                 FilesStorage.Instance.GetTemporaryDirectory(TemporaryDirectoryName));
                         var totalStages = Stages.Count(x => x.IsAvailableAndActive);
                         var initialStates = Stages.Select(x => new { Stage = x, x.IsAvailableAndActive, x.ApplyWeldingFix }).ToList();
-                        await generator.RunAsync(_toolDetails,
+                        await generator.RunAsync(selectedTool,
                                 (key, exception) =>
                                         ActionExtension.InvokeInMainThreadAsync(() => Stages.GetById(key).GenerationErrorMessage = exception.Message),
                                 (key, filename, checksum) => ActionExtension.InvokeInMainThreadAsync(() => {
@@ -1187,7 +1201,9 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                                         var index = Stages.IndexOf(stage);
                                         var generatedCount = LodDefinitions.Count(x => x.LodIndex == index && x.IsGenerated);
                                         var countPostfix = generatedCount == 0 ? "" : $", {generatedCount + 1}";
-                                        var generatedName = $"New ({_toolDetails.Name}, {(initialStates[index].ApplyWeldingFix ? "welding" : "no welding")}{countPostfix})";
+                                        var generatedName = selectedTool.CanWeld 
+                                                ? $"New ({selectedTool.Name}, {(initialStates[index].ApplyWeldingFix ? "welding" : "no welding")}{countPostfix})"
+                                                : $"New ({selectedTool.Name}{countPostfix})";
                                         var definition = new CustomShowroomLodDefinition {
                                             DisplayName = generatedName,
                                             Filename = filename,

@@ -143,6 +143,7 @@ namespace AcManager.CustomShowroom {
 
                 formWrapper.Run(() => _starting = false);
             } catch (Exception e) {
+                Logging.Warning($"Showroom exception: {e}");
                 NonfatalError.Notify(ControlsStrings.CustomShowroom_CannotStart, e);
             } finally {
                 try {

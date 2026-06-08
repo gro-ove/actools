@@ -46,6 +46,11 @@ struct SourceEntry {
     std::vector<float> data;
 };
 
+void err(const char* msg) {
+    std::fprintf(stderr, "%s\n", msg);
+    std::fflush(stderr);
+}
+
 struct Options {
     std::string input_path;
     std::string output_path;
@@ -56,11 +61,48 @@ struct Options {
     int min_keep = 20;
     double min_target_perc = 0.0;
     bool permissive = false;
+    bool error_absolute = false;
+    bool lock_border = false;
+    bool prune = false;
+    int regularize = 0; // 1 for regular, 2 for light
 };
 
-void err(const char* msg) {
-    std::fprintf(stderr, "%s\n", msg);
-    std::fflush(stderr);
+bool parse_args(int argc, char** argv, Options& opt) {
+    for (int i = 1; i < argc; ++i) {
+        const std::string arg = argv[i];
+        auto need_value = [&](const char* name) -> const char* {
+            if (arg != name)
+                return nullptr;
+            if (i + 1 >= argc) {
+                err("Missing value for argument");
+                std::exit(2);
+            }
+            return argv[++i];
+        };
+        if (const char* v = need_value("--input")) opt.input_path = v;
+        else if (const char* v = need_value("--output")) opt.output_path = v;
+        else if (const char* v = need_value("--target-perc")) opt.target_perc = std::atof(v);
+        else if (const char* v = need_value("--target-error")) opt.target_error = std::atof(v);
+        else if (const char* v = need_value("--normal-weight")) opt.normal_weight = std::atof(v);
+        else if (const char* v = need_value("--uv-weight")) opt.uv_weight = std::atof(v);
+        else if (const char* v = need_value("--min-keep")) opt.min_keep = std::atoi(v);
+        else if (const char* v = need_value("--min-target-perc")) opt.min_target_perc = std::atof(v);
+        else if (arg == "--permissive") opt.permissive = true;
+        else if (arg == "--error-absolute") opt.error_absolute = true;
+        else if (arg == "--lock-border") opt.lock_border = true;
+        else if (arg == "--prune") opt.prune = true;
+        else if (arg == "--regularize") opt.regularize = 1;
+        else if (arg == "--regularize-light") opt.regularize = 2;
+        else {
+            err(("Unknown argument: " + arg).c_str());
+            return false;
+        }
+    }
+    if (opt.input_path.empty() || opt.output_path.empty()) {
+        err("Usage: MeshOptimizerLod --input <file.dae> --output <file.dae> --target-perc <0..1> [options]");
+        return false;
+    }
+    return true;
 }
 
 void progress(double value) {
@@ -514,7 +556,6 @@ bool simplify_geometry(GeometryMesh& geo, const Options& opt) {
         target_faces = std::max(target_faces, floor_faces);
     }
     target_faces = std::min(static_cast<int>(face_count), target_faces);
-    std::fprintf(stderr, "target_faces:%d, face_count:%d\n", target_faces, face_count);
     if (target_faces >= static_cast<int>(face_count))
         return true;
 
@@ -545,7 +586,13 @@ bool simplify_geometry(GeometryMesh& geo, const Options& opt) {
         attr_weights.push_back(static_cast<float>(opt.uv_weight));
     }
 
-    const unsigned int simplify_options = (opt.permissive ? meshopt_SimplifyPermissive : 0) | meshopt_SimplifyPrune;
+    unsigned int simplify_options = 0;
+    if (opt.permissive) simplify_options |= meshopt_SimplifyPermissive;
+    if (opt.error_absolute) simplify_options |= meshopt_SimplifyErrorAbsolute;
+    if (opt.lock_border) simplify_options |= meshopt_SimplifyLockBorder;
+    if (opt.prune) simplify_options |= meshopt_SimplifyPrune;
+    if (opt.regularize == 1) simplify_options |= meshopt_SimplifyRegularize;
+    if (opt.regularize == 2) simplify_options |= meshopt_SimplifyRegularizeLight;
     size_t simplified_count = 0;
 
     if (opt.uv_weight > 0.0) {
@@ -576,48 +623,6 @@ bool simplify_geometry(GeometryMesh& geo, const Options& opt) {
 
     std::fprintf(stderr, "  %s: %zu -> %zu triangles (error %.4f)\n", geo.name.c_str(), face_count, geo.corners.size() / 3,
             result_error);
-    return true;
-}
-
-bool parse_args(int argc, char** argv, Options& opt) {
-    for (int i = 1; i < argc; ++i) {
-        const std::string arg = argv[i];
-        auto need_value = [&](const char* name) -> const char* {
-            if (arg != name)
-                return nullptr;
-            if (i + 1 >= argc) {
-                err("Missing value for argument");
-                std::exit(2);
-            }
-            return argv[++i];
-        };
-        if (const char* v = need_value("--input"))
-            opt.input_path = v;
-        else if (const char* v = need_value("--output"))
-            opt.output_path = v;
-        else if (const char* v = need_value("--target-perc"))
-            opt.target_perc = std::atof(v);
-        else if (const char* v = need_value("--target-error"))
-            opt.target_error = std::atof(v);
-        else if (const char* v = need_value("--normal-weight"))
-            opt.normal_weight = std::atof(v);
-        else if (const char* v = need_value("--uv-weight"))
-            opt.uv_weight = std::atof(v);
-        else if (const char* v = need_value("--min-keep"))
-            opt.min_keep = std::atoi(v);
-        else if (const char* v = need_value("--min-target-perc"))
-            opt.min_target_perc = std::atof(v);
-        else if (arg == "--permissive")
-            opt.permissive = true;
-        else {
-            err(("Unknown argument: " + arg).c_str());
-            return false;
-        }
-    }
-    if (opt.input_path.empty() || opt.output_path.empty()) {
-        err("Usage: MeshOptimizerLod --input <file.dae> --output <file.dae> --target-perc <0..1> [options]");
-        return false;
-    }
     return true;
 }
 

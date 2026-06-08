@@ -22,7 +22,7 @@ namespace AcManager.Tools.Helpers.LodGeneratorServices {
     public class MeshOptimizerToolDetails : ILodsToolDetails {
         public string Key => "MeshOptimizer";
 
-        public string Name => "meshoptimizer";
+        public string Name => "MeshOptimizer";
 
         // PyMeshLab cannot read FBX; this helper uses the same COLLADA round trip + FbxConverter path.
         public bool UseFbx => false;
@@ -30,69 +30,13 @@ namespace AcManager.Tools.Helpers.LodGeneratorServices {
         public bool SplitPriorities => true;
         
         public bool NeedsTool => false;
+        
+        public bool CanWeld => false;
 
         public IEnumerable<string> DefaultToolLocation => null;
 
         public string FindTool(string currentLocation) {
             return null;
-        }
-
-        private static async Task RunProcessAsync(string filename, [Localizable(false)] IEnumerable<string> args, string workingDirectory,
-                bool checkErrorCode, IProgress<double?> progress, CancellationToken cancellationToken, Action<string> errorCallback) {
-            var process = ProcessExtension.Start(filename, args, new ProcessStartInfo {
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                StandardOutputEncoding = Encoding.UTF8,
-                StandardErrorEncoding = Encoding.UTF8,
-                CreateNoWindow = true,
-                WorkingDirectory = workingDirectory ?? string.Empty,
-            });
-            try {
-                ChildProcessTracker.AddProcess(process);
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var errorData = new StringBuilder();
-                process.ErrorDataReceived += (sender, eventArgs) => {
-                    if (eventArgs.Data == null) return;
-                    if (errorData.Length > 0) errorData.Append('\n');
-                    errorData.Append(eventArgs.Data);
-                };
-                process.BeginErrorReadLine();
-
-                process.OutputDataReceived += (sender, eventArgs) => {
-                    if (eventArgs.Data == null || progress == null) return;
-                    var v = eventArgs.Data.As<double?>();
-                    if (v.HasValue) progress.Report(v.Value / 100d);
-                };
-                process.BeginOutputReadLine();
-
-                await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
-                if (errorCallback != null && errorData.Length > 0) {
-                    errorCallback.Invoke(errorData.ToString().Trim());
-                }
-                if (checkErrorCode && process.ExitCode != 0) {
-                    var errorMessage = errorData.ToString().Trim();
-                    if (string.IsNullOrEmpty(errorMessage)) {
-                        errorMessage = $@"Failed to run meshoptimizer LOD tool: {process.ExitCode}";
-                    } else {
-                        var separator = errorMessage.LastIndexOf(@": ", StringComparison.Ordinal);
-                        if (separator != -1) {
-                            errorMessage = errorMessage.Substring(separator + 2);
-                        }
-                    }
-                    throw new Exception(errorMessage);
-                }
-            } finally {
-                try {
-                    if (!process.HasExitedSafe()) {
-                        process.Kill();
-                    }
-                } catch (Exception killEx) {
-                    Logging.Debug($"Failed to kill meshoptimizer helper process: {killEx.Message}");
-                }
-                process.Dispose();
-            }
         }
 
         public class LodGeneratorService : ICarLodGeneratorService {
@@ -110,7 +54,6 @@ namespace AcManager.Tools.Helpers.LodGeneratorServices {
                 var rulesFilename = stage.ToolConfigurationFilename;
 
                 var toolFilename = FilesStorage.Instance.GetFilename("Temporary", "meshoptimizerlod.exe");
-                toolFilename = "C:/Development/CppSnippets/.output/meshoptimizerlod.exe";
                 await _initHelper.DoAsync(async () => {
                     var data = await CmApiProvider.GetStaticDataAsync("meshoptimizerlod", TimeSpan.FromDays(1), cancellation: cancellationToken);
                     if (cancellationToken.IsCancellationRequested) return;
@@ -142,7 +85,7 @@ namespace AcManager.Tools.Helpers.LodGeneratorServices {
                         rules = loaded[@"MeshOptimizer"] ?? new JObject();
 
                         var rulesData = rules.ToString();
-                        var combinedChecksum = (modelChecksum + rulesData + inputTriangles + stage.ApplyWeldingFix + useUV2).GetChecksum();
+                        var combinedChecksum = (modelChecksum + rulesData + inputTriangles + useUV2).GetChecksum();
                         filePostfix = combinedChecksum.Substring(0, 20);
                         cacheKey = $@"meshOptimizer:{combinedChecksum}";
                         var existing = CacheStorage.Get<string>(cacheKey);
@@ -179,12 +122,9 @@ namespace AcManager.Tools.Helpers.LodGeneratorServices {
                     if (useUV2) {
                         args.AddRange(rules["Arguments"]?["UV2"]?.ToObject<string[]>() ?? new string[0]);
                     }
-                    if (stage.ApplyWeldingFix) {
-                        args.AddRange(rules["Arguments"]?["Welding"]?.ToObject<string[]>() ?? new string[0]);
-                    }
 
                     string error = null;
-                    await RunProcessAsync(toolFilename, args, workingDir, true,
+                    await RunProcessAsyncHelper.RunAsync(toolFilename, args, workingDir, true,
                             progress.SubrangeDouble(0.01, 0.9), cancellationToken, err => error = err).ConfigureAwait(false);
                     
                     cancellationToken.ThrowIfCancellationRequested();
@@ -196,7 +136,7 @@ namespace AcManager.Tools.Helpers.LodGeneratorServices {
                     FileUtils.TryToDelete(outputFile);
 
                     string fbxError = null;
-                    await RunProcessAsync(Kn5.FbxConverterLocation,
+                    await RunProcessAsyncHelper.RunAsync(Kn5.FbxConverterLocation,
                             new[] { intermediateFile, outputFile, "/sffCOLLADA", "/dffFBX", "/f201300" },
                             workingDir, true, progress.SubrangeDouble(0.9, 0.99), cancellationToken,
                             err => fbxError = err).ConfigureAwait(false);

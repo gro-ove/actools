@@ -27,6 +27,8 @@ namespace AcManager.Tools.Helpers.LodGeneratorServices {
         public bool SplitPriorities => false;
         
         public bool NeedsTool => true;
+        
+        public bool CanWeld => true;
 
         public IEnumerable<string> DefaultToolLocation => new[] { @"C:\Program Files\Simplygon\10\SimplygonBatch.exe" };
 

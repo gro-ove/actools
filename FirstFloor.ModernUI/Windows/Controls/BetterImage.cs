@@ -7,6 +7,7 @@
 // #define WEBP_SUPPORT
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -66,7 +67,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 };
 
         private const int FileBufferSize = 4096;
-        private const int MemoryBufferSize = 81920;
+        private const int MemoryBufferSize = 4096 * 8;
 
         /// <summary>
         /// Set true to read files in UI thread without using async IO API.
@@ -74,42 +75,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static bool OptionReadFileSync = false;
 
         /// <summary>
-        /// If image’s size is smaller than this, it will be decoded in the UI thread.
-        /// Doesn’t do anything if OptionDecodeImageSync is true.
-        /// </summary>
-        public static int OptionDecodeImageSyncThreshold = 50 * 1000; // 50 KB
-
-        // public static int OptionDecodeImageSyncThreshold = 50; // 50 KB
-
-        /// <summary>
-        /// Considering that 30 KB image takes ≈1.8 ms to be decoded and value of
-        /// OptionDecodeImageSyncThreshold, how many of these images are allowed to be
-        /// decoded in UI thread per second before switching to non-UI one?
-        /// </summary>
-        public static int OptionMaxSyncDecodedInSecond = 8;
-
-        /// <summary>
-        /// Set true to immediately move decoded image to UI thread from non-UI one.
-        /// Doesn’t do anything if OptionDecodeImageSync is true.
-        /// </summary>
-        public static bool OptionDisplayImmediate = false;
-
-        /// <summary>
         /// Before loading cached entity, check if according file exists and was not updated.
         /// </summary>
-        // public static bool OptionEnsureCacheIsFresh = true;
-                public static bool OptionEnsureCacheIsFresh = false;
+        public static bool OptionEnsureCacheIsFresh = false;
 
         /// <summary>
         /// Do not set it to zero if OptionReadFileSync is true and OptionDecodeImageSync is true!
         /// </summary>
         public static TimeSpan OptionAdditionalDelay = TimeSpan.FromMilliseconds(30);
-
-        /// <summary>
-        /// Total number of cached images (needed so cache won’t get expanded to like thousands of
-        /// very small images).
-        /// </summary>
-        public static int OptionCacheTotalEntries = 2000;
 
         /// <summary>
         /// Summary cache size, in bytes.
@@ -119,22 +92,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// Cache threshold per image (bigger images won’t be cached), in bytes.
         /// </summary>
-        public static long OptionCacheMaxSize = 1000 * 1000; // 1 MB
-
-        /// <summary>
-        /// Cache threshold per image (smaller images won’t be cached), in bytes.
-        /// </summary>
-        public static long OptionCacheMinSize = 500; // 500 B
+        public static long OptionCacheMaxSize = 2 * 1024 * 1024; // 2 MB
 
         /// <summary>
         /// Mark cached images for debugging and log related information.
         /// </summary>
         public static bool OptionMarkCached = false;
-
-        /// <summary>
-        /// How to compare cached images’ paths.
-        /// </summary>
-        public static StringComparison OptionCacheStringComparison = StringComparison.Ordinal;
 
         /// <summary>
         /// What User-Agent to use while loading remote images.
@@ -147,10 +110,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static string RemoteCacheDirectory;
 
         public static void CleanUpCache() {
-            var cache = Cache;
-            lock (cache) {
-                cache.Clear();
-            }
+            _cCache.Clear();
+            _cCacheSize = 0;
         }
 
         #region Wrapper with size (for solving DPI-related problems)
@@ -162,7 +123,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             public readonly DateTime Date;
 
             // In bytes
-            public int Size => Width * Height * 3;
+            public int Size => Width * Height * 4;
 
             public static Image Empty => new Image();
 
@@ -577,7 +538,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 // ignored
             }
 
-            using (var cacheBytes = await ReadBytesAsync(cache)) {
+            using (var cacheBytes = await ReadBytesAsync(null, 0, cache)) {
                 return cacheBytes == null
                         ? Image.Empty : LoadBitmapSourceFromMemoryStream(cacheBytes, decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
             }
@@ -668,11 +629,27 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 #endif
 
+        private static ConcurrentStack<byte[]> _largeDataPool = new ConcurrentStack<byte[]>();
+
+        private static async Task<bool> CopyStreamAsync([CanBeNull] BetterImage origin, int curLoadingID, Stream source, Stream destination) {
+            if (!_largeDataPool.TryPop(out var buffer)) buffer = new byte[MemoryBufferSize];
+            try {
+                int count;
+                while ((count = await source.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None).ConfigureAwait(false)) != 0) {
+                    if (origin != null && curLoadingID != origin._lastLoadingID) return false;
+                    await destination.WriteAsync(buffer, 0, count, CancellationToken.None).ConfigureAwait(false);
+                }
+            } finally {
+                _largeDataPool.Push(buffer);
+            }
+            return true;
+        }
+        
         /// <summary>
         /// Safe (handles all exceptions inside).
         /// </summary>
         [ItemCanBeNull]
-        private static async Task<MemoryStream> ReadBytesAsync([CanBeNull] string filename, CancellationToken cancellation = default, BetterImage origin = null) {
+        private static async Task<MemoryStream> ReadBytesAsync([CanBeNull] BetterImage origin, int curLoadingID, [CanBeNull] string filename) {
             if (filename == null) return null;
 
             try {
@@ -682,7 +659,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     if (stream != null) {
                         using (stream) {
                             var result = Manager.GetStream(filename, (int)stream.Length);
-                            await stream.CopyToAsync(result, MemoryBufferSize, cancellation).ConfigureAwait(false);
+                            if (!await CopyStreamAsync(origin, curLoadingID, stream, result).ConfigureAwait(false)) {
+                                return null;
+                            }
                             return await ConvertSpecialAsync(result).ConfigureAwait(false);
                         }
                     }
@@ -694,7 +673,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 // We need it this way: file opening is done in thread pool, but subsequent reading uses async I/O API
                 // ReSharper disable once AsyncVoidLambda
                 ThreadPool.Run(async () => {
-                    if (origin != null && origin.Filename != filename) {
+                    if (origin != null && origin._lastLoadingID != curLoadingID) {
                         tcs.SetResult(null);
                         return;
                     }
@@ -704,8 +683,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                                 throw new Exception($"Image “{filename}” is way too big to display: {stream.Length.ToReadableSize()}");
                             }
                             var result = Manager.GetStream(filename, (int)stream.Length);
-                            await stream.CopyToAsync(result, MemoryBufferSize, cancellation).ConfigureAwait(false);
+                            if (!await CopyStreamAsync(origin, curLoadingID, stream, result).ConfigureAwait(false)) {
+                                tcs.SetResult(null);
+                                return;
+                            }
+                            #if WEBP_SUPPORT
                             tcs.SetResult(await ConvertSpecialAsync(result).ConfigureAwait(false));
+                            #else
+                            tcs.SetResult(result);
+                            #endif
                         }
                     } catch (Exception e) {
                         tcs.SetException(e);
@@ -740,7 +726,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Safe (handles all exceptions inside).
         /// </summary>
         public static Image LoadBitmapSourceFromMemoryStream([NotNull] MemoryStream data, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0,
-                [Localizable(false)] string sourceDebug = null) {
+                [Localizable(false)] string sourceDebug = null, Func<bool> cancelledCheck = null) {
             PrepareDecodeLimits(data, ref decodeWidth, ref decodeHeight, sourceDebug);
 
             try {
@@ -849,7 +835,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return await LoadRemoteBitmapAsync(uri).ConfigureAwait(false);
             }
 
-            using (var bytes = await ConvertSpecialAsync(await ReadBytesAsync(filename).ConfigureAwait(false)).ConfigureAwait(false)) {
+            using (var bytes = await ConvertSpecialAsync(await ReadBytesAsync(null, 0, filename).ConfigureAwait(false)).ConfigureAwait(false)) {
                 return bytes == null ? Image.Empty : LoadBitmapSourceFromMemoryStream(bytes, decodeWidth, decodeHeight, sourceDebug: filename);
             }
         }
@@ -872,112 +858,100 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #endregion
 
         #region Cache
-        private class CacheEntry {
-            public string Key;
-            public Image Value;
+        private class CacheItem {
+            public Image Cached;
+            public DateTime LastAccess;
         }
 
-        private static List<CacheEntry> _cache;
-
-        private static List<CacheEntry> Cache => _cache ?? (_cache = new List<CacheEntry>(OptionCacheTotalEntries));
+        private static readonly ConcurrentDictionary<string, CacheItem> _cCache = new ConcurrentDictionary<string, CacheItem>();
+        private static readonly string[] _cCacheOldestKeys = new string[16];
+        private static readonly DateTime[] _cCacheOldestTimes = new DateTime[16];
+        private static int _cCacheSize;
+        private static int _cCacheEvicting;
 
         private static void RemoveFromCache([NotNull] string filename) {
-            var cache = Cache;
-            lock (cache) {
-                for (var i = cache.Count - 1; i >= 0; i--) {
-                    if (string.Equals(cache[i].Key, filename, OptionCacheStringComparison)) {
-                        cache.RemoveAt(i);
-                    }
+            if (_cCache.TryRemove(filename, out var removed)) {
+                Interlocked.Add(ref _cCacheSize, -removed.Cached.Size);
+            }
+        }
+        
+        private static int TryFindOldestKeys(string[] keys, DateTime[] timesScratch, int count) {
+            for (var i = 0; i < count; i++) {
+                keys[i] = null;
+                timesScratch[i] = DateTime.MaxValue;
+            }
+            var filled = 0;
+            foreach (var kvp in _cCache) {
+                var key = kvp.Key;
+                var t = kvp.Value.LastAccess;
+                if (t < timesScratch[count - 1]) {
+                    InsertOldest(keys, timesScratch, Math.Min(filled, count - 1), key, t);
+                    filled++;
                 }
+            }
+            return Math.Min(filled, count);
+        }
+
+        private static void InsertOldest(string[] keys, DateTime[] times, int size, string key, DateTime t) {
+            // Insert (key, t) into sorted arrays so times[0] is oldest.
+            var i = size;
+            while (i > 0 && t < times[i - 1]) {
+                keys[i] = keys[i - 1];
+                times[i] = times[i - 1];
+                i--;
+            }
+            keys[i] = key;
+            times[i] = t;
+        }
+        
+        private static void EvictOldEntries() {
+            try {
+                for (int loop = 0; loop < 8 && _cCacheSize > OptionCacheTotalSize; ++loop) {
+                    var found = TryFindOldestKeys(_cCacheOldestKeys, _cCacheOldestTimes, loop == 0 ? 4 : 16);
+                    if (found == 0) {
+                        _cCache.Clear();
+                        _cCacheSize = 0;
+                        #if DEBUG
+                        ModernDialog.ShowMessage("Major evicting failure");
+                        #endif
+                        return;
+                    }
+                    
+                    var freed = 0;
+                    for (var i = 0; i < found; ++i) {
+                        if (_cCache.TryRemove(_cCacheOldestKeys[i], out var removed)) {
+                            freed += removed.Cached.Size;
+                        }
+                    }
+                    Interlocked.Add(ref _cCacheSize, -freed);
+                }
+            } catch (Exception e){
+                Logging.Debug($"Evicting failure: {e}");
+            } finally {
+                _cCacheEvicting = 0; // we don’t care if other threads see this change a bit too late
             }
         }
 
         private void AddToCache(string filename, Image entry) {
             _fromCache = false;
-            if (OptionCacheTotalEntries <= 0 || OptionCacheTotalSize <= 0 ||
-                    entry.Size < OptionCacheMinSize || entry.Size > OptionCacheMaxSize) return;
+            if (OptionCacheTotalSize <= 0 || entry.Size == 0 || entry.Size > OptionCacheMaxSize) return;
 
-            var cache = Cache;
-            var lastIndex = cache.Count - 1;
-
-            lock (cache) {
-                var index = -1;
-                for (var i = lastIndex; i >= 0; i--) {
-                    if (string.Equals(cache[i].Key, filename, OptionCacheStringComparison)) {
-                        index = i;
-                        break;
-                    }
-                }
-
-                CacheEntry item;
-                if (index == -1) {
-                    // item does not exist now, let’s add it
-                    item = new CacheEntry {
-                        Key = filename,
-                        Value = entry
-                    };
-
-                    // if queue is full, remove the first entry to avoid re-creating
-                    // array thing inside of the list
-                    if (cache.Count == OptionCacheTotalEntries) {
-                        if (OptionMarkCached) {
-                            Logging.Debug($"Total cached: {cache.Count} entries (capacity: {cache.Capacity})");
-                        }
-
-                        cache.RemoveAt(0);
-                    }
-
-                    cache.Add(item);
-                } else {
-                    // item already exists, let’s update its value
-                    item = cache[index];
-                    item.Value = entry;
-
-                    if (index < lastIndex) {
-                        // and move it to the end of removal queue if needed
-                        cache.RemoveAt(index);
-                        cache.Add(item);
-                    }
-                }
-
-                // remove old entries
-                long total = item.Value.Size;
-                for (var i = lastIndex - 1; i >= 0; i--) {
-                    total += cache[i].Value.Size;
-                    if (total > OptionCacheTotalSize) {
-                        if (OptionMarkCached) {
-                            Logging.Debug($"Total cached size: {total.ToReadableSize()}, let’s remove first {i + 1} image{(i > 0 ? "s" : "")}");
-                        }
-
-                        cache.RemoveRange(0, i + 1);
-                        return;
-                    }
-                }
-
-                if (OptionMarkCached) {
-                    Logging.Debug($"Total cached size: {total.ToReadableSize()}, no need to remove anything");
-                }
+            var item = new CacheItem { Cached = entry, LastAccess = DateTime.Now };
+            var cacheSizeDelta = entry.Size;
+            _cCache.AddOrUpdate(filename, item, (key, oldValue) => {
+                cacheSizeDelta -= oldValue.Cached.Size;
+                return item;
+            });
+            if (Interlocked.Add(ref _cCacheSize, cacheSizeDelta) > OptionCacheTotalSize && Interlocked.Exchange(ref _cCacheEvicting, 1) == 0) {
+                ThreadPool.Run(EvictOldEntries);
             }
         }
 
         private static Image GetCached(string filename) {
-            var cache = Cache;
-            var lastIndex = cache.Count - 1;
-
-            lock (cache) {
-                for (var i = lastIndex; i >= 0; i--) {
-                    var item = cache[i];
-                    if (string.Equals(item.Key, filename, OptionCacheStringComparison)) {
-                        if (i < lastIndex) {
-                            cache.RemoveAt(i);
-                            cache.Add(item);
-                        }
-
-                        return item.Value;
-                    }
-                }
+            if (_cCache.TryGetValue(filename, out var entry)) {
+                entry.LastAccess = DateTime.Now;
+                return entry.Cached;
             }
-
             return Image.Empty;
         }
         #endregion
@@ -1012,6 +986,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <returns>Returns true if image will be loaded later, and false if image is ready.</returns>
         private bool ReloadImage() {
             try {
+                ++_lastLoadingID;
                 if (_currentTask != null) {
                     _currentTask.Cancel();
                     _currentTask = null;
@@ -1081,16 +1056,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private Image _current;
-        private int _loading;
+        private int _lastLoadingID;
         private bool _broken;
         private bool _fromCache;
 
         protected void SetCurrent(Image value, bool? fromCache = false) {
-            ++_loading;
+            ++_lastLoadingID;
 
             _current = value;
             _broken = value.IsBroken;
             _fromCache = fromCache == true;
+            _croppedCache = null;
 
             if (fromCache.HasValue) {
                 if (fromCache.Value) {
@@ -1116,29 +1092,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static string GetActualFilename([CanBeNull] string filename) {
             return filename;
         }
+        
+        private static Action[] _resultTasks = new Action[128];
+        private static int _resultTasksWaiting;
 
-        private static readonly List<DateTime> RecentlyLoaded = new List<DateTime>(50);
-
-        private static bool UpdateLoaded() {
-            var now = DateTime.Now;
-
-            for (var i = RecentlyLoaded.Count - 1; i >= 0; i--) {
-                if ((now - RecentlyLoaded[i]).TotalSeconds > 1d) {
-                    RecentlyLoaded.RemoveAt(i);
-                }
+        private static void RunResultTasks() {
+            var tasksToProcess = Interlocked.Exchange(ref _resultTasksWaiting,
+                    Int16.MaxValue /* this will stop ApplyReloadImage2 from adding more work while we’re doing our part */);
+            if (tasksToProcess > 128) tasksToProcess = 128;
+            for (int i = 0; i < tasksToProcess; ++i) {
+                _resultTasks[i].Invoke();
             }
-
-            if (RecentlyLoaded.Count < OptionMaxSyncDecodedInSecond) {
-                RecentlyLoaded.Add(now);
-                return true;
-            }
-
-            return false;
+            Interlocked.MemoryBarrier();
+            _resultTasksWaiting = 0;
         }
 
         // Obtains ownership of MemoryStream!
-        private void ApplyReloadImage2(string filename, int loading, MemoryStream data) {
-            if (loading != _loading || Filename != filename) return;
+        private void ApplyReloadImage2(string filename, int curLoadingID, MemoryStream data) {
+            if (curLoadingID != _lastLoadingID || Filename != filename) return;
 
             if (data == null) {
                 SetCurrent(Image.Empty);
@@ -1148,31 +1119,29 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var decodeWidth = InnerDecodeWidth;
             var decodeHeight = InnerDecodeHeight;
 
-            if (data.Length < OptionDecodeImageSyncThreshold && UpdateLoaded()) {
-                using (data) {
-                    SetCurrent(LoadBitmapSourceFromMemoryStream(data, decodeWidth, decodeHeight, sourceDebug: filename));
-                }
-                return;
-            }
-
             if (AsyncDecode) {
                 _currentTask = ThreadPool.Run(() => {
                     Image current;
                     using (data) {
                         current = LoadBitmapSourceFromMemoryStream(data, decodeWidth, decodeHeight, sourceDebug: filename);
+                        if (curLoadingID != _lastLoadingID) return;
                     }
 
                     var result = (Action)(() => {
+                        if (curLoadingID != _lastLoadingID) return;
                         _currentTask = null;
-
-                        if (loading != _loading || Filename != filename) return;
                         SetCurrent(current);
                     });
 
-                    if (OptionDisplayImmediate) {
-                        Dispatcher?.Invoke(result);
-                    } else {
+                    // Something to combine nearby tasks together and to not overwork dispatcher too much
+                    var taskIndex = Interlocked.Add(ref _resultTasksWaiting, 1) - 1;
+                    if (taskIndex >= 128) {
                         Dispatcher?.BeginInvoke(DispatcherPriority.Background, result);
+                    } else {
+                        _resultTasks[taskIndex] = result;
+                        if (taskIndex == 0) {
+                            Dispatcher?.BeginInvoke(DispatcherPriority.Background, (Action)RunResultTasks);
+                        }
                     }
                 });
             } else {
@@ -1183,23 +1152,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private async void ReloadImageAsync() {
-            var loading = ++_loading;
+            var curLoadingID = ++_lastLoadingID;
             _broken = false;
 
             var filename = Filename;
-
             if (OptionAdditionalDelay > TimeSpan.Zero) {
                 await Task.Delay(OptionAdditionalDelay);
-                if (loading != _loading || Filename != filename) return;
+                if (curLoadingID != _lastLoadingID) return;
             }
 
             if (OptionReadFileSync) {
-                ApplyReloadImage2(filename, loading, ReadBytes(filename));
+                ApplyReloadImage2(filename, curLoadingID, ReadBytes(filename));
             } else {
-                ApplyReloadImage2(filename, loading, await ReadBytesAsync(filename, default, this));
-                /*ThreadPool.Run(() => {
-                    ApplyReloadImage(filename, loading, ReadBytes(filename));
-                });*/
+                ApplyReloadImage2(filename, curLoadingID, await ReadBytesAsync(this, curLoadingID, filename));
             }
         }
 
@@ -1207,6 +1172,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _isLoadedHandlerSet;
 
         protected void OnFilenameChanged(string value) {
+            ++_lastLoadingID;
             if (!IsLoaded) {
                 if (!_isLoadedHandlerSet) {
                     Loaded += OnLoaded;
@@ -1377,6 +1343,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return FindTransparentCropArea(Filename, b, out left, out top, out right, out bottom);
         }
 
+        private class CroppedCache {
+            public Int32Rect Rect;
+            public CroppedBitmap Bitmap;
+        }
+
+        private CroppedCache _croppedCache;
+        
         protected override void OnRender(DrawingContext dc) {
             var bi = _current.ImageSource;
             if (bi == null && HideBroken) return;
@@ -1394,12 +1367,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 if (cropNullable.HasValue) {
                     try {
                         var crop = cropNullable.Value;
-                        var cropped = new CroppedBitmap((BitmapSource)bi, cropTransparent || CropUnits != ImageCropMode.Relative ?
+                        var rect = cropTransparent || CropUnits != ImageCropMode.Relative ?
                                 new Int32Rect((int)crop.Left, (int)crop.Top, (int)crop.Width, (int)crop.Height) :
                                 new Int32Rect(
                                         (int)(crop.Left * _current.Width), (int)(crop.Top * _current.Height),
-                                        (int)(crop.Width * _current.Width), (int)(crop.Height * _current.Height)));
-                        dc.DrawImage(cropped, new Rect(_offset, _size));
+                                        (int)(crop.Width * _current.Width), (int)(crop.Height * _current.Height));
+                        if (_croppedCache == null || _croppedCache.Rect != rect) {
+                            _croppedCache = new CroppedCache { Rect = rect, Bitmap = new CroppedBitmap((BitmapSource)bi, rect) };
+                        }
+                        dc.DrawImage(_croppedCache.Bitmap, new Rect(_offset, _size));
                     } catch (ArgumentException) {
                         broken = true;
                     }

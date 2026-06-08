@@ -260,7 +260,7 @@ namespace AcManager.Tools.Helpers {
                     Tag = "Neat and clean results, but sometimes some geometry tends to bug out, so manual cleanup might be necessary. Also, normals are recalculated: Blender can’t optimize a mesh and leave surface as-is."
                 },
                 new DefaultSettingEntry(4, "MeshOptimizer (free, built-in)") {
-                    Tag = "Great results, thanks to meshoptimizer. No need to install anything (but CM will need to download a small extension first time)."
+                    Tag = "Great results, thanks to meshoptimizer library. No need to install anything (but CM will need to download a small extension first time)."
                 },
             };
 

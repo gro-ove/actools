@@ -28,6 +28,8 @@ namespace AcManager.Tools.Helpers.LodGeneratorServices {
         public bool UseFbx => true;
 
         public bool SplitPriorities => true;
+        
+        public bool CanWeld => true;
 
         public IEnumerable<string> DefaultToolLocation {
             get {

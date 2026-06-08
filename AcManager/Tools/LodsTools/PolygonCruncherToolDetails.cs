@@ -24,6 +24,8 @@ namespace AcManager.Tools.Helpers.LodGeneratorServices {
         public bool SplitPriorities => true;
         
         public bool NeedsTool => true;
+        
+        public bool CanWeld => true;
 
         public IEnumerable<string> DefaultToolLocation => new[] {
             @"C:\Program Files\3DBrowser 17\PolygonCruncher.exe",

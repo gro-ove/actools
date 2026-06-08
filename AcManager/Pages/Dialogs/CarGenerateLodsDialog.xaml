@@ -30,7 +30,8 @@
                     IsSelectionRangeEnabled="True" SelectionStart="{Binding TrianglesRecommendedCount.Item1, Mode=OneWay}"
                     SelectionEnd="{Binding TrianglesRecommendedCount.Item2, Mode=OneWay}" />
               </DockPanel>
-              <CheckBox IsChecked="{Binding ApplyWeldingFix}">
+              <CheckBox IsChecked="{Binding ApplyWeldingFix}"
+                  Visibility="{Binding CanWeld, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <CheckBox.ToolTip>
                   <TextBlock MaxWidth="480" TextWrapping="Wrap"
                       Text="Can help with holes and smooth things out in general, but can also slow things down a lot, so it might make sense to disable it when figuring out better settings for priorities and such." />

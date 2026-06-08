@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -9,12 +10,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static byte[] _jpegSignature = { 0xFF, 0xD8, 0xFF };
         private static byte[] _pngSignature = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
         private static byte[] _icoSignature = { 0x00, 0x00, 0x01, 0x00 };
+        private static ConcurrentStack<byte[]> _dataPool = new ConcurrentStack<byte[]>();
 
         public static Size? GetImageSize(MemoryStream stream, [Localizable(false)] string sourceDebug) {
             int index = 0, limit = Math.Min((int)stream.Length, 4096);
             if (limit == 0) return null;
 
-            var data = new byte[limit];
+            if (!_dataPool.TryPop(out var data)) {
+                data = new byte[4096];
+            }
+            
             stream.Seek(0, SeekOrigin.Begin);
             stream.Read(data, 0, limit);
 
@@ -48,6 +53,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
             } catch (Exception e) {
                 Logging.Warning(e.Message);
+            } finally {
+                _dataPool.Push(data);
             }
 
 #if DEBUG

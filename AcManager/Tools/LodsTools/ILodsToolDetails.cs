@@ -9,6 +9,8 @@ namespace AcManager.Tools.LodsTools {
         string Name { get; }
         
         bool NeedsTool { get; }
+        
+        bool CanWeld { get; }
             
         [CanBeNull]
         IEnumerable<string> DefaultToolLocation { get; }
