@@ -805,8 +805,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private static void PrepareDecodeLimits(MemoryStream data, ref int decodeWidth, ref int decodeHeight,
-                [Localizable(false)] string sourceDebug) {
+        private static void PrepareDecodeLimits(MemoryStream data, ref int decodeWidth, ref int decodeHeight, [Localizable(false)] string sourceDebug) {
             if (decodeWidth <= 0 && decodeHeight <= 0) return;
 
             decodeWidth = (int)(decodeWidth * Math.Max(DpiInformation.MaxScaleX, 1d));
