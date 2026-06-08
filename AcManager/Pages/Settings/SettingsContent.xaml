@@ -168,7 +168,21 @@
         <DockPanel set:Search.Keywords="cars;model">
           <Label Content="LOD generation tool" />
           <mui:BetterComboBox ItemsSource="{Binding Holder.CarsLODGeneratorTool}" SelectedItem="{Binding Holder.CarsLODGeneratorTool.SelectedItem}"
-              DisplayMemberPath="DisplayName" IsEditable="False" />
+              IsEditable="False">
+            <mui:BetterComboBox.ItemTemplate>
+              <DataTemplate>
+                <StackPanel>
+                  <TextBlock Text="{Binding DisplayName}" />
+                  <TextBlock x:Name="PART_Details" Text="{Binding Tag}" Style="{StaticResource Small}" TextWrapping="Wrap" MaxWidth="400" />
+                </StackPanel>
+                <DataTemplate.Triggers>
+                  <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}}" Value="{x:Null}">
+                    <Setter TargetName="PART_Details" Property="Visibility" Value="Collapsed" />
+                  </DataTrigger>
+                </DataTemplate.Triggers>
+              </DataTemplate>
+            </mui:BetterComboBox.ItemTemplate>
+          </mui:BetterComboBox>
         </DockPanel>
 
         <!-- Car skins specific -->

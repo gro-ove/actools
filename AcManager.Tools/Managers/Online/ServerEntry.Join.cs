@@ -294,8 +294,7 @@ namespace AcManager.Tools.Managers.Online {
                 Guid = SteamIdHelper.Instance.Value,
                 Password = Password,
                 ExtendedMode = WeatherId != null,
-                BackgroundImage = _backgroundImage
-                ,
+                BackgroundImage = _backgroundImage,
                 CspFeaturesList = CspFeaturesList?.JoinToString(",")
             });
 

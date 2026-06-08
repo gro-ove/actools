@@ -51,7 +51,7 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
 
             if (Stages.Any(x => x.ConvertUv2?.Length > 0)
                     && File.Exists(FileUtils.ReplaceExtension(modelOriginal, ".uv2"))) {
-                _originalKn5Uv2Data = File.ReadAllBytes(Regex.Replace(modelOriginal, @"\.\w+$", ".uv2"));
+                _originalKn5Uv2Data = File.ReadAllBytes(FileUtils.ReplaceExtension(modelOriginal, ".uv2"));
             }
         }
 
@@ -287,7 +287,7 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
                 var referenceType = layer.GetRelative("ReferenceInformationType").Value.GetAsString();
                 _data = layer.GetRelative(typeKey).Value.GetAsFloatArray();
                 _indices = referenceType == "IndexToDirect" ? layer.GetRelative(indexKey).Value.GetAsIntArray() : null;
-                _mappingType = mappingType == "ByVertex" || mappingType == "ByVertice" ? MappingInformationType.ByVertex 
+                _mappingType = mappingType == "ByVertex" || mappingType == "ByVertice" || mappingType == "ByControlPoint" ? MappingInformationType.ByVertex 
                         : mappingType == "ByPolygonVertex" ? MappingInformationType.ByPolygonVertex 
                         : mappingType == "ByPolygon" ? MappingInformationType.ByPolygon 
                         : mappingType == "AllSame" ? MappingInformationType.AllSame 
@@ -373,8 +373,8 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
 
                 var mesh = Kn5MeshUtils.Create($"{key}__mesh_", parent.Children[0].MaterialId);
                 if (parent.Children.Count != 1) throw new Exception("Unexpected arrangement");
+                parent.Children.Add(mesh); // this way, if MergeWithMesh will need to split the mesh if it’s too large, other pieces will follow this one
                 MergeMeshWith(parent, mesh, geometry.Value.Select(x => Tuple.Create(x.Document.GetGeometry(x.Id), 1d)));
-                parent.Children.Add(mesh);
             }
             RemoveEmpty(preparedKn5.RootNode);
 
@@ -382,75 +382,87 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
                 var builder = new Kn5MeshBuilder();
                 var subCounter = 1;
                 foreach (var geometry in geometriesList) {
-                    var fbxIndices = geometry?.Item1?.GetRelative("PolygonVertexIndex")?.Value?.GetAsIntArray();
-                    if (fbxIndices == null) {
-                        continue;
-                    }
-
-                    var fbxVertices = geometry.Item1.GetRelative("Vertices").Value.GetAsFloatArray();
-                    var fbxNormals = new GenDataAccessor(geometry.Item1, 
-                            "LayerElementNormal", "Normals", "NormalsIndex");
-                    var fbxUv0 = new GenDataAccessor(geometry.Item1, 
-                            "LayerElementUV", "UV", "UVIndex");
-                    
-                    GenDataAccessor fbxUv1;
                     try {
-                        fbxUv1 = mesh.Uv2 != null ? new GenDataAccessor(geometry.Item1,
-                                "LayerElementColor", "Colors", "ColorIndex") : null;
-                    } catch {
-                        fbxUv1 = null;
-                    }
-
-                    var offset = MoveAsideDistance(geometry.Item2, stage);
-                    var scale = (float)(1d / geometry.Item2);
-                    void AddVertex(VertexRef r) {
-                        var uv2 = fbxUv1?.GetVec4(r);
-                        builder.AddVertex(new Kn5Node.Vertex {
-                            Position = new Vec3(
-                                    (fbxVertices[r.VertexI * 3] - offset.X) * scale,
-                                    (fbxVertices[r.VertexI * 3 + 1] - offset.Y) * scale,
-                                    (fbxVertices[r.VertexI * 3 + 2] - offset.Z) * scale),
-                            Normal = fbxNormals.GetVec3(r),
-                            Tex = fbxUv0.GetUv(r)
-                        }, uv2.HasValue ? new Vec2(uv2.Value.X, uv2.Value.Y) : (Vec2?)null);
-                    }
-                    
-                    var collected = new List<VertexRef>();
-                    var polygonIndex = 0;
-                    for (var i = 0; i < fbxIndices.Length; ++i) {
-                        var v = fbxIndices[i];
-                        collected.Add(new VertexRef {
-                            I = i, 
-                            VertexI = v < 0 ? -v - 1 : v,
-                            PolygonVertexI = i,
-                            PolygonI = polygonIndex
-                        });
-                        if (v < 0) {
-                            if (builder.IsCloseToLimit) {
-                                builder.SetTo(mesh);
-                                mesh.RecalculateTangents();
-
-                                builder.Clear();
-                                var oldIndex = parent.Children.IndexOf(mesh);
-                                mesh = Kn5MeshUtils.Create(mesh.Name + $"___$sub:{subCounter}", mesh.MaterialId);
-                                ++subCounter;
-                                if (oldIndex != -1 && oldIndex < parent.Children.Count - 1) {
-                                    parent.Children.Insert(oldIndex + 1, mesh);
-                                } else {
-                                    parent.Children.Add(mesh);
-                                }
-                            }
-
-                            for (var j = 1; j < collected.Count - 1; j++) {
-                                AddVertex(collected[0]);
-                                AddVertex(collected[j]);
-                                AddVertex(collected[j + 1]); 
-                            }
-                            collected.Clear();
-                            ++polygonIndex;
+                        var fbxIndices = geometry?.Item1?.GetRelative("PolygonVertexIndex")?.Value?.GetAsIntArray();
+                        if (fbxIndices == null) {
+                            continue;
                         }
+                        
+                        var fbxVertices = geometry.Item1.GetRelative("Vertices").Value.GetAsFloatArray();
+                        var fbxNormals = new GenDataAccessor(geometry.Item1,
+                                "LayerElementNormal", "Normals", "NormalsIndex");
+
+                        GenDataAccessor fbxUv0;
+                        try {
+                            fbxUv0 = new GenDataAccessor(geometry.Item1,
+                                    "LayerElementUV", "UV", "UVIndex");
+                        } catch {
+                            fbxUv0 = null;
+                        }
+ 
+                        GenDataAccessor fbxUv1;
+                        try {
+                            fbxUv1 = mesh.Uv2 != null ? new GenDataAccessor(geometry.Item1,
+                                    "LayerElementColor", "Colors", "ColorIndex") : null;
+                        } catch {
+                            fbxUv1 = null;
+                        }
+
+                        var offset = MoveAsideDistance(geometry.Item2, stage);
+                        var scale = (float)(1d / geometry.Item2);
+
+                        void AddVertex(VertexRef r) {
+                            var uv2 = fbxUv1?.GetVec4(r);
+                            builder.AddVertex(new Kn5Node.Vertex {
+                                Position = new Vec3(
+                                        (fbxVertices[r.VertexI * 3] - offset.X) * scale,
+                                        (fbxVertices[r.VertexI * 3 + 1] - offset.Y) * scale,
+                                        (fbxVertices[r.VertexI * 3 + 2] - offset.Z) * scale),
+                                Normal = fbxNormals.GetVec3(r),
+                                Tex = fbxUv0?.GetUv(r) ?? new Vec2(0f, 0f)
+                            }, uv2.HasValue ? new Vec2(uv2.Value.X, uv2.Value.Y) : (Vec2?)null);
+                        }
+
+                        var collected = new List<VertexRef>();
+                        var polygonIndex = 0;
+                        for (var i = 0; i < fbxIndices.Length; ++i) {
+                            var v = fbxIndices[i];
+                            collected.Add(new VertexRef {
+                                I = i,
+                                VertexI = v < 0 ? -v - 1 : v,
+                                PolygonVertexI = i,
+                                PolygonI = polygonIndex
+                            });
+                            if (v < 0) {
+                                if (builder.IsCloseToLimit) {
+                                    builder.SetTo(mesh);
+                                    mesh.RecalculateTangents();
+
+                                    builder.Clear();
+                                    var oldIndex = parent.Children.IndexOf(mesh);
+                                    mesh = Kn5MeshUtils.Create(mesh.Name + $"___$sub:{subCounter}", mesh.MaterialId);
+                                    ++subCounter;
+                                    if (oldIndex != -1 && oldIndex < parent.Children.Count - 1) {
+                                        parent.Children.Insert(oldIndex + 1, mesh);
+                                    } else {
+                                        parent.Children.Add(mesh);
+                                    }
+                                }
+
+                                for (var j = 1; j < collected.Count - 1; j++) {
+                                    AddVertex(collected[0]);
+                                    AddVertex(collected[j]);
+                                    AddVertex(collected[j + 1]);
+                                }
+                                collected.Clear();
+                                ++polygonIndex;
+                            }
+                        }
+                    } catch (Exception e) {
+                        AcToolsLogging.Write($"Failed to load a LOD mesh: {e}");
                     }
                 }
+                    
                 builder.SetTo(mesh);
                 mesh.RecalculateTangents();
             }
@@ -461,7 +473,9 @@ namespace AcTools.ExtraKn5Utils.LodGenerator {
                     return;
                 }
 
-                MergeMeshWith(parent, node, Enumerable.Range(-1, 100).Select(i => GetGeometry(node, i)).TakeWhile(i => i != null)
+                MergeMeshWith(parent, node, Enumerable.Range(-1, 100)
+                        .Select(i => GetGeometry(node, i))
+                        .Where(i => i != null) // this way, if any sub-chunks are dropped, we’ll still pick up the rest
                         .Concat(merges.Select(n => GetGeometry(n))));
             }
 

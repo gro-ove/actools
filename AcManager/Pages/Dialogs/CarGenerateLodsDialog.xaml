@@ -90,8 +90,7 @@
   <mui:ModernDialog.ButtonsRowContent>
     <DockPanel>
       <mui:SpacingStackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right" HorizontalAlignment="Right">
-        <mui:BooleanSwitch Value="{Binding IsReady, Source={x:Static di:CarGenerateLodsDialog.Plugins}}"
-            Visibility="{Binding ToolAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <mui:BooleanSwitch Value="{Binding IsReady, Source={x:Static di:CarGenerateLodsDialog.Plugins}}">
           <mui:SpacingStackPanel Orientation="Horizontal" Spacing="8">
             <Button MinWidth="160" Content="Save LODs" Command="{Binding FinalSaveCommand}"
                 Visibility="{Binding HasDataToSave, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -117,6 +116,22 @@
           </mui:SpacingStackPanel>
         </mui:BooleanSwitch>
         <Button Command="{Binding OpenShowroomCommand}" Content="Showroom" ToolTip="View car and compare LODs in showroom (Alt+H)" />
+        
+        <mui:ButtonWithComboBox x:Name="ToolsMenu" Command="{Binding ToolLocateCommand}">
+          <mui:ButtonWithComboBox.Content>
+            <TextBlock Text="{Binding ToolName, StringFormat='{}Tool: {0}'}" />
+          </mui:ButtonWithComboBox.Content>
+          <mui:ButtonWithComboBox.ButtonToolTip>
+            <TextBlock Text="{Binding ToolLocation.Value, StringFormat='{}Current location: {0}', TargetNullValue='N/A'}" />
+          </mui:ButtonWithComboBox.ButtonToolTip>
+          <Separator />
+          <MenuItem Header="Change tool location…" Command="{Binding ToolLocateCommand}">
+            <MenuItem.ToolTip>
+              <TextBlock Text="{Binding ToolLocation, StringFormat='{}Current location: {0}', TargetNullValue='N/A'}" />
+            </MenuItem.ToolTip>
+          </MenuItem>
+        </mui:ButtonWithComboBox>
+        
         <Button Content="{x:Static mui:UiStrings.Close}" Click="OnCloseClick" />
       </mui:SpacingStackPanel>
       <TextBlock MaxWidth="340" FontSize="{StaticResource SmallFontSize}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Left"
@@ -150,13 +165,13 @@
       <!-- The tool is missing -->
       <DockPanel mui:FallbackSwitch.Value="{Binding ToolAvailable}" mui:FallbackSwitch.When="False" Margin="40 0 40 100" HorizontalAlignment="Center"
           VerticalAlignment="Center" MaxWidth="400">
-        <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" DockPanel.Dock="Top" Margin="0 0 0 8" />
+        <TextBlock Style="{StaticResource Heading1}" Text="The tool is missing" DockPanel.Dock="Top" Margin="0 0 0 8" />
         <mui:BbCodeBlock TextWrapping="Wrap" DockPanel.Dock="Top" Margin="0 0 0 8"
-            Text="Couldn’t find LOD generator tool installation. Please locate its file manually." />
+            Text="Couldn’t find the tool to use to generate LODs. Please pick it manually:" />
         <DockPanel>
           <TextBlock Text="Tool location:" Style="{StaticResource Label}" Width="120" />
           <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding ToolLocateCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
-          <mui:PathTrimmingTextBlock Text="{Binding ToolLocation.Value}" />
+          <mui:PathTrimmingTextBlock Text="{Binding ToolLocation.Value, FallbackValue='N/A'}" />
         </DockPanel>
       </DockPanel>
 

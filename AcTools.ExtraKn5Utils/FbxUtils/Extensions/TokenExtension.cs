@@ -7,6 +7,7 @@ using System.Linq;
 using AcTools.ExtraKn5Utils.FbxUtils.Tokens;
 using AcTools.ExtraKn5Utils.FbxUtils.Tokens.Value;
 using AcTools.ExtraKn5Utils.FbxUtils.Tokens.ValueArray;
+using JetBrains.Annotations;
 
 namespace AcTools.ExtraKn5Utils.FbxUtils.Extensions {
     public static class TokenExtension {
@@ -17,14 +18,14 @@ namespace AcTools.ExtraKn5Utils.FbxUtils.Extensions {
             return $"<TokenType={token.TokenType}, ValueType={token.ValueType}, Value={result}>";
         }
         
-        public static string GetAsString(this Token token) {
+        public static string GetAsString([NotNull] this Token token) {
             if (!TryGetAsString(token, out var result)) {
                 throw new NotSupportedException();
             }
             return result;
         }
 
-        public static bool TryGetAsString(this Token token, out string result) {
+        public static bool TryGetAsString([NotNull] this Token token, out string result) {
             if (token.ValueType == Tokens.ValueType.None) {
                 if (token is StringToken stringToken) {
                     result = stringToken.Value;

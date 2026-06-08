@@ -247,9 +247,21 @@ namespace AcManager.Tools.Helpers {
             };
 
             public SettingEntryStored CarsLODGeneratorTool { get; } = new SettingEntryStored("/Settings.ContentSettings.CarsLODGeneratorTool") {
-                new SettingEntry(0, "Polygon Cruncher"),
-                new SettingEntry(1, "Simplygon"),
-                // new SettingEntry(2, "MeshLab (requires Python and PyMeshLab installed)"),
+                new SettingEntry(1, "Simplygon ($42000 per year)") {
+                    Tag = "Originally, there was a free version which would produce somewhat decent results (albeit slow), but it was discontinued a few years ago."
+                },
+                new SettingEntry(0, "Polygon Cruncher ($529, or $239 per year)") {
+                    Tag = "Generated meshes are nice and clean, but this tool does tend to produce too many triangles. You might need to adjust sliders to get closer to your desired triangle count."
+                },
+                new SettingEntry(2, "MeshLab (free, requires installed Python)") {
+                    Tag = "Resulting geometry often seems a bit messy, but it works, and it’s free. With this one, you might need to increase number of triangles to compensate, or maybe clean up the resulting models manually afterwards a bit."
+                },
+                new SettingEntry(3, "Blender (free)") {
+                    Tag = "Neat and clean results, but sometimes some geometry tends to bug out, so manual cleanup might be necessary. Also, normals are recalculated: Blender can’t optimize a mesh and leave surface as-is."
+                },
+                new DefaultSettingEntry(4, "MeshOptimizer (free, built-in)") {
+                    Tag = "Great results, thanks to meshoptimizer. No need to install anything (but CM will need to download a small extension first time)."
+                },
             };
 
             private bool? _changeBrandIconAutomatically;

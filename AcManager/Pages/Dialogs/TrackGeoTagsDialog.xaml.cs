@@ -134,6 +134,7 @@ namespace AcManager.Pages.Dialogs {
                     _saveCommand?.RaiseCanExecuteChanged();
                 }
             }
+
             private string _longitude;
 
             public string Longitude {
@@ -169,9 +170,12 @@ namespace AcManager.Pages.Dialogs {
 
             private CommandBase _saveCommand;
 
-            public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(() => {
-                Track.GeoTags = new GeoTagsEntry(Latitude, Longitude);
-            }, () => Latitude != null && Longitude != null));
+            public ICommand SaveCommand
+                =>
+                        _saveCommand
+                                ?? (_saveCommand =
+                                        new DelegateCommand(() => { Track.GeoTags = new GeoTagsEntry(Latitude, Longitude); },
+                                                () => Latitude != null && Longitude != null));
         }
 
         private static string GetQuery(TrackObjectBase track) {
@@ -183,8 +187,8 @@ namespace AcManager.Pages.Dialogs {
             var tags = track.GeoTags;
             if (forceQuery || tags?.IsEmptyOrInvalid != false) return $@"https://www.google.com/maps/search/{GetQuery(track)}";
             return $@"https://www.google.com/maps/@{tags.LatitudeValue},{tags.LongitudeValue},14z";
-            return CmHelpersProvider.GetAddress("map") + @"?ms&t=new#" +
-                    (tags?.IsEmptyOrInvalid == false ? $"{tags.LatitudeValue};{tags.LongitudeValue}" : GetQuery(track));
+            // return CmHelpersProvider.GetAddress("map") + @"?ms&t=new#" +
+            //        (tags?.IsEmptyOrInvalid == false ? $"{tags.LatitudeValue};{tags.LongitudeValue}" : GetQuery(track));
         }
 
         private void OnShowDevToolsClick(object sender, RoutedEventArgs e) {

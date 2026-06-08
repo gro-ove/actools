@@ -17,12 +17,19 @@ namespace AcManager.Tools.Helpers.LodGeneratorServices {
     public class PolygonCruncherToolDetails : ILodsToolDetails {
         public string Key => "PolygonCruncher";
 
+        public string Name => "Polygon Cruncher";
+
         public bool UseFbx => true;
 
         public bool SplitPriorities => true;
+        
+        public bool NeedsTool => true;
 
-        public IEnumerable<string> DefaultToolLocation
-            => new[] { @"C:\Program Files\Polygon Cruncher 14\PolygonCruncher.exe", @"C:\Program Files\Polygon Cruncher 13\PolygonCruncher.exe" };
+        public IEnumerable<string> DefaultToolLocation => new[] {
+            @"C:\Program Files\3DBrowser 17\PolygonCruncher.exe",
+            @"C:\Program Files\Polygon Cruncher 14\PolygonCruncher.exe",
+            @"C:\Program Files\Polygon Cruncher 13\PolygonCruncher.exe"
+        };
 
         public string FindTool(string currentLocation) {
             return FileRelatedDialogs.Open(new OpenDialogParams {
@@ -82,12 +89,12 @@ namespace AcManager.Tools.Helpers.LodGeneratorServices {
                     FileUtils.TryToDelete(outputFile);
                     FileUtils.TryToDelete(logFile);
 
-                    var compressionRate = 100d * Math.Max(rules.GetDoubleValueOnly("RateLimit", 0.001), 
+                    var compressionRate = 100d * Math.Max(rules.GetDoubleValueOnly("RateLimit", 0.001),
                             1d - rules.GetDoubleValueOnly("RateScale", 1d) * stage.TrianglesCount / inputTriangles);
                     Logging.Write($"Compression rate: {compressionRate:F2}% ({inputTriangles} on input, {stage.TrianglesCount} is the target)");
-                    var args = new List<string>{ "-input-files", inputFile, "-ouput-samedir", "-ouput-namesuffix", $"_{filePostfix}" };
-                    args.AddRange(new[]{ "-output-logfile", logFile });
-                    args.AddRange(new[]{ "-level1", compressionRate.ToString(@"F2") });
+                    var args = new List<string> { "-input-files", inputFile, "-ouput-samedir", "-ouput-namesuffix", $"_{filePostfix}" };
+                    args.AddRange(new[] { "-output-logfile", logFile });
+                    args.AddRange(new[] { "-level1", compressionRate.ToString(@"F2") });
                     args.AddRange(rules["Arguments"]?["Base"]?.ToObject<string[]>() ?? new string[0]);
                     if (useUV2) {
                         args.AddRange(rules["Arguments"]?["UV2"]?.ToObject<string[]>() ?? new string[0]);
@@ -109,7 +116,7 @@ namespace AcManager.Tools.Helpers.LodGeneratorServices {
                             }
                         }
                     }
-                    
+
                     if (cacheKey != null) {
                         CacheStorage.Set(cacheKey, outputFile);
                     }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -83,6 +82,27 @@ namespace AcManager.Pages.Dialogs {
             Loaded += (s, a) => Model.LoadedWindow = this;
             this.AddWidthCondition(720).Add(x => LodsGrid.FindVisualChild<SpacingUniformGrid>()?.SetValue(SpacingUniformGrid.ColumnsProperty, x ? 2 : 1));
             this.OnActualUnload(Model);
+
+            var itemIndex = 0;
+            foreach (var item in SettingsHolder.Content.CarsLODGeneratorTool) {
+                ToolsMenu.MenuItems.Insert(itemIndex++, new MenuItem {
+                    Header = item.DisplayName,
+                    ToolTip = item.Tag,
+                    IsCheckable = true,
+                    Command = new DelegateCommand(() => {
+                        SettingsHolder.Content.CarsLODGeneratorTool.SelectedValue = item.Value;
+                        UpdateToolItems();
+                        Model.UpdateToolDetails();
+                    })
+                });
+            }
+            UpdateToolItems();
+        }
+
+        private void UpdateToolItems() {
+            foreach (var menuItem in ToolsMenu.MenuItems.OfType<MenuItem>()) {
+                menuItem.IsChecked = SettingsHolder.Content.CarsLODGeneratorTool.SelectedItem?.DisplayName == menuItem.Header as string;
+            }
         }
 
         protected override void OnClosingOverride(CancelEventArgs e) {
@@ -346,7 +366,8 @@ namespace AcManager.Pages.Dialogs {
 
             public Window LoadedWindow;
 
-            public StoredValue<string> ToolLocation { get; }
+            [CanBeNull]
+            public StoredValue<string> ToolLocation { get; private set; }
 
             public ChangeableObservableCollection<StageParams> Stages { get; }
 
@@ -535,17 +556,37 @@ namespace AcManager.Pages.Dialogs {
                         return new SimplygonToolDetails();
                     case 2:
                         return new MeshLabToolDetails();
+                    case 3:
+                        return new BlenderToolDetails();
+                    case 4:
+                        return new MeshOptimizerToolDetails();
                     default:
                         return new PolygonCruncherToolDetails();
                 }
             }
 
-            public ViewModel(CarObject target) {
-                _toolDetails = CreateToolDetails();
-                Car = target;
+            public string ToolName => _toolDetails.Name;
 
-                ToolLocation = Stored.Get($"LodsGenerator.{_toolDetails.Key}Location",
-                        _toolDetails.DefaultToolLocation.FirstOrDefault(File.Exists).Or(_toolDetails.DefaultToolLocation.FirstOrDefault()));
+            public void UpdateToolDetails() {
+                var first = _toolDetails == null;
+                _toolDetails = CreateToolDetails();
+                if (_toolDetails.NeedsTool) {
+                    ToolLocation = Stored.Get($"LodsGenerator.{_toolDetails.Key}Location",
+                            _toolDetails.DefaultToolLocation?.FirstOrDefault(File.Exists).Or(_toolDetails.DefaultToolLocation.FirstOrDefault()));
+                    ToolLocation.PropertyChanged += (s, e) => CheckToolLocation();
+                } else {
+                    ToolLocation = null;
+                }
+                if (!first) {
+                    OnPropertyChanged(nameof(ToolLocation));
+                    OnPropertyChanged(nameof(ToolName));
+                    CheckToolLocation();
+                }
+            }
+
+            public ViewModel(CarObject target) {
+                UpdateToolDetails();
+                Car = target;
 
                 PresetsManager.Instance.ClearBuiltInPresets(PresetableCategory);
                 PresetsManager.Instance.RegisterBuiltInPreset(new byte[0], PresetableCategory, "Default");
@@ -579,7 +620,6 @@ namespace AcManager.Pages.Dialogs {
                 LodDefinitions.ItemPropertyChanged += OnLodDefinitionPropertyChanged;
                 RefreshLodDetails();
 
-                ToolLocation.PropertyChanged += (s, e) => CheckToolLocation();
                 MonitorLocation().Ignore();
 
                 for (var i = 0; i < Stages.Count; ++i) {
@@ -952,7 +992,7 @@ namespace AcManager.Pages.Dialogs {
 
             public void CheckToolLocation() {
                 try {
-                    ToolAvailable = !string.IsNullOrWhiteSpace(ToolLocation.Value) && File.Exists(ToolLocation.Value);
+                    ToolAvailable = ToolLocation == null || !string.IsNullOrWhiteSpace(ToolLocation.Value) && File.Exists(ToolLocation.Value);
                 } catch (Exception e) {
                     Logging.Warning(e);
                     ToolAvailable = false;
@@ -983,8 +1023,14 @@ namespace AcManager.Pages.Dialogs {
 
             private DelegateCommand _toolLocateCommand;
 
-            public DelegateCommand ToolLocateCommand => _toolLocateCommand ?? (_toolLocateCommand = new DelegateCommand(
-                    () => ToolLocation.Value = _toolDetails.FindTool(ToolLocation.Value) ?? ToolLocation.Value));
+            public DelegateCommand ToolLocateCommand => _toolLocateCommand ?? (_toolLocateCommand = new DelegateCommand(() => {
+                if (ToolLocation == null) {
+                    ShowMessage("This LOD generator doesn’t need a tool");
+                    return;
+                }
+                ToolLocation.Value = _toolDetails.FindTool(ToolLocation.Value) ?? ToolLocation.Value;
+                CheckToolLocation();
+            }));
 
             public void Dispose() {
                 FilesStorage.Instance.Watcher(ContentCategory.CarLodsGeneration).Update -= OnDataUpdate;
@@ -1118,7 +1164,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                     using (var taskbarProgress = TaskbarService.Create("Generating LODs", 1e5)) {
                         taskbarProgress?.Set(TaskbarState.Normal, 0.001d);
                         var generator = new CarLodGenerator(Stages.Where(x => x.IsAvailableAndActive).Select(x => x.Stage),
-                                _toolDetails.Create(ToolLocation.Value, Stages), Car.Location,
+                                _toolDetails.Create(ToolLocation?.Value, Stages), Car.Location,
                                 FilesStorage.Instance.GetTemporaryDirectory(TemporaryDirectoryName));
                         var totalStages = Stages.Count(x => x.IsAvailableAndActive);
                         var initialStates = Stages.Select(x => new { Stage = x, x.IsAvailableAndActive, x.ApplyWeldingFix }).ToList();
@@ -1141,7 +1187,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                                         var index = Stages.IndexOf(stage);
                                         var generatedCount = LodDefinitions.Count(x => x.LodIndex == index && x.IsGenerated);
                                         var countPostfix = generatedCount == 0 ? "" : $", {generatedCount + 1}";
-                                        var generatedName = $"Generated ({(initialStates[index].ApplyWeldingFix ? "welding" : "no welding")}{countPostfix})";
+                                        var generatedName = $"New ({_toolDetails.Name}, {(initialStates[index].ApplyWeldingFix ? "welding" : "no welding")}{countPostfix})";
                                         var definition = new CustomShowroomLodDefinition {
                                             DisplayName = generatedName,
                                             Filename = filename,
@@ -1177,6 +1223,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         stage.GeneratingNow = false;
                     }
                 }
+                ScanCacheAsync().Ignore();
             }
 
             private void UpdateHasDataToSave() {
@@ -1199,7 +1246,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
             public async Task ViewDebugModelAsync(StageParams stage) {
                 var debugFilename = FilesStorage.Instance.GetTemporaryFilename(TemporaryDirectoryName, "debug.kn5");
                 await new CarLodGenerator(new[] { stage.Stage },
-                        _toolDetails.Create(ToolLocation.Value, Stages), Car.Location,
+                        _toolDetails.Create(ToolLocation?.Value, Stages), Car.Location,
                         FilesStorage.Instance.GetTemporaryDirectory(TemporaryDirectoryName)).SaveInputModelAsync(stage.Stage, debugFilename);
                 await CustomShowroomWrapper.StartAsync(Car, debugFilename);
             }

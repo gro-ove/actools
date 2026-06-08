@@ -826,7 +826,7 @@ namespace AcManager.Tools.ContentInstallation {
                     var cleanUp = await directory.GetCleanUpList();
                     cancellation.ThrowIfCancellationRequested();
                     return new PatchPluginEntry(directory.Key ?? "", new[] { directory.Key }, cleanUp, $"{displayName} “{name}”",
-                            Path.Combine(AcRootDirectory.Instance.RequireValue, PatchHelper.PatchDirectoryName, directory.Parent?.NameLowerCase ?? "",
+                            Path.Combine(AcRootDirectory.Instance.RequireValue, PatchHelper.PatchDirectoryName, @"lua", directory.Parent?.NameLowerCase ?? "",
                                     directoryName), 1e5,
                             version, description);
                 }

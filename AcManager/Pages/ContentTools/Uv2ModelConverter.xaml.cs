@@ -91,9 +91,9 @@ namespace AcManager.Pages.ContentTools {
 
         public ChangeableObservableCollection<KnownEntry> KnownEntries { get; } = new ChangeableObservableCollection<KnownEntry>();
 
-        private AsyncCommand _convertCommand;
+        private DelegateCommand _convertCommand;
 
-        public AsyncCommand ConvertCommand => _convertCommand ?? (_convertCommand = new AsyncCommand(async () => {
+        public DelegateCommand ConvertCommand => _convertCommand ?? (_convertCommand = new DelegateCommand(() => {
             var input = FileRelatedDialogs.Open(new OpenDialogParams {
                 DirectorySaveKey = "uv2modelorigin",
                 Filters = { DialogFilterPiece.FbxFiles, DialogFilterPiece.AllFiles },
