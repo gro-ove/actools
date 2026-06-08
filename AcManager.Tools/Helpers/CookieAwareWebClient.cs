@@ -191,6 +191,13 @@ namespace AcManager.Tools.Helpers {
                     Logging.Debug("Cookies:\n" + cookie);
                 }
 
+                if (SteamTicketProvider.UrlRequiresSteamTicket(address.ToString())) {
+                    var ticket = SteamTicketProvider.GetTicketHex();
+                    if (!string.IsNullOrEmpty(ticket)) {
+                        webRequest.Headers.Set("Authorization", "Bearer " + ticket);
+                    }
+                }
+
                 if (_autoRedirect.HasValue) {
                     webRequest.AllowAutoRedirect = _autoRedirect.Value;
                 }
