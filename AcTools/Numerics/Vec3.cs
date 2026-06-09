@@ -46,10 +46,7 @@ namespace AcTools.Numerics {
         public static Vec3 UnitZ => new Vec3(0f, 0f, 1f);
 
         public override int GetHashCode() {
-            var hash = X.GetHashCode();
-            hash = HashCodeHelper.CombineHashCodes(hash, Y.GetHashCode());
-            hash = HashCodeHelper.CombineHashCodes(hash, Z.GetHashCode());
-            return hash;
+            return HashCodeHelper.CombineHashCodes(X, Y, Z);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

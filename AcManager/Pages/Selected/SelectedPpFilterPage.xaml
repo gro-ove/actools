@@ -2,7 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:av="http://icsharpcode.net/sharpdevelop/avalonedit" xmlns:g="clr-namespace:AcManager"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
+    xmlns:c="http://acstuff.club/app/controls" mc:Ignorable="d" mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance sel:SelectedPpFilterPage+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/TextEditor.xaml" />
@@ -37,10 +37,20 @@
     </c:AcObjectBase.ToolBars>
 
     <DockPanel>
-      <c:MessageBlock CloseKey="csp-info" Margin="0 0 0 20" DockPanel.Dock="Top">
-        <mui:BbCodeBlock
-            Text="With [url=&quot;https://acstuff.ru/patch/&quot;]Custom Shaders Patch[/url] you can create and edit filters in-game, seeing changes live." />
-      </c:MessageBlock>
+      <mui:BooleanSwitch Value="{Binding SelectedObject.IsKunosName}" DockPanel.Dock="Top">
+        <mui:BooleanSwitch.False>
+          <c:MessageBlock CloseKey="csp-info" Margin="0 0 0 20">
+            <mui:BbCodeBlock
+                Text="With [url=&quot;https://acstuff.club/patch/&quot;]Custom Shaders Patch[/url] you can create and edit filters in-game, seeing changes live." />
+          </c:MessageBlock>
+        </mui:BooleanSwitch.False>
+        <mui:BooleanSwitch.True>
+          <c:MessageBlock CloseKey="kunos-pp-filter" Margin="0 0 0 20">
+            <mui:BbCodeBlock
+                Text="This is one of built-in PP-filters. Instead of editing it, please consider making a copy and editing it." />
+          </c:MessageBlock>
+        </mui:BooleanSwitch.True>
+      </mui:BooleanSwitch>
       <av:TextEditor c:AvalonExtension.Text="{Binding SelectedObject.Content}" c:AvalonExtension.Mode="Ini" />
     </DockPanel>
 

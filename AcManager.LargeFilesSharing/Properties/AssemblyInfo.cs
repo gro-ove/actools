@@ -11,7 +11,7 @@ using System.Windows.Markup;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcManager.LargeFilesSharing")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2020")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,13 +33,13 @@ using System.Windows.Markup;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.209")]
-[assembly: AssemblyFileVersion("1.0.1.209")]
+[assembly: AssemblyVersion("1.0.1.225")]
+[assembly: AssemblyFileVersion("1.0.1.225")]
 
-[assembly: XmlnsDefinition("http://acstuff.ru/app/sharing", "AcManager.LargeFilesSharing")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/sharing", "AcManager.LargeFilesSharing.Implementations")]
-[assembly: XmlnsPrefix("http://acstuff.ru/app/sharing", "h")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/sharing", "AcManager.LargeFilesSharing")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/sharing", "AcManager.LargeFilesSharing.Implementations")]
+[assembly: XmlnsPrefix("http://acstuff.club/app/sharing", "h")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
-// Modified at: 18/11/26 23:18:46
-// Modified at: 11/26/2018 11:18:46 PM
+// Modified at: 25/10/02 3:37:25 PM
+// Modified at: 5/6/2022 10:32:06 PM

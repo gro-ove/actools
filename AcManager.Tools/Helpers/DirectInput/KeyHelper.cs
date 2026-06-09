@@ -10,7 +10,8 @@ namespace AcManager.Tools.Helpers.DirectInput {
                     key >= Key.Left && key <= Key.Down ||
                     key == Key.Home || key == Key.Insert || key == Key.Delete || key == Key.Back ||
                     key == Key.LeftCtrl || key == Key.LeftAlt || key == Key.LeftShift || key == Key.LWin ||
-                    key == Key.RightCtrl || key == Key.RightAlt || key == Key.RightShift || key == Key.RWin) {
+                    key == Key.RightCtrl || key == Key.RightAlt || key == Key.RightShift || key == Key.RWin ||
+                    key >= Key.F1 && key <= Key.F24) {
                 return true;
             }
 

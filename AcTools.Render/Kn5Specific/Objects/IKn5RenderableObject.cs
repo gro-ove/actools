@@ -18,6 +18,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         void SetDebugMode([NotNull] IDeviceContextHolder holder, bool enabled);
 
         void SetTransparent(bool? isTransparent);
+        
+        void SetCastShadows(bool? castShadows);
 
         AcDynamicMaterialParams DynamicMaterialParams { get; }
 

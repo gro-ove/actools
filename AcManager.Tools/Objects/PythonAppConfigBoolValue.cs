@@ -17,5 +17,7 @@ namespace AcManager.Tools.Objects {
             _trueValue = trueValue;
             _falseValue = falseValue;
         }
+
+        public override string DisplayValueString => Value ? "yes" : "no";
     }
 }

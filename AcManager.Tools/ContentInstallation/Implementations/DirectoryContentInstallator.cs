@@ -52,6 +52,8 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             }
 
             public string Key => FileUtils.GetRelativePath(_filename, _directory);
+            
+            public DateTime? LastModified => new FileInfo(_filename).LastWriteTime;
 
             private long? _size;
             public long Size {
@@ -67,7 +69,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             }
 
             public async Task<byte[]> ReadAsync() {
-                using (var input = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true)) {
+                using (var input = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, true)) {
                     var result = new byte[input.Length];
                     await input.ReadAsync(result, 0, (int)input.Length);
                     return result;
@@ -83,7 +85,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                     throw new FileNotFoundException(ToolsStrings.DirectoryInstallator_FileNotFound, _filename);
                 }
 
-                using (var input = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+                using (var input = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, true))
                 using (var output = new FileStream(destination, FileMode.Create)) {
                     await input.CopyToAsync(output);
                 }

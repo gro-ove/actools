@@ -45,7 +45,7 @@ namespace AcManager.Tools.Data {
         }
 
         public override string GetBaseUrl() {
-            return "/patch/cars-textures/";
+            return "/cars-textures";
         }
 
         public override string GetCacheDirectoryName() {

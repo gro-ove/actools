@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Controls.Helpers;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Helpers.AcSettings;
@@ -10,6 +12,7 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -19,16 +22,17 @@ using JetBrains.Annotations;
 namespace AcManager.Controls.Dialogs {
     public class PresetSelection : IUserPresetable {
         private readonly IUserPresetable _parent;
-        private readonly string _key;
 
         public PresetSelection(IUserPresetable parent, string key) {
             _parent = parent;
-            _key = key;
+            PresetableKey = key;
         }
 
         public bool CanBeSaved => false;
+
         public PresetsCategory PresetableCategory => _parent.PresetableCategory;
-        public string PresetableKey => _key;
+
+        public string PresetableKey { get; }
 
         public string ExportToPresetData() {
             return null;
@@ -51,12 +55,12 @@ namespace AcManager.Controls.Dialogs {
             private class SaveableData {
                 public string ShowroomId, FilterId, VideoPresetFilename;
                 public double CameraFov;
-                public bool DisableSweetFx, DisableWatermark;
+                public bool DisableSweetFx, DisableWatermark, UseCspShowroom;
             }
 
             private void SaveLater() {
                 if (_saveable.SaveLater()) {
-                    Changed?.Invoke(this, new EventArgs());
+                    Changed?.Invoke(this, EventArgs.Empty);
                 }
             }
 
@@ -79,6 +83,7 @@ namespace AcManager.Controls.Dialogs {
                     DisableSweetFx = DisableSweetFx,
                     DisableWatermark = DisableWatermark,
                     VideoPresetFilename = VideoPresetFilename,
+                    UseCspShowroom = UseCspShowroom,
                 }, o => {
                     if (o.ShowroomId != null) SelectedShowroom = ShowroomsManager.Instance.GetById(o.ShowroomId) ?? SelectedShowroom;
                     if (o.FilterId != null) SelectedFilter = PpFiltersManager.Instance.GetById(o.FilterId) ?? SelectedFilter;
@@ -87,6 +92,7 @@ namespace AcManager.Controls.Dialogs {
                     DisableWatermark = o.DisableWatermark;
                     DisableSweetFx = o.DisableSweetFx;
                     VideoPresetFilename = o.VideoPresetFilename;
+                    UseCspShowroom = o.UseCspShowroom;
                 }, () => {
                     SelectedShowroom = ShowroomsManager.Instance.GetDefault();
                     SelectedFilter = PpFiltersManager.Instance.GetDefault();
@@ -94,6 +100,7 @@ namespace AcManager.Controls.Dialogs {
                     DisableWatermark = false;
                     DisableSweetFx = false;
                     VideoPresetFilename = null;
+                    UseCspShowroom = false;
                 });
 
                 if (string.IsNullOrEmpty(serializedPreset)) {
@@ -104,7 +111,7 @@ namespace AcManager.Controls.Dialogs {
                 }
             }
 
-            public ViewModel(CarObject carObject, string selectedSkinId) : this(null, carObject, selectedSkinId) {}
+            public ViewModel(CarObject carObject, string selectedSkinId) : this(null, carObject, selectedSkinId) { }
 
             public CarObject SelectedCar { get; set; }
 
@@ -114,7 +121,7 @@ namespace AcManager.Controls.Dialogs {
             private bool _disableSweetFx;
 
             public bool DisableSweetFx {
-                get { return _disableSweetFx; }
+                get => _disableSweetFx;
                 set {
                     if (Equals(value, _disableSweetFx)) return;
                     _disableSweetFx = value;
@@ -126,7 +133,7 @@ namespace AcManager.Controls.Dialogs {
             private bool _disableWatermark;
 
             public bool DisableWatermark {
-                get { return _disableWatermark; }
+                get => _disableWatermark;
                 set {
                     if (Equals(value, _disableWatermark)) return;
                     _disableWatermark = value;
@@ -138,7 +145,7 @@ namespace AcManager.Controls.Dialogs {
             private double _cameraFov;
 
             public double CameraFov {
-                get { return _cameraFov; }
+                get => _cameraFov;
                 set {
                     if (Equals(value, _cameraFov)) return;
                     _cameraFov = Math.Min(Math.Max(value, 10.0), 150.0);
@@ -150,7 +157,7 @@ namespace AcManager.Controls.Dialogs {
             private ShowroomObject _selectedShowroom;
 
             public ShowroomObject SelectedShowroom {
-                get { return _selectedShowroom; }
+                get => _selectedShowroom;
                 set {
                     if (Equals(value, _selectedShowroom)) return;
                     _selectedShowroom = value;
@@ -162,7 +169,7 @@ namespace AcManager.Controls.Dialogs {
             private PpFilterObject _selectedFilter;
 
             public PpFilterObject SelectedFilter {
-                get { return _selectedFilter; }
+                get => _selectedFilter;
                 set {
                     if (Equals(value, _selectedFilter)) return;
                     _selectedFilter = value;
@@ -174,7 +181,7 @@ namespace AcManager.Controls.Dialogs {
             private HierarchicalGroup _videoPresets;
 
             public HierarchicalGroup VideoPresets {
-                get { return _videoPresets; }
+                get => _videoPresets;
                 set => Apply(value, ref _videoPresets);
             }
 
@@ -182,7 +189,7 @@ namespace AcManager.Controls.Dialogs {
 
             [CanBeNull]
             public string VideoPresetFilename {
-                get { return _videoPresetFilename; }
+                get => _videoPresetFilename;
                 set {
                     if (Equals(value, _videoPresetFilename)) return;
                     _videoPresetFilename = value;
@@ -196,22 +203,26 @@ namespace AcManager.Controls.Dialogs {
 
             [CanBeNull]
             public string DisplayVideoPreset {
-                get { return _displayVideoPreset; }
+                get => _displayVideoPreset;
                 set => Apply(value, ref _displayVideoPreset);
             }
 
             public object SelectedVideoPreset {
-                get { return null; }
+                get => null;
                 set {
                     if (value == null) {
                         VideoPresetFilename = null;
-                    } else {
-                        var entry = value as ISavedPresetEntry;
-                        if (entry != null) {
-                            VideoPresetFilename = entry.VirtualFilename;
-                        }
+                    } else if (value is ISavedPresetEntry entry) {
+                        VideoPresetFilename = entry.VirtualFilename;
                     }
                 }
+            }
+
+            private bool _useCspShowroom;
+
+            public bool UseCspShowroom {
+                get => _useCspShowroom;
+                set => Apply(value, ref _useCspShowroom, SaveLater);
             }
 
             public AcEnabledOnlyCollection<ShowroomObject> Showrooms => ShowroomsManager.Instance.Enabled;
@@ -249,17 +260,42 @@ namespace AcManager.Controls.Dialogs {
                         AcSettingsHolder.VideoPresets.ImportFromPresetData(File.ReadAllText(VideoPresetFilename));
                     }
 
-                    await Task.Run(() => Showroom.Start(new Showroom.ShowroomProperties {
-                        AcRoot = AcRootDirectory.Instance.Value,
-                        CarId = SelectedCar.Id,
-                        CarSkinId = SelectedSkinId,
-                        ShowroomId = SelectedShowroom.Id,
-                        CameraFov = CameraFov,
-                        DisableSweetFx = DisableSweetFx,
-                        DisableWatermark = DisableWatermark,
-                        Filter = ForceFilterAcId ?? SelectedFilter.AcId,
-                        UseBmp = false
-                    }));
+                    if (UseCspShowroom && PatchHelper.IsFeatureSupported(PatchHelper.FeatureHasShowroomMode)) {
+                        await Game.StartAsync(GameWrapper.CreateStarter(), new Game.StartProperties {
+                            BasicProperties = new Game.BasicProperties {
+                                CarId = SelectedCar.Id,
+                                CarSkinId = SelectedSkinId,
+                                TrackId = $@"../showroom/{SelectedShowroom.Id}"
+                            },
+                            ConditionProperties = new Game.ConditionProperties {
+                                AmbientTemperature = 26d,
+                                RoadTemperature = 32d,
+                                CloudSpeed = 1d,
+                                SunAngle = 0,
+                                TimeMultipler = 1d,
+                                WeatherName = WeatherManager.Instance.GetDefault()?.Id,
+                                WindDirectionDeg = 0d,
+                                WindSpeedMin = 0d,
+                                WindSpeedMax = 0d
+                            },
+                            ModeProperties = new Game.PracticeProperties {
+                                SessionName = "Showroom",
+                                Penalties = false
+                            },
+                        }, null, CancellationToken.None);
+                    } else {
+                        await Task.Run(() => Showroom.Start(new Showroom.ShowroomProperties {
+                            AcRoot = AcRootDirectory.Instance.Value,
+                            CarId = SelectedCar.Id,
+                            CarSkinId = SelectedSkinId,
+                            ShowroomId = SelectedShowroom.Id,
+                            CameraFov = CameraFov,
+                            DisableSweetFx = DisableSweetFx,
+                            DisableWatermark = DisableWatermark,
+                            Filter = ForceFilterAcId ?? SelectedFilter.AcId,
+                            UseBmp = false
+                        }));
+                    }
 
                     var whatsGoingOn = AcLogHelper.TryToDetermineWhatsGoingOn();
                     if (whatsGoingOn != null) {
@@ -267,7 +303,7 @@ namespace AcManager.Controls.Dialogs {
                             whatsGoingOn.Solution
                         });
                     }
-                } catch (Exception e) {
+                } catch (IOException e) {
                     NonfatalError.Notify(ControlsStrings.Showroom_CannotStart, e);
                 } finally {
                     if (restoreVideoSettings != null) {
@@ -275,17 +311,17 @@ namespace AcManager.Controls.Dialogs {
                     }
                 }
             }
+
             public void Dispose() {
                 _helper.Dispose();
             }
         }
 
-        public ViewModel Model => (ViewModel) DataContext;
+        public ViewModel Model => (ViewModel)DataContext;
 
         public CarOpenInShowroomDialog(CarObject carObject, string selectedSkinId) {
             InitializeComponent();
             DataContext = new ViewModel(carObject, selectedSkinId);
-
             Buttons = new[] { GoButton, CloseButton };
         }
 

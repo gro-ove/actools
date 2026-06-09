@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -12,6 +15,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -83,7 +87,7 @@ namespace AcManager.Tools.Objects {
                 if (Equals(value, _selectedSkin)) return;
                 _selectedSkin = value;
                 OnPropertyChanged(nameof(SelectedSkin));
-                OnPropertyChanged(nameof(SelectedSkinLazy));
+                _lazySkinHolder?.RaiseUpdate();
 
                 if (_selectedSkin == null) return;
                 if (_selectedSkin.Id == SkinsManager.WrappersList.FirstOrDefault()?.Value.Id) {
@@ -94,20 +98,84 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public CarSkinObject SelectedSkinLazy {
+        private static bool _lazySkinsInitializing;
+        private static List<CarObject> _carSkinsInitializingQueue = new List<CarObject>();
+
+        private void LazySkinInitializeInner() {
+            if (_lazySkinHolder?.Any == false) {
+                _selectedSkinSet = false;
+                return;
+            }
+            if (!SkinsManager.IsScanned) {
+                SkinsManager.Scan();
+            }
+            SelectPreviousOrDefaultSkin();
+        }
+
+        private void LazySkinInitialize() {
+            if (_lazySkinsInitializing) {
+                lock (_carSkinsInitializingQueue) {
+                    _carSkinsInitializingQueue.Add(this);
+                }
+                return;
+            }
+            _lazySkinsInitializing = true;
+            Task.Run(() => {
+                try {
+                    var next = this;
+                    while (next != null) {
+                        next.LazySkinInitializeInner();
+                        lock (_carSkinsInitializingQueue) {
+                            var i = _carSkinsInitializingQueue.Count;
+                            if (i > 0) {
+                                next = _carSkinsInitializingQueue[i - 1];
+                                _carSkinsInitializingQueue.RemoveAt(i - 1);
+                            } else {
+                                next = null;
+                            }
+                        }
+                    }
+                } finally {
+                    _lazySkinsInitializing = false;
+                }
+            });
+        }
+
+        public class LazySkinHolder : IInvokingNotifyPropertyChanged {
+            private readonly CarObject _car;
+
+            public LazySkinHolder(CarObject car) {
+                _car = car;
+            }
+
+            public CarSkinObject Value => _car._selectedSkin;
+
+            public bool Any => PropertyChanged != null;
+
+            public void RaiseUpdate() {
+                OnPropertyChanged(nameof(Value));
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            [NotifyPropertyChangedInvocator]
+            public void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private LazySkinHolder _lazySkinHolder;
+
+        public LazySkinHolder SelectedSkinLazy {
             get {
                 if (!_selectedSkinSet) {
                     _selectedSkinSet = true;
-                    if (!SkinsManager.IsScanned) {
-                        Task.Run(() => {
-                            SkinsManager.Scan();
-                            SelectPreviousOrDefaultSkin();
-                        });
-                    } else {
-                        Task.Run(() => SelectPreviousOrDefaultSkin());
-                    }
+                    LazySkinInitialize();
                 }
-                return _selectedSkin;
+                if (_lazySkinHolder == null) {
+                    _lazySkinHolder = new LazySkinHolder(this);
+                }
+                return _lazySkinHolder;
             }
         }
 
@@ -115,7 +183,7 @@ namespace AcManager.Tools.Objects {
             var selectedSkinId = LimitedStorage.Get(LimitedSpace.SelectedSkin, Id);
             _selectedSkin = (selectedSkinId == null ? null : SkinsManager.GetById(selectedSkinId)) ?? SkinsManager.GetDefault();
             OnPropertyChanged(nameof(SelectedSkin));
-            OnPropertyChanged(nameof(SelectedSkinLazy));
+            _lazySkinHolder?.RaiseUpdate();
         }
 
         void IAcManagerScanWrapper.AcManagerScan() {

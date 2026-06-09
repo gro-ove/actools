@@ -67,6 +67,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         public async void Trigger(TimeSpan delay) {
             await Task.Delay(delay);
             ActionExtension.InvokeInMainThreadAsync(() => {
+                DebugMessage($"{Id}: triggered");
+                
                 if (FancyHintAdorner.IsAnyShown) {
                     DebugMessage($"{Id}: something else is being shown right now");
                     return;
@@ -124,7 +126,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             Available = true;
         }
 
-        public void MaskAsUnnecessary() {
+        public void MarkAsUnnecessary() {
             Logging.Debug($"{Id}: unnecessary");
             Shown = true;
             Unnecessary?.Invoke(this, EventArgs.Empty);

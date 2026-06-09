@@ -292,6 +292,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public static PitMenuSettings PitMenu => _pitMenu ?? (_pitMenu = new PitMenuSettings());
 
 
+        private static MouseHiderSettings _mouseHider;
+        public static MouseHiderSettings MouseHider => _mouseHider ?? (_mouseHider = new MouseHiderSettings());
+
+
         private static FfPostProcessSettings _ffPostProcess;
         public static FfPostProcessSettings FfPostProcess => _ffPostProcess ?? (_ffPostProcess = new FfPostProcessSettings());
 

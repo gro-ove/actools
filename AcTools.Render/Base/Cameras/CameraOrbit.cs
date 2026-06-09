@@ -1,4 +1,5 @@
 ﻿using AcTools.Render.Base.Utils;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using SlimDX;
 
@@ -94,7 +95,7 @@ namespace AcTools.Render.Base.Cameras {
                     Target.X + sideRadius * Alpha.Cos(),
                     Target.Y + height,
                     Target.Z + sideRadius * Alpha.Sin());
-            SetView(Matrix.LookAtRH(Position, Target, GetUpTilt(Target, Vector3.UnitY)));
+            SetView(MatrixFix.LookAtRH(Position, Target, GetUpTilt(Target, Vector3.UnitY)));
 
             Right = new Vector3(View.M11, View.M21, View.M31);
             Right.Normalize();

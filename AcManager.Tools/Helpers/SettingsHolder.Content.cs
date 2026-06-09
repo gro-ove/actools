@@ -13,11 +13,13 @@ namespace AcManager.Tools.Helpers {
     public static partial class SettingsHolder {
         public class ContentSettings : NotifyPropertyChanged {
             internal ContentSettings() { }
+            
             private string _cupRegistries;
 
             public string CupRegistries {
                 get => _cupRegistries ?? (_cupRegistries =
-                        ValuesStorage.Get("Settings.ContentSettings.CupRegistries", "https://acstuff.ru/cup/"));
+                        ValuesStorage.Get("Settings.ContentSettings.CupRegistries", "https://acstuff.club/cup/")
+                                .Replace(@"//acstuff.ru/cup", @"//acstuff.club/cup"));
                 set {
                     value = value.Trim();
                     if (Equals(value, _cupRegistries)) return;
@@ -242,6 +244,24 @@ namespace AcManager.Tools.Helpers {
                 new SettingEntry(0, "Weight-to-power (kg/cv)"),
                 new SettingEntry(1, "Power-to-weight (hp/kg)"),
                 new SettingEntry(2, "Power-to-weight (hp/tonne)"),
+            };
+
+            public SettingEntryStored CarsLODGeneratorTool { get; } = new SettingEntryStored("/Settings.ContentSettings.CarsLODGeneratorTool") {
+                new SettingEntry(1, "Simplygon ($42000 per year)") {
+                    Tag = "Originally, there was a free version which would produce somewhat decent results (albeit slow), but it was discontinued a few years ago."
+                },
+                new SettingEntry(0, "Polygon Cruncher ($529, or $239 per year)") {
+                    Tag = "Generated meshes are nice and clean, but this tool does tend to produce too many triangles. You might need to adjust sliders to get closer to your desired triangle count."
+                },
+                new SettingEntry(2, "MeshLab (free, requires installed Python)") {
+                    Tag = "Resulting geometry often seems a bit messy, but it works, and it’s free. With this one, you might need to increase number of triangles to compensate, or maybe clean up the resulting models manually afterwards a bit."
+                },
+                new SettingEntry(3, "Blender (free)") {
+                    Tag = "Neat and clean results, but sometimes some geometry tends to bug out, so manual cleanup might be necessary. Also, normals are recalculated: Blender can’t optimize a mesh and leave surface as-is."
+                },
+                new DefaultSettingEntry(4, "MeshOptimizer (free, built-in)") {
+                    Tag = "Great results, thanks to meshoptimizer library. No need to install anything (but CM will need to download a small extension first time)."
+                },
             };
 
             private bool? _changeBrandIconAutomatically;
@@ -485,6 +505,18 @@ namespace AcManager.Tools.Helpers {
             }
 
             public IStorage MegaAuthenticationStorage { get; } = new Substorage(AuthenticationStorage.GeneralStorage, "Mega:");
+
+            private bool? _compressFilesInBackground;
+
+            public bool CompressFilesInBackground {
+                get => _compressFilesInBackground ?? (_compressFilesInBackground = ValuesStorage.Get("Settings.ContentSettings.CompressFilesInBackground", false)).Value;
+                set {
+                    if (Equals(value, _compressFilesInBackground)) return;
+                    _compressFilesInBackground = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CompressFilesInBackground", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static ContentSettings _content;

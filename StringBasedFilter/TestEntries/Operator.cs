@@ -4,7 +4,8 @@
         LessEqual = '≤',
         More = '>',
         MoreEqual = '≥',
-        Equal = '='
+        Equal = '=',
+        SimilarTo = '≈',
     }
 
     public static class OperatorExtension {

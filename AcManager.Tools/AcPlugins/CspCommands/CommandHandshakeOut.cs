@@ -9,6 +9,10 @@ namespace AcManager.Tools.AcPlugins.CspCommands {
     public struct CommandHandshakeOut : ICspCommand {
         public uint Version;
         public bool IsWeatherFXActive;
+        public byte InputMethod; // 3 for WHEEL, 2 for GAMEPAD, 1 for KEYBOARD, 0 for unknown
+        public bool IsRainFXActive;
+        public byte Pad;
+        public ulong UniqueKey;
 
         ushort ICspCommand.GetMessageType() {
             return 1;

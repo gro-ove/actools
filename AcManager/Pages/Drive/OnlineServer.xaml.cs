@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -25,6 +26,7 @@ using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
+using AcManager.Tools.Starters;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -36,6 +38,7 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 using CarEntry = AcManager.Tools.Managers.Online.ServerEntry.CarEntry;
 
@@ -134,9 +137,10 @@ namespace AcManager.Pages.Drive {
         private void ResizingStuff() {
             ShowExtendedInformation = ActualWidth > 600;
 
-            var contentHeight = ErrorsPanel.ActualHeight + PasswordPanel.ActualHeight + DataPanel.ActualHeight;
-            var availableHeight = ScrollViewer.ActualHeight;
-            ScrollableContent = availableHeight - contentHeight < 120;
+            // var contentHeight = ErrorsPanel.ActualHeight + PasswordPanel.ActualHeight + DataPanel.ActualHeight;
+            // var availableHeight = ScrollViewer.ActualHeight;
+            // ScrollableContent = availableHeight - contentHeight < 120;
+            ScrollableContent = true;
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
@@ -311,6 +315,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public partial class ViewModel : NotifyPropertyChanged, IComparer {
+            public QuickDriveButtonModel QuickDriveButton { get; }
+
             [CanBeNull]
             private readonly DiscordRichPresence _discordPresence;
 
@@ -364,6 +370,27 @@ namespace AcManager.Pages.Drive {
 
                 Entry.Assists = Assists.ToGameProperties();
                 Assists.Changed += OnAssistsChanged;
+
+                QuickDriveButton = new QuickDriveButtonModel((setupRace, preset) => {
+                    Uri mode = null;
+                    if (Entry.Sessions?.Any(x => x.Type == Game.SessionType.Practice) == true) {
+                        mode = Entry.Sessions?.Any(x => x.Type == Game.SessionType.Qualification) == true
+                                && Entry.Sessions?.Any(x => x.Type == Game.SessionType.Race) == true ? QuickDrive.ModeWeekend : QuickDrive.ModePractice;
+                    } else if (Entry.Sessions?.Any(x => x.Type == Game.SessionType.Race) == true) {
+                        mode = QuickDrive.ModeRace;
+                    } else if (Entry.Sessions?.Any(x => x.Type == Game.SessionType.Qualification) == true) {
+                        mode = QuickDrive.ModeHotlap;
+                    }
+                    return QuickDrive.Activate(setupRace, Entry.SelectedCarEntry?.CarObject, Entry.SelectedCarEntry?.AvailableSkinId,
+                            track: Entry.Track, presetFilename: preset, weatherId: Entry.WeatherId, mode: mode, time: Entry.TimeSeconds,
+                            serializedRaceGrid: RaceGridViewModel.GeneratePresetData((Entry.Cars?.SelectMany(x => {
+                                if (x.CarObject == null || x.Available == 0) return null;
+                                return Enumerable.Range(0, x.Available).Select(y => new RaceGridEntry(x.CarObject) { CarSkin = x.AvailableSkin });
+                            }) ?? new RaceGridEntry[0]).Concat(Entry.CurrentDrivers?.Select(x => {
+                                if (x.IsBookedForPlayer) return null;
+                                return new RaceGridEntry(x.Car) { CarSkin = x.CarSkin, Name = x.Name };
+                            }) ?? new RaceGridEntry[0])));
+                });
             }
 
             private void OnAssistsChanged(object sender, EventArgs eventArgs) {
@@ -391,16 +418,30 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private DelegateCommand _inviteCommand;
-
-            public DelegateCommand InviteCommand => _inviteCommand ?? (_inviteCommand = new DelegateCommand(() => {
-                var link = $@"{InternalUtils.MainApiDomain}/s/q:race/online/join?ip={Entry.Ip}&httpPort={Entry.PortHttp}";
+            private string GenerateInviteLinkBase() {
+                var link = $@"online/join?ip={Entry.Ip}&httpPort={Entry.PortHttp}";
                 if (CopyPasswordToInviteLink && !string.IsNullOrWhiteSpace(Entry.Password) && Entry.PasswordRequired) {
                     link += $@"&password={EncryptSharedPassword(Entry.Id, Entry.Password)}";
                 }
+                return link;
+            }
 
+            private DelegateCommand _inviteCommand;
+
+            public DelegateCommand InviteCommand => _inviteCommand ?? (_inviteCommand = new DelegateCommand(() => {
+                var link = $@"{InternalUtils.MainApiDomain}/s/q:race/{GenerateInviteLinkBase()}";
                 SharingUiHelper.ShowShared("Inviting link", link, false);
             }));
+
+            private AsyncCommand _inviteSteamFriendCommand;
+
+            public AsyncCommand InviteSteamFriendCommand => _inviteSteamFriendCommand ?? (_inviteSteamFriendCommand = new AsyncCommand(async () => {
+                try {
+                    await SteamStarter.InviteFriendAsync(GenerateInviteLinkBase()).ConfigureAwait(false);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Failed to invite a friend", e);
+                }
+            }, () => SettingsHolder.Integrated.SteamIntegration));
 
             private string _tsServer;
             private DelegateCommand _joinTsCommand;
@@ -427,27 +468,19 @@ namespace AcManager.Pages.Drive {
         /// </summary>
         private static readonly string EncryptKey = InternalUtils.GetOnlineInviteEncryptionKey();
 
-        private static void Xor(byte[] data, byte[] key) {
-            int dataLength = data.Length, keyLength = key.Length;
-            for (int i = 0, k = 0; i < dataLength; i++, k++) {
-                if (k == keyLength) k = 0;
-                data[i] ^= key[k];
-            }
-        }
-
         public static string EncryptSharedPassword(string id, string password) {
             var data = Encoding.UTF8.GetBytes(password);
-            Xor(data, Encoding.UTF8.GetBytes(id + EncryptKey));
-            return Convert.ToBase64String(data);
+            data.XorSelf(Encoding.UTF8.GetBytes(id + EncryptKey));
+            return HttpUtility.UrlEncode(Convert.ToBase64String(data));
         }
 
         public static string EncryptSharedPassword(string ip, int httpPort, string password) {
-            return EncryptSharedPassword($@"{ip}:{httpPort.ToInvariantString()}", password);
+            return HttpUtility.UrlEncode(EncryptSharedPassword($@"{ip}:{httpPort.ToInvariantString()}", password));
         }
 
         public static string DecryptSharedPassword(string id, string encryptedPassword) {
             var data = Convert.FromBase64String(encryptedPassword);
-            Xor(data, Encoding.UTF8.GetBytes(id + EncryptKey));
+            data.XorSelf(Encoding.UTF8.GetBytes(id + EncryptKey));
             return Encoding.UTF8.GetString(data);
         }
 
@@ -479,6 +512,7 @@ namespace AcManager.Pages.Drive {
             _timer = null;
 
             Model.Entry.PropertyChanged -= OnEntryPropertyChanged;
+            Model.QuickDriveButton.Dispose();
             DisposeHelper.Dispose(ref _holder);
 
             if (_listsButtonInitialized) {
@@ -663,9 +697,34 @@ namespace AcManager.Pages.Drive {
 • Connected {PluralizingConverter.PluralizeExt(stats.SessionsCount, "{0} time")}, last time at {server.LastConnected:dd/MM/yyyy hh:mm tt};
 • Counting from {(server.CountingStatsFrom == null ? @"unknown time" : $@"{server.CountingStatsFrom:dd/MM/yyyy hh:mm tt}")};
 • Driven in total {stats.Distance / 1e3:F1} km ({stats.Time.ToReadableTime()});
-• Had {PluralizingConverter.PluralizeExt(stats.TotalCrashes, "{0} crash")} crashes, gone offroad {PluralizingConverter.PluralizeExt(stats.GoneOffroadTimes, "{0} time")};
+• Had {PluralizingConverter.PluralizeExt(stats.TotalCrashes, "{0} crash")} crashes, gone offroad {PluralizingConverter.PluralizeExt(stats.GoneOffroadTimes,
+        "{0} time")};
 • Avg. speed: {stats.AverageSpeed:F1} km/h, top speed: {stats.MaxSpeed:F1} km/h;
 • Burnt {stats.FuelBurnt:F1} l of fuel, worn out {PluralizingConverter.PluralizeExt(stats.TotalTyreWearRounded.RoundToInt(), "{0} tyre")}.");
+        }
+
+        private void OnDriveButtonMouseDown(object sender, MouseButtonEventArgs e) {
+            Model.QuickDriveButton.Initialize();
+        }
+
+        private async void OnErrorsBlockLoaded(object sender, RoutedEventArgs e) {
+            if (Model.Entry.IsAbleToInstallMissingContentState_Cup == ServerEntry.IsAbleToInstallMissingContent.NoMissingContent
+                    || FancyHints.CupV2IndexedContent.Shown) {
+                return;
+            }
+
+            await Task.Yield();
+            var self = (SelectableBbCodeBlock)sender;
+            var downloadIcon = BbCodeBlock.IconsDictionary[@"DownloadIconData"] as Geometry;
+            foreach (var child in self.FindVisualChildren<Path>()) {
+                if (child.Data == downloadIcon) {
+                    var pos = child.TranslatePoint(new Point(0, 0), self);
+                    FancyHintsService.SetOffsetX(self, pos.X + child.ActualWidth / 2d);
+                    FancyHintsService.SetOffsetY(self, pos.Y + child.ActualHeight / 2d);
+                    FancyHints.CupV2IndexedContent.Trigger(TimeSpan.FromSeconds(1d));
+                    break;
+                }
+            }
         }
     }
 }

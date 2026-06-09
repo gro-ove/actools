@@ -97,7 +97,7 @@ namespace AcManager.Controls.Presentation {
                         BaseUri = new Uri(AssetsDirectory ?? "", UriKind.Absolute)
                     };
 
-                    using (var fs = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                    using (var fs = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
                         AppearanceManager.Instance.SetTheme((ResourceDictionary)XamlReader.Load(fs, parserContext));
                     }
                 } else {
@@ -720,7 +720,7 @@ namespace AcManager.Controls.Presentation {
             get => _popupToolBars ?? false;
             set {
                 if (_loading) {
-                    ToolbarsApparanceManager.PopupToolBars = value;
+                    ToolbarsAppearanceManager.PopupToolBars = value;
                     _popupToolBars = value;
                     return;
                 }
@@ -728,12 +728,28 @@ namespace AcManager.Controls.Presentation {
                 if (Equals(value, _popupToolBars)) return;
                 _popupToolBars = value;
                 OnPropertyChanged();
-                ToolbarsApparanceManager.PopupToolBars = value;
+                ToolbarsAppearanceManager.PopupToolBars = value;
                 ValuesStorage.Set(KeyPopupToolBars, value);
             }
         }
 
-        private static class ToolbarsApparanceManager {
+        
+        private bool? _LimitWindowWidth;
+
+        public bool CenterContent {
+            get => _LimitWindowWidth ?? (_LimitWindowWidth = ValuesStorage.Get("Settings.AppAppearanceManager.LimitWindowWidth", false)).Value;
+            set {
+                if (Equals(value, _LimitWindowWidth)) return;
+                _LimitWindowWidth = value;
+                ValuesStorage.Set("Settings.AppAppearanceManager.LimitWindowWidth", value);
+                OnPropertyChanged();
+                if (Application.Current.MainWindow is ModernWindow modernWindow) {
+                    modernWindow.MaxRootWidth = value ? 1400d : double.PositiveInfinity;
+                }
+            }
+        }
+
+        private static class ToolbarsAppearanceManager {
             private static readonly Uri FixedToolBarsSource = new Uri("/AcManager.Controls;component/Assets/SelectedObjectToolBarTray/Fixed.xaml",
                     UriKind.Relative);
 
@@ -843,6 +859,20 @@ namespace AcManager.Controls.Presentation {
         public bool ShowMainWindowBackButton {
             get => _showMainWindowBackButton.Value;
             set => Apply(value, _showMainWindowBackButton);
+        }
+
+        private readonly StoredValue<bool> _showSelectionDialogToolTips = Stored.Get("AppAppearanceManager.ShowSelectionDialogToolTips", true);
+
+        public bool ShowSelectionDialogToolTips {
+            get => _showSelectionDialogToolTips.Value;
+            set => Apply(value, _showSelectionDialogToolTips);
+        }
+
+        private readonly StoredValue<bool> _showContentToolTips = Stored.Get("AppAppearanceManager.ShowContentToolTips", true);
+
+        public bool ShowContentToolTips {
+            get => _showContentToolTips.Value;
+            set => Apply(value, _showContentToolTips);
         }
         #endregion
     }

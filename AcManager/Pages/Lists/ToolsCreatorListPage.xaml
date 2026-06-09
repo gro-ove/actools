@@ -1,0 +1,65 @@
+<UserControl x:Class="AcManager.Pages.Lists.ToolsCreatorListPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:li="clr-namespace:AcManager.Pages.Lists"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d">
+  <UserControl.Resources>
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+  </UserControl.Resources>
+  <ItemsControl Margin="{StaticResource ContentMarginWithPadding}">
+    <ItemsControl.Template>
+      <ControlTemplate TargetType="ItemsControl">
+        <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="True"
+            HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+          <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+        </ScrollViewer>
+      </ControlTemplate>
+    </ItemsControl.Template>
+    <ItemsControl.ItemTemplate>
+      <DataTemplate DataType="li:ToolLink">
+        <Border Background="{DynamicResource CardBackground}" BorderThickness="1" BorderBrush="{DynamicResource CardBorder}" Padding="20" Margin="20">
+          <DockPanel>
+            <Button Command="{Binding LaunchCommand}" IsEnabled="{Binding IsAvailable}" Content="{x:Static g:AppStrings.Lists_ToolsListPage_Launch}"
+                DockPanel.Dock="Bottom" />
+            <DockPanel Dock="Bottom" Margin="0 0 0 4"
+                Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+              <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left"
+                  Margin="0 0 4 0" VerticalAlignment="Center" />
+              <mui:BbCodeBlock Text="{Binding NotAvailableReason}" Style="{StaticResource Small}" />
+            </DockPanel>
+            <Path Fill="{DynamicResource WindowText}" Width="32" Height="32" Margin="0 0 0 20" HorizontalAlignment="Center" DockPanel.Dock="Top"
+                Stretch="Uniform" Data="{Binding Icon}" />
+            <TextBlock Text="{Binding DisplayName, Converter={StaticResource ToTitleConverter}}" Style="{StaticResource Heading2}"
+                Foreground="{DynamicResource Accent}" Margin="0 0 0 8" TextAlignment="Center" DockPanel.Dock="Top" />
+            <TextBlock Text="{Binding Description}" Style="{StaticResource Small}" Margin="0 0 0 20" TextAlignment="Left" TextWrapping="Wrap"
+                TextTrimming="CharacterEllipsis" />
+          </DockPanel>
+        </Border>
+      </DataTemplate>
+    </ItemsControl.ItemTemplate>
+    <ItemsControl.ItemsPanel>
+      <ItemsPanelTemplate>
+        <WrapPanel ItemWidth="360" ItemHeight="250" />
+      </ItemsPanelTemplate>
+    </ItemsControl.ItemsPanel>
+    <ItemsControl.Items>
+      <li:ToolLink DisplayName="KN5 BC7 encoder" Source="/Pages/ContentTools/Bc7Upgrader.xaml"
+          Icon="F1 M 135.50 0.00 L 512.00 0.00 L 512.00 376.50 C 499.41 376.48 486.82 376.52 474.24 376.48 C 474.23 263.58 474.25 150.68 474.23 37.78 C 361.32 37.75 248.42 37.77 135.52 37.77 C 135.48 25.18 135.51 12.59 135.50 0.00 M 67.76 67.74 C 90.38 67.73 112.99 67.72 135.61 67.75 C 122.99 80.36 110.44 93.05 97.72 105.57 C 87.73 105.48 77.74 105.58 67.75 105.51 C 67.76 92.92 67.74 80.33 67.76 67.74 M 140.36 105.53 C 152.83 92.84 165.50 80.34 178.06 67.74 C 195.83 67.74 213.61 67.71 231.38 67.75 C 218.84 80.39 206.23 92.96 193.62 105.54 C 175.86 105.53 158.11 105.54 140.36 105.53 M 236.08 105.53 C 248.67 92.92 261.26 80.30 273.90 67.73 C 291.67 67.75 309.45 67.71 327.22 67.75 C 314.67 80.36 302.05 92.91 289.49 105.51 C 271.69 105.57 253.88 105.52 236.08 105.53 M 331.91 105.54 C 344.53 92.92 357.10 80.26 369.79 67.71 C 387.54 67.77 405.29 67.71 423.04 67.74 C 410.67 80.16 398.26 92.52 385.88 104.92 C 384.92 105.96 383.31 105.38 382.09 105.56 C 365.36 105.51 348.64 105.54 331.91 105.54 M 406.49 126.75 C 419.07 114.17 431.64 101.58 444.24 89.02 C 444.27 106.76 444.21 124.50 444.28 142.24 C 431.79 154.97 419.10 167.50 406.50 180.11 C 406.49 162.33 406.50 144.54 406.49 126.75 M 0.00 135.53 C 125.49 135.54 250.99 135.52 376.48 135.54 C 376.51 261.03 376.49 386.51 376.49 512.00 L 186.52 512.00 C 173.88 511.49 161.50 506.41 152.28 497.73 C 143.67 489.71 137.83 478.75 136.13 467.11 C 135.32 461.79 135.52 456.39 135.50 451.03 C 135.50 426.18 135.51 401.33 135.50 376.48 C 107.66 376.44 79.83 376.51 51.99 376.44 C 37.37 376.33 23.00 369.67 13.34 358.70 C 5.37 349.88 0.80 338.28 0.00 326.45 L 0.00 135.53 M 406.45 222.67 C 418.97 209.99 431.63 197.43 444.24 184.83 C 444.27 202.59 444.23 220.36 444.26 238.13 C 431.72 250.77 419.11 263.34 406.50 275.90 C 406.45 258.16 406.56 240.42 406.45 222.67 M 406.49 318.38 C 419.06 305.80 431.60 293.20 444.23 280.67 C 444.27 298.44 444.24 316.21 444.24 333.99 C 431.66 346.51 419.25 359.21 406.51 371.57 C 406.47 353.84 406.51 336.11 406.49 318.38 M 406.50 414.16 C 419.08 401.58 431.64 388.99 444.24 376.44 C 444.25 399.04 444.25 421.65 444.24 444.26 C 431.66 444.28 419.08 444.27 406.50 444.26 C 406.49 434.23 406.49 424.19 406.50 414.16 M 15.01 397.35 C 28.83 404.55 44.57 407.20 60.04 406.47 C 75.19 406.47 90.35 406.46 105.50 406.47 C 105.53 424.31 105.47 442.14 105.53 459.98 C 105.60 472.82 108.83 485.57 114.65 497.00 C 70.31 478.14 33.81 441.74 15.01 397.35 Z">
+        <li:ToolLink.Description>Converts textures in a KN5 file into efficient DDS BC7 format.</li:ToolLink.Description>
+      </li:ToolLink>
+      <li:ToolLink DisplayName="Switching animation generator" Source="/Pages/ContentTools/KsAnimSwitchGenerator.xaml" Icon="{StaticResource HiddenIconData}">
+        <li:ToolLink.Description>Generates efficient wing .ksanim for toggling nodes in car setup menu.</li:ToolLink.Description>
+      </li:ToolLink>
+      <li:ToolLink DisplayName="Tree model converter" Source="/Pages/ContentTools/TreeModelConverter.xaml"
+          Icon="F1 M 34.8333,63.3333L 34.8333,52.25C 32.11,52.25 29.6543,51.1996 27.9221,49.5166C 26.9866,50.2377 25.8142,50.6667 24.5417,50.6667C 21.4811,50.6667 19,48.1856 19,45.125C 19,43.1018 20.0842,41.3319 21.7033,40.3644C 20.0307,38.9374 19,36.9857 19,34.8333C 19,31.6757 21.2185,28.9498 24.4274,27.679C 23.0709,26.7033 22.1667,24.954 22.1667,22.9583C 22.1667,19.8978 24.2933,17.4167 26.9167,17.4167C 27.4893,17.4167 28.0382,17.5349 28.5465,17.7515C 30.713,15.5963 33.7922,14.25 37.2083,14.25C 39.8704,14.25 42.3279,15.0676 44.3083,16.4483C 45.2106,15.8116 46.3116,15.4375 47.5,15.4375C 50.5606,15.4375 53.0417,17.9186 53.0417,20.9792C 53.0417,22.3206 52.5651,23.5506 51.772,24.5093C 54.8731,25.6822 57,28.0923 57,30.875C 57,32.8169 55.9642,34.5773 54.2844,35.8625C 55.9642,37.4333 57,39.5849 57,41.9583C 57,46.7678 52.7467,50.6667 47.5,50.6667C 45.501,50.6667 43.6462,50.1007 42.1159,49.134L 41.1667,50.0326L 41.1667,63.3333L 34.8333,63.3333 Z">
+        <li:ToolLink.Description>Convert FBX with tree meshes into a tree model to use with CSP 0.1.79.</li:ToolLink.Description>
+      </li:ToolLink>
+      <li:ToolLink DisplayName="UV2 model converter" Source="/Pages/ContentTools/Uv2ModelConverter.xaml"
+          Icon="F1 M 38.0024,9.50133L 58.5858,17.418L 58.5858,22.168L 38.0024,30.0846L 17.4191,22.168L 17.4191,17.418L 38.0024,9.50133 Z M 36.4217,56.6121L 36.4217,39.5889L 28.504,45.9231L 28.504,41.1724L 38.0053,32.4629L 47.5066,41.1724L 47.5066,45.9231L 39.5889,39.5889L 39.5889,56.6121L 36.4217,56.6121 Z M 58.5858,53.8397L 58.5858,58.5897L 38.0024,66.5064L 17.4191,58.5897L 17.4191,53.8397L 34.8382,47.1401L 34.8382,51.7294L 23.7533,55.4244L 38.0053,61.3627L 52.2573,55.4244L 41.1724,51.7295L 41.1724,47.1423L 58.5858,53.8397 Z">
+        <li:ToolLink.Description>Adds secondary set of texture coordinates from FBX to an existing KN5 file. With CSP, it can be used for stickers.</li:ToolLink.Description>
+      </li:ToolLink>
+      <li:ToolLink DisplayName="CSP KN5 patches optimizer" Source="/Pages/ContentTools/CspTrackPatchesOptimizer.xaml" Icon="{StaticResource BulbIconData}">
+        <li:ToolLink.Description>Removes unnecessary textures from KN5s used in “extension/config” configs altering cars and tracks.</li:ToolLink.Description>
+      </li:ToolLink>
+    </ItemsControl.Items>
+  </ItemsControl>
+</UserControl>

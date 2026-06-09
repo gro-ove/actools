@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using AcTools.DataFile;
 using AcTools.Kn5File;
+using AcTools.Numerics;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
@@ -186,16 +187,21 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private int? _trianglesCount;
         private int? _objectsCount;
+        private int? _materialsCount;
 
         public int TrianglesCount => _trianglesCount ?? (_trianglesCount = RootObject.GetTrianglesCount()).Value;
 
         public int ObjectsCount => _objectsCount ?? (_objectsCount = RootObject.GetObjectsCount()).Value;
 
+        public int MaterialsCount => _materialsCount ?? (_materialsCount = RootObject.GetMaterialIds().NonNull().Distinct().Count()).Value;
+
         private void InvalidateCount() {
             _trianglesCount = null;
             _objectsCount = null;
+            _materialsCount = null;
             OnPropertyChanged(nameof(TrianglesCount));
             OnPropertyChanged(nameof(ObjectsCount));
+            OnPropertyChanged(nameof(MaterialsCount));
         }
 
         public event EventHandler ObjectsChanged;
@@ -828,7 +834,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
                 if (_colliderMesh == null) {
                     try {
-                        _colliderMesh = new Kn5RenderableCollider(Kn5.FromFile(Path.Combine(RootDirectory, "collider.kn5")), Matrix.Identity);
+                        // var graphicMatrix = MatrixFix.Invert_v2(_carData.GetGraphicMatrix());
+                        var kn5 = Kn5.FromFile(Path.Combine(RootDirectory, "collider.kn5"));
+                        foreach (var kn5Node in kn5.Nodes) {
+                            kn5Node.Transform = Mat4x4.Identity;
+                        }
+                        _colliderMesh = new Kn5RenderableCollider(kn5, RootObject.LocalMatrix);
                     } catch (Exception e) {
                         AcToolsLogging.Write(e);
                         _colliderMesh = new InvisibleObject();

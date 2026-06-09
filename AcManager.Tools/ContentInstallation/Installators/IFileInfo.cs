@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
@@ -10,6 +11,8 @@ namespace AcManager.Tools.ContentInstallation.Installators {
 
     public interface IFileInfo : IFileOrDirectoryInfo {
         long Size { get; }
+
+        DateTime? LastModified { get; }
 
         /// <summary>
         /// Read data. When returns null, call IAdditionalContentInstallator.LoadMissingContents() and then

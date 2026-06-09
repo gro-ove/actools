@@ -43,7 +43,7 @@
 
         <TextBlock x:Name="ThankYouHeader" Style="{StaticResource Heading2}" Text="First of all, thank you for your support!" Foreground="{DynamicResource Go}" />
         <mui:BbCodeBlock x:Name="ThankYouText" Margin="0 8 0 40" FontSize="{DynamicResource SmallFontSize}"
-            Text="If you want to support development of Content Manager and [url=&quot;https://acstuff.ru/f/t/mods&quot;]other projects[/url] more, here is [url=&quot;https://www.patreon.com/x4fab&quot;]a Patreon link[/url]." />
+            Text="If you want to support development of Content Manager and [url=&quot;https://acstuff.club/f/t/mods&quot;]other projects[/url] more, here is [url=&quot;https://www.patreon.com/x4fab&quot;]a Patreon link[/url]." />
 
         <TextBlock Style="{StaticResource Heading2}" Text="{x:Static g:AppStrings.About_ContactUsHeader}" />
         <mui:BbCodeBlock Margin="0 8 0 40" FontSize="{DynamicResource SmallFontSize}" Text="{x:Static g:AppStrings.About_ContactInformation}" />
@@ -82,7 +82,6 @@
 [url=&quot;https://onedrive.live.com/&quot;]Microsoft OneDrive[/url],
 [url=&quot;http://www.radiators-champ.com/RSRLiveTiming/index.php&quot;]RSR[/url],
 [url=&quot;http://store.steampowered.com/&quot;]Steam[/url],
-[url=&quot;http://thesetupmarket.com/&quot;]The Setup Market[/url],
 [url=&quot;https://openweathermap.org/&quot;]OpenWeatherMap[/url],
 [url=&quot;https://www.yahoo.com/&quot;]Yahoo[/url],
 [url=&quot;https://disk.yandex.ru&quot;]Yandex.Disk[/url]." />

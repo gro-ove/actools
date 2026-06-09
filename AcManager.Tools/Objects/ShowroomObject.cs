@@ -19,7 +19,7 @@ using FirstFloor.ModernUI.Helpers;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
-    public class ShowroomObject : AcJsonObjectNew {
+    public partial class ShowroomObject : AcJsonObjectNew {
         public ShowroomObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {}
 
         public override void Reload() {

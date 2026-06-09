@@ -1,25 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Windows;
 using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcManagersNew {
-    public interface IAcWrapperLoader {
-        /// <summary>
-        /// Not recommended way, but can’t think of something better
-        /// at the moment. After all, it’s not that bad.
-        /// </summary>
-        /// <param name="id"></param>
-        void Load(string id);
-
-        Task LoadAsync(string id);
-    }
-
     public class AcItemWrapper : NotifyPropertyChanged, IWithId {
         [CanBeNull]
         private readonly IAcWrapperLoader _loader;
@@ -39,14 +25,16 @@ namespace AcManager.Tools.AcManagersNew {
             if (IsLoaded) return (AcObjectNew)Value;
             if (_loader == null) throw new Exception(@"Loader is missing");
             _loader.Load(Value.Id);
-            return (AcObjectNew)Value;
+            if (Value is AcObjectNew ret) return ret;
+            throw new Exception($"Loading failure: {_loader}, {Value}");
         }
 
         public async Task<AcObjectNew> LoadedAsync() {
             if (IsLoaded) return (AcObjectNew)Value;
             if (_loader == null) throw new Exception(@"Loader is missing");
             await _loader.LoadAsync(Value.Id);
-            return (AcObjectNew)Value;
+            if (Value is AcObjectNew ret) return ret;
+            throw new Exception($"Loading failure: {_loader}, {Value}");
         }
 
         [NotNull]
@@ -110,60 +98,5 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         public string Id => Value.Id;
-    }
-
-    public delegate void WrappedValueChangedEventHandler(object sender, WrappedValueChangedEventArgs args);
-
-    public class WrappedValueChangedEventArgs : EventArgs {
-        [NotNull]
-        public readonly AcPlaceholderNew OldValue;
-
-        [NotNull]
-        public readonly AcPlaceholderNew NewValue;
-
-        public WrappedValueChangedEventArgs([NotNull]AcPlaceholderNew oldValue, [NotNull]AcPlaceholderNew newValue) {
-            OldValue = oldValue;
-            NewValue = newValue;
-        }
-    }
-
-    public class WrappedValueChangedEventManager : WeakEventManager {
-        private WrappedValueChangedEventManager() {}
-
-        public static void AddListener(IBaseAcObjectObservableCollection source, IWeakEventListener listener) {
-            CurrentManager.ProtectedAddListener(source, listener);
-        }
-
-        public static void RemoveListener(IBaseAcObjectObservableCollection source, IWeakEventListener listener) {
-            CurrentManager.ProtectedRemoveListener(source, listener);
-        }
-
-        protected override void StartListening(object source) {
-            var typedSource = (IBaseAcObjectObservableCollection)source;
-            typedSource.WrappedValueChanged += OnWrappedValueChanged;
-        }
-
-        protected override void StopListening(object source) {
-            var typedSource = (IBaseAcObjectObservableCollection)source;
-            typedSource.WrappedValueChanged -= OnWrappedValueChanged;
-        }
-
-        private static WrappedValueChangedEventManager CurrentManager {
-            get {
-                var managerType = typeof(WrappedValueChangedEventManager);
-                var manager = (WrappedValueChangedEventManager)GetCurrentManager(managerType);
-                if (manager != null) return manager;
-
-                manager = new WrappedValueChangedEventManager();
-                SetCurrentManager(managerType, manager);
-                return manager;
-            }
-        }
-
-        private void OnWrappedValueChanged(object sender, WrappedValueChangedEventArgs args) {
-            // what is that?!
-            Logging.Write("WHOA");
-            DeliverEvent(sender, args);
-        }
     }
 }

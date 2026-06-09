@@ -20,7 +20,7 @@ namespace AcManager.Tools.Objects {
         public bool Refresh([NotNull] IPythonAppConfigValueProvider provider) {
             if (_referenceKey == null) return false;
 
-            var value = provider.Get(_referenceKey).As(default(T));
+            var value = provider.GetValue(_referenceKey).As(default(T));
             if (Equals(value, Value)) return false;
 
             Value = value;

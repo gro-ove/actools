@@ -27,7 +27,11 @@
           <ControlTemplate.Triggers>
             <MultiDataTrigger>
               <MultiDataTrigger.Conditions>
+                <!-- TODO: Buggy resharper -->
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsThreeState}" Value="True" />
+                <!-- TODO: Buggy resharper -->
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="{x:Null}" />
               </MultiDataTrigger.Conditions>
               <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />

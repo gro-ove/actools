@@ -13,7 +13,7 @@ namespace AcManager.Pages.Drive {
                 Initialize("__QuickDrive_TimeAttack", initialize);
             }
 
-            public override void CheckIfTrackFits(TrackObjectBase track) {
+            protected override void CheckIfTrackFits(TrackObjectBase track) {
                 TrackDoesNotFit = TagRequired("circuit", track);
             }
 

@@ -10,6 +10,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Online;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -38,11 +39,12 @@ namespace AcManager.Tools.Objects {
             Sessions = new ChangeableObservableCollection<ServerSessionEntry>(SimpleSessions.Append(RaceSession));
             Sessions.ItemPropertyChanged += OnSessionEntryPropertyChanged;
 
-            InitSetupsItems();
-
             PluginEntries = new ChangeableObservableCollection<PluginEntry>();
             PluginEntries.CollectionChanged += OnPluginEntriesCollectionChanged;
             PluginEntries.ItemPropertyChanged += OnPluginEntriesPropertyChanged;
+            CmPluginLiveConditionsParams.PropertyChanged += (sender, args) => Changed = true;
+            
+            ThirdPartyOnlineSourcesManager.Instance.Initialize();
         }
 
         protected override IniFileMode IniFileMode => IniFileMode.ValuesWithSemicolons;
@@ -140,6 +142,7 @@ namespace AcManager.Tools.Objects {
             Password = section.GetNonEmpty("PASSWORD");
             AdminPassword = section.GetNonEmpty("ADMIN_PASSWORD");
             ShowOnLobby = section.GetBool("REGISTER_TO_LOBBY", true);
+            ShowOnCmLobby = cmSection.GetBool("REGISTER_TO_CM_LOBBY", ShowOnLobby);
             DisableChecksums = cmSection.GetBool("DISABLE_CHECKSUMS", false);
             LoopMode = section.GetBool("LOOP_MODE", true);
             PickupMode = section.GetBool("PICKUP_MODE_ENABLED", true);
@@ -163,6 +166,10 @@ namespace AcManager.Tools.Objects {
             if (trackIdPieces.Length == 2) {
                 CspRequired = true;
                 RequiredCspVersion = trackIdPieces[0].As<int?>();
+            } else if (trackIdPieces.Length == 3) {
+                CspRequired = true;
+                RequiredCspVersion = trackIdPieces[0].As<int?>();
+                ApplyFlags(DecodeFlagsCompact(trackIdPieces[1]));
             } else {
                 CspRequired = false;
                 RequiredCspVersion = null;
@@ -213,7 +220,8 @@ namespace AcManager.Tools.Objects {
 
             var cmPluginSection = ini["__CM_PLUGIN"];
             UseCmPlugin = cmPluginSection.GetBool("ACTIVE", false);
-            RealConditions = cmPluginSection.GetBool("REAL_CONDITIONS", false);
+            CmPluginLiveConditions = cmPluginSection.GetBool("REAL_CONDITIONS", false);
+            CmPluginLiveConditionsParams.Deserialize(cmPluginSection.GetNonEmpty("REAL_CONDITIONS_PARAMS"));
             for (var i = 0; i < 100; ++i) {
                 var entryAddress = cmPluginSection.GetNonEmpty($"EXTRA_PLUGIN_{i}_ADDRESS");
                 var entryPort = cmPluginSection.GetIntNullable($"EXTRA_PLUGIN_{i}_PORT");
@@ -251,12 +259,50 @@ namespace AcManager.Tools.Objects {
         }
 
         private void LoadEntryListData(IniFile ini) {
-            DriverEntries = new ChangeableObservableCollection<ServerPresetDriverEntry>(ini.GetSections("CAR").Select(x => new ServerPresetDriverEntry(x)));
+            DriverEntries = new ChangeableObservableCollection<ServerPresetDriverEntry>(ini.GetSections("CAR")
+                    .Select(x => new ServerPresetDriverEntry(x)));
         }
 
         private void ResetEntryListData() {
             EntryListIniObject = null;
             LoadEntryListData(IniFile.Empty);
+        }
+
+        private const string EncodeSymbolsInner = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+
+        private static string EncodeFlagsCompact(ulong flags) {
+            var r = "";
+            do {
+                r += EncodeSymbolsInner[(int)(flags % (ulong)EncodeSymbolsInner.Length)];
+                flags /= (ulong)EncodeSymbolsInner.Length;
+            } while (flags > 0);
+            return r;
+        }
+
+        public static ulong DecodeFlagsCompact(string flags) {
+            var r = 0UL;
+            for (var i = flags.Length; i > 0; i--) {
+                r = r * (ulong)EncodeSymbolsInner.Length + (ulong)EncodeSymbolsInner.IndexOf(flags[i - 1]);
+            }
+            return r;
+        }
+
+        private ulong ApplyFlags(ulong flags) {
+            CspExtendedCarsPhysics = (flags & 1UL) != 0UL;
+            CspExtendedTrackPhysics = (flags & 2UL) != 0UL;
+            CspHidePitCrew = (flags & 4UL) != 0UL;
+            CspIcePhysics = (flags & 8UL) != 0UL;
+            return flags;
+        }
+
+        private ulong CollectFlags() {
+            // Note: CSP builds can’t handle flag 32UL or above!
+            ulong flags = 0UL;
+            if (CspExtendedCarsPhysics) flags |= 1UL;
+            if (CspExtendedTrackPhysics) flags |= 2UL;
+            if (CspHidePitCrew) flags |= 4UL;
+            if (CspIcePhysics) flags |= 8UL;
+            return flags;
         }
 
         protected override void SaveData(IniFile ini) {
@@ -271,6 +317,7 @@ namespace AcManager.Tools.Objects {
             section.Set("ADMIN_PASSWORD", AdminPassword);
             section.Set("REGISTER_TO_LOBBY", ShowOnLobby);
             cmSection.Set("DISABLE_CHECKSUMS", DisableChecksums);
+            cmSection.Set("REGISTER_TO_CM_LOBBY", ShowOnCmLobby);
             section.Set("LOOP_MODE", LoopMode);
             section.Set("PICKUP_MODE_ENABLED", PickupMode);
             section.Set("LOCKED_ENTRY_LIST", PickupModeLockedEntryList);
@@ -283,8 +330,13 @@ namespace AcManager.Tools.Objects {
             section.Set("CLIENT_SEND_INTERVAL_HZ", SendIntervalHz);
             section.Set("NUM_THREADS", Threads);
 
+            var extraTweaks = "";
+            if ((CspExtendedCarsPhysics || CspExtendedTrackPhysics || CspHidePitCrew) && RequiredCspVersion >= 2000) {
+                extraTweaks = $@"{EncodeFlagsCompact(CollectFlags())}/../";
+            }
+
             section.Set("TRACK",
-                    (CspRequired ? (RequiredCspVersion == PatchHelper.NonExistentVersion ? "" : @"csp/") + (RequiredCspVersion ?? 0) + @"/../" : "") + TrackId);
+                    (CspRequired ? (RequiredCspVersion == PatchHelper.NonExistentVersion ? "" : @"csp/") + (RequiredCspVersion ?? 0) + @"/../" + extraTweaks : "") + TrackId);
 
             section.Set("CONFIG_TRACK", TrackLayoutId ?? "");
             section.Set("CARS", CarIds, ';');
@@ -357,14 +409,15 @@ namespace AcManager.Tools.Objects {
                 section.Remove("WELCOME_MESSAGE");
             }
 
-            section.Set("UDP_PLUGIN_LOCAL_PORT", PluginUdpPort);
+            section.Set("UDP_PLUGIN_LOCAL_PORT", PluginUdpPort?.ToInvariantString() ?? "");
             section.Set("UDP_PLUGIN_ADDRESS", PluginUdpAddress);
             section.Set("AUTH_PLUGIN_ADDRESS", PluginAuthAddress);
 
             var cmPluginSection = ini["__CM_PLUGIN"];
             cmPluginSection.Clear();
             cmPluginSection.Set("ACTIVE", UseCmPlugin);
-            cmPluginSection.Set("REAL_CONDITIONS", RealConditions);
+            cmPluginSection.Set("REAL_CONDITIONS", CmPluginLiveConditions);
+            cmPluginSection.Set("REAL_CONDITIONS_PARAMS", CmPluginLiveConditionsParams.Serialize());
             var extraPluginIndex = 0;
             foreach (var entry in PluginEntries.Where(x => !string.IsNullOrWhiteSpace(x.Address) && x.UdpPort.HasValue)) {
                 cmPluginSection.Set($"EXTRA_PLUGIN_{extraPluginIndex}_ADDRESS", entry.Address);

@@ -52,9 +52,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private MoveableHelper _movable;
         private MoveableHelper Movable => _movable ?? (_movable = new MoveableHelper(this));
 
-        public void DrawMovementArrows(DeviceContextHolder holder, CameraBase camera) {
+        public void DrawMovementArrows(DeviceContextHolder holder, CameraBase camera, bool drawMain) {
             Movable.ParentMatrix = Matrix;
-            Movable.Draw(holder, camera, SpecialRenderMode.Simple);
+            if (drawMain) {
+                Movable.Draw(holder, camera, SpecialRenderMode.Simple);
+            }
             if (IsDriverMovable) {
                 _driver?.DrawMovementArrows(holder, camera);
             }

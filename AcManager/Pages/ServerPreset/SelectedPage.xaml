@@ -2,7 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:serverPreset="clr-namespace:AcManager.Pages.ServerPreset" xmlns:g="clr-namespace:AcManager"
-    xmlns:system="clr-namespace:System;assembly=System" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+    xmlns:system="clr-namespace:System;assembly=System" xmlns:c="http://acstuff.club/app/controls" mc:Ignorable="d"
     mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance serverPreset:SelectedPage+ViewModel}"
     Loaded="OnLoaded">
   <UserControl.Resources>
@@ -59,6 +59,9 @@
           <MenuItem Header="{x:Static mui:UiStrings.Toolbar_Invite_IncludePasswordHeader}" IsChecked="{Binding CopyPasswordToInviteLink.Value}"
               IsCheckable="True" IsEnabled="{Binding SelectedObject.Password, Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}"
               StaysOpenOnClick="True" />
+          <Separator />
+          <MenuItem Header="Invite Steam friend…" Command="{Binding InviteSteamFriendCommand}" ToolTipService.ShowOnDisabled="True"
+              ToolTip="Please maks sure both you and your friend have Steam integration in CM settings/Integrated enabled (currently it’s in experimental stage, so it’s disabled by default)" />
         </mui:ButtonWithComboBox>
       </ToolBar>
       <ToolBar Band="1" BandIndex="1">
@@ -79,6 +82,24 @@
         <Button x:Name="RepackAllArchivesButton" Content="Repack all" Command="{Binding WrapperRepackAllCommand}" />
         <Button x:Name="ClearUnusedArchivesButton" Content="Remove unused archives" Command="{Binding WrapperRemoveUnusedCommand}"
             ToolTip="Unused files from content subfolder will be moved to the Recycle Bin" />
+        <Separator />
+        <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" Command="{Binding QuickDriveButton.DriveCommand}"
+            PreviewMouseDown="OnDriveButtonMouseDown" Style="{StaticResource ToolBarButtonWithComboBox}">
+          <mui:ButtonWithComboBox.Resources>
+            <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDriveButton.Presets}" />
+          </mui:ButtonWithComboBox.Resources>
+          <mui:ButtonWithComboBox.ButtonToolTip>
+            <StackPanel>
+              <TextBlock Text="{x:Static g:AppStrings.Toolbar_QuickDrive_FirstLine}" />
+              <TextBlock Text="{x:Static g:AppStrings.Toolbar_QuickDrive_SecondLine}" />
+            </StackPanel>
+          </mui:ButtonWithComboBox.ButtonToolTip>
+          <mui:ButtonWithComboBox.MenuItems>
+            <CompositeCollection>
+              <CollectionContainer Collection="{Binding Source={StaticResource QuickDrivePresetsItems}}" />
+            </CompositeCollection>
+          </mui:ButtonWithComboBox.MenuItems>
+        </mui:ButtonWithComboBox>
       </ToolBar>
     </c:AcObjectBase.ToolBars>
 

@@ -12,6 +12,7 @@ using AcManager.Controls.Presentation;
 using AcTools.Render.Base;
 using AcTools.Render.Wrapper;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -26,6 +27,8 @@ namespace AcManager.CustomShowroom {
         public static bool OptionAutoHideTools = true;
 
         private static readonly WeakList<AttachedHelper> Instances = new WeakList<AttachedHelper>();
+
+        public static bool AnyRunning => Instances.Count != 0;
 
         [CanBeNull]
         public static AttachedHelper GetInstance(Window window) {
@@ -67,6 +70,7 @@ namespace AcManager.CustomShowroom {
 
         public AttachedHelper([NotNull] FormWrapperBase parent, [NotNull] DpiAwareWindow child, int offset = -1, int padding = 10, bool limitHeight = true,
                 bool verbose = false) {
+            ++WaitingDialog.BlockAttachmentCounter;
             _padding = padding;
             _limitHeight = limitHeight;
             _verbose = verbose;
@@ -165,6 +169,7 @@ namespace AcManager.CustomShowroom {
         }
 
         private void OnClosed(object sender, EventArgs e) {
+            --WaitingDialog.BlockAttachmentCounter;
             _closed = true;
 
             if (_child != null) {
@@ -207,7 +212,7 @@ namespace AcManager.CustomShowroom {
                 var pos = new Point(child.DeviceLeft, child.DeviceTop);
                 for (var i = 0; i < StickyLocationsCount; i++) {
                     var location = GetStickyLocation(i, child.DeviceWidth, child.DeviceHeight);
-                    if (location.HasValue && (pos - location.Value).Length < 5) {
+                    if (location.HasValue && (pos - location.Value).Length < 10 * child.DeviceScaleX) {
                         _stickyLocation.Value = i;
                         UpdatePosition(true);
                         return;

@@ -2,8 +2,12 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using AcManager.Pages.Drive;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -17,7 +21,9 @@ namespace AcManager.Pages.ServerPreset {
         private SelectedPage.ViewModel Model => DataContext as SelectedPage.ViewModel;
 
         private readonly Busy _legalTyresBusy = new Busy();
-        private readonly Busy _defaultSetupItemBusy = new Busy();
+
+        [CanBeNull]
+        private ServerPresetObject _lastSubscribedTo;
 
         private void AllowedTyres_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
             _legalTyresBusy.Do(() => {
@@ -26,22 +32,6 @@ namespace AcManager.Pages.ServerPreset {
                 server.LegalTyres = AllowedTyres.SelectedItems.OfType<ServerPresetObject.TyresItem>().ToList();
             });
         }
-
-        private void FixedSetups_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            _defaultSetupItemBusy.Do(() => {
-                var server = Model?.SelectedObject;
-                if (server == null) return;
-                var item = e.AddedItems.OfType<ServerPresetObject.SetupItem>().FirstOrDefault();
-                server.DefaultSetupItem = item;
-                if (SetupItems.SelectedItems.Count > 1) {
-                    SetupItems.SelectedItems.Clear();
-                    SetupItems.SelectedItems.Add(item);
-                }
-            });
-        }
-
-        [CanBeNull]
-        private ServerPresetObject _lastSubscribedTo;
 
         private void AllowedTyres_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e) {
             if (_lastSubscribedTo != Model?.SelectedObject) {
@@ -53,17 +43,9 @@ namespace AcManager.Pages.ServerPreset {
             SyncLegalTyres();
         }
 
-        private void FixedSetups_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e) {
-            SyncDefaultSetupItem();
-        }
-
         private void OnServerPropertyChanged(object s, PropertyChangedEventArgs ev) {
             if (ev.PropertyName == nameof(Model.SelectedObject.LegalTyres)) {
                 SyncLegalTyres();
-            }
-
-            if (ev.PropertyName == nameof(Model.SelectedObject.DefaultSetupItem)) {
-                SyncDefaultSetupItem();
             }
         }
 
@@ -79,14 +61,15 @@ namespace AcManager.Pages.ServerPreset {
             });
         }
 
-        private void SyncDefaultSetupItem() {
-            _defaultSetupItemBusy.Do(() => {
-                SetupItems.SelectedItems.Clear();
-                var item = Model?.SelectedObject.DefaultSetupItem;
-                if (item != null) {
-                    SetupItems.SelectedItems.Add(item);
+        private void OnTestSetupClick(object sender, RoutedEventArgs e) {
+            if ((sender as FrameworkElement)?.DataContext is ServerPresetObject.SetupItem item) {
+                var car = CarsManager.Instance.GetById(item.CarId);
+                if (car == null) {
+                    MessageDialog.Show($"Car with ID {item.CarId} is missing");
+                    return;
                 }
-            });
+                QuickDrive.RunAsync(CarsManager.Instance.GetById(item.CarId), track: Model?.Track, carSetupFilename: item.Filename).Ignore();
+            }
         }
     }
 }

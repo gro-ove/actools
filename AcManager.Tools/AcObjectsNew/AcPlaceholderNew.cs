@@ -25,5 +25,8 @@ namespace AcManager.Tools.AcObjectsNew {
             return Enabled == o.Enabled ?
                     string.Compare(DisplayName, o.DisplayName, StringComparison.CurrentCultureIgnoreCase) : Enabled ? -1 : 1;
         }
+        
+        public bool NotAllowedToSelect; // not very nice, but it’d be a lot faster than to mess around with crazy filters
+        public static bool AnyNotAllowedToSelect;
     }
 }

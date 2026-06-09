@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="About_ContactInformation" xml:space="preserve">
-    <value>Bu uygulama hakkında sorunuz, fikriniz ya da tavsiyeniz var ise bize [url="https://acstuff.ru/app/#contacts"]bu linkten[/url] ulaşın.</value>
+    <value>Bu uygulama hakkında sorunuz, fikriniz ya da tavsiyeniz var ise bize [url="https://acstuff.club/app/#contacts"]bu linkten[/url] ulaşın.</value>
   <alternative>Eğer bu uygulama için bir sorunuz, fikriniz veya bir tavsiyeniz var ise bize bu linkten ulaşın (Hataları bize iletmek içinde kullanabilirsiniz) [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] or [url="https://trello.com/c/w5xT6ssZ/49-contacts"]something else[/url].</alternative></data>
   <data name="About_ContactUsHeader" xml:space="preserve">
     <value>Bize ulaşın:</value>

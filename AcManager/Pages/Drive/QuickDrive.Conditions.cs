@@ -142,6 +142,8 @@ namespace AcManager.Pages.Drive {
 
             private object _selectedWeather;
 
+            public WeatherTypeWrapped SelectedWeatherWrapped => SelectedWeather as WeatherTypeWrapped;
+
             /// <summary>
             /// Null for random weather, WeatherObject for specific weather, WeatherTypeWrapped for weather-by-type.
             /// </summary>
@@ -153,10 +155,24 @@ namespace AcManager.Pages.Drive {
 
                     OnPropertyChanged(nameof(RoadTemperature));
                     OnPropertyChanged(nameof(RecommendedRoadTemperature));
+                    OnPropertyChanged(nameof(SelectedWeatherWrapped));
 
                     if (!RealConditions) {
                         SaveLater();
 
+                        if (PatchHelper.IsWeatherFxActive()) {
+                            if (value is WeatherTypeWrapped weatherType 
+                                && weatherType.TypeOpt >= WeatherType.LightThunderstorm && weatherType.TypeOpt <= WeatherType.HeavySleet) {
+                                if (SelectedCar?.UseExtendedPhysics == false && PatchHelper.IsRainFxActive()) {
+                                    Logging.Debug("Triggering extended physics hint");
+                                    FancyHints.ExtendedPhysics.Trigger();
+                                } else {
+                                    FancyHints.ExtendedPhysics.MarkAsUnnecessary();
+                                }
+                            }
+                            return;
+                        }
+                        
                         if (value is WeatherObject weather) {
                             var diapason = weather.GetTimeDiapason();
                             var timeFits = diapason?.Contains(Time);
@@ -167,10 +183,10 @@ namespace AcManager.Pages.Drive {
                             } else {
                                 IsTimeOutOfWeatherRange = timeFits == false;
                             }
-                        } else if (value is WeatherTypeWrapped type && !WeatherManager.Instance.Enabled.Any(x => x.Fits(type.Type, Time, null))) {
+                        } else if (value is WeatherTypeWrapped type && !WeatherManager.Instance.Enabled.Any(x => x.Fits(type.TypeOpt, Time, null))) {
                             var diapason = Diapason.CreateTime(string.Empty);
                             var basicAdded = false;
-                            foreach (var d in WeatherManager.Instance.Enabled.Where(x => x.Fits(type.Type, null, null)).Select(x => x.GetTimeDiapason())) {
+                            foreach (var d in WeatherManager.Instance.Enabled.Where(x => x.Fits(type.TypeOpt, null, null)).Select(x => x.GetTimeDiapason())) {
                                 if (d != null) {
                                     diapason.CombineWith(d);
                                 } else if (!basicAdded) {
@@ -180,7 +196,7 @@ namespace AcManager.Pages.Drive {
                             }
                             Time = diapason.FindClosest(Time);
                         }
-                    }
+                    } 
                 });
             }
 
@@ -210,7 +226,7 @@ namespace AcManager.Pages.Drive {
             [CanBeNull]
             private WeatherObject GetRandomWeather(int? time, double? temperature) {
                 for (var i = 0;; i++) {
-                    var weatherObject = GetRandomObject(WeatherManager.Instance, SelectedWeatherObject?.Id);
+                    var weatherObject = GetRandomObject(WeatherManager.Instance, SelectedWeatherObject?.Id, null);
                     if (weatherObject == null) return null;
                     if (weatherObject.Fits(time, temperature) || i == 100) return weatherObject;
                 }
@@ -224,7 +240,7 @@ namespace AcManager.Pages.Drive {
             private DelegateCommand _randomWeatherCommand;
 
             public DelegateCommand RandomWeatherCommand
-                => _randomWeatherCommand ?? (_randomWeatherCommand = new DelegateCommand(() => { SetRandomWeather(true); }));
+                => _randomWeatherCommand ?? (_randomWeatherCommand = new DelegateCommand(() => SetRandomWeather(true)));
             #endregion
 
             #region Automatically set variables
@@ -272,7 +288,7 @@ namespace AcManager.Pages.Drive {
                     var entry = await IpGeoProvider.GetAsync();
                     var localAddress = entry == null ? "" : $"{entry.City}, {entry.Country}";
 
-                    var address = Prompt.Show("Where are you?", "Local address", localAddress, @"?", required: true);
+                    var address = await Prompt.ShowAsync("Where are you?", "Local address", localAddress, @"?", required: true);
                     if (string.IsNullOrWhiteSpace(address)) {
                         if (address != null) {
                             ModernDialog.ShowMessage("Value is required");
@@ -481,8 +497,8 @@ namespace AcManager.Pages.Drive {
 
             public DateTime SpecificDateValue {
                 get => _specificDateValue;
-                set => Apply(value.ToUnixTimestamp() < TimeSpan.FromHours(12).TotalSeconds ? DateTime.Now :  value,
-                ref _specificDateValue, SaveLater);
+                set => Apply(value.ToUnixTimestamp() < TimeSpan.FromHours(12).TotalSeconds ? DateTime.Now : value,
+                        ref _specificDateValue, SaveLater);
             }
 
             private bool _randomTime;
@@ -639,7 +655,7 @@ namespace AcManager.Pages.Drive {
                         _updateCancellationTokenSource = cancellation;
 
                         try {
-                            await RealConditionsHelper.UpdateConditions(SelectedTrack, RealConditionsLocalWeather, RealConditionsTimezones,
+                            await RealConditionsHelper.UpdateConditionsAsync(SelectedTrack, RealConditionsLocalWeather, RealConditionsTimezones,
                                     RealConditionsManualTime ? default(Action<DateTime>) : TryToSetTime, weather => {
                                         RealWeather = weather;
                                         TryToSetTemperature(weather.Temperature);
@@ -682,9 +698,13 @@ namespace AcManager.Pages.Drive {
             private readonly WeatherTypeConverterState _weatherTypeHelper = new WeatherTypeConverterState();
 
             private void TryToSetWeather() {
-                var weather = _weatherTypeHelper.TryToGetWeather(SelectedWeatherType, Time, Temperature);
-                if (weather != null) {
-                    SelectedWeather = weather;
+                if (PatchHelper.IsWeatherFxActive()) {
+                    SelectedWeather = new WeatherTypeWrapped(SelectedWeatherType);
+                } else {
+                    var weather = _weatherTypeHelper.TryToGetWeather(SelectedWeatherType, Time, Temperature);
+                    if (weather != null) {
+                        SelectedWeather = weather;
+                    }
                 }
             }
 
@@ -700,7 +720,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnAssistsContextMenuButtonClick(object sender, ContextMenuButtonEventArgs e) {
-            FancyHints.MoreDriveAssists.MaskAsUnnecessary();
+            FancyHints.MoreDriveAssists.MarkAsUnnecessary();
         }
     }
 }

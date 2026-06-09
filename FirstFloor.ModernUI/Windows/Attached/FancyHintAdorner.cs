@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -96,6 +97,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             return _contentPresenter.FindVisualChildren<FrameworkElement>().FirstOrDefault(x => x.Name == name);
         }
 
+        private DateTime _shownTime;
+
         private async void Show() {
             Current = this;
             await Task.Delay(1);
@@ -106,6 +109,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
                 _window.PreviewMouseDown += OnWindowMouseDown;
                 _window.PreviewKeyDown += OnWindowKeyDown;
+                _shownTime = DateTime.Now;
 
                 if (Hint.CloseOnResize) {
                     _window.SizeChanged += OnWindowSizeChanged;
@@ -157,6 +161,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private async void Close() {
+            if ((DateTime.Now - _shownTime).TotalSeconds < 1d) return;
             IsHitTestVisible = false;
 
             _window.PreviewMouseDown -= OnWindowMouseDown;

@@ -16,7 +16,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
     public class KillerOrder : IDisposable {
         public static bool OptionUseDispatcher = false;
-        public static TimeSpan OptionInterval = TimeSpan.FromMilliseconds(100d);
+        public static TimeSpan OptionInterval = TimeSpan.FromSeconds(2d);
 
         public readonly object Victim;
         public readonly TimeSpan Timeout;

@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Controls.Dialogs;
@@ -65,6 +66,14 @@ namespace AcManager.Pages.ShadersPatch {
             public ViewModel() {
                 InstalledVersion = PatchHelper.GetInstalledVersion();
                 InstalledVersionNumber = PatchHelper.GetInstalledBuild();
+            }
+        }
+
+        private void OnItemRightMouseButtonDown(object sender, MouseButtonEventArgs e) {
+            e.Handled = true;
+            if (sender is FrameworkElement fe && fe.ContextMenu != null) {
+                fe.ContextMenu.DataContext = fe.DataContext;
+                fe.ContextMenu.IsOpen = true;
             }
         }
     }

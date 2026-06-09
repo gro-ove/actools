@@ -22,6 +22,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         protected override Size MeasureOverride(Size constraint) {
             UpdateComputedValues();
+
             if (_columns == 0 || _rows == 0) return new Size();
 
             var available = new Size(
@@ -35,18 +36,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             for (var n = 0; n < count; n++) {
                 var element = InternalChildren[n];
                 element.Measure(available);
-
                 var desiredSize = element.DesiredSize;
-
                 if (width < desiredSize.Width) {
                     width = desiredSize.Width;
                 }
-
                 if (height < desiredSize.Height) {
                     height = desiredSize.Height;
                 }
-
-                n++;
             }
 
             return new Size(width * _columns + _totalSpacingWidth, height * _rows + _totalSpacingHeight);
@@ -56,8 +52,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_columns == 0 || _rows == 0) return new Size();
 
             var childBounds = new Rect(0, 0,
-                    Math.Max((arrangeSize.Width - _totalSpacingWidth) / _columns, 0),
-                    Math.Max((arrangeSize.Height - _totalSpacingHeight) / _rows, 0));
+                    Math.Max(arrangeSize.Width - _totalSpacingWidth, 0) / _columns,
+                    Math.Max(arrangeSize.Height - _totalSpacingHeight, 0) / _rows);
 
             var xStep = childBounds.Width + _horizontalSpacing;
             var yStep = childBounds.Height + _verticalSpacing;
@@ -119,41 +115,41 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (FirstColumn > 0) {
                 throw new NotImplementedException("There is no support for setting the FirstColumn (nor the FirstRow)");
             }
-
+            
             if (_rows == 0 || _columns == 0) {
-                var n = 0;
-                var m = 0;
-                var c = InternalChildren.Count;
-                while (m < c) {
-                    var element = InternalChildren[m];
-                    if (element.Visibility != Visibility.Collapsed) {
-                        n++;
+                var nonCollapsedCount = 0;
+
+                for (int i = 0, count = InternalChildren.Count; i < count; ++i) {
+                    var child = InternalChildren[i];
+                    if (child.Visibility != Visibility.Collapsed) {
+                        nonCollapsedCount++;
                     }
-                    m++;
                 }
-                if (n == 0) {
-                    n = 1;
+
+                if (nonCollapsedCount == 0) {
+                    nonCollapsedCount = 1;
                 }
+
                 if (_rows == 0) {
                     if (_columns > 0) {
-                        _rows = (n + FirstColumn + (_columns - 1)) / _columns;
+                        _rows = (nonCollapsedCount + FirstColumn + (_columns - 1)) / _columns;
                     } else {
-                        _rows = (int)Math.Sqrt(n);
-                        if (_rows * _rows < n) {
+                        _rows = (int)Math.Sqrt(nonCollapsedCount);
+                        if (_rows * _rows < nonCollapsedCount) {
                             _rows++;
                         }
                         _columns = _rows;
                     }
                 } else if (_columns == 0) {
-                    _columns = (n + (_rows - 1)) / _rows;
+                    _columns = (nonCollapsedCount + (_rows - 1)) / _rows;
                 }
             }
 
             _horizontalSpacing = HorizontalSpacing;
             _verticalSpacing = VerticalSpacing;
 
-            _totalSpacingWidth = _columns == 0 ? 0 : HorizontalSpacing * Math.Max(_columns - 1, 0);
-            _totalSpacingHeight = _rows == 0 ? 0 : VerticalSpacing * Math.Max(_rows - 1, 0);
+            _totalSpacingWidth = _columns == 0 ? 0 : _horizontalSpacing * (_columns - 1);
+            _totalSpacingHeight = _rows == 0 ? 0 : _verticalSpacing * (_rows - 1);
 
             _orientation = Orientation;
         }

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcManager.DiscordRpc")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2020")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,7 +31,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.89")]
-[assembly: AssemblyFileVersion("1.0.0.89")]
-// Modified at: 18/11/26 23:18:46
-// Modified at: 4/4/2020 2:06:48 AM
+[assembly: AssemblyVersion("1.0.0.106")]
+[assembly: AssemblyFileVersion("1.0.0.106")]
+// Modified at: 26/01/17 10:21:28 AM
+// Modified at: 12/16/2021 11:43:17 PM

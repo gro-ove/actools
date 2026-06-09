@@ -95,7 +95,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private bool _reloading;
 
-        private async void ReloadDriverModel() {
+        private async Task ReloadDriverModel() {
             if (_reloading) return;
             _reloading = true;
 
@@ -142,7 +142,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 _useUp = value;
                 OnPropertyChanged();
             }
-        }
+        } 
 
         private Up _up;
 

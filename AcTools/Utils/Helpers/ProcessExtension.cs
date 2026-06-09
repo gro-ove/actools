@@ -163,18 +163,50 @@ namespace AcTools.Utils.Helpers {
             try {
                 var tcs = new TaskCompletionSource<object>();
                 process.EnableRaisingEvents = true;
-                process.Exited += (sender, args) => tcs.TrySetResult(null);
+                AcToolsLogging.Write($"Waiting for exit: “{process.StartInfo.FileName}”");
+                process.Exited += (sender, args) => {
+                    AcToolsLogging.Write($"Process “{process.StartInfo.FileName}” has finished");
+                    tcs.TrySetResult(null);
+                };
                 if (cancellationToken != default) {
-                    cancellationToken.Register(() => tcs.TrySetCanceled());
+                    cancellationToken.Register(() => {
+                        AcToolsLogging.Write($"Process “{process.StartInfo.FileName}” run cancelled");
+                        tcs.TrySetCanceled();
+                    });
                 }
                 if (process.HasExitedSafe()) {
+                    AcToolsLogging.Write($"Process “{process.StartInfo.FileName}” has already finished (that was quick)");
                     tcs.TrySetResult(null);
                 }
                 return tcs.Task;
             } catch (Exception e) {
-                AcToolsLogging.Write(e);
+                AcToolsLogging.Write($"Couldn’t properly wait for exit: “{process.StartInfo.FileName}”, {e}");
                 return WaitForExitAsyncFallback(process, cancellationToken);
             }
+        }
+
+        public static void TryKill([NotNull] this Process process) {
+            try {
+                process.Kill();
+            } catch {
+                // ignored
+            }
+        }
+
+        public static async Task WaitKillAndDisposeAsync([NotNull] this Process process, Func<bool> shutdownCheck, CancellationToken cancellationToken) {
+            var running = new[]{ true };
+            cancellationToken.Register(process.TryKill);
+            if (shutdownCheck != null) {
+                ((Func<Task>)(async () => {
+                    while (running[0]) {
+                        await Task.Delay(TimeSpan.FromSeconds(5d)).ConfigureAwait(false);
+                        if (shutdownCheck()) process.TryKill();
+                    }
+                }))().Ignore();
+            }
+            await process.WaitForExitAsync().ConfigureAwait(false);
+            running[0] = false;
+            Task.Delay(TimeSpan.FromSeconds(5d)).ContinueWith(r => process.Dispose()).Ignore();
         }
 
         /// <summary>

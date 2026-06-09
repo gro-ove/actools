@@ -92,6 +92,7 @@
     <Compile Include="StringExtensionTest.cs" />
     <Compile Include="SublistTest.cs" />
     <Compile Include="Temporary.cs" />
+    <Compile Include="Utils\Helpers\ArrayExtensionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AcTools\AcTools.csproj">

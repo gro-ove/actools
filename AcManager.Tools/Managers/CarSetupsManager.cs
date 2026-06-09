@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers.Api;
-using AcManager.Tools.Helpers.Api.TheSetupMarket;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
@@ -41,6 +39,10 @@ namespace AcManager.Tools.Managers {
         }
 
         protected override string GetLocationByFilename(string filename, out bool inner) {
+            if (Directories == null) {
+                inner = false;
+                return null;
+            }
             return Directories.GetLocationByFilename(filename, out inner);
         }
 
@@ -53,6 +55,9 @@ namespace AcManager.Tools.Managers {
                 .IsMatch(id);
 
         protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
+            if (Directories == null) {
+                return new List<AcPlaceholderNew>();
+            }
             return Directories.GetContentFiles(SearchPattern).Select(dir => {
                 var id = Directories.GetId(dir);
                 return Filter(id, dir) ? CreateAcPlaceholder(id, Directories.CheckIfEnabled(dir)) : null;
@@ -66,7 +71,6 @@ namespace AcManager.Tools.Managers {
 
     public enum CarSetupsRemoteSource {
         None = 0,
-        TheSetupMarket
     }
 
     public class RemoteSetupsManager : BaseAcManager<RemoteCarSetupObject> {
@@ -111,15 +115,6 @@ namespace AcManager.Tools.Managers {
                 o.PastLoad();
                 yield return o;
             }
-        }
-    }
-
-    public class TheSetupMarketAsManager : RemoteSetupsManager {
-        private TheSetupMarketAsManager(string carId, List<RemoteSetupInformation> data) : base(CarSetupsRemoteSource.TheSetupMarket, carId, data) { }
-
-        [ItemNotNull]
-        public static async Task<TheSetupMarketAsManager> CreateAsync(CarObject car) {
-            return new TheSetupMarketAsManager(car.Id, await TheSetupMarketApiProvider.GetAvailableSetups(car.Id).ConfigureAwait(false));
         }
     }
 }

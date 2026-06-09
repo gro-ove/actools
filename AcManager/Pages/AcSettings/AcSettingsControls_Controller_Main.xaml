@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsControls_Controller_Main" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DataContext="{d:DesignInstance acset:AcSettingsControls+ViewModel}" Unloaded="OnUnloaded">
+    xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.club/app/tools"
+    xmlns:c="http://acstuff.club/app/controls" mc:Ignorable="d" d:DataContext="{d:DesignInstance acset:AcSettingsControls+ViewModel}" Unloaded="OnUnloaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -15,9 +15,22 @@
     <StackPanel>
       <StackPanel Style="{StaticResource SettingsPanel}" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureJoypadIndexAware}">
         <DockPanel>
-          <mui:ValueLabel Value="{Binding Controls.ControllerDeviceIndex}" mui:BetterTextBox.Mode="Integer" Content="Joypad index" />
-          <Slider Minimum="0" Maximum="3" Ticks="1" TickPlacement="BottomRight" Value="{Binding Controls.ControllerDeviceIndex}" />
+          <mui:ValueLabel Value="{Binding Controls.DisplayControllerDeviceIndex}" mui:BetterTextBox.Mode="Integer" mui:BetterTextBox.Minimum="1"
+              mui:BetterTextBox.Maximum="4" Content="Gamepad ID" />
+          <Slider Minimum="1" Maximum="4" TickFrequency="1" TickPlacement="BottomRight" Value="{Binding Controls.DisplayControllerDeviceIndex}" />
         </DockPanel>
+        <CheckBox IsChecked="{Binding Controls.ControllerUseDualShock}" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureDualShockSupport}"
+            ToolTip="Requires CSP 0.1.80">
+          <Label Content="Use PlayStation 4 DualShock gamepad" />
+        </CheckBox>
+        <CheckBox IsChecked="{Binding Controls.ControllerUseDualSense}" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureDualSenseSupport}"
+            ToolTip="Requires CSP 0.1.79">
+          <Label Content="Use PlayStation 5 DualSense gamepad" />
+        </CheckBox>
+        <c:MessageBlock c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureDualSenseSupport}">
+          <mui:BbCodeBlock Style="{StaticResource Small}"
+              Text="With CSP active, use built-in Controller Tweaks app to change buttons live with DualShock or DualSense gamepads (or any other gamepads)." />
+        </c:MessageBlock>
       </StackPanel>
 
       <CheckBox IsChecked="{Binding Controls.CombineWithKeyboardInput}" Margin="0 0 0 20">

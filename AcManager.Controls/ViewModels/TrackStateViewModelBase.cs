@@ -1,9 +1,12 @@
+using System.IO;
 using System.Text;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -96,7 +99,7 @@ namespace AcManager.Controls.ViewModels {
         #endregion
 
         #region Saveable
-        private class SaveableData {
+        private class SaveableData : IJsonSerializable {
             [JsonProperty("s")]
             public double GripStart = 95d;
 
@@ -114,6 +117,20 @@ namespace AcManager.Controls.ViewModels {
 
             [JsonProperty("w")]
             public bool WeatherDefined;
+
+            string IJsonSerializable.ToJson() {
+                var s = new StringWriter();
+                var w = new JsonTextWriter(s);
+                w.WriteStartObject();
+                w.Write("s", GripStart);
+                w.Write("t", GripTransfer);
+                w.Write("r", GripRandomness);
+                w.Write("g", LapGain);
+                w.Write("d", Description);
+                w.Write("w", WeatherDefined);
+                w.WriteEndObject();
+                return s.ToString();
+            }
         }
 
         protected virtual void SaveLater() {

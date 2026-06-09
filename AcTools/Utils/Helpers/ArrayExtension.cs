@@ -4,6 +4,14 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class ArrayExtension {
+        public static void XorSelf(this byte[] data, byte[] key) {
+            int dataLength = data.Length, keyLength = key.Length;
+            for (int i = 0, k = 0; i < dataLength; i++, k++) {
+                if (k == keyLength) k = 0;
+                data[i] ^= key[k];
+            }
+        }
+
         [CanBeNull]
         public static T[] CreateArrayOfType<T>(int size) where T : new() {
             var result = new T[size];
@@ -58,7 +66,7 @@ namespace AcTools.Utils.Helpers {
             return subset;
         }
 
-        [DllImport("msvcrt.dll", CallingConvention=CallingConvention.Cdecl)]
+        [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int memcmp(byte[] b1, byte[] b2, long count);
 
         public static bool EqualsTo(this byte[] b1, byte[] b2) {
@@ -79,7 +87,7 @@ namespace AcTools.Utils.Helpers {
             var c = new char[l-- * 2];
             while (i < l) {
                 var d = data[++i];
-                c[++p] = lookup[d >> 4];
+                c[++p] = lookup[d >>  4];
                 c[++p] = lookup[d & 0xF];
             }
             return new string(c, 0, c.Length);
@@ -91,7 +99,7 @@ namespace AcTools.Utils.Helpers {
             var c = new char[l-- * 2];
             while (i < l) {
                 var d = data[++i];
-                c[++p] = lookup[d >> 4];
+                c[++p] = lookup[d >>  4];
                 c[++p] = lookup[d & 0xF];
             }
             return new string(c, 0, c.Length);
@@ -100,15 +108,23 @@ namespace AcTools.Utils.Helpers {
         [Pure, CanBeNull]
         public static byte[] FromCutBase64([CanBeNull] this string encoded) {
             if (!string.IsNullOrWhiteSpace(encoded)) {
+                var input = encoded;
+                if (encoded[encoded.Length - 1] == '=') {
+                    encoded = encoded.TrimEnd('=');
+                }
                 try {
                     var padding = 4 - encoded.Length % 4;
                     if (padding > 0 && padding < 4) {
-                        encoded = encoded + "=".RepeatString(padding);
+                        if (padding == 3) {
+                            return null;
+                        }
+                        encoded += "=".RepeatString(padding);
                     }
 
                     return Convert.FromBase64String(encoded);
                 } catch (Exception e) {
-                    AcToolsLogging.Write(">" + encoded + "<");
+                    AcToolsLogging.Write(">INPUT:" + input + "<");
+                    AcToolsLogging.Write(">PADDED:" + encoded + "<");
                     AcToolsLogging.Write(e);
                 }
             }
@@ -127,6 +143,19 @@ namespace AcTools.Utils.Helpers {
             }
 
             return null;
+        }
+
+        public static unsafe long IndexOf(this byte[] haystack, byte[] needle) {
+            fixed (byte* h = haystack)
+            fixed (byte* n = needle) {
+                long i = 0;
+                for (byte* hNext = h, hEnd = h + haystack.LongLength; hNext < hEnd; i++, hNext++) {
+                    var found = true;
+                    for (byte* hInc = hNext, nInc = n, nEnd = n + needle.LongLength; found && nInc < nEnd; found = *nInc == *hInc, nInc++, hInc++) ;
+                    if (found) return i;
+                }
+                return -1;
+            }
         }
     }
 }

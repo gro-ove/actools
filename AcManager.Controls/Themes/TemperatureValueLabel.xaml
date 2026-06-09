@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools">
+    xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.club/app/tools">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ButtonWithComboBox.xaml" />
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
@@ -50,6 +50,8 @@
                 <Condition Value="True">
                   <Condition.Binding>
                     <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                      <!-- TODO: Buggy resharper -->
+                      <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                       <Binding Path="Value" RelativeSource="{RelativeSource Self}" />
                       <Binding Path="c:BetterTextBox.ModeLabelValue" RelativeSource="{RelativeSource Self}" />
                     </MultiBinding>
@@ -94,6 +96,8 @@
                     <Condition Value="True">
                       <Condition.Binding>
                         <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                          <!-- TODO: Buggy resharper -->
+                          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                           <Binding Path="Value" RelativeSource="{RelativeSource Self}" />
                           <Binding Path="c:BetterTextBox.ModeLabelValue" RelativeSource="{RelativeSource Self}" />
                         </MultiBinding>
@@ -183,6 +187,8 @@
                 <Condition Value="True">
                   <Condition.Binding>
                     <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                      <!-- TODO: Buggy resharper -->
+                      <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                       <Binding Path="Value" RelativeSource="{RelativeSource Self}" />
                       <Binding Path="c:BetterTextBox.ModeLabelValue" RelativeSource="{RelativeSource Self}" />
                     </MultiBinding>
@@ -239,6 +245,8 @@
                     <Condition Value="True">
                       <Condition.Binding>
                         <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                          <!-- TODO: Buggy resharper -->
+                          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                           <Binding Path="Value" RelativeSource="{RelativeSource Self}" />
                           <Binding Path="c:BetterTextBox.ModeLabelValue" RelativeSource="{RelativeSource Self}" />
                         </MultiBinding>
@@ -345,6 +353,8 @@
                     <Condition Value="True">
                       <Condition.Binding>
                         <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                          <!-- TODO: Buggy resharper -->
+                          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                           <Binding Path="Value" RelativeSource="{RelativeSource Self}" />
                           <Binding Path="c:BetterTextBox.ModeLabelValue" RelativeSource="{RelativeSource Self}" />
                         </MultiBinding>
@@ -405,6 +415,8 @@
                     <Condition Value="True">
                       <Condition.Binding>
                         <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                          <!-- TODO: Buggy resharper -->
+                          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                           <Binding Path="Value" RelativeSource="{RelativeSource Self}" />
                           <Binding Path="c:BetterTextBox.ModeLabelValue" RelativeSource="{RelativeSource Self}" />
                         </MultiBinding>

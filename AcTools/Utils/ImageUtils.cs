@@ -397,7 +397,7 @@ namespace AcTools.Utils {
                 }
             }
 
-            using (var sourceStream = File.Open(source, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var sourceStream = File.Open(source, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var destinationStream = File.Open(destination, FileMode.Create, FileAccess.ReadWrite)) {
                 Convert(sourceStream, destinationStream, resize, quality, exif);
             }

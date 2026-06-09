@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Starters;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -23,6 +25,22 @@ namespace AcManager.Tools.Helpers {
                 new DelayEntry(TimeSpan.FromDays(1))
             });
 
+            private bool? _steamIntegration;
+
+            public bool SteamIntegration {
+                get => _steamIntegration ?? (_steamIntegration = ValuesStorage.Get("Settings.IntegratedSettings.SteamIntegration", false)).Value;
+                set {
+                    if (Equals(value, _steamIntegration)) return;
+                    _steamIntegration = value;
+                    ValuesStorage.Set("Settings.IntegratedSettings.SteamIntegration", value);
+                    OnPropertyChanged();
+
+                    if (value) {
+                        SteamStarter.InitializeAsync().Ignore();
+                    }
+                }
+            }
+
             private bool? _discordIntegration;
 
             public bool DiscordIntegration {
@@ -31,78 +49,6 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _discordIntegration)) return;
                     _discordIntegration = value;
                     ValuesStorage.Set("Settings.IntegratedSettings.DiscordIntegration", value);
-                    OnPropertyChanged();
-                }
-            }
-
-            private DelayEntry _theSetupMarketCacheListPeriod;
-
-            public DelayEntry TheSetupMarketCacheListPeriod {
-                get {
-                    /*var saved = ValuesStorage.Get<TimeSpan?>("Settings.IntegratedSettings.TheSetupMarketCacheListPeriod");
-                    return _theSetupMarketCacheListPeriod ?? (_theSetupMarketCacheListPeriod = Periods.FirstOrDefault(x => x.TimeSpan == saved) ??
-                            Periods.ElementAt(3));*/
-                    return Periods.Last();
-                }
-                set {
-                    if (Equals(value, _theSetupMarketCacheListPeriod)) return;
-                    _theSetupMarketCacheListPeriod = value;
-                    ValuesStorage.Set("Settings.IntegratedSettings.TheSetupMarketCacheListPeriod", value.TimeSpan);
-                    OnPropertyChanged();
-                }
-            }
-
-            private DelayEntry _theSetupMarketCacheDataPeriod;
-
-            public DelayEntry TheSetupMarketCacheDataPeriod {
-                get {
-                    var saved = ValuesStorage.Get<TimeSpan?>("Settings.IntegratedSettings.TheSetupMarketCacheDataPeriod");
-                    return _theSetupMarketCacheDataPeriod ?? (_theSetupMarketCacheDataPeriod = Periods.FirstOrDefault(x => x.TimeSpan == saved) ??
-                            Periods.ElementAt(2));
-                }
-                set {
-                    if (Equals(value, _theSetupMarketCacheDataPeriod)) return;
-                    _theSetupMarketCacheDataPeriod = value;
-                    ValuesStorage.Set("Settings.IntegratedSettings.TheSetupMarketCacheDataPeriod", value.TimeSpan);
-                    OnPropertyChanged();
-                }
-            }
-
-            private bool? _theSetupMarketCacheServer;
-
-            public bool TheSetupMarketCacheServer {
-                get => _theSetupMarketCacheServer ?? (_theSetupMarketCacheServer =
-                        ValuesStorage.Get("Settings.IntegratedSettings.TheSetupMarketCacheServer2", true)).Value;
-                set {
-                    if (Equals(value, _theSetupMarketCacheServer)) return;
-                    _theSetupMarketCacheServer = value;
-                    ValuesStorage.Set("Settings.IntegratedSettings.TheSetupMarketCacheServer2", value);
-                    OnPropertyChanged();
-                }
-            }
-
-            private bool? _theSetupMarketTab;
-
-            public bool TheSetupMarketTab {
-                get => _theSetupMarketTab ?? (_theSetupMarketTab = ValuesStorage.Get("Settings.IntegratedSettings.TheSetupMarketTab", true)).Value;
-                set {
-                    if (Equals(value, _theSetupMarketTab)) return;
-                    _theSetupMarketTab = value;
-                    ValuesStorage.Set("Settings.IntegratedSettings.TheSetupMarketTab", value);
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(TheSetupMarketCounter));
-                }
-            }
-
-            private bool? _theSetupMarketCounter;
-
-            public bool TheSetupMarketCounter {
-                get => TheSetupMarketTab && (_theSetupMarketCounter ??
-                        (_theSetupMarketCounter = ValuesStorage.Get("Settings.IntegratedSettings.TheSetupMarketCounter", false)).Value);
-                set {
-                    if (Equals(value, _theSetupMarketCounter)) return;
-                    _theSetupMarketCounter = value;
-                    ValuesStorage.Set("Settings.IntegratedSettings.TheSetupMarketCounter", value);
                     OnPropertyChanged();
                 }
             }

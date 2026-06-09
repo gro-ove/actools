@@ -1,17 +1,29 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Forms;
 using AcManager.Tools.Data;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
+using AcTools.Windows;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
+using PowerLineStatus = System.Windows.Forms.PowerLineStatus;
 
 namespace AcManager.Tools.Miscellaneous {
     public static class LuaHelper {
         public static bool CompareStrings(string a, string b) {
             return string.Equals(a, b, StringComparison.InvariantCulture);
+        }
+        
+        public static bool MatchStrings(string pattern, string str) {
+            if (string.IsNullOrEmpty(str)) return false;
+            return new Regex("^" + Regex.Escape(pattern).Replace(@"\*", @".*").Replace(@"\?", @".") + "$").IsMatch(str);
         }
 
         public static bool CompareStringsIgnoringCase(string a, string b) {
@@ -37,7 +49,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         [CanBeNull]
-        public static Script GetExtended() {
+        public static Script GetExtended(bool pcState = false) {
             try {
                 if (!_registered) {
                     UserData.RegisterType<CarObject>();
@@ -61,9 +73,24 @@ namespace AcManager.Tools.Miscellaneous {
                 state.Globals["strutils"] = new Table(state) {
                     ["split"] = (Func<string, string, string[]>)((i, s) => i.Split(new[]{ s }, StringSplitOptions.None)),
                     ["equals"] = (Func<string, string, bool>)CompareStrings,
-                    ["equals_i"] = (Func<string, string, bool>)CompareStringsIgnoringCase
+                    ["equals_i"] = (Func<string, string, bool>)CompareStringsIgnoringCase,
+                    ["match"] = (Func<string, string, bool>)MatchStrings,
                 };
 
+                var sysUtils = new Table(state) {
+                    ["message"] = (Action<string>)(s => {
+                        Logging.Debug("Message from Lua:" + s);
+                        ActionExtension.InvokeInMainThreadAsync(() => ModernDialog.ShowMessage(s.Or(@"<empty>"), "Message from a script", MessageBoxButton.OK));
+                    }),
+                };
+
+                if (pcState) {
+                    sysUtils["numdesktops"] = (Func<int>)User32.GetMonitorCount;
+                    sysUtils["primarymonitor"] = (Func<string>)User32.GetPrimaryDisplayName;
+                    sysUtils["discharging"] = (Func<bool>)(() => SystemInformation.PowerStatus.PowerLineStatus == PowerLineStatus.Offline);
+                }
+                state.Globals["sysutils"] = sysUtils;
+                
                 state.Globals[@"SessionType"] = ToMoonSharp<Game.SessionType, byte>();
                 return state;
             } catch (Exception e) {

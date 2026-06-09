@@ -13,6 +13,8 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public WheelButtonEntry WheelButtonModifier { get; }
 
+        public string Id { get; }
+
         public string ToolTip { get; }
 
         public bool CanBeHeld { get; }
@@ -26,6 +28,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public CustomButtonEntryCombined([LocalizationRequired(false)] string id, string displayName,
                 string toolTip, Keys? defaultKey, [CanBeNull] List<Keys> modifiers, bool canBeHeld) {
+            Id = id;
             WheelButton = new WheelButtonEntry(id, displayName, true);
             WheelButtonModifier = new WheelButtonEntry(id, displayName, false, true);
             WheelButton.ModifierButton = WheelButtonModifier;

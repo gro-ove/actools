@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.club/app/tools"
     mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
@@ -14,7 +14,7 @@
     <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
       <mui:BbCodeBlock Mode="WithoutBbCodes" Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" />
       <mui:BooleanSwitch Value="{Binding ShowCarPreviewInToolTips, Source={x:Static t:SettingsHolder.Content}}" CollapseOnFalse="True">
-        <mui:BetterImage Filename="{Binding SelectedSkinLazy.PreviewImage}" HideIfNull="True" Width="480" Height="270" Stretch="UniformToFill" />
+        <mui:BetterImage Filename="{Binding SelectedSkinLazy.Value.PreviewImage}" HideIfNull="True" Width="480" Height="270" Stretch="UniformToFill" />
       </mui:BooleanSwitch>
       <c:CarBlock Car="{Binding}" ShowSkinsAndPreview="False" SelectSkin="False" Width="480" MaxHeight="320" ShowDescription="False" />
     </StackPanel>

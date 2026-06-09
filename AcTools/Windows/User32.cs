@@ -13,6 +13,7 @@ using AcTools.Utils.Helpers;
 namespace AcTools.Windows {
     public static class User32 {
         public delegate bool EnumThreadDelegate(IntPtr hWnd, IntPtr lParam);
+
         [DllImport("user32.dll")]
         public static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
@@ -341,5 +342,78 @@ namespace AcTools.Windows {
             SendMessage(handle, WM_GETTEXT, message.Capacity, message);
             return message.ToString();
         }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct ScreenRect {
+            public int left;
+            public int top;
+            public int right;
+            public int bottom;
+        }
+
+        [DllImport("user32")]
+        private static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lpRect, MonitorEnumProc callback, int dwData);
+
+        private delegate bool MonitorEnumProc(IntPtr hDesktop, IntPtr hdc, ref ScreenRect pRect, int dwData);
+
+        public static int GetMonitorCount() {
+            var ret = 0;
+
+            bool Callback(IntPtr hDesktop, IntPtr hdc, ref ScreenRect rect, int d) {
+                ++ret;
+                return true;
+            }
+
+            EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, Callback, 0);
+            return ret;
+        }
+
+        public static string GetPrimaryDisplayName() {
+            DISPLAY_DEVICE d = new DISPLAY_DEVICE();
+            d.cb = Marshal.SizeOf(d);
+            for (uint i = 0; EnumDisplayDevices(null, i, ref d, 0); i++) {
+                if (d.StateFlags.HasFlag(DisplayDeviceStateFlags.PrimaryDevice)) {
+                    return d.DeviceString;
+                }
+                d.cb = Marshal.SizeOf(d); // must reset cb before each call
+            }
+            return null;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        private struct DISPLAY_DEVICE {
+            public int cb;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+            public string DeviceName;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+            public string DeviceString;
+
+            public DisplayDeviceStateFlags StateFlags;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+            public string DeviceID;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+            public string DeviceKey;
+        }
+
+        [Flags]
+        private enum DisplayDeviceStateFlags : int {
+            Active = 0x00000001,
+            MultiDriver = 0x00000002,
+            PrimaryDevice = 0x00000004,
+            MirroringDriver = 0x00000008,
+            VGACompatible = 0x00000010,
+            Removable = 0x00000020,
+            ModesPruned = 0x08000000,
+            Remote = 0x04000000,
+            Disconnect = 0x02000000,
+            AttachedToDesktop = 0x00000001,
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern bool EnumDisplayDevices(string lpDevice, uint iDevNum, ref DISPLAY_DEVICE lpDisplayDevice, uint dwFlags);
     }
 }

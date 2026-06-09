@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AcManager.Internal;
+using AcManager.Tools.Data.TzConvert;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
-using TimeZoneConverter;
 
 namespace AcManager.Tools.Helpers.Api {
     public class TimezoneDbApiProvider {

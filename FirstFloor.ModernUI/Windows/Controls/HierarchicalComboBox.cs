@@ -138,12 +138,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected override void OnMouseEnter(MouseEventArgs e) {
             base.OnMouseEnter(e);
 
-            if (_previewInitialized || _view == null) return;
+            if (_previewInitialized) return;
             _previewInitialized = true;
 
-            if (_view.PreviewProvider != null) {
+            if (_view?.PreviewProvider != null) {
                 SetValue(PreviewValuePropertyKey, _view.PreviewProvider.GetPreview(OriginalValue));
                 SetValue(ToolTipPlacementPropertyKey, _view.PreviewProvider.GetPlacementMode(OriginalValue));
+            } else if (ToolTip != null) {
+                SetValue(PreviewValuePropertyKey, ToolTip);
             }
         }
 
@@ -286,6 +288,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     }
                 }
 
+                // return new TextBlock { Text = value.GetType().FullName };
                 return direct;
             }
 
@@ -404,7 +407,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private object GetItem(int offset) {
-            var items = Flatten(ItemsSource).Where(x => !(x is Separator)).ToList();
+            var items = Flatten(ItemsSource).Where(x => !(x is UIElement)).ToList();
             var current = SelectedItem;
             if (items.Count < 2) return current;
 
@@ -495,7 +498,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             ((HierarchicalComboBox)o).OnItemsSourceChanged((IList)e.NewValue);
         }
 
-        private static IEnumerable<object> Flatten([NotNull] IList list) {
+        protected static IEnumerable<object> Flatten([NotNull] IList list) {
             foreach (var o in list) {
                 if (o is HierarchicalGroup g) {
                     foreach (var c in Flatten(g)) {
@@ -530,6 +533,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return GetGroup(list, item, out g) ? g : null;
         }
 
+        protected virtual bool IsItemPresent(IList newValue, object item) {
+            return Flatten(newValue).Contains(SelectedItem);
+        }
+
         private void OnItemsSourceChanged([CanBeNull] IList newValue) {
             InnerItems?.Dispose();
             SetValue(InnerItemsPropertyKey, new HierarchicalItemsView(this, newValue));
@@ -537,7 +544,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (FixedMode) {
                 if (newValue == null) {
                     SelectedItem = null;
-                } else if (!Flatten(newValue).Contains(SelectedItem)) {
+                } else if (!IsItemPresent(newValue, SelectedItem)) {
                     SelectedItem = Flatten(newValue).FirstOrDefault();
                     SetValue(SelectedItemHeaderConverterPropertyKey, GetGroup(newValue, SelectedItem)?.HeaderConverter);
                     return;
@@ -567,7 +574,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             ((HierarchicalComboBox)o).OnSelectedItemChanged(e.OldValue, e.NewValue);
         }
 
-        private void OnSelectedItemChanged(object oldValue, object newValue) {
+        protected virtual void OnSelectedItemChanged(object oldValue, object newValue) {
             SelectionChanged?.Invoke(this, new SelectedItemChangedEventArgs(oldValue, newValue));
 
             var itemsSource = ItemsSource;

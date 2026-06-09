@@ -53,7 +53,7 @@ namespace AcManager.Tools.Data {
         }
 
         public override string GetBaseUrl() {
-            return "/patch/tracks-vao/";
+            return "/tracks-vao";
         }
 
         public override string GetCacheDirectoryName() {

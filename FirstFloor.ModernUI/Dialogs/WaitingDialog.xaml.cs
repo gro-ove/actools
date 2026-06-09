@@ -15,7 +15,9 @@ using JetBrains.Annotations;
 namespace FirstFloor.ModernUI.Dialogs {
     public partial class WaitingDialog : IInvokingNotifyPropertyChanged, IProgress<string>, IProgress<double?>, IProgress<Tuple<string, double?>>,
             IProgress<AsyncProgressEntry>, IDisposable, IProgress<double> {
-        private Window _realOwner;
+        public static int BlockAttachmentCounter { get; set; }
+        
+        private readonly Window _realOwner;
 
         public static WaitingDialog Create(string reportValue) {
             var w = new WaitingDialog();
@@ -114,6 +116,7 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         [CanBeNull]
         private static Window GetActiveWindow() {
+            if (BlockAttachmentCounter != 0) return null;
             return Application.Current?.Windows.OfType<Window>().FirstOrDefault(x => x.IsActive);
         }
 

@@ -24,6 +24,7 @@ using AcManager.Controls.UserControls.Web;
 using AcManager.Internal;
 using AcManager.Pages.Windows;
 using AcManager.Tools.Data;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
@@ -500,7 +501,7 @@ namespace AcManager.Pages.Drive {
                 Sync(() => {
                     using (var model = PatchSettingsModel.Create()) {
                         var item = model.Configs?
-                                .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.Sections.GetByIdOrDefault("BASIC")?
+                                .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.SectionsOwn.GetByIdOrDefault("BASIC")?
                                 .GetByIdOrDefault("ENABLED");
                         if (item != null) {
                             item.Value = @"1";
@@ -570,6 +571,9 @@ namespace AcManager.Pages.Drive {
                         RequestedCar = _car.Id,
                         CspFeaturesList = args.GetStringValueOnly("cspFeatures"),
                         CspReplayClipUploadUrl = args.GetStringValueOnly("cspReplayClipUploadUrl"),
+                    },
+                    AdditionalPropertieses = {
+                        new LiveServiceMark("RaceU")
                     }
                 };
 

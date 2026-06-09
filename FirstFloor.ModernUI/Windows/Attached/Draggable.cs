@@ -14,23 +14,6 @@ using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
-    public class DraggableMovedEventArgs : EventArgs {
-        public DraggableMovedEventArgs(string format, object draggable) {
-            Format = format;
-            Draggable = draggable;
-        }
-
-        public string Format { get; }
-
-        public object Draggable { get; }
-    }
-
-    public interface IDraggableCloneable {
-        bool CanBeCloned { get; }
-
-        object Clone();
-    }
-
     public static class Draggable {
         public const string SourceFormat = "Data-Source";
 

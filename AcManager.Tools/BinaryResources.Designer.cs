@@ -86,8 +86,7 @@ namespace AcManager.Tools {
         ///        WBCAR_STEER         vector3  0.001
         ///        WBTYRE_STEER        vector3  0.001
         ///
-        ///[suspension_rear_geometry:v0]
-        ///su [rest of string was truncated]&quot;;.
+        ///[suspension_rear_ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Rules {
             get {
@@ -101,6 +100,36 @@ namespace AcManager.Tools {
         internal static byte[] SidePassage {
             get {
                 object obj = ResourceManager.GetObject("SidePassage", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TimeZoneConverter_Aliases {
+            get {
+                object obj = ResourceManager.GetObject("TimeZoneConverter.Aliases", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TimeZoneConverter_Mapping {
+            get {
+                object obj = ResourceManager.GetObject("TimeZoneConverter.Mapping", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] TimeZoneConverter_RailsMapping {
+            get {
+                object obj = ResourceManager.GetObject("TimeZoneConverter.RailsMapping", resourceCulture);
                 return ((byte[])(obj));
             }
         }

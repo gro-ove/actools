@@ -179,20 +179,31 @@ namespace AcManager.DiscordRpc {
             Update(true);
         }
 
-        private static List<DiscordRichPresence> Instances = new List<DiscordRichPresence>();
-        private static Busy _busy = new Busy();
+        private static readonly List<DiscordRichPresence> Instances = new List<DiscordRichPresence>();
+        private static readonly Busy UpdateBusy = new Busy();
+        
+        public static EventHandler<DiscordRichPresence> PresenceUpdate;
+        private DiscordRichPresence _lastAnnounced;
 
         private void Update(bool force = false) {
             if (IsDisposed && !force) return;
-            _busy.DoDelay(() => {
-                if (!force && Instances.FirstOrDefault() != this) return;
-                DiscordConnector.Instance?.Update(Instances.FirstOrDefault());
+            UpdateBusy.DoDelay(() => {
+                var firstInstance = Instances.FirstOrDefault();
+                if (!force && firstInstance == _lastAnnounced) return;
+                AnnounceFirstState();
             }, 300);
+        }
+
+        private void AnnounceFirstState() {
+            var firstInstance = Instances.FirstOrDefault();
+            _lastAnnounced = firstInstance;
+            DiscordConnector.Instance?.Update(firstInstance);
+            PresenceUpdate?.Invoke(null, firstInstance);
         }
 
         public void ForceUpdate() {
             if (IsDisposed) return;
-            DiscordConnector.Instance?.Update(Instances.FirstOrDefault());
+            AnnounceFirstState();
         }
 
         int IComparer<DiscordRichPresence>.Compare(DiscordRichPresence x, DiscordRichPresence y) {

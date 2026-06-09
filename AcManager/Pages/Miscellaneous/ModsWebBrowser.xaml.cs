@@ -425,7 +425,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                 ClipboardHelper.SetText(piece);
                 Toast.Show(string.Format(AppStrings.WebSource_SharedDescriptionTitle, Name),
                         AppStrings.WebSource_SharedMessageCopiedTitle,
-                        () => WindowsHelper.ViewInBrowser(@"https://acstuff.ru/f/d/24-content-manager-websites-with-mods"));
+                        () => WindowsHelper.ViewInBrowser(@"https://acstuff.club/f/d/24-content-manager-websites-with-mods"));
             }));
 
             [CanBeNull]
@@ -1044,7 +1044,7 @@ window.$KEY = outline.stop.bind(outline);
                 _progress = null;
 
                 try {
-                    var newLoader = await FlexibleLoader.CreateLoaderAsync(url, this, default(CancellationToken));
+                    var newLoader = await FlexibleLoader.CreateLoaderAsync(new FlexibleLoader.LoaderParams(url), this, CancellationToken.None);
                     if (newLoader == null) throw new Exception("Unexpected exception #4313");
 
                     Logging.Write("Loader: " + newLoader.GetType().Name);
@@ -1253,10 +1253,10 @@ window.$KEY = outline.stop.bind(outline);
                         }
                     };
 
-                    Task.Delay(7000).ContinueWith(t => {
+                    Task.Delay(TimeSpan.FromSeconds(7d)).ContinueWith(t => {
                         if (suggestedRule != null && suggestedRule != _source.AutoDownloadRule) {
                             RunRule(suggestedRule);
-                            Task.Delay(4000).ContinueWith(t1 => {
+                            Task.Delay(TimeSpan.FromSeconds(7d)).ContinueWith(t1 => {
                                 if (_onDownloadFired) {
                                     _source.AutoDownloadRule = suggestedRule;
                                 } else {
@@ -1423,15 +1423,14 @@ window.$KEY = outline.stop.bind(outline);
                     () => !string.IsNullOrWhiteSpace(_finder.Model.Value)).ListenOn(_finder.Model, nameof(_finder.Model.Value)));
 
             private async Task Save() {
-                var source = _source;
-                source.AutoDownloadRule = _finder.Model.Value;
+                _source.AutoDownloadRule = _finder.Model.Value;
                 _message.Text = "Please, wait for newly created rule to start download…";
                 CancelRuleEditing();
 
                 using (var token = new CancellationTokenSource()) {
                     try {
                         _onDownloadFired = false;
-                        RunRule(source.AutoDownloadRule);
+                        RunRule(_source.AutoDownloadRule);
                         await Task.Delay(5000, token.Token);
                     } catch (OperationCanceledException) { }
                 }

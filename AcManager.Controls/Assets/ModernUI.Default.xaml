@@ -35,7 +35,7 @@
 
   <!-- For example, on dark stripe car’s and track’s names are written on quick drive page -->
   <SolidColorBrush x:Key="DarkStripeText" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="DarkStripeBackground" Color="#88222222" />
+  <SolidColorBrush x:Key="DarkStripeBackground" Color="#AA222222" />
 
   <!-- Used in list of online servers, for example -->
   <SolidColorBrush x:Key="SlightBackgroundHint" Color="#11888888" />

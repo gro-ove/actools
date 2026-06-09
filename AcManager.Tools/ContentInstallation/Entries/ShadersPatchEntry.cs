@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Data;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
@@ -14,16 +15,16 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Entries {
     public class ShadersPatchEntry : ContentEntryBase {
-        public static bool IsBusy { get; private set; }
-        public static CancelEventHandler InstallationStart;
-        public static EventHandler InstallationEnd;
+        public class InstallationEventArgs : EventArgs { }
 
-        public static string PatchDirectoryName = "extension";
+        public static bool IsBusy { get; private set; }
+        public static EventHandler<InstallationEventArgs> InstallationStart;
+        public static EventHandler InstallationEnd;
 
         private readonly List<string> _toInstall;
 
         public ShadersPatchEntry([NotNull] string path, IEnumerable<string> items, [CanBeNull] string version)
-                : base(path, "", version: version) {
+                : base(true, path, "", null, version: version) {
             _toInstall = items.ToList();
         }
 
@@ -34,7 +35,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public override string NewFormat => "Custom Shaders Patch";
         public override string ExistingFormat => "Update for Custom Shaders Patch";
 
-        private static readonly UpdateOption CleanOption = new UpdateOption("Clean old configs and shaders first", false);
+        private static readonly UpdateOption CleanOption = new UpdateOption("Clean old configs first", false);
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {
             yield return new UpdateOption(ToolsStrings.Installator_UpdateEverything, false);
@@ -46,20 +47,25 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             var first = true;
             var cleanInstall = SelectedOption == CleanOption;
 
-            var args = new CancelEventArgs();
+            var args = new InstallationEventArgs();
             InstallationStart?.Invoke(null, args);
-            if (args.Cancel) {
-                throw new InformativeException("Can’t install two things at once");
-            }
 
             var installedLogStream = new MemoryStream();
             var installedLog = new StreamWriter(installedLogStream);
             IsBusy = true;
 
-            Logging.Debug("STARTING TO INSTALL");
+            if (SettingsHolder.Common.DeveloperMode
+                && File.Exists(Path.Combine(AcRootDirectory.Instance.RequireValue, ".dev.csp"))) {
+                // My dev folder is in AC root folder, so installing a CSP build here could be kinda disastrous
+                throw new Exception("Careful please");
+            }
+
+            Logging.Debug("Installing CSP");
             return new CopyCallback(info => {
-                Logging.Debug("KEY: " + info.Key);
                 var filename = info.Key;
+#if DEBUG
+                filename = filename.Replace("extension", PatchHelper.PatchDirectoryName);
+#endif
 
                 if (path != string.Empty && !FileUtils.IsAffectedBy(filename, path)
                         || !_toInstall.Contains(info.Key) && !_toInstall.Any(x => FileUtils.IsAffectedBy(info.Key, x))) {
@@ -70,7 +76,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                 var result = Path.Combine(InstallTo(), relativePath);
 
                 if (first) {
-                    var directory = Path.Combine(InstallTo(), PatchDirectoryName);
+                    var directory = Path.Combine(InstallTo(), PatchHelper.PatchDirectoryName);
                     if (!Directory.Exists(directory)) {
                         Directory.CreateDirectory(directory);
                     } else if (cleanInstall) {
@@ -78,7 +84,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                     }
 
                     FileUtils.TryToDelete(PatchHelper.TryGetInstalledLog());
-                    FileUtils.TryToDelete(Path.Combine(PatchHelper.RequireRootDirectory(), "config", "data_manifest.ini"));
+                    FileUtils.TryToDelete(Path.Combine(PatchHelper.RequireRootDirectory(), @"config", @"data_manifest.ini"));
+                    FileUtils.TryToDelete(Path.Combine(PatchHelper.RequireRootDirectory(), @"config", @"joypad_assist.ini"));
                     first = false;
 
                     installedLog.WriteLine(@"# Generated automatically during last patch installation via Content Manager.");

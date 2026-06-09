@@ -809,7 +809,7 @@
     <value>Naive</value>
   </data>
   <data name="Common_Recommended" xml:space="preserve">
-    <value>{0} (Recommended)</value>
+    <value>{0} (recommended)</value>
   </data>
   <data name="Period_OneDay" xml:space="preserve">
     <value>One day</value>
@@ -1574,7 +1574,7 @@
     <value>Can’t initialize Lua</value>
   </data>
   <data name="Settings_Starter_Official_Description" xml:space="preserve">
-    <value>Official way from Kunos; might be slow and unreliable, but doesn’t require patching</value>
+    <value>A bit slower, but can help with controllers misbehaving</value>
   </data>
   <data name="Settings_Starter_Tricky_Description" xml:space="preserve">
     <value>Tricky way to start the race; one of the fastest, but doesn’t work without running Steam or Internet-connection</value>
@@ -1858,5 +1858,23 @@ Would you like to pack it before starting the server? But don’t forget to shar
   </data>
   <data name="AcSettings_CameraMode_OpenVr" xml:space="preserve">
       <value>OpenVR</value>
+  </data>
+  <data name="ServerEntry_PasswordIsWrong" xml:space="preserve">
+      <value>Password is wrong</value>
+  </data>
+  <data name="ServerEntry_PasswordIsRequired" xml:space="preserve">
+      <value>Password is required</value>
+  </data>
+  <data name="ContentInstallationParams_SyncingVersions" xml:space="preserve">
+      <value>Syncing versions…</value>
+  </data>
+  <data name="Settings_Drive_SessionClass_Online" xml:space="preserve">
+      <value>Online</value>
+  </data>
+  <data name="Settings_Drive_SessionClass_Live" xml:space="preserve">
+      <value>Live (SRS, World Sim Series, etc.)</value>
+  </data>
+  <data name="Settings_Drive_SessionClass_NewModes" xml:space="preserve">
+      <value>New Modes (added by CSP)</value>
   </data>
 </root>

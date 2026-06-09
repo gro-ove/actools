@@ -53,7 +53,9 @@ namespace FirstFloor.ModernUI.Helpers {
         protected override async Task ExecuteInner() {
             try {
                 await Task.Yield();
-                await _execute(CancellationToken.None);
+                if (_execute != null) {
+                    await _execute(CancellationToken.None);
+                }
             } catch (Exception e) when (e.IsCanceled()) {
                 return;
             } catch (Exception e) {

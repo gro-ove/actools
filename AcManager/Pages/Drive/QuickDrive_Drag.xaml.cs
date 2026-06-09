@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using AcManager.Tools.Helpers;
@@ -74,7 +75,7 @@ namespace AcManager.Pages.Drive {
                 RaceGridViewModel.OpponentsNumber = 1;
             }
 
-            public override void CheckIfTrackFits(TrackObjectBase track) {
+            protected override void CheckIfTrackFits(TrackObjectBase track) {
                 TrackDoesNotFit = TagRequired("drag", track);
             }
 
@@ -92,6 +93,10 @@ namespace AcManager.Pages.Drive {
                     MatchesCount = MatchesCount,
                     BotCar = botCars.FirstOrDefault()
                 };
+            }
+
+            public override Tuple<string, string> GetDefaultTrackFilter() {
+                return Tuple.Create(@"#drag", string.Empty);
             }
         }
     }

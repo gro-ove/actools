@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsSharing" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:tools="clr-namespace:AcManager.Tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.club/app/tools"
+    xmlns:c="http://acstuff.club/app/controls" xmlns:tools="clr-namespace:AcManager.Tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance set:SettingsSharing+SharingViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -61,7 +61,7 @@
         <DockPanel>
           <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="240" PreviewMouseWheel="OnScrollMouseWheel">
             <DataGrid ItemsSource="{Binding History}" Style="{StaticResource DataGrid.Lite}" IsReadOnly="True" MouseDoubleClick="OnHistoryDoubleClick"
-                x:Name="HistoryDataGrid">
+                x:Name="HistoryDataGrid" MouseRightButtonUp="OnHistoryContextMenu">
               <DataGrid.Columns>
                 <DataGridTemplateColumn Width="160" Header="{x:Static g:AppStrings.Settings_Sharing_HistoryTableType}" SortMemberPath="EntryType"
                     CellTemplate="{StaticResource HistoryEntryType}" />

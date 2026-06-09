@@ -12,6 +12,7 @@ using AcTools.Render.Base.Shadows;
 using AcTools.Render.Base.Sprites;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -498,7 +499,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         void IMoveable.Move(Vector3 delta) {
             if (!IsMovable) return;
-            var parentMatrixInvert = Matrix.Invert(ParentMatrix);
+            var parentMatrixInvert = ParentMatrix.Invert_v2();
             Position = Vector3.TransformCoordinate(ActualPosition + delta, parentMatrixInvert);
         }
 

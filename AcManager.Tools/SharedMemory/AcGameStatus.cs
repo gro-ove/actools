@@ -4,17 +4,21 @@ using Newtonsoft.Json.Serialization;
 
 namespace AcManager.Tools.SharedMemory {
     public class AcShared : IJsonSerializable {
-        public AcShared(AcSharedPhysics physics, AcSharedGraphics graphics, AcSharedStaticInfo staticInfo) {
+        private readonly BetterMemoryMappedAccessor<AcSharedStaticInfo> _staticInfo;
+
+        public AcShared(AcSharedPhysics physics, AcSharedGraphics graphics, BetterMemoryMappedAccessor<AcSharedStaticInfo> staticInfo) {
+            _staticInfo = staticInfo;
             Physics = physics;
             Graphics = graphics;
-            StaticInfo = staticInfo;
         }
 
         public AcSharedPhysics Physics { get; }
 
         public AcSharedGraphics Graphics { get; }
 
-        public AcSharedStaticInfo StaticInfo { get; }
+        private AcSharedStaticInfo _staticInfoData;
+
+        public AcSharedStaticInfo StaticInfo => _staticInfoData ?? (_staticInfoData = _staticInfo.Get());
 
         string IJsonSerializable.ToJson() {
             return JsonConvert.SerializeObject(this, Formatting.None, new JsonSerializerSettings {

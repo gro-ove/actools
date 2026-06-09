@@ -8,6 +8,7 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.Managers.Online {
     public partial class OnlineManager {
         private static readonly Dictionary<string, IOnlineSource> Sources = new Dictionary<string, IOnlineSource>(10);
+        private static readonly Dictionary<string, OnlineSourceWrapper> WrappedSources = new Dictionary<string, OnlineSourceWrapper>(10);
 
         public static void Register(IOnlineSource source) {
             if (Sources.ContainsKey(source.Id)) {
@@ -15,14 +16,22 @@ namespace AcManager.Tools.Managers.Online {
                 return;
             }
 
+            Logging.Warning($"Registering “{source.Id}”: {source.GetType().Name}");
             Sources[source.Id] = source;
+        }
+
+        public static void Unregister(ThirdPartyOnlineSource source) {
+            if (Sources.Remove(source.Id)) {
+                WrappedSources.Remove(source.Id);
+            }
         }
 
         static OnlineManager() {
             Register(KunosOnlineSource.Instance);
             Register(LanOnlineSource.Instance);
-            Register(MinoratingOnlineSource.Instance);
+            // Register(MinoratingOnlineSource.Instance);
 
+            ThirdPartyOnlineSourcesManager.Instance.Initialize();
             FileBasedOnlineSources.Instance.Initialize();
             Register(FileBasedOnlineSources.RecentInstance);
             Register(FileBasedOnlineSources.FavouritesInstance);
@@ -30,9 +39,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public static void EnsureInitialized() {}
 
-        private readonly Dictionary<string, OnlineSourceWrapper> _wrappers = new Dictionary<string, OnlineSourceWrapper>(10);
-
-        public IEnumerable<OnlineSourceWrapper> Wrappers => _wrappers.Values;
+        public IEnumerable<OnlineSourceWrapper> Wrappers => WrappedSources.Values;
 
         [CanBeNull]
         private static IOnlineSource GetSource(string key) {
@@ -40,18 +47,25 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         [CanBeNull]
-        public OnlineSourceWrapper GetWrappedSource(string key) {
-            OnlineSourceWrapper result;
-            if (_wrappers.TryGetValue(key, out result)) return result;
+        private OnlineSourceWrapper GetWrappedSource(string key) {
+            if (WrappedSources.TryGetValue(key, out var result)) return result;
 
             var source = GetSource(key) ?? FileBasedOnlineSources.Instance.GetSource(key);
+            if (source == null) return null;
+            
             result = new OnlineSourceWrapper(List, source);
-            _wrappers[key] = result;
+            WrappedSources[key] = result;
             return result;
         }
 
         public SourcesPack GetSourcesPack([CanBeNull] params string[] keys) {
-            if (keys == null || keys.Length == 0 || keys.Length == 1 && keys[0] == null) {
+            if (keys == null) {
+                return new SourcesPack(new [] { KunosOnlineSource.Key }
+                        .Concat(ThirdPartyOnlineSourcesManager.Instance.List.Select(x => x.Id))
+                        .Select(GetWrappedSource).NonNull());
+            }
+            
+            if (keys.Length == 0 || keys.Length == 1 && keys[0] == null) {
                 return GetSourcesPack(KunosOnlineSource.Key);
             }
 
@@ -59,6 +73,7 @@ namespace AcManager.Tools.Managers.Online {
                 var enumerable = Sources.Keys.Union(FileBasedOnlineSources.Instance.GetSourceKeys());
 
                 if (!SettingsHolder.Online.IntegrateMinorating) {
+                    // Because Minorating has the same servers, excluding it from the list
                     enumerable = enumerable.ApartFrom(MinoratingOnlineSource.Key);
                 }
 

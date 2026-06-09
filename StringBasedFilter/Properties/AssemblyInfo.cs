@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("StringBasedFilter")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2020")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,10 +32,10 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.27")]
-[assembly: AssemblyFileVersion("1.0.0.27")]
+[assembly: AssemblyVersion("1.0.0.47")]
+[assembly: AssemblyFileVersion("1.0.0.47")]
 
 // For testing
 [assembly: InternalsVisibleTo("StringBasedFilter.Tests")]
-// Modified at: 19/02/28 23:35:11
-// Modified at: 3/19/2020 1:42:32 AM
+// Modified at: 25/10/02 3:37:25 PM
+// Modified at: 5/6/2022 10:32:07 PM

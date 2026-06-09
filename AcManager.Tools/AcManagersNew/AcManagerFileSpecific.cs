@@ -26,7 +26,7 @@ namespace AcManager.Tools.AcManagersNew {
         protected bool MultiDirectoryMode;
 
         protected override void OnCreatedIgnored(string filename) {
-            if (!MultiDirectoryMode) return;
+            if (!MultiDirectoryMode || Directories == null) return;
 
             try {
                 foreach (var objectLocation in Directory.GetFiles(filename, SearchPattern, SearchOption.AllDirectories)) {
@@ -42,7 +42,7 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         protected override void OnDeletedIgnored(string filename, string pseudoId) {
-            if (!MultiDirectoryMode) return;
+            if (!MultiDirectoryMode || Directories == null) return;
 
             var prefix = pseudoId + '\\';
             for (var i = 0; i < InnerWrappersList.Count; i++) {
@@ -55,6 +55,11 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         protected sealed override string GetLocationByFilename(string filename, out bool inner) {
+            if (Directories == null) {
+                inner = false;
+                return null;
+            }
+            
             var result = Directories.GetLocationByFilename(filename, out inner);
             if (!inner || result == null) return result;
 
@@ -71,6 +76,7 @@ namespace AcManager.Tools.AcManagersNew {
         protected sealed override bool Filter(string id, string filename) => FilterId(id) && File.Exists(filename);
 
         protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
+            if (Directories == null) return new List<AcPlaceholderNew>();
             return Directories.GetContentFiles(SearchPattern).Select(dir => {
                 var id = Directories.GetId(dir);
                 return FilterId(id) ? CreateAcPlaceholder(id, Directories.CheckIfEnabled(dir)) : null;

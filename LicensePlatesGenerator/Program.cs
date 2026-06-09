@@ -31,6 +31,9 @@ namespace LicensePlatesGenerator {
         [Option('f', "format", DefaultValue = "png", HelpText = "Result format (such as PNG or DDS).")]
         public string Format { get; set; }
 
+        [Option('u', "uncompressed", HelpText = "Do not apply DDS compression.")]
+        public bool Uncompressed { get; set; }
+
         [Option('d', "destination", HelpText = "Destination directory.")]
         public string Target { get; set; }
 
@@ -140,8 +143,10 @@ namespace LicensePlatesGenerator {
                         p.Value = s[1];
                     }
 
-                    style.CreateDiffuseMap(options.PreviewMode, Path.Combine(options.Target ?? "", $"{options.DiffuseName}.{options.Format.ToLowerInvariant()}"));
-                    style.CreateNormalsMap(options.PreviewMode, Path.Combine(options.Target ?? "", $"{options.NormalsName}.{options.Format.ToLowerInvariant()}"));
+                    style.CreateDiffuseMap(options.PreviewMode, Path.Combine(options.Target ?? "", $"{options.DiffuseName}.{options.Format.ToLowerInvariant()}"),
+                            !options.Uncompressed);
+                    style.CreateNormalsMap(options.PreviewMode, Path.Combine(options.Target ?? "", $"{options.NormalsName}.{options.Format.ToLowerInvariant()}"),
+                            !options.Uncompressed);
                 }
 
                 return 0;

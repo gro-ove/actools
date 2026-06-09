@@ -18,7 +18,7 @@ namespace AcTools.Render.Wrapper {
 
         private static FormWrapperBase _current;
 
-        public static bool StopCurrent() {
+        private static bool StopCurrent() {
             if (_current != null && !_current.Renderer.Disposed && !_current._closed) {
                 _current.Stop();
                 return true;
@@ -33,6 +33,8 @@ namespace AcTools.Render.Wrapper {
              * finished */
             return Task.Delay(StopCurrent() ? 200 : 0);
         }
+
+        private int _closeFixCounter;
 
         protected FormWrapperBase(BaseRenderer renderer, string title, int width, int height) {
             if (StopCurrent()) {
@@ -60,6 +62,18 @@ namespace AcTools.Render.Wrapper {
 
             Form.GotFocus += OnGotFocus;
             Form.LostFocus += OnLostFocus;
+            
+            // Closing this form while it’s unfocused causes the main form to freeze for a second and then the entire app to shut down. I poked
+            // around, tried a few things, but there are no exceptions, no warning messages, nothing. There might be a proper fix, but I can’t
+            // really be bothered to go deeper into this rabbit hole at this minute. Missing C++ and how straightforward it is, that’s for sure. 
+            Form.Closing += async (sender, args) => {
+                if (!Form.Focused && ++_closeFixCounter < 10) {
+                    args.Cancel = true;
+                    Form.Focus();
+                    await Task.Delay(50);
+                    Form.Close();
+                }
+            };
 
             renderer.Tick += OnTick;
         }
@@ -88,7 +102,7 @@ namespace AcTools.Render.Wrapper {
             }
         }
 
-        protected virtual void OnTick(object sender, TickEventArgs args) {}
+        protected virtual void OnTick(object sender, TickEventArgs args) { }
 
         protected virtual void OnGotFocus(object sender, EventArgs e) {
             Paused = false;
@@ -100,6 +114,20 @@ namespace AcTools.Render.Wrapper {
 
         [CanBeNull]
         private Action _firstFrame;
+
+        private class IdleHandler {
+            private MainLoop loopDelegate;
+
+            public IdleHandler(MainLoop mainLoop) => this.loopDelegate = mainLoop;
+
+            public void OnIdle(object sender, EventArgs e) {
+                if (!MessagePump.IsApplicationIdle)
+                    return;
+                do {
+                    this.loopDelegate();
+                } while (MessagePump.IsApplicationIdle);
+            }
+        }
 
         public void Run(Action firstFrame = null) {
             try {
@@ -114,7 +142,7 @@ namespace AcTools.Render.Wrapper {
             UpdateSize();
         }
 
-        protected virtual void OnKeyDown(object sender, KeyEventArgs args) {}
+        protected virtual void OnKeyDown(object sender, KeyEventArgs args) { }
 
         protected virtual void OnKeyUp(object sender, KeyEventArgs args) {
             switch (args.KeyCode) {
@@ -192,7 +220,7 @@ namespace AcTools.Render.Wrapper {
 
         private bool _closed;
 
-        public void Stop() {
+        private void Stop() {
             if (_closed) return;
             _closed = true;
             try {

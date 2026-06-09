@@ -13,10 +13,11 @@ namespace AcManager.Pages.ContentTools {
             if (CupClient.Instance == null) return false;
 
             progress.Report("Loading list of updates…", 0.01);
-            await CupClient.Instance.LoadRegistries();
+            await CupClient.Instance.LoadRegistries(true);
 
+            // Used by the tool, so forcing to create all the managers here
             var list = CupClient.Instance.List.Select(x => {
-                var m = CupClient.Instance.GetAssociatedManager(x.Key.Type);
+                var m = CupClient.Instance.GetAssociatedManager(x.Key.Type, true);
                 return (ICupSupportedObject)m?.GetObjectById(x.Key.Id);
             }).Where(x => x?.IsCupUpdateAvailable == true).OrderBy(x => x.CupContentType).ToList();
             ItemsToUpdate = new BetterObservableCollection<ICupSupportedObject>(list);

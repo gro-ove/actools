@@ -850,6 +850,34 @@ namespace AcTools.Render.Data {
                         .Select(x => new WingDescription(x, iniFile[x]));
             }
         }
+        
+        public class FinDescription {
+            public string SectionName { get; }
+            public string Name { get; }
+            public float Chord { get; }
+            public float Span { get; }
+            public float Angle { get; }
+            public Vector3 Position { get; }
+
+            public FinDescription(string sectionName, IniFileSection section) {
+                SectionName = sectionName;
+                Name = section.GetNonEmpty("NAME");
+                Chord = section.GetFloat("CHORD", 1f);
+                Span = section.GetFloat("SPAN", 1f);
+                Angle = section.GetFloat("ANGLE", 0f);
+                Position = section.GetSlimVector3("POSITION");
+            }
+        }
+
+        public IEnumerable<FinDescription> GetFins() {
+            if (IsEmpty) {
+                return new FinDescription[0];
+            } else {
+                var iniFile = _data.GetIniFile("aero.ini");
+                return iniFile.GetExistingSectionNames("FIN")
+                        .Select(x => new FinDescription(x, iniFile[x]));
+            }
+        }
         #endregion
 
         #region Wings animations
@@ -964,6 +992,12 @@ namespace AcTools.Render.Data {
         /// </summary>
         public float GetFuelTankVolume() {
             return _data.GetIniFile("car.ini")["FUEL"].GetFloat("MAX_FUEL", 40f) * 0.001f;
+        }
+        #endregion
+
+        #region Inertia box
+        public Vector3 GetInertiaBox() {
+            return _data.GetIniFile("car.ini")["BASIC"].GetSlimVector3("INERTIA");
         }
         #endregion
 

@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="About_ContactInformation" xml:space="preserve">
-    <value>Pokud máte ohledně této aplikace jakoukoliv otázku, nápad či návrh, nebo chcete nahlásit konkrétní problém, [url="https://acstuff.ru/app/#contacts"]kontaktujte nás[/url] prosím.</value>
+    <value>Pokud máte ohledně této aplikace jakoukoliv otázku, nápad či návrh, nebo chcete nahlásit konkrétní problém, [url="https://acstuff.club/app/#contacts"]kontaktujte nás[/url] prosím.</value>
   </data>
   <data name="About_ContactUsHeader" xml:space="preserve">
     <value>Kontakt:</value>
@@ -3770,7 +3770,7 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Nebyly nalezeny žádné konfigurovatelné appky</value>
   </data>
   <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
-    <value>Změny budou uloženy automaticky. Chcete-li optimalizovat způsob, jakým se konfigurační soubory zobrazují, podívejte se [url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"]sem[/url].</value>
+    <value>Změny budou uloženy automaticky. Chcete-li optimalizovat způsob, jakým se konfigurační soubory zobrazují, podívejte se [url="https://acstuff.club/f/d/19-content-manager-python-app-configs"]sem[/url].</value>
   </data>
   <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
     <value>Používat v některých případech Vlastní autosalon místo toho původního</value>

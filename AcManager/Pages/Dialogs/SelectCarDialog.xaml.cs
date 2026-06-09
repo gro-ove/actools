@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -45,6 +46,17 @@ namespace AcManager.Pages.Dialogs {
                 _selectedSkin = value;
                 OnPropertyChanged();
                 CommandManager.InvalidateRequerySuggested();
+            }
+        }
+
+        private int _hiddenCars;
+
+        public int HiddenCars {
+            get => _hiddenCars;
+            set {
+                if (value == _hiddenCars) return;
+                _hiddenCars = value;
+                OnPropertyChanged();
             }
         }
 
@@ -153,7 +165,7 @@ namespace AcManager.Pages.Dialogs {
 
         public static Uri RatingUri(double rating) {
             return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
-                    $"rating≥{Filter.Encode(rating.FloorToInt().ToInvariantString())} & rating<{Filter.Encode((rating.FloorToInt() + 1).ToInvariantString())}",
+                    $"rating≈{Filter.Encode(rating.FloorToInt().ToInvariantString())}",
                     PluralizingConverter.PluralizeExt(rating.FloorToInt(), ControlsStrings.SelectDialog_RatingTitle));
         }
 
@@ -182,7 +194,7 @@ namespace AcManager.Pages.Dialogs {
                     $"enabled+&country:{Filter.Encode(country)}", country);
         }
 
-        public SelectCarDialog([CanBeNull] CarObject car, string defaultFilter = null) {
+        public SelectCarDialog([CanBeNull] CarObject car) {
             _selectedCar = new DelayedPropertyWrapper<CarObject>(SelectedCarChanged);
 
             SelectedCar = car;
@@ -200,11 +212,24 @@ namespace AcManager.Pages.Dialogs {
             });
             InitializeComponent();
             Buttons = new Control[0];
+        }
 
+        public SelectCarDialog ApplyDefault([CanBeNull] Tuple<string, string> defaultFilter) {
+            if (defaultFilter?.Item1 != null) {
+                Tabs.SavePolicy = SavePolicy.SkipLoadingFlexible;
+                Tabs.SelectedSource = UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}", 
+                        defaultFilter.Item1, defaultFilter.Item2.Or(defaultFilter.Item1));
+            }
+            return this;
+        }
+
+        public SelectCarDialog ApplyDefault(string defaultFilter) {
             if (defaultFilter != null) {
                 Tabs.SavePolicy = SavePolicy.SkipLoadingFlexible;
-                Tabs.SelectedSource = UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={0}", defaultFilter);
+                Tabs.SelectedSource = UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={0}", 
+                        defaultFilter);
             }
+            return this;
         }
 
         [CanBeNull]
@@ -219,7 +244,7 @@ namespace AcManager.Pages.Dialogs {
 
         [CanBeNull]
         public static CarObject Show([CanBeNull] CarObject car, string defaultFilter) {
-            var dialog = new SelectCarDialog(car ?? CarsManager.Instance.GetDefault(), defaultFilter);
+            var dialog = new SelectCarDialog(car ?? CarsManager.Instance.GetDefault()).ApplyDefault(defaultFilter);
             dialog.ShowDialog();
             return dialog.IsResultOk ? dialog.SelectedCar : null;
         }
@@ -237,6 +262,25 @@ namespace AcManager.Pages.Dialogs {
                 return dialog.SelectedCar;
             }
 
+            return null;
+        }
+
+        [CanBeNull]
+        public static CarObject Show([CanBeNull] CarObject car, [CanBeNull] ref CarSkinObject carSkin, string defaultFilter,
+                HashSet<uint> allowedCarIds = null) {
+            using (var allowed = new AllowedHelper<CarObject>(CarsManager.Instance, allowedCarIds)) {
+                allowed.SetDefaultIfNull(ref car);
+                var dialog = new SelectCarDialog(car) {
+                    SelectedSkin = carSkin != null && car?.EnabledSkinsListView.Contains(carSkin) == true ? carSkin : car?.SelectedSkin,
+                    HiddenCars = allowed.HiddenCount
+                };
+                dialog.ApplyDefault(defaultFilter);
+                dialog.ShowDialog();
+                if (dialog.IsResultOk) {
+                    carSkin = dialog.SelectedSkin;
+                    return dialog.SelectedCar;
+                }
+            }
             return null;
         }
 
@@ -374,7 +418,7 @@ namespace AcManager.Pages.Dialogs {
 
         private void OnSeparatorDrag(object sender, DragDeltaEventArgs e) {
             if (Tabs.ActualWidth > AcObjectListBox.AutoThumbnailModeThresholdValue) {
-                FancyHints.CarDialogThumbinalMode.MaskAsUnnecessary();
+                FancyHints.CarDialogThumbinalMode.MarkAsUnnecessary();
             }
         }
 

@@ -12,8 +12,8 @@ namespace AcTools.WheelAngles.Implementations {
             return null;
         }
 
-        public virtual bool Test(string productGuid) {
-            return string.Equals(productGuid, "B65E044F-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase);
+        public virtual IWheelSteerLockSetter Test(string productGuid) {
+            return string.Equals(productGuid, "B65E044F-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase) ? this : null;
         }
 
         protected virtual int ProductId => 0xb65e;

@@ -10,5 +10,5 @@ namespace AcManager.Tools.AcPlugins.CspCommands {
         ushort ICspCommand.GetMessageType() {
             return 0;
         }
-    };
+    }
 }

@@ -1,7 +1,7 @@
 ﻿<mui:ReferenceSwitch x:Class="AcManager.Pages.Drive.Rsr" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager"
-    xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d"
+    xmlns:t="http://acstuff.club/app/tools" xmlns:c="http://acstuff.club/app/controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d"
     d:DataContext="{d:DesignInstance drive:Rsr+ViewModel}" Value="{Binding Value, Source={x:Static t:SteamIdHelper.Instance}}">
   <mui:ReferenceSwitch.Null>
     <StackPanel Margin="40 0 40 0" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -10,7 +10,7 @@
     </StackPanel>
   </mui:ReferenceSwitch.Null>
   <mui:ReferenceSwitch.NonNull>
-    <Grid Style="{StaticResource ContentRootWithPadding}">
+    <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
@@ -22,8 +22,8 @@
         <mui:BbCodeBlock Text="{x:Static g:AppStrings.Rsr_Commentary}" />
       </DockPanel>-->
 
-      <c:WebBlock Grid.Row="1" x:Name="WebBrowser" StartPage="{Binding StartPage}" SaveKey="Rsr:Address" PageLoaded="OnPageLoaded" KeepAliveKey="Rsr" />
-      <Grid Grid.Row="2" Margin="0 16 0 0">
+      <c:WebBlock Grid.Row="1" x:Name="WebBrowser" StartPage="{Binding StartPage}" SaveKey="Rsr:Address" PageLoaded="OnPageLoaded" KeepAliveKey="Rsr" Margin="0 4 0 0" />
+      <Grid Grid.Row="2" Style="{StaticResource ContentRootWithPadding}">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition />

@@ -14,7 +14,7 @@ namespace AcTools.Tests {
         private string LoadColladaData(string filename) {
             using (var stream = File.OpenRead(filename)) {
                 var xml = XDocument.Load(stream);
-                var ns = xml.Root?.GetDefaultNamespace();
+                var ns = xml.Root?.GetDefaultNamespace() ?? string.Empty;
                 xml.Descendants(ns + "asset").ToList().ForEach(x => x.Remove());
                 return xml.ToString(SaveOptions.DisableFormatting);
             }

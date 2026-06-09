@@ -1,14 +1,20 @@
 using System.Linq;
 using System.Windows;
 using FirstFloor.ModernUI.Windows.Converters;
+using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class Switch : ListSwitch {
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(object),
-                typeof(Switch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
+                typeof(Switch), new PropertyMetadata(null, (o, e) => {
+                    ((Switch)o)._value = e.NewValue;
+                    OnChildSelectingPropertyChanged(o, e);
+                }));
+
+        private object _value;
 
         public object Value {
-            get => GetValue(ValueProperty);
+            get => _value;
             set => SetValue(ValueProperty, value);
         }
 
@@ -21,15 +27,20 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty WhenProperty = DependencyProperty.RegisterAttached("When", typeof(object),
-                typeof(Switch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsParentMeasure, OnWhenChanged));
+                typeof(Switch), new FrameworkPropertyMetadata(null, OnWhenChanged));
+
+        protected static void OnWhenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            if (d is UIElement element) {
+                element.GetParent<BaseSwitch>()?.RefreshActiveChild();
+            }
+        }
 
         protected override bool TestChild(UIElement child) {
-            return Value.XamlEquals(GetWhen(child));
+            return _value.XamlEquals(GetWhen(child));
         }
 
         protected override UIElement GetChild() {
-            return UiElements == null ? null : (UiElements.FirstOrDefault(TestChild) ??
-                    UiElements.FirstOrDefault(x => x.GetValue(WhenProperty) == null));
+            return RegisteredElements.FirstOrDefault(TestChild) ?? RegisteredElements.FirstOrDefault(x => x.GetValue(WhenProperty) == null);
         }
     }
 }

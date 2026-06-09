@@ -89,6 +89,13 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private bool _passwordIsMissing;
+
+        public bool PasswordIsMissing {
+            get => _passwordIsMissing;
+            set => Apply(value, ref _passwordIsMissing);
+        }
+
         private string KeyPasswordStorage => $@"__smt_pw_{Id}";
 
         private string _password;
@@ -144,7 +151,9 @@ namespace AcManager.Tools.Managers.Online {
         public IEnumerable GetErrors(string propertyName) {
             switch (propertyName) {
                 case nameof(Password):
-                    return PasswordIsWrong ? new[] { "Password is wrong" } : null;
+                    return PasswordIsWrong ? new[] {
+                        PasswordRequired && string.IsNullOrEmpty(Password) ? ToolsStrings.ServerEntry_PasswordIsRequired : ToolsStrings.ServerEntry_PasswordIsWrong
+                    } : null;
                 default:
                     return null;
             }
@@ -205,6 +214,8 @@ namespace AcManager.Tools.Managers.Online {
             set => Apply(value, ref _cspFeaturesList, () => OnPropertyChanged(nameof(DisplayCspFeatures)));
         }
 
+        private string _backgroundImage;
+
         [CanBeNull]
         public string DisplayCspFeatures => CspFeaturesList?.Length > 0 ? CspFeaturesList.JoinToReadableString() : null;
 
@@ -228,6 +239,13 @@ namespace AcManager.Tools.Managers.Online {
         public string Time {
             get => _time;
             set => Apply(value, ref _time);
+        }
+
+        private int _TimeSeconds;
+
+        public int TimeSeconds {
+            get => _TimeSeconds;
+            set => Apply(value, ref _TimeSeconds);
         }
 
         private RaceMode _raceMode;
@@ -322,6 +340,27 @@ namespace AcManager.Tools.Managers.Online {
         public bool CspRequiredMissing {
             get => _cspRequiredMissing;
             set => Apply(value, ref _cspRequiredMissing);
+        }
+
+        private bool _cspExtendedCarsPhysics;
+
+        public bool CspExtendedCarsPhysics {
+            get => _cspExtendedCarsPhysics;
+            set => Apply(value, ref _cspExtendedCarsPhysics);
+        }
+
+        private bool _cspExtendedTrackPhysics;
+
+        public bool CspExtendedTrackPhysics {
+            get => _cspExtendedTrackPhysics;
+            set => Apply(value, ref _cspExtendedTrackPhysics);
+        }
+
+        private bool _cspIcePhysics;
+
+        public bool CspIcePhysics {
+            get => _cspIcePhysics;
+            set => Apply(value, ref _cspIcePhysics);
         }
 
         private string _trackId;

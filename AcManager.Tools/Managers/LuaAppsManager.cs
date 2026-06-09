@@ -11,7 +11,7 @@ namespace AcManager.Tools.Managers {
         public static LuaAppsManager Instance => _instance ?? (_instance = new LuaAppsManager());
 
         private LuaAppsManager() {
-            CupClient.Instance?.Register(this, CupContentType.LuaApp);
+            CupClient.Register(this, CupContentType.LuaApp);
         }
 
         public override LuaAppObject GetDefault() {

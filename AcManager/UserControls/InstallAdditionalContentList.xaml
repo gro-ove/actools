@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="AcManager.UserControls.InstallAdditionalContentList" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:g="clr-namespace:AcManager" xmlns:in="http://acstuff.ru/app/internal"
-    xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:g="clr-namespace:AcManager" xmlns:in="http://acstuff.club/app/internal"
+    xmlns:t="http://acstuff.club/app/tools" xmlns:c="http://acstuff.club/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d"
     ClipToBounds="True" Background="Transparent" d:DataContext="{d:DesignInstance uc:InstallAdditionalContentList}" VerticalContentAlignment="Center">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -19,10 +19,10 @@
       <!-- ReSharper disable once Xaml.UnexpectedTextToken -->
       <sys:TimeSpan x:Key="IconFadeDelay">0:0:0.11</sys:TimeSpan>
 
-      <Duration x:Key="ExpandDuration">0:0:0.27</Duration>
-      <Duration x:Key="SlideUpDuration">0:0:0.21</Duration><!-- 23 px -->
-      <Duration x:Key="SlideRightDuration">0:0:0.21</Duration><!-- 24 px -->
-      <Duration x:Key="SlideLeftDuration">0:0:0.15</Duration><!-- 16 px -->
+      <Duration x:Key="ExpandDuration">0:0:0.21</Duration>
+      <Duration x:Key="SlideUpDuration">0:0:0.15</Duration><!-- 23 px -->
+      <Duration x:Key="SlideRightDuration">0:0:0.15</Duration><!-- 24 px -->
+      <Duration x:Key="SlideLeftDuration">0:0:0.13</Duration><!-- 16 px -->
       <Duration x:Key="IconFadeDuration">0:0:0.1</Duration>
 
       <!--<sys:TimeSpan x:Key="ResetTime">0:0:5.0</sys:TimeSpan>
@@ -71,6 +71,11 @@
                     x:Name="PART_NewVersion" />
               </DockPanel>
             </mui:SpacingUniformGrid>
+            <DockPanel Dock="Top" Margin="0 4 0 0" Visibility="{Binding ShowWarning, Converter={StaticResource BooleanToVisibilityConverter}}">
+              <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                  Margin="2 2 4 0" VerticalAlignment="Center" />
+              <TextBlock Text="Please install mods from trusted sources only." Style="{StaticResource Small}" Foreground="{DynamicResource Error}" />
+            </DockPanel>
           </DockPanel>
 
           <mui:BooleanSwitch DockPanel.Dock="Top">
@@ -101,7 +106,14 @@
 
           <!-- Update options -->
           <mui:BetterComboBox x:Name="PART_UpdateOptions" ItemsSource="{Binding UpdateOptions}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0"
-              IsEnabled="{Binding Active}" IsEditable="False" DockPanel.Dock="Top" />
+              IsEnabled="{Binding Active}" IsEditable="False" DockPanel.Dock="Top"
+              ToolTip="Hold Ctrl when selecting a mode to select similar one for all the other mods">
+            <mui:BetterComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding DisplayName}" ToolTip="Hold Ctrl when selecting a mode to select similar one for all the other mods" />
+              </DataTemplate>
+            </mui:BetterComboBox.ItemTemplate>
+          </mui:BetterComboBox>
         </DockPanel>
 
         <DataTemplate.Resources>
@@ -503,7 +515,7 @@
                               <Path Data="{StaticResource QuestionMarkIconData}" Width="12" Height="12" DockPanel.Dock="Left"
                                   Fill="{DynamicResource WindowTextReadOnly}" Stretch="Uniform" Margin="0 1 4 -1" VerticalAlignment="Center" />
                               <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Text="{x:Static g:AppStrings.DownloadList_DetectionFailed}"
-                                  Style="{StaticResource Small}" />
+                                  Style="{StaticResource Small}" ToolTip="Use context menu to access downloaded file" />
                             </DockPanel>
                           </mui:BooleanSwitch.True>
                           <mui:BooleanSwitch.False>
@@ -569,34 +581,33 @@
 
                       <Border SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
                         <Border.LayoutTransform>
-                          <TransformGroup>
-                            <ScaleTransform x:Name="PART_ExpandScale" ScaleX="1" ScaleY="0" />
-                          </TransformGroup>
+                          <ScaleTransform x:Name="PART_ExpandScale" ScaleX="1" ScaleY="0.2" />
                         </Border.LayoutTransform>
 
                         <DockPanel
                             RenderTransform="{Binding Path=(FrameworkElement.LayoutTransform).Inverse, RelativeSource={RelativeSource AncestorType=Border}}">
-                          <ItemsControl ItemsSource="{Binding ExtraOptions}" DockPanel.Dock="Bottom"
-                              Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}">
-                            <ItemsControl.ItemsPanel>
-                              <ItemsPanelTemplate>
-                                <mui:SpacingStackPanel Spacing="8" />
-                              </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                              <DataTemplate>
-                                <DockPanel>
-                                  <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left" />
-                                  <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
-                                  <mui:BbCodeBlock Text="{Binding Description}" DockPanel.Dock="Top" Style="{StaticResource Small}" />
-                                </DockPanel>
-                              </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                          </ItemsControl>
-                          <TextBlock Text="{x:Static g:AppStrings.DownloadList_ExtraOptions}" DockPanel.Dock="Bottom" Margin="0 20 0 4"
-                              Style="{StaticResource Label}" Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}" />
+                          <StackPanel DockPanel.Dock="Bottom" Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}">
+                            <TextBlock Text="{x:Static g:AppStrings.DownloadList_ExtraOptions}" Margin="0 20 0 4" Style="{StaticResource Label}" />
+                            <ItemsControl ItemsSource="{Binding ExtraOptions}"
+                                Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}">
+                              <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                  <mui:SpacingStackPanel Spacing="8" />
+                                </ItemsPanelTemplate>
+                              </ItemsControl.ItemsPanel>
+                              <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                  <DockPanel>
+                                    <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left" />
+                                    <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
+                                    <mui:BbCodeBlock Text="{Binding Description}" DockPanel.Dock="Top" Style="{StaticResource Small}" />
+                                  </DockPanel>
+                                </DataTemplate>
+                              </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                          </StackPanel>
 
-                          <ItemsControl ItemsSource="{Binding Entries}" Style="{StaticResource VirtualizingItemsControl}" MaxHeight="400" Margin="0 0 0 -12">
+                          <ItemsControl ItemsSource="{Binding Entries}" Style="{StaticResource ScrollingItemsControl}" MaxHeight="400" Margin="0 0 0 -12">
                             <ItemsControl.ItemTemplateSelector>
                               <uc:AdditionalContentEntryTemplateSelector BasicTemplate="{StaticResource EntryDataTemplate}"
                                   FontTemplate="{StaticResource FontEntryDataTemplate}" TrackTemplate="{StaticResource TrackEntryDataTemplate}" />

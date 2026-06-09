@@ -5,42 +5,58 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     [ContentProperty(nameof(True))]
     public class BooleanSwitch : BaseSwitch {
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(bool),
-                typeof(BooleanSwitch), new FrameworkPropertyMetadata(false, OnChildDefiningPropertyChanged));
+                typeof(BooleanSwitch), new PropertyMetadata(false, (o, e) => {
+                    ((BooleanSwitch)o)._value = (bool)e.NewValue;
+                    OnChildSelectingPropertyChanged(o, e);
+                }));
+
+        private bool _value;
 
         public bool Value {
-            get => GetValue(ValueProperty) as bool? == true;
+            get => _value;
             set => SetValue(ValueProperty, value);
         }
 
         public static readonly DependencyProperty TrueProperty = DependencyProperty.Register(nameof(True), typeof(UIElement),
-                typeof(BooleanSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
+                typeof(BooleanSwitch), new PropertyMetadata(null, (o, e) => {
+                    ((BooleanSwitch)o)._true = (UIElement)e.NewValue;
+                    OnChildRegisteringPropertyChanged(o, e);
+                }));
+
+        private UIElement _true;
 
         public UIElement True {
-            get => (UIElement)GetValue(TrueProperty);
+            get => _true;
             set => SetValue(TrueProperty, value);
         }
 
         public static readonly DependencyProperty FalseProperty = DependencyProperty.Register(nameof(False), typeof(UIElement),
-                typeof(BooleanSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
+                typeof(BooleanSwitch), new PropertyMetadata(null, (o, e) => {
+                    ((BooleanSwitch)o)._false = (UIElement)e.NewValue;
+                    OnChildRegisteringPropertyChanged(o, e);
+                }));
+
+        private UIElement _false;
 
         public UIElement False {
-            get => (UIElement)GetValue(FalseProperty);
+            get => _false;
             set => SetValue(FalseProperty, value);
         }
 
         protected override UIElement GetChild() {
-            if (Value) {
-                if (CollapseOnFalse) Visibility = Visibility.Visible;
-                return True;
+            var value = _value;
+            if (_collapseOnFalse) {
+                var targetVisibility = value ? Visibility.Visible : Visibility.Collapsed;
+                if (Visibility != targetVisibility) {
+                    Visibility = targetVisibility;
+                }
             }
-
-            if (CollapseOnFalse) Visibility = Visibility.Collapsed;
-            return False;
+            return value ? _true : _false;
         }
 
         public static readonly DependencyProperty CollapseOnFalseProperty = DependencyProperty.Register(nameof(CollapseOnFalse), typeof(bool),
                 typeof(BooleanSwitch), new PropertyMetadata(false, (o, e) => {
-                    var b = ((BooleanSwitch)o);
+                    var b = (BooleanSwitch)o;
                     b._collapseOnFalse = (bool)e.NewValue;
                     if (b._collapseOnFalse && !b.Value) {
                         b.Visibility = Visibility.Collapsed;

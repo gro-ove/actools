@@ -33,6 +33,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(HighlightCheckedProperty, value);
         }
 
+        public static readonly DependencyProperty HighlightUncheckedProperty = DependencyProperty.Register(nameof(HighlightUnchecked), typeof(bool),
+                typeof(LabeledToggleButton));
+
+        public bool HighlightUnchecked {
+            get => GetValue(HighlightUncheckedProperty) as bool? == true;
+            set => SetValue(HighlightUncheckedProperty, value);
+        }
+
         public static readonly DependencyProperty AnimationSpeedProperty = DependencyProperty.Register(nameof(AnimationSpeed), typeof(double),
                 typeof(LabeledToggleButton), new PropertyMetadata(150d));
 

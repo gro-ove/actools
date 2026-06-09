@@ -26,6 +26,7 @@ namespace AcManager.Tools.Managers.Plugins {
             Tuple.Create("CefSharp-69.0.0-x86", ""),
             Tuple.Create("CefSharp-71.0.0-x86", ""),
             Tuple.Create("CefSharp-79.1.360-x86", ""),
+            Tuple.Create("CefSharp-91.1.211-x86", ""),
             Tuple.Create("SSE", "1.4.2.1"),
             Tuple.Create(KnownPlugins.SevenZip, "17.0.1"),
         };

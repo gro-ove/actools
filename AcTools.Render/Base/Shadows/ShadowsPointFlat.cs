@@ -2,6 +2,7 @@
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Utils;
 using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
@@ -25,7 +26,7 @@ namespace AcTools.Render.Base.Shadows {
             _cameras = Enumerable.Range(0, 6).Select(x => new FpsCamera(MathF.PI / 2) {
                 NearZ = 0.1f,
                 RhMode = false,
-                CutProj = Matrix.Transformation2D(Vector2.Zero, 0f, new Vector2(padding), Vector2.Zero, 0f, Vector2.Zero)
+                CutProj = MatrixFix.Transformation2D(Vector2.Zero, 0f, new Vector2(padding), Vector2.Zero, 0f, Vector2.Zero)
             }).ToArray();
             _buffer = TargetResourceDepthTexture.Create(Format.R24G8_Typeless);
         }

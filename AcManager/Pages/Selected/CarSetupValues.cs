@@ -97,6 +97,7 @@ namespace AcManager.Pages.Selected {
                         .ToArray();
             }
 
+            // ReSharper disable once AssignNullToNotNullAttribute
             _hasGearEntries = _entries.Any(x => x.Key.StartsWith(@"GEAR_"));
 
             var tyres = car.AcdData?.GetIniFile("tyres.ini");

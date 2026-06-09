@@ -25,6 +25,7 @@ namespace AcTools.Utils {
         }
 
         public abstract object GenericValue { get; }
+
         public abstract void StartSetting();
 
         private bool _isSet;

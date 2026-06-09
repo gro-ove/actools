@@ -197,10 +197,10 @@ namespace AcManager.Controls {
         private readonly TextEditor _editor;
         private readonly FoldingManager _foldingManager;
 
-        private IniFoldingStrategy(TextEditor editor) {
-            _foldingManager = FoldingManager.Install(_editor.TextArea);
+        private IniFoldingStrategy([NotNull] TextEditor editor) {
             _editor = editor;
             _editor.TextChanged += OnTextChanged;
+            _foldingManager = FoldingManager.Install(_editor.TextArea);
         }
 
         private int _update;

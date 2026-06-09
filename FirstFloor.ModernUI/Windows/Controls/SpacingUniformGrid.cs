@@ -204,10 +204,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return new Size(sum, summaryChildrenHeight + _totalSpacingHeight);
         }
 
-        private Size MeasureStackNone(Size constraint) {
+        protected Size MeasureStackNone(Size constraint) {
             var childConstraint = new Size(
-                    Math.Max(constraint.Width - _totalSpacingWidth, 0) / _columns,
-                    Math.Max(constraint.Height - _totalSpacingHeight, 0) / _rows);
+                    Math.Max((constraint.Width - _totalSpacingWidth) / _columns, 0),
+                    Math.Max((constraint.Height - _totalSpacingHeight) / _rows, 0));
 
             var maxChildDesiredWidth = 0d;
             var maxChildDesiredHeight = 0d;
@@ -383,7 +383,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private void ArrangeStackNone(Size arrangeSize, UIElementCollection children) {
+        protected void ArrangeStackNone(Size arrangeSize, UIElementCollection children) {
             var childBounds = new Rect(0, 0,
                     Math.Max(arrangeSize.Width - _totalSpacingWidth, 0) / _columns,
                     Math.Max(arrangeSize.Height - _totalSpacingHeight, 0) / _rows);

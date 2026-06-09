@@ -3863,7 +3863,7 @@
     <value>找不到可配置的应用程序</value>
   </data>
   <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
-    <value>更改将自动保存。如果您想优化显示配置文件的方式，可以在此处找到有关它们的更多信息[url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"][/url].</value>
+    <value>更改将自动保存。如果您想优化显示配置文件的方式，可以在此处找到有关它们的更多信息[url="https://acstuff.club/f/d/19-content-manager-python-app-configs"][/url].</value>
   </data>
   <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
     <value>在某些情况下，使用自定义的展厅而不是原始展厅</value>

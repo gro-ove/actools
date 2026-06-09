@@ -231,6 +231,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _pingingSingleSocket;
+
+            public bool PingingSingleSocket {
+                get => _pingingSingleSocket ?? (_pingingSingleSocket = ValuesStorage.Get("Settings.OnlineSettings.PingingSingleSocket", true)).Value;
+                set {
+                    if (Equals(value, _pingingSingleSocket)) return;
+                    _pingingSingleSocket = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.PingingSingleSocket", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _pingingWithThreads;
 
             public bool ThreadsPing {
@@ -319,15 +331,25 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _searchForMissingContent;
+            private SettingEntry[] _searchContentModes;
 
-            public bool SearchForMissingContent {
-                get => _searchForMissingContent ??
-                        (_searchForMissingContent = ValuesStorage.Get("Settings.OnlineSettings.SearchForMissingContent", false)).Value;
+            public SettingEntry[] SearchContentModes => _searchContentModes ?? (_searchContentModes = new[] {
+                new SettingEntry(0, "Disabled"),
+                new SettingEntry(1, "Original content only"),
+                new SettingEntry(2, "Original and ported")
+            });
+
+            private SettingEntry _searchContentMode;
+
+            public SettingEntry SearchContentMode {
+                get {
+                    var saved = ValuesStorage.Get<int?>("Settings.OnlineSettings.SearchContentMode");
+                    return _searchContentMode ?? (_searchContentMode = SearchContentModes.GetByIdOrDefault(saved) ?? SearchContentModes.ElementAt(2));
+                }
                 set {
-                    if (Equals(value, _searchForMissingContent)) return;
-                    _searchForMissingContent = value;
-                    ValuesStorage.Set("Settings.OnlineSettings.SearchForMissingContent", value);
+                    if (Equals(value, _searchContentMode)) return;
+                    _searchContentMode = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.SearchContentMode", value.IntValue ?? -1);
                     OnPropertyChanged();
                 }
             }
@@ -388,13 +410,25 @@ namespace AcManager.Tools.Helpers {
             private bool? _serverPresetsUpdateDataAutomatically;
 
             public bool ServerPresetsUpdateDataAutomatically {
-                get => _serverPresetsUpdateDataAutomatically ??
-                        (_serverPresetsUpdateDataAutomatically = ValuesStorage.Get("Settings.OnlineSettings.ServerPresetsUpdateDataAutomatically", true))
-                                .Value;
+                get => _serverPresetsUpdateDataAutomatically ?? (_serverPresetsUpdateDataAutomatically
+                                = ValuesStorage.Get("Settings.OnlineSettings.ServerPresetsUpdateDataAutomatically", true)).Value;
                 set {
                     if (Equals(value, _serverPresetsUpdateDataAutomatically)) return;
                     _serverPresetsUpdateDataAutomatically = value;
                     ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsUpdateDataAutomatically", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _ServerCopyConfigsToCfgFolder;
+
+            public bool ServerCopyConfigsToCfgFolder {
+                get => _ServerCopyConfigsToCfgFolder ?? (_ServerCopyConfigsToCfgFolder
+                        = ValuesStorage.Get("Settings.OnlineSettings.ServerCopyConfigsToCfgFolder", false)).Value;
+                set {
+                    if (Equals(value, _ServerCopyConfigsToCfgFolder)) return;
+                    _ServerCopyConfigsToCfgFolder = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerCopyConfigsToCfgFolder", value);
                     OnPropertyChanged();
                 }
             }

@@ -1,9 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsControls_Wheel_System" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:acset="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:acset="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools" xmlns:c="http://acstuff.club/app/controls"
     xmlns:acs="clr-namespace:AcManager.Tools.Helpers.AcSettingsControls;assembly=AcManager.Tools" xmlns:acsc="clr-namespace:AcManager.Pages.AcSettings"
-    xmlns:t="http://acstuff.ru/app/tools" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" Loaded="OnLoaded" Unloaded="OnUnloaded">
+    xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" Loaded="OnLoaded" Unloaded="OnUnloaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -192,30 +192,12 @@
           <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.AcSettings_Controls_Wheel_System_Options}" />
           <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
 
-            <mui:BooleanSwitch Value="{Binding IsOverlayAvailable}">
-              <mui:BooleanSwitch.False>
-                <!-- ¯\_(ツ)_/¯ -->
-                <StackPanel>
-                  <CheckBox IsChecked="False" IsEnabled="False">
-                    <Label Content="Delay race-terminating commands by half a second" />
-                  </CheckBox>
-                  <CheckBox IsChecked="False" IsEnabled="False" ToolTip="Not available with fullscreen enabled">
-                    <Label Content="Show overlay progress while delaying" />
-                  </CheckBox>
-                </StackPanel>
-              </mui:BooleanSwitch.False>
-              <mui:BooleanSwitch.True>
-                <StackPanel>
-                  <CheckBox IsChecked="{Binding DelaySpecificSystemCommands}">
-                    <Label Content="Delay race-terminating commands by half a second" />
-                  </CheckBox>
-                  <CheckBox IsChecked="{Binding ShowSystemDelays}" IsEnabled="{Binding DelaySpecificSystemCommands}">
-                    <Label Content="Show overlay progress while delaying" />
-                  </CheckBox>
-                </StackPanel>
-              </mui:BooleanSwitch.True>
-            </mui:BooleanSwitch>
-
+            <CheckBox IsChecked="{Binding DelaySpecificSystemCommands}">
+              <Label Content="Delay race-terminating commands by half a second" />
+            </CheckBox>
+            <CheckBox IsChecked="{Binding ShowSystemDelays}" IsEnabled="{Binding DelaySpecificSystemCommands}">
+              <Label Content="Show overlay progress while delaying" />
+            </CheckBox>
             <CheckBox IsChecked="{Binding SystemIgnorePovInPits}" ToolTip="To avoid conflicts with pits menu">
               <Label Content="Ignore POV1 buttons in pits" />
             </CheckBox>
@@ -224,7 +206,7 @@
               <mui:BbCodeBlock Text="[i]Did you know?[/i] In this section, you can use POV buttons as well." />
             </c:MessageBlock>
 
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Overlay-related options:" />
+            <!--<TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Overlay-related options:" />
 
             <CheckBox IsChecked="{Binding Fullscreen, Source={x:Static acset:AcSettingsHolder.Video}}">
               <Label Content="Fullscreen (from video settings)" />
@@ -273,7 +255,7 @@
             <c:MessageBlock>
               <mui:BbCodeBlock
                   Text="[i]Please, read me![/i] To show popups — for example, for Discord join requests — CM needs to be able to display some stuff in AC. Now, it could be done either by just showing stuff on top of AC, but [b]only if AC is not in fullscreen mode[/b]. Or, alternatively, I’ve made [url=&quot;acmanager://install?url=https%3A%2F%2Fyadi.sk%2Fd%2F4_42zhk03RtCAL&quot;]a small Python app[/url] for it. It should work, although it won’t be as nice and smooth. For example, it won’t help at all if you’ll get a join request during loading or while in pits.[br][br]If you’re developing interface apps and want to integrate this feature, please, contact me." />
-            </c:MessageBlock>
+            </c:MessageBlock>-->
           </StackPanel>
 
         </StackPanel>

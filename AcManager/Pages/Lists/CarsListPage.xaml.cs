@@ -24,6 +24,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools;
+using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Render.Kn5SpecificSpecial;
@@ -95,7 +96,7 @@ namespace AcManager.Pages.Lists {
 
         #region Batch actions
         protected override IEnumerable<BatchAction> GetBatchActions() {
-            return CommonBatchActions.GetDefaultSet<CarObject>().Concat(new BatchAction[] {
+            var ret = CommonBatchActions.GetDefaultSet<CarObject>().Concat(new BatchAction[] {
                 BatchAction_FixBrand.Instance,
                 BatchAction_FixCarClass.Instance,
                 BatchAction_RecalculateCurves.Instance,
@@ -110,6 +111,12 @@ namespace AcManager.Pages.Lists {
                 BatchAction_UpdateAmbientShadows.Instance,
                 BatchAction_AnalyzeCar.Instance,
             });
+            if (SettingsHolder.Common.DeveloperMode) {
+                ret = ret.Append(BatchAction_UnpackCarData.Instance);
+                ret = ret.Append(BatchAction_PackCarData.Instance);
+                ret = ret.Append(BatchAction_ResaveCarModel.Instance);
+            }
+            return ret;
         }
 
         public class BatchAction_FixBrand : BatchAction<CarObject> {
@@ -414,7 +421,7 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_SortAndCleanUpTags : BatchAction<CarObject> {
             public static readonly BatchAction_SortAndCleanUpTags Instance = new BatchAction_SortAndCleanUpTags();
 
-            public BatchAction_SortAndCleanUpTags() : base("Sort & Clean Tags", "This way, they’ll be more readable", "UI", "Batch.SortAndCleanUpTags") {
+            public BatchAction_SortAndCleanUpTags() : base("Sort & clean tags", "This way, they’ll be more readable", "UI", "Batch.SortAndCleanUpTags") {
                 DisplayApply = "Fix";
             }
 
@@ -488,6 +495,83 @@ namespace AcManager.Pages.Lists {
             }
         }
 
+        public class BatchAction_ResaveCarModel : BatchAction<CarObject> {
+            public static readonly BatchAction_ResaveCarModel Instance = new BatchAction_ResaveCarModel();
+
+            public BatchAction_ResaveCarModel()
+                    : base("Re-save car model", "Might help with some damaged models", "Developer", null) {
+                DisplayApply = "Re-save";
+            }
+
+            public override bool IsAvailable(CarObject obj) {
+                return true;
+            }
+
+            protected override void ApplyOverride(CarObject obj) {
+                try {
+                    var kn5 = Kn5.FromFile(AcPaths.GetMainCarFilename(obj.Location, obj.AcdData, false) ?? throw new Exception());
+                    kn5.SaveRecyclingOriginal(kn5.OriginalFilename);
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground("Can’t re-save model", e);
+                }
+            }
+        }
+
+        public class BatchAction_UnpackCarData : BatchAction<CarObject> {
+            public static readonly BatchAction_UnpackCarData Instance = new BatchAction_UnpackCarData();
+
+            public BatchAction_UnpackCarData()
+                    : base("Unpack car data", "Extract “data.acd” into “data” folders (if there is already such a folder, new one will be created next to it)", "Developer", null) {
+                DisplayApply = "Unpack";
+            }
+
+            public override bool IsAvailable(CarObject obj) {
+                return true;
+            }
+
+            protected override void ApplyOverride(CarObject obj) {
+                try {
+                    var source = Path.Combine(obj.Location, "data.a" + "cd");
+                    if (!File.Exists(source)) return;
+                    var destination = FileUtils.EnsureUnique(Path.Combine(obj.Location, "data"));
+                    Acd.FromFile(source).ExportDirectory(destination);
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground(ToolsStrings.Common_CannotReadData, e);
+                }
+            }
+        }
+
+        public class BatchAction_PackCarData : BatchAction<CarObject> {
+            public static readonly BatchAction_PackCarData Instance = new BatchAction_PackCarData();
+
+            public StoredValue<bool> OverrideExisting { get; } = Stored.Get("BatchAction_AnalyzeCar.OverrideExisting", false);
+
+            public BatchAction_PackCarData()
+                    : base("Pack car data", "Pack “data” folder into “data.acd” if there is no such file", "Developer", "Batch.PackCarData") {
+                DisplayApply = "Unpack";
+            }
+
+            public override bool IsAvailable(CarObject obj) {
+                return true;
+            }
+
+            protected override void ApplyOverride(CarObject obj) {
+                try {
+                    var destination = Path.Combine(obj.Location, "data.a" + "cd");
+                    var dataDirectory = Path.Combine(obj.Location, "data");
+                    if (!Directory.Exists(dataDirectory) || !OverrideExisting.Value && File.Exists(destination)) {
+                        return;
+                    }
+                    if (OverrideExisting.Value && File.Exists(destination)) {
+                        FileUtils.Recycle(destination);
+                    }
+                    Acd.FromDirectory(dataDirectory).Save(destination);
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground(AppStrings.Car_CannotPackData, ToolsStrings.Common_MakeSureThereIsEnoughSpace, e);
+                }
+            }
+        }
+
         public class BatchAction_UpdatePwRatio : BatchAction<CarObject> {
             public static readonly BatchAction_UpdatePwRatio Instance = new BatchAction_UpdatePwRatio();
 
@@ -531,8 +615,10 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_AnalyzeCar : BatchAction<CarObject> {
             public static readonly BatchAction_AnalyzeCar Instance = new BatchAction_AnalyzeCar();
 
+            public StoredValue<bool> CheckModels { get; } = Stored.Get("BatchAction_AnalyzeCar.CheckModels", true);
+
             public BatchAction_AnalyzeCar()
-                    : base("Analyze", "Check for common issues", null, null) {
+                    : base("Analyze", "Check for common issues", null, "Batch.AnalyzeCar") {
                 DisplayApply = "Analyze";
                 InternalWaitingDialog = true;
                 Priority = 1;
@@ -543,8 +629,8 @@ namespace AcManager.Pages.Lists {
             }
 
             public override Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-                return ToolsListPage.Launch("Analyze cars", UriExtension.Create("/Pages/ContentTools/CarAnalyzer.xaml?Models=True&Rating=True&Filter={0}",
-                        OfType(list).Select(x => $@"""{Filter.Encode(x.Id)}""").JoinToString('|')));
+                return ToolsListPage.Launch("Analyze cars", UriExtension.Create("/Pages/ContentTools/CarAnalyzer.xaml?Models={0}&Rating=True&Filter={1}", 
+                        CheckModels.Value ? @"True" : @"False", OfType(list).Select(x => $@"""{Filter.Encode(x.Id)}""").JoinToString('|')));
             }
         }
 

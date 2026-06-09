@@ -63,7 +63,7 @@ namespace AcManager.Pages.Drive {
             }
             #endregion
 
-            public override void CheckIfTrackFits(TrackObjectBase track) {
+            protected override void CheckIfTrackFits(TrackObjectBase track) {
                 TrackDoesNotFit = TagRequired("circuit", track);
             }
 

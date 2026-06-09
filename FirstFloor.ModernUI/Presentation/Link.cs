@@ -83,5 +83,12 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         public string SaveKey => Tag != null ? $@"{Source}::{Tag}" : Source?.ToString();
+
+        private object _toolTip;
+
+        public object ToolTip {
+            get => _toolTip;
+            set => Apply(value, ref _toolTip);
+        }
     }
 }

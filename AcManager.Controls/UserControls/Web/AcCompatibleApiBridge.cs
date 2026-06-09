@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using AcManager.Controls.UserControls.Cef;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -146,7 +147,10 @@ namespace AcManager.Controls.UserControls.Web {
                 case "start":
                     ActionExtension.InvokeInMainThread(() => {
                         GameWrapper.StartAsync(new Game.StartProperties {
-                            PreparedConfig = RaceConfig
+                            PreparedConfig = RaceConfig,
+                            AdditionalPropertieses = {
+                                new LiveServiceMark("AC Compatible Bridge")
+                            }
                         });
                     });
                     return string.Empty;

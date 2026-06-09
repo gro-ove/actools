@@ -18,6 +18,7 @@ using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark.Lights;
 using AcTools.Render.Kn5SpecificForwardDark.Materials;
 using AcTools.Render.Shaders;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -805,9 +806,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             SetFlatMirrorSide(0);
 
-            if (ShowMovementArrows) {
+            if (ShowAnyMovementArrows) {
                 for (var i = CarSlots.Length - 1; i >= 0; i--) {
-                    CarSlots[i].CarNode?.DrawMovementArrows(DeviceContextHolder, Camera);
+                    CarSlots[i].CarNode?.DrawMovementArrows(DeviceContextHolder, Camera, ShowMovementArrows);
                 }
 
                 if (_complexMode) {
@@ -871,7 +872,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                     _aoShadowEffect.FxShadowPosition.Set(m.GetTranslationVector());
                     _aoShadowEffect.FxShadowSize.Set(new Vector2(1f / b.X, 1f / b.Z));
-                    _aoShadowEffect.FxShadowViewProj.SetMatrix(Matrix.Invert(m) * new Matrix {
+                    _aoShadowEffect.FxShadowViewProj.SetMatrix(m.Invert_v2() * new Matrix {
                         M11 = -0.5f,
                         M22 = 0.5f,
                         M33 = 0.5f,
@@ -1043,7 +1044,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                 if (AoDebug) {
                     DeviceContext.Rasterizer.SetViewports(InnerBuffer.Viewport);
-                    if (_aoBuffer?.Format == Format.R8_UNorm) {
+                    if (_aoBuffer.Format == Format.R8_UNorm) {
                         DeviceContextHolder.GetHelper<CopyHelper>().DrawFromRed(DeviceContextHolder, _aoBuffer.View, InnerBuffer.TargetView);
                     } else {
                         DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _aoBuffer.View, InnerBuffer.TargetView);
@@ -1115,7 +1116,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _accumulationBaseTexture.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
             }
 
-            if (ShowMovementArrows) {
+            if (ShowAnyMovementArrows) {
                 _realTimeAccumulationSize = 0;
             }
 

@@ -76,7 +76,7 @@ namespace AcManager.Tools.Data {
         }
 
         public override string GetBaseUrl() {
-            return "/patch/backgrounds/";
+            return "/backgrounds";
         }
 
         public override string GetCacheDirectoryName() {

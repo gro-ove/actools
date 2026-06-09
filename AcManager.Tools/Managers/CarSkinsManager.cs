@@ -119,6 +119,8 @@ namespace AcManager.Tools.Managers {
         protected override void LogLoadingTime(TimeSpan s) { }
 
         public IAcObjectNew AddNew(string id = null) {
+            if (Directories == null) return null;
+            
             var mainDirectory = Directories.GetMainDirectory();
 
             if (id == null) {

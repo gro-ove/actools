@@ -30,6 +30,7 @@ namespace AcManager.Controls.UserControls.Web {
         void SetStyleProvider([CanBeNull] ICustomStyleProvider provider);
         void SetDownloadListener([CanBeNull] IWebDownloadListener listener);
         void SetNewWindowsBehavior(NewWindowsBehavior mode);
+        void ShowDevTools();
 
         void Execute([NotNull] string js);
         void Navigate([NotNull] string url);

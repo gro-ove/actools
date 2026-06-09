@@ -12,7 +12,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         public AcStuffSharedLoader(string url) : base(url) { }
 
         protected override async Task<string> GetRedirectOverrideAsync(string url, CookieAwareWebClient client, CancellationToken cancellation) {
-            using (client.SetAccept("application/json")) {
+            using (client.SetAccept(@"application/json")) {
                 var response = await client.DownloadStringTaskAsync(url.AddQueryParameter("json"));
                 if (cancellation.IsCancellationRequested) return null;
                 return JObject.Parse(response).GetStringValueOnly("request");

@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AcManager.Tools.Filters.TestEntries;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI.Helpers;
 using StringBasedFilter;
+using StringBasedFilter.TestEntries;
 
 namespace AcManager.Tools.Filters.Testers {
     public class TrackObjectBaseTester : ITester<TrackObjectBase>, ITesterDescription {
@@ -73,6 +76,12 @@ namespace AcManager.Tools.Filters.Testers {
                 case "drivendistance":
                     value.Set(TestEntryFactories.DistanceKilometers);
                     return value.Test(obj.TotalDrivenDistance / 1e3);
+                
+                case "tag":
+                    if (value is StringTestEntry ste && ste.UnderlyingValue == @"traffic-planner-ready") {
+                        return obj.IsTrafficPlannerReady;
+                    }
+                    return obj.Tags.Any(value.Test);
             }
 
             return AcJsonObjectTester.Instance.Test(obj, key, value);

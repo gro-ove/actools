@@ -162,6 +162,19 @@ namespace AcManager.PaintShop {
             }
         }
 
+        private static readonly string KeySaveCompressed = @"__PaintShop.LicensePlate.SaveCompressed";
+        private bool _saveCompressed = ValuesStorage.Get(KeySaveCompressed, true);
+
+        public bool SaveCompressed {
+            get => _saveCompressed;
+            set {
+                if (Equals(value, _saveCompressed)) return;
+                _saveCompressed = value;
+                ValuesStorage.Set(KeySaveCompressed, value);
+                OnPropertyChanged();
+            }
+        }
+
         private void OnStyleValueChanged(object sender, PropertyChangedEventArgs e) {
             _onlyPreviewModeChanged = false;
             Update();
@@ -320,11 +333,11 @@ namespace AcManager.PaintShop {
             if (SelectedStyle == null) return Task.Delay(0);
             return Task.Run(() => {
                 if (DiffuseTexture != null) {
-                    SelectedStyle?.CreateDiffuseMap(false, Path.Combine(location, DiffuseTexture));
+                    SelectedStyle?.CreateDiffuseMap(false, Path.Combine(location, DiffuseTexture), SaveCompressed);
                 }
 
                 if (NormalsTexture != null && !cancellation.IsCancellationRequested) {
-                    SelectedStyle?.CreateNormalsMap(false, Path.Combine(location, NormalsTexture));
+                    SelectedStyle?.CreateNormalsMap(false, Path.Combine(location, NormalsTexture), SaveCompressed);
                 }
             });
         }

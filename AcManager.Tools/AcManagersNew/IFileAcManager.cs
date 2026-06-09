@@ -5,7 +5,6 @@ using AcManager.Tools.Managers.Directories;
 namespace AcManager.Tools.AcManagersNew {
     public interface IFileAcManager : IAcManagerNew {
         IAcDirectories Directories { get; }
-
         Task ToggleAsync(string id, bool? enabled = null);
         Task ToggleAsync(IEnumerable<string> ids, bool? enabled = null);
         Task DeleteAsync(string id);

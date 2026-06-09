@@ -129,7 +129,7 @@ namespace AcManager.Tools.Data {
                 Logging.Write("Data loaded: " + InstalledVersion);
                 return true;
             } catch (Exception e) {
-                NonfatalError.Notify(ToolsStrings.ContentSyncronizer_CannotLoadContent, ToolsStrings.ContentSyncronizer_CannotLoadContent_Commentary, e);
+                NonfatalError.NotifyBackground(ToolsStrings.ContentSyncronizer_CannotLoadContent, ToolsStrings.ContentSyncronizer_CannotLoadContent_Commentary, e);
             } finally {
                 _isInstalling = false;
             }

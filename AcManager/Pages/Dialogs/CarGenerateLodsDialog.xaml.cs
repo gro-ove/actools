@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -18,11 +17,14 @@ using AcManager.Controls.Graphs;
 using AcManager.Controls.Helpers;
 using AcManager.CustomShowroom;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.LodGeneratorServices;
+using AcManager.Tools.LodsTools;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcTools;
 using AcTools.DataFile;
 using AcTools.ExtraKn5Utils.Kn5Utils;
 using AcTools.ExtraKn5Utils.LodGenerator;
@@ -80,12 +82,33 @@ namespace AcManager.Pages.Dialogs {
             Loaded += (s, a) => Model.LoadedWindow = this;
             this.AddWidthCondition(720).Add(x => LodsGrid.FindVisualChild<SpacingUniformGrid>()?.SetValue(SpacingUniformGrid.ColumnsProperty, x ? 2 : 1));
             this.OnActualUnload(Model);
+
+            var itemIndex = 0;
+            foreach (var item in SettingsHolder.Content.CarsLODGeneratorTool) {
+                ToolsMenu.MenuItems.Insert(itemIndex++, new MenuItem {
+                    Header = item.DisplayName,
+                    ToolTip = item.Tag,
+                    IsCheckable = true,
+                    Command = new DelegateCommand(() => {
+                        SettingsHolder.Content.CarsLODGeneratorTool.SelectedValue = item.Value;
+                        UpdateToolItems();
+                        Model.UpdateToolDetails();
+                    })
+                });
+            }
+            UpdateToolItems();
+        }
+
+        private void UpdateToolItems() {
+            foreach (var menuItem in ToolsMenu.MenuItems.OfType<MenuItem>()) {
+                menuItem.IsChecked = SettingsHolder.Content.CarsLODGeneratorTool.SelectedItem?.DisplayName == menuItem.Header as string;
+            }
         }
 
         protected override void OnClosingOverride(CancelEventArgs e) {
             if (_closingGracefully) return;
             e.Cancel = e.Cancel
-                    || (!Model.GenerateCommand.IsAbleToExecute || Model.HasDataToSave) && ShowMessage(Model.HasDataToSave
+                    || (Model.GenerateCommand.IsInProcess || Model.HasDataToSave) && ShowMessage(Model.HasDataToSave
                             ? "Are you sure you want to abandon generated models?"
                             : "Are you sure you want to terminate generation?",
                             ControlsStrings.Common_AreYouSure, MessageBoxButton.YesNo) != MessageBoxResult.Yes;
@@ -96,14 +119,14 @@ namespace AcManager.Pages.Dialogs {
         }
 
         [JsonObject(MemberSerialization.OptIn)]
-        public sealed class StageParams : Displayable, IWithId {
+        public sealed class StageParams : Displayable, ICarLodGeneratorStage {
             public CarLodGeneratorStageParams Stage { get; }
 
             public string Id { get; }
 
             public string Filename { get; }
 
-            public string SimplygonConfigurationFilename => FilesStorage.Instance.GetContentFile(ContentCategory.CarLodsGeneration,
+            public string ToolConfigurationFilename => FilesStorage.Instance.GetContentFile(ContentCategory.CarLodsGeneration,
                     $@"StageRules.{Id}.json").Filename;
 
             public static string GetId(string filename) {
@@ -133,6 +156,7 @@ namespace AcManager.Pages.Dialogs {
                 OnPropertyChanged(nameof(MergeAsBlack));
                 OnPropertyChanged(nameof(ElementsToRemove));
                 OnPropertyChanged(nameof(EmptyNodesToKeep));
+                OnPropertyChanged(nameof(ConvertUv2));
                 OnPropertyChanged(nameof(ElementsPriorities));
                 OnPropertyChanged(nameof(OffsetsAlongNormal));
                 OnPropertyChanged(nameof(KeepTemporaryFiles));
@@ -178,6 +202,14 @@ namespace AcManager.Pages.Dialogs {
                 get => Stage.Triangles.Count;
                 set => Apply(value.Round(100), ref Stage.Triangles.Count);
             }
+            
+            
+            private bool _canWeld;
+
+            public bool CanWeld {
+                get => _canWeld;
+                set => Apply(value, ref _canWeld);
+            }
 
             private Tuple<int, int> _trianglesRecommendedCount;
 
@@ -222,6 +254,12 @@ namespace AcManager.Pages.Dialogs {
             public string EmptyNodesToKeep {
                 get => Stage.EmptyNodesToKeep?.JoinToString("\n");
                 set => Apply(value?.Split('\n'), ref Stage.EmptyNodesToKeep);
+            }
+
+            [JsonProperty("convertUv2")]
+            public string ConvertUv2 {
+                get => Stage.ConvertUv2?.JoinToString("\n");
+                set => Apply(value?.Split('\n'), ref Stage.ConvertUv2);
             }
 
             [JsonProperty("elementsPriorities")]
@@ -294,10 +332,10 @@ namespace AcManager.Pages.Dialogs {
                 SelectedGeneratedModel = filename;
             }
 
-            private DelegateCommand _viewSimplygonConfigurationCommand;
+            private DelegateCommand _viewToolConfigurationCommand;
 
-            public DelegateCommand ViewSimplygonConfigurationCommand => _viewSimplygonConfigurationCommand ?? (_viewSimplygonConfigurationCommand =
-                    new DelegateCommand(() => WindowsHelper.ViewFile(SimplygonConfigurationFilename)));
+            public DelegateCommand ViewToolConfigurationCommand => _viewToolConfigurationCommand ?? (_viewToolConfigurationCommand =
+                    new DelegateCommand(() => WindowsHelper.ViewFile(ToolConfigurationFilename)));
 
             public string Serialize() {
                 return JsonConvert.SerializeObject(this);
@@ -317,6 +355,7 @@ namespace AcManager.Pages.Dialogs {
                     case nameof(MergeAsBlack):
                     case nameof(ElementsToRemove):
                     case nameof(EmptyNodesToKeep):
+                    case nameof(ConvertUv2):
                     case nameof(ElementsPriorities):
                     case nameof(OffsetsAlongNormal):
                     case nameof(KeepTemporaryFiles):
@@ -335,8 +374,8 @@ namespace AcManager.Pages.Dialogs {
 
             public Window LoadedWindow;
 
-            public StoredValue<string> SimplygonLocation { get; } = Stored.Get("LodsGenerator.SimplygonLocation",
-                    @"C:\Program Files\Simplygon\9\SimplygonBatch.exe");
+            [CanBeNull]
+            public StoredValue<string> ToolLocation { get; private set; }
 
             public ChangeableObservableCollection<StageParams> Stages { get; }
 
@@ -444,6 +483,12 @@ namespace AcManager.Pages.Dialogs {
                     Tag =
                         "During preparation LOD generator would move vertices for meshes listed here along normal (in other words, perpendicular to surface). Positive values will make meshes “grow”, negative — shrink. Mainly meant for stickers to expand a bit to prevent them from clipping through underlying surface."
                 },
+                new Link {
+                    DisplayName = "Convert UV2",
+                    Key = "ConvertUv2",
+                    Tag =
+                        "Meshes to prepare UV2 patches for are listed here. Note: due to difficulties with UV2 support, the resulting mesh might be optimized to a lesser extend and looking worse. Consider not using UV2 patches for low-res cockpit and LOD D."
+                },
             };
 
             private Link _selectedSettingsSection;
@@ -482,11 +527,11 @@ namespace AcManager.Pages.Dialogs {
             public async Task ScanCacheAsync() {
                 await Task.Run(() => {
                     var files = new DirectoryInfo(FilesStorage.Instance.GetTemporaryDirectory(TemporaryDirectoryName))
-                            .GetFiles().Where(x => x.Name.EndsWith(".kn5") || x.Name.EndsWith(".fbx")).ToList();
+                            .GetFiles().Where(x => x.Name.EndsWith(@".kn5") || x.Name.EndsWith(@".fbx") || x.Name.EndsWith(@".dae")).ToList();
                     var totalSize = files.Sum(x => x.Length);
                     if (totalSize > OptionCacheSize) {
                         var spaceToFree = totalSize - OptionCacheSize + 16 * 1024 * 1024;
-                        var toRemove = files.OrderBy(x => x.Name.EndsWith("kn5") ? 0 : 1)
+                        var toRemove = files.OrderBy(x => x.Name.EndsWith(@"kn5") ? 0 : 1)
                                 .ThenBy(x => x.LastWriteTime)
                                 .TakeUntil(0L, x => x > spaceToFree, (x, t) => t + x.Length).ToList();
                         totalSize -= toRemove.Where(x => FileUtils.TryToDelete(x.FullName)).Sum(x => x.Length);
@@ -503,7 +548,7 @@ namespace AcManager.Pages.Dialogs {
             public AsyncCommand ClearCacheCommand => _ClearCacheCommand ?? (_ClearCacheCommand = new AsyncCommand(async () => {
                 await Task.Run(() => {
                     var files = Directory.GetFiles(FilesStorage.Instance.GetTemporaryDirectory(TemporaryDirectoryName))
-                            .Where(x => x.EndsWith(".kn5") || x.EndsWith(".fbx"));
+                            .Where(x => x.EndsWith(@".kn5") || x.EndsWith(@".fbx") || x.EndsWith(@".dae"));
                     foreach (var fileInfo in files) {
                         FileUtils.TryToDelete(fileInfo);
                     }
@@ -511,7 +556,47 @@ namespace AcManager.Pages.Dialogs {
                 await ScanCacheAsync();
             }));
 
+            private ILodsToolDetails _toolDetails;
+
+            private static ILodsToolDetails CreateToolDetails() {
+                switch (SettingsHolder.Content.CarsLODGeneratorTool.SelectedValue.As<int>()) {
+                    case 1:
+                        return new SimplygonToolDetails();
+                    case 2:
+                        return new MeshLabToolDetails();
+                    case 3:
+                        return new BlenderToolDetails();
+                    case 4:
+                        return new MeshOptimizerToolDetails();
+                    default:
+                        return new PolygonCruncherToolDetails();
+                }
+            }
+
+            public string ToolName => _toolDetails.Name;
+
+            public void UpdateToolDetails() {
+                var first = _toolDetails == null;
+                _toolDetails = CreateToolDetails();
+                if (_toolDetails.NeedsTool) {
+                    ToolLocation = Stored.Get($"LodsGenerator.{_toolDetails.Key}Location",
+                            _toolDetails.DefaultToolLocation?.FirstOrDefault(File.Exists).Or(_toolDetails.DefaultToolLocation.FirstOrDefault()));
+                    ToolLocation.PropertyChanged += (s, e) => CheckToolLocation();
+                } else {
+                    ToolLocation = null;
+                }
+                if (!first) {
+                    OnPropertyChanged(nameof(ToolLocation));
+                    OnPropertyChanged(nameof(ToolName));
+                    CheckToolLocation();
+                    foreach (var stage in Stages) {
+                        stage.CanWeld = _toolDetails.CanWeld;
+                    }
+                }
+            }
+
             public ViewModel(CarObject target) {
+                UpdateToolDetails();
                 Car = target;
 
                 PresetsManager.Instance.ClearBuiltInPresets(PresetableCategory);
@@ -536,7 +621,9 @@ namespace AcManager.Pages.Dialogs {
 
                 Stages = new ChangeableObservableCollection<StageParams>(
                         FilesStorage.Instance.GetContentFilesFiltered(@"Stage.*.json", ContentCategory.CarLodsGeneration)
-                                .Select(x => new StageParams(x.Filename, definitions, _userDefined)));
+                                .Select(x => new StageParams(x.Filename, definitions, _userDefined) {
+                                    CanWeld = _toolDetails.CanWeld
+                                }));
                 Stages.ItemPropertyChanged += OnStagePropertyChanged;
                 if (Stages.Count == 0) {
                     throw new InformativeException("Stage defitions are missing", "Make sure to have latest app data installed.");
@@ -546,7 +633,6 @@ namespace AcManager.Pages.Dialogs {
                 LodDefinitions.ItemPropertyChanged += OnLodDefinitionPropertyChanged;
                 RefreshLodDetails();
 
-                SimplygonLocation.PropertyChanged += (s, e) => CheckSimplygonLocation();
                 MonitorLocation().Ignore();
 
                 for (var i = 0; i < Stages.Count; ++i) {
@@ -848,7 +934,7 @@ namespace AcManager.Pages.Dialogs {
                 }
 
                 sb.Append("\nNodes:\n");
-                sb.Append(CollectNodeStats(kn5.RootNode, 0).Item1);
+                sb.Append(CollectNodeStats(kn5.RootNode, 0)?.Item1 ?? "<unknown>");
                 return sb.ToString();
 
                 Tuple<string, int> CollectNodeStats(Kn5Node node, int level, bool withNode = false) {
@@ -866,7 +952,7 @@ namespace AcManager.Pages.Dialogs {
                     var s = new StringBuilder();
                     var t = 0;
                     foreach (var child in node.Children
-                            .Select(x => CollectNodeStats(x, level + 1)).OrderByDescending(x => x.Item2).NonNull()) {
+                            .Select(x => CollectNodeStats(x, level + 1)).NonNull().OrderByDescending(x => x.Item2)) {
                         s.Append('\n').Append(child.Item1);
                         t += child.Item2;
                     }
@@ -911,26 +997,26 @@ namespace AcManager.Pages.Dialogs {
             }
 
             private async Task MonitorLocation() {
-                while (!_disposed && !SimplygonAvailable) {
-                    CheckSimplygonLocation();
+                while (!_disposed && !ToolAvailable) {
+                    CheckToolLocation();
                     await Task.Delay(TimeSpan.FromSeconds(3d));
                 }
             }
 
-            public void CheckSimplygonLocation() {
+            public void CheckToolLocation() {
                 try {
-                    SimplygonAvailable = !string.IsNullOrWhiteSpace(SimplygonLocation.Value) && File.Exists(SimplygonLocation.Value);
+                    ToolAvailable = ToolLocation == null || !string.IsNullOrWhiteSpace(ToolLocation.Value) && File.Exists(ToolLocation.Value);
                 } catch (Exception e) {
                     Logging.Warning(e);
-                    SimplygonAvailable = false;
+                    ToolAvailable = false;
                 }
             }
 
-            private bool _simplygonAvailable;
+            private bool _toolAvailable;
 
-            public bool SimplygonAvailable {
-                get => _simplygonAvailable;
-                set => Apply(value, ref _simplygonAvailable, () => _generateCommand?.RaiseCanExecuteChanged());
+            public bool ToolAvailable {
+                get => _toolAvailable;
+                set => Apply(value, ref _toolAvailable, () => _generateCommand?.RaiseCanExecuteChanged());
             }
 
             private bool _isInitialCheckComplete;
@@ -948,21 +1034,15 @@ namespace AcManager.Pages.Dialogs {
                         LodDefinitions);
             }));
 
-            private DelegateCommand _simplygonLocateCommand;
+            private DelegateCommand _toolLocateCommand;
 
-            public DelegateCommand SimplygonLocateCommand => _simplygonLocateCommand ?? (_simplygonLocateCommand = new DelegateCommand(() => {
-                SimplygonLocation.Value = FileRelatedDialogs.Open(new OpenDialogParams {
-                    DirectorySaveKey = "simplygon",
-                    InitialDirectory = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles")?.Replace(@" (x86)", "")
-                            ?? @"C:\Program Files", @"Simplygon\9"),
-                    Filters = {
-                        new DialogFilterPiece("Simplygon Batch Tool", "SimplygonBatch.exe"),
-                        DialogFilterPiece.Applications,
-                        DialogFilterPiece.AllFiles,
-                    },
-                    Title = "Select Simplygon Batch tool",
-                    DefaultFileName = Path.GetFileName(SimplygonLocation.Value),
-                }) ?? SimplygonLocation.Value;
+            public DelegateCommand ToolLocateCommand => _toolLocateCommand ?? (_toolLocateCommand = new DelegateCommand(() => {
+                if (ToolLocation == null) {
+                    ShowMessage("This LOD generator doesn’t need a tool");
+                    return;
+                }
+                ToolLocation.Value = _toolDetails.FindTool(ToolLocation.Value) ?? ToolLocation.Value;
+                CheckToolLocation();
             }));
 
             public void Dispose() {
@@ -1058,7 +1138,8 @@ namespace AcManager.Pages.Dialogs {
             private async Task GenerateAsync([CanBeNull] IProgress<double> progress, CancellationToken cancellationToken) {
                 try {
                     Kn5.FbxConverterLocation = PluginsManager.Instance.GetPluginFilename(KnownPlugins.FbxConverter, "FbxConverter.exe");
-                    if (!File.Exists(Kn5.FbxConverterLocation)) {
+                    var selectedTool = _toolDetails;
+                    if (!File.Exists(Kn5.FbxConverterLocation) && selectedTool.UseFbx) {
                         throw new Exception("FbxConverter is not available");
                     }
 
@@ -1097,11 +1178,11 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                     using (var taskbarProgress = TaskbarService.Create("Generating LODs", 1e5)) {
                         taskbarProgress?.Set(TaskbarState.Normal, 0.001d);
                         var generator = new CarLodGenerator(Stages.Where(x => x.IsAvailableAndActive).Select(x => x.Stage),
-                                new CarLodSimplygonService(SimplygonLocation.Value, Stages), Car.Location,
+                                selectedTool.Create(ToolLocation?.Value, Stages), Car.Location,
                                 FilesStorage.Instance.GetTemporaryDirectory(TemporaryDirectoryName));
                         var totalStages = Stages.Count(x => x.IsAvailableAndActive);
                         var initialStates = Stages.Select(x => new { Stage = x, x.IsAvailableAndActive, x.ApplyWeldingFix }).ToList();
-                        await generator.RunAsync(
+                        await generator.RunAsync(selectedTool,
                                 (key, exception) =>
                                         ActionExtension.InvokeInMainThreadAsync(() => Stages.GetById(key).GenerationErrorMessage = exception.Message),
                                 (key, filename, checksum) => ActionExtension.InvokeInMainThreadAsync(() => {
@@ -1120,7 +1201,9 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                                         var index = Stages.IndexOf(stage);
                                         var generatedCount = LodDefinitions.Count(x => x.LodIndex == index && x.IsGenerated);
                                         var countPostfix = generatedCount == 0 ? "" : $", {generatedCount + 1}";
-                                        var generatedName = $"Generated ({(initialStates[index].ApplyWeldingFix ? "welding" : "no welding")}{countPostfix})";
+                                        var generatedName = selectedTool.CanWeld 
+                                                ? $"New ({selectedTool.Name}, {(initialStates[index].ApplyWeldingFix ? "welding" : "no welding")}{countPostfix})"
+                                                : $"New ({selectedTool.Name}{countPostfix})";
                                         var definition = new CustomShowroomLodDefinition {
                                             DisplayName = generatedName,
                                             Filename = filename,
@@ -1156,6 +1239,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         stage.GeneratingNow = false;
                     }
                 }
+                ScanCacheAsync().Ignore();
             }
 
             private void UpdateHasDataToSave() {
@@ -1173,12 +1257,12 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
 
             public AsyncCommand<Tuple<IProgress<double>, CancellationToken>> GenerateCommand => _generateCommand ?? (_generateCommand
                     = new AsyncCommand<Tuple<IProgress<double>, CancellationToken>>(t => GenerateAsync(t.Item1, t.Item2),
-                            t => SimplygonAvailable));
+                            t => ToolAvailable));
 
             public async Task ViewDebugModelAsync(StageParams stage) {
                 var debugFilename = FilesStorage.Instance.GetTemporaryFilename(TemporaryDirectoryName, "debug.kn5");
                 await new CarLodGenerator(new[] { stage.Stage },
-                        new CarLodSimplygonService(SimplygonLocation.Value, Stages), Car.Location,
+                        _toolDetails.Create(ToolLocation?.Value, Stages), Car.Location,
                         FilesStorage.Instance.GetTemporaryDirectory(TemporaryDirectoryName)).SaveInputModelAsync(stage.Stage, debugFilename);
                 await CustomShowroomWrapper.StartAsync(Car, debugFilename);
             }
@@ -1270,6 +1354,14 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                         using (var replacement = FileUtils.RecycleOriginal(destination)) {
                             FileUtils.Move(filename, replacement.Filename);
                         }
+
+                        if (stage.ConvertUv2?.Trim().Length > 0) {
+                            var uv2 = FileUtils.ReplaceExtension(filename, @".uv2");
+                            FileUtils.TryToDelete(FileUtils.ReplaceExtension(destination, @".uv2"));
+                            if (File.Exists(uv2)) {
+                                FileUtils.Move(uv2, FileUtils.ReplaceExtension(destination, @".uv2"));
+                            }
+                        }
                     }
                 });
             }
@@ -1286,113 +1378,6 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
                     NonfatalError.Notify("Failed to save LODs", e);
                 }
             }, () => HasDataToSave));
-
-            public class CarLodSimplygonService : ICarLodGeneratorService {
-                private readonly string _simplygonExecutable;
-                private readonly IReadOnlyList<StageParams> _stages;
-
-                public CarLodSimplygonService(string simplygonExecutable, IReadOnlyList<StageParams> stages) {
-                    _simplygonExecutable = simplygonExecutable;
-                    _stages = stages;
-                }
-
-                private static async Task RunProcessAsync(string filename, [Localizable(false)] IEnumerable<string> args, bool checkErrorCode,
-                        IProgress<double?> progress, CancellationToken cancellationToken) {
-                    var process = ProcessExtension.Start(filename, args, new ProcessStartInfo {
-                        UseShellExecute = false,
-                        RedirectStandardOutput = progress != null,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    });
-                    try {
-                        ChildProcessTracker.AddProcess(process);
-                        cancellationToken.ThrowIfCancellationRequested();
-
-                        var errorData = new StringBuilder();
-                        process.ErrorDataReceived += (sender, eventArgs) => errorData.Append(eventArgs.Data);
-                        process.BeginErrorReadLine();
-
-                        if (progress != null) {
-                            process.OutputDataReceived += (sender, eventArgs) => progress.Report(eventArgs.Data.As<double?>() / 100d);
-                            process.BeginOutputReadLine();
-                        }
-
-                        await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
-                        if (checkErrorCode && process.ExitCode != 0) {
-                            var errorMessage = errorData.ToString().Trim();
-                            if (string.IsNullOrEmpty(errorMessage)) {
-                                errorMessage = $@"Failed to run process: {process.ExitCode}";
-                            } else {
-                                var separator = errorMessage.LastIndexOf(@": ", StringComparison.Ordinal);
-                                if (separator != -1) {
-                                    errorMessage = errorMessage.Substring(separator + 2);
-                                }
-                            }
-                            throw new Exception(errorMessage);
-                        }
-                    } finally {
-                        if (!process.HasExitedSafe()) {
-                            process.Kill();
-                        }
-                        process.Dispose();
-                    }
-                }
-
-                public async Task<string> GenerateLodAsync(string stageId, string inputFile, string modelChecksum,
-                        IProgress<double?> progress, CancellationToken cancellationToken) {
-                    var stage = _stages.GetById(stageId);
-                    var rulesFilename = stage.SimplygonConfigurationFilename;
-                    string intermediateFilename = null;
-
-                    try {
-                        string cacheKey = null;
-                        try {
-                            var rules = JObject.Parse(File.ReadAllText(rulesFilename));
-                            rules[@"Settings"][@"ReductionProcessor"][@"ReductionSettings"][@"ReductionTargetTriangleCount"] = stage.TrianglesCount;
-                            rules[@"Settings"][@"ReductionProcessor"][@"RepairSettings"][@"UseWelding"] = stage.ApplyWeldingFix;
-                            rules[@"Settings"][@"ReductionProcessor"][@"RepairSettings"][@"UseTJunctionRemover"] = stage.ApplyWeldingFix;
-
-                            var rulesData = rules.ToString();
-                            var combinedChecksum = (modelChecksum + rulesData).GetChecksum();
-                            cacheKey = $@"simplygon:{combinedChecksum}";
-                            var existing = CacheStorage.Get<string>(cacheKey);
-                            if (existing != null && File.Exists(existing)) {
-                                progress?.Report(1d);
-                                return existing;
-                            }
-
-                            var newRulesFilename = FileUtils.EnsureUnique($@"{inputFile.ApartFromLast(@".fbx")}_rules.json");
-                            File.WriteAllText(newRulesFilename, rulesData);
-                            rulesFilename = newRulesFilename;
-                        } catch (Exception e) {
-                            Logging.Warning(e);
-                        }
-
-                        // Simplygon can’t parse FBX generated from COLLADA by FbxConverter. But it can parse FBX generated from FBX from COLLADA! So, let’s
-                        // convert it once more:
-                        intermediateFilename = FileUtils.EnsureUnique($@"{inputFile.ApartFromLast(@".fbx")}_fixed.fbx");
-                        await RunProcessAsync(Kn5.FbxConverterLocation, new[] { inputFile, intermediateFilename, "/sffFBX", "/dffFBX", "/f201300" },
-                                true, null, cancellationToken).ConfigureAwait(false);
-
-                        cancellationToken.ThrowIfCancellationRequested();
-                        progress?.Report(0.01);
-
-                        var outputFile = FileUtils.EnsureUnique($@"{inputFile.ApartFromLast(@".fbx")}_simplygon.fbx");
-                        await RunProcessAsync(_simplygonExecutable, new[] {
-                            "-Progress", rulesFilename, intermediateFilename, outputFile
-                        }, false, progress.SubrangeDouble(0.01, 1d), cancellationToken).ConfigureAwait(false);
-                        if (cacheKey != null) {
-                            CacheStorage.Set(cacheKey, outputFile);
-                        }
-                        return outputFile;
-                    } finally {
-                        if (!stage.KeepTemporaryFiles) {
-                            if (!FileUtils.ArePathsEqual(rulesFilename, stage.SimplygonConfigurationFilename)) FileUtils.TryToDelete(rulesFilename);
-                            if (intermediateFilename != null) FileUtils.TryToDelete(intermediateFilename);
-                        }
-                    }
-                }
-            }
         }
 
         public static Task<bool> RunAsync(CarObject target) {
@@ -1414,6 +1399,7 @@ Would you like to continue as is?", "Warning", new MessageDialogButton {
 
         private void OnViewPreparedModelClick(object sender, RoutedEventArgs e) {
             if ((sender as FrameworkElement)?.DataContext is StageParams stageParams) {
+                GCHelper.CleanUp();
                 Model.ViewDebugModelAsync(stageParams).Ignore();
             }
         }

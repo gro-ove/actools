@@ -1,4 +1,5 @@
-﻿using SlimDX;
+﻿using AcTools.Render.Utils;
+using SlimDX;
 
 namespace AcTools.Render.Base.Cameras {
     public class AccumulationDofCamera : FpsCamera {
@@ -22,8 +23,8 @@ namespace AcTools.Render.Base.Cameras {
         private void UpdateViewMatrixRotate() {
             var newPosition = Position + Right * ApertureOffset.X + Up * ApertureOffset.Y;
             var lookAt = Position + Look * FocusPlane;
-            SetView(RhMode ? Matrix.LookAtRH(newPosition, lookAt, GetUpTilt(lookAt, Up)) :
-                    Matrix.LookAtLH(newPosition, lookAt, GetUpTilt(lookAt, Up)));
+            SetView(RhMode ? MatrixFix.LookAtRH(newPosition, lookAt, GetUpTilt(lookAt, Up)) :
+                    MatrixFix.LookAtLH(newPosition, lookAt, GetUpTilt(lookAt, Up)));
             Right = Vector3.Normalize(new Vector3(View.M11, View.M21, View.M31));
         }
 
@@ -31,8 +32,8 @@ namespace AcTools.Render.Base.Cameras {
             if (SkewMode) {
                 Aspect = aspect;
 
-                var proj = RhMode ? Matrix.PerspectiveFovRH(FovY, Aspect, NearZValue, FarZValue) :
-                        Matrix.PerspectiveFovLH(FovY, Aspect, NearZValue, FarZValue);
+                var proj = RhMode ? MatrixFix.PerspectiveFovRH(FovY, Aspect, NearZValue, FarZValue) :
+                        MatrixFix.PerspectiveFovLH(FovY, Aspect, NearZValue, FarZValue);
                 proj.M31 -= ApertureOffset.X * proj.M11 / FocusPlane;
                 proj.M32 -= ApertureOffset.Y * proj.M22 / FocusPlane;
                 SetProj(proj);
@@ -43,8 +44,8 @@ namespace AcTools.Render.Base.Cameras {
 
         private void UpdateViewMatrixSkew() {
             var target = Position + Look;
-            var matrix = RhMode ? Matrix.LookAtRH(Position, target, GetUpTilt(target, Up)) :
-                    Matrix.LookAtLH(Position, target, GetUpTilt(target, Up));
+            var matrix = RhMode ? MatrixFix.LookAtRH(Position, target, GetUpTilt(target, Up)) :
+                    MatrixFix.LookAtLH(Position, target, GetUpTilt(target, Up));
 
             var right = new Vector3(matrix.M11, matrix.M21, matrix.M31);
             var up = new Vector3(matrix.M12, matrix.M22, matrix.M32);

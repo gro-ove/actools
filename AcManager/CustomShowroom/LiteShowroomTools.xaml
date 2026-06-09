@@ -1,7 +1,7 @@
 ﻿<mui:ModernDialog x:Class="AcManager.CustomShowroom.LiteShowroomTools" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:t="http://acstuff.ru/app/tools" xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.club/app/controls"
+    xmlns:t="http://acstuff.club/app/tools" xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:oxy="http://oxyplot.org/wpf" mc:Ignorable="d" Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False" Topmost="False"
     ShowTitle="False" ShowTopBlob="False" Width="250" SizeToContent="Manual" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" Loaded="OnLoaded"
     Unloaded="OnUnloaded" ResizeMode="CanResizeWithGrip" MinWidth="250" MaxWidth="250" LocationAndSizeKey="__cmls"
@@ -191,6 +191,10 @@
                     <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
                     <mui:SelectableTextBlock Text="{Binding Renderer.CarNode.TrianglesCount}" />
                   </DockPanel>
+                  <DockPanel Style="{StaticResource DockPanel}">
+                    <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_MaterialLabel}" />
+                    <mui:SelectableTextBlock Text="{Binding Renderer.CarNode.MaterialsCount}" />
+                  </DockPanel>
 
                   <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_ControlHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
                   <DockPanel Margin="0 4 0 0">
@@ -316,7 +320,7 @@
                   <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewMaterialCommand}" CommandParameter="{Binding}" Height="20"
                       Margin="4 0 0 0" Padding="4 0"
                       Visibility="{Binding ViewMaterialCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
-                  <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_MaterialLabel}" />
+                  <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_MaterialLabel}" />
                   <mui:SelectableTextBlock Text="{Binding Renderer.SelectedMaterial.Name, Mode=OneWay}" Margin="0 0 4 0" />
                 </DockPanel>
                 <DockPanel Style="{StaticResource DockPanel}">
@@ -343,9 +347,26 @@
                   <Label Content="Full path:" />
                   <mui:SelectableTextBlock Text="{Binding SelectedObjectPath}" Placeholder="?" />
                 </DockPanel>
+                
                 <DockPanel Style="{StaticResource DockPanel}">
+                  <mui:ContextMenuButton DockPanel.Dock="Right" CommandParameter="{Binding}" Height="20" Margin="4 0 0 0" Padding="4 0"
+                      Visibility="{Binding ToggleMeshTransparencyCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}">
+                    <ContextMenu>
+                      <MenuItem Header="Toggle transparency and update KN5" Command="{Binding ToggleMeshTransparencyCommand}" />
+                    </ContextMenu>
+                  </mui:ContextMenuButton>
                   <Label Content="Transparent:" />
                   <mui:SelectableTextBlock Text="{Binding SelectedObjectTransparent}" Placeholder="?" />
+                </DockPanel>
+                <DockPanel Style="{StaticResource DockPanel}">
+                  <mui:ContextMenuButton DockPanel.Dock="Right" CommandParameter="{Binding}" Height="20" Margin="4 0 0 0" Padding="4 0"
+                      Visibility="{Binding ToggleMeshCastShadowCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}">
+                    <ContextMenu>
+                      <MenuItem Header="Toggle cast shadow flag and update KN5" Command="{Binding ToggleMeshCastShadowCommand}" />
+                    </ContextMenu>
+                  </mui:ContextMenuButton>
+                  <Label Content="Casts shadows:" />
+                  <mui:SelectableTextBlock Text="{Binding SelectedObjectCastsShadow}" Placeholder="?" />
                 </DockPanel>
 
                 <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
@@ -356,7 +377,7 @@
 
                 <c:MessageBlock CloseKey="showroomSelectionHint" Margin="0 20 0 0">
                   <mui:BbCodeBlock Style="{StaticResource Small}"
-                      Text="Use Alt+H to hide selected mesh, Alt+Shift+H to un-hide all meshes. Might be helpful for stopping some meshes from casting shadows when baking AO." />
+                      Text="Use Alt+H to hide selected mesh, Alt+Shift+H to un-hide all meshes, or Alt+Ctrl+H to hide all but selected mesh. Might help to stop some meshes from casting shadows when baking AO." />
                 </c:MessageBlock>
               </StackPanel>
             </ScrollViewer>

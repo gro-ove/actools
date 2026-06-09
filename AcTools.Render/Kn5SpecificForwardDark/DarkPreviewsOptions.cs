@@ -148,7 +148,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         // public string FixedChecksum { get; set; }
 
-        public string GetChecksum() {
+        public string GetChecksum(bool cspRenderMode) {
             // if (FixedChecksum != null) return FixedChecksum;
 
             unchecked {
@@ -255,6 +255,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 if (!LoadCarLights) hashCode = (hashCode * 397) ^ 96745201;
                 if (!TryToGuessCarLights) hashCode = (hashCode * 397) ^ 64351024;
                 if (!LoadShowroomLights) hashCode = (hashCode * 397) ^ 93872189;
+                if (cspRenderMode) hashCode = (hashCode * 397) ^ 46728481;
 
                 return Convert.ToBase64String(BitConverter.GetBytes(hashCode)).TrimEnd('=');
             }

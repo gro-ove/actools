@@ -6,6 +6,9 @@ namespace AcManager.Tools.Data {
 
         public double Temperature { get; }
 
+        /// <summary>
+        /// Units: m/s.
+        /// </summary>
         public double WindSpeed { get; }
 
         public double WindDirection { get; }

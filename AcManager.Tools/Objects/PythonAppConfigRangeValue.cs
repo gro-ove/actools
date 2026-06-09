@@ -72,6 +72,8 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _displayPostix);
         }
 
+        public override string DisplayValueString => DisplayValue + DisplayPostix;
+
         public PythonAppConfigRangeValue(PythonAppReferencedValue<double> minimum, PythonAppReferencedValue<double> maximum, [CanBeNull] string postfix) {
             Minimum = minimum;
             Maximum = maximum;

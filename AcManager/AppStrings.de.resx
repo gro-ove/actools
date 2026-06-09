@@ -3479,7 +3479,7 @@ Gültige Werte liegen zwischen -1 und 1.</alternative></data>
     <value>Ändere Fahrzeug</value>
   </data>
   <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
-    <value>Änderungen werden automatisch gespeichert. Informationen zur Optimierung der Darstellung der Konfigurationsdateien finden Sie [url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"]hier[/url].</value>
+    <value>Änderungen werden automatisch gespeichert. Informationen zur Optimierung der Darstellung der Konfigurationsdateien finden Sie [url="https://acstuff.club/f/d/19-content-manager-python-app-configs"]hier[/url].</value>
   </data>
   <data name="Settings_Appearance_BindToScreen_Hint" xml:space="preserve">
     <value>Änderungen werden keinen Einfluss auf bereits dargestellte Fenster haben.</value>

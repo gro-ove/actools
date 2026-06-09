@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Threading;
 using JetBrains.Annotations;
 
 namespace AcTools.WheelAngles.Implementations {
@@ -9,13 +6,12 @@ namespace AcTools.WheelAngles.Implementations {
     internal class LogitechG920 : LogitechG25 {
         public override string ControllerName => "Logitech G920";
 
-        public override bool Test(string productGuid) {
-            return string.Equals(productGuid, "C262046D-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase);
+        public override IWheelSteerLockSetter Test(string productGuid) {
+            return string.Equals(productGuid, "C262046D-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase) ? this : null;
         }
 
         protected override string GetRegistryPath() {
-            // TODO: Check
-            return @"Software\Logitech\Gaming Software\GlobalDeviceSettings\G920";
+            return null;
         }
 
         public override WheelOptionsBase GetOptions() {
@@ -32,15 +28,8 @@ namespace AcTools.WheelAngles.Implementations {
             return SetValue(appliedValue);
         }
 
-        private static IntPtr GetHandle() {
-            return (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(() => {
-                var mainWindow = Application.Current?.MainWindow;
-                return mainWindow == null ? IntPtr.Zero : new WindowInteropHelper(mainWindow).Handle;
-            });
-        }
-
         private static bool SetValue(int value) {
-            var handle = GetHandle();
+            var handle = GetMainWindowHandle();
             if (handle == IntPtr.Zero) {
                 AcToolsLogging.Write("Main window not found, cancel");
                 return false;

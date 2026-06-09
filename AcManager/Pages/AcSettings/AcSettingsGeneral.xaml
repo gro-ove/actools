@@ -2,7 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:set="clr-namespace:AcManager.Pages.Settings"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    xmlns:c="http://acstuff.club/app/controls" xmlns:t="http://acstuff.club/app/tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance acset:AcSettingsGeneral+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />

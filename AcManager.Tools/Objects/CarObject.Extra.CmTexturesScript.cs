@@ -135,7 +135,7 @@ namespace AcManager.Tools.Objects {
 
                 ActionExtension.InvokeInMainThread(() => {
                     var image = new BetterImage {
-                        Source = BetterImage.LoadBitmapSourceFromBytes(File.ReadAllBytes(filename)).ImageSource,
+                        Source = BetterImage.LoadBitmapSourceFromFilename(filename).ImageSource,
                         CropTransparentAreas = v[@"cropTransparent"].As(true),
                         Stretch = v[@"stretch"].As(Stretch.Uniform),
                         Effect = GetEffect(v[@"effect"]?.ToString())

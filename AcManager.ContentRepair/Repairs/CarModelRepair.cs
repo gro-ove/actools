@@ -96,7 +96,12 @@ namespace AcManager.ContentRepair.Repairs {
             var kn5Filename = AcPaths.GetMainCarFilename(car.Location, car.AcdData, false);
             if (kn5Filename == null || !File.Exists(kn5Filename)) return new ContentRepairSuggestion[0];
 
-            var kn5 = Kn5.FromFile(kn5Filename);
+            IKn5 kn5;
+            try {
+                kn5 = Kn5.FromFile(kn5Filename);
+            } catch (Exception) {
+                return new ContentRepairSuggestion[0];
+            }
             if (!kn5.IsEditable) return new ContentRepairSuggestion[0];
 
             return new[] {

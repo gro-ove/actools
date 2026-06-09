@@ -55,7 +55,7 @@ namespace AcManager.Pages.Settings {
         }
 
         private void SetKeyboardInputs() {
-            KeyBindingsController.Set(Model.SelectedAppConfigs?.SelectMany(x => x.Sections).SelectMany().OfType<PythonAppConfigKeyValue>());
+            KeyBindingsController.Set(Model.SelectedAppConfigs?.SelectMany(x => x.SectionsOwn).SelectMany().OfType<PythonAppConfigKeyValue>());
         }
 
         private void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e) {

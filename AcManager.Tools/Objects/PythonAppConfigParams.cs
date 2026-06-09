@@ -22,7 +22,7 @@ namespace AcManager.Tools.Objects {
         public Func<string, IEnumerable<string>> ScanFunc { get; set; }
 
         [CanBeNull]
-        public Func<PythonAppConfigParams, string, PythonAppConfig> ConfigFactory { get; set; }
+        public Func<PythonAppConfigParams, string, IEnumerable<PythonAppConfig>> ConfigFactory { get; set; }
 
         public bool SaveOnlyNonDefault { get; set; }
 

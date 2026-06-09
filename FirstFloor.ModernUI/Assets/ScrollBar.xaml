@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <Style x:Key="ScrollBarThumb" TargetType="{x:Type Thumb}">
+  <Style x:Key="ScrollBarThumbStyle" TargetType="{x:Type Thumb}">
     <Setter Property="OverridesDefaultStyle" Value="True" />
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Background" Value="{DynamicResource ScrollBarThumbBackground}" />
@@ -103,7 +103,7 @@
                 <RepeatButton Style="{StaticResource ScrollBarPageButton}" Command="{x:Static ScrollBar.PageDownCommand}" />
               </Track.IncreaseRepeatButton>
               <Track.Thumb>
-                <Thumb Style="{StaticResource ScrollBarThumb}" Padding="4,0" />
+                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Padding="4,0" />
               </Track.Thumb>
             </Track>
             <RepeatButton Style="{StaticResource ScrollBarButton}" Grid.Row="2" IsEnabled="{TemplateBinding IsMouseOver}"
@@ -143,7 +143,7 @@
                     <RepeatButton Style="{StaticResource ScrollBarPageButton}" Command="{x:Static ScrollBar.PageRightCommand}" />
                   </Track.IncreaseRepeatButton>
                   <Track.Thumb>
-                    <Thumb Style="{StaticResource ScrollBarThumb}" Padding="0,4" />
+                    <Thumb Style="{StaticResource ScrollBarThumbStyle}" Padding="0,4" />
                   </Track.Thumb>
                 </Track>
                 <RepeatButton Style="{StaticResource ScrollBarButton}" Grid.Column="2" IsEnabled="{TemplateBinding IsMouseOver}"

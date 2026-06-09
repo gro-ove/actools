@@ -63,8 +63,8 @@ namespace AcManager {
             var profileDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AcTools Content Manager",
                     "Temporary", "Profile");
             Directory.CreateDirectory(profileDirectory);
-            ProfileOptimization.SetProfileRoot(profileDirectory);
-            ProfileOptimization.StartProfile("Startup.Profile");
+            // ProfileOptimization.SetProfileRoot(profileDirectory);
+            // ProfileOptimization.StartProfile("Startup.Profile");
 
             try {
                 MainReal(a);

@@ -1,7 +1,7 @@
 <mui:ModernDialog x:Class="AcManager.Pages.Dialogs.CarGenerateLodsDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
+    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.club/app/controls" xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
     xmlns:g="clr-namespace:AcManager" xmlns:sys="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d"
     Title="{Binding Car.DisplayName, StringFormat='{}Generate LODs for {0}'}" ShowTitle="True" SizeToContent="Manual" Width="1200" Height="1040"
     MinWidth="1080" MinHeight="600" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
@@ -30,7 +30,8 @@
                     IsSelectionRangeEnabled="True" SelectionStart="{Binding TrianglesRecommendedCount.Item1, Mode=OneWay}"
                     SelectionEnd="{Binding TrianglesRecommendedCount.Item2, Mode=OneWay}" />
               </DockPanel>
-              <CheckBox IsChecked="{Binding ApplyWeldingFix}">
+              <CheckBox IsChecked="{Binding ApplyWeldingFix}"
+                  Visibility="{Binding CanWeld, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <CheckBox.ToolTip>
                   <TextBlock MaxWidth="480" TextWrapping="Wrap"
                       Text="Can help with holes and smooth things out in general, but can also slow things down a lot, so it might make sense to disable it when figuring out better settings for priorities and such." />
@@ -77,6 +78,12 @@
           </mui:DirectContentLoaderEntry.Content>
         </mui:DirectContentLoaderEntry>
 
+        <mui:DirectContentLoaderEntry Key="ConvertUv2">
+          <mui:DirectContentLoaderEntry.Content>
+            <ae:TextEditor c:AvalonExtension.Text="{Binding ConvertUv2, UpdateSourceTrigger=PropertyChanged}" ShowLineNumbers="False" />
+          </mui:DirectContentLoaderEntry.Content>
+        </mui:DirectContentLoaderEntry>
+
       </mui:DirectContentLoader>
     </ResourceDictionary>
   </mui:ModernDialog.Resources>
@@ -84,8 +91,7 @@
   <mui:ModernDialog.ButtonsRowContent>
     <DockPanel>
       <mui:SpacingStackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right" HorizontalAlignment="Right">
-        <mui:BooleanSwitch Value="{Binding IsReady, Source={x:Static di:CarGenerateLodsDialog.Plugins}}"
-            Visibility="{Binding SimplygonAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <mui:BooleanSwitch Value="{Binding IsReady, Source={x:Static di:CarGenerateLodsDialog.Plugins}}">
           <mui:SpacingStackPanel Orientation="Horizontal" Spacing="8">
             <Button MinWidth="160" Content="Save LODs" Command="{Binding FinalSaveCommand}"
                 Visibility="{Binding HasDataToSave, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -111,6 +117,22 @@
           </mui:SpacingStackPanel>
         </mui:BooleanSwitch>
         <Button Command="{Binding OpenShowroomCommand}" Content="Showroom" ToolTip="View car and compare LODs in showroom (Alt+H)" />
+        
+        <mui:ButtonWithComboBox x:Name="ToolsMenu" Command="{Binding ToolLocateCommand}">
+          <mui:ButtonWithComboBox.Content>
+            <TextBlock Text="{Binding ToolName, StringFormat='{}Tool: {0}'}" />
+          </mui:ButtonWithComboBox.Content>
+          <mui:ButtonWithComboBox.ButtonToolTip>
+            <TextBlock Text="{Binding ToolLocation.Value, StringFormat='{}Current location: {0}', TargetNullValue='N/A'}" />
+          </mui:ButtonWithComboBox.ButtonToolTip>
+          <Separator />
+          <MenuItem Header="Change tool location…" Command="{Binding ToolLocateCommand}">
+            <MenuItem.ToolTip>
+              <TextBlock Text="{Binding ToolLocation, StringFormat='{}Current location: {0}', TargetNullValue='N/A'}" />
+            </MenuItem.ToolTip>
+          </MenuItem>
+        </mui:ButtonWithComboBox>
+        
         <Button Content="{x:Static mui:UiStrings.Close}" Click="OnCloseClick" />
       </mui:SpacingStackPanel>
       <TextBlock MaxWidth="340" FontSize="{StaticResource SmallFontSize}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Left"
@@ -141,16 +163,16 @@
         </mui:Switch>
       </DockPanel>
 
-      <!-- Simplygon is missing -->
-      <DockPanel mui:FallbackSwitch.Value="{Binding SimplygonAvailable}" mui:FallbackSwitch.When="False" Margin="40 0 40 100" HorizontalAlignment="Center"
+      <!-- The tool is missing -->
+      <DockPanel mui:FallbackSwitch.Value="{Binding ToolAvailable}" mui:FallbackSwitch.When="False" Margin="40 0 40 100" HorizontalAlignment="Center"
           VerticalAlignment="Center" MaxWidth="400">
-        <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" DockPanel.Dock="Top" Margin="0 0 0 8" />
+        <TextBlock Style="{StaticResource Heading1}" Text="The tool is missing" DockPanel.Dock="Top" Margin="0 0 0 8" />
         <mui:BbCodeBlock TextWrapping="Wrap" DockPanel.Dock="Top" Margin="0 0 0 8"
-            Text="Couldn’t find Simplygon installation. Please locate its file manually. You can get Simplygon [url=&quot;https://simplygon.com/&quot;]here[/url]." />
+            Text="Couldn’t find the tool to use to generate LODs. Please pick it manually:" />
         <DockPanel>
-          <TextBlock Text="Simplygon location:" Style="{StaticResource Label}" Width="120" />
-          <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding SimplygonLocateCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
-          <mui:PathTrimmingTextBlock Text="{Binding SimplygonLocation.Value}" />
+          <TextBlock Text="Tool location:" Style="{StaticResource Label}" Width="120" />
+          <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding ToolLocateCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
+          <mui:PathTrimmingTextBlock Text="{Binding ToolLocation.Value, FallbackValue='N/A'}" />
         </DockPanel>
       </DockPanel>
 
@@ -305,8 +327,8 @@
                               ToolTip="LODs generator will keep some files for caching, but remove others unless this option is active" />
                           <Separator />
                           <MenuItem Header="View prepared model" Click="OnViewPreparedModelClick" />
-                          <MenuItem Header="View Simplygon configuration" Command="{Binding ViewSimplygonConfigurationCommand}"
-                              ToolTip="Currently, Simplygon configuration, as well as all the other files, are not included with presets and sharing URLs" />
+                          <MenuItem Header="View tool configuration" Command="{Binding ViewToolConfigurationCommand}"
+                              ToolTip="Currently, tool configuration, as well as all the other files, are not included with presets and sharing URLs" />
                         </ContextMenu>
                       </mui:ContextMenuButton>
                       <CheckBox IsChecked="{Binding IsUserActive}" IsEnabled="{Binding IsAvailable}">

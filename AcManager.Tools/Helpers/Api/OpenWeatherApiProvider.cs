@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
 using AcManager.Internal;
 using AcManager.Tools.Data;
@@ -243,32 +242,30 @@ namespace AcManager.Tools.Helpers.Api {
             using (var order = KillerOrder.Create(new WebClient(), 5000)) {
                 var data = await order.Victim.DownloadStringTaskAsync(requestUri);
 
-                XDocument doc;
                 try {
-                    doc = XDocument.Parse(data);
-                } catch (XmlException) {
-                    Logging.Warning("response: " + data);
+                    var doc = XDocument.Parse(data);
+                    var temperatureValue = doc.Descendants(@"temperature").FirstOrDefault()?.Attribute(@"value")?.Value;
+                    var weatherNode = doc.Descendants(@"weather").FirstOrDefault();
+                    var windNode = doc.Descendants(@"wind").FirstOrDefault();
+                    if (temperatureValue == null || weatherNode == null || windNode == null) throw new Exception("Invalid response");
+
+                    var type = OpenWeatherTypeToCommonType((OpenWeatherType)FlexibleParser.ParseInt(weatherNode.Attribute(@"number")?.Value));
+                    var temperature = FlexibleParser.ParseDouble(temperatureValue);
+                    var description = weatherNode.Attribute(@"value")?.Value;
+
+                    var windSpeed = FlexibleParser.TryParseDouble(windNode.Descendants(@"speed").First().Attribute("value")?.Value) ?? 0d;
+                    var windDirection = FlexibleParser.TryParseDouble(windNode.Descendants(@"direction").First().Attribute("value")?.Value) ?? 0d;
+
+                    var humidity = FlexibleParser.ParseDouble(doc.Descendants(@"humidity").FirstOrDefault()?.Attribute(@"value")?.Value);
+                    var pressure = FlexibleParser.ParseDouble(doc.Descendants(@"pressure").FirstOrDefault()?.Attribute(@"value")?.Value);
+
+                    var icon = weatherNode.Attribute(@"icon")?.Value;
+                    var iconUri = icon == null ? null : string.Format(IconUri, icon);
+                    return new WeatherDescription(type, temperature, description, windSpeed, windDirection, humidity, pressure, iconUri);
+                } catch {
+                    Logging.Warning("Failed to parse: " + data);
                     throw;
                 }
-
-                var temperatureValue = doc.Descendants(@"temperature").FirstOrDefault()?.Attribute(@"value")?.Value;
-                var weatherNode = doc.Descendants(@"weather").FirstOrDefault();
-                var windNode = doc.Descendants(@"wind").FirstOrDefault();
-                if (temperatureValue == null || weatherNode == null || windNode == null) throw new Exception("Invalid response");
-
-                var type = OpenWeatherTypeToCommonType((OpenWeatherType)FlexibleParser.ParseInt(weatherNode.Attribute(@"number")?.Value));
-                var temperature = FlexibleParser.ParseDouble(temperatureValue);
-                var description = weatherNode.Attribute(@"value")?.Value;
-
-                var windSpeed = FlexibleParser.ParseDouble(windNode.Descendants(@"speed").First().Attribute("value")?.Value);
-                var windDirection = FlexibleParser.ParseDouble(windNode.Descendants(@"direction").First().Attribute("value")?.Value);
-
-                var humidity = FlexibleParser.ParseDouble(doc.Descendants(@"humidity").FirstOrDefault()?.Attribute(@"value")?.Value);
-                var pressure = FlexibleParser.ParseDouble(doc.Descendants(@"pressure").FirstOrDefault()?.Attribute(@"value")?.Value);
-
-                var icon = weatherNode.Attribute(@"icon")?.Value;
-                var iconUri = icon == null ? null : string.Format(IconUri, icon);
-                return new WeatherDescription(type, temperature, description, windSpeed, windDirection, humidity, pressure, iconUri);
             }
         }
     }

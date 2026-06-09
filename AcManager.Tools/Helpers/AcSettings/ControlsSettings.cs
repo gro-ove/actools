@@ -45,6 +45,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         static ControlsSettings() {
             PresetsDirectory = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "controllers");
             UserPresetsDirectory = Path.Combine(PresetsDirectory, SubUserPresets);
+            Directory.CreateDirectory(UserPresetsDirectory);
         }
 
         private static string CapitalizeFirst(string s) {
@@ -67,10 +68,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             WheelAxleEntries = new[] {
                 SteerAxleEntry,
-                new WheelAxleEntry("THROTTLE", ToolsStrings.Controls_Throttle),
-                new WheelAxleEntry("BRAKES", ToolsStrings.Controls_Brakes, gammaMode: true),
-                new WheelAxleEntry("CLUTCH", ToolsStrings.Controls_Clutch),
-                new WheelAxleEntry(HandbrakeId, ToolsStrings.Controls_Handbrake)
+                new WheelAxleEntry("THROTTLE", ToolsStrings.Controls_Throttle, gammaMode: PatchHelper.IsFeatureSupported(PatchHelper.FeatureDirectInputExtraGamma)),
+                new WheelAxleEntry("BRAKES", ToolsStrings.Controls_Brakes, gammaMode: true) { GammaWarning = true },
+                new WheelAxleEntry("CLUTCH", ToolsStrings.Controls_Clutch, gammaMode: PatchHelper.IsFeatureSupported(PatchHelper.FeatureDirectInputExtraGamma)),
+                new WheelAxleEntry(HandbrakeId, ToolsStrings.Controls_Handbrake, gammaMode: PatchHelper.IsFeatureSupported(PatchHelper.FeatureDirectInputExtraGamma))
             };
 
             KeyboardSpecificButtonEntries = new[] {
@@ -80,10 +81,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new KeyboardSpecificButtonEntry("LEFT", ToolsStrings.Controls_SteerLeft)
             }.Union(WheelGearsButtonEntries.Select(x => x.KeyboardButton)).ToArray();
 
-            KeyboardPatchButtonEntries = new[] {
+            KeyboardPatchButtonEntries = new KeyboardButtonEntry[] {
                 new KeyboardSpecificButtonEntry("KEY_MODIFICATOR", "Forcing modifier", "__EXT_KEYBOARD_GAS_RAW"),
                 new KeyboardSpecificButtonEntry("KEY", "Forced throttle", "__EXT_KEYBOARD_GAS_RAW")
-            }.ToArray();
+            };
 
             #region Joystick entires
             ControllerCarExtraButtonEntries = new[] {
@@ -175,7 +176,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     var index = name.IndexOf('(');
                     if (index != -1 && name.EndsWith(")")) {
                         description = CapitalizeFirst(name.Substring(index + 1, name.Length - index - 2)).TrimEnd('.');
-                        name = name.Substring(0, index).TrimStart();
+                        name = name.Substring(0, index).Trim();
                     }
 
                     var flags = k.GetStrings(p.Key + "_FLAGS_");
@@ -225,10 +226,17 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new SystemButtonEntryCombined("REV", "Rewind", defaultKey: Keys.D),
             };
 
-            SystemOnlineButtonEntries = new[] {
-                new SystemButtonEntryCombined("__CM_ONLINE_POLL_YES", "Poll: vote Yes", fixedValueCallback: x => new[] { Keys.Y }, delayed: true),
-                new SystemButtonEntryCombined("__CM_ONLINE_POLL_NO", "Poll: vote No", fixedValueCallback: x => new[] { Keys.N }, delayed: true)
-            };
+            if (PatchHelper.IsFeatureSupported(PatchHelper.CustomVotingBinding)) {
+                SystemOnlineButtonEntries = new[] {
+                    new SystemButtonEntryCombined("__CM_ONLINE_POLL_YES", "Poll: vote Yes", defaultKey: Keys.Y),
+                    new SystemButtonEntryCombined("__CM_ONLINE_POLL_NO", "Poll: vote No", defaultKey: Keys.N)
+                };
+            } else {
+                SystemOnlineButtonEntries = new[] {
+                    new SystemButtonEntryCombined("__CM_ONLINE_POLL_YES", "Poll: vote Yes", fixedValueCallback: x => new[] { Keys.Y }, delayed: true),
+                    new SystemButtonEntryCombined("__CM_ONLINE_POLL_NO", "Poll: vote No", fixedValueCallback: x => new[] { Keys.N }, delayed: true)
+                };
+            }
 
             SystemDiscordButtonEntries = new[] {
                 new SystemButtonEntryCombined("__CM_DISCORD_REQUEST_ACCEPT", "Accept join request", fixedValueCallback: x => new[] { Keys.Enter }, delayed: true),
@@ -299,6 +307,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Reload();
             foreach (var entry in Entries) {
                 entry.PropertyChanged += EntryPropertyChanged;
+            }
+
+            foreach (var entry in CustomButtonEntries) {
+                if (entry.CanBeHeld) {
+                    entry.PropertyChanged += EntryPropertyChanged;
+                }
             }
 
             UpdateWheelHShifterDevice();
@@ -472,13 +486,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
                         var device = devices[i];
                         if (device == null) continue;
 
-                        if (device.Information.ProductName.Contains(@"FANATEC CSL Elite")) {
+                        /*if (device.Information.ProductName.Contains(@"FANATEC CSL Elite")
+                            || device.Information.ProductName.Contains(@"FANATEC Podium Wheel Base DD")) {
                             if (SettingsHolder.Drive.SameControllersKeepFirst) {
                                 newDevices.RemoveAll(y => y.Same(device.Information));
                             } else if (newDevices.Any(y => y.Same(device.Information))) {
                                 continue;
                             }
-                        }
+                        }*/
 
                         var existing = Devices.FirstOrDefault(y => y.Same(device.Information));
                         if (existing != null) {
@@ -1059,7 +1074,26 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public int ControllerDeviceIndex {
             get => _controllerDeviceIndex;
-            set => Apply(value, ref _controllerDeviceIndex);
+            set => Apply(value, ref _controllerDeviceIndex, () => {
+                OnPropertyChanged(nameof(DisplayControllerDeviceIndex));
+                OnPropertyChanged(nameof(ControllerUseDualSense));
+                OnPropertyChanged(nameof(ControllerUseDualShock));
+            });
+        }
+
+        public int DisplayControllerDeviceIndex {
+            get => _controllerDeviceIndex % 4 + 1;
+            set => ControllerDeviceIndex = (value - 1).Clamp(0, 3) + (_controllerDeviceIndex & 4);
+        }
+
+        public bool ControllerUseDualSense {
+            get => _controllerDeviceIndex > 3 && _controllerDeviceIndex <= 7;
+            set => ControllerDeviceIndex = _controllerDeviceIndex % 4 + (value ? 4 : 0);
+        }
+
+        public bool ControllerUseDualShock {
+            get => _controllerDeviceIndex > 7;
+            set => ControllerDeviceIndex = _controllerDeviceIndex % 4 + (value ? 8 : 0);
         }
 
         private double _controllerSteeringGamma;
@@ -1551,6 +1585,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 entry.Load(Ini, devices);
             }
 
+            foreach (var entry in CustomButtonEntries) {
+                if (entry.CanBeHeld) {
+                    entry.HoldMode = Ini[entry.Id].GetBool("HOLD_MODE", false);
+                }
+            }
+
             LoadFfbFromIni(Ini);
 
             var section = Ini["KEYBOARD"];
@@ -1657,6 +1697,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 entry.Save(Ini);
             }
 
+            foreach (var entry in CustomButtonEntries) {
+                if (entry.CanBeHeld) {
+                    Ini[entry.Id].Set("HOLD_MODE", entry.HoldMode);
+                }
+            }
+
             SaveFfbToIni(Ini);
 
             var section = Ini["KEYBOARD"];
@@ -1688,7 +1734,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("FF_POST_PROCESS", AcSettingsHolder.FfPostProcess.Export().ToCutBase64());
             section.Set("SYSTEM", AcSettingsHolder.System.ExportFfb().ToCutBase64());
             section.Set("AUTO_ADJUST_SCALE", WheelSteerScaleAutoAdjust);
-            section.Set("DELAY_SPECIFIC_SYSTEM_COMMANDS", DelaySpecificSystemCommands);
+            section.Set("DELAY_SPECIFIC_SYSTEM_COMMANDS", DelaySpecificSystemCommands ? 2 : 0);
             section.Set("SHOW_SYSTEM_DELAYS", ShowSystemDelays);
             section.Set("SYSTEM_IGNORE_POV_IN_PITS", SystemIgnorePovInPits);
             section.Set("HARDWARE_LOCK", HardwareLock);

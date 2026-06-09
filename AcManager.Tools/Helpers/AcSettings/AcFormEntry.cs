@@ -119,6 +119,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             name = Regex.Replace(name, @"Ksmap\b", "KS Map");
             name = Regex.Replace(name, @"Tyre\b(?:(?= Wearing Debug)|(?= Tester))", "Tyres");
             name = Regex.Replace(name, @"Cam\b", "Camera");
+            name = Regex.Replace(name, @"\bCsp\b", "CSP");
+            name = Regex.Replace(name, @"fx\b", "FX");
             name = Regex.Replace(name, @"Susp?\b", "Suspension");
             name = Regex.Replace(name, @"Perf\b", "Performance");
             name = Regex.Replace(name, @"Rstats\b", "Rendering Stats");

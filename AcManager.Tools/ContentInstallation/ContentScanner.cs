@@ -5,10 +5,12 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Xaml;
 using AcManager.Tools.ContentInstallation.Entries;
 using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Data;
@@ -16,10 +18,12 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace AcManager.Tools.ContentInstallation {
     internal class ContentScanner {
@@ -127,6 +131,18 @@ namespace AcManager.Tools.ContentInstallation {
                 }
 
                 return _files.GetValueOrDefault(name.ToLowerInvariant());
+            }
+
+            public async Task<string[]> GetCleanUpList() {
+                var cleanup = await (GetSubFile("clean_update.txt")?.Info.ReadAsync() ?? Task.FromResult<byte[]>(null));
+                return cleanup != null ? Encoding.UTF8.GetString(cleanup).Split('\n')
+                        .Select(x => FileUtils.EnsureFilenameIsValid(x.Trim(), true))
+                        .Where(x => !x.Contains(@"..") && x.Length > 0)
+                        .ToArray() : null;
+            }
+
+            public bool HasAnySubFile(Func<string, bool> fn) {
+                return _files.Keys.Any(fn);
             }
 
             [CanBeNull]
@@ -368,13 +384,16 @@ namespace AcManager.Tools.ContentInstallation {
                         Tuple.Create(new List<string>(0), new List<string> { name }));
             }
 
+            var cleanUp = await ui.GetCleanUpList();
+            cancellation.ThrowIfCancellationRequested();
+
             if (uiTrack != null && uiTrackSubs.Count == 0) {
                 // It’s a basic track, no layouts
                 Logging.Write("Basic type of track");
 
                 var nvi = await LoadNameVersionIcon(uiTrack);
                 var models = await LoadMainModelsIni();
-                return await TrackContentEntry.Create(directory.Key ?? "", trackId, models.Item1, models.Item2,
+                return await TrackContentEntry.Create(directory.Key ?? "", trackId, cleanUp, models.Item1, models.Item2,
                         nvi.Item1, nvi.Item2, nvi.Item3);
             }
 
@@ -403,11 +422,13 @@ namespace AcManager.Tools.ContentInstallation {
                         nvi.Item1, nvi.Item2, nvi.Item3));
             }
 
-            return await TrackContentEntry.Create(directory.Key ?? "", trackId, layouts);
+            return await TrackContentEntry.Create(directory.Key ?? "", trackId, cleanUp, layouts);
         }
 
         [ItemCanBeNull]
         private async Task<ContentEntryBase> CheckDirectoryNode(DirectoryNode directory, CancellationToken cancellation) {
+            var ui = directory.GetSubDirectory("ui");
+
             if (directory.Parent?.NameLowerCase == "python" && directory.Parent.Parent?.NameLowerCase == "apps" ||
                     directory.HasSubFile(directory.Name + ".py")) {
                 var id = directory.Name;
@@ -425,8 +446,11 @@ namespace AcManager.Tools.ContentInstallation {
                 var uiAppFound = false;
                 string version = null, name = null;
 
+                var cleanUp = ui != null ? await ui.GetCleanUpList() : null;
+                cancellation.ThrowIfCancellationRequested();
+
                 // Maybe, it’s done nicely?
-                var uiApp = directory.GetSubDirectory("ui")?.GetSubFile("ui_app.json");
+                var uiApp = ui?.GetSubFile("ui_app.json");
                 if (uiApp != null) {
                     uiAppFound = true;
                     var data = await uiApp.Info.ReadAsync();
@@ -476,7 +500,7 @@ namespace AcManager.Tools.ContentInstallation {
                     throw new MissingContentException();
                 }
 
-                return new PythonAppContentEntry(directory.Key ?? "", id,
+                return new PythonAppContentEntry(directory.Key ?? "", id, cleanUp,
                         name ?? id, version, icon, icons?.Select(x => x.Key));
             }
 
@@ -486,6 +510,9 @@ namespace AcManager.Tools.ContentInstallation {
                 if (id == null) {
                     return null;
                 }
+
+                var cleanUp = await directory.GetCleanUpList();
+                cancellation.ThrowIfCancellationRequested();
 
                 // Collecting values…
                 string version = null, name = null;
@@ -504,14 +531,16 @@ namespace AcManager.Tools.ContentInstallation {
                 var icon = await (directory.GetSubFile("icon.png")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
                 cancellation.ThrowIfCancellationRequested();
 
-                return new LuaAppContentEntry(directory.Key ?? "", id, name ?? id, version, icon);
+                return new LuaAppContentEntry(directory.Key ?? "", id, cleanUp, name ?? id, version, icon);
             }
 
-            var ui = directory.GetSubDirectory("ui");
             if (ui != null) {
                 // Is it a car?
                 var uiCar = ui.GetSubFile("ui_car.json");
                 if (uiCar != null) {
+                    var cleanUp = await ui.GetCleanUpList();
+                    cancellation.ThrowIfCancellationRequested();
+
                     var icon = await (ui.GetSubFile("badge.png")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
                     cancellation.ThrowIfCancellationRequested();
 
@@ -522,7 +551,7 @@ namespace AcManager.Tools.ContentInstallation {
                                     .FirstOrDefault(x => x.EndsWith(@".bank") && x.Count('.') == 1 && x != @"common.bank")?.ApartFromLast(@".bank");
 
                     if (carId != null) {
-                        return new CarContentEntry(directory.Key ?? "", carId, parsed.GetStringValueOnly("parent") != null,
+                        return new CarContentEntry(directory.Key ?? "", carId, cleanUp, parsed.GetStringValueOnly("parent") != null,
                                 parsed.GetStringValueOnly("name"), parsed.GetStringValueOnly("version"), icon);
                     }
                 }
@@ -545,7 +574,10 @@ namespace AcManager.Tools.ContentInstallation {
                             directory.Files.Where(x => x.NameLowerCase.EndsWith(@".kn5")).OrderByDescending(x => x.Info.Size)
                                     .FirstOrDefault()?.NameLowerCase.ApartFromLast(@".kn5");
                     if (showroomId != null) {
-                        return new ShowroomContentEntry(directory.Key ?? "", showroomId,
+                        var cleanUp = await ui.GetCleanUpList();
+                        cancellation.ThrowIfCancellationRequested();
+
+                        return new ShowroomContentEntry(directory.Key ?? "", showroomId, cleanUp,
                                 parsed.GetStringValueOnly("name"), parsed.GetStringValueOnly("version"), icon);
                     }
                 }
@@ -558,7 +590,7 @@ namespace AcManager.Tools.ContentInstallation {
                             ? await (directory.GetSubFile(@"preview.jpg")?.Info.ReadAsync() ?? throw new MissingContentException())
                             : null;
                     cancellation.ThrowIfCancellationRequested();
-                    return new ShowroomContentEntry(directory.Key ?? "", directory.Name ?? throw new ArgumentException(), iconData: icon);
+                    return new ShowroomContentEntry(directory.Key ?? "", directory.Name ?? throw new ArgumentException(), null, iconData: icon);
                 }
             }
 
@@ -587,7 +619,7 @@ namespace AcManager.Tools.ContentInstallation {
                         var icon = await (directory.GetSubFile("preview.jpg")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
                         cancellation.ThrowIfCancellationRequested();
 
-                        return new ShowroomContentEntry(directory.Key ?? "", id,
+                        return new ShowroomContentEntry(directory.Key ?? "", id, null,
                                 AcStringValues.NameFromId(id), null, icon);
                     }
                 }
@@ -715,34 +747,71 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             if (directory.NameLowerCase == "__gbwsuite") {
-                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, "GBW scripts", "__gbwSuite");
+                return new CustomFolderEntry(true, directory.Key ?? "", new[] { directory.Key }, "GBW scripts", "__gbwSuite");
             }
 
             if (directory.Name == "cars" && directory.Parent?.Name == "config" && directory.Parent?.Parent?.Name == "extension") {
-                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, "Cars configs", "extension/config/cars", onlyUpdating: true);
+                return new CustomFolderEntry(false, directory.Key ?? "", new[] { directory.Key }, "Cars configs", "extension/config/cars", onlyUpdating: true);
             }
 
             if (directory.Name == "tracks" && directory.Parent?.Name == "config" && directory.Parent?.Parent?.Name == "extension") {
-                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, "Track configs", "extension/config/tracks", onlyUpdating: true);
+                return new CustomFolderEntry(false, directory.Key ?? "", new[] { directory.Key }, "Track configs", "extension/config/tracks", onlyUpdating: true);
             }
 
             PatchPluginEntry ret;
+
+            // Extra scripts: weather
             if ((ret = await CheckPatchPlugin("weather.lua", "CSP Weather FX script", @"weather")) != null) {
                 return ret;
             }
             if ((ret = await CheckPatchPlugin("controller.lua", "CSP Weather FX controller", @"weather-controllers")) != null) {
                 return ret;
             }
-            if ((ret = await CheckPatchPlugin("camera.lua", "CSP camera script", @"lua\chaser-camera")) != null) {
+
+            // Extra scripts: extension/lua
+            if ((ret = await CheckPatchPlugin("config.ini", "CSP car script", @"cars")) != null) {
                 return ret;
             }
-            if ((ret = await CheckPatchPlugin("fireworks.lua", "CSP fireworks script", @"lua\fireworks")) != null) {
+            if ((ret = await CheckPatchPlugin("camera.lua", "CSP camera script", @"chaser-camera")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("cockpit.lua", "CSP first person camera script", @"cockpit-camera")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("ffb.lua", "CSP FFB post-process script", @"ffb-postprocess")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("fireworks.lua", "CSP fireworks script", @"fireworks")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("assist.lua", "CSP gamepad script", @"joypad-assist")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("splashscreen.lua", "CSP loading screen script", @"loading-screen")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("assist.lua", "CSP mouse steering script", @"mouse-steering")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("mode.lua", "CSP new mode", @"new-modes")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("filter.lua", "CSP post-processing filter", @"pp-filters")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("tool.lua", "CSP tool script", @"tools")) != null) {
                 return ret;
             }
 
-            async Task<PatchPluginEntry> CheckPatchPlugin(string fileName, string displayName, string relativePath) {
+            // Extra scripts: Android Auto
+            if ((ret = await CheckPatchPluginRe("app.lua", "CSP Android Auto app",
+                    new Regex(@"^lua\\cars\\\w+\\apps$"))) != null) {
+                return ret;
+            }
+
+            async Task<PatchPluginEntry> CheckPatchPluginGen(string fileName, string displayName, Func<string, bool> relativePath) {
                 var directoryName = directory?.Name;
-                if (directoryName != null && directory.HasSubFile(fileName) && directory.Parent?.NameLowerCase == Path.GetFileName(relativePath)) {
+                if (directoryName != null && (fileName == null || directory.HasSubFile(fileName)) && relativePath(directory.Parent?.NameLowerCase ?? "")) {
                     var manifestInfo = directory.GetSubFile("manifest.ini");
                     var name = AcStringValues.NameFromId(directoryName);
                     string version = null;
@@ -754,11 +823,22 @@ namespace AcManager.Tools.ContentInstallation {
                         version = data.GetNonEmpty("VERSION");
                         description = data.GetNonEmpty("DESCRIPTION");
                     }
-                    return new PatchPluginEntry(directory.Key ?? "", new[] { directory.Key }, $"{displayName} “{name}”",
-                            Path.Combine(AcRootDirectory.Instance.RequireValue, "extension", relativePath ?? "", directoryName), 1e5,
+                    var cleanUp = await directory.GetCleanUpList();
+                    cancellation.ThrowIfCancellationRequested();
+                    return new PatchPluginEntry(directory.Key ?? "", new[] { directory.Key }, cleanUp, $"{displayName} “{name}”",
+                            Path.Combine(AcRootDirectory.Instance.RequireValue, PatchHelper.PatchDirectoryName, @"lua", directory.Parent?.NameLowerCase ?? "",
+                                    directoryName), 1e5,
                             version, description);
                 }
                 return null;
+            }
+
+            Task<PatchPluginEntry> CheckPatchPlugin(string fileName, string displayName, string relativePath) {
+                return CheckPatchPluginGen(fileName, displayName, x => x == relativePath);
+            }
+
+            Task<PatchPluginEntry> CheckPatchPluginRe(string fileName, string displayName, Regex relativePath) {
+                return CheckPatchPluginGen(fileName, displayName, x => relativePath.IsMatch(x));
             }
 
             // Mod
@@ -772,12 +852,15 @@ namespace AcManager.Tools.ContentInstallation {
                         description = directory.GetSubDirectory("documentation")?.Files.FirstOrDefault(x => x.NameLowerCase.EndsWith(@".jsgme"));
                     }
 
+                    var cleanUp = await directory.GetCleanUpList();
+                    cancellation.ThrowIfCancellationRequested();
+
                     if (description != null) {
                         var data = await description.Info.ReadAsync() ?? throw new MissingContentException();
-                        return new GenericModConfigEntry(directory.Key ?? "", name, data.ToUtf8String());
+                        return new GenericModConfigEntry(directory.Key ?? "", name, cleanUp, data.ToUtf8String());
                     }
 
-                    return new GenericModConfigEntry(directory.Key ?? "", name);
+                    return new GenericModConfigEntry(directory.Key ?? "", name, cleanUp);
                 }
             }
 

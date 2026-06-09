@@ -1,8 +1,8 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.CarUpdatePreviewsDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" Title="{x:Static g:AppStrings.CarPreviews_Title}" MinWidth="320" MinHeight="120" Width="740"
+    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.club/app/controls"
+    xmlns:t="http://acstuff.club/app/tools" mc:Ignorable="d" Title="{x:Static g:AppStrings.CarPreviews_Title}" MinWidth="320" MinHeight="120" Width="740"
     Height="400" ResizeMode="NoResize" MaxWidth="1920" MaxHeight="1080" Closing="OnClosing" SizeToContent="Manual" Loaded="OnLoaded"
     d:DataContext="{d:DesignInstance di:CarUpdatePreviewsDialog}">
   <mui:ModernDialog.Resources>

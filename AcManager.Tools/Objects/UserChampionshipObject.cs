@@ -168,7 +168,7 @@ namespace AcManager.Tools.Objects {
                     if (!_setDriversQuietly) {
                         var player = value.First(x => x.IsPlayer);
                         PlayerCarEntries.ReplaceEverythingBy_Direct(new[] {
-                            new PlayerCarEntry(player.CarId, player.SkinId),
+                            new PlayerCarEntry(player.CarId ?? CarsManager.Instance.Default.Id, player.SkinId),
                         });
                     }
 
@@ -313,12 +313,11 @@ namespace AcManager.Tools.Objects {
             [NotNull]
             public string CarId { get; }
 
-            public PlayerCarEntry(string carId, string carSkinId) {
-                _car = Lazier.Create(() => CarsManager.Instance.GetById(CarId));
-                _carSkin = Lazier.Create(() => CarSkinId == null ? null : Car?.GetSkinById(CarSkinId));
-
+            public PlayerCarEntry([NotNull] string carId, string carSkinId) {
                 CarId = carId;
-                CarSkinId = carSkinId;
+                _carSkinId = carSkinId;
+                _car = Lazier.Create(() => CarsManager.Instance.GetById(CarId));
+                _carSkin = Lazier.Create(() => _carSkinId == null ? null : Car?.GetSkinById(_carSkinId));
             }
 
             public PlayerCarEntry(CarObject car, CarSkinObject carSkin) : this(car.Id, carSkin.Id) { }
@@ -1247,6 +1246,7 @@ namespace AcManager.Tools.Objects {
 
         private UserChampionshipRoundExtended _currentRound;
 
+        [CanBeNull]
         public UserChampionshipRoundExtended CurrentRound {
             get => _currentRound;
             set => Apply(value, ref _currentRound);
@@ -1311,7 +1311,7 @@ namespace AcManager.Tools.Objects {
                 UpdateTakenPlaces();
 
                 _lastSelectedTimestamp = 0;
-                CurrentRound = ExtendedRounds.First();
+                CurrentRound = ExtendedRounds.FirstOrDefault();
 
                 foreach (var round in ExtendedRounds) {
                     round.TakenPlace = Type == KunosCareerObjectType.SingleEvents ? PlaceConditions.UnremarkablePlace : 0;

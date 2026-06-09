@@ -122,7 +122,7 @@ namespace AcManager.Controls.UserControls.Cef {
                 }
 
                 using (var s = new MemoryStream(_response)) {
-                    bytesRead = s.CopyTo(dataOut, (int)dataOut.Length, 8192);
+                    bytesRead = s.CopyToLimited(dataOut, (int)dataOut.Length, 8192);
                     return bytesRead > 0;
                 }
             }
@@ -138,7 +138,7 @@ namespace AcManager.Controls.UserControls.Cef {
                 }
 
                 using (var s = new MemoryStream(_response)) {
-                    bytesRead = s.CopyTo(dataOut, (int)dataOut.Length, 8192);
+                    bytesRead = s.CopyToLimited(dataOut, (int)dataOut.Length, 8192);
                     return bytesRead > 0;
                 }
             }

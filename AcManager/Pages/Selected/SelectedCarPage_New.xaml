@@ -1,7 +1,7 @@
 ﻿<sel:SelectedAcJsonObjectPage x:Class="AcManager.Pages.Selected.SelectedCarPage_New" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:g="clr-namespace:AcManager" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:c="http://acstuff.club/app/controls" xmlns:t="http://acstuff.club/app/tools"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:graphs="clr-namespace:AcManager.Controls.Graphs;assembly=AcManager.Controls"
     mc:Ignorable="d" mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance sel:SelectedCarPage_New+ViewModel}">
@@ -76,7 +76,7 @@
         </Button>
         <Button Content="Generate LODs" Command="{Binding GenerateLodsCommand}"
             Visibility="{Binding CanEditDetails, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <Button.ToolTip>Improve performance by generating LODs using Simplygon</Button.ToolTip>
+          <Button.ToolTip>Improve performance by generating LODs</Button.ToolTip>
         </Button>
       </ToolBar>
       <ToolBar Band="1" BandIndex="1">
@@ -155,8 +155,12 @@
               </i:Interaction.Behaviors>
               <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type t:CarSkinObject}">
-                  <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding LiveryImage}" Width="32" Height="32" ClearOnChange="True"
-                      PreviewMouseRightButtonUp="OnPreviewRightClick" c:ToolTips.CarSkin="{Binding}" />
+                  <mui:Cell>
+                    <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding LiveryImage}" Width="32" Height="32" ClearOnChange="True"
+                        PreviewMouseRightButtonUp="OnPreviewRightClick" c:ToolTips.CarSkin="{Binding}" />
+                    <Ellipse Width="4" Height="4" VerticalAlignment="Top" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 -1 -1 0"
+                        IsHitTestVisible="False" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                  </mui:Cell>
                 </DataTemplate>
               </ListBox.ItemTemplate>
             </ListBox>
@@ -449,14 +453,6 @@
                     </ContextMenu>
                   </FrameworkElement.ContextMenu>
                 </c:NotesBlock>
-
-                <mui:BooleanSwitch Value="{Binding TheSetupMarketCounter, Source={x:Static t:SettingsHolder.Integrated}}" CollapseOnFalse="True"
-                    c:PropertiesGrid.Label="Setups on TSM:">
-                  <DockPanel Background="Transparent" ToolTip="{x:Static g:AppStrings.Selected_CarPage_New_TSMSetups_Tooltip}">
-                    <Button Content="…" Padding="4 0" DockPanel.Dock="Right" Margin="4 0 1 0" Click="OnTsmSetupsButtonClick" />
-                    <mui:PlaceholderTextBlock Placeholder="…" Text="{Binding SelectedObject.TsmSetupsCount}" />
-                  </DockPanel>
-                </mui:BooleanSwitch>
 
                 <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
                     Text="{Binding SelectedObject.TotalDrivenDistanceKm, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.DistanceFormat}}">

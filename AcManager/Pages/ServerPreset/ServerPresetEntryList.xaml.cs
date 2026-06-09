@@ -202,6 +202,8 @@ namespace AcManager.Pages.ServerPreset {
         }
 
         private void CspTweaksCopyToOtherCarsClick(object sender, RoutedEventArgs e) {
+            // ReSharper disable once RedundantAssignment
+            // ReSharper disable once InlineOutVariableDeclaration
             string result = null;
             if (((sender as FrameworkElement)?.DataContext as ServerPresetDriverEntry)?.CspOptions?.Pack(out result) == true) {
                 foreach (var entry in Model.SelectedObject.DriverEntries) {

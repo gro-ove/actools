@@ -44,6 +44,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             public virtual bool IsBlending => false;
 
+            public string Name => null;
+
             public void Dispose() { }
         }
 

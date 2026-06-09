@@ -40,7 +40,7 @@ namespace AcManager.Tools.Managers.Online {
             TracksManager.Instance.WrappersList.ItemPropertyChanged += OnTrackPropertyChanged;
             WeatherManager.Instance.WrappersList.CollectionReady += OnWeatherListCollectionReady;
 
-            if (SettingsHolder.Online.SearchForMissingContent) {
+            if (SettingsHolder.Online.SearchContentMode.IntValue > 0) {
                 IndexDirectDownloader.AvailableIdsLoaded += OnAvailableIdsLoaded;
                 IndexDirectDownloader.LoadAvailableIdsAsync();
             }
@@ -184,14 +184,16 @@ namespace AcManager.Tools.Managers.Online {
 
                     // assume address is [HOSTNAME]:[TCP PORT]
                     progress?.Report(AsyncProgressEntry.FromStringIndetermitate(ToolsStrings.Online_TryingToFindOutHttpPort));
-                    var pair = await KunosApiProvider.TryToPingServerAsync(ip, port, SettingsHolder.Online.PingTimeout);
+                    var pair = SettingsHolder.Online.PingingSingleSocket
+                            ? await KunosApiProvider.TryToPingServerAsync(ip, port)
+                            : await KunosApiProvider.TryToPingServerAsyncOld(ip, port, SettingsHolder.Online.PingTimeout);
                     if (cancellation.IsCancellationRequested) return null;
 
-                    if (pair != null) {
+                    if (pair?.PortHttp != null) {
                         progress?.Report(AsyncProgressEntry.FromStringIndetermitate(ToolsStrings.Online_GettingInformationDirectly_SecondAttempt));
 
                         try {
-                            information = await KunosApiProvider.GetInformationDirectAsync(ip, pair.Item1);
+                            information = await KunosApiProvider.GetInformationDirectAsync(ip, pair.PortHttp.Value);
                         } catch (WebException) {
                             information = null;
                         }
@@ -213,12 +215,14 @@ namespace AcManager.Tools.Managers.Online {
                 var total = portsDiapason.Count();
 
                 await portsDiapason.Select(async p => {
-                    var pair = await KunosApiProvider.TryToPingServerAsync(ip, p, SettingsHolder.Online.ScanPingTimeout);
-                    if (pair != null && pair.Item1 > 1024 && pair.Item1 < 65536) {
+                    var pair = SettingsHolder.Online.PingingSingleSocket
+                            ? await KunosApiProvider.TryToPingServerAsync(ip, p)
+                            : await KunosApiProvider.TryToPingServerAsyncOld(ip, p, SettingsHolder.Online.ScanPingTimeout);
+                    if (pair?.PortHttp != null && pair.PortHttp > 1024 && pair.PortHttp < 65536) {
                         if (cancellation.IsCancellationRequested) return;
 
                         try {
-                            var information = await KunosApiProvider.GetInformationDirectAsync(ip, pair.Item1);
+                            var information = await KunosApiProvider.GetInformationDirectAsync(ip, pair.PortHttp.Value);
                             if (cancellation.IsCancellationRequested) return;
                             result.Add(information);
                         } catch (WebException) { }

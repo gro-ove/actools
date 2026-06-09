@@ -10,7 +10,10 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers {
     public class SaveHelper<T> : ISaveHelper where T : class, new() {
+        [CanBeNull]
         private readonly Func<T> _save;
+
+        private readonly Func<string> _saveDirect;
         private readonly Action<T> _load;
         private readonly Action _reset;
         private readonly Func<string, T> _deserialize;
@@ -34,6 +37,17 @@ namespace AcManager.Tools.Helpers {
                 IStorage storage = null) {
             Key = key;
             _save = save;
+            _load = load;
+            _reset = () => _load(new T());
+            _deserialize = deserialize;
+            _storage = storage ?? ValuesStorage.Storage;
+        }
+
+        /* Super-streamlined version for extra saving performance */
+        public SaveHelper([CanBeNull, Localizable(false)] string key, Func<string> saveDirect, Action<T> load, Func<string, T> deserialize = null,
+                IStorage storage = null) {
+            Key = key;
+            _saveDirect = saveDirect;
             _load = load;
             _reset = () => _load(new T());
             _deserialize = deserialize;
@@ -130,7 +144,8 @@ namespace AcManager.Tools.Helpers {
         public bool HasSavedData => Key != null && _storage.Contains(Key);
 
         public string ToSerializedString() {
-            var obj = _save();
+            if (_saveDirect != null) return _saveDirect();
+            var obj = _save?.Invoke();
             return obj == null ? null : Serialize(obj);
         }
 

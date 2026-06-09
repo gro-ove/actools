@@ -62,6 +62,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private ShaderResourceView LoadSafe([CanBeNull] Device device, byte[] bytes) {
             if (device == null) return null;
             try {
+                GC.AddMemoryPressure(bytes.Length);
                 return ShaderResourceView.FromMemory(device, bytes);
             } catch (Exception e) {
                 AcToolsLogging.Write($"Texture {Name} damaged: {e}");

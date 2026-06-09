@@ -1,7 +1,7 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.ControllerDefinitionsDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" Title="{Binding Device.DisplayName}"
+    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.club/app/controls" mc:Ignorable="d" Title="{Binding Device.DisplayName}"
     d:DataContext="{d:DesignInstance di:ControllerDefinitionsDialog+ViewModel}" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
     MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" MinWidth="200" SizeToContent="WidthAndHeight" ResizeMode="NoResize" ContentMargin="0 0 0 -42">
   <mui:ModernDialog.Resources>

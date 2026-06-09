@@ -480,7 +480,7 @@ namespace AcManager.CustomShowroom {
             public AsyncCommand RenameCommand => _renameCommand ?? (_renameCommand = new AsyncCommand(async () => {
                 if (Material == null) return;
 
-                var newName = Prompt.Show("New material name:", "Rename material", Material.Name, "?", required: true, maxLength: 120)?.Trim();
+                var newName = (await Prompt.ShowAsync("New material name:", "Rename material", Material.Name, "?", required: true, maxLength: 120))?.Trim();
                 if (string.IsNullOrEmpty(newName)) return;
 
                 try {
@@ -507,7 +507,7 @@ namespace AcManager.CustomShowroom {
                 var selectedObject = (_renderer as ToolsKn5ObjectRenderer)?.SelectedObject;
                 if (selectedObject == null) return;
 
-                var newName = Prompt.Show("New material name:", "Fork material", material.Name, "?", required: true, maxLength: 120)?.Trim();
+                var newName = (await Prompt.ShowAsync("New material name:", "Fork material", material.Name, "?", required: true, maxLength: 120))?.Trim();
                 if (string.IsNullOrEmpty(newName)) return;
 
                 try {
@@ -537,8 +537,8 @@ namespace AcManager.CustomShowroom {
                 var selectedObject = (_renderer as ToolsKn5ObjectRenderer)?.SelectedObject;
                 if (selectedObject == null) return;
 
-                var newName = Prompt.Show("Select material:", "Change material", material.Name, "?", required: true, maxLength: 120,
-                        suggestions: _kn5.Materials.Keys.OrderBy(x => x), suggestionsFixed: true)?.Trim();
+                var newName = (await Prompt.ShowAsync("Select material:", "Change material", material.Name, "?", required: true, maxLength: 120,
+                        suggestions: _kn5.Materials.Keys.OrderBy(x => x), suggestionsFixed: true))?.Trim();
                 if (string.IsNullOrEmpty(newName) || newName == material.Name) return;
 
                 try {

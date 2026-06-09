@@ -62,6 +62,20 @@ namespace AcManager.Controls.ViewModels {
             return _saveable.ToSerializedString();
         }
 
+        [CanBeNull]
+        public static string GeneratePresetData(IEnumerable<RaceGridEntry> entries) {
+            if (entries == null) return null;
+            var vm = new RaceGridViewModel(keySaveable: null) {
+                LoadingFromOutside = true,
+                Mode = BuiltInGridMode.Custom,
+                FilterValue = null,
+                RandomSkinsFilter = null
+            };
+            vm.NonfilteredList.ReplaceEverythingBy_Direct(entries.NonNull());
+            if (vm.NonfilteredList.Count == 0) return null;
+            return vm.ExportToPresetData();
+        }
+
         public event EventHandler Changed;
 
         public void ImportFromPresetData(string data) {
@@ -305,7 +319,7 @@ namespace AcManager.Controls.ViewModels {
                 ErrorMessage = null;
 
                 // NonfilteredList is not gonna be rebuilt now, because of LoadingItself flag set by SaveableHelper
-                var mode = Modes.GetByIdOrDefault<IRaceGridMode>(data.ModeId);
+                var mode = Modes?.GetByIdOrDefault<IRaceGridMode>(data.ModeId);
                 if (mode == null) {
                     NonfatalError.NotifyBackground(ToolsStrings.RaceGrid_GridModeIsMissing,
                             string.Format(ToolsStrings.RaceGrid_GridModeIsMissing_Commentary, data.ModeId));
@@ -323,6 +337,7 @@ namespace AcManager.Controls.ViewModels {
                             var aiLevel = data.AiLevels?.ArrayElementAtOrDefault(i);
                             var aiAggression = data.AiAggressions?.ArrayElementAtOrDefault(i);
                             var carSkinId = data.SkinIds?.ArrayElementAtOrDefault(i);
+                        
                             return new RaceGridEntry(x) {
                                 CandidatePriority = data.CandidatePriorities?.ElementAtOr(i, 1) ?? 1,
                                 AiLevel = aiLevel >= 0 ? aiLevel : null,
@@ -666,7 +681,8 @@ namespace AcManager.Controls.ViewModels {
 
         private ICommand _switchModeCommand;
 
-        public ICommand SetModeCommand => _switchModeCommand ?? (_switchModeCommand = new DelegateCommand<BuiltInGridMode>(o => { Mode = o; }, o => o != null));
+        public ICommand SetModeCommand => _switchModeCommand ?? (_switchModeCommand = new DelegateCommand<BuiltInGridMode>(
+                o => Mode = o, o => o != null));
 
         private void UpdateRandomModes() {
             var items = new List<object> {
@@ -1378,7 +1394,7 @@ namespace AcManager.Controls.ViewModels {
 
             var takenNames = new List<string>(opponentsNumber);
             return final.Select((entry, i) => {
-                var level = entry.AiLevel ?? aiLevels?[i] ?? AiLevel;
+                var level = entry.AiLevel ?? aiLevels?[i] ?? (AiLevelFixed ? 100d : AiLevel);
                 var aggression = entry.AiAggression ?? aiAggressions?[i] ?? AiAggression;
 
                 CarSkinObject skin;
@@ -1433,16 +1449,7 @@ namespace AcManager.Controls.ViewModels {
                 }
 
                 var carId = entry.Car.Id;
-                if (entry.AiLimitationDetails.IsActive) {
-                    // TODO: Async?
-                    try {
-                        carId = entry.AiLimitationDetails.Apply();
-                    } catch (Exception e) {
-                        NonfatalError.Notify("Can’t make AI-specific version of a car", e);
-                    }
-                }
-
-                return new Game.AiCar {
+                var result = new Game.AiCar {
                     AiLevel = level,
                     AiAggression = aggression,
                     CarId = carId,
@@ -1453,6 +1460,16 @@ namespace AcManager.Controls.ViewModels {
                     Setup = "",
                     SkinId = skinId
                 };
+                if (entry.AiLimitationDetails.IsActive) {
+                    // TODO: Async?
+                    try {
+                        entry.AiLimitationDetails.Apply(result);
+                    } catch (Exception e) {
+                        NonfatalError.Notify("Can’t make AI-specific version of a car", e);
+                    }
+                }
+
+                return result;
             }).ToList();
         }
 

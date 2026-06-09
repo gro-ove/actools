@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.PresetsPerMode;
@@ -28,76 +29,36 @@ namespace AcManager.Pages.AcSettings {
             this.OnActualUnload(Unload);
         }
 
-        [JsonObject(MemberSerialization.OptIn)]
-        public sealed class Mode : Displayable, IWithId {
-            public string Id { get; }
-
-            public string Script { get; }
-
-            [JsonConstructor]
-            public Mode(string id, string name, string script) {
-                Id = id;
-                DisplayName = name;
-                Script = script;
-            }
-
-            private bool Equals(Mode other) {
-                return string.Equals(Id, other.Id) && string.Equals(DisplayName, other.DisplayName) && string.Equals(Script, other.Script);
-            }
-
-            public override bool Equals(object obj) {
-                return !ReferenceEquals(null, obj) && (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((Mode)obj));
-            }
-
-            public override int GetHashCode() {
-                unchecked {
-                    var hashCode = Id?.GetHashCode() ?? 0;
-                    hashCode = (hashCode * 397) ^ (DisplayName?.GetHashCode() ?? 0);
-                    hashCode = (hashCode * 397) ^ (Script?.GetHashCode() ?? 0);
-                    return hashCode;
-                }
-            }
-        }
-
         public class PresetPerModeUi : PresetPerMode {
-            private readonly IEnumerable<Mode> _modes;
-
-            public PresetPerModeUi(IEnumerable<Mode> modes) {
-                _modes = modes;
+            public PresetPerModeUi() {
                 OnConditionChanged();
             }
 
-            public PresetPerModeUi(string serialized, IEnumerable<Mode> modes) : base(serialized) {
-                _modes = modes;
+            public PresetPerModeUi(string serialized) : base(serialized) {
                 OnConditionChanged();
             }
 
-            private Mode _mode;
+            private ModeSpecificPresetsHelper.Mode _mode;
 
-            public Mode Mode {
+            public ModeSpecificPresetsHelper.Mode Mode {
                 get {
                     if (_mode == null) {
-                        if (_modes == null) {
-                            Logging.Unexpected();
-                            _mode = new Mode(ConditionId, AcStringValues.NameFromId(ConditionId), ConditionFn);
+                        var mode = ModeSpecificPresetsHelper.GetModes().GetByIdOrDefault(ConditionId);
+                        if (mode != null) {
+                            ConditionFn = mode.Script;
                         } else {
-                            var mode = _modes.GetByIdOrDefault(ConditionId);
+                            Logging.Warning($"Mode with ID=“{ConditionId}” missing");
+                            mode = ModeSpecificPresetsHelper.GetModes().FirstOrDefault(x => x.Script == ConditionFn);
                             if (mode != null) {
-                                ConditionFn = mode.Script;
+                                Logging.Warning($"Mode with ID=“{mode.Id}” will be used instead");
+                                ConditionId = mode.Id;
                             } else {
-                                Logging.Warning($"Mode with ID=“{ConditionId}” missing");
-                                mode = _modes.FirstOrDefault(x => x.Script == ConditionFn);
-                                if (mode != null) {
-                                    Logging.Warning($"Mode with ID=“{mode.Id}” will be used instead");
-                                    ConditionId = mode.Id;
-                                } else {
-                                    Logging.Warning($"Mode with Func=“{ConditionFn}” missing as well");
-                                    mode = new Mode(ConditionId, AcStringValues.NameFromId(ConditionId), ConditionFn);
-                                }
+                                Logging.Warning($"Mode with Func=“{ConditionFn}” missing as well");
+                                mode = new ModeSpecificPresetsHelper.Mode(ConditionId, AcStringValues.NameFromId(ConditionId), ConditionFn);
                             }
-
-                            _mode = mode;
                         }
+
+                        _mode = mode;
                     }
 
                     return _mode;
@@ -117,7 +78,7 @@ namespace AcManager.Pages.AcSettings {
             private bool _ignore;
 
             public sealed override void OnConditionChanged() {
-                if (!_ignore && _modes != null) {
+                if (!_ignore) {
                     _mode = null;
                     OnPropertyChanged(nameof(Mode));
                 }
@@ -125,7 +86,7 @@ namespace AcManager.Pages.AcSettings {
         }
 
         public class ViewModel : PresetsPerModeBase, IDisposable {
-            public BetterObservableCollection<Mode> Modes { get; }
+            public HierarchicalGroup Modes { get; }
 
             private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
 
@@ -139,16 +100,22 @@ namespace AcManager.Pages.AcSettings {
 
             public ViewModel() {
                 Entries = new ChangeableObservableCollection<PresetPerMode>();
-                Modes = new BetterObservableCollection<Mode>();
+                
+                Modes = new HierarchicalGroup();
+                foreach (var mode in ModeSpecificPresetsHelper.GetModes().GroupBy(x => x.Category).OrderBy(x => x.Key)) {
+                    Modes.Add(new HierarchicalGroup(mode.Key, mode.OrderBy(x => x.DisplayName).Select(x => {
+                        var ret = new HierarchicalItem { Header = x.DisplayName, ToolTip = x.Description };
+                        HierarchicalItemsView.SetValue(ret, x);
+                        return ret;
+                    })));
+                }
 
                 AppPresets = new HierarchicalGroup("", UserPresetsControl.GroupPresets(new PresetsCategory(AcSettingsHolder.AppsPresetsKey)));
                 AudioPresets = new HierarchicalGroup("", UserPresetsControl.GroupPresets(new PresetsCategory(AcSettingsHolder.AudioPresetsKey)));
                 VideoPresets = new HierarchicalGroup("", UserPresetsControl.GroupPresets(new PresetsCategory(AcSettingsHolder.VideoPresetsKey)));
                 PatchPresets = new HierarchicalGroup("", UserPresetsControl.GroupPresets(PatchSettingsModel.Category));
 
-                UpdateModes();
                 FilesStorage.Instance.Watcher(ContentCategory.PresetsPerModeConditions).Update += OnCategoriesUpdate;
-
                 Saveable.Initialize();
 
                 Entries.CollectionChanged += OnCollectionChanged;
@@ -156,23 +123,13 @@ namespace AcManager.Pages.AcSettings {
             }
 
             private void UpdateModes() {
-                Modes.ReplaceIfDifferBy(FilesStorage.Instance.GetContentFilesFiltered(@"*.json", ContentCategory.PresetsPerModeConditions)
-                                                    .SelectMany(x => {
-                                                        try {
-                                                            return JsonConvert.DeserializeObject<Mode[]>(File.ReadAllText(x.Filename));
-                                                        } catch (Exception e) {
-                                                            Logging.Warning($"Cannot load file {x.Name}: {e}");
-                                                            return new Mode[0];
-                                                        }
-                                                    })
-                                                    .OrderBy(x => x.DisplayName));
                 foreach (var entry in Entries.OfType<PresetPerModeUi>()) {
                     entry.OnConditionChanged();
                 }
             }
 
             protected override PresetPerMode CreateEntry(string serialized) {
-                return new PresetPerModeUi(serialized, Modes);
+                return new PresetPerModeUi(serialized);
             }
 
             private void OnCategoriesUpdate(object sender, EventArgs e) {
@@ -220,7 +177,7 @@ namespace AcManager.Pages.AcSettings {
         }
 
         private void OnAddNewRoundButtonClick(object sender, RoutedEventArgs e) {
-            Model.Entries.Add(new PresetPerModeUi(Model.Modes));
+            Model.Entries.Add(new PresetPerModeUi());
         }
     }
 }

@@ -16,8 +16,8 @@ namespace AcManager.Tools.Miscellaneous {
             }
             if (SteamStarter.Initialize(MainExecutingFile.Directory, true)) {
                 var data = args.Contains(@"--stats")
-                        ? JsonConvert.SerializeObject(SteamStarter.GetAchievementStats(), Formatting.Indented)
-                        : JsonConvert.SerializeObject(SteamStarter.GetAchievements(), Formatting.Indented);
+                        ? JsonConvert.SerializeObject(SteamStarter.GetAchievementStatsAsync().Result, Formatting.Indented)
+                        : JsonConvert.SerializeObject(SteamStarter.GetAchievementsAsync().Result, Formatting.Indented);
                 if (outFilename != null) {
                     File.WriteAllText(outFilename, data);
                 } else {

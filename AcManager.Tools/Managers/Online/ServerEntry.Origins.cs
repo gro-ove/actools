@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -118,7 +119,9 @@ namespace AcManager.Tools.Managers.Online {
                         AddExcluded(key);
                         break;
                     default:
-                        if (FileBasedOnlineSources.Instance.IsSourceExcluded(key)) {
+                        if (key.StartsWith(ThirdPartyOnlineSource.Prefix)) {
+                            FromThirdPartyList = true;
+                        } else if (FileBasedOnlineSources.Instance.IsSourceExcluded(key)) {
                             AddExcluded(key);
                         }
                         break;
@@ -157,7 +160,11 @@ namespace AcManager.Tools.Managers.Online {
                         RemoveExcluded(key);
                         break;
                     default:
-                        if (FileBasedOnlineSources.Instance.IsSourceExcluded(key)) {
+                        if (key.StartsWith(ThirdPartyOnlineSource.Prefix)) {
+                            if (!_references.Any(x => x.StartsWith(ThirdPartyOnlineSource.Prefix))) {
+                                FromThirdPartyList = false;
+                            }
+                        } else if (FileBasedOnlineSources.Instance.IsSourceExcluded(key)) {
                             RemoveExcluded(key);
                         }
                         break;
@@ -167,6 +174,14 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool ReferencedFrom(string source) {
             return _references.Contains(source);
+        }
+
+        public bool ReferencedFromGenericLobby() {
+            foreach (var reference in _references) {
+                if (reference == KunosOnlineSource.Key) return true;
+                if (reference.StartsWith(ThirdPartyOnlineSource.Prefix)) return true;
+            }
+            return false;
         }
 
         public bool ReferencedFrom(string[] sources) {
@@ -252,12 +267,19 @@ namespace AcManager.Tools.Managers.Online {
         }
         #endregion
 
-        #region Minorating-related
+        #region Third-party related
         private bool _fromMinoratingList;
 
         public bool FromMinoratingList {
             get => _fromMinoratingList;
             private set => Apply(value, ref _fromMinoratingList);
+        }
+
+        private bool _fromThirdPartyList;
+
+        public bool FromThirdPartyList {
+            get => _fromThirdPartyList;
+            private set => Apply(value, ref _fromThirdPartyList);
         }
         #endregion
 
@@ -290,9 +312,8 @@ namespace AcManager.Tools.Managers.Online {
 
         private DelegateCommand _toggleFavoriteCommand;
 
-        public DelegateCommand ToggleFavouriteCommand => _toggleFavoriteCommand ?? (_toggleFavoriteCommand = new DelegateCommand(() => {
-            IsFavourite = !IsFavourite;
-        }));
+        public DelegateCommand ToggleFavouriteCommand
+            => _toggleFavoriteCommand ?? (_toggleFavoriteCommand = new DelegateCommand(() => { IsFavourite = !IsFavourite; }));
 
         private bool _isExcluded;
 
@@ -322,9 +343,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private DelegateCommand _toggleHiddenCommand;
 
-        public DelegateCommand ToggleHiddenCommand => _toggleHiddenCommand ?? (_toggleHiddenCommand = new DelegateCommand(() => {
-            IsExcluded = !IsExcluded;
-        }));
+        public DelegateCommand ToggleHiddenCommand => _toggleHiddenCommand ?? (_toggleHiddenCommand = new DelegateCommand(() => { IsExcluded = !IsExcluded; }));
 
         private bool _wasUsedRecently;
 

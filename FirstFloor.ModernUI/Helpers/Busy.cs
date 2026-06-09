@@ -77,6 +77,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public Task Task(Func<Task> a) {
             var t = this;
+            if (Is) return System.Threading.Tasks.Task.FromResult(false);
             return _invokeInUiThread ? ActionExtension.InvokeInMainThreadAsync(() => t.TaskUi(a)) : TaskUi(a);
         }
 

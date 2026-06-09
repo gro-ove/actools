@@ -173,11 +173,8 @@ namespace AcManager.Pages.AcSettings {
         private void OnUnloaded(object sender, RoutedEventArgs e) { }
 
         private void OnPreviewKeyDown(object sender, KeyEventArgs e) {
-            // Logging.Write("KEY: " + e.Key + ", i=" + (int)e.Key);
-            // Logging.Write("SKEY: " + e.SystemKey + ", i=" + (int)e.SystemKey);
-
             var key = e.Key;
-            if (e.KeyboardDevice.Modifiers == ModifierKeys.Alt && key == Key.System) {
+            if (key == Key.System) {
                 key = e.SystemKey;
             }
 

@@ -191,6 +191,10 @@ namespace AcManager.Tools.Managers {
         }
 
         public IAcObjectNew AddNew(string id = null) {
+            if (Directories == null) {
+                throw new InformativeException("Can’t add a new object", "State corruption.");
+            }
+            
             var newId = Guid.NewGuid() + UserChampionshipObject.FileExtension;
             var filename = Directories.GetLocation(newId, true);
 

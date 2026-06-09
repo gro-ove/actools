@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -67,7 +68,7 @@ namespace AcManager.Tools.SemiGui {
         }
 
         private static void PrepareRaceModeImmediateStart(Game.StartProperties properties) {
-            if (!SettingsHolder.Drive.ImmediateStart) return;
+            if (!SettingsHolder.Drive.ImmediateStart || PatchHelper.IsActive()) return;
             properties.SetAdditional(new ImmediateStart());
         }
 
@@ -139,6 +140,15 @@ namespace AcManager.Tools.SemiGui {
                 properties.ConditionProperties.AmbientTemperature = 10d;
                 properties.ConditionProperties.RoadTemperature = 10d;
             }
+        }
+
+        private static List<Action<Game.StartProperties>> _callbacks = new List<Action<Game.StartProperties>>();
+
+        public static IDisposable SetPropertiesCallback(Action<Game.StartProperties> callback) {
+            _callbacks.Add(callback);
+            return new ActionAsDisposable(() => {
+                _callbacks.Remove(callback);
+            });
         }
 
         private static void StartAsync_Prepare(Game.StartProperties properties) {
@@ -226,7 +236,7 @@ namespace AcManager.Tools.SemiGui {
             properties.SetAdditional(new CarRaceTextures());
 
             if (PatchHelper.GetInstalledVersion() != null) {
-                properties.SetAdditional(new AcPatchTrackOutline());
+                // properties.SetAdditional(new AcPatchTrackOutline());
             }
 
             properties.SetAdditional(new ExtraHotkeysRaceHelper());
@@ -234,6 +244,10 @@ namespace AcManager.Tools.SemiGui {
             if (SettingsHolder.Drive.CopyFilterToSystemForOculus
                     && (AcSettingsHolder.Video.CameraMode.Id == "OCULUS" || AcSettingsHolder.Video.CameraMode.Id == "OPENVR")) {
                 properties.SetAdditional(new CopyFilterToSystemForOculusHelper());
+            }
+
+            foreach (var callback in _callbacks) {
+                callback(properties);
             }
         }
 
@@ -249,12 +263,12 @@ namespace AcManager.Tools.SemiGui {
         }
 
         [NotNull]
-        private static IAcsStarter CreateStarter(Game.StartProperties properties) {
+        public static IAcsStarter CreateStarter([CanBeNull] Game.StartProperties properties = null) {
             var starter = AcsStarterFactory.Create();
 
             if (SettingsHolder.Drive.PatchAcToDisableShadows && !PatchHelper.IsFeatureSupported(PatchHelper.FeatureDynamicShadowResolution)
                     && AcShadowsPatcher.IsSupposedToWork()) {
-                properties.SetAdditional(new AcShadowsPatcher(starter));
+                properties?.SetAdditional(new AcShadowsPatcher(starter));
             }
 
             return starter;
@@ -307,6 +321,7 @@ namespace AcManager.Tools.SemiGui {
 
                 try {
                     FileUtils.TryToDelete(AcPaths.GetLogFilename());
+                    PatchHelper.PatchASmallIssue();
 
                     Game.Result result;
                     using (ReplaysExtensionSetter.OnlyNewIfEnabled())
@@ -316,7 +331,7 @@ namespace AcManager.Tools.SemiGui {
                         if (mode == GameMode.Race) {
                             properties.SetAdditional(new RaceCommandExecutor(properties));
                             properties.SetAdditional(new DBoxIntegration());
-                            if (SettingsHolder.Drive.ContinueOnEscape) {
+                            if (SettingsHolder.Drive.ContinueOnEscape && PatchHelper.IsFeatureSupported(@"$disabled")) {
                                 properties.SetAdditional(new ContinueRaceHelper());
                             }
                         } else if (mode == GameMode.Replay) {
@@ -336,31 +351,45 @@ namespace AcManager.Tools.SemiGui {
                             await PrepareReplay(properties, ui, cancellationToken);
                         }
 
-                        if (SettingsHolder.Drive.LoadPatchDataAutomatically && PatchHelper.IsActive()) {
+                        if (PatchHelper.IsActive() && PatchUpdater.Instance.DownloadMissingData.Value) {
                             var trackId = string.IsNullOrWhiteSpace(properties.BasicProperties?.TrackConfigurationId)
                                     ? properties.BasicProperties?.TrackId
                                     : properties.BasicProperties?.TrackId + @"/" + properties.BasicProperties?.TrackConfigurationId;
-                            using (var cancellation = new CancellationTokenSource()) {
-                                ui.OnProgress("Loading data for Custom Shaders Patch…", AsyncProgressEntry.Indetermitate, () => { cancellation.Cancel(); });
-                                var carName = properties.BasicProperties?.CarId == null ? null : CarsManager.Instance.GetById(properties.BasicProperties?.CarId);
-                                var trackName = trackId == null ? null : TracksManager.Instance.GetById(trackId)?.Name ?? trackId;
-                                await PatchTracksDataUpdater.Instance.TriggerAutoLoadAsync(trackId,
-                                        PatchSubProgress($"Config for track {trackName}"), cancellation.Token);
-                                await PatchTracksVaoDataUpdater.Instance.TriggerAutoLoadAsync(trackId,
-                                        PatchSubProgress($"Ambient occlusion patch for track {trackName}"), cancellation.Token);
-                                await PatchBackgroundDataUpdater.Instance.TriggerAutoLoadAsync(trackId,
-                                        PatchSubProgress($"Backgrounds for track {trackName}"), cancellation.Token);
-                                await PatchCarsDataUpdater.Instance.TriggerAutoLoadAsync(properties.BasicProperties?.CarId,
-                                        PatchSubProgress($"Config for car {carName}"), cancellation.Token);
-                                await PatchCarsVaoDataUpdater.Instance.TriggerAutoLoadAsync(properties.BasicProperties?.CarId,
-                                        PatchSubProgress($"Ambient occlusion patch for car {carName}"), cancellation.Token);
-                                ui.OnProgress("Final preparations…");
+                            var currentMessage = ui.GetCurrentMessage();
+                            try {
+                                using (var cancellation = new CancellationTokenSource()) {
+                                    ui.OnProgress("Fetching data for Custom Shaders Patch…", AsyncProgressEntry.Indetermitate, () => {
+                                        Logging.Debug("Cancelling loading…");
+                                        cancellation.Cancel();
+                                    });
+                                    var carName = properties.BasicProperties?.CarId == null ? null
+                                            : CarsManager.Instance.GetById(properties.BasicProperties?.CarId ?? string.Empty);
+                                    var trackName = trackId == null ? null : TracksManager.Instance.GetById(trackId)?.Name ?? trackId;
+                                    await PatchTracksDataUpdater.Instance.TriggerAutoLoadAsync(trackId,
+                                            PatchSubProgress($"Config for track {trackName}"), cancellation.Token);
+                                    cancellation.Token.ThrowIfCancellationRequested();
+                                    await PatchTracksVaoDataUpdater.Instance.TriggerAutoLoadAsync(trackId,
+                                            PatchSubProgress($"Ambient occlusion patch for track {trackName}"), cancellation.Token);
+                                    cancellation.Token.ThrowIfCancellationRequested();
+                                    await PatchBackgroundDataUpdater.Instance.TriggerAutoLoadAsync(trackId,
+                                            PatchSubProgress($"Backgrounds for track {trackName}"), cancellation.Token);
+                                    cancellation.Token.ThrowIfCancellationRequested();
+                                    await PatchCarsDataUpdater.Instance.TriggerAutoLoadAsync(properties.BasicProperties?.CarId,
+                                            PatchSubProgress($"Config for car {carName}"), cancellation.Token);
+                                    cancellation.Token.ThrowIfCancellationRequested();
+                                    await PatchCarsVaoDataUpdater.Instance.TriggerAutoLoadAsync(properties.BasicProperties?.CarId,
+                                            PatchSubProgress($"Ambient occlusion patch for car {carName}"), cancellation.Token);
+                                    cancellation.Token.ThrowIfCancellationRequested();
+                                    ui.OnProgress("Final preparations…");
 
-                                IProgress<AsyncProgressEntry> PatchSubProgress(string target) {
-                                    return new Progress<AsyncProgressEntry>(p => ui.OnProgress("Loading data for Custom Shaders Patch…",
-                                            new AsyncProgressEntry($"{target}\n{p.Message ?? @"…"}", p.IsReady || p.Progress == null ? 0d : p.Progress),
-                                            () => cancellation.Cancel()));
+                                    IProgress<AsyncProgressEntry> PatchSubProgress(string target) {
+                                        return new Progress<AsyncProgressEntry>(p => ui.OnProgress("Loading data for Custom Shaders Patch…",
+                                                new AsyncProgressEntry($"{target}\n{p.Message ?? @"…"}", p.IsReady || p.Progress == null ? 0d : p.Progress),
+                                                () => cancellation.Cancel()));
+                                    }
                                 }
+                            } catch (Exception ex) when (ex.IsCancelled()) {
+                                ui.OnProgress(currentMessage);
                             }
                         }
 

@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using AcManager.PaintShop;
 using AcManager.Tools;
+using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
@@ -285,6 +286,10 @@ namespace AcManager.CustomShowroom {
                                     await LiveryGenerator.CreateLiveryAsync(skin, colorsArray, liveryStyle);
                                 }
                             }
+                        }
+
+                        foreach (var created in Directory.GetFiles(skin.Location, "*.dds")) {
+                            NewFilesReporter.RegisterNewFile(created);
                         }
 
                         File.WriteAllText(Path.Combine(skin.Location, "cm_skin.json"), jObj.ToString(Formatting.Indented));

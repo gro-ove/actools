@@ -41,9 +41,9 @@ namespace AcTools.Render.Base.PostEffects.AO {
                     3f * aoRadiusMultiplier * valueX / target.Width,
                     3f * aoRadiusMultiplier * valueY / target.Height * target.Width / target.Height));
 
-            // var view = Matrix.LookAtLH(c.Position, (c.Position + c.Look), c.Up);
+            // var view = MatrixFix.LookAtLH(c.Position, (c.Position + c.Look), c.Up);
             // var proj = Matrix.PerspectiveFovLH(c.FovY, c.Aspect, c.NearZValue, c.FarZValue);
-            // _effect.FxNormalsToViewSpace.SetMatrix(Matrix.Invert(Matrix.Transpose(proj)));
+            // _effect.FxNormalsToViewSpace.SetMatrix(MatrixFix.Invert_v2(Matrix.Transpose(proj)));
             _effect.TechHbao.DrawAllPasses(holder.DeviceContext, 6);
         }
     }

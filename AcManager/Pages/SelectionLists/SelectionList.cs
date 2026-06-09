@@ -272,7 +272,7 @@ namespace AcManager.Pages.SelectionLists {
                 if (!obj.IsLoaded) continue;
 
                 var value = obj.Value;
-                if (value.Enabled) {
+                if (value.Enabled && !value.NotAllowedToSelect) {
                     AddNewIfMissing(result, (TObject)value);
                 }
             }
@@ -358,7 +358,7 @@ namespace AcManager.Pages.SelectionLists {
             if (newValue != null) {
                 if (oldValue != null) {
                     UpdateIfNeeded();
-                } else if (newValue.Enabled) {
+                } else if (newValue.Enabled && !newValue.NotAllowedToSelect) {
                     AddNewIfMissing(_items, newValue);
                 }
             } else if (oldValue != null) {

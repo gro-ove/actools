@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -27,13 +29,37 @@ namespace AcManager.Tools.Helpers.Loaders {
             return dMatch.Success ? "https://drive.google.com/uc?export=download&id=" + dMatch.Groups[1].Value : url;
         }
 
-        public GoogleDriveLoader(string url) : base(PrepareUrl(url)) {}
+        public GoogleDriveLoader(string url) : base(PrepareUrl(url)) { }
 
         protected override bool? ResumeSupported => true;
         protected override bool HeadRequestSupported => false;
 
         public override string GetFootprint(FlexibleLoaderMetaInformation information, WebHeaderCollection headers) {
             return $"filename={information.FileName}, size={information.TotalSize}, checksum={headers?["X-Goog-Hash"]}".ToCutBase64();
+        }
+
+        protected override string TryToFixHtmlWebpage(HtmlDocument doc) {
+            var form = doc.DocumentNode.SelectSingleNode(@"//form[contains(@action, 'google.com/download')]");
+            if (form == null) return null;
+            
+            var formData = GetFormData(form);
+            string queryString = formData.Select(kv => $"{WebUtility.UrlEncode(kv.Key)}={WebUtility.UrlEncode(kv.Value)}").JoinToString(@"&");
+            string fullUrl = $"{form.Attributes[@"action"]?.Value}?{queryString}";
+            Logging.Debug("Fixed URL: " + fullUrl);
+            return fullUrl;
+        }
+
+        private static Dictionary<string, string> GetFormData(HtmlNode formNode) {
+            var formData = new Dictionary<string, string>();
+            var inputNodes = formNode.SelectNodes("//input[@name and @value]");
+            if (inputNodes != null) {
+                foreach (var inputNode in inputNodes) {
+                    string name = inputNode.GetAttributeValue("name", "");
+                    string value = inputNode.GetAttributeValue("value", "");
+                    formData[name] = value;
+                }
+            }
+            return formData;
         }
 
         public override async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
@@ -71,7 +97,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             var doc = new HtmlDocument();
             doc.LoadHtml(webPageContent);
 
-            var link = doc.DocumentNode.SelectSingleNode(@"//form[contains(@action, 'export=download')]")?.Attributes[@"action"]?.Value;
+            var link = doc.DocumentNode.SelectSingleNode(@"//form[contains(@action, 'google.com/download')]")?.Attributes[@"action"]?.Value;
             if (link == null) {
                 if (doc.DocumentNode.SelectSingleNode(@"//head/title/text()")?.InnerText.Contains("Quota exceeded") == true) {
                     throw new InformativeException(ToolsStrings.Common_CannotDownloadFile, "Google Drive quota exceeded");

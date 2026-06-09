@@ -4,6 +4,7 @@ using System.Linq;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
@@ -85,13 +86,13 @@ namespace AcTools.Render.Base.Objects {
 
             var globalPos = Vector3.TransformCoordinate(_originalLocalPos.Value, ParentMatrix);
             var yAxis = Vector3.TransformNormal(up, _originalMatrix * ParentMatrix);
-            LocalMatrix = globalPos.LookAtMatrixXAxis(globalPoint, yAxis) * Matrix.Invert(ParentMatrix);
+            LocalMatrix = globalPos.LookAtMatrixXAxis(globalPoint, yAxis) * ParentMatrix.Invert_v2();
         }
 
         public void LookAt(Vector3 globalPoint, Vector3 up) {
             var globalPos = Vector3.TransformCoordinate(LocalMatrix.GetTranslationVector(), ParentMatrix);
             var yAxis = up;
-            LocalMatrix = globalPos.LookAtMatrix(globalPoint, yAxis) * Matrix.Invert(ParentMatrix);
+            LocalMatrix = globalPos.LookAtMatrix(globalPoint, yAxis) * ParentMatrix.Invert_v2();
         }
 
         private Matrix _prevThisMatrix, _prevLookAtMatrix;
@@ -114,6 +115,10 @@ namespace AcTools.Render.Base.Objects {
 
         public int GetObjectsCount() {
             return this.Where(x => x.IsEnabled).Aggregate(0, (a, b) => a + b.GetObjectsCount());
+        }
+
+        public IEnumerable<int> GetMaterialIds() {
+            return this.Where(x => x.IsEnabled).SelectMany(x => x.GetMaterialIds());
         }
 
         public BoundingBox? BoundingBox { get; private set; }

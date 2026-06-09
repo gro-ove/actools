@@ -84,6 +84,9 @@ namespace AcTools.Processes {
                     CarId, CarSkinId, CarSetupId,
                     TrackId, TrackConfigurationId;
 
+            [CanBeNull]
+            public string CarSetupFilename;
+
             public double Ballast, Restrictor;
             public bool UseMph;
 
@@ -111,6 +114,10 @@ namespace AcTools.Processes {
                     ["NATIONALITY"] = DriverNationality
                 };
 
+                if (!string.IsNullOrWhiteSpace(CarSetupFilename)) {
+                    file["CAR_0"].Set("_EXT_SETUP_FILENAME", CarSetupFilename);
+                }
+
                 file["OPTIONS"].Set("USE_MPH", UseMph);
             }
         }
@@ -118,6 +125,9 @@ namespace AcTools.Processes {
         public class AiCar {
             [CanBeNull]
             public string CarId, SkinId = "", Setup = "", DriverName = "", Nationality = "", NationCode;
+
+            [CanBeNull]
+            public string AiRestrictions;
 
             public double AiLevel = 100, AiAggression = 0;
             public double Ballast, Restrictor;
@@ -140,6 +150,8 @@ namespace AcTools.Processes {
                 section.Set("FIXED_SETUP", FixedSetup);
                 section.Set("PENALTIES", Penalties);
                 section.Set("JUMP_START_PENALTY", JumpStartPenalty);
+                
+                file["HEADER"].Set("__CM_FEATURE_SET", 2);
             }
 
             protected void SetGhostCar(IniFile file, bool playing = false, bool recording = false, double? advantage = null) {
@@ -173,7 +185,8 @@ namespace AcTools.Processes {
                         ["BALLAST"] = car.Ballast,
                         ["RESTRICTOR"] = car.Restrictor,
                         ["NATION_CODE"] = car.NationCode ?? GetNationCode(car.Nationality),
-                        ["NATIONALITY"] = car.Nationality
+                        ["NATIONALITY"] = car.Nationality,
+                        ["EXT_AI_RESTRICTIONS"] = car.AiRestrictions,
                     });
             }
         }
@@ -187,6 +200,7 @@ namespace AcTools.Processes {
             public bool ExtendedMode;
             public string CspFeaturesList;
             public string CspReplayClipUploadUrl;
+            public string BackgroundImage;
 
             public override void Set(IniFile file) {
                 SetGhostCar(file);
@@ -224,10 +238,17 @@ namespace AcTools.Processes {
                     section.Set("TYPE", SessionType.Practice);
                     section.Set("DURATION_MINUTES", Duration);
                 }
+
+                if (!string.IsNullOrWhiteSpace(BackgroundImage)) {
+                    file["OPTIONS"].Set("__BACKGROUND_IMAGE", $"'{BackgroundImage.Replace("\'", "\\'")}'");
+                }
             }
         }
 
         public class PracticeProperties : BaseModeProperties {
+            [CanBeNull]
+            public string SessionName = "Practice";
+
             public StartType StartType = StartType.Pit;
 
             public override void Set(IniFile file) {
@@ -237,7 +258,7 @@ namespace AcTools.Processes {
                 base.Set(file);
 
                 var section = file["SESSION_0"];
-                section.Set("NAME", "Practice");
+                section.Set("NAME", SessionName);
                 section.Set("TYPE", SessionType.Practice);
                 section.Set("DURATION_MINUTES", Duration);
                 section.Set("SPAWN_SET", StartType.Id);
@@ -391,15 +412,19 @@ namespace AcTools.Processes {
             }
         }
 
-        public static readonly string TrackDaySessionName = "car";
+        public static readonly string TrackDaySessionName = "Track Day";
 
         public class TrackdayProperties : RaceProperties {
+            public TrackdayProperties() {
+                SessionName = TrackDaySessionName;
+            }
+            
             public bool UsePracticeSessionType = false;
             public double SpeedLimit = 0.0;
 
             protected override void SetSessions(IniFile file) {
                 file["SESSION_0"] = new IniFileSection(null) {
-                    ["NAME"] = TrackDaySessionName,
+                    ["NAME"] = SessionName,
                     ["DURATION_MINUTES"] = 720,
                     ["SPAWN_SET"] = StartType.Pit.Id,
                     ["TYPE"] = UsePracticeSessionType ? SessionType.Practice : SessionType.Qualification,

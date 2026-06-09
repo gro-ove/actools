@@ -1,7 +1,7 @@
 <UserControl x:Class="AcManager.Pages.Lists.ServerBannedListPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:lists="clr-namespace:AcManager.Pages.Lists"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:ac="http://acstuff.ru/app/controls" mc:Ignorable="d"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:ac="http://acstuff.club/app/controls" mc:Ignorable="d"
     d:DataContext="{d:DesignInstance lists:ServerBannedListPage+ViewModel}">
   <mui:Switch Value="{Binding View.Count}">
     <DockPanel mui:Switch.When="0" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">

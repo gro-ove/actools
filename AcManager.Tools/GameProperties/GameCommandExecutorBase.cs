@@ -15,18 +15,16 @@ namespace AcManager.Tools.GameProperties {
             _properties = properties;
         }
 
-        protected void Execute(string command) {
-            if (string.IsNullOrWhiteSpace(command)) return;
-
-            command = VariablesReplacement.Process(command, _properties, null);
-            Logging.Write($"Executing command: “{command}”");
+        public static void Execute(string commandResolved, string workingDirectory) {
+            if (string.IsNullOrWhiteSpace(commandResolved)) return;
+            Logging.Write($"Executing command: “{commandResolved}”");
 
             try {
                 var proc = Process.Start(new ProcessStartInfo {
                     FileName = "cmd",
-                    Arguments = $"/C \"{command}\"",
+                    Arguments = $"/C \"{commandResolved}\"",
                     UseShellExecute = false,
-                    WorkingDirectory = AcPaths.GetDocumentsDirectory(),
+                    WorkingDirectory = workingDirectory,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                 });
@@ -35,12 +33,19 @@ namespace AcManager.Tools.GameProperties {
                     throw new Exception(ToolsStrings.GameCommand_UnknownProblem);
                 }
 
-                proc.OutputDataReceived += Process_OutputDataReceived;
-                proc.ErrorDataReceived += Process_ErrorDataReceived;
+                proc.OutputDataReceived += (s, e) => {
+                    if (!string.IsNullOrWhiteSpace(e.Data)) {
+                        Logging.Write("Output: " + e.Data);
+                    }
+                };
+                proc.ErrorDataReceived += (s, e) => {
+                    if (!string.IsNullOrWhiteSpace(e.Data)) {
+                        Logging.Write("Error: " + e.Data);
+                    }
+                };
 
                 proc.BeginOutputReadLine();
                 proc.BeginErrorReadLine();
-                
                 if (!proc.WaitForExit(OptionCommandTimeout)) {
                     proc.Kill();
                     throw new InformativeException(ToolsStrings.GameCommand_TimeoutExceeded,
@@ -51,16 +56,9 @@ namespace AcManager.Tools.GameProperties {
             }
         }
 
-        private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e) {
-            if (!string.IsNullOrWhiteSpace(e.Data)) {
-                Logging.Write("Output: " + e.Data);
-            }
-        }
-
-        private void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e) {
-            if (!string.IsNullOrWhiteSpace(e.Data)) {
-                Logging.Write("Error: " + e.Data);
-            }
+        protected void Execute(string command) {
+            if (string.IsNullOrWhiteSpace(command)) return;
+            Execute(VariablesReplacement.Process(command, _properties, null), AcPaths.GetDocumentsDirectory());
         }
 
         public abstract void Dispose();

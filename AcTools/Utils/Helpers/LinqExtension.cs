@@ -21,6 +21,16 @@ namespace AcTools.Utils.Helpers {
             return items?.Aggregate(0, (x, o) => (x * 397) ^ o.GetHashCode()) ?? 0;
         }
 
+        public static IEnumerable<TSource> SubsequentDistinct<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector) {
+            TKey last = default;
+            foreach (var item in source) {
+                var cur = keySelector(item);
+                if (Equals(last, cur)) continue;
+                last = cur;
+                yield return item;
+            }
+        }
+
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector) {
             return source.DistinctBy(keySelector, EqualityComparer<TKey>.Default);
         }
@@ -114,6 +124,21 @@ namespace AcTools.Utils.Helpers {
             }
 
             return defaultValue;
+        }
+
+        public static IEnumerable<IEnumerable<T>> Batch<T>(this IEnumerable<T> source, int batchSize) {
+            using (var enumerator = source.GetEnumerator()) {
+                while (enumerator.MoveNext()) {
+                    yield return YieldBatchElements(enumerator, batchSize - 1);
+                }
+            }
+        }
+
+        private static IEnumerable<T> YieldBatchElements<T>(IEnumerator<T> source, int batchSize) {
+            yield return source.Current;
+            for (var i = 0; i < batchSize && source.MoveNext(); i++) {
+                yield return source.Current;
+            }
         }
 
         public static void DragAndDrop<T>(this IList<T> target, int index, T obj, IList<T> source = null) {

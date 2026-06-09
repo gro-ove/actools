@@ -170,6 +170,17 @@ namespace AcManager.Tools.Helpers.AcLog {
                         return new WhatsGoingOn(WhatsGoingOnType.AiSplineMissing);
                     }
 
+                    if (crash.Contains(@"\engine.cpp")) {
+                        if (crash.Contains(@"Curve::loadEncrypted")) {
+                            return new WhatsGoingOn(WhatsGoingOnType.EngineCurveIsDamaged, TryToGetCarName(log.Substring(0, i)));
+                        }
+                        return new WhatsGoingOn(WhatsGoingOnType.EngineIsDamaged, TryToGetCarName(log.Substring(0, i)));
+                    }
+
+                    if (crash.Contains(@"Curve::loadEncrypted")) {
+                        return new WhatsGoingOn(WhatsGoingOnType.SomeCurveIsDamaged, TryToGetCarName(log.Substring(0, i)));
+                    }
+
                     if (crash.Contains(@"\drivetrain.cpp")) {
                         return new WhatsGoingOn(WhatsGoingOnType.DrivetrainIsDamaged, TryToGetCarName(log.Substring(0, i)));
                     }

@@ -98,7 +98,7 @@ namespace AcManager.Tools.GameProperties {
         [NotNull]
         protected abstract string GetAbsolutePath([NotNull] string relative);
 
-        protected bool Apply([NotNull] string source) {
+        protected bool Apply([NotNull] string source, bool trackChanges) {
             if (AcRootDirectory.Instance.Value == null || !File.Exists(source)) return false;
 
             var destination = GetAbsolutePath(_relativeDestination);
@@ -114,6 +114,11 @@ namespace AcManager.Tools.GameProperties {
 
             try {
                 Logging.Debug($"{source} → {destination}");
+
+                if (trackChanges) {
+                    File.WriteAllText(destination + "_tc_cm", source);
+                }
+                
                 if (_allowHardlinks) {
                     FileUtils.HardLinkOrCopy(source, destination);
                 } else {
@@ -134,6 +139,22 @@ namespace AcManager.Tools.GameProperties {
             try {
                 var destination = GetAbsolutePath(_relativeDestination);
                 var backup = GetAbsolutePath(_relativeBackup);
+
+                var trackChanges = destination + @"_tc_cm";
+                if (File.Exists(trackChanges)) {
+                    try {
+                        if (new FileInfo(destination).LastWriteTime > new FileInfo(trackChanges).LastWriteTime + TimeSpan.FromSeconds(5d)) {
+                            var origin = File.ReadAllText(trackChanges);
+                            if (File.Exists(origin)) {
+                                FileUtils.Recycle(origin);
+                                File.Move(destination, origin);
+                            }
+                        }
+                    } catch (Exception e) {
+                        Logging.Warning(e);
+                    }
+                    FileUtils.TryToDelete(trackChanges);
+                }
 
                 if (File.Exists(backup)) {
                     if (File.Exists(destination)) {
@@ -159,8 +180,8 @@ namespace AcManager.Tools.GameProperties {
             _source = source;
         }
 
-        public bool Apply() {
-            return _source != null && Apply(_source);
+        public bool Apply(bool trackChanges) {
+            return _source != null && Apply(_source, trackChanges);
         }
 
         protected override string GetAbsolutePath(string relative) {

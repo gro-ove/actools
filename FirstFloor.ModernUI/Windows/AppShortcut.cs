@@ -51,7 +51,7 @@ namespace FirstFloor.ModernUI.Windows {
                 }
 
                 using (var shortcut = new ShellLink()) {
-                    shortcut.TargetPath = System.Reflection.Assembly.GetEntryAssembly().Location;
+                    shortcut.TargetPath = System.Reflection.Assembly.GetEntryAssembly()?.Location ?? "";
                     shortcut.Arguments = "";
                     shortcut.AppUserModelId = AppUserModelId;
                     shortcut.Save(ShortcutLocation);

@@ -9,6 +9,7 @@ using AcTools.WheelAngles;
 using AcTools.WheelAngles.Implementations.Options;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace AcManager.Tools.GameProperties {
     public class CarSpecificControlsPresetHelper : CarSpecificHelperBase {
@@ -26,20 +27,29 @@ namespace AcManager.Tools.GameProperties {
                 }
             }
 
-            if (!new TemporaryFileReplacement(null, controlsFilename, BackupPostfix).Revert() && iniChanged) {
+            if (iniChanged) {
                 ini.Save();
             }
+            new TemporaryFileReplacement(null, controlsFilename, BackupPostfix).Revert();
         }
 
         protected override bool SetOverride(CarObject car) {
             var controlsFilename = AcPaths.GetCfgControlsFilename();
             var specificControlsLoaded = car.SpecificControlsPreset && car.ControlsPresetFilename != null
-                    && new TemporaryFileReplacement(car.ControlsPresetFilename, controlsFilename, BackupPostfix, false).Apply();
+                    && new TemporaryFileReplacement(car.ControlsPresetFilename, controlsFilename, BackupPostfix, false).Apply(true);
 
             var ini = new IniFile(controlsFilename);
             var iniChanged = Revert(ini, out _);
 
             var extra = ini["__EXTRA_CM"];
+            if (specificControlsLoaded 
+                || extra.GetBool("CAR_SPECIFIC", true) // so it’s not set by Presets Per Mode
+                && extra.ContainsKey("PRESET_OVERRIDE")) {
+                extra.SetOrRemove("CAR_SPECIFIC", specificControlsLoaded ? "1" : null);
+                extra.SetOrRemove("PRESET_OVERRIDE", specificControlsLoaded ? JsonConvert.SerializeObject(car.ControlsPresetFilename) : null);
+                iniChanged = true;
+            }
+
             var steer = ini["STEER"];
 
             var carSteerLock = car.SteerLock ?? 0d;
@@ -94,10 +104,10 @@ namespace AcManager.Tools.GameProperties {
             if (autoAdjustScale) {
                 var currentScale = steer.GetDouble("SCALE", 1d);
                 var newScale = Math.Min(currentDegrees / carSteerLock, 1d);
-                if (newScale != currentScale) {
+                if (newScale != Math.Abs(currentScale)) {
                     Logging.Write($"Set scale: {newScale}");
                     steer.Set("__CM_ORIGINAL_SCALE", currentScale);
-                    steer.Set("SCALE", newScale);
+                    steer.Set("SCALE", newScale * Math.Sign(currentScale));
                     ini.Save();
                     return true;
                 }
@@ -146,7 +156,12 @@ namespace AcManager.Tools.GameProperties {
                 steer.Remove("__CM_ORIGINAL_SCALE");
             }
 
-            return originalLock.HasValue || originalScale.HasValue;
+            var originalOrigin = ini["__EXTRA_CM"].GetNonEmpty("PRESET_OVERRIDE");
+            if (originalOrigin != null) {
+                ini["__EXTRA_CM"].Remove("PRESET_OVERRIDE");
+            }
+
+            return originalLock.HasValue || originalScale.HasValue || originalOrigin != null;
         }
 
         protected override void DisposeOverride() {

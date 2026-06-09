@@ -3746,7 +3746,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</alternativ
     <value>Nie znaleziono konfigurowalnych aplikacji</value>
   </data>
   <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
-    <value>Zmiany zostaną zapisane automatycznie. Jeśli chcesz zoptymalizować sposób wyświetlania plików konfiguracyjnych, możesz znaleźć więcej informacji na ich temat [url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"]here[/url].</value>
+    <value>Zmiany zostaną zapisane automatycznie. Jeśli chcesz zoptymalizować sposób wyświetlania plików konfiguracyjnych, możesz znaleźć więcej informacji na ich temat [url="https://acstuff.club/f/d/19-content-manager-python-app-configs"]here[/url].</value>
   </data>
   <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
     <value>W niektórych przypadkach skorzystaj z salonu CM zamiast oryginalnego</value>

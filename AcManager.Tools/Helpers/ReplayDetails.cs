@@ -184,7 +184,7 @@ namespace AcManager.Tools.Helpers {
                 var cacheFilename = FilesStorage.Instance.GetTemporaryFilename("Replay Details", cacheKey);
                 if (File.Exists(cacheFilename)) {
                     try {
-                        using (var file = File.Open(cacheFilename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                        using (var file = File.Open(cacheFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
                             return JsonConvert.DeserializeObject<ReplayDetails>(
                                     new DeflateStream(file, CompressionMode.Decompress).ReadAsStringAndDispose());
                         }

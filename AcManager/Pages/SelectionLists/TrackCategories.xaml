@@ -1,7 +1,7 @@
 ﻿<sl:SelectionCategoriesList x:TypeArguments="t:TrackObject" x:Class="AcManager.Pages.SelectionLists.TrackCategories"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sl="clr-namespace:AcManager.Pages.SelectionLists" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sl="clr-namespace:AcManager.Pages.SelectionLists" xmlns:t="http://acstuff.club/app/tools"
     mc:Ignorable="d" Style="{StaticResource {x:Type ListBox}}" VirtualizingStackPanel.IsVirtualizingWhenGrouping="True">
   <ListBox.ItemsPanel>
     <ItemsPanelTemplate>

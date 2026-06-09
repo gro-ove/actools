@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
@@ -34,7 +35,7 @@ namespace AcManager.Pages.Dialogs {
 
         public static Uri RatingUri(double rating) {
             return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&Filter={0}&Title={1}",
-                    $"rating≥{Filter.Encode(rating.FloorToInt().ToInvariantString())} & rating<{Filter.Encode((rating.FloorToInt() + 1).ToInvariantString())}",
+                    $"rating≈{Filter.Encode(rating.FloorToInt().ToInvariantString())}",
                     PluralizingConverter.PluralizeExt(rating.FloorToInt(), ControlsStrings.SelectDialog_RatingTitle));
         }
 
@@ -64,6 +65,24 @@ namespace AcManager.Pages.Dialogs {
             BackgroundImage0.Filename = Model.CurrentPreviewImage;
         }
 
+        public SelectTrackDialog ApplyDefault([CanBeNull] Tuple<string, string> defaultFilter) {
+            if (defaultFilter?.Item1 != null) {
+                Tabs.SavePolicy = SavePolicy.SkipLoadingFlexible;
+                Tabs.SelectedSource = UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&Filter={0}&Title={1}", 
+                        defaultFilter.Item1, defaultFilter.Item2.Or(defaultFilter.Item1));
+            }
+            return this;
+        }
+
+        public SelectTrackDialog ApplyDefault(string defaultFilter) {
+            if (defaultFilter != null) {
+                Tabs.SavePolicy = SavePolicy.SkipLoadingFlexible;
+                Tabs.SelectedSource = UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&Filter={0}&Title={0}", 
+                        defaultFilter);
+            }
+            return this;
+        }
+
         private DelegateCommand _toggleFavouriteCommand;
 
         public DelegateCommand ToggleFavouriteCommand => _toggleFavouriteCommand ?? (_toggleFavouriteCommand = new DelegateCommand(() => {
@@ -75,15 +94,17 @@ namespace AcManager.Pages.Dialogs {
         /// as well.
         /// </summary>
         [CanBeNull]
-        public static TrackObjectBase Show([CanBeNull] TrackObjectBase track) {
-            if (track == null) {
-                track = TracksManager.Instance.GetDefault();
-                if (track == null) return null;
+        public static TrackObjectBase Show([CanBeNull] TrackObjectBase track, Tuple<string, string> defaultFilter = null,
+                HashSet<uint> allowedTrackIds = null) {
+            using (var allowed = new AllowedHelper<TrackObject>(TracksManager.Instance, allowedTrackIds)) {
+                if (track == null || track.MainTrackObject.NotAllowedToSelect) {
+                    track = allowed.GetDefaultItem();
+                    if (track == null) return null;
+                }
+                var dialog = new SelectTrackDialog(track).ApplyDefault(defaultFilter);
+                dialog.ShowDialog();
+                return !dialog.IsResultOk || dialog.Model.SelectedTrackConfiguration == null ? track : dialog.Model.SelectedTrackConfiguration;
             }
-
-            var dialog = new SelectTrackDialog(track);
-            dialog.ShowDialog();
-            return !dialog.IsResultOk || dialog.Model.SelectedTrackConfiguration == null ? track : dialog.Model.SelectedTrackConfiguration;
         }
 
         [ContractAnnotation(@"=> track:null, false; => track:notnull, true")]

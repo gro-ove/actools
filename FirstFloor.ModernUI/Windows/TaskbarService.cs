@@ -115,7 +115,7 @@ namespace FirstFloor.ModernUI.Windows {
 
         public static TaskbarHolder Create(string name, double priority, Func<Tuple<TaskbarState, double>> periodicCallback = null) {
             var holder = new TaskbarHolder(name, priority, periodicCallback);
-            AddSorted(Holders, holder, TaskbarHolder.PriorityComparer);
+            ActionExtension.InvokeInMainThreadAsync(() => AddSorted(Holders, holder, TaskbarHolder.PriorityComparer));
             Task.Delay(200).ContinueWithInMainThread(t => Update());
             return holder;
         }
@@ -130,8 +130,10 @@ namespace FirstFloor.ModernUI.Windows {
         }
 
         internal static void Delete(TaskbarHolder holder) {
-            Holders.Remove(holder);
-            Update();
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                Holders.Remove(holder);
+                Update();
+            });
         }
 
         // Simple version, more optimized one is in AcTools library if needed.

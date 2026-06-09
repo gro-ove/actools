@@ -46,7 +46,7 @@ namespace AcManager.Tools.Managers {
         }
 
         protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
-            if (OptionIgnoreSkippedEvents) return base.ScanOverride();
+            if (OptionIgnoreSkippedEvents || Directories == null) return base.ScanOverride();
 
             var entries = Directories.GetContentDirectories().Select(x => new {
                 Name = Path.GetFileName(x)?.ToLowerInvariant(),

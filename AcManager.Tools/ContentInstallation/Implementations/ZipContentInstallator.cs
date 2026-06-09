@@ -61,7 +61,10 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             }
 
             public string Key => _archiveEntry.FullName.Replace('/', '\\');
+            
             public long Size => _archiveEntry.Length;
+            
+            public DateTime? LastModified => _archiveEntry.LastWriteTime.LocalDateTime;
 
             public async Task<byte[]> ReadAsync() {
                 using (var memory = new MemoryStream())
@@ -76,7 +79,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             }
 
             public async Task CopyToAsync(string destination) {
-                using (var fileStream = new FileStream(destination, FileMode.Create))
+                using (var fileStream = new FileStream(destination, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                 using (var stream = _archiveEntry.Open()) {
                     await stream.CopyToAsync(fileStream);
                 }

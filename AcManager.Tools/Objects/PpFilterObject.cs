@@ -12,15 +12,19 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Objects {
-    public class PpFilterObject : AcCommonSingleFileObject {
+    public partial class PpFilterObject : AcCommonSingleFileObject {
         public const string FileExtension = ".ini";
 
         public override string Extension => FileExtension;
 
         public PpFilterObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) { }
+                : base(manager, id, enabled) {
+            IsKunosName = KunosContent.ContainsKey(id);
+        }
 
         public string AcId => Id.ApartFromLast(FileExtension);
+        
+        public bool IsKunosName { get; }
 
         public override bool HasData => true;
 
@@ -54,6 +58,9 @@ namespace AcManager.Tools.Objects {
                 _content = value;
                 OnPropertyChanged();
                 Changed = true;
+                if (_versionInfoApplied) {
+                    ApplyVersionInfo(value);
+                }
             }
         }
 
@@ -96,7 +103,7 @@ namespace AcManager.Tools.Objects {
             }
 
             protected override PackedDescription GetDescriptionOverride(PpFilterObject t) {
-                return new PackedDescription(t.Id, t.Name, null, PpFiltersManager.Instance.Directories.GetMainDirectory(), true);
+                return new PackedDescription(t.AcId, t.Name, null, PpFiltersManager.Instance.Directories.GetMainDirectory(), true);
             }
         }
 

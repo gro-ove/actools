@@ -56,6 +56,8 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
 
         public bool IsBlending => false;
 
+        public string Name => null;
+
         public void Dispose() {
             DisposeHelper.Dispose(ref _txDiffuse);
         }

@@ -52,10 +52,23 @@ namespace AcManager.Tools.Objects {
         private PythonAppConfigPluginInfo _selectedPlugin;
 
         public PythonAppConfigPluginInfo SelectedPlugin {
-            get => _selectedPlugin;
-            set => Apply(value, ref _selectedPlugin, () => {
-                Value = value?.Id;
-            });
+            get {
+                if (_plugins == null) {
+                    ReloadConfigs();
+                }
+                return _selectedPlugin;
+            }
+            set {
+                if (value == null) return;
+                Apply(value, ref _selectedPlugin, () => Value = value.Id);
+            }
+        }
+
+        protected override void OnValueChanged() {
+            base.OnValueChanged();
+            if (_plugins != null) {
+                SelectedPlugin = _plugins.FirstOrDefault(x => x.Id == Value);
+            }
         }
 
         public void ReloadPlugins() {

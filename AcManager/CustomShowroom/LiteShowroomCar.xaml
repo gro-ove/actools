@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.club/app/controls" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:cs="clr-namespace:AcManager.CustomShowroom"
-    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d">
+    xmlns:t="http://acstuff.club/app/tools" mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="/CustomShowroom/LiteShowroomSettings.xaml" />
   </ResourceDictionary.MergedDictionaries>
@@ -35,7 +35,7 @@
             <Label Content="Shifting" />
           </CheckBox>
           <CheckBox IsChecked="{Binding Renderer.CarNode.IsDriverMovable}" IsEnabled="{Binding Renderer.CarNode.IsDriverVisible}">
-            <Label Content="Movable driver" />
+            <Label Content="Movable" />
           </CheckBox>
           <Button Content="Reset" Command="{Binding Renderer.CarNode.ResetDriverMovementCommand}" IsEnabled="{Binding Renderer.CarNode.IsDriverMovable}" />
           <Button Content="Save pos." Command="{Binding Renderer.CarNode.SaveDriverMovementCommand}" ToolTip="Save driver position into “steer.ksanim” file"
@@ -63,6 +63,10 @@
       <DockPanel Style="{StaticResource DockPanel}">
         <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
         <TextBlock Text="{Binding Renderer.CarNode.TrianglesCount}" />
+      </DockPanel>
+      <DockPanel Style="{StaticResource DockPanel}">
+        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_MaterialsLabel}" />
+        <TextBlock Text="{Binding Renderer.CarNode.MaterialsCount}" />
       </DockPanel>
       <DockPanel IsEnabled="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource MoreConverter}}"
           Visibility="{Binding LodDefinitions, Converter={StaticResource NullToVisibilityConverter}}">
@@ -148,6 +152,9 @@
         </CheckBox>
         <CheckBox IsChecked="{Binding Renderer.CarNode.IsFuelTankVisible}">
           <Label Content="Fuel tank" />
+        </CheckBox>
+        <CheckBox IsChecked="{Binding Renderer.CarNode.IsInertiaBoxVisible}">
+          <Label Content="Inertia box" />
         </CheckBox>
         <CheckBox IsChecked="{Binding Renderer.CarNode.AreFlamesVisible}">
           <Label Content="Flames" />

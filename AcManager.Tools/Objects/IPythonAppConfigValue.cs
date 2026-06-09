@@ -6,7 +6,11 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public interface IPythonAppConfigValue : IWithId, INotifyPropertyChanged {
+        string DisplayName { get; }
+        
         string Value { get; set; }
+        
+        string DisplayValueString { get; }
 
         string ToolTip { get; }
 

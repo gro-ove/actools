@@ -1,0 +1,77 @@
+<tools:ContentTool x:Class="AcManager.Pages.ContentTools.KsAnimSwitchGenerator" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:tools="clr-namespace:AcManager.Pages.ContentTools"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.club/app/controls"
+    xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" mc:Ignorable="d" d:DataContext="{d:DesignInstance tools:KsAnimSwitchGenerator}">
+  <FrameworkElement.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/TextEditor.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
+      <ContextMenu x:Key="FileContextMenu" d:DataContext="{d:DesignInstance tools:FilesCompressor+FileToCompress}">
+        <MenuItem Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_ViewInExplorer}" Command="{Binding ViewInExplorerCommand}" />
+      </ContextMenu>
+    </ResourceDictionary>
+  </FrameworkElement.Resources>
+
+  <mui:Cell mui:Switch.When="{x:Static tools:Stage.Loading}" Width="400" HorizontalAlignment="Center">
+    <mui:SpacingStackPanel Spacing="8" VerticalAlignment="Center">
+      <ProgressBar IsIndeterminate="{Binding ProgressValue.IsIndeterminate}" Maximum="1" Value="{Binding ProgressValue.Progress, Mode=OneWay}" Height="4" />
+      <TextBlock Text="{Binding ProgressValue.Message}" />
+    </mui:SpacingStackPanel>
+    <mui:SelectableBbCodeBlock VerticalAlignment="Bottom" Style="{StaticResource RichTextBox.Small.ReadOnly}"
+        Text="{x:Static g:AppStrings.ContentTools_FilesCompressor_Description}" />
+  </mui:Cell>
+
+  <DockPanel mui:Switch.When="{x:Static tools:Stage.Empty}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <TextBlock Text="{x:Static g:AppStrings.Online_NothingToDisplay}" Style="{StaticResource Heading1}" />
+  </DockPanel>
+
+  <DockPanel mui:Switch.When="{x:Static tools:Stage.Error}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <TextBlock Text="{x:Static g:AppStrings.ContentTools_BatchPreviewsUpdater_SomeErrorHappened}" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+    <TextBlock Text="{Binding Error}" Margin="0 20 0 0" />
+  </DockPanel>
+
+  <DockPanel mui:Switch.When="{x:Static tools:Stage.Ready}" x:Name="RootPanel">
+    <mui:SpacingStackPanel Spacing="8" DockPanel.Dock="Top" Margin="0 0 0 20">
+      <TextBlock TextWrapping="Wrap"
+          Text="Generate .ksanim to use for a wing for hiding or showing geometry configurable in car setup menu. This tool will generate an efficient animation forcing CSP to hide hidden geometry completely and save on rendering." />
+    </mui:SpacingStackPanel>
+    <Button DockPanel.Dock="Top" Command="{Binding ConvertCommand}" Margin="0 0 0 8">
+      <Button.Content>
+        <mui:ReferenceSwitch Value="{Binding ModelFileName}">
+          <mui:ReferenceSwitch.Null>
+            <TextBlock Text="Select main car model" />
+          </mui:ReferenceSwitch.Null>
+          <mui:ReferenceSwitch.NonNull>
+            <TextBlock Text="{Binding ModelFileName, StringFormat='{}Selected model: {0}'}" />
+          </mui:ReferenceSwitch.NonNull>
+        </mui:ReferenceSwitch>
+      </Button.Content>
+    </Button>
+    <DockPanel Visibility="{Binding ModelFilename, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+      <Button DockPanel.Dock="Bottom" Content="Save .ksanim" Command="{Binding SaveCommand}" Margin="0 8 0 0" />
+      <avalonEdit:TextEditor c:AvalonExtension.Text="{Binding SuggestedConfig}" c:AvalonExtension.Mode="Ini" DockPanel.Dock="Bottom" Margin="0 8 0 0"
+          Height="120" ToolTip="Optionally, add this to your car config to ensure CSP will hide things properly (should work without it as well though)" />
+      <ScrollViewer>
+        <StackPanel>
+          <ItemsControl ItemsSource="{Binding Frames}" mui:Draggable.Destination="{x:Static tools:KsAnimSwitchGenerator+FrameEntry.DraggableFormat}"
+              mui:Draggable.Enabled="True">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <DockPanel Margin="0 0 0 8" Background="Transparent">
+                  <Button DockPanel.Dock="Right" Command="{Binding RemoveCommand}" Content="Remove" VerticalAlignment="Center" Margin="8 0 0 0" />
+                  <mui:TagsList ItemsSource="{Binding Nodes}"
+                      SuggestionsSource="{Binding DataContext.CarTagsListView, ElementName=RootPanel}" />
+                </DockPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <Button Content="Add a frame" Command="{Binding AddFrameCommand}" />
+        </StackPanel>
+      </ScrollViewer>
+    </DockPanel>
+  </DockPanel>
+</tools:ContentTool>

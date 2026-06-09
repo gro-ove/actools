@@ -335,7 +335,7 @@ namespace AcTools.Render.Base {
 
         double IDeviceContextHolder.LastFrameTime => _clock.GetLastFrameTime();
 
-        public void Dispose() {
+        public void Dispose(SwapChain swapChain) {
             Debug.WriteLine("DeviceContextHolder.Dispose()");
 
             DisposeHelper.Dispose(ref _states);
@@ -365,10 +365,23 @@ namespace AcTools.Render.Base {
 
             DeviceContext.ClearState();
             DeviceContext.Flush();
-            // we don’t need to dispose deviceContext — it’s the same as device
+
+            // DeviceContext.Dispose();
+            // Debug.WriteLine("DeviceContext disposed");
+
+            if (swapChain != null) {
+                swapChain.Dispose();
+                Debug.WriteLine("SwapChain disposed");
+            }
 
             Device.Dispose();
             Debug.WriteLine("Device disposed");
+            
+            // Apparently destroying one of DeviceContext and Device destroys another?
+        }
+
+        public void Dispose() {
+            Dispose(null);
         }
 
         private readonly RendererClock _clock = new RendererClock(32);

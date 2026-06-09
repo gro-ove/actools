@@ -1,7 +1,7 @@
 <UserControl x:Class="AcManager.Controls.UserControls.Workshop.WorkshopCurrentUserBlock" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:ws="http://acstuff.ru/app/workshop"
+    xmlns:ws="http://acstuff.club/app/workshop"
     mc:Ignorable="d">
   <UserControl.Resources>
     <ResourceDictionary>

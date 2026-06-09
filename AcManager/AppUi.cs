@@ -23,6 +23,8 @@ using Application = System.Windows.Application;
 
 namespace AcManager {
     public class AppUi {
+        public static bool NoExitOnTimeout = false;
+        
         [NotNull]
         private readonly Application _application;
 
@@ -39,6 +41,7 @@ namespace AcManager {
         private int _nothing;
 
         private void OnTimer(object sender, EventArgs eventArgs) {
+            if (NoExitOnTimeout) return;
             if (_application.Windows.Count == 0 && System.Windows.Forms.Application.OpenForms.Count == 0) {
                 if (_nothing > 2) {
                     Logging.Write("Nothing shown! Existing…");
@@ -94,10 +97,14 @@ namespace AcManager {
                     || arg.EndsWith(".report-launch", StringComparison.OrdinalIgnoreCase);
         }
 
+        public static Func<IEnumerable<string>, bool> AppUiMessageInterception { get; set; }
+
         private bool HandleMessages(IEnumerable<string> obj) {
             if (AcRootDirectory.Instance?.IsReady != true) return false;
 
             var list = obj.ToList();
+            if (AppUiMessageInterception?.Invoke(list) == true) return false;
+            
             Logging.Write(list.Select(x => $"“{x}”").JoinToReadableString());
             HandleMessagesAsync(list).Ignore();
             return list.Count == 0 || !list.All(CanGoWithoutWindow);
@@ -162,6 +169,36 @@ namespace AcManager {
                     SizeToContent = SizeToContent.Manual,
                     ResizeMode = ResizeMode.CanResizeWithGrip,
                     LocationAndSizeKey = @".ServerManagerWindow"
+                }.ShowAndWaitAsync();
+            }
+            if (AppArguments.Has(AppFlag.SimpleQuickDriveMode)) {
+                return new ModernWindow {
+                    Title = "Content Manager Quick Drive",
+                    BackButtonVisibility = Visibility.Collapsed,
+                    TitleButtonsVisibility = Visibility.Collapsed,
+                    MenuTopRowVisibility = Visibility.Collapsed,
+                    IsRootMarginEven = true,
+                    MenuLinkGroups = {
+                        new LinkGroup {
+                            Links = {
+                                new Link {
+                                    DisplayName = string.Empty,
+                                    Source = new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative),
+                                }
+                            },
+                            GroupKey = "drive",
+                            DisplayName = string.Empty
+                        }
+                    },
+                    DefaultContentSource = new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative),
+                    MinHeight = 400,
+                    MinWidth = 600,
+                    MaxHeight = DpiAwareWindow.UnlimitedSize,
+                    MaxWidth = DpiAwareWindow.UnlimitedSize,
+                    Padding = new Thickness(0),
+                    SizeToContent = SizeToContent.Manual,
+                    ResizeMode = ResizeMode.CanResizeWithGrip,
+                    LocationAndSizeKey = @".SimpleQuickDriveWindow"
                 }.ShowAndWaitAsync();
             }
             return new MainWindow().ShowAndWaitAsync();

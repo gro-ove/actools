@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
@@ -18,10 +19,10 @@ using SharpCompress.Writers;
 
 namespace AcManager.Tools.Objects {
     public sealed class PythonAppConfigPluginInfo : NotifyPropertyChanged, IWithId {
-        private readonly string _directory;
+        public string Location { get; }
 
         public PythonAppConfigPluginInfo(string directory) {
-            _directory = directory;
+            Location = directory;
             Id = Path.GetFileName(directory);
         }
 
@@ -33,7 +34,7 @@ namespace AcManager.Tools.Objects {
         private void LoadInformation() {
             if (_displayName != null) return;
             try {
-                var manifest = new IniFile(Path.Combine(_directory, "manifest.ini"))["ABOUT"];
+                var manifest = new IniFile(Path.Combine(Location, "manifest.ini"))["ABOUT"];
                 _displayName = manifest.GetNonEmpty("NAME") ?? Id.ToTitle();
                 _description = manifest.GetNonEmpty("DESCRIPTION");
                 _author = manifest.GetNonEmpty("AUTHOR");
@@ -134,7 +135,7 @@ namespace AcManager.Tools.Objects {
         private DelegateCommand _viewInExplorerCommand;
 
         public DelegateCommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(
-                () => { WindowsHelper.ViewDirectory(_directory); }));
+                () => { WindowsHelper.ViewDirectory(Location); }));
 
         private AsyncCommand _packCommand;
 
@@ -150,7 +151,7 @@ namespace AcManager.Tools.Objects {
                         using (var output = File.Create(destination)) {
                             var root = AcRootDirectory.Instance.RequireValue;
                             using (var writer = WriterFactory.Open(output, ArchiveType.Zip, CompressionType.Deflate)) {
-                                var files = FileUtils.GetFilesRecursive(_directory)
+                                var files = FileUtils.GetFilesRecursive(Location)
                                         .Where(x => !Regex.IsMatch(x, @"[\\/]\.|\.(?:bak|tmp|psd)$")).ToList();
                                 for (var i = 0; i < files.Count; i++) {
                                     var file = files[i];
@@ -164,7 +165,7 @@ namespace AcManager.Tools.Objects {
                                 new PackedDescription(Id, DisplayName, new Dictionary<string, string> {
                                     [@"Version"] = Version,
                                     [@"Made by"] = Author,
-                                }, Path.GetDirectoryName(_directory), true)
+                                }, Path.GetDirectoryName(Location), true)
                             }));
                         }
                     });

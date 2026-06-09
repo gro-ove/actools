@@ -1,9 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.IO.MemoryMappedFiles;
 using System.Timers;
 using AcManager.Tools.Helpers;
+using AcTools;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -148,9 +149,9 @@ namespace AcManager.Tools.SharedMemory {
 
         private int? _previousPacketId;
         private DateTime _previousPacketTime;
-        private MemoryMappedFile _physicsFile;
-        private MemoryMappedFile _graphicsFile;
-        private MemoryMappedFile _staticInfoFile;
+        private BetterMemoryMappedAccessor<AcSharedPhysics> _physicsMmFile;
+        private BetterMemoryMappedAccessor<AcSharedGraphics> _graphicsMmFile;
+        private BetterMemoryMappedAccessor<AcSharedStaticInfo> _staticInfoMmFile;
 
         private Process _gameProcess;
 
@@ -164,7 +165,7 @@ namespace AcManager.Tools.SharedMemory {
         private double _averageFps;
         private double? _minimumFps;
 
-        public class FpsDetails {
+        public class FpsDetails : NotifyPropertyChanged {
             [JsonConstructor]
             public FpsDetails(double averageFps, double? minimumFps, int samplesTaken) {
                 AverageFps = averageFps;
@@ -213,20 +214,19 @@ namespace AcManager.Tools.SharedMemory {
         public event EventHandler MonitorFramesPerSecondEnd;
 
         private void UpdateData() {
-            if (_physicsFile == null) return;
+            if (_physicsMmFile == null) return;
 
             try {
-                AcSharedGraphics graphics;
+                // AcSharedGraphics graphics;
 
                 if (MonitorFramesPerSecond) {
-                    graphics = _graphicsFile.ToStruct<AcSharedGraphics>(AcSharedGraphics.Buffer);
-
-                    var delta = graphics.PacketId - _graphicsPacketId;
-                    _graphicsPacketId = graphics.PacketId;
-
                     if (_graphicsTime == null) {
                         _graphicsTime = new Stopwatch();
                     }
+
+                    var packetId = _graphicsMmFile.GetPacketId();
+                    var delta = packetId - _graphicsPacketId;
+                    _graphicsPacketId = packetId;
 
                     if (delta > 0) {
                         if (_graphicsTime.IsRunning) {
@@ -255,14 +255,12 @@ namespace AcManager.Tools.SharedMemory {
                     } else {
                         _graphicsTime.Stop();
                     }
-                } else {
-                    graphics = null;
                 }
 
-                var physics = _physicsFile.ToStruct<AcSharedPhysics>(AcSharedPhysics.Buffer);
-                if (physics.PacketId != _previousPacketId) {
+                var physicsPacketId = _physicsMmFile.GetPacketId();
+                if (physicsPacketId != _previousPacketId) {
                     var firstPacket = !_previousPacketId.HasValue;
-                    _previousPacketId = physics.PacketId;
+                    _previousPacketId = physicsPacketId;
                     _previousPacketTime = DateTime.Now;
 
                     if (firstPacket) {
@@ -277,12 +275,11 @@ namespace AcManager.Tools.SharedMemory {
                         KnownProcess = _gameProcess != null;
                     }
 
-                    if (graphics == null) {
-                        graphics = _graphicsFile.ToStruct<AcSharedGraphics>(AcSharedGraphics.Buffer);
-                    }
-
-                    var staticInfo = _staticInfoFile.ToStruct<AcSharedStaticInfo>(AcSharedStaticInfo.Buffer);
-                    Shared = new AcShared(physics, graphics, staticInfo);
+                    // TODO: Optimize further to avoid excessive copying?
+                    Shared = new AcShared(
+                            _physicsMmFile.Get(), 
+                            _graphicsMmFile.Get(),
+                            _staticInfoMmFile);
                     Tick?.Invoke(this, EventArgs.Empty);
                 } else if (_gameProcess?.HasExitedSafe() ?? (DateTime.Now - _previousPacketTime).TotalSeconds > 1d) {
                     IsPaused = false;
@@ -315,13 +312,13 @@ namespace AcManager.Tools.SharedMemory {
             Status = AcSharedMemoryStatus.Connecting;
 
             try {
-                DisposeHelper.Dispose(ref _physicsFile);
-                DisposeHelper.Dispose(ref _graphicsFile);
-                DisposeHelper.Dispose(ref _staticInfoFile);
+                DisposeHelper.Dispose(ref _physicsMmFile);
+                DisposeHelper.Dispose(ref _graphicsMmFile);
+                DisposeHelper.Dispose(ref _staticInfoMmFile);
 
-                _physicsFile = MemoryMappedFile.OpenExisting(@"Local\acpmf_physics");
-                _graphicsFile = MemoryMappedFile.OpenExisting(@"Local\acpmf_graphics");
-                _staticInfoFile = MemoryMappedFile.OpenExisting(@"Local\acpmf_static");
+                _physicsMmFile = new BetterMemoryMappedAccessor<AcSharedPhysics>(@"Local\acpmf_physics");
+                _graphicsMmFile = new BetterMemoryMappedAccessor<AcSharedGraphics>(@"Local\acpmf_graphics");
+                _staticInfoMmFile = new BetterMemoryMappedAccessor<AcSharedStaticInfo>(@"Local\acpmf_static");
 
                 Status = AcSharedMemoryStatus.Connected;
                 Connect?.Invoke(this, EventArgs.Empty);
@@ -359,9 +356,18 @@ namespace AcManager.Tools.SharedMemory {
             }
         }
 
+        private Stopwatch _bgStopwatch = Stopwatch.StartNew();
+
         private void Update(object sender, ElapsedEventArgs e) {
             UpdateInner();
+
+            if (Status != AcSharedMemoryStatus.Live && _bgStopwatch.Elapsed.TotalSeconds > 30d) {
+                _bgStopwatch.Restart();
+                BackgroundProcessingOpportunity?.Invoke(this, EventArgs.Empty);
+            }
         }
+        
+        public event EventHandler BackgroundProcessingOpportunity;
 
         /// <summary>
         /// Game started.
@@ -391,9 +397,9 @@ namespace AcManager.Tools.SharedMemory {
         public void Dispose() {
             DisposeHelper.Dispose(ref _runTimer);
             DisposeHelper.Dispose(ref _gameProcess);
-            DisposeHelper.Dispose(ref _physicsFile);
-            DisposeHelper.Dispose(ref _graphicsFile);
-            DisposeHelper.Dispose(ref _staticInfoFile);
+            DisposeHelper.Dispose(ref _physicsMmFile);
+            DisposeHelper.Dispose(ref _graphicsMmFile);
+            DisposeHelper.Dispose(ref _staticInfoMmFile);
         }
     }
 }

@@ -6,9 +6,13 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     public static class UrlHelper {
-        [Localizable(false),ContractAnnotation(@"s: null => null; s: notnull => notnull")]
+        [Localizable(false), ContractAnnotation(@"s: null => null; s: notnull => notnull")]
         public static string AddQueryParameter(this string s, string key, string value = null) {
             return s == null ? null : $@"{s}{(s.IndexOf('?') == -1 ? "?" : "&")}{key}{(string.IsNullOrWhiteSpace(value) ? "" : Uri.EscapeDataString(value))}";
+        }
+
+        public static bool IsValidQuerySubKey(this string s) {
+            return Regex.IsMatch(s, "\\.");
         }
 
         [ContractAnnotation(@"s: null => null; s: notnull => notnull")]
@@ -330,6 +334,8 @@ console.log(result);
                     urlLength = 0;
                     return false;
                 }
+            } else if ((Expect(@"mumble") || Expect("ts") || Expect("acmanager")) && Expect(@"://")) {
+                goto EatTheRest;
             }
 
             var lastDot = -1;
@@ -358,21 +364,23 @@ console.log(result);
 
             if (index >= length || s[index] != '/') {
                 urlLength = index - start;
-            } else {
-                var last = '\0';
-                if (bbCodeMode) {
-                    for (char c; index < length && !char.IsWhiteSpace(c = s[index]) && c != '[' && c != ']'; index++) {
-                        last = c;
-                    }
-                } else {
-                    for (char c; index < length && !char.IsWhiteSpace(c = s[index]); index++) {
-                        last = c;
-                    }
-                }
-
-                urlLength = last == '.' || last == ',' || last == ':' || last == ';' || last == '!' || last == ']' ? index - start - 1 : index - start;
+                return true;
             }
 
+            EatTheRest:
+            var last = '\0';
+            if (bbCodeMode) {
+                for (char c; index < length && !char.IsWhiteSpace(c = s[index]) && c != '[' && c != ']'; index++) {
+                    last = c;
+                }
+            } else {
+                for (char c; index < length && !char.IsWhiteSpace(c = s[index]); index++) {
+                    last = c;
+                }
+            }
+
+            urlLength = last == '.' || last == ',' || last == ':' || last == ';' || last == '!' || last == ']' || last == '”' || last == '»'
+                    ? index - start - 1 : index - start;
             return true;
 
             bool Expect(string p) {

@@ -127,10 +127,14 @@ namespace AcManager.Tools.Helpers.DirectInput {
             RefreshDescription();
         }
 
+        private bool GuessIfCouldUseLoadCellsInBrakes(string displayName) {
+            return !Regex.IsMatch(displayName, @"^(?:Logitech G|Thrustmaster T\d)");
+        }
+
         public void RefreshDescription() {
-            if (!DisplayInputParams.Get(Device.ProductGuid.ToString(), out var displayName, out var axisP, out var buttonsP, out var povsP)
-                    && IsController) {
-                DisplayInputParams.Get(DirectInputDeviceUtils.GetXboxControllerGuid(), out _, out axisP, out buttonsP, out povsP);
+            if (!DisplayInputParams.Get(Device.ProductGuid.ToString(), out var displayName, out var axisP, out var buttonsP, 
+                        out var povsP, out var couldHaveLoadCells) && IsController) {
+                DisplayInputParams.Get(DirectInputDeviceUtils.GetXboxControllerGuid(), out _, out axisP, out buttonsP, out povsP, out couldHaveLoadCells);
             }
 
             DisplayName = displayName ?? FixDisplayName(Device.InstanceName);
@@ -147,10 +151,13 @@ namespace AcManager.Tools.Helpers.DirectInput {
             VisibleAxis = Axis.Where(x => x.IsVisible).ToList();
             VisibleButtons = Buttons.Where(x => x.IsVisible).ToList();
             VisiblePovs = Povs.Where(x => x.IsVisible).ToList();
+            CouldHaveLoadCells = !IsController && (couldHaveLoadCells == 1 || couldHaveLoadCells == -1 && GuessIfCouldUseLoadCellsInBrakes(DisplayName));
             OnPropertyChanged(nameof(VisibleAxis));
             OnPropertyChanged(nameof(VisibleButtons));
             OnPropertyChanged(nameof(VisiblePovs));
         }
+
+        public bool CouldHaveLoadCells { get; private set; }
 
         [CanBeNull]
         public static DirectInputDevice Create(Joystick device, int iniId) {

@@ -156,7 +156,7 @@ namespace AcManager.CustomShowroom {
                 int width, height;
                 switch (size) {
                     case null:
-                        var result = Prompt.Show(ControlsStrings.CustomShowroom_ViewMapping_Prompt, ControlsStrings.CustomShowroom_ViewMapping,
+                        var result = await Prompt.ShowAsync(ControlsStrings.CustomShowroom_ViewMapping_Prompt, ControlsStrings.CustomShowroom_ViewMapping,
                                 ValuesStorage.Get(KeyDimensions, PreviewImage != null ? $"{PreviewImage?.PixelWidth}x{PreviewImage?.PixelHeight}" : ""),
                                 @"2048x2048");
                         if (string.IsNullOrWhiteSpace(result)) return;
@@ -295,7 +295,7 @@ namespace AcManager.CustomShowroom {
             private AsyncCommand _renameCommand;
 
             public AsyncCommand RenameCommand => _renameCommand ?? (_renameCommand = new AsyncCommand(async () => {
-                var newName = Prompt.Show("New texture name:", "Rename texture", TextureName, "?", required: true, maxLength: 120)?.Trim();
+                var newName = (await Prompt.ShowAsync("New texture name:", "Rename texture", TextureName, "?", required: true, maxLength: 120))?.Trim();
                 if (string.IsNullOrEmpty(newName)) return;
 
                 try {
@@ -331,7 +331,7 @@ namespace AcManager.CustomShowroom {
                 var material = Material;
                 if (material == null) return;
 
-                var newName = Prompt.Show("New texture name:", "Fork texture", TextureName, "?", required: true, maxLength: 120)?.Trim();
+                var newName = (await Prompt.ShowAsync("New texture name:", "Fork texture", TextureName, "?", required: true, maxLength: 120))?.Trim();
                 if (string.IsNullOrEmpty(newName)) return;
 
                 try {
@@ -366,8 +366,8 @@ namespace AcManager.CustomShowroom {
                 var material = Material;
                 if (material == null) return;
 
-                var newName = Prompt.Show("Select texture:", "Change texture", TextureName, "?", required: true, maxLength: 120,
-                        suggestions: _kn5.Textures.Keys.OrderBy(x => x), suggestionsFixed: true)?.Trim();
+                var newName = (await Prompt.ShowAsync("Select texture:", "Change texture", TextureName, "?", required: true, maxLength: 120,
+                        suggestions: _kn5.Textures.Keys.OrderBy(x => x), suggestionsFixed: true))?.Trim();
                 if (string.IsNullOrEmpty(newName) || newName == TextureName) return;
 
                 try {
@@ -375,7 +375,7 @@ namespace AcManager.CustomShowroom {
                         throw new InformativeException("Can’t change texture", "Texture with that name not found.");
                     }
 
-                    using (WaitingDialog.Create("Changing…")) {
+                    using (new WaitingDialog("Changing…")) {
                         var usedElsewhere = _kn5.Materials.Values.ApartFrom(material).Any(m =>
                                 m.TextureMappings.Any(slot => string.Equals(slot.Texture, TextureName, StringComparison.OrdinalIgnoreCase)));
 

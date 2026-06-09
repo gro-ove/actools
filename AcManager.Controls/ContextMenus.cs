@@ -104,14 +104,10 @@ namespace AcManager.Controls {
 
         private static void ResetContextMenu(FrameworkElement element) {
             SetIsDirty(element, true);
-            element.MouseEnter -= OnElementMouseEnter;
-            element.MouseEnter += OnElementMouseEnter;
+            element.MouseRightButtonDown -= OnElementMouseEnter;
+            element.MouseRightButtonDown += OnElementMouseEnter;
             element.PreviewGotKeyboardFocus -= OnElementMouseEnter;
             element.PreviewGotKeyboardFocus += OnElementMouseEnter;
-
-            if (element.IsMouseOver) {
-                UpdateContextMenu(element);
-            }
         }
 
         public static AcObjectNew GetGenericObject(DependencyObject obj) {

@@ -31,8 +31,6 @@ namespace AcManager.Controls.UserControls.Cef {
                 Logging.Write($"Initializing CEF (WPF mode: {wpfMode})…");
 
                 CefSharpSettings.WcfEnabled = true;
-                CefSharp.Cef.EnableHighDPISupport();
-
                 var path = PluginsManager.Instance.GetPluginDirectory(KnownPlugins.CefSharp);
                 var settings = new CefSettings {
                     UserAgent = DefaultUserAgent,
@@ -47,6 +45,10 @@ namespace AcManager.Controls.UserControls.Cef {
                     RemoteDebuggingPort = 45451,
 #endif
                 };
+                
+                settings.CefCommandLineArgs.Add(@"allow-universal-access-from-files", string.Empty);
+                settings.CefCommandLineArgs.Add(@"allow-file-access-from-files", string.Empty);
+                settings.CefCommandLineArgs.Add(@"disable-blink-features", "WebCodecs");
 
                 if (wpfMode) {
                     settings.MultiThreadedMessageLoop = OptionMultiThreadedMessageLoop;

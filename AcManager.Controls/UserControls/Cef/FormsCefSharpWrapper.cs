@@ -41,8 +41,16 @@ namespace AcManager.Controls.UserControls.Cef {
 
         public FrameworkElement GetElement(DpiAwareWindow parentWindow, bool preferTransparentBackground) {
             if (_inner == null || _wrapper == null) {
-                DisposeHelper.Dispose(ref _inner);
-                DisposeHelper.Dispose(ref _wrapper);
+                var innerBak = _inner;
+                var wrapperBak = _wrapper;
+                if (innerBak != null || wrapperBak != null) {
+                    _inner = null;
+                    _wrapper = null;
+                    ActionExtension.InvokeInMainThreadAsync(() => {
+                        innerBak?.Dispose();
+                        wrapperBak?.Dispose();
+                    });
+                }
                 CefSharpHelper.EnsureInitialized();
 
                 _downloadHandler = new DownloadHandler();
@@ -52,9 +60,13 @@ namespace AcManager.Controls.UserControls.Cef {
 
                 _inner = new ChromiumWebBrowser(@"about:blank") {
                     BrowserSettings = {
-                        FileAccessFromFileUrls = CefState.Enabled,
-                        UniversalAccessFromFileUrls = CefState.Enabled,
                         BackgroundColor = 0xff000000,
+                        WebGl = CefState.Disabled,
+                    },
+                    JavascriptObjectRepository = {
+                        Settings = {
+                            LegacyBindingEnabled = true
+                        }
                     },
                     DisplayHandler = this,
                     DownloadHandler = _downloadHandler,
@@ -191,6 +203,10 @@ namespace AcManager.Controls.UserControls.Cef {
             });
         }
 
+        public void ShowDevTools() {
+            Task.Delay(1000).ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => _inner.ShowDevTools()));
+        }
+
         public void Execute(string js) {
 #if DEBUG
             Logging.Debug(js);
@@ -254,15 +270,19 @@ namespace AcManager.Controls.UserControls.Cef {
             if (_downloadHandler.IsAnyDownloadActive) {
                 _downloadHandler.PropertyChanged += OnDownloadHandlerPropertyChanged;
             } else {
-                DisposeHelper.Dispose(ref _inner);
-                DisposeHelper.Dispose(ref _wrapper);
+                ActionExtension.InvokeInMainThreadAsync(() => {
+                    DisposeHelper.Dispose(ref _inner);
+                    DisposeHelper.Dispose(ref _wrapper);
+                });
             }
 
             void OnDownloadHandlerPropertyChanged(object sender, PropertyChangedEventArgs args) {
                 if (args.PropertyName == nameof(_downloadHandler.IsAnyDownloadActive) && !_downloadHandler.IsAnyDownloadActive) {
                     _downloadHandler.PropertyChanged -= OnDownloadHandlerPropertyChanged;
-                    DisposeHelper.Dispose(ref _inner);
-                    DisposeHelper.Dispose(ref _wrapper);
+                    ActionExtension.InvokeInMainThreadAsync(() => {
+                        DisposeHelper.Dispose(ref _inner);
+                        DisposeHelper.Dispose(ref _wrapper);
+                    });
                 }
             }
         }

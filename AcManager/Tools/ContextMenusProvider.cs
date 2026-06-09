@@ -139,11 +139,11 @@ namespace AcManager.Tools {
                         client.InstallUpdateAsync(obj.CupContentType, obj.Id)),
                         iconData: (Geometry)Icons["UpdateIconData"]);
                 menu.AddItem("Download update",
-                        new AsyncCommand(async () => { WindowsHelper.ViewInBrowser(await client.GetUpdateUrlAsync(obj.CupContentType, obj.Id)); }));
+                        new AsyncCommand(async () => { WindowsHelper.ViewInBrowser((await client.GetUpdateUrlAsync(obj.CupContentType, obj.Id))?.Item1); }));
                 menu.AddSeparator();
             } else {
                 menu.AddItem("Get update", new AsyncCommand(async () => {
-                    WindowsHelper.ViewInBrowser(await client.GetUpdateUrlAsync(obj.CupContentType, obj.Id)
+                    WindowsHelper.ViewInBrowser((await client.GetUpdateUrlAsync(obj.CupContentType, obj.Id))?.Item1
                             ?? obj.CupUpdateInformation?.InformationUrl);
                 }));
                 menu.AddSeparator();

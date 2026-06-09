@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:lp="clr-namespace:LicensePlates;assembly=LicensePlates" xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:t="http://acstuff.club/app/tools"
+    xmlns:lp="clr-namespace:LicensePlates;assembly=LicensePlates" xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:c="http://acstuff.club/app/controls"
     xmlns:paintShop="clr-namespace:AcManager.PaintShop" mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="LiteShowroomSettings.xaml" />
@@ -60,6 +60,10 @@
 
             <CheckBox IsChecked="{Binding PreviewMode}" Margin="8 4 0 0">
               <Label Content="Simplity in preview" ToolTip="Simplify normal map to make it work faster" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding SaveCompressed}" Margin="8 4 0 0">
+              <Label Content="Save compressed" ToolTip="Apply DXT5 compression" />
             </CheckBox>
 
             <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">

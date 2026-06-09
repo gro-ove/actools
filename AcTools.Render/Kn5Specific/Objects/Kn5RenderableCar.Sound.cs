@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using JetBrains.Annotations;
 using SlimDX;
@@ -249,7 +250,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             Sound.Engine(SoundEngineActive ? SoundEngineExternal : (bool?)null, _soundRpm.Value, _soundThrottle.Value);
             Sound.Limiter(SoundEngineActive ? ((_soundRpm.Value - (SoundMaximumRpm - 45f)) / 50f).Saturate() : (float?)null);
 
-            var matrix = Matrix * Matrix.LookAtRH(camera.Position, camera.Position + camera.Look, camera.Up);
+            var matrix = Matrix * MatrixFix.LookAtRH(camera.Position, camera.Position + camera.Look, camera.Up);
             _carSoundEmitter.Value?.Update(matrix, dt);
             _hornSoundEmitter.Value?.Update(matrix, dt);
             _engineSoundEmitter.Value?.Update(matrix, dt);

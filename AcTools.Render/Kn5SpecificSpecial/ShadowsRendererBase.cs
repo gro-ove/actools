@@ -13,6 +13,7 @@ using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Kn5SpecificForward;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -55,6 +56,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             ApplyCarState();
             Scene.UpdateBoundingBox();
+        }
+
+        protected override void DisposeOverride() {
+            Scene.Dispose();
+            base.DisposeOverride();
         }
 
         #region Light sources distribution
@@ -144,6 +150,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             var summaryBrightness = 0f;
 
             foreach (var vec in GetLightsDistribution()) {
+                if (iteration % 100 == 0) { 
+                    DeviceContext.Flush();
+                }
+                
                 if (++iteration % 10 == 9) {
                     progress?.Report((double)iteration / t);
                     if (cancellation.IsCancellationRequested) return 0f;
@@ -199,7 +209,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             if (_dataWheels) {
                 Kn5RenderableFile.UpdateModelMatrixInverted(CarNode);
-                Kn5RenderableCar.SetWheelsByData(CarNode, carData.GetWheels(_suspensionModifiers), Matrix.Invert(carData.GetGraphicMatrix()));
+                Kn5RenderableCar.SetWheelsByData(CarNode, carData.GetWheels(_suspensionModifiers), carData.GetGraphicMatrix().Invert_v2());
             }
 
             Kn5RenderableCar.AdjustPosition(CarNode);

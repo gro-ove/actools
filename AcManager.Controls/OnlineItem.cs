@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,7 @@ using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -517,6 +519,7 @@ namespace AcManager.Controls {
         }
 
         private static readonly Lazier<BitmapSource> MinoratingIcon = Lazier.Create(() => ToBitmap(@"MinoratingIcon", 0, ReferenceIconSize));
+        private static readonly Lazier<BitmapSource> ThirdPartyIcon = Lazier.Create(() => ToBitmap(@"ThirdPartyIcon", 0, ReferenceIconSize));
         private static readonly Lazier<BitmapSource> LanIcon = Lazier.Create(() => ToBitmap(@"LanIcon", ReferenceIconSize));
         private static readonly Lazier<BitmapSource> FavouritesIcon = Lazier.Create(() => ToBitmap(@"FavouriteIcon", ReferenceIconSize));
         private static readonly Lazier<BitmapSource> HiddenIcon = Lazier.Create(() => ToBitmap(@"HiddenIcon", ReferenceIconSize));
@@ -525,6 +528,7 @@ namespace AcManager.Controls {
 
         private static void ResetIcons() {
             MinoratingIcon.Reset();
+            ThirdPartyIcon.Reset();
             LanIcon.Reset();
             FavouritesIcon.Reset();
             HiddenIcon.Reset();
@@ -559,6 +563,10 @@ namespace AcManager.Controls {
                     toolTip = null;
                     return null;
                 default:
+                    if (originId.StartsWith(ThirdPartyOnlineSource.Prefix)) {
+                        toolTip = "Third-party lobby";
+                        return ThirdPartyIcon.Value;
+                    }
                     if (!CustomIcons.TryGetValue(originId, out var result)) {
                         var information = FileBasedOnlineSources.Instance.GetInformation(originId);
                         if (string.IsNullOrWhiteSpace(information?.Label)) {
@@ -883,6 +891,9 @@ namespace AcManager.Controls {
                         TextAlignment = textAlignment,
                         MaxLineCount = 1
                     };
+            if (isLabel) {
+                formattedText.LineHeight = 18d;
+            }
             if (!double.IsNaN(maxWidth)) {
                 formattedText.MaxTextWidth = maxWidth;
             }
@@ -1284,7 +1295,11 @@ namespace AcManager.Controls {
                     return;
             }
 
-            InvalidateVisual();
+            if (Application.Current?.Dispatcher.Thread == Thread.CurrentThread) {
+                InvalidateVisual();
+            } else {
+                ActionExtension.InvokeInMainThreadAsync(() => InvalidateVisual());
+            }
         }
 
         // TODO: Replace warning triangles with download icons if content is available to download

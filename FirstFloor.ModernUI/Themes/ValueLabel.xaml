@@ -56,6 +56,8 @@
                 <Condition Value="True">
                   <Condition.Binding>
                     <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                      <!-- TODO: Buggy resharper -->
+                      <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                       <Binding Path="Value" RelativeSource="{RelativeSource Self}" />
                       <Binding Path="c:BetterTextBox.ModeLabelValue" RelativeSource="{RelativeSource Self}" />
                     </MultiBinding>
@@ -132,6 +134,8 @@
                 <Condition Value="True">
                   <Condition.Binding>
                     <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                      <!-- TODO: Buggy resharper -->
+                      <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                       <Binding Path="Value" RelativeSource="{RelativeSource Self}" />
                       <Binding Path="c:BetterTextBox.ModeLabelValue" RelativeSource="{RelativeSource Self}" />
                     </MultiBinding>
@@ -203,6 +207,8 @@
                     <Condition Value="True">
                       <Condition.Binding>
                         <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                          <!-- TODO: Buggy resharper -->
+                          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                           <Binding Path="Value" RelativeSource="{RelativeSource Self}" />
                           <Binding Path="c:BetterTextBox.ModeLabelValue" RelativeSource="{RelativeSource Self}" />
                         </MultiBinding>

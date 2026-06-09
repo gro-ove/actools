@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Windows;
 
 namespace FirstFloor.ModernUI.Windows.Navigation {
@@ -21,13 +20,5 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
         /// <param name="source">The source element that triggers the navigation. Required for frame navigation.</param>
         /// <param name="parameter">An optional command parameter or navigation target.</param>
         void Navigate(Uri uri, FrameworkElement source, string parameter = null);
-    }
-
-    public class NavigateEventArgs : CancelEventArgs {
-        public NavigateEventArgs(Uri uri) {
-            Uri = uri;
-        }
-
-        public Uri Uri { get; }
     }
 }

@@ -270,12 +270,18 @@ namespace AcManager.Pages.Drive {
             /// </summary>
             protected virtual bool IgnoreStartingPosition => false;
 
-            public ViewModel(bool initialize = true) {
+            public ViewModel(bool? initialize = true) {
                 // ReSharper disable once VirtualMemberCallInConstructor
                 RaceGridViewModel = new RaceGridViewModel(IgnoreStartingPosition);
                 RaceGridViewModel.Changed += RaceGridViewModel_Changed;
 
-                // ReSharper disable once VirtualMemberCallInContructor
+                if (!initialize.HasValue) return;
+                LoadSaveable(initialize.Value);
+            }
+
+            public override bool HasAnyRestrictions => RaceGridViewModel.PlayerBallast != 0d || RaceGridViewModel.PlayerRestrictor != 0d;
+
+            protected void LoadSaveable(bool initialize = true) {
                 InitializeSaveable();
 
                 if (initialize) {
@@ -293,6 +299,7 @@ namespace AcManager.Pages.Drive {
 
             private void RaceGridViewModel_Changed(object sender, EventArgs e) {
                 SaveLater();
+                OnPropertyChanged(nameof(HasAnyRestrictions));
             }
 
             public void Load() { }
@@ -308,7 +315,6 @@ namespace AcManager.Pages.Drive {
                 var selectedTrack = TracksManager.Instance.GetLayoutById(basicProperties.TrackId ?? "", basicProperties.TrackConfigurationId);
 
                 IEnumerable<Game.AiCar> botCars;
-
                 try {
                     using (var waiting = new WaitingDialog()) {
                         if (selectedCar == null || !selectedCar.Enabled) {
@@ -365,7 +371,7 @@ namespace AcManager.Pages.Drive {
                 };
             }
 
-            public override void CheckIfTrackFits(TrackObjectBase track) {
+            protected override void CheckIfTrackFits(TrackObjectBase track) {
                 TrackDoesNotFit = LapsNumber == 1 ? null : TagRequired("circuit", track);
             }
 
@@ -412,7 +418,7 @@ namespace AcManager.Pages.Drive {
                 RaceGridViewModel.ImportFromPresetData(serializedRaceGrid);
             }
 
-            public NumberInputConverter StartingPositionInputConverter { get; }
+            public NumberInputConverter StartingPositionInputConverter { get; private set; }
         }
 
         public static string GetDisplayPosition(int startingPosition, int limit) {

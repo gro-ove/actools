@@ -1,4 +1,5 @@
-﻿using FirstFloor.ModernUI.Helpers;
+﻿using AcManager.Tools.Data;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -94,6 +95,20 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private bool? _CspPreviews;
+
+            public bool CspPreviews {
+                get => _CspPreviews ?? (_CspPreviews = ValuesStorage.Get("Settings.CustomShowroomSettings.CspPreviews", false)).Value;
+                set {
+                    if (Equals(value, _CspPreviews)) return;
+                    _CspPreviews = value;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.CspPreviews", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public bool CspPreviewsReady => CspPreviews && PatchHelper.IsFeatureSupported(PatchHelper.FeatureCarPreviews);
 
             private bool? _detailedExifForPreviews;
 

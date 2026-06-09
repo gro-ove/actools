@@ -102,8 +102,11 @@ namespace AcManager.Pages.ServerPreset {
             }
 
             private IEnumerable<WrapperContentObject> GetContentWeather() {
+                if (SelectedObject.Weather == null) {
+                    return new List<WrapperContentObject>();
+                }
                 return from c in SelectedObject.Weather.GroupBy(x => x.WeatherId)
-                       let weather = WeatherManager.Instance.GetById(c.Key)
+                       let weather = c.Key == null ? null : WeatherManager.Instance.GetById(c.Key)
                        where weather?.CanBePacked() == true
                        select new WrapperContentObject(weather, SelectedObject.WrapperContentDirectory);
             }

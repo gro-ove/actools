@@ -32,6 +32,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public static void Shutdown() {
             _isActive = false;
+            DisposeHelper.Dispose(ref _directInput);
         }
 
         private static void StartScanning() {

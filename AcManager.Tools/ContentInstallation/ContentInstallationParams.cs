@@ -32,6 +32,9 @@ namespace AcManager.Tools.ContentInstallation {
         public string DisplayName { get; set; }
 
         [CanBeNull]
+        public string ForcedFileName { get; set; }
+
+        [CanBeNull]
         public string InformationUrl { get; set; }
 
         [CanBeNull]
@@ -49,15 +52,17 @@ namespace AcManager.Tools.ContentInstallation {
         public bool PreferCleanInstallation { get; set; }
 
         public bool SyncDetails { get; set; }
+        
+        public bool UseSteamAuth { get; set; }
 
         public async Task PostInstallation(IProgress<AsyncProgressEntry> progress, CancellationToken token) {
             if (!CupType.HasValue || IdsToUpdate == null) return;
 
-            var manager = CupClient.Instance?.GetAssociatedManager(CupType.Value);
+            var manager = CupClient.Instance?.GetAssociatedManager(CupType.Value, false);
             if (manager == null) return;
 
             // TODO: Make it firmer
-            progress.Report(new AsyncProgressEntry("Syncing versions…", 0.9999));
+            progress.Report(new AsyncProgressEntry(ToolsStrings.ContentInstallationParams_SyncingVersions, 0.9999));
             await Task.Delay(1000);
             foreach (var cupSupportedObject in IdsToUpdate.Select(x => manager.GetObjectById(x) as ICupSupportedObject).NonNull()) {
                 Logging.Debug($"Set values: {cupSupportedObject}={Version}");

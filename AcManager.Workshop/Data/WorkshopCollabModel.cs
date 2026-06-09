@@ -61,7 +61,7 @@ namespace AcManager.Workshop.Data {
         public AsyncCommand AddReferenceCommand => _addReferenceCommand ?? (_addReferenceCommand = new AsyncCommand(async () => {
             try {
                 _lastFullSuggestionsValue = null;
-                var username = Prompt.Show("Enter username:", "Add collaborator",
+                var username = await Prompt.ShowAsync("Enter username:", "Add collaborator",
                         suggestionsCallback: GetSuggestionsAsync,
                         verificationCallback: async value => !IsAllowed(value) ? "This author is already added"
                                 : await UserInfoProvider.GetByUsername(value) != null ? null : "No user with such username",

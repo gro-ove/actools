@@ -61,6 +61,7 @@ namespace AcManager.Tools.Managers.Online {
             if (!IsBookedForPlayer) {
                 if (PasswordRequired) {
                     if (string.IsNullOrEmpty(Password)) {
+                        PasswordIsMissing = true;
                         yield return ToolsStrings.ArchiveInstallator_PasswordIsRequired;
                     } else if (PasswordWasWrong) {
                         yield return ToolsStrings.ArchiveInstallator_PasswordIsInvalid;
@@ -100,6 +101,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public void AvailableUpdate() {
+            PasswordIsMissing = false;
             NonAvailableReasons = GetNonAvailableReasons().ToList();
             IsAvailable = NonAvailableReasons.Count == 0;
             UpdateAutoJoinAvailable();
@@ -292,6 +294,7 @@ namespace AcManager.Tools.Managers.Online {
                 Guid = SteamIdHelper.Instance.Value,
                 Password = Password,
                 ExtendedMode = WeatherId != null,
+                BackgroundImage = _backgroundImage,
                 CspFeaturesList = CspFeaturesList?.JoinToString(",")
             });
 

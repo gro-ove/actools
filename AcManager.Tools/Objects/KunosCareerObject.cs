@@ -27,7 +27,6 @@ namespace AcManager.Tools.Objects {
         public KunosCareerObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             ChampionshipDrivers = new BetterObservableCollection<ChampionshipDriverEntry>();
-            ChampionshipDriversView = new BetterListCollectionView(ChampionshipDrivers) { CustomSort = this };
         }
 
         public class ChampionshipDriverEntry : NotifyPropertyChanged, IWithId<int> {
@@ -75,7 +74,10 @@ namespace AcManager.Tools.Objects {
             base.OnAcObjectOutdated();
         }
 
-        public BetterListCollectionView ChampionshipDriversView { get; }
+        private BetterListCollectionView _championshipDriversView;
+
+        public BetterListCollectionView ChampionshipDriversView => _championshipDriversView ?? (_championshipDriversView 
+                = new BetterListCollectionView(ChampionshipDrivers) { CustomSort = this });
 
         private void InitializeEventsManager() {
             if (EventsManager != null) return;
@@ -182,7 +184,7 @@ namespace AcManager.Tools.Objects {
             Logging.Write($"Summary points restored: {points} (was {ChampionshipPoints})");
             ChampionshipPoints = points;
             ChampionshipDrivers.GetById(-1).Points = ChampionshipPoints;
-            ChampionshipDriversView.Refresh();
+            _championshipDriversView?.Refresh();
         }
 
         public string DisplayType => Type.GetDescription();
@@ -574,7 +576,7 @@ namespace AcManager.Tools.Objects {
                 }
             }
 
-            ChampionshipDriversView.Refresh();
+            _championshipDriversView?.Refresh();
             OnPropertyChanged(nameof(LastSelectedTimestamp));
 
             if (EventsManager != null) {

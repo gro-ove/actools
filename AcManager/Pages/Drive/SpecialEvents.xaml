@@ -2,7 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:g="clr-namespace:AcManager"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d"
+    xmlns:c="http://acstuff.club/app/controls" xmlns:t="http://acstuff.club/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d"
     d:DataContext="{d:DesignInstance dr:SpecialEvents+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged" x:Name="This">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -79,7 +79,7 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <mui:Switch Value="{Binding List.Count}" Style="{StaticResource ContentRootWithPadding}" ResetElementNameBindings="True">
+  <mui:Switch Value="{Binding List.Count}" Style="{StaticResource ContentRootWithPadding}">
     <mui:Cell mui:Switch.When="0">
       <TextBlock Text="{x:Static g:AppStrings.Online_NothingToDisplay}" Style="{StaticResource Heading1}" TextAlignment="Center" />
     </mui:Cell>

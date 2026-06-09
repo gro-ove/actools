@@ -18,13 +18,15 @@ namespace AcManager.Tools.Helpers.Api {
     /// </summary>
     public class ApiCacheThing {
         private readonly TimeSpan _cacheAliveTime;
+        private readonly bool _ignoreAliveTime;
         private readonly string _directory;
 
         private readonly Dictionary<string, Tuple<byte[], DateTime>> _cache =
                 new Dictionary<string, Tuple<byte[], DateTime>>(10);
 
-        public ApiCacheThing(string directoryName, TimeSpan cacheAliveTime) {
+        public ApiCacheThing(string directoryName, TimeSpan cacheAliveTime, bool ignoreAliveTime = false) {
             _cacheAliveTime = cacheAliveTime;
+            _ignoreAliveTime = ignoreAliveTime;
             _directory = FilesStorage.Instance.GetTemporaryDirectory(directoryName);
         }
 
@@ -51,6 +53,38 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
+        private Task<byte[]> DoHttpRequestAsync(string url, IProgress<long> progress, CancellationToken token) {
+            var tcs = new TaskCompletionSource<byte[]>();
+            var tokenMonitoring = token.Register(() => tcs.TrySetCanceled());
+            Task.Run(async () => {
+                try {
+                    var request = new HttpRequestMessage(HttpMethod.Get, url);
+                    using (var response = await HttpClientHolder.Get().SendAsync(request,
+                            HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false)) {
+                        token.ThrowIfCancellationRequested();
+                        byte[] data;
+                        if (progress == null) {
+                            data = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                        } else {
+                            using (var memory = new MemoryStream())
+                            using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
+                                await CopyToAsync(stream, memory, progress, token).ConfigureAwait(false);
+                                token.ThrowIfCancellationRequested();
+                                data = memory.ToArray();
+                            }
+                        }
+                        tcs.TrySetResult(data);
+                    }
+                } catch (Exception e) {
+                    Logging.Warning("Exception: " + e);
+                    tcs.TrySetException(e);
+                } finally {
+                    tokenMonitoring.Dispose();
+                }
+            }, token);
+            return tcs.Task;
+        }
+
         [ItemCanBeNull]
         private async Task<byte[]> GetBytesAsyncInner([NotNull] string url, string cacheKey = null, TimeSpan? aliveTime = null,
                 IProgress<long> progress = null, CancellationToken cancellation = default) {
@@ -59,7 +93,7 @@ namespace AcManager.Tools.Helpers.Api {
                     cacheKey = GetTemporaryName(url);
                 }
 
-                var actualAliveTime = aliveTime ?? _cacheAliveTime;
+                var actualAliveTime = _ignoreAliveTime ? _cacheAliveTime : aliveTime ?? _cacheAliveTime;
 
                 Tuple<byte[], DateTime> cache;
                 lock (_cache) {
@@ -89,23 +123,9 @@ namespace AcManager.Tools.Helpers.Api {
                 }
 
                 try {
-                    var request = new HttpRequestMessage(HttpMethod.Get, url);
                     using (var timeout = new CancellationTokenSource(KunosApiProvider.OptionWebRequestTimeout))
-                    using (var combined = CancellationTokenSource.CreateLinkedTokenSource(cancellation, timeout.Token))
-                    using (var response = await HttpClientHolder.Get().SendAsync(request,
-                            HttpCompletionOption.ResponseHeadersRead, combined.Token).ConfigureAwait(false)) {
-                        byte[] data;
-                        if (progress == null) {
-                            data = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                        } else {
-                            using (var memory = new MemoryStream())
-                            using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
-                                await CopyToAsync(stream, memory, progress, cancellation).ConfigureAwait(false);
-                                cancellation.ThrowIfCancellationRequested();
-                                data = memory.ToArray();
-                            }
-                        }
-
+                    using (var combined = CancellationTokenSource.CreateLinkedTokenSource(cancellation, timeout.Token)) {
+                        var data = await DoHttpRequestAsync(url, progress, combined.Token);
                         if (data.Length < 1e6) {
                             lock (_cache) {
                                 _cache[cacheKey] = Tuple.Create(data, DateTime.Now);

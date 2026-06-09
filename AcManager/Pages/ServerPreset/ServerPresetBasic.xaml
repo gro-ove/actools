@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.ServerPreset.ServerPresetBasic" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.club/app/tools"
+    xmlns:c="http://acstuff.club/app/controls" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -96,7 +96,11 @@
           </DockPanel>
           <CheckBox IsChecked="{Binding SelectedObject.ShowOnLobby}"
               ToolTip="Disable if you want for users to join directly through IP (or using LAN connection)">
-            <Label Content="Make server public (show on lobby)" />
+            <Label Content="Public server (show in the lobby)" />
+          </CheckBox>
+          <CheckBox IsChecked="{Binding SelectedObject.ShowOnCmLobby}" ToolTip="Might be less crowded than the main lobby"
+              Visibility="{Binding HasCmLobbies, Source={x:Static t:ThirdPartyOnlineSourcesManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Label Content="CM public server (show in the CM lobby)" />
           </CheckBox>
           <CheckBox IsChecked="{Binding SelectedObject.DisableChecksums}"
               ToolTip="With integrity verification disabled clients will be able to modify their versions of cars and tracks and get an unfair advantage">
@@ -154,8 +158,29 @@
           <CheckBox IsChecked="{Binding SelectedObject.CspRequired}" ToolTip="If CSP is not installed, track would be shown as not available">
             <Label Content="Require CSP to join" />
           </CheckBox>
+          <CheckBox IsChecked="{Binding SelectedObject.CspExtendedCarsPhysics}" ToolTip="Available starting with build 2000"
+              ToolTipService.ShowOnDisabled="True"
+              IsEnabled="{Binding SelectedObject.RequiredCspVersion, Converter={StaticResource MoreConverter}, ConverterParameter=1999}">
+            <Label Content="Use extended physics for cars" />
+          </CheckBox>
+          <CheckBox IsChecked="{Binding SelectedObject.CspExtendedTrackPhysics}" ToolTip="Available starting with build 2000"
+              ToolTipService.ShowOnDisabled="True"
+              IsEnabled="{Binding SelectedObject.RequiredCspVersion, Converter={StaticResource MoreConverter}, ConverterParameter=1999}">
+            <Label Content="Use extended physics for tracks" />
+          </CheckBox>
           <DockPanel Margin="0 0 0 8"
               ToolTip="{Binding Source={x:Static t:PatchHelper.MinimumTestOnlineVersion}, StringFormat='{}Version ID is a single number, minimum version is {0} (previous builds do not support this filtering system)'}">
+            <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
+              <ContextMenu>
+                <MenuItem Header="Hide pit crew (speeds up loading)" IsCheckable="True" IsChecked="{Binding SelectedObject.CspHidePitCrew}"
+                    ToolTip="Available starting with build 2000" ToolTipService.ShowOnDisabled="True"
+                    IsEnabled="{Binding SelectedObject.RequiredCspVersion, Converter={StaticResource MoreConverter}, ConverterParameter=1999}" />
+                <MenuItem Header="Icy surfaces" IsCheckable="True" IsChecked="{Binding SelectedObject.CspIcePhysics}"
+                    ToolTip="Available starting with build 3214" ToolTipService.ShowOnDisabled="True"
+                    IsEnabled="{Binding SelectedObject.RequiredCspVersion, Converter={StaticResource MoreConverter}, ConverterParameter=3213}" />
+              </ContextMenu>
+            </mui:ContextMenuButton>
+            
             <Label Content="Minimum version:" />
             <Button x:Name="CspVersionAutoFill" Click="CspVersionAutoFillClick" Content="Auto-fill" DockPanel.Dock="Right" Margin="8 0 0 0"
                 ToolTip="Use version of CSP you have installed" />
@@ -164,6 +189,8 @@
                 Minimum="{Binding Source={x:Static t:PatchHelper.MinimumTestOnlineVersion}}" Maximum="65535" />
           </DockPanel>
           <Button Click="CspExtendedConfigClick" Content="Extra options" Margin="0 0 0 8"
+              IsEnabled="{Binding SelectedObject.RequiredCspVersion, Converter={StaticResource MoreConverter}, ConverterParameter=1265}"
+              ToolTipService.ShowOnDisabled="True"
               ToolTip="Here you can define some extra options for Custom Shaders Patch, available starting with build 1266 (v0.1.69)" />
         </StackPanel>
       </Grid>

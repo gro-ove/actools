@@ -56,29 +56,30 @@ namespace AcManager.Tools.Helpers.Loaders {
             Register<GoogleDriveLoader>(GoogleDriveLoader.Test);
             Register<YandexDiskLoader>(YandexDiskLoader.Test);
             Register<MediaFireLoader>(MediaFireLoader.Test);
-            Register<ShareModsLoader>(ShareModsLoader.Test);
             Register<DropboxLoader>(DropboxLoader.Test);
             Register<OneDriveLoader>(OneDriveLoader.Test);
             Register<AdFlyLoader>(AdFlyLoader.Test);
             Register<MegaLoader>(MegaLoader.Test);
             Register<LongenerLoader>(LongenerLoader.Test);
             Register<YouTubeDescriptionLoader>(YouTubeDescriptionLoader.Test);
+            // Register<ShareModsLoader>(ShareModsLoader.Test);
         }
 
         public static bool IsSupportedFileStorage(string url) {
-            return AcStuffSharedLoader.Test(url) ||
-                    GoogleDriveLoader.Test(url) ||
-                    YandexDiskLoader.Test(url) ||
-                    MediaFireLoader.Test(url) ||
-                    ShareModsLoader.Test(url) ||
-                    DropboxLoader.Test(url) ||
-                    OneDriveLoader.Test(url) ||
-                    AdFlyLoader.Test(url) ||
-                    MegaLoader.Test(url);
+            return AcStuffSharedLoader.Test(url)
+                    || GoogleDriveLoader.Test(url)
+                    || YandexDiskLoader.Test(url)
+                    || MediaFireLoader.Test(url)
+                    || DropboxLoader.Test(url)
+                    || OneDriveLoader.Test(url)
+                    || AdFlyLoader.Test(url)
+                    || MegaLoader.Test(url)
+                    // ShareModsLoader.Test(url)
+                    ;
         }
 
         [ItemCanBeNull]
-        public static async Task<ILoaderFactory> GetFactoryAsync(string url, CancellationToken cancellation) {
+        private static async Task<ILoaderFactory> GetFactoryAsync(string url, CancellationToken cancellation) {
             try {
                 foreach (var factory in Factories) {
                     if (await factory.TestAsync(url, cancellation).ConfigureAwait(false)) return factory;
@@ -92,9 +93,20 @@ namespace AcManager.Tools.Helpers.Loaders {
             return await GetFactoryAsync(url, cancellation).ConfigureAwait(false) != null;
         }
 
+        public class LoaderParams {
+            [NotNull]
+            public string Url;
+
+            public bool UseSteamAuth;
+            
+            public LoaderParams([NotNull] string url) {
+                Url = url;
+            }
+        }
+
         [ItemCanBeNull]
-        public static Task<ILoader> CreateLoaderAsync([NotNull] string url, CancellationToken cancellation) {
-            return CreateLoaderAsync(url, null, cancellation);
+        public static Task<ILoader> CreateLoaderAsync([NotNull] LoaderParams loaderParams, CancellationToken cancellation) {
+            return CreateLoaderAsync(loaderParams, null, cancellation);
         }
 
         [CanBeNull]
@@ -116,26 +128,27 @@ namespace AcManager.Tools.Helpers.Loaders {
         }
 
         [ItemCanBeNull]
-        public static async Task<ILoader> CreateLoaderAsync([NotNull] string url, [CanBeNull] ILoader parent, CancellationToken cancellation) {
+        public static async Task<ILoader> CreateLoaderAsync([NotNull] LoaderParams loaderParams, [CanBeNull] ILoader parent, CancellationToken cancellation) {
             for (var i = 0; i < 10; ++i) {
                 try {
-                    var newUrl = UnwrapUrl(url);
-                    if (newUrl != null && newUrl != url) {
-                        url = newUrl;
+                    var newUrl = UnwrapUrl(loaderParams.Url);
+                    if (newUrl != null && newUrl != loaderParams.Url) {
+                        loaderParams.Url = newUrl;
                         continue;
                     }
                 } catch (NotSupportedException) {
                     return null;
                 } catch (Exception e) {
-                    Logging.Warning($"URL: {url}, error: {e}");
+                    Logging.Warning($"URL: {loaderParams.Url}, error: {e}");
                 }
                 break;
             }
 
             try {
-                var factory = await GetFactoryAsync(url, cancellation);
+                var factory = await GetFactoryAsync(loaderParams.Url, cancellation);
                 if (cancellation.IsCancellationRequested) return null;
-                var loader = factory == null ? new DirectLoader(url) : await factory.CreateAsync(url, cancellation);
+                var loader = factory == null
+                        ? new DirectLoader(loaderParams.Url, loaderParams.UseSteamAuth) : await factory.CreateAsync(loaderParams.Url, cancellation);
                 if (loader == null) return null;
                 loader.Parent = parent;
                 return loader;
@@ -151,7 +164,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         }
 
         public static async Task<string> UnwrapLink(string argument, CancellationToken cancellation = default) {
-            var loader = await CreateLoaderAsync(argument, cancellation) ?? throw new OperationCanceledException();
+            var loader = await CreateLoaderAsync(new LoaderParams(argument), cancellation) ?? throw new OperationCanceledException();
             using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10))) {
                 var client = order.Victim;
 
@@ -167,54 +180,40 @@ namespace AcManager.Tools.Helpers.Loaders {
             }
         }
 
-        public static async Task<string> LoadAsyncTo(string argument,
+        public static async Task<string> LoadAsyncTo(LoaderParams loaderParams,
                 FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination, [CanBeNull] FlexibleLoaderReportDestinationCallback reportDestination,
                 Action<FlexibleLoaderMetaInformation> reportMetaInformation = null, Func<bool> checkIfPaused = null,
-                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
+                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default,
+                bool useSteamAuth = false) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Finding fitting loader…"));
-            var loader = await CreateLoaderAsync(argument, cancellation) ?? throw new OperationCanceledException();
-            try {
-                using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10))) {
-                    var client = order.Victim;
+            while (true) {
+                var loader = await CreateLoaderAsync(loaderParams, cancellation) ?? throw new OperationCanceledException();
+                try {
+                    using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10))) {
+                        var client = order.Victim;
 
-                    if (_proxy != null) {
-                        client.Proxy = _proxy;
-                    }
+                        if (_proxy != null) {
+                            client.Proxy = _proxy;
+                        }
 
-                    progress?.Report(AsyncProgressEntry.Indetermitate);
+                        progress?.Report(AsyncProgressEntry.Indetermitate);
 
-                    cancellation.ThrowIfCancellationRequested();
-                    cancellation.Register(client.CancelAsync);
+                        cancellation.ThrowIfCancellationRequested();
+                        cancellation.Register(client.CancelAsync);
 
-                    if (!await loader.PrepareAsync(client, cancellation)) {
-                        throw new InformativeException("Can’t load file", "Loader preparation failed.");
-                    }
+                        if (!await loader.PrepareAsync(client, cancellation)) {
+                            throw new InformativeException("Can’t load file", "Loader preparation failed.");
+                        }
 
-                    cancellation.ThrowIfCancellationRequested();
-                    reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
+                        cancellation.ThrowIfCancellationRequested();
+                        reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
 
-                    var initialProgressCallback = true;
-                    var reportStopwatch = Stopwatch.StartNew();
-                    var progressStopwatch = new AsyncProgressBytesStopwatch();
+                        var initialProgressCallback = true;
+                        var reportStopwatch = Stopwatch.StartNew();
+                        var progressStopwatch = new AsyncProgressBytesStopwatch();
 
-                    if (loader.UsesClientToDownload) {
-                        client.DownloadProgressChanged += (sender, args) => {
-                            if (initialProgressCallback) {
-                                reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
-                                initialProgressCallback = false;
-                            }
-
-                            if (reportStopwatch.Elapsed.TotalMilliseconds < 20) return;
-                            order.Delay();
-                            reportStopwatch.Restart();
-                            progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, args.TotalBytesToReceive == -1
-                                    && loader.TotalSize.HasValue ? Math.Max(loader.TotalSize.Value, args.BytesReceived) : args.TotalBytesToReceive,
-                                    progressStopwatch));
-                        };
-                    }
-
-                    var loaded = await loader.DownloadAsync(client, getPreferredDestination, reportDestination, checkIfPaused,
-                            loader.UsesClientToDownload ? null : new Progress<long>(p => {
+                        if (loader.UsesClientToDownload) {
+                            client.DownloadProgressChanged += (sender, args) => {
                                 if (initialProgressCallback) {
                                     reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
                                     initialProgressCallback = false;
@@ -223,21 +222,50 @@ namespace AcManager.Tools.Helpers.Loaders {
                                 if (reportStopwatch.Elapsed.TotalMilliseconds < 20) return;
                                 order.Delay();
                                 reportStopwatch.Restart();
-                                progress?.Report(loader.TotalSize.HasValue ? AsyncProgressEntry.CreateDownloading(p, loader.TotalSize.Value, progressStopwatch)
-                                        : new AsyncProgressEntry(string.Format(UiStrings.Progress_Downloading, p.ToReadableSize(1)), null));
-                            }), cancellation);
+                                progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, args.TotalBytesToReceive == -1
+                                        && loader.TotalSize.HasValue ? Math.Max(loader.TotalSize.Value, args.BytesReceived) : args.TotalBytesToReceive,
+                                        progressStopwatch));
+                            };
+                        }
 
-                    cancellation.ThrowIfCancellationRequested();
-                    Logging.Write("Loaded: " + loaded);
-                    return loaded;
+                        var loaded = await loader.DownloadAsync(client, getPreferredDestination, reportDestination, checkIfPaused,
+                                loader.UsesClientToDownload ? null : new Progress<long>(p => {
+                                    if (initialProgressCallback || p == long.MinValue) {
+                                        reportMetaInformation?.Invoke(FlexibleLoaderMetaInformation.FromLoader(loader));
+                                        initialProgressCallback = false;
+                                        if (p == long.MinValue) return;
+                                    }
+
+                                    if (reportStopwatch.Elapsed.TotalMilliseconds < 20) return;
+                                    order.Delay();
+                                    reportStopwatch.Restart();
+                                    progress?.Report(loader.TotalSize.HasValue
+                                            ? AsyncProgressEntry.CreateDownloading(p, loader.TotalSize.Value, progressStopwatch)
+                                            : new AsyncProgressEntry(string.Format(UiStrings.Progress_Downloading, p.ToReadableSize(1)), null));
+                                }), cancellation);
+
+                        cancellation.ThrowIfCancellationRequested();
+                        Logging.Write("Loaded: " + loaded);
+                        return loaded;
+                    }
+                } catch (Exception e) when (cancellation.IsCancellationRequested || e.IsCancelled()) {
+                    Logging.Warning("Cancelled");
+                    throw new OperationCanceledException();
+                } catch (RestartLoadingException e) {
+                    loaderParams = new LoaderParams(e.Url);
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                    throw;
                 }
-            } catch (Exception e) when (cancellation.IsCancellationRequested || e.IsCancelled()) {
-                Logging.Warning("Cancelled");
-                throw new OperationCanceledException();
-            } catch (Exception e) {
-                Logging.Warning(e);
-                throw;
             }
+        }
+    }
+
+    public class RestartLoadingException : Exception {
+        public string Url { get; }
+
+        public RestartLoadingException(string url) {
+            Url = url;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace FirstFloor.ModernUI.Presentation {
     /// </summary>
     public class CustomLink : Link {
         public string Serialize() {
-            return Storage.Encode(DisplayName) + '\n' + Storage.Encode(Source.ToString());
+            return Storage.Encode(DisplayName) + '\n' + Storage.Encode(Source?.ToString() ?? string.Empty);
         }
 
         public static CustomLink Deserialize(string s) {

@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
+using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -160,6 +164,19 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
                 }
 
                 if (backup.Controls != null) {
+                    if (!string.IsNullOrWhiteSpace(backup.ControlsPresetFilename)) {
+                        try {
+                            if (new FileInfo(AcSettingsHolder.Controls.Filename).LastWriteTime > new FileInfo(filename).LastWriteTime + TimeSpan.FromSeconds(5d)) {
+                                var origin = File.ReadAllText(AcSettingsHolder.Controls.Filename);
+                                if (File.Exists(origin)) {
+                                    FileUtils.Recycle(origin);
+                                    File.Move(backup.ControlsPresetFilename, origin);
+                                }
+                            }
+                        } catch (Exception e) {
+                            Logging.Warning(e);
+                        }
+                    }
                     File.WriteAllText(AcSettingsHolder.Controls.Filename, backup.Controls);
                 }
 
@@ -185,6 +202,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
 
         private class Backup {
             public string Apps, Audio, Video, Controls, CustomShadersPatch;
+            public string ControlsPresetFilename;
             public bool? RearViewMirror;
         }
 
@@ -206,6 +224,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
             if (set.Controls.IsActuallyEnabled()) {
                 try {
                     backup.Controls = File.ReadAllText(AcSettingsHolder.Controls.Filename);
+                    backup.ControlsPresetFilename = set.Controls.Filename;
                 } catch (Exception e) {
                     Logging.Warning(e);
                 }
@@ -297,6 +316,11 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
                 Logging.Debug($"Applying {name} preset {entry.Filename}…");
                 if (File.Exists(entry.Filename)) {
                     File.Copy(entry.Filename, destination, true);
+                    
+                    var cfg = new IniFile(destination);
+                    cfg["__EXTRA_CM"].Set("CAR_SPECIFIC", false);
+                    cfg["__EXTRA_CM"].Set("PRESET_OVERRIDE", entry.Filename);
+                    cfg.Save();
                 } else {
                     NonfatalError.NotifyBackground($"Can’t load {name} preset", $"File “{entry.Name}” is missing.");
                 }
@@ -373,8 +397,12 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
             set {
                 if (value == _conditionFn) return;
                 _conditionFn = value;
+                _scriptUsesParam = null;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(Serialized));
+                OnPropertyChanged(nameof(ScriptParamName));
+                OnPropertyChanged(nameof(ScriptParamShortName));
+                OnPropertyChanged(nameof(ScriptParamVisibility));
                 OnConditionChanged();
             }
         }
@@ -393,6 +421,21 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
             }
         }
 
+        private string _scriptUsesParam;
+
+        public string ScriptParamName => _scriptUsesParam ?? (_scriptUsesParam = ModeSpecificPresetsHelper.UseScriptParam(this) ?? string.Empty);
+        
+        public string ScriptParamShortName => ScriptParamName.Split('(').First().Trim();
+        
+        public Visibility ScriptParamVisibility => ScriptParamName == string.Empty ? Visibility.Hidden : Visibility.Visible;
+
+        private string _scriptParam;
+
+        public string ScriptParam {
+            get => _scriptParam;
+            set => Apply(value, ref _scriptParam, () => OnPropertyChanged(nameof(Serialized)));
+        }
+
         private bool _deleted;
 
         public bool Deleted {
@@ -408,6 +451,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
             var jObject = JObject.Parse(serialized);
             ConditionId = jObject.GetStringValueOnly("id");
             ConditionFn = jObject.GetStringValueOnly("fn");
+            ScriptParam = jObject.GetStringValueOnly("param");
             Enabled = jObject.GetBoolValueOnly("enabled") ?? true;
             RearViewMirror = jObject.GetBoolValueOnly("mirror");
             Controls.Import(jObject["controls"] as JObject);
@@ -420,6 +464,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         public string Serialized => new JObject {
             ["id"] = ConditionId,
             ["fn"] = ConditionFn,
+            ["param"] = ScriptParam,
             ["enabled"] = Enabled,
             ["mirror"] = RearViewMirror,
             ["controls"] = Controls.Export(),

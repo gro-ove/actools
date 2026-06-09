@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using AcTools;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -75,6 +77,8 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             public SimpleFileInfo(IEntry archiveEntry) {
                 _archiveEntry = archiveEntry;
             }
+            
+            public DateTime? LastModified => _archiveEntry.LastModifiedTime ?? _archiveEntry.CreatedTime;
 
             public string Key => _archiveEntry.Key.Replace('/', '\\');
             public long Size => _archiveEntry.Size;
@@ -92,6 +96,34 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             }
         }
 
+        private class RedirectFileInfo : IFileInfo {
+            private readonly FileInfo _borrowedFile;
+
+            public RedirectFileInfo(string key, string borrowedFile) {
+                _borrowedFile = new FileInfo(borrowedFile);
+                Key = key;
+            }
+
+            public string Key { get; }
+
+            public long Size => _borrowedFile.Length;
+
+            public DateTime? LastModified => _borrowedFile.LastWriteTime;
+            
+            public Task<byte[]> ReadAsync() {
+                return FileUtils.ReadAllBytesAsync(_borrowedFile.FullName);
+            }
+            
+            public bool IsAvailable() {
+                return true;
+            }
+            
+            public Task CopyToAsync(string destination) {
+                FileUtils.HardLinkOrCopy(_borrowedFile.FullName, destination, true);
+                return Task.FromResult(true);
+            }
+        }
+        
         private class ArchiveFileInfo : SimpleFileInfo {
             private readonly IArchiveEntry _archiveEntry;
 
@@ -193,16 +225,57 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                 }
             });
         }
+        
+        private IEnumerable<IFileOrDirectoryInfo> GetFileEntriesImplementation(IArchive extractor) {
+            foreach (var entry in extractor.Entries) {
+                if (entry.IsDirectory) {
+                    yield return new SimpleDirectoryInfo(entry);
+                } else {
+                    if (entry.Key == ".borrow" && !extractor.IsSolid) {
+                        var data = entry.OpenEntryStream().ReadAsStringAndDispose();
+                        foreach (var line in data.ToLines()) {
+                            var dir = Path.Combine(AcRootDirectory.Instance.RequireValue, "content");
+                            var pieces = line.Split('#')[0].Trim().Split(':').Select(x => x.Trim()).ToList();
+                            if (pieces.Count == 1 && pieces[0] == string.Empty) {
+                                continue;
+                            }
+                            var directoryName = Path.GetDirectoryName(pieces[0]);
+                            if (pieces.Count == 2 && pieces[0].IndexOf(@"..", StringComparison.Ordinal) == -1) {
+                                if (pieces[0].IndexOf('*') == -1) {
+                                    var src = Path.Combine(dir, pieces[0]);
+                                    if (File.Exists(src)) {
+                                        yield return new RedirectFileInfo(pieces[1], src);
+                                    } else {
+                                        throw new InformativeException($"File “{pieces[0]}” to borrow is missing");
+                                    }
+                                } else {
+                                    var any = false;
+                                    foreach (var p in GlobMatcher.Find(dir, pieces[0], pieces[1])) {
+                                        Logging.Debug($"Borrow: {p.Item1}, {p.Item2}");
+                                        any = true;
+                                        yield return new RedirectFileInfo(p.Item2, p.Item1);
+                                    }
+                                    if (!any) {
+                                        throw new InformativeException($"Couldn’t find files to borrow from “{directoryName}”");
+                                    }
+                                }
+                            } else {
+                                throw new InformativeException("Unsupported format or malformed .borrow list");
+                            }
+                        }
+                        continue;
+                    }
+                    yield return new ArchiveFileInfo(entry,
+                            extractor.IsSolid ? ReadSolid : (Func<string, byte[]>)null,
+                            extractor.IsSolid ? CheckSolid : (Func<string, bool>)null);
+                }
+            }
+        }
 
         protected override Task<IEnumerable<IFileOrDirectoryInfo>> GetFileEntriesAsync(CancellationToken cancellation) {
             var extractor = _extractor;
             if (extractor == null) throw new Exception(ToolsStrings.ArchiveInstallator_InitializationFault);
-
-            return Task.FromResult(extractor.Entries.Select(x => x.IsDirectory ?
-                    (IFileOrDirectoryInfo)new SimpleDirectoryInfo(x) :
-                    new ArchiveFileInfo(x,
-                            extractor.IsSolid ? ReadSolid : (Func<string, byte[]>)null,
-                            extractor.IsSolid ? CheckSolid : (Func<string, bool>)null)));
+            return Task.FromResult(GetFileEntriesImplementation(extractor));
         }
 
         protected override async Task CopyFileEntries(ICopyCallback callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
@@ -222,22 +295,32 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                         while (reader.MoveToNextEntry()) {
                             i++;
 
-                            var readerEntry = reader.Entry;
-                            if (readerEntry.IsDirectory) {
-                                var entry = new SimpleDirectoryInfo(readerEntry);
-                                var destination = callback.Directory(entry);
-                                if (destination != null) {
-                                    FileUtils.EnsureDirectoryExists(destination);
+                            for (var j = 0; j < 5; ++j) {
+                                try {
+                                    var readerEntry = reader.Entry;
+                                    if (readerEntry.IsDirectory) {
+                                        var entry = new SimpleDirectoryInfo(readerEntry);
+                                        var destination = callback.Directory(entry);
+                                        if (destination != null) {
+                                            FileUtils.EnsureDirectoryExists(destination);
+                                        }
+                                    } else {
+                                        var entry = new SimpleFileInfo(readerEntry);
+                                        var destination = callback.File(entry);
+                                        if (destination != null) {
+                                            FileUtils.EnsureFileDirectoryExists(destination);
+                                            progress?.Report(Path.GetFileName(destination), i, count);
+                                            reader.WriteEntryTo(destination);
+                                            if (cancellation.IsCancellationRequested) return;
+                                            NewFilesReporter.RegisterNewFile(destination);
+                                        }
+                                    }
+                                    break;
+                                } catch (Exception e) {
+                                    if (j == 2) throw;
+                                    Logging.Warning($"Failed to install (going to try again in half a second): {e}");
                                 }
-                            } else {
-                                var entry = new SimpleFileInfo(readerEntry);
-                                var destination = callback.File(entry);
-                                if (destination != null) {
-                                    FileUtils.EnsureFileDirectoryExists(destination);
-                                    progress?.Report(Path.GetFileName(destination), i, count);
-                                    reader.WriteEntryTo(destination);
-                                    if (cancellation.IsCancellationRequested) return;
-                                }
+                                Thread.Sleep(500);
                             }
                         }
                     }

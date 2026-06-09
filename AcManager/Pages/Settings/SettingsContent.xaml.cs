@@ -39,7 +39,7 @@ namespace AcManager.Pages.Settings {
             private DelegateCommand _resetCupRegistriesCommand;
 
             public DelegateCommand ResetCupRegistriesCommand => _resetCupRegistriesCommand ?? (_resetCupRegistriesCommand = new DelegateCommand(() => {
-                Holder.CupRegistries = "https://acstuff.ru/cup/";
+                Holder.CupRegistries = "https://acstuff.club/cup/";
             }));
 
             public string DefaultTemporaryFilesLocation { get; } = Path.GetTempPath();

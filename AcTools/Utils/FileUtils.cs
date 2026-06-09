@@ -496,7 +496,15 @@ namespace AcTools.Utils {
             return EnsureUnique(holdPlace, filename, postfix, false);
         }
 
-        public static void CopyRecursive(string source, string destination) {
+        public static void TryCopy(string source, string destination, bool overwrite) {
+            try {
+                File.Copy(source, destination, overwrite);
+            } catch {
+                // ignored
+            }
+        }
+
+        public static void CopyRecursive(string source, string destination, bool overwrite = true) {
             if (File.GetAttributes(source).HasFlag(FileAttributes.Directory)) {
                 Directory.CreateDirectory(destination);
 
@@ -505,10 +513,10 @@ namespace AcTools.Utils {
                 }
 
                 foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
-                    File.Copy(filePath, Path.Combine(destination, GetPathWithin(filePath, source) ?? source), true);
+                    TryCopy(filePath, Path.Combine(destination, GetPathWithin(filePath, source) ?? source), overwrite);
                 }
             } else {
-                File.Copy(source, destination, true);
+                TryCopy(source, destination, overwrite);
             }
         }
 
@@ -597,17 +605,23 @@ namespace AcTools.Utils {
         [NotNull]
         public static string[] GetFileSiblingHardLinks([NotNull] string filename, [NotNull] string mountPoint) {
             var result = new List<string>();
-            uint stringLength = 256;
-            var sb = new StringBuilder((int)stringLength);
-            var findHandle = Kernel32.FindFirstFileNameW(filename, 0, ref stringLength, sb);
-            if (findHandle.ToInt32() == -1) return new string[0];
-
-            do {
-                result.Add(mountPoint + sb.ToString().Substring(1));
-                sb.Length = 0;
-                stringLength = 256;
-            } while (Kernel32.FindNextFileNameW(findHandle, ref stringLength, sb));
-            Kernel32.FindClose(findHandle);
+            try {
+                uint stringLength = 256;
+                var sb = new StringBuilder((int)stringLength);
+                var findHandle = Kernel32.FindFirstFileNameW(filename, 0, ref stringLength, sb);
+                if (findHandle.ToInt32() == -1) return new string[0];
+                try {
+                    do {
+                        result.Add(mountPoint + sb.ToString().Substring(1));
+                        sb.Length = 0;
+                        stringLength = 256;
+                    } while (Kernel32.FindNextFileNameW(findHandle, ref stringLength, sb));
+                } finally {
+                    Kernel32.FindClose(findHandle);
+                }
+            } catch (Exception e) {
+                AcToolsLogging.Write($"Failed to collect hard links: {e}");
+            }
             return result.ToArray();
         }
 

@@ -43,14 +43,45 @@ namespace AcManager.Pages.Settings {
             InitializeComponent();
             DataContext = new ViewModel();
 
+            // ReSharper disable once RedundantAssignment
+            ModernProgressRing popupRing = null;
+
+#if DEBUG
+            var dialog = new ModernDialog {
+                Width = 100,
+                Height = 100,
+                ShowTopBlob = false,
+                ShowTitle = false,
+                Topmost = true,
+                WindowStyle = WindowStyle.None,
+                AllowsTransparency = true,
+                LocationAndSizeKey = "ringDev",
+                Content = popupRing = new ModernProgressRing {
+                    Width = 80d,
+                    Height = 80d,
+                    IsActive = true
+                }
+            };
+            dialog.Show();
+#endif
+
             ProgressRingsComboBox.SelectionChanged += (sender, args) => {
                 var s = ((ComboBox)sender).SelectedItem as RingStyle;
-                ModernProgressRing.Style = ExtraProgressRings.Styles.GetValueOrDefault(s?.Key ?? "");
+                ModernProgressRing.Style = ExtraProgressRings.StylesLazy.GetValueOrDefault(s?.Key ?? "")?.Value;
+                if (popupRing != null) {
+                    popupRing.Style = ExtraProgressRings.StylesLazy.GetValueOrDefault(s?.Key ?? "")?.Value;
+                }
             };
 
-            ProgressRingsComboBox.ItemsSource = ExtraProgressRings.Styles.Keys.Select(x => new RingStyle(x)).ToArray();
+            ProgressRingsComboBox.ItemsSource = ExtraProgressRings.StylesLazy.Keys.Select(x => new RingStyle(x)).ToArray();
             ProgressRingsComboBox.SelectedItem = ProgressRingsComboBox.ItemsSource.OfType<RingStyle>().FirstOrDefault();
             ProgressRingColor = (Color)FindResource("AccentColor");
+
+            ExtraProgressRings.StylesUpdated += (sender, args) => {
+                var selected = (ProgressRingsComboBox.SelectedItem as RingStyle)?.Key;
+                ProgressRingsComboBox.ItemsSource = ExtraProgressRings.StylesLazy.Keys.Select(x => new RingStyle(x)).ToArray();
+                ProgressRingsComboBox.SelectedItem = ProgressRingsComboBox.ItemsSource.OfType<RingStyle>().FirstOrDefault(x => x.Key == selected);
+            };
         }
 
         private Color _progressRingColor;
@@ -141,20 +172,22 @@ namespace AcManager.Pages.Settings {
             private AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>> _asyncProgressMsgCancelCommand;
 
             public AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>> AsyncProgressMsgCancelCommand
-                => _asyncProgressMsgCancelCommand ?? (_asyncProgressMsgCancelCommand = new AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>>(async t => {
-                    for (var i = 0; i < 100 && !t.Item2.IsCancellationRequested; i++) {
-                        t.Item1?.Report($"Progress: {i}%", i, 100);
-                        await Task.Delay(16, t.Item2);
-                    }
-                }));
+                =>
+                        _asyncProgressMsgCancelCommand
+                                ?? (_asyncProgressMsgCancelCommand = new AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>>(async t => {
+                                    for (var i = 0; i < 100 && !t.Item2.IsCancellationRequested; i++) {
+                                        t.Item1?.Report($"Progress: {i}%", i, 100);
+                                        await Task.Delay(16, t.Item2);
+                                    }
+                                }));
 
             private ICommand _magickNetMemoryLeakingCommand;
 
             public ICommand MagickNetMemoryLeakingCommand => _magickNetMemoryLeakingCommand ?? (_magickNetMemoryLeakingCommand = new AsyncCommand(async () => {
                 var image = AcPaths.GetDocumentsScreensDirectory();
                 var filename = new DirectoryInfo(image).GetFiles("*.bmp")
-                                                       .OrderByDescending(f => f.LastWriteTime)
-                                                       .FirstOrDefault();
+                        .OrderByDescending(f => f.LastWriteTime)
+                        .FirstOrDefault();
                 if (filename == null) {
                     ModernDialog.ShowMessage("Can’t start. At least one bmp-file in screens directory required.");
                     return;
@@ -170,9 +203,7 @@ namespace AcManager.Pages.Settings {
 
                     var i = 0;
                     while (!w.CancellationToken.IsCancellationRequested) {
-                        await Task.Run(() => {
-                            ImageUtils.ApplyPreviewImageMagick(from, to, 1022, 575, new AcPreviewImageInformation());
-                        });
+                        await Task.Run(() => { ImageUtils.ApplyPreviewImageMagick(from, to, 1022, 575, new AcPreviewImageInformation()); });
                         w.Report(PluralizingConverter.PluralizeExt(++i, "Copied {0} time"));
                         await Task.Yield();
                     }

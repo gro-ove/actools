@@ -43,7 +43,7 @@ namespace AcManager.Workshop {
     }
 
     public class WorkshopModel : NotifyPropertyChanged {
-        private const string KeySteamId = "w/ui";
+        private const string KeySteamId = "w/uk";
         private const string KeyUserPassword = "w/up";
 
         [NotNull]
@@ -202,7 +202,7 @@ namespace AcManager.Workshop {
                         if (_client.UserId == null || AuthorizedAs == null || !AuthorizedAs.IsVirtual) throw new Exception("Can’t upgrade user");
 
                         var upgradeRun = ++_upgradeRun;
-                        var password = Prompt.Show("Choose a new password for your CM Workshop account:", "Verify CM Workshop account",
+                        var password = await Prompt.ShowAsync("Choose a new password for your CM Workshop account:", "Verify CM Workshop account",
                                 comment: "After choosing a new password, you would need to verify it by passing Steam authentication.",
                                 required: true, passwordMode: true);
                         if (string.IsNullOrEmpty(password)) return;
@@ -238,7 +238,7 @@ namespace AcManager.Workshop {
             => _resetPasswordCommand ?? (_resetPasswordCommand = new AsyncCommand<CancellationToken?>(c => {
                 return TryAsync(async () => {
                     var upgradeRun = ++_upgradeRun;
-                    var password = Prompt.Show("Choose a new password for your CM Workshop account:", "Reset CM Workshop password",
+                    var password = await Prompt.ShowAsync("Choose a new password for your CM Workshop account:", "Reset CM Workshop password",
                             comment: "After choosing a new password, you would need to verify it by passing Steam authentication.",
                             required: true, passwordMode: true);
                     if (string.IsNullOrEmpty(password)) return;

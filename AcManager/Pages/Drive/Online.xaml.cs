@@ -59,7 +59,7 @@ namespace AcManager.Pages.Drive {
 
         public Online() {
             this.OnActualUnload(() => {
-                Logging.Debug("Disposing DiscordRichPresence for online");
+                // Logging.Debug("Disposing DiscordRichPresence for online");
                 _discordPresence.Dispose();
             });
         }
@@ -109,6 +109,11 @@ namespace AcManager.Pages.Drive {
         private int _timerTick;
 
         private void OnTimerTick(object sender, EventArgs e) {
+            if (Application.Current?.MainWindow?.IsActive != true) {
+                _timerTick = 5;
+                return;
+            }
+
             if (++_timerTick > 5) {
                 _timerTick = 0;
 
@@ -226,7 +231,7 @@ namespace AcManager.Pages.Drive {
         }
 
         public static async Task AddServerManually(string listKey) {
-            var address = Prompt.Show(AppStrings.Online_AddServer, AppStrings.Online_AddServer_Title, "",
+            var address = await Prompt.ShowAsync(AppStrings.Online_AddServer, AppStrings.Online_AddServer_Title, "",
                     @"127.0.0.1:8081", AppStrings.Online_AddServer_Tooltip);
             if (address == null) return;
 
@@ -288,6 +293,22 @@ namespace AcManager.Pages.Drive {
                 set => Apply(value, ref _serverSelected);
             }
 
+            private class GenericLobbySourceTester : IFilter<ServerEntry> {
+                public string Source => null;
+
+                public bool Test(ServerEntry obj) {
+                    return !obj.IsExcluded && obj.ReferencedFromGenericLobby();
+                }
+
+                public bool IsAffectedBy(string propertyName) {
+                    return propertyName == nameof(ServerEntry.ReferencesString) || propertyName == nameof(ServerEntry.IsExcluded);
+                }
+
+                public override string ToString() {
+                    return @"[<lobbies>]";
+                }
+            }
+
             private class ServerSourceTester : IFilter<ServerEntry> {
                 public string Source => _source;
 
@@ -339,7 +360,9 @@ namespace AcManager.Pages.Drive {
             [NotNull]
             private static CombinedFilter<ServerEntry> GetFilter([CanBeNull] string filterString, [CanBeNull] string[] sources) {
                 IFilter<ServerEntry> sourcesTester;
-                if (sources == null || sources.Length == 0) {
+                if (sources == null) {
+                    sourcesTester = new GenericLobbySourceTester();
+                } else if (sources.Length == 0) {
                     sourcesTester = new ServerSourceTester(KunosOnlineSource.Key);
                 } else if (sources.ArrayContains(@"*") || sources.ArrayContains(@"all")) {
                     sourcesTester = null;

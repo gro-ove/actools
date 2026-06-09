@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using AcManager.Internal;
+using AcManager.Tools.Data;
 using AcManager.Tools.GameProperties.InGameApp;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.DirectInput;
@@ -462,11 +463,11 @@ namespace AcManager.Tools.GameProperties {
                     Direction = DirectInputPovDirection.Up;
                 }
 
-                public JoyKey(int joy, int pov, DirectInputPovDirection direction) {
+                public JoyKey(int joy, int pov, DirectInputPovDirection direction, int? joyModifier, int? buttonModifier) {
                     Joy = joy;
                     Button = null;
-                    JoyModifier = null;
-                    ButtonModifier = null;
+                    JoyModifier = joyModifier < 0 ? null : joyModifier;
+                    ButtonModifier = buttonModifier < 0 ? null : buttonModifier;
                     Pov = pov;
                     Direction = direction;
                 }
@@ -532,29 +533,35 @@ namespace AcManager.Tools.GameProperties {
                 var delaysAvailable = delayEnabled && (!isAcFullscreen || isCmAppInstalled);
                 _delaysAvailable = delaysAvailable;
 
-                foreach (var n in AcSettingsHolder.Controls.WheelButtonKeys) {
-                    var section = ini[n];
-                    var delay = ShortenDelays.ArrayContains(n) ? OptionSmallInterval : OptionLargeInterval;
+                if (!PatchHelper.IsFeatureSupported(PatchHelper.SecondaryGearButtons)) {
+                    // Note: CSP currently only supports GEARUP and GEARDN
+                    foreach (var n in AcSettingsHolder.Controls.WheelButtonKeys) {
+                        var section = ini[n];
+                        var delay = ShortenDelays.ArrayContains(n) ? OptionSmallInterval : OptionLargeInterval;
 
-                    var joy = section.GetInt("__CM_ALT_JOY", -1);
-                    var button = section.GetInt("__CM_ALT_BUTTON", -1);
-                    var pov = section.GetInt("__CM_ALT__POV", -1);
-                    var povDirection = section.GetIntEnum("__CM_ALT_POV_DIR", DirectInputPovDirection.Up);
-                    var key = section.GetInt("KEY", -1);
+                        var joy = section.GetInt("__CM_ALT_JOY", -1);
+                        var button = section.GetInt("__CM_ALT_BUTTON", -1);
+                        var pov = section.GetInt("__CM_ALT__POV", -1);
+                        var povDirection = section.GetIntEnum("__CM_ALT_POV_DIR", DirectInputPovDirection.Up);
+                        var key = section.GetInt("KEY", -1);
+                        var joyModifier = section.GetInt("JOY_MODIFICATOR", -1);
+                        var buttonModifier = section.GetInt("BUTTON_MODIFICATOR", -1);
 
-                    if (joy == -1 || button == -1 && pov == -1 || key == -1) {
-                        continue;
+                        if (joy == -1 || button == -1 && pov == -1 || key == -1) {
+                            continue;
+                        }
+
+                        var joyKey = button != -1
+                                ? new JoyKey(joy, button, joyModifier, buttonModifier) : new JoyKey(joy, pov, povDirection, joyModifier, buttonModifier);
+                        joyToCommand[joyKey] = new HotkeyJoyCommand( /*Keys.RControlKey,*/ (Keys)key) {
+                            MinInterval = delay,
+                            DelayedName = null
+                        };
                     }
-
-                    var joyKey = button != -1 ? new JoyKey(joy, button, null, null) : new JoyKey(joy, pov, povDirection);
-                    joyToCommand[joyKey] = new HotkeyJoyCommand( /*Keys.RControlKey,*/ (Keys)key) {
-                        MinInterval = delay,
-                        DelayedName = null
-                    };
                 }
 
                 var supportedByPatchFilename = Path.Combine(AcRootDirectory.Instance.RequireValue,
-                        @"extension", @"config", @"data_hotkeys_supported.txt");
+                        PatchHelper.PatchDirectoryName, @"config", @"data_hotkeys_supported.txt");
                 var supportedByPatch = File.Exists(supportedByPatchFilename) ? File.ReadAllLines(supportedByPatchFilename) : new string[0];
 
                 foreach (var n in AcSettingsHolder.Controls.SystemButtonKeys) {
@@ -567,8 +574,8 @@ namespace AcManager.Tools.GameProperties {
                     if (isExtra && c.IsAvailableTest?.Invoke() == false) continue;
 
                     var joy = section.GetInt("JOY", -1);
-                    var joyModifier = section.GetInt("JOY_MODIFICATOR", -1);
                     var button = section.GetInt("BUTTON", -1);
+                    var joyModifier = section.GetInt("JOY_MODIFICATOR", -1);
                     var buttonModifier = section.GetInt("BUTTON_MODIFICATOR", -1);
                     var pov = section.GetInt("__CM_POV", -1);
                     var povDirection = section.GetIntEnum("__CM_POV_DIR", DirectInputPovDirection.Up);
@@ -588,7 +595,7 @@ namespace AcManager.Tools.GameProperties {
                         continue;
                     }
 
-                    var joyKey = button != -1 ? new JoyKey(joy, button, joyModifier, buttonModifier) : new JoyKey(joy, pov, povDirection);
+                    var joyKey = button != -1 ? new JoyKey(joy, button, joyModifier, buttonModifier) : new JoyKey(joy, pov, povDirection, joyModifier, buttonModifier);
                     if (isExtra) {
                         c.ConsiderControlsIni(ini);
                     } else if (key != -1) {
@@ -679,7 +686,7 @@ namespace AcManager.Tools.GameProperties {
 #else
                     OnTick(usedJoysticks, joystickCommands);
 #endif
-                    Thread.Sleep(8);
+                    Thread.Sleep(20);
 
 #if DEBUG
                     if (++iterations >= 3000) {
@@ -743,13 +750,24 @@ namespace AcManager.Tools.GameProperties {
                 foreach (var command in commands) {
                     var key = command.Key;
                     if (!devices.TryGetValue(key.Joy, out var device) || device.State == null) continue;
-                    command.Value.SetJoyPressed(key.Button.HasValue
+
+                    /*if (key.Button.HasValue
                             ? device.State.GetButtons().ArrayElementAtOrDefault(key.Button.Value)
-                                    && (!key.ButtonModifier.HasValue || !key.JoyModifier.HasValue
-                                            || devices.TryGetValue(key.JoyModifier.Value, out var modifierDevice)
-                                                    && modifierDevice.State.GetButtons().ArrayElementAtOrDefault(key.ButtonModifier.Value))
                             : (povAvailable || key.Pov != 0)
-                                    && key.Direction.IsInRange(device.State.GetPointOfViewControllers().ArrayElementAtOrDefault(key.Pov ?? 0)));
+                                    && key.Direction.IsInRange(device.State.GetPointOfViewControllers().ArrayElementAtOrDefault(key.Pov ?? 0))) {
+                        Logging.Debug("KEY:" + key.ToString());
+                        Logging.Debug("MOD:" + (!key.ButtonModifier.HasValue || !key.JoyModifier.HasValue
+                                || devices.TryGetValue(key.JoyModifier.Value, out var modifierDevice2)
+                                        && modifierDevice2.State.GetButtons().ArrayElementAtOrDefault(key.ButtonModifier.Value)));
+                    }*/
+                    
+                    command.Value.SetJoyPressed((key.Button.HasValue
+                            ? device.State.GetButtons().ArrayElementAtOrDefault(key.Button.Value)
+                            : (povAvailable || key.Pov != 0)
+                                    && key.Direction.IsInRange(device.State.GetPointOfViewControllers().ArrayElementAtOrDefault(key.Pov ?? 0)))
+                            && (!key.ButtonModifier.HasValue || !key.JoyModifier.HasValue
+                                    || devices.TryGetValue(key.JoyModifier.Value, out var modifierDevice)
+                                            && modifierDevice.State.GetButtons().ArrayElementAtOrDefault(key.ButtonModifier.Value)));
                 }
 
                 string delayedName = null;

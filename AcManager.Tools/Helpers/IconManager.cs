@@ -32,7 +32,7 @@ namespace AcManager.Tools.Helpers {
         /// <summary>
         /// http://stackoverflow.com/a/6580799/1943849
         /// </summary>
-        private static ImageSource ToImageSource(this Icon icon) {
+        public static ImageSource ToImageSource(this Icon icon) {
             return Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
         }
 

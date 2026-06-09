@@ -104,7 +104,7 @@ namespace AcManager.Pages.Drive {
                 QualificationDuration = 30;
             }
 
-            public override void CheckIfTrackFits(TrackObjectBase track) {
+            protected override void CheckIfTrackFits(TrackObjectBase track) {
                 TrackDoesNotFit = TagRequired("circuit", track);
             }
 

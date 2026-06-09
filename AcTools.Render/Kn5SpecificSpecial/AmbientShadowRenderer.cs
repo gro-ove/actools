@@ -12,6 +12,7 @@ using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Shaders;
+using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -175,6 +176,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         private void Draw(float multipler, int size, int padding, float fadeRadius, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
             DeviceContext.ClearRenderTargetView(_summBuffer.TargetView, Color.Transparent);
+            AcToolsLogging.Write("    Summary buffer cleared");
 
             // draw
             var yThreshold = 0.95f - DiffusionLevel * 0.95f;
@@ -182,12 +184,15 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             ΘToDeg = 90;
 
             var iter = DrawLights(progress, cancellation);
+            AcToolsLogging.Write("    Lights drawn");
+            
             if (cancellation.IsCancellationRequested) return;
 
             DeviceContextHolder.PrepareQuad(_effect.LayoutPT);
             DeviceContext.Rasterizer.State = null;
             DeviceContext.OutputMerger.BlendState = null;
             DeviceContext.Rasterizer.SetViewports(Viewport);
+            AcToolsLogging.Write("    Viewport set");
 
             _effect.FxSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
 
@@ -205,6 +210,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
                 _effect.FxInputMap.SetResource(_tempBuffer.View);
                 _effect.TechVerticalShadowBlur.DrawAllPasses(DeviceContext, 6);
+                AcToolsLogging.Write("    Blur pass: " + i);
+                DeviceContext.Flush();
             }
 
             // result
@@ -217,7 +224,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _effect.FxPadding.Set(padding / (size + padding * 2f));
             _effect.FxShadowSize.Set(new Vector2(_shadowSize.X, _shadowSize.Z));
             _effect.FxScreenSize.Set(new Vector2(ActualWidth, ActualHeight));
+            AcToolsLogging.Write("    Result pass set");
+            
             _effect.TechResult.DrawAllPasses(DeviceContext, 6);
+            AcToolsLogging.Write("    Result pass drawn");
+            DeviceContext.Flush();
         }
 
         private void SaveResultAs(string filename, int size, int padding) {
@@ -265,18 +276,25 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public void Shot(string outputDirectory, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
+            AcToolsLogging.Write("Rendering ambient shadows…");
             if (!Initialized) {
                 Initialize();
+                AcToolsLogging.Write("  Initialized");
             }
 
             using (var replacement = FileUtils.RecycleOriginal(Path.Combine(outputDirectory, "body_shadow.png"))) {
                 // body shadow
                 PrepareBuffers(BodySize + BodyPadding * 2, 1024);
+                AcToolsLogging.Write("  Body buffers prepared");
                 SetBodyShadowCamera();
+                AcToolsLogging.Write("  Body camera set");
                 Draw(BodyMultiplier, BodySize, BodyPadding, Fade ? 0.5f : 0f, progress.SubrangeDouble(0.01, 0.59), cancellation);
+                DeviceContext.Flush();
+                AcToolsLogging.Write("  Body drawn");
                 if (cancellation.IsCancellationRequested) return;
 
                 SaveResultAs(replacement.Filename, BodySize, BodyPadding);
+                AcToolsLogging.Write("  Body saved");
             }
 
             // wheels shadows
@@ -287,7 +305,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
 
             PrepareBuffers(WheelSize + WheelPadding * 2, 128);
+            AcToolsLogging.Write("  Wheel buffers prepared");
             SetWheelShadowCamera();
+            AcToolsLogging.Write("  Wheel camera set");
             _wheelMode = true;
 
             var nodes = new[] { "WHEEL_LF", "WHEEL_RF", "WHEEL_LR", "WHEEL_RR" };
@@ -302,7 +322,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             foreach (var entry in list) {
                 using (var replacement = FileUtils.RecycleOriginal(Path.Combine(outputDirectory, entry.FileName))) {
-                    var m = Matrix.Invert(entry.GlobalMatrix);
+                    var m = entry.GlobalMatrix.Invert_v2();
                     _flattenNodes = list.SelectMany(x => {
                         x.Node.ParentMatrix = Matrix.Identity;
                         x.Node.LocalMatrix = entry.Matrix * x.GlobalMatrix * m;
@@ -310,9 +330,12 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     }).ToArray();
 
                     Draw(WheelMultiplier, WheelSize, WheelPadding, 1f, entry.Progress, cancellation);
+                    DeviceContext.Flush();
+                    AcToolsLogging.Write("  Wheel drawn");
                     if (cancellation.IsCancellationRequested) return;
 
                     SaveResultAs(replacement.Filename, WheelSize, WheelPadding);
+                    AcToolsLogging.Write("  Wheel saved");
                 }
             }
         }
@@ -328,8 +351,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DisposeHelper.Dispose(ref _summBuffer);
             DisposeHelper.Dispose(ref _tempBuffer);
             DisposeHelper.Dispose(ref _shadowBuffer);
-            CarNode.Dispose();
-            Scene.Dispose();
+            // CarNode.Dispose();
             base.DisposeOverride();
         }
     }

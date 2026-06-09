@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using AcTools.ExtraKn5Utils.FbxUtils.Extensions;
 using AcTools.ExtraKn5Utils.FbxUtils.Tokens;
 using AcTools.ExtraKn5Utils.FbxUtils.Tokens.Value;
+using JetBrains.Annotations;
 
 namespace AcTools.ExtraKn5Utils.FbxUtils {
     /// <summary>
@@ -27,6 +28,7 @@ namespace AcTools.ExtraKn5Utils.FbxUtils {
             Identifier = identifier;
         }
 
+        [CanBeNull]
         public Token GetPropertyWithName(string name) {
             foreach (var property in Properties) {
                 if (property.TokenType != TokenType.String) {
@@ -41,8 +43,9 @@ namespace AcTools.ExtraKn5Utils.FbxUtils {
             return null;
         }
 
+        [CanBeNull]
         public string GetName(string type) {
-            return GetPropertyWithName(type).GetAsString().Split(new[] { "::" }, 2, StringSplitOptions.None)[1];
+            return GetPropertyWithName(type)?.GetAsString().Split(new[] { "::" }, 2, StringSplitOptions.None)[1];
         }
 
         public void AddProperty(Token value) {

@@ -2,9 +2,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows {
-    public class ImmediateContentLoader : IContentLoader {
+    public sealed class ImmediateContentLoader : IContentLoader {
         public Task<object> LoadContentAsync(Uri uri, CancellationToken cancellationToken) {
             if (ModernUiHelper.IsInDesignMode) return null;
 
@@ -24,7 +25,7 @@ namespace FirstFloor.ModernUI.Windows {
             return Task.FromResult(loaded);
         }
         
-        public virtual object LoadContent(Uri uri) {
+        public object LoadContent(Uri uri) {
             if (ModernUiHelper.IsInDesignMode) return null;
 
             var loaded = Application.LoadComponent(uri);

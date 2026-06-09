@@ -67,7 +67,7 @@ namespace AcManager.Controls.ViewModels {
 
         private static string _namespace;
 
-        internal static void SetNamespace(string space) {
+        public static void SetNamespace(string space) {
             _namespace = space == null ? null : IdFromName(space);
         }
 

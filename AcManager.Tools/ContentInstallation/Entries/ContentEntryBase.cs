@@ -4,17 +4,24 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.ContentInstallation.Installators;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Entries {
     public abstract class ContentEntryBase : NotifyPropertyChanged {
+        [CanBeNull]
+        private readonly string[] _cleanUp;
+
+        public static event EventHandler OnInstallationModeChanged;
+
         [NotNull]
         public string Id { get; }
 
@@ -42,6 +49,13 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         [CanBeNull]
         public string Description { get; }
+
+        private bool _showWarning;
+
+        public bool ShowWarning {
+            get => _showWarning;
+            set => Apply(value, ref _showWarning);
+        }
 
         private bool _singleEntry;
 
@@ -73,16 +87,19 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public abstract string GenericModTypeName { get; }
 
         public abstract string NewFormat { get; }
+
         public abstract string ExistingFormat { get; }
 
-        protected ContentEntryBase([NotNull] string path, [NotNull] string id,
+        protected ContentEntryBase(bool showWarning, [NotNull] string path, [NotNull] string id, [CanBeNull] string[] cleanUp,
                 string name = null, string version = null, byte[] iconData = null, string description = null) {
+            _cleanUp = cleanUp;
             EntryPath = path ?? throw new ArgumentNullException(nameof(path));
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Name = name ?? id;
             Version = version;
             IconData = iconData;
             Description = description;
+            ShowWarning = showWarning;
         }
 
         private bool _installEntry;
@@ -92,10 +109,23 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             set => Apply(value, ref _installEntry);
         }
 
+        private IEnumerable<string> CleanUpBase(string location) {
+            return _cleanUp?.Select(x => Path.Combine(x, location)) ?? new string[0];
+        }
+
+        private void SetFallbackCleanUp() {
+            if (_cleanUp != null) {
+                foreach (var option in _updateOptions.Where(x => !x.RemoveExisting && x.CleanUp == null)) {
+                    option.CleanUp = CleanUpBase;
+                }
+            }
+        }
+
         private void InitializeOptions() {
             if (_updateOptions == null) {
                 var oldValue = _selectedOption;
                 _updateOptions = GetUpdateOptions().ToArray();
+                SetFallbackCleanUp();
                 _selectedOption = GetDefaultUpdateOption(_updateOptions);
                 OnSelectedOptionChanged(oldValue, _selectedOption);
             }
@@ -104,6 +134,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         protected void ResetUpdateOptions() {
             var oldValue = _selectedOption;
             _updateOptions = GetUpdateOptions().ToArray();
+            SetFallbackCleanUp();
             _selectedOption = GetDefaultUpdateOption(_updateOptions);
             OnSelectedOptionChanged(oldValue, _selectedOption);
             OnPropertyChanged(nameof(UpdateOptions));
@@ -114,8 +145,10 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         public void SetInstallationParams([NotNull] ContentInstallationParams installationParams) {
             _installationParams = installationParams;
-            if (_installationParams.CupType.HasValue && _installationParams.Version != null) {
+            if (_installationParams.CupType.HasValue && _installationParams.Version != null && _installationParams.Version != Version) {
                 Version = _installationParams.Version;
+                OnPropertyChanged(nameof(Version));
+                CompareVersions();
             }
         }
 
@@ -139,6 +172,10 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                 _selectedOption = value;
                 OnSelectedOptionChanged(oldValue, value);
                 OnPropertyChanged();
+
+                if (Keyboard.Modifiers == ModifierKeys.Control) {
+                    OnInstallationModeChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -251,8 +288,12 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             IsNew = tuple == null;
             ExistingName = tuple?.Item1;
             ExistingVersion = tuple?.Item2;
+        }
+
+        private void CompareVersions() {
             IsNewer = Version.IsVersionNewerThan(ExistingVersion);
             IsOlder = Version.IsVersionOlderThan(ExistingVersion);
+            Logging.Debug($"Existing: {ExistingVersion}, new: {Version}, newer: {IsNewer}, older: {IsOlder}");
         }
 
         [NotNull, ItemCanBeNull]
@@ -271,6 +312,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                 _existingVersion = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(DisplayName));
+                CompareVersions();
             }
         }
 
@@ -307,8 +349,9 @@ namespace AcManager.Tools.ContentInstallation.Entries {
     }
 
     public abstract class ContentEntryBase<T> : ContentEntryBase where T : AcCommonObject {
-        protected ContentEntryBase([NotNull] string path, [NotNull] string id, string name = null, string version = null, byte[] iconData = null)
-                : base(path, id, name, version, iconData) { }
+        protected ContentEntryBase(bool showWarning, [NotNull] string path, [NotNull] string id, [CanBeNull] string[] cleanUp,
+                string name = null, string version = null, byte[] iconData = null)
+                : base(showWarning, path, id, cleanUp, name, version, iconData) { }
 
         protected sealed override bool GenericModSupportedByDesign => IsNew;
 

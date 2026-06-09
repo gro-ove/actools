@@ -20,6 +20,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// </summary>
     [Localizable(false), ContentProperty(nameof(Text))]
     public class BbCodeBlock : PlaceholderTextBlock {
+        public static ResourceDictionary IconsDictionary { get; set; }
+        
         public enum AllowBbCodes {
             None,
             Limited,

@@ -63,7 +63,7 @@ namespace AcManager.Controls {
                     if (!File.Exists(fallbackFilename)) return Image.Empty;
                     filename = fallbackFilename;
                 }
-                var ret = LoadBitmapSourceFromBytes(File.ReadAllBytes(filename), decodeWidth);
+                var ret = LoadBitmapSourceFromFilename(filename, decodeWidth);
                 lock (Cache) {
                     Cache[$@"{brandName?.ToLowerInvariant()}:{decodeWidth}"] = ret;
                 }

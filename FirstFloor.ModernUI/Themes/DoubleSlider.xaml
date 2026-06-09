@@ -18,7 +18,7 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type Thumb}">
           <c:Cell Background="Transparent">
-            <Border x:Name="Bg" Background="{TemplateBinding Background}" HorizontalAlignment="Right" Width="3" />
+            <Border x:Name="Bg" Background="{TemplateBinding Background}" HorizontalAlignment="Right" Width="4" />
             <Border x:Name="VerticalLine" Background="{TemplateBinding BorderBrush}" HorizontalAlignment="Right" Width="1" />
             <Border Background="{TemplateBinding BorderBrush}" VerticalAlignment="Top" Height="1" />
             <Border Background="{TemplateBinding BorderBrush}" VerticalAlignment="Bottom" Height="1" />

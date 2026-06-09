@@ -27,7 +27,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             name = name.Trim();
-
+            
             var shadyCount = name.TakeWhile(IsLikelyToBeCheat).Count();
             if (shadyCount > 2 && (IsMoreLikelyToBeCheat(name[shadyCount - 1]) || name[0] == 'A')) {
                 name = name.Substring(shadyCount).TrimStart() + @"z";
@@ -45,10 +45,20 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             var lettersOnly = LettersOnly(name);
+            for (int i = 0, u = 0; i < lettersOnly.Length - 3; ++i) {
+                if (lettersOnly[i] == '0' && lettersOnly[i + 1] == '0') {
+                    lettersOnly = lettersOnly.Substring(i + 2).TrimStart('0');
+                    i = 0;
+                    u = 0;
+                } else if (IsUnlikelyToBeCheat(lettersOnly[i])) {
+                    if (++u == 2) break;
+                }
+            }
+            
             return lettersOnly.Length > 0 ? lettersOnly : @"zzz:" + name;
 
             bool IsLikelyToBeCheat(char c) {
-                return c >= 'a' && c <= 'c' || c >= 'A' && c <= 'D' || c >= '0' && c <= '4' || !char.IsLetterOrDigit(c);
+                return c >= 'a' && c <= 'c' || c >= 'A' && c <= 'D' || c >= '0' && c <= '5' || !char.IsLetterOrDigit(c);
             }
 
             bool IsMoreLikelyToBeCheat(char c) {

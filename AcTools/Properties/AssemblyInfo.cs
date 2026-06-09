@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcTools")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2020")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,10 +32,10 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.4.1332")]
-[assembly: AssemblyFileVersion("1.0.4.1332")]
+[assembly: AssemblyVersion("1.0.4.1494")]
+[assembly: AssemblyFileVersion("1.0.4.1494")]
 
 // For testing
 [assembly: InternalsVisibleTo("AcTools.Tests")]
-// Modified at: 19/06/14 03:54:28
-// Modified at: 4/2/2020 7:13:45 PM
+// Modified at: 26/05/26 9:35:23 AM
+// Modified at: 5/6/2022 10:32:06 PM

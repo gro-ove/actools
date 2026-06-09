@@ -208,8 +208,8 @@ namespace AcManager.CustomShowroom {
                 case Keys.H:
                     if (args.Alt) {
                         if (Renderer is ToolsKn5ObjectRenderer tools) {
-                            if (!args.Control && !args.Shift) {
-                                tools.ToggleSelected();
+                            if (!args.Shift) {
+                                tools.ToggleSelected(args.Control);
                                 args.Handled = true;
                             } else if (!args.Control && args.Shift) {
                                 tools.UnhideAll();

@@ -41,13 +41,13 @@ namespace AcManager.Tools.AcPlugins.Helpers {
             _remoteIpEndPoint = new IPEndPoint(IPAddress.Any, remotePort);
             Opened = true;
 
-            _processMessagesThread = new Thread(ProcessMessages) { Name = "ProcessMessages" };
+            _processMessagesThread = new Thread(ProcessMessages) { Name = "ProcessMessages", IsBackground = true };
             _processMessagesThread.Start();
 
-            _receiveMessagesThread = new Thread(ReceiveMessages) { Name = "ReceiveMessages" };
+            _receiveMessagesThread = new Thread(ReceiveMessages) { Name = "ReceiveMessages", IsBackground = true  };
             _receiveMessagesThread.Start();
 
-            _sendMessagesThread = new Thread(SendMessages) { Name = "SendMessages" };
+            _sendMessagesThread = new Thread(SendMessages) { Name = "SendMessages", IsBackground = true  };
             _sendMessagesThread.Start();
         }
 

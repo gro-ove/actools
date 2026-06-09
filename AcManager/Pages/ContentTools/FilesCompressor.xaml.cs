@@ -11,9 +11,11 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using AcManager.Controls.Graphs;
 using AcManager.Tools;
+using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
@@ -101,72 +103,99 @@ namespace AcManager.Pages.ContentTools {
 
             public DelegateCommand ViewInExplorerCommand
                 => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(() => { WindowsHelper.ViewFile(FileInfo.FullName); }));
+        }
 
-            private static readonly Dictionary<string, uint> ClusterSizes = new Dictionary<string, uint>();
+        private static readonly Dictionary<string, uint> ClusterSizes = new Dictionary<string, uint>();
 
-            private static long GetFileSizeOnDisk(FileInfo info, out bool isCompressed) {
-                var key = info.Directory?.Root.FullName ?? string.Empty;
+        private static long GetFileSizeOnDisk(FileInfo info, out bool isCompressed) {
+            var key = info.Directory?.Root.FullName ?? string.Empty;
 
-                uint clusterSize;
-                lock (ClusterSizes) {
-                    if (!ClusterSizes.TryGetValue(key, out clusterSize)) {
-                        clusterSize = Kernel32.GetDiskFreeSpaceW(key, out var sectorsPerCluster, out var bytesPerSector, out _, out _) == 0 ? 1
-                                : sectorsPerCluster * bytesPerSector;
-                        ClusterSizes[key] = clusterSize;
-                    }
+            uint clusterSize;
+            lock (ClusterSizes) {
+                if (!ClusterSizes.TryGetValue(key, out clusterSize)) {
+                    clusterSize = Kernel32.GetDiskFreeSpaceW(key, out var sectorsPerCluster, out var bytesPerSector, out _, out _) == 0 ? 1
+                            : sectorsPerCluster * bytesPerSector;
+                    ClusterSizes[key] = clusterSize;
                 }
+            }
 
-                var loSize = Kernel32.GetCompressedFileSizeW(info.FullName, out var hoSize);
-                var size = ((long)hoSize << 32) | loSize;
-                isCompressed = info.Length != size;
-                return (size + clusterSize - 1) / clusterSize * clusterSize;
+            var loSize = Kernel32.GetCompressedFileSizeW(info.FullName, out var hoSize);
+            var size = ((long)hoSize << 32) | loSize;
+            isCompressed = info.Length != size;
+            return (size + clusterSize - 1) / clusterSize * clusterSize;
+        }
+
+        private IAcManagerNew _targetManager;
+        private AcCommonObject[] _targetObjects;
+
+        protected override void InitializeOverride(Uri uri) {
+            var id = uri.GetQueryParam("Type");
+            if (id != null) {
+                _targetManager = Superintendent.Instance.GetManagerById(id);
+                if (_targetManager != null) {
+                    _targetObjects = uri.GetQueryParam("Items")?.Split('\n').Select(x => _targetManager.GetObjectById(x))
+                            .OfType<AcCommonObject>().ToArray();
+                }
             }
         }
 
         protected override async Task<bool> LoadAsyncOverride(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             var contentDirectory = GetContentDirectory();
-
-            progress.Report("Loading cars…", 0.01);
-            await CarsManager.Instance.EnsureLoadedAsync();
-
-            progress.Report("Loading tracks…", 0.02);
-            await CarsManager.Instance.EnsureLoadedAsync();
-
-            progress.Report("Loading showrooms…", 0.03);
-            await ShowroomsManager.Instance.EnsureLoadedAsync();
-
-            var cars = CarsManager.Instance.WrappersList.Select(x => (AcCommonObject)x.Loaded()).ToList();
-            var tracks = TracksManager.Instance.WrappersList.Select(x => (AcCommonObject)x.Loaded()).ToList();
-            var showrooms = ShowroomsManager.Instance.WrappersList.Select(x => (AcCommonObject)x.Loaded()).ToList();
+            var scannedFiles = new List<FileToCompress>();
+            
             var index = new[] { 0 };
             var objectsProgress = progress.Subrange(0.04, 0.9);
 
-            var scannedFiles = new List<FileToCompress>();
-            foreach (var obj in cars) {
-                scannedFiles.AddRange(await ScanObjectFiles(obj, true));
-            }
+            if (_targetObjects?.Length > 0) {
+                foreach (var obj in _targetObjects) {
+                    scannedFiles.AddRange(await ScanObjectFiles(obj, false));
+                }
 
-            foreach (var obj in tracks) {
-                scannedFiles.AddRange(await ScanObjectFiles(obj, false));
-            }
+                Task<List<FileToCompress>> ScanObjectFiles(AcCommonObject obj, bool carMode) {
+                    var info = new DirectoryInfo(obj.Location);
+                    objectsProgress.Report($"Scanning ({obj.Name ?? obj.Id})…", index[0]++, _targetObjects.Length);
+                    return ActualScan(info, carMode);
+                }
+            } else {
+                progress.Report("Loading cars…", 0.01);
+                await CarsManager.Instance.EnsureLoadedAsync();
 
-            foreach (var obj in showrooms) {
-                scannedFiles.AddRange(await ScanObjectFiles(obj, false));
-            }
+                progress.Report("Loading tracks…", 0.02);
+                await CarsManager.Instance.EnsureLoadedAsync();
 
-            scannedFiles.AddRange(await ScanDirectoryFiles(AcPaths.GetWeatherDirectory(AcRootDirectory.Instance.RequireValue), 0.96));
-            scannedFiles.AddRange(await ScanDirectoryFiles(Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "driver"), 0.97));
-            scannedFiles.AddRange(await ScanDirectoryFiles(Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "texture"), 0.98));
-            scannedFiles.AddRange(await ScanDirectoryFiles(Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "objects3D"), 0.99));
+                progress.Report("Loading showrooms…", 0.03);
+                await ShowroomsManager.Instance.EnsureLoadedAsync();
+
+                var cars = CarsManager.Instance.Loaded.ToList();
+                var tracks = TracksManager.Instance.Loaded.ToList();
+                var showrooms = ShowroomsManager.Instance.Loaded.ToList();
+
+                foreach (var obj in cars) {
+                    scannedFiles.AddRange(await ScanObjectFiles(obj, true));
+                }
+
+                foreach (var obj in tracks) {
+                    scannedFiles.AddRange(await ScanObjectFiles(obj, false));
+                }
+
+                foreach (var obj in showrooms) {
+                    scannedFiles.AddRange(await ScanObjectFiles(obj, false));
+                }
+
+                scannedFiles.AddRange(await ScanDirectoryFiles(AcPaths.GetWeatherDirectory(AcRootDirectory.Instance.RequireValue), 0.96));
+                scannedFiles.AddRange(await ScanDirectoryFiles(Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "driver"), 0.97));
+                scannedFiles.AddRange(await ScanDirectoryFiles(Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "texture"), 0.98));
+                scannedFiles.AddRange(await ScanDirectoryFiles(Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "objects3D"), 0.99));
+
+                Task<List<FileToCompress>> ScanObjectFiles(AcCommonObject obj, bool carMode) {
+                    var info = new DirectoryInfo(obj.Location);
+                    objectsProgress.Report($"Scanning ({obj.Name ?? obj.Id})…", index[0]++, cars.Count + tracks.Count + showrooms.Count);
+                    return ActualScan(info, carMode);
+                }
+            }
 
             FilesToCompress.ReplaceEverythingBy_Direct(scannedFiles.OrderBy(x => x.RelativePath));
             return FilesToCompress.Any();
-
-            Task<List<FileToCompress>> ScanObjectFiles(AcCommonObject obj, bool carMode) {
-                var info = new DirectoryInfo(obj.Location);
-                objectsProgress.Report($"Scanning ({obj.Name ?? obj.Id})…", index[0]++, cars.Count + tracks.Count + showrooms.Count);
-                return ActualScan(info, carMode);
-            }
 
             Task<List<FileToCompress>> ScanDirectoryFiles(string directory, double progressValue) {
                 var info = new DirectoryInfo(directory);
@@ -186,6 +215,8 @@ namespace AcManager.Pages.ContentTools {
                             if (animations.Exists) {
                                 list = list.Concat(animations.GetFiles("*.ksanim"));
                             }
+                        } else {
+                            list = list.Concat(info.GetFiles("*.ai", SearchOption.AllDirectories));
                         }
 
                         return list.Where(x => x.Length > OptionCompressThreshold).Select(x => new FileToCompress(x)).ToList();
@@ -196,8 +227,6 @@ namespace AcManager.Pages.ContentTools {
                 });
             }
         }
-
-        protected override void InitializeOverride(Uri uri) { }
 
         public ChangeableObservableCollection<FileToCompress> FilesToCompress { get; }
 
@@ -217,16 +246,24 @@ namespace AcManager.Pages.ContentTools {
             this.OnActualUnload(watcher);
         }
 
-        private void OnFileChanged(object o, FileSystemEventArgs e) {
-            var index = e.Name.LastIndexOf('.');
-            if (index == -1) return;
-            switch (e.Name.Substring(index + 1).ToLowerInvariant()) {
+        private static bool IsToBeCompressed(string filename) {
+            var index = filename.LastIndexOf('.');
+            if (index == -1) return false;
+            switch (filename.Substring(index + 1).ToLowerInvariant()) {
                 case "dds":
                 case "kn5":
                 case "knh":
                 case "ksanim":
-                    FilesToCompress.GetByIdOrDefault(FileToCompress.NormalizePath(e.FullPath))?.Refresh();
-                    break;
+                case "ai":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private void OnFileChanged(object o, FileSystemEventArgs e) {
+            if (IsToBeCompressed(e.Name)) {
+                FilesToCompress.GetByIdOrDefault(FileToCompress.NormalizePath(e.FullPath))?.Refresh();
             }
         }
 
@@ -320,7 +357,7 @@ namespace AcManager.Pages.ContentTools {
                 TotalRatio = (double)CompressedSize / (TotalSize == 0 ? 1 : TotalSize);
 
                 var savedLabel = string.Format(TotalRatio < 0.9 ? ColonConverter.FormatBoth : "{0}", "Saved", (TotalSize - CompressedSize).ToReadableSize());
-                var compressedLabel = string.Format(TotalRatio < 0.9 ? ColonConverter.FormatBoth : "{0}", "Compressed", CompressedSize.ToReadableSize());
+                var compressedLabel = string.Format(TotalRatio < 0.9 ? ColonConverter.FormatBoth : "{0}", "On disk", CompressedSize.ToReadableSize());
 
                 if (_savedSlide == null) {
                     var color = this.ToOxyColor("WindowText");
@@ -376,15 +413,29 @@ namespace AcManager.Pages.ContentTools {
                 () => CompressedCount > 0));
 
         private static async Task Process(string title, IEnumerable<FileToCompress> items, params string[] flags) {
-            const int step = 20;
+            const int step = 10;
             var directory = GetContentDirectory();
 
             try {
                 using (var waiting = new WaitingDialog(title)) {
+                    waiting.SetMultiline(true);
+                    waiting.CancellationText = "Stop";
+                    
                     var queue = items.ToList();
+                    var start = Stopwatch.StartNew();
                     for (var i = 0; i < queue.Count && !waiting.CancellationToken.IsCancellationRequested; i += step) {
                         var files = queue.Skip(i).Take(step).ToList();
+                        var speed = (i + step / 2d) / start.Elapsed.TotalMinutes;
+                        var remainingItems = queue.Count - i;
+                        var remainingTime = speed < 0.0001 || speed > 1e5 ? "Unknown" : $"About {TimeSpan.FromMinutes(remainingItems / speed).ToReadableTime()}";
                         waiting.Report(files[0].RelativePath, i, queue.Count);
+                        waiting.SetDetails(new[] {
+                            $"Speed: {speed:F1} files/min",
+                            $"Time remaining: {remainingTime}",
+                            $"Files remaining: {remainingItems}",
+                            string.Empty,
+                            "[i]Can’t wait? You can always stop and come back to resume the compression later.[/i]"
+                        }.NonNull());
 
                         var filesOffset = i;
                         var filesIndex = 1;
@@ -401,7 +452,6 @@ namespace AcManager.Pages.ContentTools {
                                     StandardErrorEncoding = Encoding.UTF8,
                                     WindowStyle = ProcessWindowStyle.Hidden
                                 }, true)) {
-                            process.Start();
                             process.OutputDataReceived += (sender, args) => {
                                 if (args.Data == null) return;
                                 if (args.Data.EndsWith(@" [OK]") && filesIndex < files.Count) {
@@ -421,14 +471,145 @@ namespace AcManager.Pages.ContentTools {
                                 throw new InformativeException("Can’t compress files",
                                         $"Tool compact.exe failed to run: {process.ExitCode}. More information in CM logs.");
                             }
-
-                            Logging.Debug(output.ToString());
                         }
                     }
                 }
             } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
                 NonfatalError.Notify("Can’t process files", e);
             }
+        }
+
+        private static List<string> _newFilesToBeCompressedLater = new List<string>();
+        private static bool _newFilesAddingEnqueued;
+        private static bool _compressingEnqueued;
+
+        public static void RegisterNewFileToBeCompressedLater(string filename) {
+            if (!IsToBeCompressed(filename)) return;
+
+            filename = filename.ToLowerInvariant();
+            lock (_newFilesToBeCompressedLater) {
+                if (!_newFilesToBeCompressedLater.Contains(filename)) {
+                    _newFilesToBeCompressedLater.Add(filename);
+                }
+
+                if (!_newFilesAddingEnqueued) {
+                    _newFilesAddingEnqueued = true;
+                    Task.Delay(TimeSpan.FromSeconds(5d)).ContinueWith(r => {
+                        var ownList = new HashSet<string>();
+                        lock (_newFilesToBeCompressedLater) {
+                            foreach (var item in _newFilesToBeCompressedLater) {
+                                ownList.Add(item);
+                            }
+                            _newFilesToBeCompressedLater.Clear();
+                        }
+
+                        var listFilename = FilesStorage.Instance.GetTemporaryFilename("To Compress.txt");
+                        try {
+                            foreach (var item in File.ReadLines(listFilename)) {
+                                ownList.Add(item);
+                            }
+                        } catch {
+                            // Do nothing
+                        }
+                        File.WriteAllLines(listFilename, ownList);
+                        _newFilesAddingEnqueued = false;
+                    });
+                }
+            }
+        }
+
+        public static void BackgroundCompressStep() {
+            if (_compressingEnqueued) return;
+            _compressingEnqueued = true;
+
+            Task.Delay(TimeSpan.FromSeconds(5d)).ContinueWith(r => {
+                try {
+                    // Logging.Debug("[BgCompression] Launching…");
+                
+                    var contentDirectory = GetContentDirectory();
+                    var listFilename = FilesStorage.Instance.GetTemporaryFilename("To Compress.txt");
+                    string[] lines;
+                    try {
+                        lines = File.ReadAllLines(listFilename);
+                    } catch {
+                        lines = new string[0];
+                    }
+                    if (lines.Length > 0) {
+                        // Logging.Debug("[BgCompression] In the queue: " + lines.Length);
+                    }
+                    var candidates = lines.Take(20).Where(x => {
+                        var fileInfo = new FileInfo(x);
+                        if (!fileInfo.Exists || fileInfo.Length < OptionCompressThreshold) return false;
+                        GetFileSizeOnDisk(fileInfo, out var isCompressed);
+                        return !isCompressed;
+                    }).Select(x => FileUtils.GetPathWithin(x, contentDirectory)).ToList();
+                    lines = lines.Skip(20).ToArray();
+
+                    if (candidates.Count == 0 && MathUtils.Random() > 0.95) {
+                        var carMode = MathUtils.Random() > 0.5;
+                        var randomFolder = Path.Combine(contentDirectory, carMode ? @"cars" : @"tracks");
+                        var randomEntity = Directory.GetDirectories(randomFolder).RandomElementOrDefault();
+                        if (randomEntity == null) return;
+                    
+                        Logging.Debug("[BgCompression] Queue is empty, randomly checking: " + randomEntity);
+                        var info = new DirectoryInfo(randomEntity);
+                        IEnumerable<FileInfo> list;
+                        var firstScan = info.GetFiles("*.dds", SearchOption.AllDirectories);
+                        if (firstScan.Length == 0) {
+                            firstScan = info.GetFiles("*.kn5", SearchOption.AllDirectories);
+                            if (firstScan.Length == 0) return;
+                            list = firstScan;
+                        } else {
+                            list = firstScan.Append(info.GetFiles("*.kn5", SearchOption.AllDirectories));
+                        }
+                        if (carMode) {
+                            list = list.Concat(info.GetFiles("*.knh"));
+                            var animations = new DirectoryInfo(Path.Combine(info.FullName, "animations"));
+                            if (animations.Exists) {
+                                list = list.Concat(animations.GetFiles("*.ksanim"));
+                            }
+                        } else {
+                            list = list.Concat(info.GetFiles("*.ai", SearchOption.AllDirectories));
+                        }
+                    
+                        var filtered = list.Where(fileInfo => {
+                            if (!fileInfo.Exists || fileInfo.Length < OptionCompressThreshold) return false;
+                            GetFileSizeOnDisk(fileInfo, out var isCompressed);
+                            return !isCompressed;
+                        }).ToList();
+                        if (filtered.Count > 20) {
+                            lines = lines.Concat(filtered.Skip(20).Select(x => x.FullName)).ToArray();
+                            filtered = filtered.Take(20).ToList();
+                        }
+                        candidates = filtered.Select(x => FileUtils.GetPathWithin(x.FullName, contentDirectory)).ToList();
+                    }
+                
+                    if (candidates.Count == 0) return;
+                    Logging.Debug("[BgCompression] Compression candidates: " + candidates.JoinToString("; "));
+                    using (var process = ProcessExtension.Start(@"compact", candidates.Prepend("/C", "/EXE:LZX"),
+                            new ProcessStartInfo {
+                                WorkingDirectory = contentDirectory,
+                                CreateNoWindow = true,
+                                RedirectStandardInput = true,
+                                RedirectStandardOutput = true,
+                                UseShellExecute = false,
+                                RedirectStandardError = true,
+                                StandardOutputEncoding = Encoding.UTF8,
+                                StandardErrorEncoding = Encoding.UTF8,
+                                WindowStyle = ProcessWindowStyle.Hidden
+                            }, true)) {
+                        process.PriorityClass = ProcessPriorityClass.Idle;
+                        process.WaitForExit();
+                        Logging.Debug($"[BgCompression] Done: {process.ExitCode} ({candidates.JoinToString(@"; ")})");
+                    }
+                
+                    File.WriteAllLines(listFilename, lines);
+                } catch (Exception e) {
+                    Logging.Debug($"[BgCompression] Exception: {e}");
+                } finally {
+                    _compressingEnqueued = false;
+                }
+            });
         }
     }
 }

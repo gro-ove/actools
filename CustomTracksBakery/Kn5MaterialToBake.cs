@@ -120,6 +120,8 @@ namespace CustomTracksBakery {
 
         public bool IsBlending => false;
 
+        public string Name => null;
+
         public void Dispose() { }
     }
 }

@@ -21,7 +21,7 @@ namespace AcManager.Tools.Managers {
         }
 
         private TracksManager() {
-            CupClient.Instance?.Register(this, CupContentType.Track);
+            CupClient.Register(this, CupContentType.Track);
         }
 
         public override IAcDirectories Directories => AcRootDirectory.Instance.TracksDirectories;

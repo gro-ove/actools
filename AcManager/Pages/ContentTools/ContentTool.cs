@@ -104,5 +104,13 @@ namespace AcManager.Pages.ContentTools {
         void IInvokingNotifyPropertyChanged.OnPropertyChanged(string propertyName) {
             OnPropertyChanged(propertyName);
         }
+
+        protected bool Apply<T>(T value, ref T backendValue, Action onChangeCallback = null, [CallerMemberName] string propertyName = null) {
+            return NotifyPropertyChangedExtension.Apply(this, value, ref backendValue, onChangeCallback, propertyName);
+        }
+
+        protected bool Apply<T>(T value, StoredValue<T> backendValue, Action onChangeCallback = null, [CallerMemberName] string propertyName = null) {
+            return NotifyPropertyChangedExtension.Apply(this, value, backendValue, onChangeCallback, propertyName);
+        }
     }
 }

@@ -9,10 +9,12 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
+using AcTools.Render.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
+using Debug = System.Diagnostics.Debug;
 
 namespace AcTools.Render.Kn5SpecificSpecial {
     public class DepthMaterialsFactory : IMaterialsFactory {
@@ -64,7 +66,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public void SetMatricesAo(Matrix objectTransform) {
             _effect.FxWorld.SetMatrix(objectTransform);
-            _effect.FxWorldInvTranspose.SetMatrix(Matrix.Invert(Matrix.Transpose(objectTransform)));
+            _effect.FxWorldInvTranspose.SetMatrix(Matrix.Transpose(objectTransform).Invert_v2());
         }
 
         public void DrawAo(IDeviceContextHolder contextHolder, int indices) {
@@ -72,6 +74,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public bool IsBlending => false;
+
+        public string Name => null;
 
         public void Dispose() { }
     }
@@ -96,6 +100,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         int IKn5RenderableObject.TrianglesCount => GetTrianglesCount();
 
         public void SetTransparent(bool? isTransparent) { }
+        public void SetCastShadows(bool? castShadows) { }
 
         private TrianglesRenderableObject<InputLayouts.VerticePNTG> _pntgObject;
 

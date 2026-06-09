@@ -13,6 +13,8 @@ namespace AcTools.Tests {
             Assert.IsTrue("0.1.2".CompareAsVersionTo("0") > 0);
             Assert.IsTrue("1.1.2".CompareAsVersionTo("0") > 0);
             Assert.IsTrue("1.1.2".CompareAsVersionTo("2") < 0);
+            Assert.IsTrue("1.8".CompareAsVersionTo("2.0") < 0);
+            Assert.IsTrue("2.0".CompareAsVersionTo("1.8") > 0);
         }
 
         [Test]

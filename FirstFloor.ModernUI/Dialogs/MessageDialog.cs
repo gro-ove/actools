@@ -98,13 +98,14 @@ namespace FirstFloor.ModernUI.Dialogs {
 
             FrameworkElement content = new SelectableBbCodeBlock {
                 Text = text,
-                Margin = new Thickness(0, 0, 0, 8)
+                Margin = new Thickness(0, 0, 0, 8),
+                Mode = EmojiSupport.Extended
             };
 
             CheckBox doNotAskAgainCheckbox;
             if (doNotAskAgainLoadSave != null) {
                 doNotAskAgainCheckbox = new CheckBox {
-                    Content = new Label { Content = "Don’t ask again" }
+                    Content = new Label { Content = button == MessageDialogButton.OK ? UiStrings.MessageDialog_DontShowAgain : UiStrings.MessageDialog_DontAskAgain }
                 };
 
                 content = new SpacingStackPanel {

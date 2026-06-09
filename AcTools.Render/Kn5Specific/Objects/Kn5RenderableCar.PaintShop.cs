@@ -46,6 +46,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
 
             var texture = _texturesProvider?.GetTexture(device, textureName);
+            if (texture == null) {
+                return false;
+            }
             texture.SetProceduralOverride(device, textureView, disposeLater);
             return texture.Exists ||
                     GetChildrenPaintShopObjects().Select(x => x.OverrideTexture(device, textureName, textureView, disposeLater)).FirstOrDefault();

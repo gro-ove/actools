@@ -18,6 +18,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Loaders;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.SemiGui;
+using AcManager.Tools.Starters;
 using AcTools.Kn5File;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -121,6 +122,14 @@ namespace AcManager.Tools {
             if (_previousArguments?.SequenceEqual(list) == true) return ShowMainWindow.No;
             if (list.Count == 0) return ShowMainWindow.Immediately;
 
+            if (list.Count == 2 && list[0] == "+connect_lobby") {
+                list = new[] { await SteamStarter.GetLobbyInviteUrlAsync(list[1]) }.Where(x => !string.IsNullOrEmpty(x)).ToList();
+                if (list.Count == 0) {
+                    NonfatalError.Notify("Failed to get information about the Steam lobby to join",
+                            "Make sure your Steam DLLs are not altered.");
+                }
+            }
+
             try {
                 // Why it’s here?
                 _previousArguments = list;
@@ -220,7 +229,7 @@ namespace AcManager.Tools {
         [ItemNotNull]
         private static async Task<string> LoadRemoteFile(string argument, string name = null, string extension = null) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
-                return await FlexibleLoader.LoadAsyncTo(argument, (url, information) => {
+                return await FlexibleLoader.LoadAsyncTo(new FlexibleLoader.LoaderParams(argument), (url, information) => {
                     var filename = Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue, name + extension);
                     return new FlexibleLoaderDestination(filename, true);
                 }, null, information => {
@@ -239,7 +248,7 @@ namespace AcManager.Tools {
         /// <exception cref="Exception">Thrown if failed or cancelled.</exception>
         private static async Task LoadRemoteFileToNew(string argument, string destination) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
-                await FlexibleLoader.LoadAsyncTo(argument, (url, information) => new FlexibleLoaderDestination(destination, false), null, information => {
+                await FlexibleLoader.LoadAsyncTo(new FlexibleLoader.LoaderParams(argument), (url, information) => new FlexibleLoaderDestination(destination, false), null, information => {
                     if (information.FileName != null) {
                         waiting.Title = $@"Loading {information.FileName}…";
                     }
@@ -279,6 +288,7 @@ namespace AcManager.Tools {
             if (!isDirectory && filename.EndsWith(@".kn5", StringComparison.OrdinalIgnoreCase)) {
                 if ((Keyboard.Modifiers == ModifierKeys.Alt || Keyboard.Modifiers == ModifierKeys.Shift) && SettingsHolder.Common.DeveloperMode) {
                     try {
+                        AppUi.NoExitOnTimeout = true;
                         Kn5.FbxConverterLocation = PluginsManager.Instance.GetPluginFilename(KnownPlugins.FbxConverter, "FbxConverter.exe");
                         var kn5 = Kn5.FromFile(filename);
                         var destination = FileUtils.EnsureUnique(Path.Combine(Path.GetDirectoryName(filename) ?? @".",

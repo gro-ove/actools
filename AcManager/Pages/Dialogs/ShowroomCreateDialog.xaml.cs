@@ -117,7 +117,7 @@ namespace AcManager.Pages.Dialogs {
                     ResultName = AcStringValues.NameFromId(ResultId);
                 }
 
-                var location = ShowroomsManager.Instance.Directories.GetLocation(ResultId, true);
+                var location = ShowroomsManager.Instance.Directories?.GetLocation(ResultId, true) ?? string.Empty;
                 FileUtils.EnsureDirectoryExists(Path.Combine(location, "ui"));
 
                 new IniFile {

@@ -9,9 +9,9 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             return value.As<double>() - parameter.As<double>();
         }
-        
+
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-            throw new NotSupportedException();
+            return value.As<double>() + parameter.As<double>();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:g="clr-namespace:AcManager"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset" xmlns:a="clr-namespace:AcTools;assembly=AcTools">
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.club/app/tools" xmlns:g="clr-namespace:AcManager"
+    xmlns:c="http://acstuff.club/app/controls" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset" xmlns:a="clr-namespace:AcTools;assembly=AcTools">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
@@ -292,7 +292,7 @@
             RelativeRangeHalf="{Binding RoadTemperatureVariationHalf, StringFormat='{}{0:F1}'}" Background="Transparent" Content="Road temperature" Width="240"
             JoinIfEqual="True" RelativeRange="{mui:Stored 'temperatureRelativeRange=True'}" />
         <mui:DoubleSlider TickFrequency="6" TickPlacement="BottomRight" Value="{Binding BaseRoadTemperature}" Range="{Binding RoadTemperatureVariation}"
-            BindingMode="PositionRange" Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" />
+            BindingMode="PositionRange" Minimum="{x:Static a:CommonAcConsts.RoadTemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.RoadTemperatureMaximum}" />
       </DockPanel>
 
       <DockPanel Margin="0 4 0 0">

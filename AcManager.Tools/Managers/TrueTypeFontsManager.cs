@@ -15,7 +15,7 @@ namespace AcManager.Tools.Managers {
             return GetById(v + TrueTypeFontObject.FileExtension);
         }
 
-        public string DefaultFilename => Directories.GetLocation("consola.ttf", true);
+        public string DefaultFilename => Directories?.GetLocation("consola.ttf", true);
 
         public override string SearchPattern => @"*.ttf";
 

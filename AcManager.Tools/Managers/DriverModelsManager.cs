@@ -25,7 +25,7 @@ namespace AcManager.Tools.Managers {
             return GetById(v + DriverModelObject.FileExtension);
         }
 
-        public string DefaultFilename => Directories.GetLocation("driver.kn5", true);
+        public string DefaultFilename => Directories?.GetLocation("driver.kn5", true);
 
         protected override bool FilterId(string id) {
             return base.FilterId(id) && !id.EndsWith(@"_B.kn5");

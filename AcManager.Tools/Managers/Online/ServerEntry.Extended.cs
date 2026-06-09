@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.ContentInstallation;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
@@ -177,7 +178,7 @@ namespace AcManager.Tools.Managers.Online {
         private double? _maxContactsPerKm;
 
         public double? MaxContactsPerKm {
-            get => _maxContactsPerKm;
+            get => _maxContactsPerKm < 0d ? null : _maxContactsPerKm;
             set => Apply(value, ref _maxContactsPerKm);
         }
 
@@ -272,15 +273,31 @@ namespace AcManager.Tools.Managers.Online {
         private JObject _missingContentReferences;
 
         private IEnumerable<Task> InstallMissingContentTasks() {
+            var any = IsAbleToInstallMissingContentState_Cup != IsAbleToInstallMissingContent.NoMissingContent;
+            if (any) {
+                if (Cars != null) {
+                    var listCars = Cars.Where(x => !x.CarExists).Select(x => x.Id)
+                            .Where(x => IndexDirectDownloader.IsCarAvailable(x) == IndexDirectDownloader.ContentState.Available).ToList();
+                    foreach (var car in listCars) {
+                        yield return IndexDirectDownloader.DownloadCarAsync(car);
+                    }
+                }
+                if (TrackId != null && Track == null
+                        && IndexDirectDownloader.IsTrackAvailable(TrackId) == IndexDirectDownloader.ContentState.Available) {
+                    yield return IndexDirectDownloader.DownloadTrackAsync(TrackId);
+                }
+            }
+
             var mref = _missingContentReferences;
             if (mref == null) {
+                if (any) yield break;
                 throw new Exception("MREFs are not defined");
             }
 
             var passwordPostfix = Lazier.Create(() => {
                 using (var sha1 = SHA1.Create()) {
                     return @"?password=" + sha1.ComputeHash(Encoding.UTF8.GetBytes(@"tanidolizedhoatzin" + Password))
-                                               .ToHexString().ToLowerInvariant();
+                            .ToHexString().ToLowerInvariant();
                 }
             });
 
@@ -290,23 +307,28 @@ namespace AcManager.Tools.Managers.Online {
 
                     if (car == null || carPair.Value.GetStringValueOnly("version").IsVersionNewerThan(car.Version)) {
                         if (!IsAvailableToInstall(carPair.Value)) continue;
-                        var url = carPair.Value.GetStringValueOnly("url") ??
-                                $@"http://{Ip}:{DetailsPort}/content/car/{carPair.Key}{passwordPostfix.Value}";
-                        yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false) {
-                            FallbackId = carPair.Key,
-                            Checksum = carPair.Value.GetStringValueOnly("checksum")
-                        });
+                        if (carPair.Value.GetBoolValueOnly("cup") == true) {
+                            yield return IndexDirectDownloader.DownloadCarAsync(carPair.Key, carPair.Value.GetStringValueOnly("version"));
+                        } else {
+                            var url = carPair.Value.GetStringValueOnly("url") ??
+                                    $@"http://{Ip}:{DetailsPort}/content/car/{carPair.Key}{passwordPostfix.Value}";
+                            yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false) {
+                                FallbackId = carPair.Key,
+                                Checksum = carPair.Value.GetStringValueOnly("checksum"),
+                                UseSteamAuth = carPair.Value.GetBoolValueOnly("steamAuth") ?? false
+                            });
+                        }
                     } else if (carPair.Value[@"skins"] is JObject skins) {
                         foreach (var skinPair in skins) {
                             if (car.SkinsManager.GetWrapperById(skinPair.Key) != null ||
                                     !IsAvailableToInstall(skinPair.Value)) continue;
-
                             var url = skinPair.Value.GetStringValueOnly("url") ??
                                     $@"http://{Ip}:{DetailsPort}/content/skin/{carPair.Key}/{skinPair.Key}{passwordPostfix.Value}";
                             yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false) {
                                 CarId = carPair.Key,
                                 FallbackId = skinPair.Key,
-                                Checksum = skinPair.Value.GetStringValueOnly("checksum")
+                                Checksum = skinPair.Value.GetStringValueOnly("checksum"),
+                                UseSteamAuth = skinPair.Value.GetBoolValueOnly("steamAuth") ?? false
                             });
                         }
                     }
@@ -322,19 +344,25 @@ namespace AcManager.Tools.Managers.Online {
                             $@"http://{Ip}:{DetailsPort}/content/weather/{weatherPair.Key}{passwordPostfix.Value}";
                     yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false) {
                         FallbackId = weatherPair.Key,
-                        Checksum = weatherPair.Value.GetStringValueOnly("checksum")
+                        Checksum = weatherPair.Value.GetStringValueOnly("checksum"),
+                        UseSteamAuth = weatherPair.Value.GetBoolValueOnly("steamAuth") ?? false
                     });
                 }
             }
 
             if (mref[@"track"] is JObject track
                     && (Track == null || track.GetStringValueOnly("version").IsVersionNewerThan(Track.Version)) && IsAvailableToInstall(track)) {
-                var url = track.GetStringValueOnly("url") ??
-                        $@"http://{Ip}:{DetailsPort}/content/track{passwordPostfix.Value}";
-                yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false) {
-                    FallbackId = TrackBaseId,
-                    Checksum = track.GetStringValueOnly("checksum")
-                });
+                if (track.GetBoolValueOnly("cup") == true) {
+                    yield return IndexDirectDownloader.DownloadTrackAsync(TrackId, track.GetStringValueOnly("version"));
+                } else {
+                    var url = track.GetStringValueOnly("url") ??
+                            $@"http://{Ip}:{DetailsPort}/content/track{passwordPostfix.Value}";
+                    yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false) {
+                        FallbackId = TrackBaseId,
+                        Checksum = track.GetStringValueOnly("checksum"),
+                        UseSteamAuth = track.GetBoolValueOnly("steamAuth") ?? false
+                    });
+                }
             }
         }
 
@@ -354,22 +382,51 @@ namespace AcManager.Tools.Managers.Online {
                 }
             }, () => IsInstallMissingContentCommandAvailable));
 
-        private IsAbleToInstallMissingContent _isAbleToInstallMissingContentState = IsAbleToInstallMissingContent.NoMissingContent;
+        private IsAbleToInstallMissingContent _isAbleToInstallMissingContentState_Extended = IsAbleToInstallMissingContent.NoMissingContent;
 
-        public IsAbleToInstallMissingContent IsAbleToInstallMissingContentState {
-            get => _isAbleToInstallMissingContentState;
+        public IsAbleToInstallMissingContent IsAbleToInstallMissingContentState_Extended {
+            get => _isAbleToInstallMissingContentState_Extended;
             set {
-                if (Equals(value, _isAbleToInstallMissingContentState)) return;
-                _isAbleToInstallMissingContentState = value;
+                if (Equals(value, _isAbleToInstallMissingContentState_Extended)) return;
+                _isAbleToInstallMissingContentState_Extended = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsInstallMissingContentCommandAvailable));
+                OnPropertyChanged(nameof(IsAbleToInstallMissingContentState_Max));
                 _installMissingContentCommand?.RaiseCanExecuteChanged();
             }
         }
 
-        public bool IsInstallMissingContentCommandAvailable => IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Partially ||
-                IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.AllOfIt ||
-                IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Updates;
+        private IsAbleToInstallMissingContent _isAbleToInstallMissingContentState_Cup = IsAbleToInstallMissingContent.NoMissingContent;
+
+        public IsAbleToInstallMissingContent IsAbleToInstallMissingContentState_Cup {
+            get => _isAbleToInstallMissingContentState_Cup;
+            set {
+                if (Equals(value, _isAbleToInstallMissingContentState_Cup)) return;
+                _isAbleToInstallMissingContentState_Cup = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsInstallMissingContentCommandAvailable));
+                OnPropertyChanged(nameof(IsAbleToInstallMissingContentState_Max));
+                _installMissingContentCommand?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public IsAbleToInstallMissingContent IsAbleToInstallMissingContentState_Max {
+            get {
+                if (_isAbleToInstallMissingContentState_Cup == IsAbleToInstallMissingContent.AllOfIt
+                        || IsAbleToInstallMissingContentState_Extended != IsAbleToInstallMissingContent.AllOfIt
+                                && _isAbleToInstallMissingContentState_Cup == IsAbleToInstallMissingContent.Partially) {
+                    return _isAbleToInstallMissingContentState_Cup;
+                }
+                return IsAbleToInstallMissingContentState_Extended;
+            }
+        }
+
+        public bool IsInstallMissingContentCommandAvailable => IsAbleToInstallMissingContentState_Extended == IsAbleToInstallMissingContent.Partially ||
+                IsAbleToInstallMissingContentState_Extended == IsAbleToInstallMissingContent.AllOfIt ||
+                IsAbleToInstallMissingContentState_Extended == IsAbleToInstallMissingContent.Updates ||
+                IsAbleToInstallMissingContentState_Cup == IsAbleToInstallMissingContent.Partially ||
+                IsAbleToInstallMissingContentState_Cup == IsAbleToInstallMissingContent.AllOfIt ||
+                IsAbleToInstallMissingContentState_Cup == IsAbleToInstallMissingContent.Updates;
 
         [Pure]
         private static bool IsAvailableToInstall([CanBeNull] JToken token) {
@@ -377,6 +434,7 @@ namespace AcManager.Tools.Managers.Online {
             if ((string)token[@"url"] != null) return true;
 
             try {
+                if ((bool?)token[@"cup"] == true) return true;
                 if ((bool?)token[@"direct"] == false) return false;
             } catch (Exception e) {
                 Logging.Warning(e.Message);
@@ -409,7 +467,7 @@ namespace AcManager.Tools.Managers.Online {
 
             var mref = _missingContentReferences;
             if (mref == null) {
-                IsAbleToInstallMissingContentState = alreadyMissingSomething ?
+                IsAbleToInstallMissingContentState_Extended = alreadyMissingSomething ?
                         IsAbleToInstallMissingContent.NotAbleTo :
                         IsAbleToInstallMissingContent.NoMissingContent;
                 return null;
@@ -496,7 +554,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             // Logging.Debug($"Result: {state}");
-            IsAbleToInstallMissingContentState = state;
+            IsAbleToInstallMissingContentState_Extended = state;
             return missingSomething ? ServerStatus.MissingContent : (ServerStatus?)null;
         }
         #endregion

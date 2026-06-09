@@ -1,8 +1,8 @@
 ﻿<se:SelectedAcJsonObjectPage x:Class="AcManager.Pages.Selected.SelectedTrackPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:se="clr-namespace:AcManager.Pages.Selected" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
+    xmlns:se="clr-namespace:AcManager.Pages.Selected" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.club/app/tools"
+    xmlns:c="http://acstuff.club/app/controls" mc:Ignorable="d" mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance se:SelectedTrackPage+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -275,7 +275,7 @@
             </c:PropertiesGrid>
 
             <!-- Description -->
-            <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap"
+            <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedTrackConfiguration.Description}" AcceptsReturn="True" TextWrapping="Wrap"
                 Placeholder="None" />
           </mui:SpacingStackPanel>
 
@@ -330,7 +330,7 @@
                           <mui:BetterImage Height="32" Width="57" Background="{DynamicResource ThumbnailBackground}" Filename="{Binding PreviewImage}" Stretch="UniformToFill"
                               Margin="2 2 6 -2" VerticalAlignment="Center" />
                           <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
-                          <TextBlock Text="{Binding Description}" Style="{StaticResource Small}" Margin="0 0 0 0" />
+                          <mui:BbCodeBlock Mode="SafeBbCodes" Text="{Binding Description}" Style="{StaticResource Small}" Margin="0 0 0 0" />
                         </DockPanel>
                       </CheckBox>
                     </DataTemplate>

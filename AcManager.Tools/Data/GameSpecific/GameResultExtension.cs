@@ -59,7 +59,7 @@ namespace AcManager.Tools.Data.GameSpecific {
                 return ToolsStrings.Session_TrackDay;
             }
 
-            return parsedData.Type.GetDisplayName() ?? LocalizeSessionName(parsedData.Name);
+            return LocalizeSessionName(parsedData.Name);
         }
 
         [ContractAnnotation("null => false")]

@@ -48,12 +48,9 @@ namespace AcManager.Controls.UserControls.Cef {
 
             _inner = new ChromiumWebBrowser {
                 BrowserSettings = {
-                    FileAccessFromFileUrls = CefState.Enabled,
-                    UniversalAccessFromFileUrls = CefState.Enabled,
                     BackgroundColor = preferTransparentBackground ? 0U : 0xffffffff,
                     WindowlessFrameRate = SettingsHolder.Plugins.Cef60Fps ? 60 : 30,
                     WebGl = CefState.Disabled,
-                    Plugins = CefState.Disabled,
                 },
                 JavascriptObjectRepository = {
                     Settings = {
@@ -225,6 +222,10 @@ namespace AcManager.Controls.UserControls.Cef {
                 NewWindow?.Invoke(this, args);
                 return args.Cancel;
             });
+        }
+
+        public void ShowDevTools() {
+            Task.Delay(1000).ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => _inner.ShowDevTools()));
         }
 
         public void Execute(string js) {

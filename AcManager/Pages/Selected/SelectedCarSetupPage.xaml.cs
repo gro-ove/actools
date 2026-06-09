@@ -62,10 +62,8 @@ namespace AcManager.Pages.Selected {
 
             private CommandBase _testCommand;
 
-            public ICommand TestCommand => _testCommand ?? (_testCommand = new AsyncCommand(() => {
-                var setupId = SelectedObject.Id.ApartFromLast(SelectedObject.Extension).Replace('\\', '/');
-                return QuickDrive.RunAsync(Car, track: SelectedObject.Track, carSetupId: setupId);
-            }));
+            public ICommand TestCommand => _testCommand ?? (_testCommand = new AsyncCommand(() =>
+                    QuickDrive.RunAsync(Car, track: SelectedObject.Track, carSetupFilename: SelectedObject.Location)));
 
             protected override string PrepareIdForInput(string id) {
                 if (string.IsNullOrWhiteSpace(id)) return null;
@@ -119,7 +117,7 @@ namespace AcManager.Pages.Selected {
                 }
 
                 _object = _carObject?.SetupsManager.GetById(_id);
-            } while (_carObject.Outdated);
+            } while (_carObject?.Outdated == true);
         }
 
         void ILoadableContent.Initialize() {

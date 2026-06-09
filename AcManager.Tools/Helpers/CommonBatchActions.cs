@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcTools.Utils;
@@ -12,6 +14,8 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
+using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
@@ -26,11 +30,13 @@ namespace AcManager.Tools.Helpers {
         public static readonly BatchAction[] AcCommonObjectSet = new BatchAction[] {
             BatchAction_Delete.Instance,
             BatchAction_Enable.Instance,
-            BatchAction_Disable.Instance
+            BatchAction_Disable.Instance,
+            BatchAction_Compress.Instance,
         }.Append(DefaultSet).ToArray();
 
         private static readonly BatchAction[] AcJsonObjectNewSet = new BatchAction[] {
-            BatchAction_AddTag.Instance
+            BatchAction_AddTag.Instance,
+            BatchAction_NameReplace.Instance,
         }.Append(AcCommonObjectSet).ToArray();
 
         public static IEnumerable<BatchAction> GetDefaultSet<T>() where T : AcObjectNew {
@@ -46,6 +52,71 @@ namespace AcManager.Tools.Helpers {
         }
 
         #region JSON objects
+        public class BatchAction_NameReplace : BatchAction<AcJsonObjectNew> {
+            public static readonly BatchAction_NameReplace Instance = new BatchAction_NameReplace();
+
+            public BatchAction_NameReplace() 
+                    : base("Replace names", "Find-and-replace something in names", "UI", "Batch.FindAndReplace") {
+                DisplayApply = "Replace";
+            }
+
+            #region Properies
+            private string _Find;
+
+            public string Find {
+                get => _Find;
+                set => Apply(value, ref _Find);
+            }
+
+            private string _Replace;
+
+            public string Replace {
+                get => _Replace;
+                set => Apply(value, ref _Replace);
+            }
+
+            private bool _ignoreCase;
+
+            public bool IgnoreCase {
+                get => _ignoreCase;
+                set => Apply(value, ref _ignoreCase);
+            }
+
+            private bool _useRegularExpression;
+
+            public bool UseRegularExpression {
+                get => _useRegularExpression;
+                set => Apply(value, ref _useRegularExpression);
+            }
+            #endregion
+
+            public override bool IsAvailable(AcJsonObjectNew obj) {
+                return true;
+            }
+
+            private static readonly Regex ReplaceRegex = new Regex(@"\\\d+", RegexOptions.Compiled);
+
+            protected override void ApplyOverride(AcJsonObjectNew obj) {
+                if (obj.NameEditable == null) return;
+                Regex regex;
+                try {
+                    regex = new Regex(UseRegularExpression ? Find : Regex.Escape(Find), IgnoreCase ? RegexOptions.IgnoreCase : RegexOptions.None);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t use regular expression", e);
+                    return;
+                }
+                obj.NameEditable = regex.Replace(obj.NameEditable, m => {
+                    if (UseRegularExpression) {
+                        return ReplaceRegex.Replace(Replace, m_ => {
+                            var i = m_.Value.Substring(1).As(0);
+                            return i >= 0 && i < m.Groups.Count ? m.Groups[i].Value : m_.Value;
+                        });
+                    }
+                    return Replace;
+                });
+            }
+        }
+
         public class BatchAction_AddTag : BatchAction<AcJsonObjectNew> {
             public static readonly BatchAction_AddTag Instance = new BatchAction_AddTag();
 
@@ -282,6 +353,42 @@ namespace AcManager.Tools.Helpers {
 
                 var manager = objs.First().FileAcManager;
                 return manager.ToggleAsync(objs.Select(x => x.Id), false);
+            }
+        }
+
+        public class BatchAction_Compress : BatchAction<AcCommonObject> {
+            public static readonly BatchAction_Compress Instance = new BatchAction_Compress();
+
+            public BatchAction_Compress() : base("Compress", "Compress objects", "Files", null) {
+                Priority = -6;
+                DisplayApply = "Compress";
+            }
+
+            public override bool IsAvailable(AcCommonObject obj) {
+                return true;
+            }
+
+            public override Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+                var objs = OfType(list).ToList();
+                if (objs.Count == 0) return Task.Delay(0);
+                var dialog = new ModernDialog {
+                    Title = "Compress files",
+                    SizeToContent = SizeToContent.Manual,
+                    ResizeMode = ResizeMode.CanResizeWithGrip,
+                    LocationAndSizeKey = ".compressBatch",
+                    MinWidth = 800,
+                    MinHeight = 480,
+                    Width = 800,
+                    Height = 640,
+                    MaxWidth = 99999,
+                    MaxHeight = 99999,
+                    Content = new ModernFrame {
+                        Source = new Uri("/Pages/ContentTools/FilesCompressor.xaml", UriKind.Relative)
+                                .AddQueryParam("Type", objs.First().FileAcManager.Id)
+                                .AddQueryParam("Items", objs.Select(x => x.Id).JoinToString("\n"))
+                    }
+                };
+                return dialog.ShowAndWaitAsync();
             }
         }
         #endregion

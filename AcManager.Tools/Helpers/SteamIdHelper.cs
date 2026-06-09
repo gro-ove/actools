@@ -122,7 +122,7 @@ namespace AcManager.Tools.Helpers {
                     throw new Exception("Config is invalid");
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t get Steam ID from its config", e);
+                NonfatalError.NotifyBackground("Can’t get Steam ID from its config", e);
                 yield break;
             }
 

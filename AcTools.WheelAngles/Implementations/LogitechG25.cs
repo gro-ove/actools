@@ -34,8 +34,8 @@ namespace AcTools.WheelAngles.Implementations {
             return _options;
         }
 
-        public virtual bool Test(string productGuid) {
-            return string.Equals(productGuid, "C299046D-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase);
+        public virtual IWheelSteerLockSetter Test(string productGuid) {
+            return string.Equals(productGuid, "C299046D-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase) ? this : null;
         }
 
         public int MaximumSteerLock => 900;
@@ -163,7 +163,7 @@ namespace AcTools.WheelAngles.Implementations {
             }
         }
 
-        [NotNull]
+        [CanBeNull]
         protected virtual string GetRegistryPath() {
             return @"Software\Logitech\Gaming Software\GlobalDeviceSettings\G25";
         }
@@ -271,7 +271,10 @@ namespace AcTools.WheelAngles.Implementations {
                 }
             }
 
-            public static LogiControllerPropertiesData Load([NotNull] string registryPath, [CanBeNull] string processFilename) {
+            public static LogiControllerPropertiesData Load([CanBeNull] string registryPath, [CanBeNull] string processFilename) {
+                if (registryPath == null) {
+                    return CreateNew();
+                }
                 using (var regKey = Registry.CurrentUser.OpenSubKey(registryPath)) {
                     object o = CreateNew();
                     if (regKey != null) {
@@ -309,7 +312,7 @@ namespace AcTools.WheelAngles.Implementations {
             }.Distinct().Where(Directory.Exists).ToList();
 
             var lgHub = programFiles
-                    .SelectMany(x => CombineWith(x, Path.Combine("LGHUB", "sdk_legacy_steering_wheel_x86.dll"))).FirstOrDefault(File.Exists);
+                    .SelectMany(x => CombineWith(x, Path.Combine("LGHUB", "sdks", "sdk_legacy_steering_wheel_x86.dll"))).FirstOrDefault(File.Exists);
             if (lgHub != null) {
                 return lgHub;
             }
@@ -398,6 +401,12 @@ namespace AcTools.WheelAngles.Implementations {
                     : SdkNew.LogiSetOperatingRange(index, range);
         }
 
+        protected static bool LogiGetOperatingRange(int index, out int range) {
+            return _logitechDllUseOld
+                    ? SdkOld.LogiGetOperatingRange(index, out range)
+                    : SdkNew.LogiGetOperatingRange(index, out range);
+        }
+
         private static bool LogiSteeringInitializeWithWindow(bool ignoreXInputControllers, IntPtr windowHandle) {
             return _logitechDllUseOld
                     ? SdkOld.LogiSteeringInitializeWithWindow(ignoreXInputControllers, windowHandle)
@@ -433,6 +442,9 @@ namespace AcTools.WheelAngles.Implementations {
             public static extern bool LogiSteeringInitialize(bool ignoreXInputControllers);
 
             [DllImport(LogitechSteeringWheelOld, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+            public static extern bool LogiGetOperatingRange(int index, out int range);
+
+            [DllImport(LogitechSteeringWheelOld, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
             public static extern bool LogiSetOperatingRange(int index, int range);
 
             [DllImport(LogitechSteeringWheelOld, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
@@ -454,6 +466,9 @@ namespace AcTools.WheelAngles.Implementations {
         private static class SdkNew {
             [DllImport(LogitechSteeringWheelNew, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
             public static extern bool LogiSteeringInitialize(bool ignoreXInputControllers);
+
+            [DllImport(LogitechSteeringWheelNew, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+            public static extern bool LogiGetOperatingRange(int index, out int range);
 
             [DllImport(LogitechSteeringWheelNew, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
             public static extern bool LogiSetOperatingRange(int index, int range);

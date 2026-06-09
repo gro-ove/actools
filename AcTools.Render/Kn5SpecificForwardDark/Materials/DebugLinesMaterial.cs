@@ -56,6 +56,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public bool IsBlending => true;
 
+        public string Name => null;
+
         public void Dispose() { }
     }
 }

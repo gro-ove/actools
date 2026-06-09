@@ -5,11 +5,54 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Changes target frame rate for CM UI. Default value: 60.
+        /// Example: --desired-frame-rate=30.
+        /// </summary>
+        DesiredFrameRate,
+        
+        /// <summary>
+        /// Changes maximum number of skins to be rendered at once using AC CSP. Default value: 10.
+        /// Example: --csp-previews-batch-size=100.
+        /// </summary>
+        CspPreviewsBatchSize,
+        
+        /// <summary>
+        /// Show AC window when generating previews.
+        /// Example: --csp-previews-run-visible.
+        /// </summary>
+        CspPreviewsRunVisible,
+        
+        /// <summary>
+        /// Keep previously stored car states to ensure cars are always positioned the same. By default it instead resets
+        /// each run. Positions are stored in “assettocorsa/cache/preview_state”.
+        /// Example: --csp-previews-keep-positions.
+        /// </summary>
+        CspPreviewsKeepPositions,
+        
+        /// <summary>
+        /// For development purposes.
+        /// Example: --allow-data-scripts.
+        /// </summary>
+        AllowDataScripts,
+        
+        /// <summary>
         /// Size of cache for cars LOD generator. Default value: 100 MB.
         /// Example: --car-lod-generator-cache-size=50MB.
         /// </summary>
         [FlagDefaultValue("100MB")]
         CarLodGeneratorCacheSize,
+
+        /// <summary>
+        /// Use developer list of extra online lobbies.
+        /// Example: --dev-lobbies.
+        /// </summary>
+        DevLobbies,
+
+        /// <summary>
+        /// For development purposes.
+        /// Example: --ring-debug.
+        /// </summary>
+        RingDebug,
 
         /// <summary>
         /// For development purposes.
@@ -37,6 +80,12 @@ namespace AcManager {
 
         /// <summary>
         /// Hide everything but server management.
+        /// Example: --simple-quick-drive-mode.
+        /// </summary>
+        SimpleQuickDriveMode,
+
+        /// <summary>
+        /// Hide everything but server management.
         /// Example: --server-management-mode.
         /// </summary>
         ServerManagementMode,
@@ -46,6 +95,12 @@ namespace AcManager {
         /// Example: --hide-race-cancel-button.
         /// </summary>
         HideRaceCancelButton,
+
+        /// <summary>
+        /// Skip any race result entirely.
+        /// Example: --skip-all-results.
+        /// </summary>
+        SkipAllResults,
 
         /// <summary>
         /// For development purposes.
@@ -241,7 +296,7 @@ namespace AcManager {
 
         /// <summary>
         /// Additional IDs for searching for similar data (by default, only Kunos cars
-        /// are checked as potential sources) separated by comma or semicolon.
+        /// are checked as potential sources) separated by commas.
         /// Example: --similar-additional-source-ids=.
         /// </summary>
         SimilarAdditionalSourceIds,
@@ -593,5 +648,10 @@ namespace AcManager {
         /// Definitely only for internal use.
         /// </summary>
         MoveApp,
+
+        /// <summary>
+        /// Definitely only for internal use.
+        /// </summary>
+        OculusFixApplied,
     }
 }

@@ -50,6 +50,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
 
             var texture = _texturesProvider?.GetTexture(device, textureName);
+            if (texture == null) {
+                return false;
+            }
             texture.SetProceduralOverride(device, textureView, disposeLater);
             return texture.Exists;
         }
@@ -112,7 +115,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 DrawInitialize(holder);
             }
 
-            if (_debugModeLater.HasValue) {
+            if (_debugModeLater.HasValue && LocalHolder != null) {
                 _debugModeLater = null;
 
                 foreach (var node in this.GetAllChildren().OfType<IKn5RenderableObject>()) {

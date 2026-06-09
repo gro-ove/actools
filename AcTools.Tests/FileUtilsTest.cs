@@ -23,6 +23,39 @@ namespace AcTools.Tests {
             Assert.AreEqual(@"..\Windows",
                     FileUtils.GetRelativePath(@"C:\Windows", @"C:\Windows"));
         }
+        
+        [Test]
+        public void ReplaceExtension() {
+            Assert.AreEqual(@"C:\Windows\system32\a.bin",
+                    FileUtils.ReplaceExtension(@"C:\Windows\system32\a.exe", @".bin"));
+            
+            Assert.AreEqual(@"C:\Windows\system32/a.bin",
+                    FileUtils.ReplaceExtension(@"C:\Windows\system32/a.exe", @".bin"));
+            
+            Assert.AreEqual(@"C:\Windows\system32/a_exe.bin",
+                    FileUtils.ReplaceExtension(@"C:\Windows\system32/a_exe", @".bin"));
+            
+            Assert.AreEqual(@"C:\Windows\system.32/a_exe.bin",
+                    FileUtils.ReplaceExtension(@"C:\Windows\system.32/a_exe", @".bin"));
+            
+            Assert.AreEqual(@"C:\Windows\system32\a",
+                    FileUtils.ReplaceExtension(@"C:\Windows\system32\a.exe", @""));
+            
+            Assert.AreEqual(@"a.bin",
+                    FileUtils.ReplaceExtension(@"a.exe", @".bin"));
+            
+            Assert.AreEqual(@"a_exe.bin",
+                    FileUtils.ReplaceExtension(@"a_exe", @".bin"));
+            
+            Assert.AreEqual(@"a",
+                    FileUtils.ReplaceExtension(@"a.exe", @""));
+            
+            Assert.AreEqual(@".bin",
+                    FileUtils.ReplaceExtension(@".exe", @".bin"));
+            
+            Assert.AreEqual(@"",
+                    FileUtils.ReplaceExtension(@".exe", @""));
+        }
 
         [Test]
         public void GetPathWithin() {

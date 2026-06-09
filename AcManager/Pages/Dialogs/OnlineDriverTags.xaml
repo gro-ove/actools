@@ -2,7 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" mc:Ignorable="d" d:DesignHeight="300"
+    xmlns:c="http://acstuff.club/app/controls" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" mc:Ignorable="d" d:DesignHeight="300"
     d:DesignWidth="300" Title="Driver tags" SizeToContent="Manual" ResizeMode="CanResize" Width="800" Height="400" MinWidth="600" MinHeight="320"
     LocationAndSizeKey=".OnlineListManager" Closed="OnClosed" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
     MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" d:DataContext="{d:DesignInstance di:OnlineDriverTags+ViewModel}">

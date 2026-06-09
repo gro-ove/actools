@@ -6,6 +6,9 @@ namespace FirstFloor.ModernUI.Windows.Converters {
     [ValueConversion(typeof(TimeSpan), typeof(string))]
     public class MillisecondsTimeSpanConverter : IValueConverter {
         private static string ToMillisecondsString(TimeSpan span) {
+            if (span == TimeSpan.Zero) {
+                return @"-:--:---";
+            }
             return span.TotalHours > 1d
                     ? $@"{(int)span.TotalHours:D2}:{span.Minutes:D2}:{span.Seconds:D2}.{span.Milliseconds:D3}"
                     : $@"{span.Minutes:D2}:{span.Seconds:D2}.{span.Milliseconds:D3}";

@@ -47,6 +47,8 @@ namespace AcManager.Tools.ContentInstallation {
 
         public bool PreferCleanInstallation { get; }
 
+        public bool Virtual { get; set; }
+
         [NotNull]
         public ContentInstallationParams InstallationParams { get; }
 
@@ -59,7 +61,7 @@ namespace AcManager.Tools.ContentInstallation {
             Version = InstallationParams.Version;
 
             if (InstallationParams.CupType.HasValue) {
-                var manager = CupClient.Instance?.GetAssociatedManager(InstallationParams.CupType.Value);
+                var manager = CupClient.Instance?.GetAssociatedManager(InstallationParams.CupType.Value, true);
                 DisplayUpdateFor = InstallationParams.IdsToUpdate?.Select(x => manager?.GetObjectById(x)?.ToString()).JoinToReadableString();
                 if (string.IsNullOrWhiteSpace(DisplayUpdateFor)) {
                     DisplayUpdateFor = null;
@@ -475,7 +477,7 @@ namespace AcManager.Tools.ContentInstallation {
         }
         #endregion
 
-        private static readonly Regex ExecutablesRegex = new Regex(@"\.(?:exe|bat|cmd|py|vbs|js|ps1|sh|zsh|bash|pl|hta)$",
+        private static readonly Regex ExecutablesRegex = new Regex(@"\.(?:exe|dll|bat|cmd|com|py|lnk|vbs|js|ps1|sh|zsh|bash|pl|hta)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private DelegateCommand _copySourceToClipboardCommand;
@@ -577,19 +579,28 @@ namespace AcManager.Tools.ContentInstallation {
                         }
 
                         try {
+                            Logging.Debug("Loading: " + Source);
                             var properDisplayNameSet = false;
-                            localFilename = await FlexibleLoader.LoadAsyncTo(Source,
+                            if (!string.IsNullOrWhiteSpace(InstallationParams.ForcedFileName)) {
+                                properDisplayNameSet = true;
+                                DisplayName = InstallationParams.ForcedFileName;
+                                FileName = InstallationParams.ForcedFileName;
+                            }
+                            localFilename = await FlexibleLoader.LoadAsyncTo(new FlexibleLoader.LoaderParams(Source) { UseSteamAuth = InstallationParams.UseSteamAuth },
                                     (url, information) => new FlexibleLoaderDestination(Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue,
                                             information.FileName ?? GetFileNameFromUrl(url)), true),
                                     destination => {
+                                        Logging.Debug($"[DLOADER] Destination is known: {destination}");
                                         DisplayName = Path.GetFileName(destination) ?? DisplayName;
                                         FileIcon = IconManager.FindIconForFilename(DisplayName, true);
                                         properDisplayNameSet = true;
                                     },
                                     information => {
+                                        Logging.Debug(
+                                                $"[DLOADER] Meta-information arrived: {information.FileName}, {information.Version}, properDisplayNameSet={properDisplayNameSet}");
                                         CanPause = information.CanPause;
-                                        FileName = information.FileName ?? information.FileName;
-                                        Version = information.Version ?? information.Version;
+                                        FileName = information.FileName ?? FileName;
+                                        Version = information.Version ?? Version;
                                         if (FileName != null && !properDisplayNameSet) {
                                             DisplayName = FileName;
                                         }
@@ -611,8 +622,8 @@ namespace AcManager.Tools.ContentInstallation {
                         } catch (Exception e) when (e.IsCancelled()) {
                             CheckCancellation(true);
                             return false;
-                        } catch (WebException e) when (e.Response is HttpWebResponse) {
-                            FailedMessage = $"Can’t download file: {((HttpWebResponse)e.Response).StatusDescription.ToLower()}";
+                        } catch (WebException e) when (e.Response is HttpWebResponse webResponse) {
+                            FailedMessage = $"Failed, {webResponse.StatusDescription.ToLower().Or(e.Message.ToSentenceMember())}";
                             return false;
                         } catch (WebException) when (cancellation.IsCancellationRequested) {
                             CheckCancellation(true);
@@ -639,7 +650,7 @@ namespace AcManager.Tools.ContentInstallation {
                     LocalFilename = localFilename;
 
                     if (InstallationParams.Checksum != null) {
-                        using (var fs = new FileStream(localFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        using (var fs = new FileStream(localFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         using (var sha1 = SHA1.Create()) {
                             if (!string.Equals(sha1.ComputeHash(fs).ToHexString(), InstallationParams.Checksum, StringComparison.OrdinalIgnoreCase)) {
                                 FailedMessage = "Checksum failed";
@@ -714,7 +725,19 @@ namespace AcManager.Tools.ContentInstallation {
                                 return false;
                             }
 
+                            var trustedSource = Lazier.Create(() => {
+                                try {
+                                    return InternalUtils.VerifySignature(localFilename);
+                                } catch (Exception e) {
+                                    Logging.Warning(e);
+                                    return false;
+                                }
+                            });
+
                             foreach (var entry in entries) {
+                                if (entry.ShowWarning && trustedSource.Value) {
+                                    entry.ShowWarning = false;
+                                }
                                 entry.SingleEntry = entries.Count == 1;
                                 await entry.CheckExistingAsync();
                             }
@@ -985,7 +1008,7 @@ namespace AcManager.Tools.ContentInstallation {
             set => Apply(value, ref _displayFound);
         }
 
-        public ExtraOption[] ExtraOptions { get; set; }
+        public ExtraOption[] ExtraOptions { get; set; } = new ExtraOption[0];
         #endregion
 
         public void Report(AsyncProgressEntry value) {
@@ -1001,7 +1024,11 @@ namespace AcManager.Tools.ContentInstallation {
                 return DirectoryContentInstallator.Create(filename, installationParams, cancellation);
             }
 
-            if ( /*!IsZipArchive(filename) &&*/ PluginsManager.Instance.IsPluginEnabled(KnownPlugins.SevenZip)) {
+            if (filename.EndsWith(@".zip")) {
+                return SharpCompressContentInstallator.Create(filename, installationParams, cancellation);
+            }
+
+            if (PluginsManager.Instance.IsPluginEnabled(KnownPlugins.SevenZip)) {
                 try {
                     Logging.Write("7-Zip plugin is available");
                     return SevenZipContentInstallator.Create(filename, installationParams, cancellation);

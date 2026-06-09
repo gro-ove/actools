@@ -54,30 +54,30 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         public override double Priority => 90d;
 
-        private TrackContentEntry([NotNull] string path, [NotNull] string id, [CanBeNull] List<string> kn5Files,
+        private TrackContentEntry([NotNull] string path, [NotNull] string id, [CanBeNull] string[] cleanUp, [CanBeNull] List<string> kn5Files,
                 [CanBeNull] List<string> requiredKn5Files, string name = null, string version = null,
-                byte[] iconData = null) : base(path, id, name, version, iconData) {
+                byte[] iconData = null) : base(false, path, id, cleanUp, name, version, iconData) {
             RequiredKn5Files = requiredKn5Files;
             Kn5Files = kn5Files;
         }
 
-        private TrackContentEntry([NotNull] string path, [NotNull] string id, [NotNull] IReadOnlyList<TrackContentLayoutEntry> layouts)
-                : base(path, id, GetName(layouts), layouts.FirstOrDefault()?.Version) {
+        private TrackContentEntry([NotNull] string path, [NotNull] string id, [CanBeNull] string[] cleanUp, [NotNull] IReadOnlyList<TrackContentLayoutEntry> layouts)
+                : base(false, path, id, cleanUp, GetName(layouts), layouts.FirstOrDefault()?.Version) {
             Layouts = layouts.ToList();
             foreach (var layout in Layouts) {
                 layout.PropertyChanged += OnLayoutPropertyChanged;
             }
         }
 
-        public static async Task<TrackContentEntry> Create([NotNull] string path, [NotNull] string id, [CanBeNull] List<string> kn5Files,
+        public static async Task<TrackContentEntry> Create([NotNull] string path, [NotNull] string id, [CanBeNull] string[] cleanUp, [CanBeNull] List<string> kn5Files,
                 [CanBeNull] List<string> requiredKn5Files, string name = null, string version = null, byte[] iconData = null) {
-            var result = new TrackContentEntry(path, id, kn5Files, requiredKn5Files, name, version, iconData);
+            var result = new TrackContentEntry(path, id, cleanUp, kn5Files, requiredKn5Files, name, version, iconData);
             await result.Initialize().ConfigureAwait(false);
             return result;
         }
 
-        public static async Task<TrackContentEntry> Create([NotNull] string path, [NotNull] string id, [NotNull] IReadOnlyList<TrackContentLayoutEntry> layouts) {
-            var result = new TrackContentEntry(path, id, layouts);
+        public static async Task<TrackContentEntry> Create([NotNull] string path, [NotNull] string id, [CanBeNull] string[] cleanUp, [NotNull] IReadOnlyList<TrackContentLayoutEntry> layouts) {
+            var result = new TrackContentEntry(path, id, cleanUp, layouts);
             await result.Initialize().ConfigureAwait(false);
             return result;
         }

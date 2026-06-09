@@ -96,6 +96,50 @@ namespace AcManager.Tools.Objects {
             });
         }
 
+        private bool _cspExtendedCarsPhysics;
+
+        public bool CspExtendedCarsPhysics {
+            get => _cspExtendedCarsPhysics;
+            set => Apply(value, ref _cspExtendedCarsPhysics, () => {
+                if (Loaded) {
+                    Changed = true;
+                }
+            });
+        }
+
+        private bool _cspExtendedTrackPhysics;
+
+        public bool CspExtendedTrackPhysics {
+            get => _cspExtendedTrackPhysics;
+            set => Apply(value, ref _cspExtendedTrackPhysics, () => {
+                if (Loaded) {
+                    Changed = true;
+                }
+            });
+        }
+
+        private bool _cspHidePitCrew;
+
+        public bool CspHidePitCrew {
+            get => _cspHidePitCrew;
+            set => Apply(value, ref _cspHidePitCrew, () => {
+                if (Loaded) {
+                    Changed = true;
+                }
+            });
+        }
+
+        private bool _cspIcePhysics;
+
+        public bool CspIcePhysics {
+            get => _cspIcePhysics;
+            set => Apply(value, ref _cspIcePhysics, () => {
+                if (Loaded) {
+                    Changed = true;
+                }
+            });
+        }
+
         private string _cspExtraConfig;
 
         public string CspExtraConfig {
@@ -239,6 +283,20 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _showOnLobby)) return;
                 _showOnLobby = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private bool _showOnCmLobby;
+
+        public bool ShowOnCmLobby {
+            get => _showOnCmLobby;
+            set {
+                if (Equals(value, _showOnCmLobby)) return;
+                _showOnCmLobby = value;
                 if (Loaded) {
                     OnPropertyChanged();
                     Changed = true;
@@ -757,6 +815,7 @@ namespace AcManager.Tools.Objects {
             if (_driverEntries == null) return;
             for (var i = 0; i < _driverEntries.Count; i++) {
                 _driverEntries[i].Index = i + 1;
+                _driverEntries[i].Parent = this;
             }
         }
 
@@ -871,7 +930,15 @@ namespace AcManager.Tools.Objects {
 
         public Game.TrackProperties TrackProperties {
             get => _trackProperties;
-            set => Apply(value, ref _trackProperties);
+            set {
+                if (_trackProperties == value) return;
+                _trackProperties?.UnsubscribeWeak(OnTrackPropertiesChanged);
+                Apply(value, ref _trackProperties, () => value?.SubscribeWeak(OnTrackPropertiesChanged));
+            }
+        }
+
+        private void OnTrackPropertiesChanged(object s, PropertyChangedEventArgs e) {
+            Changed = true;
         }
 
         private ChangeableObservableCollection<ServerWeatherEntry> _weather;
@@ -1018,15 +1085,6 @@ namespace AcManager.Tools.Objects {
         public bool UseCmPlugin {
             get => _useCmPlugin;
             set => Apply(value, ref _useCmPlugin, () => {
-                if (Loaded) Changed = true;
-            });
-        }
-
-        private bool _realConditions;
-
-        public bool RealConditions {
-            get => _realConditions;
-            set => Apply(value, ref _realConditions, () => {
                 if (Loaded) Changed = true;
             });
         }
