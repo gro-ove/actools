@@ -12,7 +12,7 @@ using System.Windows.Markup;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcManager.Controls")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2020")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -50,22 +50,22 @@ using System.Windows.Markup;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.15446")]
-[assembly: AssemblyFileVersion("1.0.1.15446")]
+[assembly: AssemblyVersion("1.0.1.17689")]
+[assembly: AssemblyFileVersion("1.0.1.17689")]
 
-[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Converters")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.CustomShowroom")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Dialogs")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Graphs")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Helpers")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Presentation")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.QuickSwitches")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Services")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.UserControls")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.ViewModels")]
-[assembly: XmlnsPrefix("http://acstuff.ru/app/controls", "c")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/controls", "AcManager.Controls")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/controls", "AcManager.Controls.Converters")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/controls", "AcManager.Controls.CustomShowroom")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/controls", "AcManager.Controls.Dialogs")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/controls", "AcManager.Controls.Graphs")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/controls", "AcManager.Controls.Helpers")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/controls", "AcManager.Controls.Presentation")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/controls", "AcManager.Controls.QuickSwitches")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/controls", "AcManager.Controls.Services")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/controls", "AcManager.Controls.UserControls")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/controls", "AcManager.Controls.ViewModels")]
+[assembly: XmlnsPrefix("http://acstuff.club/app/controls", "c")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
-// Modified at: 18/04/09 20:14:01
-// Modified at: 6/14/2020 11:00:42 PM
+// Modified at: 26/06/08 7:33:51 PM
+// Modified at: 9/8/2022 11:14:13 PM

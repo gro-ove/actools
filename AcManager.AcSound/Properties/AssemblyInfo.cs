@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcManager.AcSound")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2020")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,7 +31,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.26")]
-[assembly: AssemblyFileVersion("1.0.0.26")]
-// Modified at: 19/03/20 19:54:59
-// Modified at: 3/20/2019 7:54:59 PM
+[assembly: AssemblyVersion("1.0.0.36")]
+[assembly: AssemblyFileVersion("1.0.0.36")]
+// Modified at: 25/10/02 3:37:25 PM
+// Modified at: 12/16/2021 11:43:20 PM

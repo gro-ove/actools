@@ -12,7 +12,7 @@ using System.Windows.Markup;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcManager.Tools")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2020")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,32 +34,32 @@ using System.Windows.Markup;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.6671")]
-[assembly: AssemblyFileVersion("1.0.1.6671")]
+[assembly: AssemblyVersion("1.0.1.7941")]
+[assembly: AssemblyFileVersion("1.0.1.7941")]
 
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.AcManagersNew")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.AcObjectsNew")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.ContentInstallation")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.ContentInstallation.Entries")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Data")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.GameProperties")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Helpers")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Helpers.AcLog")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Helpers.AcSettings")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Helpers.DirectInput")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Helpers.PresetsPerMode")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Managers")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Managers.Plugins")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Managers.Online")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Miscellaneous")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Objects")]
-[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Profile")]
-[assembly: XmlnsPrefix("http://acstuff.ru/app/tools", "t")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.AcManagersNew")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.AcObjectsNew")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.ContentInstallation")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.ContentInstallation.Entries")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.Data")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.GameProperties")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.Helpers")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.Helpers.AcLog")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.Helpers.AcSettings")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.Helpers.DirectInput")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.Helpers.PresetsPerMode")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.Managers")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.Managers.Plugins")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.Managers.Online")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.Miscellaneous")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.Objects")]
+[assembly: XmlnsDefinition("http://acstuff.club/app/tools", "AcManager.Tools.Profile")]
+[assembly: XmlnsPrefix("http://acstuff.club/app/tools", "t")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
 
 // For testing
 [assembly: InternalsVisibleTo("AcManager.Tools.Tests")]
-// Modified at: 18/04/09 01:52:22
-// Modified at: 6/14/2020 11:00:42 PM
+// Modified at: 26/06/08 8:14:42 PM
+// Modified at: 9/8/2022 11:14:13 PM

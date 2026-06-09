@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcTools.GenericMods")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2020")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -35,7 +35,7 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.0.71")]
-[assembly: AssemblyFileVersion("1.0.0.71")]
-// Modified at: 19/04/04 20:01:28
-// Modified at: 4/4/2019 8:01:28 PM
+[assembly: AssemblyVersion("1.0.0.80")]
+[assembly: AssemblyFileVersion("1.0.0.80")]
+// Modified at: 25/10/02 3:37:27 PM
+// Modified at: 12/16/2021 11:43:17 PM

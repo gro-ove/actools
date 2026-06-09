@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("Custom Previews Updater")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2020")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,7 +31,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.101.62")]
-[assembly: AssemblyFileVersion("1.0.101.62")]
-// Modified at: 18/05/22 22:58:28
-// Modified at: 3/16/2020 8:24:41 PM
+[assembly: AssemblyVersion("1.1.107.78")]
+[assembly: AssemblyFileVersion("1.1.107.78")]
+// Modified at: 26/01/16 1:42:52 PM
+// Modified at: 5/6/2022 10:58:39 PM
