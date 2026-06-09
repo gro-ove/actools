@@ -229,7 +229,7 @@ namespace AcManager.Tools {
         [ItemNotNull]
         private static async Task<string> LoadRemoteFile(string argument, string name = null, string extension = null) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
-                return await FlexibleLoader.LoadAsyncTo(argument, (url, information) => {
+                return await FlexibleLoader.LoadAsyncTo(new FlexibleLoader.LoaderParams(argument), (url, information) => {
                     var filename = Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue, name + extension);
                     return new FlexibleLoaderDestination(filename, true);
                 }, null, information => {
@@ -248,7 +248,7 @@ namespace AcManager.Tools {
         /// <exception cref="Exception">Thrown if failed or cancelled.</exception>
         private static async Task LoadRemoteFileToNew(string argument, string destination) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
-                await FlexibleLoader.LoadAsyncTo(argument, (url, information) => new FlexibleLoaderDestination(destination, false), null, information => {
+                await FlexibleLoader.LoadAsyncTo(new FlexibleLoader.LoaderParams(argument), (url, information) => new FlexibleLoaderDestination(destination, false), null, information => {
                     if (information.FileName != null) {
                         waiting.Title = $@"Loading {information.FileName}…";
                     }
