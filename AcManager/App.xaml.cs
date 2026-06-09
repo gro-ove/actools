@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -965,11 +966,19 @@ namespace AcManager {
 
                 await Task.Delay(5000);
                 await Task.Run(() => {
+                    var toRemoval = new List<string>();
                     foreach (var f in new DirectoryInfo(FilesStorage.Instance.GetTemporaryDirectory()).GetFiles("*", SearchOption.AllDirectories)
                             .Where(x => x.LastAccessTime < DateTime.Now - TimeSpan.FromDays(30) && x.LastWriteTime < DateTime.Now - TimeSpan.FromDays(30))) {
                         if (f.Name == "Startup.Profile") continue;
                         Logging.Debug($"Delete old temporary file: {f.FullName}");
-                        f.Delete();
+                        toRemoval.Add(f.FullName);
+                    }
+                    if (toRemoval.Count > 0) {
+                        Task.Delay(5000).ContinueWith(t => {
+                            foreach (var filename in toRemoval) {
+                                FileUtils.TryToDelete(filename);
+                            }
+                        });
                     }
                 });
             } catch (Exception e) {

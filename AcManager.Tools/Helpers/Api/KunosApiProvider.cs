@@ -530,20 +530,20 @@ namespace AcManager.Tools.Helpers.Api {
 
             private class WaitingRecord {
                 public readonly TaskCompletionSource<PingResponse> TaskSource = new TaskCompletionSource<PingResponse>();
-                public readonly DateTime Start = DateTime.Now;
+                public readonly long Start = Stopwatch.GetTimestamp();
                 public WaitingState State = WaitingState.Waiting;
             }
 
             private class WaitingComplete {
                 public readonly EndPoint Origin;
                 public readonly int Mark;
-                public readonly DateTime TimePoint;
+                public readonly long TimePoint;
                 public readonly string Error;
 
-                public WaitingComplete(EndPoint origin, int mark, DateTime date) {
+                public WaitingComplete(EndPoint origin, int mark, long timePoint) {
                     Origin = origin;
                     Mark = mark;
-                    TimePoint = date;
+                    TimePoint = timePoint;
                 }
 
                 public WaitingComplete(EndPoint origin, string error) {
@@ -585,8 +585,9 @@ namespace AcManager.Tools.Helpers.Api {
                             toRemove.Clear();
                             toTimeout.Clear();
                             lock (_waiting) {
-                                var timeoutPoint = DateTime.Now - TimeSpan.FromSeconds(2d);
-                                var removalPoint = timeoutPoint - TimeSpan.FromSeconds(5d);
+                                var timeoutPoint = Stopwatch.GetTimestamp() - Stopwatch.Frequency * 2;
+                                var removalPoint = timeoutPoint - Stopwatch.Frequency * 5;
+                                // We keep failed pings around for 7 seconds to prevent DDOSing everything
                                 foreach (var p in _waiting) {
                                     if (p.Value.State == WaitingState.Waiting && p.Value.Start < timeoutPoint) {
                                         p.Value.State = WaitingState.Timeouted;
@@ -603,7 +604,12 @@ namespace AcManager.Tools.Helpers.Api {
                                 record.TaskSource.TrySetResult(null);
                             }
                         } else if (++emptyCounter > 10) {
-                            break;
+                            lock (_waiting) {
+                                if (_waiting.Count == 0) {
+                                    _loopActive = false;
+                                    break;
+                                }
+                            }
                         }
                         while (_received.TryDequeue(out var item)) {
                             FinishResponse(item);
@@ -611,7 +617,6 @@ namespace AcManager.Tools.Helpers.Api {
                         await Task.Delay(100).ConfigureAwait(false);
                     }
                 } finally {
-                    _loopActive = false;
                     Logging.Warning($"[NewPing] Loop has been completed");
                 }
             }
@@ -628,10 +633,15 @@ namespace AcManager.Tools.Helpers.Api {
                         try {
                             ReceiveCallback(ar);
                         } finally {
-                            Receive();
+                            if (ar.CompletedSynchronously) {
+                                Task.Run(() => Receive());
+                            } else {
+                                Receive();
+                            }
                         }
                     }, state);
                 } catch (Exception e) {
+                    // This function should keep running at all times
                     Logging.Warning($"Receive error: {e.Message}");
                     Task.Delay(1000).ContinueWith(r => Receive());
                 }
@@ -660,17 +670,18 @@ namespace AcManager.Tools.Helpers.Api {
                     }
                 } else if (!needsCompletion) {
                     Logging.Warning(existing.State == WaitingState.Timeouted
-                            ? $"[NewPing] {complete.Origin}: Timeouted before response ({(existing.Start - DateTime.Now).TotalMilliseconds:F0} ms)"
+                            ? $"[NewPing] {complete.Origin}: Timeouted before response ({(Stopwatch.GetTimestamp() - existing.Start) * 1000d / Stopwatch.Frequency:F0} ms)"
                             : existing.State == WaitingState.Errored
                                     ? $"[NewPing] {complete.Origin}: Already failed"
                                     : $"[NewPing] {complete.Origin}: Already completed");
                 } else {
-                    existing.TaskSource.TrySetResult(new PingResponse(complete.Mark, complete.TimePoint - existing.Start));
+                    existing.TaskSource.TrySetResult(new PingResponse(complete.Mark, 
+                            TimeSpan.FromMilliseconds((complete.TimePoint - existing.Start) * 1000d / Stopwatch.Frequency)));
                 }
             }
 
             private void ReceiveCallback(IAsyncResult ar) {
-                var timePoint = DateTime.Now;
+                var timePoint = Stopwatch.GetTimestamp();
                 var args = (ReceiveState)ar.AsyncState;
 
                 var receivedBytes = 0;
@@ -690,7 +701,7 @@ namespace AcManager.Tools.Helpers.Api {
             }
 
             public Task<PingResponse> SendAsync(EndPoint destination) {
-                var bytes = BitConverter.GetBytes((byte)200);
+                var bytes = new byte[]{ 200 };
                 var key = destination.GetHashCode();
                 bool created;
                 WaitingRecord record;
@@ -704,13 +715,19 @@ namespace AcManager.Tools.Helpers.Api {
                 }
                 if (created) {
                     try {
-                        _socket.BeginSendTo(bytes, 0, bytes.Length, SocketFlags.None, destination, ar => _socket.EndSendTo(ar), null);
+                        _socket.BeginSendTo(bytes, 0, bytes.Length, SocketFlags.None, destination, ar => {
+                            try {
+                                _socket.EndSendTo(ar);
+                            } catch (Exception e) {
+                                _received.Enqueue(new WaitingComplete(destination, $"EndSendTo(): {e.Message}"));
+                            }
+                        }, null);
                     } catch (Exception e) {
                         _received.Enqueue(new WaitingComplete(destination, $"BeginSendTo(): {e.Message}"));
                     }
-                }
-                if (!_loopActive) {
-                    Loop().Ignore();
+                    if (!_loopActive) {
+                        Loop().Ignore();
+                    }
                 }
                 return record.TaskSource.Task;
             }

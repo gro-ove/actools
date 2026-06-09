@@ -324,9 +324,13 @@ namespace AcManager.Tools.Managers.Online {
                     CurrentDrivers = currentDrivers;
 
                     var count = 0;
+                    var realCount = 0;
                     var booked = false;
                     foreach (var x in currentDrivers) {
-                        if (x.IsConnected) count++;
+                        if (x.IsConnected != DriverStatus.Disconnected) {
+                            if (x.IsConnected == DriverStatus.Connected) realCount++;
+                            count++;
+                        }
                         if (x.IsBookedForPlayer) {
                             booked = true;
                             SetSelectedCarEntry(Cars?.GetByIdOrDefault(x.CarId, StringComparison.OrdinalIgnoreCase));
@@ -334,6 +338,7 @@ namespace AcManager.Tools.Managers.Online {
                     }
 
                     ConnectedDrivers = count;
+                    RealConnectedDrivers = realCount;
                     IsBookedForPlayer = booked;
                 }
 

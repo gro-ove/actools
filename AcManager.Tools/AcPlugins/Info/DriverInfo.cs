@@ -16,8 +16,6 @@ namespace AcManager.Tools.AcPlugins.Info {
 
         [IgnoreDataMember]
         private LinkedList<MsgCarUpdate> _carUpdateCache = new LinkedList<MsgCarUpdate>();
-
-        public LinkedListNode<MsgCarUpdate> LastCarUpdate => _carUpdateCache.Last;
         #endregion
 
         private const double MaxSpeed = 1000; // km/h

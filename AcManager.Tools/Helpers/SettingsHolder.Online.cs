@@ -207,6 +207,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _LoadDescriptionImages;
+
+            public bool LoadDescriptionImages {
+                get => _LoadDescriptionImages ?? (_LoadDescriptionImages = ValuesStorage.Get("Settings.OnlineSettings.LoadDescriptionImages", true)).Value;
+                set {
+                    if (Equals(value, _LoadDescriptionImages)) return;
+                    _LoadDescriptionImages = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.LoadDescriptionImages", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _pausePingingInRace;
 
             public bool PausePingingInRace {

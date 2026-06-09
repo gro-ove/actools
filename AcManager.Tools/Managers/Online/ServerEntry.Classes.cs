@@ -248,6 +248,10 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        public enum DriverStatus : byte {
+            Disconnected, Connected, Fake
+        }
+
         public class CurrentDriver : NotifyPropertyChanged {
             private static readonly WeakList<CurrentDriver> Instances = new WeakList<CurrentDriver>();
 
@@ -261,17 +265,30 @@ namespace AcManager.Tools.Managers.Online {
 
             public string CarSkinId { get; }
 
-            public bool IsConnected { get; }
+            public DriverStatus IsConnected { get; }
 
             public bool IsBookedForPlayer { get; }
+
+            private static bool IsHoldingSlot(string name) {
+                return name.StartsWith(@"[Not Connected] ", StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(name, "Reserved Slot", StringComparison.Ordinal);
+            }
 
             public CurrentDriver(ServerActualCarInformation x, bool allowCspParams) {
                 Name = x.DriverName;
                 Team = x.DriverTeam;
                 CarId = x.CarId;
                 CarSkinId = x.CarSkinId;
-                CspParams = x.CspParams;
-                IsConnected = x.IsConnected;
+                if (allowCspParams) {
+                    CspParams = x.CspParams;
+                }
+                if (!x.IsConnected) {
+                    IsConnected = DriverStatus.Disconnected;
+                } else if (IsHoldingSlot(Name)) {
+                    IsConnected = DriverStatus.Fake;
+                } else {
+                    IsConnected = DriverStatus.Connected;
+                }
                 IsBookedForPlayer = x.IsRequestedGuid;
 
                 Instances.Purge();

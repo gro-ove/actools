@@ -38,6 +38,8 @@ namespace AcManager.Tools.Filters.Testers {
                 case "d":
                 case "drivers":
                 case "players":
+                    return nameof(ServerEntry.RealConnectedDrivers);
+                
                 case "full":
                 case "free":
                     return nameof(ServerEntry.CurrentDriversCount);
@@ -220,7 +222,7 @@ namespace AcManager.Tools.Filters.Testers {
                 case "d":
                 case "drivers":
                 case "players":
-                    return value.Test(obj.CurrentDriversCount);
+                    return value.Test(obj.RealConnectedDrivers);
 
                 case "full":
                     return value.Test(obj.CurrentDriversCount == obj.Capacity);

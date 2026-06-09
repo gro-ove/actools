@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
@@ -21,7 +22,75 @@ namespace AcManager.Tools.Managers.Online {
 
         private static readonly Regex SimpleCleanUpRegex = new Regex(@"^AA+\s*", RegexOptions.Compiled);
 
+        private static StringBuilder _sortingNameSb;
+
+        private static bool IsLetterOrExtended(char c) {
+            return char.IsLetter(c) || c >= '\u007F';
+        }
+        
+        private static bool IsSortPaddingToken(string token, int from, int to) {
+            var len = to - from;
+            if (len == 1) return true;
+
+            var hasLetters = false;
+            var hasGoodLetters = false;
+            var leadingDigits = 0;
+            for (int i = from; i < to; ++i) {
+                var c = token[i];
+                if (IsLetterOrExtended(c)) hasLetters = true;
+                else if (!hasLetters) ++leadingDigits;
+                if (c >= 'h' && c <= 'z' || c >= 'H' && c <= 'Z') hasGoodLetters = true;
+            }
+
+            if (hasLetters && leadingDigits > 2) return true;
+
+            var s = char.ToLower(token[from]);
+            if (s >= '0' && s <= (hasLetters ? '1' : '5')) return true;
+            if (hasGoodLetters) return len < 3 && s == 'a';
+            return s >= 'a' && s <= 'e';
+        }
+
         private static string GetSortingName(string name) {
+            var sb = _sortingNameSb ?? (_sortingNameSb = new StringBuilder());
+            sb.Clear();
+            
+            int b = 0;
+            for (int i = 0; i < name.Length + 1; ++i) {
+                if (i == name.Length || !IsPartOfWord(name[i])) {
+                    if (i > b && !IsSortPaddingToken(name, b, i - b)) {
+                        for (int j = b; j < i; ++j) {
+                            sb.Append(name[j]);
+                        }
+                    }
+                    b = i + 1;
+                }
+            }
+            
+            if (sb.Length == 0) {
+                return @"zz:" + name;
+            }
+            
+            return sb.ToString();
+
+            bool IsPartOfWord(char c) {
+                return char.IsDigit(c) || IsLetterOrExtended(c);
+            }
+        }
+        
+
+        private static string GetSortingName2(string name) {
+
+            int b = 0;
+
+            for (int i = 0; i < name.Length; ++i) {
+                if (!char.IsLetterOrDigit(name[i])) {
+                    if (i > b) {
+                        var word = name.Substring(b, i - b);
+                    }
+                    b = i + 1;
+                }
+            }
+            
             if (string.IsNullOrEmpty(name)) {
                 return @"zzzz";
             }

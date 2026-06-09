@@ -47,7 +47,7 @@ namespace LicensePlatesGenerator {
             var help = new HelpText {
                 Heading = new HeadingInfo("License Plates Generator",
                         FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly()?.Location ?? "").FileVersion),
-                Copyright = new CopyrightInfo("AcClub", 2020),
+                Copyright = new CopyrightInfo("AcClub", 2026),
                 AdditionalNewLineAfterOption = false,
                 AddDashesToOption = true
             };

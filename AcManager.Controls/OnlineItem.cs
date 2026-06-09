@@ -677,12 +677,30 @@ namespace AcManager.Controls {
             _timeLeft = TextConfigurationBase.Get(server.DisplayTimeLeft);
         }
 
-        private void UpdateCountryFlag(ServerEntry server) {
+        private string _currentCountryId;
+
+        private bool UpdateCountryFlag(ServerEntry server) {
+            if (_currentCountryId == server.CountryId) return false;
+            _currentCountryId = server.CountryId;
             try {
-                _countryBitmap = CountryIcon.LoadEntryAsync(server.CountryId, 24).Result.ImageSource;
+                var task = CountryIcon.LoadEntryAsync(server.CountryId, 24);
+                if (task.IsCompleted) {
+                    _countryBitmap = task.Result.ImageSource;
+                    return true;
+                }
+                
+                _countryBitmap = null;
+                task.ContinueWithInMainThread(r => {
+                    if (r.IsCompleted && _currentCountryId == server.CountryId) {
+                        _countryBitmap = r.Result.ImageSource;
+                        _renderDirty = true;
+                        InvalidateVisual();
+                    }
+                });
             } catch (Exception e) {
                 Logging.Error(e);
             }
+            return false;
         }
 
         private void UpdateErrorFlag(ServerEntry server) {
@@ -1241,8 +1259,9 @@ namespace AcManager.Controls {
                     _renderDirty = true;
                     break;
                 case nameof(ServerEntry.CountryId):
-                    UpdateCountryFlag(server);
-                    _renderDirty = true;
+                    if (UpdateCountryFlag(server)) {
+                        _renderDirty = true;
+                    }
                     break;
                 case nameof(ServerEntry.Ping):
                     UpdatePing(server);

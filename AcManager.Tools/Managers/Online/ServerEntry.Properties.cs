@@ -228,7 +228,6 @@ namespace AcManager.Tools.Managers.Online {
                 _currentDriversCount = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsEmpty));
-                OnPropertyChanged(nameof(DisplayClients));
             }
         }
 
@@ -301,11 +300,14 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _capacity)) return;
                 _capacity = value;
                 OnPropertyChanged();
+                _displayClients = null;
                 OnPropertyChanged(nameof(DisplayClients));
             }
         }
 
-        public string DisplayClients => $@"{CurrentDriversCount}/{Capacity}";
+        private string _displayClients;
+
+        public string DisplayClients => _displayClients ?? (_displayClients = $@"{RealConnectedDrivers}/{Capacity}");
 
         private long? _ping;
 
@@ -441,6 +443,19 @@ namespace AcManager.Tools.Managers.Online {
         public int ConnectedDrivers {
             get => _connectedDrivers;
             set => Apply(value, ref _connectedDrivers);
+        }
+
+        private int _realConnectedDrivers;
+
+        public int RealConnectedDrivers {
+            get => _realConnectedDrivers;
+            set {
+                if (Equals(value, _realConnectedDrivers)) return;
+                _realConnectedDrivers = value;
+                OnPropertyChanged();
+                _displayClients = null;
+                OnPropertyChanged(nameof(DisplayClients));
+            }
         }
 
         private bool _isBookedForPlayer;

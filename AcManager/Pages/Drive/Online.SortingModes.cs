@@ -73,12 +73,12 @@ namespace AcManager.Pages.Drive {
 
         private class SortingConnectedDriversCount : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
-                var dif = -x.ConnectedDrivers.CompareTo(y.ConnectedDrivers);
+                var dif = -x.RealConnectedDrivers.CompareTo(y.RealConnectedDrivers);
                 return dif == 0 ? string.Compare(x.SortingName, y.SortingName, StringComparison.Ordinal) : dif;
             }
 
             public override bool IsAffectedBy(string propertyName) {
-                return propertyName == nameof(ServerEntry.ConnectedDrivers);
+                return propertyName == nameof(ServerEntry.RealConnectedDrivers);
             }
         }
 

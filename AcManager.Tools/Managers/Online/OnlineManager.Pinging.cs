@@ -59,7 +59,7 @@ namespace AcManager.Tools.Managers.Online {
                             await Task.Delay(TimeSpan.FromSeconds(1d));
                         }
 
-                        var ordered = List.OrderByDescending(x => (priorityFilter?.Test(x) == true ? 1000 : 0) + x.ConnectedDrivers).ToList();
+                        var ordered = List.OrderByDescending(x => (priorityFilter?.Test(x) == true ? 1000 : 0) + x.RealConnectedDrivers).ToList();
                         await ordered.Select
                                 (async x => {
                                     // ReSharper disable once AccessToDisposedClosure

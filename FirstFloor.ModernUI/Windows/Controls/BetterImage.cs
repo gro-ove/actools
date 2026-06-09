@@ -947,7 +947,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void AddToCache(string filename, Image entry) {
             _fromCache = false;
-            if (OptionCacheTotalSize <= 0 || entry.Size == 0 || entry.Size > OptionCacheMaxSize) return;
+            if (OptionCacheTotalSize <= 0 || string.IsNullOrEmpty(filename) || entry.Size == 0 || entry.Size > OptionCacheMaxSize) return;
 
             var item = new CacheItem { Cached = entry, LastAccess = DateTime.Now };
             var cacheSizeDelta = entry.Size;

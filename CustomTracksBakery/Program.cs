@@ -159,7 +159,7 @@ namespace CustomTracksBakery {
             var help = new HelpText {
                 Heading = new HeadingInfo("Custom Tracks Bakery",
                         FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly()?.Location ?? "").FileVersion),
-                Copyright = new CopyrightInfo("AcClub", 2020),
+                Copyright = new CopyrightInfo("AcClub", 2026),
                 AdditionalNewLineAfterOption = false,
                 AddDashesToOption = true
             };

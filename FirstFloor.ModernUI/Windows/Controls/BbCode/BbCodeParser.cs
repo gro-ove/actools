@@ -97,6 +97,8 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
         /// Gets or sets the available navigable commands.
         /// </summary>
         public CommandDictionary Commands { get; set; }
+        
+        public bool AllowImages { get; set; }
 
         private void ParseTag(string tag, bool start, ParseContext context) {
             if (tag == TagBold) {
@@ -270,7 +272,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                         } else {
                             toolTip = true;
 
-                            if (NavigationHelper.TryParseUriWithParameters(context.ImageUri, out var temporary, out var parameter, out _, out _)) {
+                            if (AllowImages && NavigationHelper.TryParseUriWithParameters(context.ImageUri, out var temporary, out var parameter, out _, out _)) {
                                 try {
                                     url = new Uri(temporary.OriginalString);
                                     if (double.TryParse(parameter, out maxSize)) {

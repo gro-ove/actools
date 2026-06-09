@@ -533,7 +533,8 @@
 
               <!-- Description -->
               <mui:ReferenceSwitch Value="{Binding Description}">
-                <mui:BbCodeBlock Text="{Binding Description}" Margin="0 20 0 0" TextWrapping="Wrap" />
+                <mui:BbCodeBlock Text="{Binding Description}" Margin="0 20 0 0" TextWrapping="Wrap" 
+                    AllowImages="{Binding LoadDescriptionImages, Source={x:Static t:SettingsHolder.Online}, Mode=OneTime}" />
               </mui:ReferenceSwitch>
 
               <!-- Sessions list -->
@@ -565,7 +566,7 @@
 
               <DockPanel>
                 <TextBlock Style="{StaticResource Label.Padding}" DockPanel.Dock="Top" Foreground="{DynamicResource WindowText}"
-                    Text="{Binding Path=ConnectedDrivers, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.Online_DriversOnServer}}">
+                    Text="{Binding Path=RealConnectedDrivers, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.Online_DriversOnServer}}">
                 </TextBlock>
                 <ItemsControl ItemsSource="{Binding CurrentDrivers}">
                   <ItemsControl.ItemsPanel>
