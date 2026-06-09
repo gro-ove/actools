@@ -28,11 +28,11 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
     
     [![Dark Showroom](https://i.imgur.com/nW6cCvJ.jpg)](https://i.imgur.com/nW6cCvJ.jpg)
     
-    [![Dark Showroom](http://acstuff.ru/app/screens/__custom_showroom_1517749976.jpg)](http://acstuff.ru/app/screens/__custom_showroom_1517749976.jpg)
+    [![Dark Showroom](http://acstuff.club/app/screens/__custom_showroom_1517749976.jpg)](http://acstuff.club/app/screens/__custom_showroom_1517749976.jpg)
         
-    [![Dark Showroom](http://acstuff.ru/app/screens/__custom_showroom_1516289950.jpg)](http://acstuff.ru/app/screens/__custom_showroom_1516289950.jpg)
+    [![Dark Showroom](http://acstuff.club/app/screens/__custom_showroom_1516289950.jpg)](http://acstuff.club/app/screens/__custom_showroom_1516289950.jpg)
 
-    [![Lite Showroom](http://acstuff.ru/app/screens/__custom_showroom_1517751713.jpg)](http://acstuff.ru/app/screens/__custom_showroom_1517751713.jpg)
+    [![Lite Showroom](http://acstuff.club/app/screens/__custom_showroom_1517751713.jpg)](http://acstuff.club/app/screens/__custom_showroom_1517751713.jpg)
     
 - ### [LicensePlates](https://github.com/gro-ove/actools/tree/master/LicensePlates)
     Fully independent from AcTools.\* library which generates number plates using Lua to interpret style files and Magick.NET to create and save textures. [In action](http://i.imgur.com/T7SVlLF.gifv).

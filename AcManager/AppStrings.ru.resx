@@ -3881,7 +3881,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Конфигурируемые приложения не найдены</value>
   </data>
   <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
-    <value>Изменения будут сохранены автоматически. Если вы хотите оптимизировать способ отображения конфигурационных файлов, вы можете найти о них дополнительную информацию [url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"]here[/url].</value>
+    <value>Изменения будут сохранены автоматически. Если вы хотите оптимизировать способ отображения конфигурационных файлов, вы можете найти о них дополнительную информацию [url="https://acstuff.club/f/d/19-content-manager-python-app-configs"]here[/url].</value>
   </data>
   <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
     <value>В некоторых случаях использовать пользовательский шоурум вместо оригинального</value>

@@ -4245,7 +4245,7 @@
     <value>如果內容遺失，則顯示擴展資訊</value>
   </data>
   <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
-    <value>更改將自動儲存。如果您想改良配置文件的顯示方式，您可以在這裡找到更多關於它們的資訊[url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"][/url]。</value>
+    <value>更改將自動儲存。如果您想改良配置文件的顯示方式，您可以在這裡找到更多關於它們的資訊[url="https://acstuff.club/f/d/19-content-manager-python-app-configs"][/url]。</value>
   </data>
   <data name="Settings_PythonApps_NoConfigurableAppsFound" xml:space="preserve">
     <value>未找到可配置的app</value>

@@ -3779,7 +3779,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Aucune application configurable trouvée</value>
   </data>
   <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
-    <value>Modifications enregistré automatiquement. Si vous souhaitez optimiser la façon dont les fichiers de configuration sont affichés, vous pouvez trouver plus d'informations à leur sujet [url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"]here[/url].</value>
+    <value>Modifications enregistré automatiquement. Si vous souhaitez optimiser la façon dont les fichiers de configuration sont affichés, vous pouvez trouver plus d'informations à leur sujet [url="https://acstuff.club/f/d/19-content-manager-python-app-configs"]here[/url].</value>
   </data>
   <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
     <value>Utilisez une salle d'exposition personnalisée au lieu de l'original dans certains cas</value>

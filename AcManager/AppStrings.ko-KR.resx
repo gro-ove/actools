@@ -118,8 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="About_ContactInformation" xml:space="preserve">
-    <value>이 앱에 대한 질문, 아이디어 또는 제안 사항이 있거나 특정 문제를 보고하려면 [url="https://acstuff.ru/app/#contacts"]contact us[/url]연락처[/url]로 문의하세요.</value>
-  <alternative>이 앱에 대한 질문, 아이디어 또는 제안 사항이 있거나 특정 문제를 보고하려면 [url="https://acstuff.ru/app/#contacts"]contact us[/url]연락처[/url]로 문의하십시오.</alternative></data>
+    <value>이 앱에 대한 질문, 아이디어 또는 제안 사항이 있거나 특정 문제를 보고하려면 [url="https://acstuff.club/app/#contacts"]contact us[/url]연락처[/url]로 문의하세요.</value>
+  <alternative>이 앱에 대한 질문, 아이디어 또는 제안 사항이 있거나 특정 문제를 보고하려면 [url="https://acstuff.club/app/#contacts"]contact us[/url]연락처[/url]로 문의하십시오.</alternative></data>
   <data name="About_ContactUsHeader" xml:space="preserve">
     <value>연락처:</value>
   </data>
@@ -3797,7 +3797,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</alternativ
     <value>플러그인</value>
   </data>
   <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
-    <value>변경 내용이 자동으로 저장됩니다. 구성 파일이 표시되는 방식을 최적화하려면 [url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"]여기[/url]에서 해당 파일에 대한 자세한 정보를 찾을 수 있습니다.</value>
+    <value>변경 내용이 자동으로 저장됩니다. 구성 파일이 표시되는 방식을 최적화하려면 [url="https://acstuff.club/f/d/19-content-manager-python-app-configs"]여기[/url]에서 해당 파일에 대한 자세한 정보를 찾을 수 있습니다.</value>
   </data>
   <data name="Settings_PythonApps_NoConfigurableAppsFound" xml:space="preserve">
     <value>구성 가능한 앱이 없습니다</value>
@@ -3809,8 +3809,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</alternativ
     <value>추가 :</value>
   </data>
   <data name="Settings_QuickSwitches_Description" xml:space="preserve">
-    <value>빠른 전환 - 프로그램의 모든 장소와 다른 설정을 변경할 수 있는 작은 팝업 메뉴입니다. 이 메뉴를 열려면 Alt+~를 누르거나 마우스 가운데 버튼을 클릭합니다. Alt+1을 눌러 설정을 변경할 수도 있습니다. Alt+9.[br][br]새로운 옵션이 필요한 경우 [url="https://acstuff.ru/app/#filename"](으)로 문의하세요. [/url](으)</value>
-  <alternative>빠른 전환 - 프로그램의 모든 장소와 다른 설정을 변경할 수 있는 작은 팝업 메뉴입니다. 이 메뉴를 열려면 Alt+~를 누르거나 마우스 가운데 버튼을 클릭합니다. Alt+1을 눌러 설정을 변경할 수도 있습니다.Alt+9.[br][br]새로운 옵션이 필요한 경우 [url="https://acstuff.ru/app/#filename"](으)로 문의하십시오. [/url](으)</alternative></data>
+    <value>빠른 전환 - 프로그램의 모든 장소와 다른 설정을 변경할 수 있는 작은 팝업 메뉴입니다. 이 메뉴를 열려면 Alt+~를 누르거나 마우스 가운데 버튼을 클릭합니다. Alt+1을 눌러 설정을 변경할 수도 있습니다. Alt+9.[br][br]새로운 옵션이 필요한 경우 [url="https://acstuff.club/app/#filename"](으)로 문의하세요. [/url](으)</value>
+  <alternative>빠른 전환 - 프로그램의 모든 장소와 다른 설정을 변경할 수 있는 작은 팝업 메뉴입니다. 이 메뉴를 열려면 Alt+~를 누르거나 마우스 가운데 버튼을 클릭합니다. Alt+1을 눌러 설정을 변경할 수도 있습니다.Alt+9.[br][br]새로운 옵션이 필요한 경우 [url="https://acstuff.club/app/#filename"](으)로 문의하십시오. [/url](으)</alternative></data>
   <data name="Settings_QuickSwitches_Enable" xml:space="preserve">
     <value>빠른 전환 활성화</value>
   </data>
