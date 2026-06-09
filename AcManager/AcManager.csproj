@@ -21,8 +21,9 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <LocalDeveloperFlag>C:\Development\.x4fab</LocalDeveloperFlag>
   </PropertyGroup>
-  <PropertyGroup Condition="Exists('C:/Development/.x4fab')">
+  <PropertyGroup Condition="Exists('$(LocalDeveloperFlag)')">
     <UseCosturaToPack>true</UseCosturaToPack>
   </PropertyGroup>
   <PropertyGroup>
