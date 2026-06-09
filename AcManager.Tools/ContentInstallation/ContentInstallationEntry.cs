@@ -586,7 +586,7 @@ namespace AcManager.Tools.ContentInstallation {
                                 DisplayName = InstallationParams.ForcedFileName;
                                 FileName = InstallationParams.ForcedFileName;
                             }
-                            localFilename = await FlexibleLoader.LoadAsyncTo(Source,
+                            localFilename = await FlexibleLoader.LoadAsyncTo(new FlexibleLoader.LoaderParams(Source) { UseSteamAuth = InstallationParams.UseSteamAuth },
                                     (url, information) => new FlexibleLoaderDestination(Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue,
                                             information.FileName ?? GetFileNameFromUrl(url)), true),
                                     destination => {

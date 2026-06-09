@@ -1,4 +1,6 @@
 using System;
+using AcManager.Tools.Starters;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Steamworks;
@@ -10,12 +12,6 @@ namespace AcManager.Tools.Helpers {
     /// </summary>
     public static class SteamTicketProvider {
         /// <summary>
-        /// Query param that indicates the server requires a Steam ticket.
-        /// When present in URL, CM adds Authorization: Bearer &lt;hex-ticket&gt; to the request.
-        /// </summary>
-        public const string AuthParam = "auth=steam";
-
-        /// <summary>
         /// Generates a Steam auth session ticket and returns it as a hex string for Bearer auth.
         /// Returns null if Steam is not initialized or ticket generation fails.
         /// Uses GetAuthSessionTicket (game session). Compatible with Steamworks.NET 5.x+ (3-param overload).
@@ -23,7 +19,7 @@ namespace AcManager.Tools.Helpers {
         [CanBeNull]
         public static string GetTicketHex() {
             try {
-                if (!SteamAPI.Init()) return null;
+                if (!SteamStarter.Initialize(MainExecutingFile.Directory, true)) return null;
 
                 var ticketBuffer = new byte[1024];
                 var ticketHandle = SteamUser.GetAuthSessionTicket(ticketBuffer, ticketBuffer.Length, out var ticketSize);
@@ -46,11 +42,12 @@ namespace AcManager.Tools.Helpers {
         /// Checks if the URL contains the auth=steam param (case-insensitive).
         /// </summary>
         public static bool UrlRequiresSteamTicket([NotNull] string url) {
-            if (string.IsNullOrEmpty(url)) return false;
-            var queryStart = url.IndexOf('?');
-            if (queryStart < 0) return false;
-            var query = url.Substring(queryStart);
-            return query.IndexOf(AuthParam, StringComparison.OrdinalIgnoreCase) >= 0;
+            try {
+                return new Uri(url, UriKind.RelativeOrAbsolute).GetQueryParam("auth") == "steam";
+            } catch (Exception e) {
+                Logging.Warning($"Failed to parse URL: {e}");
+                return false;
+            }
         }
     }
 }

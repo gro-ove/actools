@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 namespace AcManager.Tools.Helpers.Loaders {
     public class DirectLoader : ILoader {
         public static bool OptionUseHeadRequests = false;
-        
+
         public int BufferSize { get; set; } = 65536;
 
         private readonly string _keyDestination;
@@ -25,6 +25,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         private readonly string _keyFootprint;
         private readonly string _keyLastWriteDate;
         protected string Url;
+        private readonly bool _useSteamAuth;
 
         public ILoader Parent { get; set; }
         public long? TotalSize { get; protected set; }
@@ -46,7 +47,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             return null;
         }
 
-        public DirectLoader(string url) {
+        public DirectLoader(string url, bool useSteamAuth = false) {
             _keyDestination = ".DirectLoader.Destination:" + url;
             _keyPartiallyLoadedFilename = ".DirectLoader.PartiallyLoadedFilename:" + url;
             _keyFootprint = ".DirectLoader.Footprint:" + url;
@@ -57,6 +58,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             }
 
             Url = url;
+            _useSteamAuth = useSteamAuth;
         }
 
         public virtual Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
@@ -79,7 +81,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 [NotNull] FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination,
                 [CanBeNull] FlexibleLoaderReportDestinationCallback reportDestination, [CanBeNull] Func<bool> checkIfPaused,
                 IProgress<long> progress, CancellationToken cancellation) {
-            return UsesClientToDownload
+            return UsesClientToDownload || _useSteamAuth
                     ? DownloadClientAsync(client, getPreferredDestination, reportDestination, checkIfPaused, cancellation)
                     : DownloadResumeSupportAsync(client, getPreferredDestination, reportDestination, checkIfPaused, progress, cancellation);
         }
@@ -93,7 +95,13 @@ namespace AcManager.Tools.Helpers.Loaders {
             var destination = getPreferredDestination(Url, information);
             var filename = FileUtils.EnsureUnique(true, destination.Filename);
             reportDestination?.Invoke(filename);
-            await client.DownloadFileTaskAsync(Url, filename).ConfigureAwait(false);
+            if (_useSteamAuth) {
+                using (client.SetSteamAuthAware(true)) {
+                    await client.DownloadFileTaskAsync(Url, filename).ConfigureAwait(false);
+                }
+            } else {
+                await client.DownloadFileTaskAsync(Url, filename).ConfigureAwait(false);
+            }
             return filename;
         }
 
@@ -187,14 +195,14 @@ namespace AcManager.Tools.Helpers.Loaders {
                             if (i == 20) throw new Exception("Too many redirects");
 
                             Logging.Debug($"Redirect from {targetUrl} to {client.ResponseLocation}");
-                            
+
                             var supported = await FlexibleLoader.IsSupportedAsync(client.ResponseLocation, cancellation);
                             cancellation.ThrowIfCancellationRequested();
 
                             if (supported) {
                                 throw new RestartLoadingException(client.ResponseLocation);
                             }
-                            
+
                             targetUrl = client.ResponseLocation;
                             if (client.TryGetFileName(out var fileName) && fileName != FileName) {
                                 FileName = information.FileName = fileName;
@@ -248,7 +256,8 @@ namespace AcManager.Tools.Helpers.Loaders {
                                 var url = Regex.Match(link, @"\bhttp.+");
                                 if (url.Success) {
                                     Logging.Debug("Redirect to " + url.Value);
-                                    var innerLoader = await FlexibleLoader.CreateLoaderAsync(url.Value, this, cancellation);
+                                    var innerLoader = await FlexibleLoader.CreateLoaderAsync(new FlexibleLoader.LoaderParams(url.Value), 
+                                            this, cancellation);
                                     if (innerLoader != null) {
                                         return await innerLoader.DownloadAsync(client, getPreferredDestination, reportDestination,
                                                 checkIfPaused, progress, cancellation);

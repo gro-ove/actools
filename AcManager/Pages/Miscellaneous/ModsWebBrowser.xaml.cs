@@ -1044,7 +1044,7 @@ window.$KEY = outline.stop.bind(outline);
                 _progress = null;
 
                 try {
-                    var newLoader = await FlexibleLoader.CreateLoaderAsync(url, this, default(CancellationToken));
+                    var newLoader = await FlexibleLoader.CreateLoaderAsync(new FlexibleLoader.LoaderParams(url), this, CancellationToken.None);
                     if (newLoader == null) throw new Exception("Unexpected exception #4313");
 
                     Logging.Write("Loader: " + newLoader.GetType().Name);

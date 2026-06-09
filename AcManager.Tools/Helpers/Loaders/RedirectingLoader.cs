@@ -31,7 +31,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             _url = url;
             Logging.Write($"{GetType().Name} download link: {_url}");
 
-            _innerLoader = await FlexibleLoader.CreateLoaderAsync(_url, this, cancellation);
+            _innerLoader = await FlexibleLoader.CreateLoaderAsync(new FlexibleLoader.LoaderParams(_url), this, cancellation);
             if (_innerLoader == null || cancellation.IsCancellationRequested) return false;
 
             if (_innerLoader.GetType() == GetType()) throw new Exception(ToolsStrings.DirectLoader_RecursionDetected);

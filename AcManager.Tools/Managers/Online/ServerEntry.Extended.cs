@@ -314,7 +314,8 @@ namespace AcManager.Tools.Managers.Online {
                                     $@"http://{Ip}:{DetailsPort}/content/car/{carPair.Key}{passwordPostfix.Value}";
                             yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false) {
                                 FallbackId = carPair.Key,
-                                Checksum = carPair.Value.GetStringValueOnly("checksum")
+                                Checksum = carPair.Value.GetStringValueOnly("checksum"),
+                                UseSteamAuth = carPair.Value.GetBoolValueOnly("steamAuth") ?? false
                             });
                         }
                     } else if (carPair.Value[@"skins"] is JObject skins) {
@@ -326,7 +327,8 @@ namespace AcManager.Tools.Managers.Online {
                             yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false) {
                                 CarId = carPair.Key,
                                 FallbackId = skinPair.Key,
-                                Checksum = skinPair.Value.GetStringValueOnly("checksum")
+                                Checksum = skinPair.Value.GetStringValueOnly("checksum"),
+                                UseSteamAuth = skinPair.Value.GetBoolValueOnly("steamAuth") ?? false
                             });
                         }
                     }
@@ -342,7 +344,8 @@ namespace AcManager.Tools.Managers.Online {
                             $@"http://{Ip}:{DetailsPort}/content/weather/{weatherPair.Key}{passwordPostfix.Value}";
                     yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false) {
                         FallbackId = weatherPair.Key,
-                        Checksum = weatherPair.Value.GetStringValueOnly("checksum")
+                        Checksum = weatherPair.Value.GetStringValueOnly("checksum"),
+                        UseSteamAuth = weatherPair.Value.GetBoolValueOnly("steamAuth") ?? false
                     });
                 }
             }
@@ -356,7 +359,8 @@ namespace AcManager.Tools.Managers.Online {
                             $@"http://{Ip}:{DetailsPort}/content/track{passwordPostfix.Value}";
                     yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false) {
                         FallbackId = TrackBaseId,
-                        Checksum = track.GetStringValueOnly("checksum")
+                        Checksum = track.GetStringValueOnly("checksum"),
+                        UseSteamAuth = track.GetBoolValueOnly("steamAuth") ?? false
                     });
                 }
             }

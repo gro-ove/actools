@@ -139,6 +139,14 @@ namespace AcManager.Tools.Helpers {
             return new ActionAsDisposable(() => _debugMode = oldValue);
         }
 
+        private bool _steamAuthAware;
+
+        public IDisposable SetSteamAuthAware(bool value) {
+            var oldValue = _steamAuthAware;
+            _steamAuthAware = value;
+            return new ActionAsDisposable(() => _steamAuthAware = oldValue);
+        }
+
         public IDisposable SetProxy([CanBeNull] string proxy) {
             if (string.IsNullOrWhiteSpace(proxy)) return new ActionAsDisposable(() => { });
 
@@ -191,7 +199,7 @@ namespace AcManager.Tools.Helpers {
                     Logging.Debug("Cookies:\n" + cookie);
                 }
 
-                if (SteamTicketProvider.UrlRequiresSteamTicket(address.ToString())) {
+                if (_steamAuthAware && SteamTicketProvider.UrlRequiresSteamTicket(address.ToString())) {
                     var ticket = SteamTicketProvider.GetTicketHex();
                     if (!string.IsNullOrEmpty(ticket)) {
                         webRequest.Headers.Set("Authorization", "Bearer " + ticket);

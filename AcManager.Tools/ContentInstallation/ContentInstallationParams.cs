@@ -52,6 +52,8 @@ namespace AcManager.Tools.ContentInstallation {
         public bool PreferCleanInstallation { get; set; }
 
         public bool SyncDetails { get; set; }
+        
+        public bool UseSteamAuth { get; set; }
 
         public async Task PostInstallation(IProgress<AsyncProgressEntry> progress, CancellationToken token) {
             if (!CupType.HasValue || IdsToUpdate == null) return;
