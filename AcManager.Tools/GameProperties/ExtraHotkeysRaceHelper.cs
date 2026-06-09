@@ -514,6 +514,13 @@ namespace AcManager.Tools.GameProperties {
 
             private readonly bool _ignorePovInPits;
 
+            // Maps slot index (JOY field) → instance GUID, built from controls.ini [CONTROLLERS].
+            // Used in Start() to find joysticks by GUID rather than by raw enumeration position,
+            // because a fresh DirectInput scan can return devices in a different order than
+            // the scan that was current when controls.ini was last saved.
+            [NotNull]
+            private readonly Dictionary<int, Guid> _slotToInstanceGuid;
+
             [CanBeNull]
             private readonly Thread _pollThread;
 
@@ -527,6 +534,17 @@ namespace AcManager.Tools.GameProperties {
                 var delayEnabled = ini["__EXTRA_CM"].GetBool("DELAY_SPECIFIC_SYSTEM_COMMANDS", true);
                 var showDelay = delayEnabled && ini["__EXTRA_CM"].GetBool("SHOW_SYSTEM_DELAYS", true);
                 _ignorePovInPits = ini["__EXTRA_CM"].GetBool("SYSTEM_IGNORE_POV_IN_PITS", true);
+
+                _slotToInstanceGuid = new Dictionary<int, Guid>();
+                var controllers = ini["CONTROLLERS"];
+                foreach (var key in controllers.Keys) {
+                    if (key.StartsWith(@"__IGUID") && int.TryParse(key.Substring(7), out var slotId)) {
+                        var guidStr = controllers.GetNonEmpty(key);
+                        if (guidStr != null && Guid.TryParse(guidStr, out var guid)) {
+                            _slotToInstanceGuid[slotId] = guid;
+                        }
+                    }
+                }
 
                 var keyToCommand = new Dictionary<Keys, JoyCommandBase>();
                 var joyToCommand = new Dictionary<JoyKey, JoyCommandBase>();
@@ -643,6 +661,15 @@ namespace AcManager.Tools.GameProperties {
 
             private bool? _running;
 
+            [CanBeNull]
+            private Joystick FindJoystickBySlot([CanBeNull] IList<Joystick> joysticks, int slotId) {
+                if (joysticks == null) return null;
+                if (_slotToInstanceGuid.TryGetValue(slotId, out var guid)) {
+                    return joysticks.FirstOrDefault(x => x.Information.InstanceGuid == guid);
+                }
+                return joysticks.ElementAtOrDefault(slotId);
+            }
+
             private class JoystickHolder {
                 [NotNull]
                 public Joystick Device { get; }
@@ -665,9 +692,9 @@ namespace AcManager.Tools.GameProperties {
                         .GroupBy(x => x.Key.Joy)
                         .Select(x => new {
                             Id = x.Key,
-                            Joystick = new JoystickHolder(joysticks?.ElementAtOrDefault(x.Key))
+                            Joystick = new JoystickHolder(FindJoystickBySlot(joysticks, x.Key))
                         })
-                        .Where(x => x.Joystick != null)
+                        .Where(x => x.Joystick.Device != null)
                         .ToDictionary(x => x.Id, x => x.Joystick);
                 var joystickCommands = _joyToCommand?
                         .Where(x => usedJoysticks?.ContainsKey(x.Key.Joy) == true)
