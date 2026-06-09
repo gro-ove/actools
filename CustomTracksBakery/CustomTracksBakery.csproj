@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <UseCosturaToPack>true</UseCosturaToPack>
+    <UseCosturaToPack>false</UseCosturaToPack>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{973540C0-82C1-471B-B405-09DAB8D45DF3}</ProjectGuid>
@@ -14,6 +14,9 @@
     <FileAlignment>512</FileAlignment>
     <ActualPlatform>$(Platform)</ActualPlatform>
     <ActualPlatform Condition="'$(ActualPlatform)' == 'AnyCPU'">x64</ActualPlatform>
+  </PropertyGroup>
+  <PropertyGroup Condition="Exists('C:\Development\.x4fab')">
+    <UseCosturaToPack>true</UseCosturaToPack>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
