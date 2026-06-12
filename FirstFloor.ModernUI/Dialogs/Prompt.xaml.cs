@@ -27,7 +27,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         private Prompt(string title, string description, string defaultValue, string placeholder, string toolTip, bool multiline, bool passwordMode,
                 bool required, int maxLength, IEnumerable<string> suggestions, bool suggestionsFixed, string comment,
                 Func<string, Task<IEnumerable<string>>> suggestionsCallback = null, Func<string, Task<string>> verificationCallback = null,
-                bool suggestionsAsList = false) {
+                bool suggestionsAsList = false, object extraContent = null) {
             DataContext = new ViewModel(description, defaultValue, placeholder, toolTip, required) {
                 SuggestionsCallback = suggestionsCallback,
                 VerificationCallback = verificationCallback,
@@ -49,6 +49,10 @@ namespace FirstFloor.ModernUI.Dialogs {
                     Path = new PropertyPath(nameof(ViewModel.Text)),
                     Converter = this
                 });
+            }
+
+            if (extraContent != null) {
+                ExtraContent = extraContent;
             }
 
             if (comment != null) {
@@ -358,13 +362,13 @@ namespace FirstFloor.ModernUI.Dialogs {
                 bool multiline = false, bool passwordMode = false, bool required = false, int maxLength = -1, IEnumerable<string> suggestions = null,
                 bool suggestionsFixed = false, string comment = null,
                 Func<string, Task<IEnumerable<string>>> suggestionsCallback = null, Func<string, Task<string>> verificationCallback = null,
-                bool suggestionsAsList = false) {
+                bool suggestionsAsList = false, object extraContent = null) {
             if (passwordMode && suggestions != null) throw new ArgumentException(@"Can’t have suggestions with password mode");
             if (passwordMode && multiline) throw new ArgumentException(@"Can’t use multiline input area with password mode");
             if (suggestions != null && multiline) throw new ArgumentException(@"Can’t use multiline input area with suggestions");
 
             var dialog = new Prompt(title, description, defaultValue, placeholder, toolTip, multiline, passwordMode, required, maxLength, suggestions,
-                    suggestionsFixed, comment, suggestionsCallback, verificationCallback, suggestionsAsList) {
+                    suggestionsFixed, comment, suggestionsCallback, verificationCallback, suggestionsAsList, extraContent) {
                         DoNotAttachToWaitingDialogs = true
                     };
             dialog.ShowDialog();
@@ -401,13 +405,13 @@ namespace FirstFloor.ModernUI.Dialogs {
                 bool multiline = false, bool passwordMode = false, bool required = false, int maxLength = -1, IEnumerable<string> suggestions = null,
                 bool suggestionsFixed = false, string comment = null,
                 Func<string, Task<IEnumerable<string>>> suggestionsCallback = null, Func<string, Task<string>> verificationCallback = null,
-                bool suggestionsAsList = false, CancellationToken cancellation = default) {
+                bool suggestionsAsList = false, CancellationToken cancellation = default, object extraContent = null) {
             if (passwordMode && suggestions != null) throw new ArgumentException(@"Can’t have suggestions with password mode");
             if (passwordMode && multiline) throw new ArgumentException(@"Can’t use multiline input area with password mode");
             if (suggestions != null && multiline) throw new ArgumentException(@"Can’t use multiline input area with suggestions");
 
             var dialog = new Prompt(title, description, defaultValue, placeholder, toolTip, multiline, passwordMode, required, maxLength, suggestions,
-                    suggestionsFixed, comment, suggestionsCallback, verificationCallback, suggestionsAsList) {
+                    suggestionsFixed, comment, suggestionsCallback, verificationCallback, suggestionsAsList, extraContent) {
                         DoNotAttachToWaitingDialogs = true
                     };
             try {

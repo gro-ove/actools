@@ -34,6 +34,10 @@ namespace AcManager.Tools.Filters.Testers {
 
                 case "cphysice":
                     return nameof(ServerEntry.CspIcePhysics);
+                
+                case "score":
+                case "rating":
+                    return nameof(ServerEntry.VotesRating);
 
                 case "d":
                 case "drivers":
@@ -218,6 +222,10 @@ namespace AcManager.Tools.Filters.Testers {
 
                 case "extra":
                     return value.Test(obj.RaceMode == RaceMode.TimedExtra);
+                
+                case "score":
+                case "rating":
+                    return value.Test(obj.VotesRating * 100d);
 
                 case "d":
                 case "drivers":

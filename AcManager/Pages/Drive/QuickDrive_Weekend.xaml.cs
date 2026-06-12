@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Serialization;
+using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Pages.Drive {
-    public partial class QuickDrive_Weekend : IQuickDriveModeControl {
+    public partial class QuickDrive_Weekend : IQuickDriveModeControl, ITabCanBePinned {
         public QuickDrive_Weekend() {
             InitializeComponent();
         }
@@ -161,5 +163,7 @@ namespace AcManager.Pages.Drive {
                 return value as string == AppStrings.Drive_SkipSession ? 0 : value.As<int>();
             }
         }
+
+        public string Title => ToolsStrings.Common_Weekend;
     }
 }

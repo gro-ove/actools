@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AcManager.Internal;
 using AcManager.Tools.Helpers.Api;
 using AcTools;
@@ -109,7 +110,7 @@ namespace AcManager.Tools.Managers.Online {
                 HttpClientHolder.Get().GetStringAsync(InternalUtils.GetLobbyRegistryUrl(OptionDevLobbies))
                         .ContinueWithInMainThread(r => {
                             try {
-                                if (!r.IsCompleted) {
+                                if (r.Status != TaskStatus.RanToCompletion) {
                                     Logging.Warning($"Failed to load list of third-party lobbies: {r.Exception}");
                                     return;
                                 }

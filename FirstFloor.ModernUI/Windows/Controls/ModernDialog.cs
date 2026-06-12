@@ -279,6 +279,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(ButtonsRowContentAlignmentProperty, value);
         }
 
+        public static readonly DependencyProperty ExtraContentProperty = DependencyProperty.Register(nameof(ExtraContent), typeof(object),
+                typeof(ModernDialog));
+
+        public object ExtraContent {
+            get => GetValue(ExtraContentProperty);
+            set => SetValue(ExtraContentProperty, value);
+        }
+
         public static readonly DependencyProperty ButtonsRowContentProperty = DependencyProperty.Register(nameof(ButtonsRowContent), typeof(object),
                 typeof(ModernDialog));
 

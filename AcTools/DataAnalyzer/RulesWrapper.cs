@@ -125,25 +125,25 @@ namespace AcTools.DataAnalyzer {
             return null;
         }
 
-        public IEnumerable<HashStorage.Simular> FindSimular(string carId, string setId, bool keepWorkedRules, double threshold) {
+        public IEnumerable<HashStorage.Similar> FindSimular(string carId, string setId, bool keepWorkedRules, double threshold) {
             var carLocation = AcPaths.GetCarDirectory(_acRoot, carId);
             return Directory.Exists(carLocation) ?
                     FindSimular(DataWrapper.FromCarDirectory(carLocation), setId, keepWorkedRules, threshold) :
-                    new HashStorage.Simular[0];
+                    new HashStorage.Similar[0];
         }
 
-        public IEnumerable<HashStorage.Simular> FindSimular(DataWrapper carData, string setId, bool keepWorkedRules, double threshold) {
+        public IEnumerable<HashStorage.Similar> FindSimular(DataWrapper carData, string setId, bool keepWorkedRules, double threshold) {
             var hashStorage = _hashStorage;
-            if (hashStorage == null) return new HashStorage.Simular[0];
+            if (hashStorage == null) return new HashStorage.Similar[0];
             
             var entry = GetSet(setId);
             if (entry == null) {
                 AcToolsLogging.Write("Rules not found: " + setId);
-                return new HashStorage.Simular[0];
+                return new HashStorage.Similar[0];
             }
 
             var hashValue = entry.Rules.GetHash(carData);
-            return hashStorage.FindSimular(Path.GetFileName(carData.ParentDirectory) ?? "", entry.Id, hashValue, threshold,
+            return hashStorage.FindSimilar(Path.GetFileName(carData.ParentDirectory) ?? "", entry.Id, hashValue, threshold,
                     entry.Rules, keepWorkedRules);
         }
     }

@@ -26,6 +26,10 @@ namespace FirstFloor.ModernUI {
             (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).InvokeAsync(action);
         }
 
+        public static void InvokeInMainThreadAsyncLater(this Action action) {
+            (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).InvokeAsync(action, DispatcherPriority.ContextIdle);
+        }
+
         public static Task ContinueWithInMainThread<T>(this Task<T> task, Action<Task<T>> callback, TaskContinuationOptions options = TaskContinuationOptions.None) {
             return task.ContinueWith(r => ActionExtension.InvokeInMainThreadAsync(() => callback(r)), options);
         }

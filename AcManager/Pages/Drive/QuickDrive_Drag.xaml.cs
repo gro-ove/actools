@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Drive {
-    public partial class QuickDrive_Drag : IQuickDriveModeControl {
+    public partial class QuickDrive_Drag : IQuickDriveModeControl, ITabCanBePinned {
         public QuickDrive_Drag() {
             InitializeComponent();
         }
@@ -99,5 +101,7 @@ namespace AcManager.Pages.Drive {
                 return Tuple.Create(@"#drag", string.Empty);
             }
         }
+
+        public string Title => ToolsStrings.Session_Drag;
     }
 }

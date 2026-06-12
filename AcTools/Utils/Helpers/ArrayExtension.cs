@@ -145,6 +145,19 @@ namespace AcTools.Utils.Helpers {
             return null;
         }
 
+        [Pure, CanBeNull]
+        public static string ToCutBase64Url([CanBeNull] this byte[] decoded) {
+            if (decoded != null) {
+                try {
+                    return Convert.ToBase64String(decoded).TrimEnd('=').Replace('+', '-').Replace('/', '_');
+                } catch (Exception e) {
+                    AcToolsLogging.Write(e);
+                }
+            }
+
+            return null;
+        }
+
         public static unsafe long IndexOf(this byte[] haystack, byte[] needle) {
             fixed (byte* h = haystack)
             fixed (byte* n = needle) {

@@ -79,7 +79,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// If image’s size is smaller than this, it will be decoded in the UI thread.
         /// Doesn’t do anything if OptionDecodeImageSync is true.
         /// </summary>
-        public static int OptionDecodeImageSyncThreshold = 50 * 1000; // 50 KB
+        public static int OptionDecodeImageSyncThreshold = 30 * 1000; // 30 KB
 
         /// <summary>
         /// Considering that 30 KB image takes ≈1.8 ms to be decoded and value of
@@ -1012,7 +1012,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                 if (IsRemoteImage()) {
                     LoadRemoteBitmapAsync(new Uri(Filename, UriKind.RelativeOrAbsolute), InnerDecodeWidth, InnerDecodeHeight).ContinueWith(
-                            v => ActionExtension.InvokeInMainThread(() => SetCurrent(v.IsCompleted ? v.Result : Image.Empty)));
+                            v => ActionExtension.InvokeInMainThreadAsyncLater(() => SetCurrent(v.Status == TaskStatus.RanToCompletion ? v.Result : Image.Empty)));
                     return true;
                 }
 
@@ -1151,7 +1151,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             if (data.Length < OptionDecodeImageSyncThreshold && TryAcquireSyncDecodeSlot()) {
                 using (data) {
+                    var sw = Stopwatch.StartNew();
                     SetCurrent(LoadBitmapSourceFromMemoryStream(data, decodeWidth, decodeHeight, sourceDebug: filename));
+                    if (sw.ElapsedMilliseconds > 2) {
+                        _syncDecodeCount = 99;
+                    }
                 }
                 return;
             }

@@ -231,7 +231,7 @@ namespace AcManager.Tools.Managers.Online {
                     scanned++;
                     progress?.Report(new AsyncProgressEntry(string.Format(ToolsStrings.Online_ScanningProgress, scanned, total,
                             PluralizingConverter.PluralizeExt(result.Count, ToolsStrings.Online_ScanningProgress_Found)), scanned, total));
-                }).WhenAll(200, cancellation);
+                }).WhenAll(100, cancellation);
 
                 return result;
             }

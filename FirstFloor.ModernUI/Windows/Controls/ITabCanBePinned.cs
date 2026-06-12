@@ -1,5 +1,5 @@
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public interface ITitleable {
+    public interface ITabCanBePinned {
         string Title { get; }
     }
 }

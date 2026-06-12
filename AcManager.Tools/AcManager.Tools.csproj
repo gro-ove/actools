@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -413,6 +413,7 @@
     <Compile Include="Helpers\AcSettings\PitMenuSettings.cs" />
     <Compile Include="Helpers\Api\ApiCacheThing.cs" />
     <Compile Include="Helpers\Api\HttpClientHolder.cs" />
+    <Compile Include="Helpers\Api\KunosApiProvider.PingingSocket.cs" />
     <Compile Include="Helpers\Api\Kunos\InvertConverter.cs" />
     <Compile Include="Helpers\Api\Kunos\IServerInformationExtra.cs" />
     <Compile Include="Helpers\Api\Kunos\ServerInformationComplete.cs" />
@@ -575,6 +576,7 @@
     <Compile Include="Helpers\WindowsHelper.cs" />
     <Compile Include="Managers\DriverModelsManager.cs" />
     <Compile Include="Managers\LuaAppsManager.cs" />
+    <Compile Include="Managers\Online\CmorProvider.cs" />
     <Compile Include="Managers\Online\FileBasedOnlineSources.cs" />
     <Compile Include="Managers\Online\LanOnlineSource.cs" />
     <Compile Include="Managers\Online\MinoratingOnlineSource.cs" />
@@ -583,9 +585,11 @@
     <Compile Include="Managers\Online\OnlineManager.cs" />
     <Compile Include="Managers\Online\IOnlineSource.cs" />
     <Compile Include="Managers\Online\KunosOnlineSource.cs" />
+    <Compile Include="Managers\Online\OnlineSanityHelper.cs" />
     <Compile Include="Managers\Online\OnlineSourceInformation.cs" />
     <Compile Include="Managers\Online\OnlineSourceWrapper.cs" />
     <Compile Include="Managers\Online\ServerEntry.AutoJoin.cs" />
+    <Compile Include="Managers\Online\ServerEntry.Cmor.cs" />
     <Compile Include="Managers\Online\ServerEntry.Extended.cs" />
     <Compile Include="Managers\Online\ServerEntry.Properties.cs" />
     <Compile Include="Managers\Online\ServerEntry.Classes.cs" />

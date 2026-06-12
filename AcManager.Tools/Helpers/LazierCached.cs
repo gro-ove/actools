@@ -56,7 +56,7 @@ namespace AcManager.Tools.Helpers {
             }
 
             return fn().ContinueWith(v => {
-                if (v.IsCompleted) {
+                if (v.Status == TaskStatus.RanToCompletion) {
                     Store(v.Result);
                     return v.Result;
                 }

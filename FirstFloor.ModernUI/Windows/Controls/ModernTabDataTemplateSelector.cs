@@ -9,9 +9,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public DataTemplate PinnedLinkDataTemplate { get; set; }
 
         public DataTemplate TitleDataTemplate { get; set; }
+        
+        public DataTemplate ListOfLinksDataTemplate { get; set; }
+        
+        public DataTemplate LinkWithListDataTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
-            return item is Link l ? l.IsPinned ? PinnedLinkDataTemplate : LinkDataTemplate : TitleDataTemplate;
+            return item is LinkWithList ? LinkWithListDataTemplate 
+                    : item is ListOfLinks ? ListOfLinksDataTemplate 
+                    : item is Link l ? l.IsPinned ? PinnedLinkDataTemplate : LinkDataTemplate 
+                    : TitleDataTemplate;
         }
     }
 }

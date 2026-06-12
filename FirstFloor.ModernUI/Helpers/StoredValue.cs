@@ -20,17 +20,18 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         internal static StoredValue Create([NotNull] string key, [CanBeNull] object defaultValue) {
-            if (!Instances.TryGetValue(key, out var link) || !link.TryGetTarget(out var result)) {
-                if (link != null) {
-                    RemoveDeadReferences(Instances);
+            lock (Instances) {
+                if (!Instances.TryGetValue(key, out var link) || !link.TryGetTarget(out var result)) {
+                    if (link != null) {
+                        RemoveDeadReferences(Instances);
+                    }
+
+                    result = new StoredValue(key, defaultValue);
+                    link = new WeakReference<StoredValue>(result);
+                    Instances[key] = link;
                 }
-
-                result = new StoredValue(key, defaultValue);
-                link = new WeakReference<StoredValue>(result);
-                Instances[key] = link;
+                return result;
             }
-
-            return result;
         }
 
         private readonly string _storageKey;

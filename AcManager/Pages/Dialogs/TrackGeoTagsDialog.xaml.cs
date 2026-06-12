@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
@@ -8,7 +7,6 @@ using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls.UserControls.Web;
 using AcManager.Tools;
-using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -42,6 +40,11 @@ namespace AcManager.Pages.Dialogs {
             UrlMonitoring();
         }
 
+        protected override void OnClosedOverride() {
+            base.OnClosedOverride();
+            _closed = true;
+        }
+
         private async void UrlMonitoring() {
             while (!_closed) {
                 await Task.Delay(TimeSpan.FromMilliseconds(100d));
@@ -62,17 +65,7 @@ namespace AcManager.Pages.Dialogs {
                         }
                     }
                 }
-                /*_skipNext = true;
-                if (_bridge.Model != null) {
-                    _bridge.Model.Latitude = GeoTagsEntry.ToLat(lat);
-                    _bridge.Model.Longitude = GeoTagsEntry.ToLng(lng);
-                }
-                _skipNext = false;*/
             }
-        }
-
-        protected override void OnClosingOverride(CancelEventArgs e) {
-            base.OnClosingOverride(e);
         }
 
         private static bool _skipNext;
@@ -187,8 +180,6 @@ namespace AcManager.Pages.Dialogs {
             var tags = track.GeoTags;
             if (forceQuery || tags?.IsEmptyOrInvalid != false) return $@"https://www.google.com/maps/search/{GetQuery(track)}";
             return $@"https://www.google.com/maps/@{tags.LatitudeValue},{tags.LongitudeValue},14z";
-            // return CmHelpersProvider.GetAddress("map") + @"?ms&t=new#" +
-            //        (tags?.IsEmptyOrInvalid == false ? $"{tags.LatitudeValue};{tags.LongitudeValue}" : GetQuery(track));
         }
 
         private void OnShowDevToolsClick(object sender, RoutedEventArgs e) {

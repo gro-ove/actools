@@ -161,13 +161,13 @@ namespace AcManager.Pages.ContentTools {
             }
 
             public class SimularEntry {
-                public SimularEntry(HashStorage.Simular simular, CarObject car, double interest) {
-                    Simular = simular;
+                public SimularEntry(HashStorage.Similar similar, CarObject car, double interest) {
+                    Similar = similar;
                     Car = car;
                     Interest = interest;
                 }
 
-                public HashStorage.Simular Simular { get; }
+                public HashStorage.Similar Similar { get; }
 
                 public CarObject Car { get; }
 
@@ -175,8 +175,8 @@ namespace AcManager.Pages.ContentTools {
             }
 
             [ItemCanBeNull]
-            private static async Task<SimularEntry> Wrap(CarObject car, HashStorage.Simular baseSimular) {
-                var found = await CarsManager.Instance.GetByIdAsync(baseSimular.CarId);
+            private static async Task<SimularEntry> Wrap(CarObject car, HashStorage.Similar baseSimilar) {
+                var found = await CarsManager.Instance.GetByIdAsync(baseSimilar.CarId);
                 if (found == null) return null;
 
                 var parent = car.Parent ?? car;
@@ -185,7 +185,7 @@ namespace AcManager.Pages.ContentTools {
                     return null;
                 }
 
-                var interest = baseSimular.Value;
+                var interest = baseSimilar.Value;
 
                 if (found.Author != car.Author) {
                     // different authors, but the same suspension? hmm…
@@ -213,7 +213,7 @@ namespace AcManager.Pages.ContentTools {
                     interest += ageDifference / 10d;
                 }
 
-                return new SimularEntry(baseSimular, found, interest);
+                return new SimularEntry(baseSimilar, found, interest);
             }
 
             private static async Task<List<SimularEntry>> FindSimilar(CarObject car, RulesWrapper rules, string id, double threshold) {
@@ -229,12 +229,12 @@ namespace AcManager.Pages.ContentTools {
                 return new[] {
                     new RatingEntry(
                             $"Engine is similar to {similar[0].Car}",
-                            $"{similar[0].Simular.Value * 100:F1}% match.", null,
+                            $"{similar[0].Similar.Value * 100:F1}% match.", null,
                             () => {
                                 return $@"It doesn’t really mean anything… Just a bit of information.
 
 All found similarities:
-{similar.Select(x => $" • {x.Car.DisplayName}: {x.Simular.Value * 100:F1}%").JoinToString(";\n")}.";
+{similar.Select(x => $" • {x.Car.DisplayName}: {x.Similar.Value * 100:F1}%").JoinToString(";\n")}.";
                             })
                 };
             }
@@ -249,12 +249,12 @@ All found similarities:
                 return new[] {
                     new RatingEntry(
                             $"Turbo is similar to {similar[0].Car}",
-                            $"{similar[0].Simular.Value * 100:F1}% match.", null,
+                            $"{similar[0].Similar.Value * 100:F1}% match.", null,
                             () => {
                                 return $@"It doesn’t really mean anything… Just a bit of information.
 
 All found similarities:
-{similar.Select(x => $" • {x.Car.DisplayName}: {x.Simular.Value * 100:F1}%").JoinToString(";\n")}.";
+{similar.Select(x => $" • {x.Car.DisplayName}: {x.Similar.Value * 100:F1}%").JoinToString(";\n")}.";
                             })
                 };
             }
@@ -267,12 +267,12 @@ All found similarities:
                 return new[] {
                     new RatingEntry(
                             $"Gear ratios are similar to {similar[0].Car}",
-                            $"{similar[0].Simular.Value * 100:F1}% match.", null,
+                            $"{similar[0].Similar.Value * 100:F1}% match.", null,
                             () => {
                                 return $@"Why not?
 
 All found similarities:
-{similar.Select(x => $" • {x.Car.DisplayName}: {x.Simular.Value * 100:F1}%").JoinToString(";\n")}.";
+{similar.Select(x => $" • {x.Car.DisplayName}: {x.Similar.Value * 100:F1}%").JoinToString(";\n")}.";
                             })
                 };
             }
@@ -285,12 +285,12 @@ All found similarities:
                 return new[] {
                     new RatingEntry(
                             $"Aerodynamic properties are similar to {similar[0].Car}",
-                            $"{similar[0].Simular.Value * 100:F1}% match.", null,
+                            $"{similar[0].Similar.Value * 100:F1}% match.", null,
                             () => {
                                 return $@"It might be difficult to calculate those values from scratch for every model.
 
 All found similarities:
-{similar.Select(x => $" • {x.Car.DisplayName}: {x.Simular.Value * 100:F1}%").JoinToString(";\n")}.";
+{similar.Select(x => $" • {x.Car.DisplayName}: {x.Similar.Value * 100:F1}%").JoinToString(";\n")}.";
                             })
                 };
             }
@@ -325,11 +325,11 @@ All found similarities:
                         return new[] {
                             new RatingEntry(
                                     frontGeometry ? $"Suspension geometry is similar to {zip.Front.Car}" : $"Suspension is similar to {zip.Front.Car}",
-                                    $"{(zip.Front.Simular.Value + zip.Rear.Simular.Value) * 50d:F1}% match.", null, () => {
+                                    $"{(zip.Front.Similar.Value + zip.Rear.Similar.Value) * 50d:F1}% match.", null, () => {
                                         return $@"Of course, it’s not always a bad thing. A lot of cars are built on the same chassis.
 
 All found similarities:
-{zipList.Select(x => $" • {x.Front.Car.DisplayName}: {(x.Front.Simular.Value + x.Rear.Simular.Value) * 50:F1}%").JoinToString(";\n")}.";
+{zipList.Select(x => $" • {x.Front.Car.DisplayName}: {(x.Front.Similar.Value + x.Rear.Similar.Value) * 50:F1}%").JoinToString(";\n")}.";
                                     })
                         };
                     }
@@ -339,12 +339,12 @@ All found similarities:
                     result.Add(new RatingEntry(
                             frontGeometry
                                     ? $"Front suspension geometry is similar to {similarFront[0].Car}" : $"Front suspension is similar to {similarFront[0].Car}",
-                            $"{similarFront[0].Simular.Value * 100:F1}% match.", null,
+                            $"{similarFront[0].Similar.Value * 100:F1}% match.", null,
                             () => {
                                 return $@"Of course, it’s not always a bad thing. A lot of cars are built on the same chassis.
 
 All found similarities:
-{similarFront.Select(x => $" • {x.Car.DisplayName}: {x.Simular.Value * 100:F1}%").JoinToString(";\n")}.";
+{similarFront.Select(x => $" • {x.Car.DisplayName}: {x.Similar.Value * 100:F1}%").JoinToString(";\n")}.";
                             }));
                 }
 
@@ -352,12 +352,12 @@ All found similarities:
                     result.Add(new RatingEntry(
                             rearGeometry
                                     ? $"Rear suspension geometry is similar to {similarRear[0].Car}" : $"Rear suspension is similar to {similarRear[0].Car}",
-                            $"{similarRear[0].Simular.Value * 100:F1}% match.", null,
+                            $"{similarRear[0].Similar.Value * 100:F1}% match.", null,
                             () => {
                                 return $@"Of course, it’s not always a bad thing. A lot of cars are built on the same chassis.
 
 All found similarities:
-{similarRear.Select(x => $" • {x.Car.DisplayName}: {x.Simular.Value * 100:F1}%").JoinToString(";\n")}.";
+{similarRear.Select(x => $" • {x.Car.DisplayName}: {x.Similar.Value * 100:F1}%").JoinToString(";\n")}.";
                             }));
                 }
 

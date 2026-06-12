@@ -67,7 +67,7 @@ namespace AcManager.Tools.Starters {
                     SteamAPI.RunCallbacks();
                     await Task.Delay(20);
                 }
-            } catch (Exception e) {
+            } catch (Exception) {
                 // ignored
             }
         }
@@ -111,7 +111,7 @@ namespace AcManager.Tools.Starters {
             InviteListener = Callback<GameRichPresenceJoinRequested_t>.Create(t =>
                     SteamInvite?.Invoke(null, new SteamInviteArgs(t.m_steamIDFriend.ToString(), t.m_rgchConnect)));
             LobbyListener = Callback<GameLobbyJoinRequested_t>.Create(t => GetLobbyInviteUrlTyped(t.m_steamIDLobby).ContinueWith(v => {
-                if (v.IsCompleted && !string.IsNullOrEmpty(v.Result)) {
+                if (v.Status == TaskStatus.RanToCompletion && !string.IsNullOrEmpty(v.Result)) {
                     SteamInvite?.Invoke(null, new SteamInviteArgs(t.m_steamIDFriend.ToString(), v.Result));
                 }
             }));

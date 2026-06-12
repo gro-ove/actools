@@ -92,7 +92,7 @@ namespace AcTools.DataAnalyzer {
             }
         }
 
-        public IEnumerable<Simular> FindSimular([NotNull] string carId, [NotNull] string setId, [NotNull] byte[] hashValues, double threshold,
+        public IEnumerable<Similar> FindSimilar([NotNull] string carId, [NotNull] string setId, [NotNull] byte[] hashValues, double threshold,
                 [NotNull] RulesSet set, bool keepWorkedRules) {
             var index = _setsKeys.IndexOf(setId);
             if (index < 0) {
@@ -105,12 +105,12 @@ namespace AcTools.DataAnalyzer {
                 var pairHash = pair.Value[index];
                 var value = RulesSet.CompareHashes(hashValues, pairHash, set, keepWorkedRules, out var workedRules);
                 if (value > threshold) {
-                    yield return new Simular { CarId = pair.Key, Value = value, WorkedRules = workedRules };
+                    yield return new Similar { CarId = pair.Key, Value = value, WorkedRules = workedRules };
                 }
             }
         }
 
-        public class Simular {
+        public class Similar {
             public string CarId;
             public double Value;
             public RulesSet.Rule[] WorkedRules;

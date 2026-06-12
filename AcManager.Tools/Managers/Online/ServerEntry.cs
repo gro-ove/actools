@@ -7,7 +7,6 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -40,7 +39,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private string _sortingName;
         
-        public string SortingName => _sortingName ?? (_sortingName = GetSortingName(DisplayName));
+        public string SortingName => _sortingName ?? (_sortingName = OnlineSanityHelper.GetSortingName(DisplayName));
 
         public async Task UpdateValuesAsync([NotNull] ServerInformation information, bool forceStatus = false) {
             PrepareErrorsList();

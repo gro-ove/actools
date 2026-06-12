@@ -49,10 +49,11 @@ namespace AcManager.Tools.Miscellaneous {
         public static void Register<T>(BaseAcManager<T> manager, CupContentType type) where T : AcObjectNew, ICupSupportedObject {
             // Logging.Debug($"REGISTERING : {type}, {manager}, {Instance}");
             if (Instance == null) {
-#if DEBUG
+                #if DEBUG
                 throw new Exception("Nowhere to register: " + manager);
-#endif
+                #else
                 return;
+                #endif
             }
             Instance._managers.Add(type, manager);
             Instance.NewLatestVersion += (sender, args) => {
@@ -77,7 +78,7 @@ namespace AcManager.Tools.Miscellaneous {
                 var manager = factory();
                 foreach (var args in postponed) {
                     var obj = manager.GetWrapperById(args.Key.Id);
-                    if (obj == null || !obj.IsLoaded) return;
+                    if (obj == null || !obj.IsLoaded) continue;
                     ((ICupSupportedObject)obj.Value).OnCupUpdateAvailableChanged();
                 }
                 _postponed.Remove(type);

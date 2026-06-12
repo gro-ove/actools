@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AcManager.Tools;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Profile;
 using AcTools.Processes;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Drive {
-    public partial class QuickDrive_TimeAttack : IQuickDriveModeControl {
+    public partial class QuickDrive_TimeAttack : IQuickDriveModeControl, ITabCanBePinned {
         public class ViewModel : QuickDriveSingleModeViewModel {
             public ViewModel(bool initialize = true) {
                 Initialize("__QuickDrive_TimeAttack", initialize);
@@ -48,5 +50,7 @@ namespace AcManager.Pages.Drive {
             get => (QuickDriveModeViewModel)DataContext;
             set => DataContext = value;
         }
+
+        public string Title => ToolsStrings.Session_TimeAttack;
     }
 }

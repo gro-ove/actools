@@ -91,7 +91,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public async Task<bool> LoadAsync(ListAddAsyncCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress,
                 CancellationToken cancellation) {
-            var data = await Task.Run(() => KunosApiProvider.TryToGetThirdPartyList(Url), cancellation);
+            var data = await Task.Run(() => KunosApiProvider.TryToGetThirdPartyListAsync(Url), cancellation);
             // if (cancellation.IsCancellationRequested) return false;
 
             if (data == null) {

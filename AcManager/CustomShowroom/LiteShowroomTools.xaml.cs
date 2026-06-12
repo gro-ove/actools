@@ -960,11 +960,11 @@ namespace AcManager.CustomShowroom {
             private void OnRendererPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(Renderer.MagickOverride):
-                        ActionExtension.InvokeInMainThread(SaveLater);
+                        ActionExtension.InvokeInMainThreadAsyncLater(SaveLater);
                         break;
 
                     case nameof(Renderer.CarNode):
-                        ActionExtension.InvokeInMainThread(OnCarNodeUpdated);
+                        ActionExtension.InvokeInMainThreadAsyncLater(OnCarNodeUpdated);
                         break;
 
                     case nameof(Renderer.AutoAdjustTarget):
@@ -984,7 +984,7 @@ namespace AcManager.CustomShowroom {
                         break;
 
                     case nameof(Renderer.SelectedObject):
-                        ActionExtension.InvokeInMainThread(() => {
+                        ActionExtension.InvokeInMainThreadAsync(() => {
                             if (Renderer?.SelectedObject != null) {
                                 if (Mode != Mode.Selected) {
                                     _modeBeforeSelection = Mode;
@@ -1005,7 +1005,7 @@ namespace AcManager.CustomShowroom {
                         break;
 
                     case nameof(Renderer.SelectedMaterial):
-                        ActionExtension.InvokeInMainThread(() => { _viewMaterialCommand?.RaiseCanExecuteChanged(); });
+                        ActionExtension.InvokeInMainThreadAsync(() => _viewMaterialCommand?.RaiseCanExecuteChanged());
                         break;
                 }
             }

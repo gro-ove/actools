@@ -179,7 +179,7 @@ namespace AcManager.Pages.Dialogs {
                 void OnProgress(Tuple<string, double?> p) {
                     if (cancellation.IsCancellationRequested) return;
                     var msg = $"Creating: {GetItemName(p.Item1, out _).ToSentenceMember()}…";
-                    ActionExtension.InvokeInMainThread(() => progress?.Report(msg, p.Item2));
+                    ActionExtension.InvokeInMainThreadAsyncLater(() => progress?.Report(msg, p.Item2));
                 }
             }
 

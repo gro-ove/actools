@@ -51,9 +51,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static readonly DependencyProperty LayoutProperty = DependencyProperty.Register("Layout", typeof(TabLayout),
                 typeof(ModernTab), new PropertyMetadata(TabLayout.Tab));
 
-        public static readonly DependencyProperty ListWidthProperty = DependencyProperty.Register("ListWidth", typeof(GridLength),
-                typeof(ModernTab), new PropertyMetadata(new GridLength(170)));
-
         public static readonly DependencyProperty LinksProperty = DependencyProperty.Register("Links", typeof(LinkCollection),
                 typeof(ModernTab), new PropertyMetadata(OnLinksChanged));
 
@@ -64,18 +61,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public event EventHandler<NavigationEventArgs> FrameNavigated;
 
         private ListBox _linkList;
+        
+        public string PinnedSaveKey { get; set; }
 
         private void SavePinned() {
-            if (SaveKey != null) {
-                ValuesStorage.Storage.SetStringList(SaveKey + "/pinned",
+            var saveKey = PinnedSaveKey ?? (SaveKey != null ? SaveKey + "/pinned" : null);
+            if (saveKey != null) {
+                ValuesStorage.Storage.SetStringList(saveKey,
                         PinnedLinks.Select(x => Storage.EncodeList(x.DisplayName, x.Source?.OriginalString ?? "")));
             }
         }
 
-        private void LoadPinned() {
-            if (SaveKey != null) {
+        public void LoadPinned() {
+            var saveKey = PinnedSaveKey ?? (SaveKey != null ? SaveKey + "/pinned" : null);
+            if (saveKey != null) {
                 PinnedLinks.Clear();
-                foreach (var item in ValuesStorage.Storage.GetStringList(SaveKey + "/pinned").Select(Storage.DecodeList)) {
+                foreach (var item in ValuesStorage.Storage.GetStringList(saveKey).Select(Storage.DecodeList)) {
                     var values = item.ToList();
                     if (values.Count == 2) {
                         PinnedLinks.Add(new Link {
@@ -142,7 +143,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static object FindFittingLink(LinkCollection collection, Uri source) {
             foreach (var link in collection) {
                 if (link.IsShown && link.Source == source) return link;
-                if (link is LinksList list) {
+                if (link is LinkWithList list) {
                     foreach (var child in list.Children) {
                         if (child.IsShown && child.Source == source) {
                             list.SelectedLink = child;
@@ -157,7 +158,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static object FindFittingLink(LinkCollection collection, string source) {
             foreach (var link in collection) {
                 if (link.IsShown && link.Source?.OriginalString == source) return link;
-                if (link is LinksList list) {
+                if (link is LinkWithList list) {
                     foreach (var child in list.Children) {
                         if (child.IsShown && child.Source?.OriginalString == source) {
                             list.SelectedLink = child;
@@ -226,17 +227,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnLinkListSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            if (_linkList.SelectedItem is Link link && !(link is LinksList) && link.Source != SelectedSource) {
+            if (_linkList.SelectedItem is Link link && !(link is LinkWithList) && link.Source != SelectedSource) {
                 SetCurrentValue(SelectedSourceProperty, link.Source);
             }
         }
 
         private void Frame_Navigated(object sender, NavigationEventArgs navigationEventArgs) {
+            FrameNavigated?.Invoke(this, navigationEventArgs);
             if (Layout == TabLayout.TabWithTitle) {
-                Title = PinnedLinks.Any(x => x.Source == SelectedSource) ? null : (Frame.Content as ITitleable)?.Title;
+                Title = !(Frame.Content is ITabCanBePinned pinnable) || PinnedLinks.Any(x => x.Source == SelectedSource)
+                        ? null : pinnable.Title;
             }
 
-            FrameNavigated?.Invoke(this, navigationEventArgs);
             if (SaveKey != null && (_linkList.SelectedItem != null || SavePolicy == SavePolicy.Flexible)) {
                 ValuesStorage.Set(SaveKey, Frame.Source.OriginalString);
             }
@@ -266,11 +268,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public LinkCollection PinnedLinks {
             get => (LinkCollection)GetValue(PinnedLinksProperty);
             set => SetValue(PinnedLinksProperty, value);
-        }
-
-        public GridLength ListWidth {
-            get => GetValue(ListWidthProperty) as GridLength? ?? default;
-            set => SetValue(ListWidthProperty, value);
         }
 
         public Uri SelectedSource {

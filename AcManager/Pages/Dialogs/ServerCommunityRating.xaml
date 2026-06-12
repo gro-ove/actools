@@ -1,0 +1,106 @@
+<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.ServerCommunityRating" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.Dialogs"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" Title="{Binding Entry.DisplayName, StringFormat='Community rating: {0}'}"
+    d:DataContext="{d:DesignInstance local:ServerCommunityRating+ViewModel}" LocationAndSizeKey="ServerCommunityRating_LS" ResizeMode="CanResizeWithGrip"
+    MinWidth="200" MinHeight="200" MaxWidth="99999" MaxHeight="99999" SizeToContent="Manual" Width="400" Height="600">
+  <mui:ModernDialog.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FullscreenDialog.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </mui:ModernDialog.Resources>
+  <DockPanel>
+    <StackPanel DockPanel.Dock="Top">
+      <TextBlock Style="{StaticResource Heading1}" Text="{Binding Entry.DisplayVotes, StringFormat='{}Rating: {0}'}"
+          ToolTip="All servers get 50% by default. Votes shift them closer to 100% or to 0%." />
+      <ProgressBar Value="{Binding Entry.VotesRating, Mode=OneWay}" Minimum="0" Maximum="1" Height="4" Margin="0 4 0 0"></ProgressBar>
+      <mui:SpacingUniformGrid Rows="1" Columns="3" HorizontalSpacing="4" Margin="0 4 0 0">
+        <mui:AsyncButton Command="{Binding RateCommand}" CommandParameter="1" ToolTip="I recommend this server">
+          <mui:AsyncButton.Style>
+            <Style TargetType="{x:Type mui:AsyncButton}" BasedOn="{StaticResource {x:Type mui:AsyncButton}}">
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding Entry.OwnVote}" Value="1">
+                  <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </mui:AsyncButton.Style>
+          <mui:AsyncButton.Content>
+            <DockPanel>
+              <Path Data="M 2,10 L 6,10 L 8,4 L 10,4 L 9,10 L 18,10 L 18,13 L 15,20 L 6,20 L 6,10 Z M 2,20 L 5,20 L 5,10 L 2,10 Z" Width="14" Height="14"
+                  Stretch="Uniform" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Margin="0 0 4 0" />
+              <TextBlock Text="{Binding Entry.VotesUp}" />
+            </DockPanel>
+          </mui:AsyncButton.Content>
+        </mui:AsyncButton>
+        <mui:AsyncButton Command="{Binding RateCommand}" CommandParameter="-1" ToolTip="I don’t recommend this server"
+            Tag="{Binding Entry.OwnVote, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=0}">
+          <mui:AsyncButton.Style>
+            <Style TargetType="{x:Type mui:AsyncButton}" BasedOn="{StaticResource {x:Type mui:AsyncButton}}">
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding Entry.OwnVote}" Value="-1">
+                  <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </mui:AsyncButton.Style>
+          <mui:AsyncButton.Content>
+            <DockPanel>
+              <Path Data="M 2,12 L 6,12 L 8,18 L 10,18 L 9,12 L 18,12 L 18,9 L 15,2 L 6,2 L 6,12 Z M 2,2 L 5,2 L 5,12 L 2,12 Z" Width="14" Height="14"
+                  Stretch="Uniform" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Margin="0 0 4 0" />
+              <TextBlock Text="{Binding Entry.VotesDown}" />
+            </DockPanel>
+          </mui:AsyncButton.Content>
+        </mui:AsyncButton>
+        <mui:AsyncButton Command="{Binding RateCommand}" CommandParameter="0" ToolTip="I want to erase my vote">
+          <mui:AsyncButton.Content>
+            <DockPanel>
+              <Path Data="{StaticResource CloseIconData}" Width="14" Height="14" Stretch="Uniform"
+                  Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Margin="0 0 4 0" />
+              <TextBlock Text="Clear" />
+            </DockPanel>
+          </mui:AsyncButton.Content>
+        </mui:AsyncButton>
+      </mui:SpacingUniformGrid>
+      <TextBlock Text="Comments:" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+    </StackPanel>
+    <mui:FallbackSwitch>
+      <mui:ModernProgressRing mui:FallbackSwitch.Value="{Binding Loading}" Width="80" Height="80" VerticalAlignment="Center" HorizontalAlignment="Center"
+          IsActive="True" />
+      <mui:PlaceholderTextBlock mui:FallbackSwitch.Value="{Binding Comments.Count}" mui:FallbackSwitch.When="0" Placeholder="No comments yet." />
+      <ItemsControl ItemsSource="{Binding Comments}" Style="{StaticResource VirtualizingItemsControl}" mui:FancyScroll.Outside="True">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <DockPanel Margin="0 8 0 0" x:Name="PART_Panel">
+              <Rectangle x:Name="PART_Mark" Width="4" Margin="0 0 8 0" Fill="{DynamicResource Go}" ToolTip="Positive review" />
+              <mui:BetterImage Filename="{Binding Avatar}" Height="28" Width="28" DockPanel.Dock="Left" Margin="0 4 12 0" AsyncDecode="True"
+                  VerticalAlignment="Top" />
+              <DockPanel Dock="Top" Margin="0 0 0 4">
+                <mui:PlaceholderTextBlock Text="{Binding Username}" Placeholder="Anonymous" FontWeight="Bold" />
+                <TextBlock x:Name="PART_You" Visibility="Collapsed" Text=" (you)" FontWeight="Bold" Foreground="{DynamicResource Accent}" />
+                <TextBlock Text="{Binding Date}" Margin="8 0 0 0" Foreground="{DynamicResource WindowTextReadOnly}" FontSize="{DynamicResource SmallFontSize}"
+                    VerticalAlignment="Bottom" />
+              </DockPanel>
+              <TextBlock Text="{Binding DisplayStats}" Style="{StaticResource Small}" FontWeight="Bold" DockPanel.Dock="Top" Margin="0 0 0 4"
+                  Visibility="{Binding Stats, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+              <mui:BbCodeBlock Text="{Binding Comment}" Mode="SafeBbCodes" Margin="0 0 0 4" />
+            </DockPanel>
+            <DataTemplate.Triggers>
+              <DataTrigger Binding="{Binding Own}" Value="True">
+                <Setter TargetName="PART_You" Property="Visibility" Value="Visible" />
+              </DataTrigger>
+              <DataTrigger Binding="{Binding Vote}" Value="-1">
+                <Setter TargetName="PART_Mark" Property="Fill" Value="{DynamicResource Error}" />
+                <Setter TargetName="PART_Mark" Property="ToolTip" Value="Negative review" />
+              </DataTrigger>
+            </DataTemplate.Triggers>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </mui:FallbackSwitch>
+  </DockPanel>
+</mui:ModernDialog>

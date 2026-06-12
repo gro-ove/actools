@@ -219,7 +219,7 @@ namespace AcManager.Tools.Managers.Online {
                         driversCount = extended.Clients;
                         carsInformation = extended.Players;
                         informationLoadedExtended = true;
-                    } catch (Exception e) {
+                    } catch (Exception) {
                         // Logging.Warning($"<{Ip}:{PortHttp}> {(e.IsWebException() ? e.Message : e.ToString())}");
                         DetailsPort = null;
                         UpdateValuesExtended(null);
@@ -234,7 +234,7 @@ namespace AcManager.Tools.Managers.Online {
                             Sessions?.ForEach((x, i) => x.Duration = extended.Durations?.ElementAtOrDefault(i) ?? x.Duration);
                         }
                         UpdateValuesExtended(extended);
-                    } catch (Exception e) {
+                    } catch (Exception) {
                         // Logging.Warning($"<{Ip}:{PortHttp}> {(e.IsWebException() ? e.Message : e.ToString())}");
                         UpdateValuesExtended(null);
                         return;
@@ -310,11 +310,11 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 if (!BookingMode) {
-                    CurrentDriversCount = carsInformation.Cars.Count(x => x.IsConnected);
+                    CurrentDriversCount = carsInformation.Cars.Count(x => x.IsSlotTaken);
                     driversCount = -1;
                 }
 
-                var currentDrivers = (BookingMode ? carsInformation.Cars : carsInformation.Cars.Where(x => x.IsConnected))
+                var currentDrivers = (BookingMode ? carsInformation.Cars : carsInformation.Cars.Where(x => x.IsSlotTaken))
                         .Select(x => {
                             var driver = CurrentDrivers?.FirstOrDefault(y => y.SameAs(x)) ?? new CurrentDriver(x, RequiredCspVersion != 0);
                             return driver;
@@ -327,8 +327,8 @@ namespace AcManager.Tools.Managers.Online {
                     var realCount = 0;
                     var booked = false;
                     foreach (var x in currentDrivers) {
-                        if (x.IsConnected != DriverStatus.Disconnected) {
-                            if (x.IsConnected == DriverStatus.Connected) realCount++;
+                        if (x.IsAnybodyConnected != CurrentDriverStatus.Disconnected) {
+                            if (x.IsAnybodyConnected == CurrentDriverStatus.Connected) realCount++;
                             count++;
                         }
                         if (x.IsBookedForPlayer) {
@@ -395,9 +395,9 @@ namespace AcManager.Tools.Managers.Online {
                             entry.Available = 0;
                             entry.IsAvailable = true;
                         } else {
-                            availableSkin = cars.FirstOrDefault(y => !y.IsConnected);
+                            availableSkin = cars.FirstOrDefault(y => !y.IsSlotTaken);
                             entry.Total = cars.Count;
-                            entry.Available = cars.Count(y => !y.IsConnected);
+                            entry.Available = cars.Count(y => !y.IsSlotTaken);
                             entry.IsAvailable = entry.Available > 0;
                         }
 

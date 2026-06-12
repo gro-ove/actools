@@ -60,6 +60,7 @@
           <Separator />
           <MenuItem Header="{x:Static mui:UiStrings.Toolbar_OnlineManageLists}" InputGestureText="Ctrl+Shift+D" Command="{Binding ManageListsCommand}" />
         </mui:ButtonWithComboBox>
+        
         <mui:ButtonWithComboBox Content="{x:Static mui:UiStrings.Toolbar_Invite}" Command="{Binding InviteCommand}"
             ToolTip="{x:Static mui:UiStrings.Toolbar_Invite_Tooltip}">
           <MenuItem Header="{x:Static mui:UiStrings.Toolbar_Invite_IncludePasswordHeader}" IsChecked="{Binding CopyPasswordToInviteLink}" IsCheckable="True"
@@ -90,6 +91,14 @@
             </CompositeCollection>
           </mui:ButtonWithComboBox.MenuItems>
         </mui:ButtonWithComboBox>
+        
+        <Separator 
+            Visibility="{Binding RatingAvailable, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}" />
+        <Button Command="{Binding RateCommand}"
+            Visibility="{Binding RatingAvailable, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"
+            ToolTip="New experimental mechanism for users to rate servers. Proof-of-concept stage.">
+          <TextBlock Text="{Binding Entry.DisplayVotes, StringFormat='Community rating: {0}'}" />
+        </Button>
       </ToolBar>
       <ToolBar ToolBarTray.IsLocked="True" Band="1" BandIndex="1">
         <mui:AsyncButton Command="{Binding Entry.InstallMissingContentCommand}"
@@ -616,9 +625,13 @@
                       </DockPanel>
 
                       <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                        <DataTrigger Binding="{Binding IsAnybodyConnected}" Value="{x:Static t:ServerEntry+CurrentDriverStatus.Disconnected}">
                           <Setter Property="TextBlock.TextDecorations" Value="Strikethrough" TargetName="DriverName" />
                           <Setter Property="ToolTip" Value="Disconnected" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsAnybodyConnected}" Value="{x:Static t:ServerEntry+CurrentDriverStatus.Fake}">
+                          <Setter Property="TextBlock.TextDecorations" Value="Strikethrough" TargetName="DriverName" />
+                          <Setter Property="ToolTip" Value="N/A slot" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsBookedForPlayer}" Value="True">
                           <Setter Property="TextBlock.TextDecorations" Value="None" TargetName="DriverName" />
@@ -630,7 +643,7 @@
                         </DataTrigger>
                         <MultiDataTrigger>
                           <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding IsConnected}" Value="True" />
+                            <Condition Binding="{Binding IsAnybodyConnected}" Value="{x:Static t:ServerEntry+CurrentDriverStatus.Connected}" />
                             <Condition Binding="{Binding IsBookedForPlayer}" Value="True" />
                           </MultiDataTrigger.Conditions>
                           <Setter Property="ToolTip" Value="{x:Static t:ToolsStrings.Online_YouAreOnThisServer}" />

@@ -3,6 +3,5 @@
         Tab,
         TabWithTitle,
         List,
-        TabWithLinksLists
     }
 }

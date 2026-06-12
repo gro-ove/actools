@@ -34,7 +34,7 @@ namespace AcManager.Tools.Data {
 
         [CanBeNull]
         private static string VersionFromData([CanBeNull] string data) {
-            return data == null ? null : JsonConvert.DeserializeObject<ContentManifest>(data).Version;
+            return data == null ? null : JsonConvert.DeserializeObject<ContentManifest>(data)?.Version;
         }
 
         [CanBeNull]
@@ -108,11 +108,15 @@ namespace AcManager.Tools.Data {
                             CleanUp(location);
                             break;
                         } catch (IOException e) {
-                            if (i == 0) throw;
+                            if (i == 0 && Directory.GetFiles(location, "*.*", SearchOption.AllDirectories).Length > 0) {
+                                throw;
+                            }
                             Logging.Warning(e.Message);
                             Thread.Sleep(30);
                         } catch (UnauthorizedAccessException e) {
-                            if (i == 0) throw;
+                            if (i == 0 && Directory.GetFiles(location, "*.*", SearchOption.AllDirectories).Length > 0) {
+                                throw;
+                            }
                             Logging.Warning(e.Message);
                             Thread.Sleep(30);
                         }

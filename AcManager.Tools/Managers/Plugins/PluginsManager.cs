@@ -53,6 +53,13 @@ namespace AcManager.Tools.Managers.Plugins {
             List = new BetterObservableCollection<PluginEntry>();
             ListView = new BetterListCollectionView(List);
             ListView.SortDescriptions.Add(new SortDescription(nameof(PluginEntry.Name), ListSortDirection.Ascending));
+            Task.Run(() => {
+                var list = LoadListImpl();
+                ActionExtension.InvokeInMainThreadAsyncLater(() => {
+                    List.ReplaceEverythingBy(list);
+                    _locallyLoaded = true;
+                });
+            });
             ReloadLocalList();
             // TODO: Directory watching
         }
@@ -87,20 +94,23 @@ namespace AcManager.Tools.Managers.Plugins {
             }
         }
 
-        public void ReloadLocalList() {
+        private List<PluginEntry> LoadListImpl() {
             try {
-                List.ReplaceEverythingBy(Directory.GetDirectories(PluginsDirectory)
+                return Directory.GetDirectories(PluginsDirectory)
                         .Select(x => Path.Combine(x, ManifestFileName))
                         .Where(File.Exists)
                         .Select(x => JsonConvert.DeserializeObject<PluginEntry>(File.ReadAllText(x)))
                         .Where(x => x.IsAllRight)
                         .Distinct(new UniqueIds())
-                        .ToList());
+                        .ToList();
             } catch (Exception e) {
-                List.Clear();
                 Logging.Warning("Cannot get list of installed plugins: " + e);
+                return new List<PluginEntry>();
             }
+        }
 
+        private void ReloadLocalList() {
+            List.ReplaceEverythingBy(LoadListImpl());
             _locallyLoaded = true;
         }
 

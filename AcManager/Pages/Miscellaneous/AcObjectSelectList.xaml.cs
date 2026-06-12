@@ -39,7 +39,7 @@ namespace AcManager.Pages.Miscellaneous {
         event EventHandler<ItemChosenEventArgs<T>> ItemChosen;
     }
 
-    public sealed partial class AcObjectSelectList : ISelectedItemsPage<AcObjectNew>, IChoosingItemControl<AcObjectNew>, ITitleable, IParametrizedUriContent {
+    public sealed partial class AcObjectSelectList : ISelectedItemsPage<AcObjectNew>, IChoosingItemControl<AcObjectNew>, ITabCanBePinned, IParametrizedUriContent {
         public string Title { get; set; }
 
         public string Filter { get; private set; }

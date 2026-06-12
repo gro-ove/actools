@@ -169,7 +169,8 @@
     <Compile Include="Presentation\AppearanceManager.Behavior.cs" />
     <Compile Include="Presentation\LinkCloseEventArgs.cs" />
     <Compile Include="Presentation\LinkCloseMode.cs" />
-    <Compile Include="Presentation\LinksList.cs" />
+    <Compile Include="Presentation\ListOfLinks.cs" />
+    <Compile Include="Presentation\LinkWithList.cs" />
     <Compile Include="Presentation\NotifyPropertyErrorsChanged.cs" />
     <Compile Include="Serialization\SimpleSerialization.cs" />
     <Compile Include="Serialization\SimpleSerialization.Extra.cs" />
@@ -255,12 +256,11 @@
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
     <Compile Include="Windows\Controls\IEmojiProvider.cs" />
     <Compile Include="Windows\Controls\INumberInputConverter.cs" />
-    <Compile Include="Windows\Controls\ITitleable.cs" />
+    <Compile Include="Windows\Controls\ITabCanBePinned.cs" />
     <Compile Include="Windows\Controls\LabeledToggleButton.cs" />
     <Compile Include="Windows\Controls\LazySwitch.cs" />
     <Compile Include="Windows\Controls\ListSwitch.cs" />
     <Compile Include="Windows\Controls\ModernSubMenuItemContainerStyleSelector.cs" />
-    <Compile Include="Windows\Controls\ModernTabDataLinkListTemplateSelector.cs" />
     <Compile Include="Windows\Controls\ModernTabDataTemplateSelector.cs" />
     <Compile Include="Windows\Controls\ModernTabLinksComboBox.cs" />
     <Compile Include="Windows\Controls\ModernTabSplitter.cs" />

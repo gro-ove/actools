@@ -684,14 +684,14 @@ namespace AcManager.Controls {
             _currentCountryId = server.CountryId;
             try {
                 var task = CountryIcon.LoadEntryAsync(server.CountryId, 24);
-                if (task.IsCompleted) {
+                if (task.Status == TaskStatus.RanToCompletion) {
                     _countryBitmap = task.Result.ImageSource;
                     return true;
                 }
                 
                 _countryBitmap = null;
                 task.ContinueWithInMainThread(r => {
-                    if (r.IsCompleted && _currentCountryId == server.CountryId) {
+                    if (r.Status == TaskStatus.RanToCompletion && _currentCountryId == server.CountryId) {
                         _countryBitmap = r.Result.ImageSource;
                         _renderDirty = true;
                         InvalidateVisual();
@@ -1220,6 +1220,12 @@ namespace AcManager.Controls {
         }
 
         private void OnServerPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (Application.Current?.Dispatcher.Thread != Thread.CurrentThread) {
+                ActionExtension.InvokeInMainThreadAsyncLater(() => {
+                    OnServerPropertyChanged(sender, e);
+                });
+                return;
+            }
             var server = (ServerEntry)sender;
             switch (e.PropertyName) {
                 case nameof(ServerEntry.DisplayName):
@@ -1259,9 +1265,8 @@ namespace AcManager.Controls {
                     _renderDirty = true;
                     break;
                 case nameof(ServerEntry.CountryId):
-                    if (UpdateCountryFlag(server)) {
-                        _renderDirty = true;
-                    }
+                    if (!UpdateCountryFlag(server)) return;
+                    _renderDirty = true;
                     break;
                 case nameof(ServerEntry.Ping):
                     UpdatePing(server);
@@ -1314,11 +1319,7 @@ namespace AcManager.Controls {
                     return;
             }
 
-            if (Application.Current?.Dispatcher.Thread == Thread.CurrentThread) {
-                InvalidateVisual();
-            } else {
-                ActionExtension.InvokeInMainThreadAsync(() => InvalidateVisual());
-            }
+            InvalidateVisual();
         }
 
         // TODO: Replace warning triangles with download icons if content is available to download

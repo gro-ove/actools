@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AcManager.Tools;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Profile;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Drive {
-    public partial class QuickDrive_Drift : IQuickDriveModeControl {
+    public partial class QuickDrive_Drift : IQuickDriveModeControl, ITabCanBePinned {
         public class ViewModel : QuickDriveSingleModeViewModel {
             public Game.StartType[] StartTypes => Game.StartType.Values;
 
@@ -81,5 +83,7 @@ namespace AcManager.Pages.Drive {
             get => (QuickDriveModeViewModel)DataContext;
             set => DataContext = value;
         }
+        
+        public string Title => ToolsStrings.Session_Drift;
     }
 }

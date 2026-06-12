@@ -458,6 +458,9 @@
     <Compile Include="Pages\Dialogs\ImageEditor.xaml.cs">
       <DependentUpon>ImageEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\ServerCommunityRating.xaml.cs">
+      <DependentUpon>ServerCommunityRating.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\TrackSkinTexturesDialog.xaml.cs">
       <DependentUpon>TrackSkinTexturesDialog.xaml</DependentUpon>
     </Compile>
@@ -503,6 +506,7 @@
     <Compile Include="Pages\Drive\JsGenericProxy.cs" />
     <Compile Include="Pages\Drive\Online.QuickFilters.cs" />
     <Compile Include="Pages\Drive\OnlineServer.AutoJoin.cs" />
+    <Compile Include="Pages\Drive\OnlineServer.Cmor.cs" />
     <Compile Include="Pages\Drive\QuickDriveSingleModeViewModel.cs" />
     <Compile Include="Pages\Drive\QuickDrive_Custom.xaml.cs">
       <DependentUpon>QuickDrive_Custom.xaml</DependentUpon>
@@ -1201,6 +1205,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Dialogs\ServerCommunityRating.xaml" />
     <Page Include="Pages\Dialogs\TrackSkinTexturesDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

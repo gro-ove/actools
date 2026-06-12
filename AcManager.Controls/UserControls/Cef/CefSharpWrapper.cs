@@ -124,7 +124,7 @@ namespace AcManager.Controls.UserControls.Cef {
         private void OnFrameLoadStart(object sender, FrameLoadStartEventArgs e) {
             _inner.SetZoomLevel(Math.Log(_zoomLevel, 1.2));
             if (e.Frame.IsMain) {
-                ActionExtension.InvokeInMainThread(() => PageLoadingStarted?.Invoke(this, new UrlEventArgs(AlterUrl(e.Url))));
+                ActionExtension.InvokeInMainThreadAsync(() => PageLoadingStarted?.Invoke(this, new UrlEventArgs(AlterUrl(e.Url))));
             }
         }
 

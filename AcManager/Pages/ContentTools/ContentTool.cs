@@ -30,9 +30,7 @@ namespace AcManager.Pages.ContentTools {
                 bool result;
                 using (_cancellation = new CancellationTokenSource()) {
                     result = await LoadAsyncOverride(new Progress<AsyncProgressEntry>(entry => {
-                        ActionExtension.InvokeInMainThread(() => {
-                            ProgressValue = entry;
-                        });
+                        ActionExtension.InvokeInMainThreadAsyncLater(() => ProgressValue = entry);
                     }), _cancellation.Token);
                 }
 

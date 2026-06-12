@@ -103,9 +103,10 @@ namespace AcTools.Utils {
                 }
 
                 lock (_lock) {
-                    // TODO: SHOULD ISSET GO FIRST?
-                    _value = _fn == null ? default : _fn.Invoke();
-                    IsSet = true;
+                    if (!IsSet) {
+                        _value = _fn == null ? default : _fn.Invoke();
+                        IsSet = true;
+                    }
                 }
             }
             return _value;

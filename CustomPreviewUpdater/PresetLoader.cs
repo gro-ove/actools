@@ -139,7 +139,7 @@ namespace CustomPreviewUpdater {
                         }
                         return memory.ToArray();
                     }
-                } catch (Exception e) {
+                } catch (Exception) {
                     return null;
                 }
             }

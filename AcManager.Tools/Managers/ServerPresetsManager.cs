@@ -127,7 +127,7 @@ namespace AcManager.Tools.Managers {
             try {
                 await Task.Delay(300);
                 if (_updating) {
-                    ActionExtension.InvokeInMainThread(() => { SavedDrivers.ReplaceIfDifferBy(ServerSavedDriver.Load(DriversFilename)); });
+                    ActionExtension.InvokeInMainThreadAsyncLater(() => SavedDrivers.ReplaceIfDifferBy(ServerSavedDriver.Load(DriversFilename)));
                     await Task.Delay(200);
                 }
             } finally {

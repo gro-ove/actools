@@ -311,7 +311,7 @@ namespace AcManager.Pages.Selected {
             }, () => {
                 if (!SettingsHolder.Common.DeveloperMode) return false;
                 var task = SelectedObject.GetAcdDataAsync();
-                if (task.IsCompleted) {
+                if (task.Status == TaskStatus.RanToCompletion) {
                     return task.Result?.IsPacked == true;
                 }
                 task.ContinueWithInMainThread(r => _readDataCommand?.RaiseCanExecuteChanged());

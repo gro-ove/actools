@@ -23,18 +23,21 @@ namespace AcManager.Tools.Managers.InnerHelpers {
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void Action() {
-            Debug.WriteLine("ACMGR: WatchingTask.Action()");
+            // Debug.WriteLine("ACMGR: WatchingTask.Action()");
             if (_actionInProcess) return;
             _actionInProcess = true;
             AsyncAction().Ignore();
         }
 
-        private async Task AsyncAction() {
-            Debug.WriteLine("ACMGR: WatchingTask.AsyncAction()");
+        private int _asyncActionId;
 
+        private async Task AsyncAction() {
+            // Debug.WriteLine("ACMGR: WatchingTask.AsyncAction()");
+
+            var curId = ++_asyncActionId;
             while (_delay) {
                 _delay = false;
-                Debug.WriteLine("ACMGR: WatchingTask.AsyncAction() Delay");
+                // Debug.WriteLine("ACMGR: WatchingTask.AsyncAction() Delay");
 
                 int delayAmount;
                 lock (_queue) {
@@ -42,13 +45,15 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                 }
 
                 await Task.Delay(delayAmount);
+                if (curId != _asyncActionId) return;
             }
 
-            ActionExtension.InvokeInMainThread(() => {
+            ActionExtension.InvokeInMainThreadAsyncLater(() => {
                 try {
-                    Debug.WriteLine("ACMGR: WatchingTask.AsyncAction() Invoke");
+                    // Debug.WriteLine("ACMGR: WatchingTask.AsyncAction() Invoke");
                     // in some cases (CREATED, DELETED) queue could be cleared
 
+                    if (curId != _asyncActionId) return;
                     lock (_queue) {
                         if (_queue.Any()) {
                             var change = _queue.Dequeue();
@@ -65,7 +70,7 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                                     }
                                     _queue.Clear();
                                 } else {
-                                    Debug.WriteLine("ACMGR: WatchingTask.AsyncAction() Next");
+                                    // Debug.WriteLine("ACMGR: WatchingTask.AsyncAction() Next");
                                     AsyncAction().Ignore();
                                     return;
                                 }
@@ -74,17 +79,17 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                     }
 
                     _delay = false;
-                    _actionInProcess = false;
                 } catch (Exception e) {
                     Logging.Error(e);
+                } finally {
+                    _actionInProcess = false;
                 }
             });
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void AddEvent(WatcherChangeTypes type, string newLocation, string fullFilename) {
-            Debug.WriteLine("ACMGR: WatchingTask.AddEvent({0}, {1})", type, newLocation);
-
+            // Debug.WriteLine("ACMGR: WatchingTask.AddEvent({0}, {1})", type, newLocation);
             // try to collapse new entry with the last one (mostly for optimization purposes)
             lock (_queue) {
                 if (_queue.Any()) {
@@ -154,6 +159,9 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                     }
 
                     _delay = true;
+                    if (!_actionInProcess) {
+                        Action();
+                    }
                 } else {
                     // if queue is empty, add a new entry to queue and run start processing queue
                     _queue.Enqueue(new WatchingChange {

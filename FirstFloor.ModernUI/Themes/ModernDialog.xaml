@@ -77,10 +77,13 @@
                         <ContentControl x:Name="PART_BottomRow_Content" HorizontalAlignment="{TemplateBinding ButtonsRowContentAlignment}"
                             Content="{TemplateBinding ButtonsRowContent}" />
                       </DockPanel>
-
+                      
                       <!-- content -->
                       <Border Margin="{TemplateBinding ContentMargin}" Padding="{TemplateBinding Padding}">
-                        <c:TransitioningContentControl x:Name="PART_Content" Content="{TemplateBinding Content}" />
+                        <DockPanel>
+                          <ContentControl x:Name="PART_ExtraContent" DockPanel.Dock="Bottom" Content="{TemplateBinding ExtraContent}" />
+                          <c:TransitioningContentControl x:Name="PART_Content" Content="{TemplateBinding Content}" />
+                        </DockPanel>
                       </Border>
                     </DockPanel>
 
@@ -115,6 +118,9 @@
                   </Storyboard>
                 </BeginStoryboard>
               </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="ExtraContent" Value="{x:Null}">
+              <Setter TargetName="PART_ExtraContent" Property="Visibility" Value="Collapsed" />
             </Trigger>
             <DataTrigger Binding="{Binding Path=BorderBrush.(SolidColorBrush.Color).(Color.A), ElementName=PART_Border}" Value="0">
               <Setter TargetName="PART_BorderActive" Property="Visibility" Value="Collapsed" />

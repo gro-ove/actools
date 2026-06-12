@@ -22,7 +22,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public async Task<bool> LoadAsync(ListAddAsyncCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            var data = await Task.Run(() => KunosApiProvider.TryToGetMinoratingList(), cancellation);
+            var data = await Task.Run(() => KunosApiProvider.TryToGetMinoratingListAsync(), cancellation);
             // if (cancellation.IsCancellationRequested) return false;
 
             if (data == null) {

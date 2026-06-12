@@ -207,14 +207,26 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _LoadDescriptionImages;
+            private bool? _loadDescriptionImages;
 
             public bool LoadDescriptionImages {
-                get => _LoadDescriptionImages ?? (_LoadDescriptionImages = ValuesStorage.Get("Settings.OnlineSettings.LoadDescriptionImages", true)).Value;
+                get => _loadDescriptionImages ?? (_loadDescriptionImages = ValuesStorage.Get("Settings.OnlineSettings.LoadDescriptionImages", true)).Value;
                 set {
-                    if (Equals(value, _LoadDescriptionImages)) return;
-                    _LoadDescriptionImages = value;
+                    if (Equals(value, _loadDescriptionImages)) return;
+                    _loadDescriptionImages = value;
                     ValuesStorage.Set("Settings.OnlineSettings.LoadDescriptionImages", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _useCommunityRating;
+
+            public bool UseCommunityRating {
+                get => _useCommunityRating ?? (_useCommunityRating = ValuesStorage.Get("Settings.OnlineSettings.UseCommunityRating", false)).Value;
+                set {
+                    if (Equals(value, _useCommunityRating)) return;
+                    _useCommunityRating = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.UseCommunityRating", value);
                     OnPropertyChanged();
                 }
             }
@@ -267,15 +279,28 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private int? _pingingConcurrency;
+            private int? _pingConcurrency;
 
             public int PingConcurrency {
-                get => _pingingConcurrency ?? (_pingingConcurrency = ValuesStorage.Get("Settings.OnlineSettings.PingConcurrency", 10)).Value;
+                get => _pingConcurrency ?? (_pingConcurrency = ValuesStorage.Get("Settings.OnlineSettings.PingConcurrency", 10)).Value;
                 set {
                     value = value.Clamp(1, 1000);
-                    if (Equals(value, _pingingConcurrency)) return;
-                    _pingingConcurrency = value;
+                    if (Equals(value, _pingConcurrency)) return;
+                    _pingConcurrency = value;
                     ValuesStorage.Set("Settings.OnlineSettings.PingConcurrency", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private int? _pingConcurrency2;
+
+            public int PingConcurrency2 {
+                get => _pingConcurrency2 ?? (_pingConcurrency2 = ValuesStorage.Get("Settings.OnlineSettings.PingConcurrency2", 25)).Value;
+                set {
+                    value = value.Clamp(1, 1000);
+                    if (Equals(value, _pingConcurrency2)) return;
+                    _pingConcurrency2 = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.PingConcurrency2", value);
                     OnPropertyChanged();
                 }
             }

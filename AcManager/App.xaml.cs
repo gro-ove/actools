@@ -101,7 +101,7 @@ namespace AcManager {
     public partial class App : IDisposable {
         private const string WebBrowserEmulationModeDisabledKey = "___webBrowserEmulationModeDisabled";
 
-        public static void CreateAndRun(bool forceSoftwareRenderingMode) {
+        private static void CreateAndRun_InitializeBase() {
             FilesStorage.Initialize(EntryPoint.ApplicationDataDirectory);
 
             if (!AppArguments.GetBool(AppFlag.DisableLogging)) {
@@ -135,7 +135,9 @@ namespace AcManager {
 
             NonfatalError.Initialize();
             LocaleHelper.InitializeAsync().Wait();
+        }
 
+        private static App CreateAndRun_CreateApp(bool forceSoftwareRenderingMode) {
             var softwareRenderingModeWasEnabled = IsSoftwareRenderingModeEnabled();
             if (forceSoftwareRenderingMode) {
                 ValuesStorage.Set(AppAppearanceManager.KeySoftwareRendering, true);
@@ -168,6 +170,12 @@ namespace AcManager {
                 });
             }
 
+            return app;
+        }
+
+        public static void CreateAndRun(bool forceSoftwareRenderingMode) {
+            CreateAndRun_InitializeBase();
+            var app = CreateAndRun_CreateApp(forceSoftwareRenderingMode);
             var move = AppArguments.Get(AppFlag.MoveApp);
             if (move != null && File.Exists(move)) {
                 for (var i = 0; i < 10; i++) {
@@ -189,7 +197,6 @@ namespace AcManager {
                     });
                 }
             }
-
             app.Run();
         }
 
@@ -889,6 +896,7 @@ namespace AcManager {
                 }
 
                 await Task.Delay(500);
+                OnlineSanityHelper.Initialize();
                 AppArguments.Set(AppFlag.SimilarThreshold, ref CarAnalyzer.OptionSimilarThreshold);
 
                 if (SettingsHolder.Drive.ScanControllersAutomatically) {
@@ -1045,10 +1053,10 @@ namespace AcManager {
         }
 
         private void OnProcessExit(object sender, EventArgs args) {
-            Logging.Flush();
             Storage.SaveBeforeExit();
             KunosCareerProgress.SaveBeforeExit();
             UserChampionshipsProgress.SaveBeforeExit();
+            Logging.Flush();
             RhmService.Instance.Dispose();
             DiscordConnector.Instance?.Dispose();
             try {

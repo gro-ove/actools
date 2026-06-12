@@ -248,7 +248,7 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        public enum DriverStatus : byte {
+        public enum CurrentDriverStatus : byte {
             Disconnected, Connected, Fake
         }
 
@@ -265,14 +265,9 @@ namespace AcManager.Tools.Managers.Online {
 
             public string CarSkinId { get; }
 
-            public DriverStatus IsConnected { get; }
+            public CurrentDriverStatus IsAnybodyConnected { get; }
 
             public bool IsBookedForPlayer { get; }
-
-            private static bool IsHoldingSlot(string name) {
-                return name.StartsWith(@"[Not Connected] ", StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(name, "Reserved Slot", StringComparison.Ordinal);
-            }
 
             public CurrentDriver(ServerActualCarInformation x, bool allowCspParams) {
                 Name = x.DriverName;
@@ -282,12 +277,12 @@ namespace AcManager.Tools.Managers.Online {
                 if (allowCspParams) {
                     CspParams = x.CspParams;
                 }
-                if (!x.IsConnected) {
-                    IsConnected = DriverStatus.Disconnected;
-                } else if (IsHoldingSlot(Name)) {
-                    IsConnected = DriverStatus.Fake;
+                if (!x.IsSlotTaken) {
+                    IsAnybodyConnected = CurrentDriverStatus.Disconnected;
+                } else if (!x.IsRequestedGuid && OnlineSanityHelper.IsHoldingSlot(Name, x.CarSkinId)) {
+                    IsAnybodyConnected = CurrentDriverStatus.Fake;
                 } else {
-                    IsConnected = DriverStatus.Connected;
+                    IsAnybodyConnected = CurrentDriverStatus.Connected;
                 }
                 IsBookedForPlayer = x.IsRequestedGuid;
 
@@ -310,7 +305,7 @@ namespace AcManager.Tools.Managers.Online {
 
             protected bool Equals(CurrentDriver other) {
                 return string.Equals(Name, other.Name) && string.Equals(Team, other.Team) && string.Equals(CarId, other.CarId) &&
-                        string.Equals(CarSkinId, other.CarSkinId) && IsConnected == other.IsConnected && IsBookedForPlayer == other.IsBookedForPlayer;
+                        string.Equals(CarSkinId, other.CarSkinId) && IsAnybodyConnected == other.IsAnybodyConnected && IsBookedForPlayer == other.IsBookedForPlayer;
             }
 
             public override bool Equals(object obj) {
@@ -323,7 +318,7 @@ namespace AcManager.Tools.Managers.Online {
                     hashCode = (hashCode * 397) ^ (Team?.GetHashCode() ?? 0);
                     hashCode = (hashCode * 397) ^ (CarId?.GetHashCode() ?? 0);
                     hashCode = (hashCode * 397) ^ (CarSkinId?.GetHashCode() ?? 0);
-                    hashCode = (hashCode * 397) ^ IsConnected.GetHashCode();
+                    hashCode = (hashCode * 397) ^ IsAnybodyConnected.GetHashCode();
                     hashCode = (hashCode * 397) ^ IsBookedForPlayer.GetHashCode();
                     return hashCode;
                 }

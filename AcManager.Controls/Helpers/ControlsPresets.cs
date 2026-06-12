@@ -93,12 +93,11 @@ namespace AcManager.Controls.Helpers {
 
         private async void OnPresetsUpdated(object sender, EventArgs args) {
             if (_innerReloading) return;
-
             _innerReloading = true;
 
             try {
-                await Task.Delay(200);
-                ActionExtension.InvokeInMainThread(() => { RebuildPresetsList().Ignore(); });
+                await Task.Delay(200).ConfigureAwait(false);
+                ActionExtension.InvokeInMainThreadAsyncLater(() => { RebuildPresetsList().Ignore(); });
             } catch (Exception e) {
                 Logging.Warning("OnPresetsUpdated() exception: " + e);
             } finally {

@@ -100,7 +100,6 @@ namespace AcTools.GenericMods {
             get => _appliedOrder;
             internal set {
                 if (Equals(value, _appliedOrder)) return;
-
                 ActionExtension.InvokeInMainThread(() => {
                     _appliedOrder = value;
                     OnPropertyChanged();

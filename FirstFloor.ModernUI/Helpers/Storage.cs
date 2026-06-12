@@ -7,6 +7,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
@@ -45,17 +46,24 @@ namespace FirstFloor.ModernUI.Helpers {
             Exit += OnExit;
         }
 
-        private void OnExit(object sender, EventArgs e) {
-            if (_dirty) {
-                Save();
+        private void EnsureSaved() {
+            for (var i = 0; i < 5; ++i) {
+                var value = Interlocked.CompareExchange(ref _savingNow, 2, 1);
+                if (value == 2) {
+                    Thread.Sleep(20); // if in 100 ms we didn’t save, something is wrong, we’re bailing out
+                } else {
+                    if (value == 1) Save();
+                    break;
+                }
             }
         }
 
-        public void Dispose() {
-            if (_dirty) {
-                Save();
-            }
+        private void OnExit(object sender, EventArgs e) {
+            EnsureSaved();
+        }
 
+        public void Dispose() {
+            EnsureSaved();
             Exit -= OnExit;
         }
 
@@ -98,31 +106,6 @@ namespace FirstFloor.ModernUI.Helpers {
                     return memory.ToArray();
                 }
             }
-        }
-
-        private byte[] EncodeBytes(string s) {
-            var bytes = Encoding.UTF8.GetBytes(s);
-            if (_disableCompression) return bytes;
-
-            using (var output = new MemoryStream()) {
-                output.WriteByte(DeflateFlag);
-
-                if (_useDeflate) {
-                    using (var gzip = new DeflateStream(output, CompressionLevel.Fastest)) {
-                        gzip.Write(bytes, 0, bytes.Length);
-                    }
-                } else {
-                    Lzf.Compress(bytes, bytes.Length, output);
-                }
-
-                return output.ToArray();
-            }
-        }
-
-        public static string EncodeBase64([NotNull] string s) {
-            if (s == null) throw new ArgumentNullException(nameof(s));
-            var plainTextBytes = Encoding.UTF8.GetBytes(s);
-            return Convert.ToBase64String(plainTextBytes);
         }
 
         public static string DecodeBase64([NotNull] string s) {
@@ -275,10 +258,11 @@ namespace FirstFloor.ModernUI.Helpers {
 
         private const int ActualVersion = 2;
 
-        private static char[] _chars = new char[256];
+        private static char[] _charsReuse;
 
         public static string Decode(byte[] d, int f, int l) {
-            if (l > _chars.Length) _chars = new char[l + 64];
+            var chars = Interlocked.Exchange(ref _charsReuse, null);
+            if (chars == null || l > chars.Length) chars = new char[Math.Max(256, l + 64)];
 
             StringBuilder result = null;
             var u = 0;
@@ -291,8 +275,8 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 if (result == null) result = new StringBuilder(l);
                 if (u > 0) {
-                    var count = Encoding.UTF8.GetChars(d, f + i - u, u, _chars, 0);
-                    result.Append(_chars, 0, count);
+                    var count = Encoding.UTF8.GetChars(d, f + i - u, u, chars, 0);
+                    result.Append(chars, 0, count);
                     u = 0;
                 }
 
@@ -316,11 +300,15 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             if (u > 0) {
-                if (result == null) return Encoding.UTF8.GetString(d, f + l - u, u);
-                var count = Encoding.UTF8.GetChars(d, f + l - u, u, _chars, 0);
-                result.Append(_chars, 0, count);
+                if (result == null) {
+                    _charsReuse = chars;
+                    return Encoding.UTF8.GetString(d, f + l - u, u);
+                }
+                var count = Encoding.UTF8.GetChars(d, f + l - u, u, chars, 0);
+                result.Append(chars, 0, count);
             }
 
+            _charsReuse = chars;
             return result?.ToString() ?? string.Empty;
         }
 
@@ -392,10 +380,10 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public string GetData() {
+            var ret = new StringBuilder();
+            ret.Append("version: ");
+            ret.Append(ActualVersion);
             lock (_storage) {
-                var ret = new StringBuilder();
-                ret.Append("version: ");
-                ret.Append(ActualVersion);
                 foreach (var p in _storage) {
                     if (p.Key != null && p.Value != null) {
                         ret.Append('\n');
@@ -404,41 +392,42 @@ namespace FirstFloor.ModernUI.Helpers {
                         EncodeTo(ret, p.Value);
                     }
                 }
-                return ret.ToString();
             }
-        }
-
-        [NotNull]
-        private static string EnsureUnique([NotNull] string filename, int startFrom = 1) {
-            if (!File.Exists(filename) && !Directory.Exists(filename)) {
-                return filename;
-            }
-
-            var ext = Path.GetExtension(filename);
-            var start = filename.Substring(0, filename.Length - ext.Length);
-
-            for (var i = startFrom; i < 99999; i++) {
-                var result = $"{start}-{i}{ext}";
-                if (File.Exists(result) || Directory.Exists(result)) continue;
-                return result;
-            }
-
-            throw new Exception("Can’t find unique filename");
+            return ret.ToString();
         }
 
         [CanBeNull]
         private string GetBackupFilename() {
-            return TemporaryBackupsDirectory == null || _filename == null || _withoutBackups ? null : Path.Combine(TemporaryBackupsDirectory, Path.GetFileName(_filename));
+            return TemporaryBackupsDirectory == null || _filename == null || _withoutBackups ? null 
+                    : Path.Combine(TemporaryBackupsDirectory, Path.GetFileName(_filename));
         }
+
+        private static byte[] _saveBuffer;
 
         private void SaveData(string data) {
             try {
                 var filename = _filename;
                 if (filename == null) return;
 
-                var bytes = Encoding.UTF8.GetBytes(data);
-                var newFilename = EnsureUnique(_filename + ".new");
+                var chars = data.ToCharArray();
+                var bytesLen = Encoding.UTF8.GetByteCount(chars);
+                var bytes = Interlocked.Exchange(ref _saveBuffer, null);
+                if (bytes == null || bytes.Length < bytesLen) {
+                    bytes = new byte[bytesLen];
+                }
+                Encoding.UTF8.GetBytes(chars, 0, chars.Length, bytes, 0);
 
+                string newFilename;
+                if (File.Exists(_filename)) {
+                    newFilename = _filename + ".tmp";
+                    try {
+                        File.Delete(newFilename);
+                    } catch (Exception) {
+                        // ignored
+                    }
+                } else {
+                    newFilename = _filename;
+                }
                 if (_disableCompression) {
                     File.WriteAllBytes(newFilename, bytes);
                 } else {
@@ -455,33 +444,34 @@ namespace FirstFloor.ModernUI.Helpers {
                     }
                 }
 
-                if (newFilename == filename) return;
+                _saveBuffer = bytes;
 
-                if (File.Exists(filename)) {
+                if (newFilename != _filename) {
                     var backupFilename = GetBackupFilename();
                     if (backupFilename != null) {
                         try {
-                            if (File.Exists(backupFilename)) {
-                                File.Delete(backupFilename);
-                            }
-                            File.Move(filename, backupFilename);
-                        } catch (Exception e) {
-                            Logging.Error(e);
+                            File.Delete(backupFilename);
+                        } catch (Exception) {
+                            // ignored
                         }
-                    } else {
-                        File.Delete(filename);
                     }
-
-                    try {
-                        if (File.Exists(filename)) {
-                            File.Delete(filename);
+                    for (var i = 0; i < 4; ++i) {
+                        if (i > 0) {
+                            Thread.Sleep(20);
                         }
-                    } catch (Exception e) {
-                        Logging.Error(e);
+                        try {
+                            File.Replace(newFilename, filename, backupFilename);
+                            i = 100;
+                        } catch (FileNotFoundException) {
+                            try {
+                                File.Move(newFilename, filename);
+                                i = 100;
+                            } catch (Exception) {
+                                // ignored
+                            }
+                        }
                     }
                 }
-
-                File.Move(newFilename, filename);
             } catch (Exception e) {
                 Logging.Error(e);
             }
@@ -496,32 +486,31 @@ namespace FirstFloor.ModernUI.Helpers {
             SaveData(GetData());
         }
 
-        private async Task SaveAsync() {
-            if (_filename == null) return;
-            var sw = Stopwatch.StartNew();
-            var data = GetData();
-            await Task.Run(() => SaveData(data));
-            PreviousSaveTime = sw.Elapsed;
-        }
-
         public static event EventHandler Exit;
 
         public static void SaveBeforeExit() {
             Exit?.Invoke(null, EventArgs.Empty);
         }
 
-        private bool _dirty;
+        private int _saveGeneration;
+        private int _savingNow;
 
-        private async void Dirty() {
-            if (_dirty) return;
-
-            try {
-                _dirty = true;
-                await Task.Delay(5000);
-                await SaveAsync();
-            } finally {
-                _dirty = false;
-            }
+        private void SaveLater() {
+            Interlocked.Increment(ref _saveGeneration);
+            if (_filename == null || Interlocked.CompareExchange(ref _savingNow, 1, 0) != 0) return;
+            Task.Delay(5000).ContinueWith(t => {
+                if (Interlocked.CompareExchange(ref _savingNow, 2, 1) == 1) {
+                    var curGen = _saveGeneration;
+                    var sw = Stopwatch.StartNew();
+                    Task.Run(() => SaveData(GetData())).ContinueWith(r => {
+                        _savingNow = 0;
+                        PreviousSaveTime = sw.Elapsed;
+                        if (_saveGeneration != curGen) {
+                            SaveLater();
+                        }
+                    });
+                }
+            });
         }
 
         [ContractAnnotation("defaultValue:null => canbenull; defaultValue:notnull => notnull")]
@@ -563,9 +552,9 @@ namespace FirstFloor.ModernUI.Helpers {
                 if (exists && previous == v) return;
 
                 _storage[key] = v;
-                Dirty();
+                SaveLater();
 
-                if (exists) {
+                if (!exists) {
                     OnPropertyChanged(nameof(Count));
                 }
             }
@@ -611,9 +600,8 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public bool Remove([LocalizationRequired(false)] string key) {
             lock (_storage) {
-                if (_storage.ContainsKey(key)) {
-                    _storage.Remove(key);
-                    Dirty();
+                if (_storage.Remove(key)) {
+                    SaveLater();
                     OnPropertyChanged(nameof(Count));
                     return true;
                 }
@@ -623,27 +611,38 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public void CleanUp(Func<string, bool> predicate) {
+            var any = false;
             lock (_storage) {
                 var keys = _storage.Keys.ToList();
                 foreach (var key in keys.Where(predicate)) {
+                    any = true;
                     _storage.Remove(key);
                 }
             }
 
-            Dirty();
-            ActionExtension.InvokeInMainThread(() => { OnPropertyChanged(nameof(Count)); });
+            if (any) {
+                SaveLater();
+                ActionExtension.InvokeInMainThreadAsyncLater(() => OnPropertyChanged(nameof(Count)));
+            }
         }
 
         public void CopyFrom(Storage source) {
+            var any = false;
             lock (_storage) {
-                _storage.Clear();
+                if (_storage.Count > 0) {
+                    any = true;
+                    _storage.Clear();
+                }
                 foreach (var pair in source) {
+                    any = true;
                     _storage[pair.Key] = pair.Value;
                 }
             }
 
-            Dirty();
-            ActionExtension.InvokeInMainThread(() => { OnPropertyChanged(nameof(Count)); });
+            if (any) {
+                SaveLater();
+                ActionExtension.InvokeInMainThreadAsyncLater(() => OnPropertyChanged(nameof(Count)));
+            }
         }
 
         public IEnumerable<string> Keys {
@@ -656,8 +655,11 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public void Clear() {
             lock (_storage) {
+                if (_storage.Count == 0) return;
                 _storage.Clear();
             }
+            SaveLater();
+            ActionExtension.InvokeInMainThreadAsyncLater(() => OnPropertyChanged(nameof(Count)));
         }
 
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator() {

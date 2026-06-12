@@ -51,7 +51,7 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         public string DriverTeam { get; set; }
 
         [JsonProperty(PropertyName = "IsConnected")]
-        public bool IsConnected { get; set; }
+        public bool IsSlotTaken { get; set; }
 
         /// <summary>
         /// True if this slot was booked for a player.

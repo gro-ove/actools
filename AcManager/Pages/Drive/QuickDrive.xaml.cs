@@ -51,6 +51,19 @@ using Newtonsoft.Json;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Drive {
+
+    public class QuickDriveModeLinksTemplateSelector : DataTemplateSelector {
+        public DataTemplate LinkDataTemplate { get; set; }
+
+        public DataTemplate HeaderDataTemplate { get; set; }
+        
+        public DataTemplate SeparatorDataTemplate { get; set; }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container) {
+            return item is Link ? LinkDataTemplate : item == null ? SeparatorDataTemplate : HeaderDataTemplate;
+        }
+    }
+    
     public partial class QuickDrive : ILoadableContent {
         public const string PresetableKeyValue = "Quick Drive";
         private const string KeySaveable = "__QuickDrive_Main";
@@ -174,14 +187,14 @@ namespace AcManager.Pages.Drive {
                     MainGrid.HorizontalAlignment = x ? HorizontalAlignment.Center : HorizontalAlignment.Stretch;
                     MainGrid.MinWidth = x ? 1300d - 20d * 2d : 0d;
                 });*/
-                
+
                 this.AddSizeCondition(x => x.ActualHeight > 600 && SettingsHolder.Drive.ShowExtraComboBoxes).Add(CarCellExtra).Add(TrackCellExtra).Add(x => {
                     if (!_loaded && ValuesStorage.Contains(".qd.rz.h")) {
                         CarCellBase.Height = TrackCellBase.Height = ValuesStorage.Get(".qd.rz.h", CarCellBase.Height);
-                    }  else {
+                    } else {
                         CarCellBase.Height = TrackCellBase.Height = 120d;
                         ValuesStorage.Remove(".qd.rz.h");
-                    } 
+                    }
                 });
                 this.AddSizeCondition(x => (((ActualWidth - 720) / 440).Saturate() * 93 + 120).Round()).Add(x => {
                     if (!_loaded && ValuesStorage.Contains(".qd.rz.w")) {
@@ -208,7 +221,7 @@ namespace AcManager.Pages.Drive {
             if (Model.SelectedWeather is WeatherTypeWrapped w) {
                 w.RefreshReference();
             }
-            
+
             if (_realConditionsTimer != null) return;
 
             _realConditionsTimer = new DispatcherTimer();
@@ -279,7 +292,7 @@ namespace AcManager.Pages.Drive {
             // Obsolete
             [JsonProperty(@"TrackPropertiesPreset")]
 #pragma warning disable 649
-            public string ObsTrackPropertiesPreset;
+                    public string ObsTrackPropertiesPreset;
 #pragma warning restore 649
 
             [JsonProperty(@"rcTimezones")]
@@ -306,22 +319,50 @@ namespace AcManager.Pages.Drive {
             [JsonProperty(@"crtv")]
             public double? CustomRoadTemperatureValue;
         }
+        
+        public static BetterObservableCollection<object> AllModesList { get; } = new BetterObservableCollection<object>();
+
+        private class LinksComparer : IEqualityComparer<object> {
+            bool IEqualityComparer<object>.Equals(object x, object y) {
+                if (x is Link a) {
+                    if (y is Link b) {
+                        return a.Source == b.Source && a.DisplayName == b.DisplayName;
+                    }
+                    return false;
+                }
+                return x == y;
+            }
+
+            int IEqualityComparer<object>.GetHashCode(object obj) {
+                return obj.GetHashCode();
+            }
+        }
+        
+        private static IEqualityComparer<object> _linksComparer = new LinksComparer();
 
         private void OnNewModesChanged(object sender, EventArgs e) {
-            var newModes = LinksList.Children.Where(x => x.Source?.OriginalString.StartsWith(ModeCustomPath) == false)
-                    .Concat(NewRaceModeData.Instance.Items.Select(x => new Link {
-                        DisplayName = x.DisplayName,
-                        Source = new Uri(ModeCustomPath + "?Id=" + x.Id, UriKind.Relative),
-                        ToolTip = x.GetToolTip()
-                    }))
-                    .ToList();
-            var selected = Model?.SelectedMode;
-            if (!LinksList.Children.SequenceEqual(newModes)) {
-                Logging.Debug("Refresh new modes list");
-                LinksList.Children.ReplaceEverythingBy(newModes);
-                if (Model != null && selected != null && newModes.Any(x => x.Source == selected)) {
-                    Model.SelectedMode = selected;
+            var updatedList = new List<object> {
+                new Link { DisplayName = ToolsStrings.Session_TrackDay, Source = ModeTrackday },
+                new Link { DisplayName = ToolsStrings.Common_Weekend, Source = ModeWeekend },
+                new Link { DisplayName = ToolsStrings.Session_Drift, Source = ModeDrift },
+                new Link { DisplayName = ToolsStrings.Session_Drag, Source = ModeDrag, },
+                new Link { DisplayName = ToolsStrings.Session_TimeAttack, Source = ModeTimeAttack }
+            };
+            if (NewRaceModeData.Instance.Items.Count > 0) {
+                updatedList.Insert(0, "Original modes");
+                updatedList.Add(null);
+                updatedList.Add("Custom modes");
+                foreach (var item in NewRaceModeData.Instance.Items) {
+                    updatedList.Add(new Link {
+                        DisplayName = item.DisplayName,
+                        Source = new Uri(ModeCustomPath + "?Id=" + item.Id, UriKind.Relative),
+                        ToolTip = item.GetToolTip()
+                    });
                 }
+            }
+            if (!AllModesList.SequenceEqual(updatedList, _linksComparer)) {
+                AllModesList.ReplaceEverythingBy_Direct(updatedList);
+                ModeTab.LoadPinned();
             }
         }
 
@@ -353,7 +394,7 @@ namespace AcManager.Pages.Drive {
                         WaitForNewModes(value).Ignore();
                         return;
                     }
-                    
+
                     if (Equals(value, _selectedMode)) return;
                     _selectedMode = value;
                     OnPropertyChanged();
@@ -972,17 +1013,17 @@ namespace AcManager.Pages.Drive {
                             [MessageBoxResult.OK] = AppStrings.Drive_Quick_YesAndFixIt,
                             [MessageBoxResult.No] = UiStrings.No,
                         }, "incompatibleTrack")) {
-                    case MessageBoxResult.Yes:
-                        return TrackDoesNotFitRespond.Go;
-                    case MessageBoxResult.OK:
-                        return TrackDoesNotFitRespond.FixAndGo;
-                    case MessageBoxResult.None:
-                    case MessageBoxResult.Cancel:
-                    case MessageBoxResult.No:
-                        return TrackDoesNotFitRespond.Cancel;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                            case MessageBoxResult.Yes:
+                                return TrackDoesNotFitRespond.Go;
+                            case MessageBoxResult.OK:
+                                return TrackDoesNotFitRespond.FixAndGo;
+                            case MessageBoxResult.None:
+                            case MessageBoxResult.Cancel:
+                            case MessageBoxResult.No:
+                                return TrackDoesNotFitRespond.Cancel;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
             }
 
             private static TrackDoesNotFitRespond ShowCarOrTrackDoesNotFitMessage(string car, string track) {
@@ -1083,7 +1124,7 @@ namespace AcManager.Pages.Drive {
                         WindSpeedMax = RandomWindSpeed ? 40 : WindSpeedMax,
                     }, TrackState.ToProperties(), ExportToPresetData(), new object[] {
                         new WeatherSpecificDate(UseSpecificDate, SpecificDateValue),
-                        new WeatherDetails(RealWeather, SelectedWeather as WeatherTypeWrapped, 
+                        new WeatherDetails(RealWeather, SelectedWeather as WeatherTypeWrapped,
                                 WeatherFxControllerData.Instance.Items.FirstOrDefault(x => x.IsSelectedAsBase)?.Id),
                         TrackState.WeatherDefined ? new CustomTrackState(Path.Combine(weather?.Location ?? ".", "track_state.ini")) : null
                     });
@@ -1194,7 +1235,7 @@ namespace AcManager.Pages.Drive {
                 Uri mode = null, string serializedRaceGrid = null,
                 bool forceAssistsLoading = false) {
             if (setupRace || Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)
-                || !await RunAsync(car, carSkinId, carSetupFilename, track, trackSkin, weatherId, time, serializedPreset, presetFilename, mode, serializedRaceGrid, forceAssistsLoading)) {
+                    || !await RunAsync(car, carSkinId, carSetupFilename, track, trackSkin, weatherId, time, serializedPreset, presetFilename, mode, serializedRaceGrid, forceAssistsLoading)) {
                 Show(car, carSkinId, carSetupFilename, track, trackSkin, weatherId, time, serializedPreset, presetFilename, mode, serializedRaceGrid, forceAssistsLoading);
             }
         }

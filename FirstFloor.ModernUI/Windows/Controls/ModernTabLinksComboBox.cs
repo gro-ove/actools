@@ -25,10 +25,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             PreviewMouseUp += (sender, args) => {
                 if (_parent == null) return;
                 var popup = this.FindVisualChild<Popup>();
-                if (popup?.IsOpen == true) {
+                if (popup?.IsOpen == true && (args.Source as DependencyObject)?.GetParent<Popup>() == popup){
                     popup.IsOpen = false;
                     var newUrl = (SelectedItem as Link)?.Source;
-                    _parent.SelectedSource = newUrl;
+                    if (newUrl != null) {
+                        _parent.SelectedSource = newUrl;
+                    }
                 }
             };
             Loaded += (sender, args) => {

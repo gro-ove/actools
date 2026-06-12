@@ -145,7 +145,7 @@ namespace AcManager.Tools.AcPlugins.Extras {
             foreach (var item in Leaderboard) {
                 if (item.Driver != null && ++item.SilentFor > 5) {
                     // Logging.Debug("item.SilentFor=" + item.SilentFor);
-                    ActionExtension.InvokeInMainThread(() => {
+                    ActionExtension.InvokeInMainThreadAsync(() => {
                         item.Driver = null;
                         item.Reset(true);
                         ConnectedOnly.Refresh(item);
