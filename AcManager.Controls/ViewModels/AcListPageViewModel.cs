@@ -36,7 +36,6 @@ namespace AcManager.Controls.ViewModels {
             Manager = list;
             _sortingBy = ValuesStorage.Get<string>($"{Key}.s");
             if (_sortingBy != null) {
-                Logging.Debug("_sortingBy=" + _sortingBy);
                 Sorting = GetSortingImpl(_sortingBy);
             }
         }
@@ -68,9 +67,6 @@ namespace AcManager.Controls.ViewModels {
         }
 
         protected AcObjectSorter<T> GetSortingImpl(string key) {
-            foreach (KeyValuePair<string, Type> p in GetSortingTypes()) {
-                Logging.Debug($"p.v={p.Value?.Name}, eq={p.Value?.Name == key}");
-            }
             var found = GetSortingTypes().FirstOrDefault(x => key == x.Value?.Name).Value;
             return found != null ? (AcObjectSorter<T>)Activator.CreateInstance(found) : null;
         }
@@ -80,7 +76,6 @@ namespace AcManager.Controls.ViewModels {
             var copyTags = new DelegateCommand(() => ClipboardHelper.SetText(MainList.OfType<AcItemWrapper>().Select(x => x.Value)
                     .OfType<AcJsonObjectNew>().SelectMany(x => x.Tags).OrderBy(x => x).Distinct().JoinToString('\n')));
             var setSorting = new DelegateCommand<string>(mode => {
-                Logging.Debug("set sorting=" + mode);
                 SortingBy = mode;
                 Sorting = GetSortingImpl(mode);
                 ValuesStorage.Set($"{Key}.s", mode);

@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Starters;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -28,7 +29,7 @@ namespace AcManager.Tools.Helpers {
         public static byte[] GetTicketBytes() {
             if (_ticketAge == null || _ticketAge.Elapsed.TotalMinutes > 5) {
                 _ticketAge = Stopwatch.StartNew();
-                if (SteamStarter.Initialize(MainExecutingFile.Directory, true)) {
+                if (SteamStarter.Initialize(AcRootDirectory.Instance.RequireValue, true)) {
                     GetTicketBytesImpl();
                     if (_ticket == null) {
                         Logging.Warning("Failed to generate Steam ticket");
