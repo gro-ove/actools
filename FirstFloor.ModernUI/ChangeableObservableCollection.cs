@@ -31,10 +31,12 @@ namespace FirstFloor.ModernUI {
         public event PropertyChangedEventHandler ItemPropertyChanged;
 
         protected virtual void Subscribe(T item) {
+            if (item == null) return;
             item.PropertyChanged += OnItemPropertyChanged;
         }
 
         protected virtual void Unsubscribe(T item) {
+            if (item == null) return;
             item.PropertyChanged -= OnItemPropertyChanged;
         }
 
@@ -58,6 +60,7 @@ namespace FirstFloor.ModernUI {
 
         public event NotifyCollectionChangedEventHandler CollectionChanged {
             add {
+                if (value == null) return;
                 if (CollectionChangedInner?.GetInvocationList().Any(x => Equals(x, value)) != true) {
                     CollectionChangedInner += value;
                     _listenersCount++;
@@ -154,7 +157,7 @@ namespace FirstFloor.ModernUI {
         }
 
         protected void CheckReentrancy() {
-            if (_monitor.Busy && CollectionChangedInner!= null && CollectionChangedInner.GetInvocationList().Length > 1) {
+            if (_monitor.Busy && _listenersCount > 1) {
                 throw new InvalidOperationException();
             }
         }
@@ -199,7 +202,10 @@ namespace FirstFloor.ModernUI {
         }
 
         public void RefreshFilter([NotNull] T obj) {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, obj, obj, IndexOf(obj)));
+            var i = IndexOf(obj);
+            if (i >= 0) {
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, obj, obj, i));
+            }
         }
 
         #region Additional methods
@@ -233,14 +239,21 @@ namespace FirstFloor.ModernUI {
         }
 
         private void ReplaceEverythingByInner([NotNull] IEnumerable<T> list) {
-            foreach (var item in Items) {
+            var items = Items;
+            foreach (var item in items) {
                 Unsubscribe(item);
             }
-
-            Items.Clear();
-            foreach (var item in list) {
-                Subscribe(item);
-                Items.Add(item);
+            items.Clear();
+            if (items is List<T> itemsList) {
+                itemsList.AddRange(list);
+                foreach (var item in itemsList) {
+                    Subscribe(item);
+                }
+            } else {
+                foreach (var item in list) {
+                    Subscribe(item);
+                    items.Add(item);
+                }
             }
 
             OnPropertyChanged(new PropertyChangedEventArgs("Count"));
@@ -250,13 +263,10 @@ namespace FirstFloor.ModernUI {
 
         private void ReplaceEverythingByInner([NotNull] IList<T> list) {
             var items = Items;
-
-            foreach (var item in Items) {
+            foreach (var item in items) {
                 Unsubscribe(item);
             }
-
-            Items.Clear();
-
+            items.Clear();
             for (int i = 0, c = list.Count; i < c; i++) {
                 var item = list[i];
                 Subscribe(item);

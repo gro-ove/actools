@@ -327,7 +327,7 @@
               <mui:BooleanSwitch.True>
                 <StackPanel>
                   <TextBlock Text="{Binding UserAiLevelDisplay}" Style="{StaticResource Value}" />
-                  <Slider Minimum="0.75" Maximum="1.25" Value="{Binding UserAiLevelMultipler}" TickFrequency="0.0625" IsSnapToTickEnabled="False"
+                  <Slider Minimum="0.75" Maximum="1.25" Value="{Binding UserAiLevelMultiplier}" TickFrequency="0.0625" IsSnapToTickEnabled="False"
                       TickPlacement="TopLeft" />
                   <StackPanel.ContextMenu>
                     <ContextMenu>

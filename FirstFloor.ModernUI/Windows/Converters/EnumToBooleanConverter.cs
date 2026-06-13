@@ -5,6 +5,8 @@ using System.Windows.Data;
 namespace FirstFloor.ModernUI.Windows.Converters {
     [ValueConversion(typeof(object), typeof(bool))]
     public class EnumToBooleanConverter : IValueConverter {
+        public static EnumToBooleanConverter Instance { get; } = new EnumToBooleanConverter();
+        
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if (parameter == null) return value == null;
             var s = parameter.ToString();

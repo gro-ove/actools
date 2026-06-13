@@ -742,8 +742,10 @@ namespace AcManager.Pages.Windows {
             ArgumentsHandler.OnDragEnter(e);
         }
 
-        private void OnClosed(object sender, EventArgs e) {
-            _dynamicBackground?.Dispose();
+        private bool _closed;
+        private bool _postponeShutdown;
+
+        private static void EnsureShutdown() {
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 WindowsHelper.RestartCurrentApplication();
             } else {
@@ -755,8 +757,11 @@ namespace AcManager.Pages.Windows {
                 }
             }
         }
-
-        private bool _closed;
+        
+        private void OnClosed(object sender, EventArgs e) {
+            _dynamicBackground?.Dispose();
+            if (!_postponeShutdown) EnsureShutdown();
+        }
 
         private void OnClosing(object sender, CancelEventArgs e) {
             if (_closed) return;
@@ -788,7 +793,8 @@ namespace AcManager.Pages.Windows {
                                     unsaved.OrderBy(x => x).Select(x => $@" • {x}").JoinToString(Environment.NewLine)}",
                             AppStrings.Main_UnsavedChangesHeader, MessageBoxButton.YesNoCancel)) {
                                 case MessageBoxResult.Yes:
-                                    Superintendent.Instance.SaveAll();
+                                    _postponeShutdown = true;
+                                    Superintendent.Instance.SaveAllAsync().ContinueWith(r => EnsureShutdown());
                                     break;
                                 case MessageBoxResult.Cancel:
                                     e.Cancel = true;
@@ -798,7 +804,7 @@ namespace AcManager.Pages.Windows {
 
                 // Just in case, temporary
                 _closed = true;
-                Application.Current.Shutdown();
+                if (!_postponeShutdown) EnsureShutdown();
             } catch (Exception ex) {
                 Logging.Warning(ex);
             }

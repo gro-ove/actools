@@ -143,7 +143,12 @@ namespace AcManager {
                 ValuesStorage.Set(AppAppearanceManager.KeySoftwareRendering, true);
             }
 
-            var softwareRenderingModeIsEnabled = IsSoftwareRenderingModeEnabled();
+            bool softwareRenderingModeIsEnabled = IsSoftwareRenderingModeEnabled();
+            if (WineHelper.IsOnWine) {
+                BetterImage.WineDecodeLock = new object();
+                Logging.Debug("Wine detected, switching to safer image loading method");
+            }
+
             if (AppArguments.GetDouble(AppFlag.DesiredFrameRate) is double v && v > 0d) {
                 Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline), new FrameworkPropertyMetadata(v));
                 if (softwareRenderingModeIsEnabled) {
@@ -844,7 +849,7 @@ namespace AcManager {
                 ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(60000));
                 ItemsControl.IsTextSearchCaseSensitiveProperty.OverrideMetadata(typeof(ComboBox), new FrameworkPropertyMetadata(true));
 
-                if (AppAppearanceManager.Instance.DisallowTransparency) {
+                if (AppAppearanceManager.Instance.DisallowTransparency || WineHelper.IsOnWine) {
                     DisableTransparencyHelper.Disable();
                 }
             } catch (Exception e) {

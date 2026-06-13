@@ -92,7 +92,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
             Purge();
             foreach (var reference in Elements) {
-                if (!reference.TryGetTarget(out var f)) return;
+                if (!reference.TryGetTarget(out var f)) continue;
                 if (GetHint(f) == hint.Id && f.IsLoaded && TryToShow(f, hint)) {
                     eventArgs.Shown = true;
                     return;

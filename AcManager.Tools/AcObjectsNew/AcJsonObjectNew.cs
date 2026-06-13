@@ -10,6 +10,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
@@ -139,7 +140,6 @@ namespace AcManager.Tools.AcObjectsNew {
             Year = null;
             Country = null;
             Description = null;
-            Country = null;
             Version = null;
             Author = null;
             Url = null;
@@ -241,8 +241,12 @@ namespace AcManager.Tools.AcObjectsNew {
             var json = JsonObject;
             if (json != null) {
                 SaveData(json);
-                using (CarsManager.Instance.IgnoreChanges()) {
-                    File.WriteAllText(JsonFilename, json.ToString());
+                using ((FileAcManager as IIgnorer)?.IgnoreChanges()) {
+                    try {
+                        File.WriteAllText(JsonFilename, json.ToString());
+                    } catch (Exception e) {
+                        NonfatalError.NotifyBackground($"Failed to save {JsonFilename}: {e.Message}", e);
+                    }
                 }
                 Changed = false;
             }

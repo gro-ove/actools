@@ -85,11 +85,11 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private bool _dateDependant;
+        private bool _dateDependent;
 
-        public bool DateDependant {
-            get => _dateDependant;
-            set => Apply(value, ref _dateDependant);
+        public bool DateDependent {
+            get => _dateDependent;
+            set => Apply(value, ref _dateDependent);
         }
 
         public string DisplayTimeDiapason => _timeDiapason == null ? null :
@@ -283,7 +283,7 @@ namespace AcManager.Tools.Objects {
             TemperatureDiapason = ini["__LAUNCHER_CM"].GetNonEmpty("TEMPERATURE_DIAPASON");
             TimeDiapason = ini["__LAUNCHER_CM"].GetNonEmpty("TIME_DIAPASON");
             DisableShadows = ini["__LAUNCHER_CM"].GetBool("DISABLE_SHADOWS", false);
-            DateDependant = ini["__LAUNCHER_CM"].GetBool("DATE_DEPENDANT", false);
+            DateDependent = ini["__LAUNCHER_CM"].GetBool("DATE_DEPENDANT", false);
             Author = ini["__LAUNCHER_CM"].GetNonEmpty("AUTHOR");
 
             if (Author == null && IsKunosWeather(Id)) {
@@ -305,7 +305,7 @@ namespace AcManager.Tools.Objects {
             ini["__LAUNCHER_CM"].SetOrRemove("TEMPERATURE_DIAPASON", TemperatureDiapason);
             ini["__LAUNCHER_CM"].SetOrRemove("TIME_DIAPASON", TimeDiapason);
             ini["__LAUNCHER_CM"].SetOrRemove("DISABLE_SHADOWS", DisableShadows);
-            ini["__LAUNCHER_CM"].SetOrRemove("DATE_DEPENDANT", DateDependant);
+            ini["__LAUNCHER_CM"].SetOrRemove("DATE_DEPENDANT", DateDependent);
             ini["__LAUNCHER_CM"].SetOrRemove("AUTHOR", Author);
 
             if (_loadedExtended) {
@@ -427,24 +427,24 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private double _cloudsSpeedMultipler;
+        private double _cloudsSpeedMultiplier;
 
-        public double CloudsSpeedMultipler {
-            get => _cloudsSpeedMultipler;
+        public double CloudsSpeedMultiplier {
+            get => _cloudsSpeedMultiplier;
             set {
-                if (Equals(value, _cloudsSpeedMultipler)) return;
-                _cloudsSpeedMultipler = value;
+                if (Equals(value, _cloudsSpeedMultiplier)) return;
+                _cloudsSpeedMultiplier = value;
                 if (_loadedExtended) {
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(CloudsSpeedMultiplerRounded));
+                    OnPropertyChanged(nameof(CloudsSpeedMultiplierRounded));
                     Changed = true;
                 }
             }
         }
 
-        public double CloudsSpeedMultiplerRounded {
-            get => CloudsSpeedMultipler;
-            set => CloudsSpeedMultipler = value.Round(0.01);
+        public double CloudsSpeedMultiplierRounded {
+            get => CloudsSpeedMultiplier;
+            set => CloudsSpeedMultiplier = value.Round(0.01);
         }
 
         private Color _fogColor;
@@ -461,13 +461,13 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private double _fogColorMultipler;
+        private double _fogColorMultiplier;
 
-        public double FogColorMultipler {
-            get => _fogColorMultipler;
+        public double FogColorMultiplier {
+            get => _fogColorMultiplier;
             set {
-                if (Equals(value, _fogColorMultipler)) return;
-                _fogColorMultipler = value;
+                if (Equals(value, _fogColorMultiplier)) return;
+                _fogColorMultiplier = value;
                 if (_loadedExtended) {
                     OnPropertyChanged();
                     Changed = true;
@@ -514,7 +514,7 @@ namespace AcManager.Tools.Objects {
             CloudsHeight = clouds.GetDouble("HEIGHT", 4);
             CloudsRadius = clouds.GetDouble("RADIUS", 6);
             CloudsNumber = clouds.GetInt("NUMBER", 40);
-            CloudsSpeedMultipler = clouds.GetDouble("BASE_SPEED_MULT", 0.0015) * 100d;
+            CloudsSpeedMultiplier = clouds.GetDouble("BASE_SPEED_MULT", 0.0015) * 100d;
 
             var fog = ini["FOG"];
             var color = fog.GetStrings("COLOR").Select(x => FlexibleParser.TryParseDouble(x) ?? 1d).ToArray();
@@ -522,7 +522,7 @@ namespace AcManager.Tools.Objects {
                 var maxValue = color.Max();
                 if (Equals(maxValue, 0d)) {
                     FogColor = Colors.Black;
-                    FogColorMultipler = 100;
+                    FogColorMultiplier = 100;
                 } else {
                     maxValue *= 1.2;
                     if (maxValue >= 0d && maxValue < 1d) {
@@ -534,7 +534,7 @@ namespace AcManager.Tools.Objects {
                     FogColor = Color.FromRgb((255 * color[0] / maxValue).ClampToByte(),
                             (255 * color[1] / maxValue).ClampToByte(),
                             (255 * color[2] / maxValue).ClampToByte());
-                    FogColorMultipler = maxValue;
+                    FogColorMultiplier = maxValue;
                 }
             }
 
@@ -574,12 +574,12 @@ namespace AcManager.Tools.Objects {
             clouds.Set("HEIGHT", CloudsHeight);
             clouds.Set("RADIUS", CloudsRadius);
             clouds.Set("NUMBER", CloudsNumber);
-            clouds.Set("BASE_SPEED_MULT", CloudsSpeedMultipler * 0.01);
+            clouds.Set("BASE_SPEED_MULT", CloudsSpeedMultiplier * 0.01);
 
             var fog = ini["FOG"];
             fog.Set("COLOR", new[] {
                 FogColor.R, FogColor.G, FogColor.B
-            }.Select(x => (x * FogColorMultipler / 255d).Round(0.001)));
+            }.Select(x => (x * FogColorMultiplier / 255d).Round(0.001)));
             fog.Set("BLEND", FogBlend);
             fog.Set("DISTANCE", FogDistance);
 
@@ -595,13 +595,13 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _hasCurvesData);
         }
 
-        private double _hdrOffMultipler;
+        private double _hdrOffMultiplier;
 
-        public double HdrOffMultipler {
-            get => _hdrOffMultipler;
+        public double HdrOffMultiplier {
+            get => _hdrOffMultiplier;
             set {
-                if (Equals(value, _hdrOffMultipler)) return;
-                _hdrOffMultipler = value;
+                if (Equals(value, _hdrOffMultiplier)) return;
+                _hdrOffMultiplier = value;
                 if (_loadedExtended) {
                     OnPropertyChanged();
                     Changed = true;
@@ -627,25 +627,24 @@ namespace AcManager.Tools.Objects {
 
         private void LoadColorCurvesData(IniFile ini) {
             var header = ini["HEADER"];
-            HdrOffMultipler = header.GetDouble("HDR_OFF_MULT", 0.3);
+            HdrOffMultiplier = header.GetDouble("HDR_OFF_MULT", 0.3);
             AngleGamma = header.GetDouble("ANGLE_GAMMA", 3.4);
 
             foreach (var entry in ColorCurves) {
-                double multipler;
-                entry.Color = ini[entry.Id].GetColor(entry.Sub, entry.DefaultColor, entry.DefaultMultipler, out multipler);
-                entry.Multipler = multipler;
+                entry.Color = ini[entry.Id].GetColor(entry.Sub, entry.DefaultColor, entry.DefaultMultiplier, out var multiplier);
+                entry.Multiplier = multiplier;
             }
         }
 
         private void SaveColorCurvesData(IniFile ini) {
             var header = ini["HEADER"];
             header.Set("VERSION", 3);
-            header.Set("HDR_OFF_MULT", HdrOffMultipler);
+            header.Set("HDR_OFF_MULT", HdrOffMultiplier);
             header.Set("ANGLE_GAMMA", AngleGamma);
 
             foreach (var entry in ColorCurves) {
                 ini[entry.Id].Set(entry.Sub, new[] {
-                    entry.Color.R, entry.Color.G, entry.Color.B, entry.Multipler
+                    entry.Color.R, entry.Color.G, entry.Color.B, entry.Multiplier
                 });
             }
         }

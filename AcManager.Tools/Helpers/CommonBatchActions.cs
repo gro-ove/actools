@@ -60,7 +60,7 @@ namespace AcManager.Tools.Helpers {
                 DisplayApply = "Replace";
             }
 
-            #region Properies
+            #region Properties
             private string _Find;
 
             public string Find {
@@ -129,7 +129,7 @@ namespace AcManager.Tools.Helpers {
                 Tags.Clear();
             }
 
-            #region Properies
+            #region Properties
             public BetterObservableCollection<string> Tags { get; }
             private List<string> _originalTags;
 

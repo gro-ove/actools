@@ -209,7 +209,7 @@ namespace AcManager.Pages.Drive {
                                 weather?.TemperatureCoefficient ?? 0d),
                         CloudSpeed = 1d,
                         SunAngle = Game.ConditionProperties.GetSunAngle(time),
-                        TimeMultipler = _acObject.TimeMultiplier,
+                        TimeMultiplier = _acObject.TimeMultiplier,
                         WeatherName = weather?.Id ?? round.WeatherId
                     };
 
@@ -218,7 +218,7 @@ namespace AcManager.Pages.Drive {
                         throw new InformativeException("Can’t launch the race", "No car selected.");
                     }
 
-                    var multipler = SettingsHolder.Drive.KunosCareerUserAiLevel ? _acObject.UserAiLevelMultipler : 1d;
+                    var multiplier = SettingsHolder.Drive.KunosCareerUserAiLevel ? _acObject.UserAiLevelMultiplier : 1d;
                     var trackId = round.TrackId.Split('/');
                     await GameWrapper.StartAsync(new Game.StartProperties(new Game.BasicProperties {
                         CarId = userCar.CarId,
@@ -233,8 +233,8 @@ namespace AcManager.Pages.Drive {
                         JumpStartPenalty = _acObject.Rules.JumpStartPenalty,
                         Penalties = _acObject.Rules.Penalties,
                         BotCars = _acObject.Drivers.Where(x => !x.IsPlayer).Select(x => new Game.AiCar {
-                            AiLevel = (x.AiLevel * multipler).Clamp(25, 100),
-                            AiAggression = (x.AiAggression * multipler).Clamp(0, 100),
+                            AiLevel = (x.AiLevel * multiplier).Clamp(25, 100),
+                            AiAggression = (x.AiAggression * multiplier).Clamp(0, 100),
                             Ballast = x.Ballast,
                             Restrictor = x.Restrictor,
                             CarId = x.CarId,

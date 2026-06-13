@@ -11,14 +11,14 @@ namespace AcManager.Pages.Dialogs {
 
         public double DataPower { get; }
 
-        public double UiTorque => DataTorque * Multipler;
+        public double UiTorque => DataTorque * Multiplier;
 
-        public double UiPower => DataPower * Multipler;
+        public double UiPower => DataPower * Multiplier;
 
         public CarObject Car { get; }
 
         private double _value = double.NaN;
-        private double _multipler;
+        private double _multiplier;
 
         public double Value {
             get => _value;
@@ -26,16 +26,16 @@ namespace AcManager.Pages.Dialogs {
                 value = value.Clamp(0d, 0.95d);
                 if (value == _value) return;
                 _value = value;
-                _multipler = 1d / (1d - value);
+                _multiplier = 1d / (1d - value);
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(Multipler));
+                OnPropertyChanged(nameof(Multiplier));
                 OnPropertyChanged(nameof(UiPower));
                 OnPropertyChanged(nameof(UiTorque));
                 CacheStorage.Set(_key, value);
             }
         }
 
-        public double Multipler => _multipler;
+        public double Multiplier => _multiplier;
 
         private readonly string _key;
 

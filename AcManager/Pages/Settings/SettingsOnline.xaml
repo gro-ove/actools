@@ -52,7 +52,6 @@
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Online.UseCommunityRating}" set:Search.Keywords="appearance;ui" 
-            Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}"
             ToolTip="Experimental addition allowing users to rate servers. Subject to change. Restart the app after changing. In the future, if the concept works at all, more features (like sorting or hiding based on community score) will be added.">
           <Label Content="Participate in community server rating" />
         </CheckBox>

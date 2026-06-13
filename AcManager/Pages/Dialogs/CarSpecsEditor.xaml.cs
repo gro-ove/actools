@@ -212,8 +212,8 @@ namespace AcManager.Pages.Dialogs {
             dlg.ShowDialog();
             if (!dlg.IsResultOk) return;
 
-            torque.TransformSelf(x => x.Y * dlg.Multipler);
-            power.TransformSelf(x => x.Y * dlg.Multipler);
+            torque.TransformSelf(x => x.Y * dlg.Multiplier);
+            power.TransformSelf(x => x.Y * dlg.Multiplier);
 
             o.SpecsTorqueCurve = new GraphData(torque);
             o.SpecsPowerCurve = new GraphData(power);
@@ -222,8 +222,8 @@ namespace AcManager.Pages.Dialogs {
                     MessageBoxResult.Yes) {
                 // MaxY values were updated while creating new GraphData instances above
                 o.SpecsTorque = Format(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture))
-                        + (dlg.Multipler == 1d ? "*" : "");
-                o.SpecsBhp = Format(dlg.Multipler == 1d ? AppStrings.CarSpecs_PowerAtWheels_FormatTooltip : AppStrings.CarSpecs_Power_FormatTooltip,
+                        + (dlg.Multiplier == 1d ? "*" : "");
+                o.SpecsBhp = Format(dlg.Multiplier == 1d ? AppStrings.CarSpecs_PowerAtWheels_FormatTooltip : AppStrings.CarSpecs_Power_FormatTooltip,
                         power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
             }
         }

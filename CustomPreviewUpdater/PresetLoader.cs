@@ -13,6 +13,7 @@ using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
 
 namespace CustomPreviewUpdater {
     /* Messy copy-paste from AcManager library. I’d be happy to do it properly, but compiler is getting too slow for a good rewrite. Maybe I’ll redo thing properly a bit later… */

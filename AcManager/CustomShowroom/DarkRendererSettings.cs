@@ -1169,11 +1169,11 @@ namespace AcManager.CustomShowroom {
                 if (Equals(value, _ssaaMode)) return;
                 _ssaaMode = value;
                 OnPropertyChanged();
-                Renderer.ResolutionMultiplier = GetRendererResolutionMultipler();
+                Renderer.ResolutionMultiplier = GetRendererResolutionMultiplier();
             }
         }
 
-        protected virtual double GetRendererResolutionMultipler() {
+        protected virtual double GetRendererResolutionMultiplier() {
             return Math.Sqrt(SsaaMode.IntValue ?? 1);
         }
 

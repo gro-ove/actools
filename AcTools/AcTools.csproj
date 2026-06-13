@@ -276,6 +276,7 @@
     <Compile Include="Windows\Kernel32.cs" />
     <Compile Include="Windows\Shell32.cs" />
     <Compile Include="Windows\User32.cs" />
+    <Compile Include="Windows\WineHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

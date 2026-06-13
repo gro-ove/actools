@@ -1,16 +1,21 @@
 <mui:ModernDialog x:Class="AcManager.Pages.Dialogs.ServerCommunityRating" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.Dialogs"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" Title="{Binding Entry.DisplayName, StringFormat='Community rating: {0}'}"
-    d:DataContext="{d:DesignInstance local:ServerCommunityRating+ViewModel}" LocationAndSizeKey="ServerCommunityRating_LS" ResizeMode="CanResizeWithGrip"
-    MinWidth="200" MinHeight="200" MaxWidth="99999" MaxHeight="99999" SizeToContent="Manual" Width="400" Height="600">
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.club/app/controls" mc:Ignorable="d"
+    Title="{Binding Entry.DisplayName, StringFormat='Community rating: {0}'}" d:DataContext="{d:DesignInstance local:ServerCommunityRating+ViewModel}"
+    LocationAndSizeKey="ServerCommunityRating_LS" ResizeMode="CanResizeWithGrip" MinWidth="200" MinHeight="200" MaxWidth="99999" MaxHeight="99999"
+    SizeToContent="Manual" Width="400" Height="600">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FullscreenDialog.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/FavouriteButton.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
       </ResourceDictionary.MergedDictionaries>
+      <Style x:Key="LikeButton" TargetType="{x:Type c:FavouriteButton}" BasedOn="{StaticResource {x:Type c:FavouriteButton}}">
+        <Setter Property="Data" Value="{StaticResource LikeIconData}" />
+      </Style>
     </ResourceDictionary>
   </mui:ModernDialog.Resources>
   <DockPanel>
@@ -87,10 +92,44 @@
               </DockPanel>
               <TextBlock Text="{Binding DisplayStats}" Style="{StaticResource Small}" FontWeight="Bold" DockPanel.Dock="Top" Margin="0 0 0 4"
                   Visibility="{Binding Stats, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-              <mui:BbCodeBlock Text="{Binding Comment}" Mode="SafeBbCodes" Margin="0 0 0 4" />
+              <mui:BbCodeBlock Text="{Binding Comment}" Mode="SafeBbCodes" Margin="0 0 0 4" DockPanel.Dock="Top" />
+              <mui:BooleanSwitch Value="{Binding IsOwn}" VerticalAlignment="Center" Margin="0 0 4 0">
+                <mui:BooleanSwitch.False>
+                  <Button Width="80" Height="18" Padding="0" Command="{Binding ReportCommand}">
+                    <DockPanel>
+                      <Path Data="{StaticResource AlertIconData}" Width="12" Height="12"
+                          Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Stretch="Uniform" />
+                      <TextBlock Text="Report" FontSize="{DynamicResource SmallFontSize}" Margin="4 0 0 0" ToolTip="Reported comments will be hidden" />
+                    </DockPanel>
+                  </Button>
+                </mui:BooleanSwitch.False>
+                <mui:BooleanSwitch.True>
+                  <Button Width="80" Height="18" Padding="0" Command="{Binding EditCommand}">
+                    <DockPanel>
+                      <Path Data="{StaticResource EditIconData}" Width="12" Height="12"
+                          Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Stretch="Uniform" />
+                      <TextBlock Text="Edit" FontSize="{DynamicResource SmallFontSize}" Margin="4 0 0 0" ToolTip="Change or erase comment" />
+                    </DockPanel>
+                  </Button>
+                </mui:BooleanSwitch.True>
+                </mui:BooleanSwitch>
+              <DockPanel Width="80" Height="18" HorizontalAlignment="Left">
+                <mui:BooleanSwitch Value="{Binding IsOwn}" VerticalAlignment="Center">
+                  <mui:BooleanSwitch.False>
+                    <c:FavouriteButton Style="{StaticResource LikeButton}" Command="{Binding ToggleLikeCommand}" IsChecked="{Binding Liked, Mode=OneWay}"
+                        Width="12" Height="12" HorizontalAlignment="Left" />
+                  </mui:BooleanSwitch.False>
+                  <mui:BooleanSwitch.True>
+                    <Path Data="{StaticResource LikeIconData}" Width="12" Height="12" Fill="{DynamicResource ButtonBackground}" Stretch="Uniform"
+                        HorizontalAlignment="Left" Visibility="{Binding Likes, Converter={StaticResource MoreToVisibilityConverter}}" />
+                  </mui:BooleanSwitch.True>
+                </mui:BooleanSwitch>
+                <TextBlock Text="{Binding Likes}" FontSize="{DynamicResource SmallFontSize}" FontWeight="Bold" Margin="4 0 0 0" VerticalAlignment="Center"
+                    Visibility="{Binding Likes, Converter={StaticResource MoreToVisibilityConverter}}" />
+              </DockPanel>
             </DockPanel>
             <DataTemplate.Triggers>
-              <DataTrigger Binding="{Binding Own}" Value="True">
+              <DataTrigger Binding="{Binding IsOwn}" Value="True">
                 <Setter TargetName="PART_You" Property="Visibility" Value="Visible" />
               </DataTrigger>
               <DataTrigger Binding="{Binding Vote}" Value="-1">

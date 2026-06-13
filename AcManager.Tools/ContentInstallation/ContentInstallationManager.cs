@@ -304,7 +304,7 @@ namespace AcManager.Tools.ContentInstallation {
             var sb = new StringBuilder(l.Count * 2);
             for (var i = 0; i < l.Count; i++) {
                 var x = l[i];
-                if (x.IsDeleted || x.IsDeleting || x.Virtual) return;
+                if (x.IsDeleted || x.IsDeleting || x.Virtual) continue;
 
                 if (i > 0) sb.Append('\n');
                 sb.Append(Storage.Encode(x.Serialize()));

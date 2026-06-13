@@ -84,7 +84,7 @@ namespace AcManager.Tools.Helpers {
                     return response.StatusCode;
                 }
 
-                throw new InvalidOperationException(@"No request were made to get status code");
+                throw new InvalidOperationException(@"No request was made to get status code");
             }
         }
 

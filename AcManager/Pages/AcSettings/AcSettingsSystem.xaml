@@ -149,8 +149,8 @@
         <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.AcSettings_Skidmarks}" />
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding Skidmarks.QuantityMultipler}" Postfix="%" Content="{x:Static g:AppStrings.AcSettings_Skidmarks_Quantity}" />
-          <Slider Minimum="0" Maximum="250" Value="{Binding Skidmarks.QuantityMultipler}" TickFrequency="25" TickPlacement="BottomRight" />
+          <mui:ValueLabel Value="{Binding Skidmarks.QuantityMultiplier}" Postfix="%" Content="{x:Static g:AppStrings.AcSettings_Skidmarks_Quantity}" />
+          <Slider Minimum="0" Maximum="250" Value="{Binding Skidmarks.QuantityMultiplier}" TickFrequency="25" TickPlacement="BottomRight" />
         </DockPanel>
 
         <DockPanel>

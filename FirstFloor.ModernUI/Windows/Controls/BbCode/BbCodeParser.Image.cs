@@ -53,48 +53,23 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 set => SetValue(ImageUriProperty, value);
             }
 
-            public BitmapCreateOptions CreateOptions {
-                get => GetValue(CreateOptionsProperty) as BitmapCreateOptions? ?? default;
-                set => SetValue(CreateOptionsProperty, value);
-            }
-
             private static async void ImageUrlPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e) {
                 var uri = e.NewValue as Uri;
-                if (uri == null) return;
+                if (uri == null || uri.IsFile /* not supported by design */) return;
 
                 var cachedImage = (InlineImage)obj;
-                var bitmapImage = new BitmapImage();
-
                 if (cachedImage._cache != null) {
-                    try {
-                        var memoryStream = await cachedImage._cache.HitAsync(uri);
-                        if (memoryStream == null) return;
-
-                        bitmapImage.BeginInit();
-                        bitmapImage.CreateOptions = cachedImage.CreateOptions;
-                        bitmapImage.StreamSource = memoryStream;
-                        bitmapImage.EndInit();
-                        cachedImage.Source = bitmapImage;
-                    } catch (Exception) {
-                        // ignored, in case the downloaded file is a broken or not an image.
-                    }
+                    var memoryStream = await cachedImage._cache.HitAsync(uri);
+                    if (memoryStream == null) return;
+                    cachedImage.Source = BetterImage.LoadBitmapSourceFromMemoryStream(memoryStream, sourceDebug: uri.ToString()).ImageSource;
                 } else {
-                    bitmapImage.BeginInit();
-                    bitmapImage.CreateOptions = cachedImage.CreateOptions;
-                    bitmapImage.UriSource = uri;
-
-                    // Enable IE-like cache policy.
-                    bitmapImage.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.Default);
-                    bitmapImage.EndInit();
-                    cachedImage.Source = bitmapImage;
+                    var image = await BetterImage.LoadRemoteBitmapAsync(uri);
+                    cachedImage.Source = image.ImageSource;
                 }
             }
 
             public static readonly DependencyProperty ImageUriProperty = DependencyProperty.Register("ImageUri",
                     typeof(Uri), typeof(InlineImage), new PropertyMetadata(null, ImageUrlPropertyChanged));
-
-            public static readonly DependencyProperty CreateOptionsProperty = DependencyProperty.Register("CreateOptions",
-                    typeof(BitmapCreateOptions), typeof(InlineImage));
         }
 
         private class InlineImageCache {

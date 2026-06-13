@@ -247,6 +247,7 @@ namespace AcManager.Tools.Helpers.Api {
             Chunk
         }
 
+        [ItemCanBeNull]
         private static async Task<byte[]> LoadDataFromCustomOrigin(string fullUrl, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             try {
                 using (var order = KillerOrder.Create(new WebClient(), 30000)) {
@@ -300,6 +301,8 @@ namespace AcManager.Tools.Helpers.Api {
                         return Tuple.Create(file.FullName, false);
                     }
                     var data = await LoadDataFromCustomOrigin(custom.Value[1], progress, cancellation).ConfigureAwait(false);
+                    if (data == null) return null;
+                    
                     await FileUtils.WriteAllBytesAsync(file.FullName, data, cancellation).ConfigureAwait(false);
                     file.Refresh();
                     file.LastWriteTime = DateTime.Now;
@@ -383,7 +386,8 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         public static bool HasPatchCached(string version) {
-            return File.Exists(FilesStorage.Instance.GetFilename("Temporary", "Patch", $"{version}.zip"));
+            var key = GetPatchCacheKey(PatchDataType.Patch, version);
+            return File.Exists(FilesStorage.Instance.GetFilename("Temporary", "Patch", key));
         }
 
         [ItemCanBeNull]

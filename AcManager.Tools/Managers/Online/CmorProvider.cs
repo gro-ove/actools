@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
@@ -16,7 +17,11 @@ using SharpCompress.Compressors.Deflate;
 
 namespace AcManager.Tools.Managers.Online {
     public static class CmorProvider {
+        #if DEBUG
+        private static string _serviceUrl = "http://127.0.0.1:22220";
+        #else
         private static string _serviceUrl = "https://cmor.acstuff.club";
+        #endif
         private static string _sessionToken;
         private static HashSet<ServerEntry> _awaiting;
         private static Dictionary<ulong, uint> _records;
@@ -98,14 +103,29 @@ namespace AcManager.Tools.Managers.Online {
                         var error = response.GetStringValueOnly("error");
                         if (error == null) return response;
                         throw new InformativeException($"Service error: {error}", "Please try again later.");
-                    } catch (WebException e) when (i == 0 && e.Response is HttpWebResponse webResponse && webResponse.StatusCode == HttpStatusCode.Unauthorized) {
-#if DEBUG
-                        Logging.Debug("Auth is lost, redoing…");
-#endif
-                        _sessionToken = string.Empty;
                     } catch (WebException e) {
-                        Logging.Debug($"Weird error: {e.Response is HttpWebResponse}, i={i}");
-                        throw new InformativeException($"Service error: {e.Message}", "Please try again later.");
+                        var webResponse = e.Response as HttpWebResponse;
+                        if (i == 0 && webResponse != null && webResponse.StatusCode == HttpStatusCode.Unauthorized) {
+                            _sessionToken = string.Empty;
+                        } else {
+                            string errMsg = null;
+                            if (webResponse != null && webResponse.StatusCode == HttpStatusCode.BadRequest
+                                && webResponse.ContentType.StartsWith(@"application/json")) {
+                                try {
+                                    var stream = webResponse.GetResponseStream();
+                                    if (stream != null) {
+                                        var error = JObject.Parse(Encoding.UTF8.GetString(await stream.ReadAsBytesAndDisposeAsync().ConfigureAwait(false)))?
+                                                .GetStringValueOnly("error");
+                                        if (!string.IsNullOrEmpty(error)) {
+                                            errMsg = error;
+                                        }
+                                    }
+                                } catch {
+                                    // ignored
+                                }
+                            }
+                            throw new InformativeException(errMsg ?? $"Service error: {e.Message}", errMsg == null ? "Please try again later." : null, e);
+                        }
                     }
                 }
             }

@@ -235,8 +235,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void Frame_Navigated(object sender, NavigationEventArgs navigationEventArgs) {
             FrameNavigated?.Invoke(this, navigationEventArgs);
             if (Layout == TabLayout.TabWithTitle) {
-                Title = !(Frame.Content is ITabCanBePinned pinnable) || PinnedLinks.Any(x => x.Source == SelectedSource)
-                        ? null : pinnable.Title;
+                if (Frame.Content is ITabCanBePinned pinnable && pinnable.Title != null) {
+                    var pinned = PinnedLinks.FirstOrDefault(x => x.Source == SelectedSource);
+                    if (pinned == null) {
+                        Title = pinnable.Title;
+                    } else if (pinned.DisplayName != pinnable.Title) {
+                        pinned.DisplayName = pinnable.Title;
+                        SavePinned();
+                    }
+                } else {
+                    Title = null;
+                }
             }
 
             if (SaveKey != null && (_linkList.SelectedItem != null || SavePolicy == SavePolicy.Flexible)) {

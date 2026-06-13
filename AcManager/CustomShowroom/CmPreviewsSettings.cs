@@ -470,12 +470,12 @@ namespace AcManager.CustomShowroom {
                 _highQualityPreview = value;
                 ValuesStorage.Set(".cmPsHqPreview", value);
                 OnPropertyChangedSkipSaving();
-                Renderer.ResolutionMultiplier = GetRendererResolutionMultipler();
+                Renderer.ResolutionMultiplier = GetRendererResolutionMultiplier();
             }
         }
 
-        protected override double GetRendererResolutionMultipler() {
-            return HighQualityPreview ? base.GetRendererResolutionMultipler() : Math.Min(base.GetRendererResolutionMultipler(), 2d);
+        protected override double GetRendererResolutionMultiplier() {
+            return HighQualityPreview ? base.GetRendererResolutionMultiplier() : Math.Min(base.GetRendererResolutionMultiplier(), 2d);
         }
 
         #region Size
@@ -526,7 +526,7 @@ namespace AcManager.CustomShowroom {
                     form.Height = height + borderHeight;
                     Renderer.Width = width;
                     Renderer.Height = height;
-                    Renderer.ResolutionMultiplier = GetRendererResolutionMultipler() / scale;
+                    Renderer.ResolutionMultiplier = GetRendererResolutionMultiplier() / scale;
                 }
             } finally {
                 _sizeBusy = false;

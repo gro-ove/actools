@@ -930,7 +930,6 @@ namespace AcManager.Tools.Objects {
             json.SetNonDefault("championshipRankingGoal", ChampionshipRankingGoal);
             json.SetNonDefault("pointsForBestLap", PointsForBestLap);
             json.SetNonDefault("pointsForPolePosition", PointsForPolePosition);
-            json.SetNonDefault("code", Code);
             json.SetNonDefault("description", Description);
             json.SetNonDefault("difficulty", Difficulty);
             json.SetNonDefault("coherentTime", CoherentTime);
@@ -1075,14 +1074,14 @@ namespace AcManager.Tools.Objects {
         #endregion
 
         #region Custom AI level
-        private double _userAiLevelMultipler = 1;
+        private double _userAiLevelMultiplier = 1;
 
-        public double UserAiLevelMultipler {
-            get => _userAiLevelMultipler;
+        public double UserAiLevelMultiplier {
+            get => _userAiLevelMultiplier;
             set {
                 value = value.Clamp(0.5, 1.5);
-                if (Equals(value, _userAiLevelMultipler)) return;
-                _userAiLevelMultipler = value;
+                if (Equals(value, _userAiLevelMultiplier)) return;
+                _userAiLevelMultiplier = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(UserAiLevelFrom));
                 OnPropertyChanged(nameof(UserAiLevelTo));
@@ -1093,11 +1092,11 @@ namespace AcManager.Tools.Objects {
         private DelegateCommand _resetUserAiLevelCommand;
 
         public DelegateCommand ResetUserAiLevelCommand
-            => _resetUserAiLevelCommand ?? (_resetUserAiLevelCommand = new DelegateCommand(() => { UserAiLevelMultipler = 1d; }));
+            => _resetUserAiLevelCommand ?? (_resetUserAiLevelCommand = new DelegateCommand(() => UserAiLevelMultiplier = 1d));
 
-        public double UserAiLevelFrom => Math.Min(AiLevelFrom * UserAiLevelMultipler, 100d);
+        public double UserAiLevelFrom => Math.Min(AiLevelFrom * UserAiLevelMultiplier, 100d);
 
-        public double UserAiLevelTo => Math.Min(AiLevelTo * UserAiLevelMultipler, 100d);
+        public double UserAiLevelTo => Math.Min(AiLevelTo * UserAiLevelMultiplier, 100d);
 
         public string UserAiLevelDisplay => AiLevelRange ? $@"{UserAiLevelFrom:F0}%–{UserAiLevelTo:F0}%" : $@"{UserAiLevelTo:F0}%";
         #endregion
@@ -1317,7 +1316,6 @@ namespace AcManager.Tools.Objects {
                     round.TakenPlace = Type == KunosCareerObjectType.SingleEvents ? PlaceConditions.UnremarkablePlace : 0;
                     round.IsAvailable = Type == KunosCareerObjectType.SingleEvents || round.Index == 0;
                     round.IsPassed = false;
-                    return;
                 }
             } else {
                 var count = ExtendedRounds.Count;

@@ -14,7 +14,7 @@ using Buffer = SlimDX.Direct3D11.Buffer;
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public class DarkDof : IDisposable {
         private int _maxSize = 960;
-        private float _sizeMultipler;
+        private float _sizeMultiplier;
 
         [NotNull]
         public readonly TargetResourceTexture BufferScene, BufferDownsampleColor, BufferScatterBokeh;
@@ -58,11 +58,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _height = height;
             BufferScene.Resize(holder, width, height, null);
 
-            var minMultipler = Math.Min((float)_maxSize / width, (float)_maxSize / height);
-            _sizeMultipler = minMultipler;
+            var minMultiplier = Math.Min((float)_maxSize / width, (float)_maxSize / height);
+            _sizeMultiplier = minMultiplier;
 
-            var smallWidth = (int)(minMultipler * width);
-            var smallHeight = (int)(minMultipler * height);
+            var smallWidth = (int)(minMultiplier * width);
+            var smallHeight = (int)(minMultiplier * height);
 
             if (BufferDownsampleColor.Resize(holder, smallWidth, smallHeight, null)) {
                 BufferScatterBokeh.Resize(holder, smallWidth * 2, smallHeight, null);
@@ -122,8 +122,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             var cocCalculationsScale = DofCoCScale * focusPlane * (camera.FarZValue - camera.NearZValue) / (camera.FarZValue * camera.NearZValue);
             _effect.FxCocScaleBias.Set(new Vector4(cocCalculationsScale, cocCalculationsBias, 0f, 0f));
             _effect.FxScreenSize.Set(new Vector4(_width, _height, 1f / _width, 1f / _height));
-            _effect.FxScreenSizeHalfRes.Set(new Vector4(_width * _sizeMultipler, _height * _sizeMultipler,
-                    1f / _sizeMultipler / _width, 1f / _sizeMultipler / _height));
+            _effect.FxScreenSizeHalfRes.Set(new Vector4(_width * _sizeMultiplier, _height * _sizeMultiplier,
+                    1f / _sizeMultiplier / _width, 1f / _sizeMultiplier / _height));
 
             // common preparation
             holder.PrepareQuad(_effect.LayoutPT);

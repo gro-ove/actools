@@ -473,7 +473,7 @@ namespace AcTools.Processes {
         }
 
         public class ConditionProperties : RaceIniProperties {
-            public double? SunAngle, TimeMultipler, CloudSpeed;
+            public double? SunAngle, TimeMultiplier, CloudSpeed;
             public double? RoadTemperature, AmbientTemperature;
             public double? WindDirectionDeg, WindSpeedMin, WindSpeedMax;
             public string WeatherName;
@@ -486,7 +486,7 @@ namespace AcTools.Processes {
                 var lightingSection = file["LIGHTING"];
                 lightingSection.Remove("__CM_UNCLAMPED_SUN_ANGLE");
                 lightingSection.Set("SUN_ANGLE", SunAngle, "F2");
-                lightingSection.Set("TIME_MULT", TimeMultipler, "F1");
+                lightingSection.Set("TIME_MULT", TimeMultiplier, "F1");
                 lightingSection.Set("CLOUD_SPEED", CloudSpeed, "F3");
 
                 var weatherSection = file["WEATHER"];
@@ -715,9 +715,9 @@ namespace AcTools.Processes {
             public bool VisualDamage;
             public double Damage;
             public double FuelConsumption;
-            public double TyreWearMultipler;
+            public double TyreWearMultiplier;
             public bool TyreBlankets;
-            public double SlipSteamMultipler;
+            public double SlipSteamMultiplier;
 
             public IniFile ToIniFile() {
                 return new IniFile {
@@ -733,9 +733,9 @@ namespace AcTools.Processes {
                         ["VISUALDAMAGE"] = VisualDamage,
                         ["DAMAGE"] = Damage,
                         ["FUEL_RATE"] = FuelConsumption,
-                        ["TYRE_WEAR"] = TyreWearMultipler,
+                        ["TYRE_WEAR"] = TyreWearMultiplier,
                         ["TYRE_BLANKETS"] = TyreBlankets,
-                        ["SLIPSTREAM"] = SlipSteamMultipler,
+                        ["SLIPSTREAM"] = SlipSteamMultiplier,
                     }
                 };
             }

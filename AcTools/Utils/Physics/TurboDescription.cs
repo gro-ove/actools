@@ -22,7 +22,7 @@ namespace AcTools.Utils.Physics {
         }
 
         [Pure]
-        public double CalculateMultipler(double rpm) {
+        public double CalculateMultiplier(double rpm) {
             var baseLevel = Math.Min(1, Math.Pow(rpm / ReferenceRpm, Gamma));
             var result = GetBoost(rpm) * baseLevel;
             return Equals(Wastegate, 0d) ? result : Math.Min(Wastegate, result);

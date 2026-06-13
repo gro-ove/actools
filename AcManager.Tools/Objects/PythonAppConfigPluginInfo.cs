@@ -135,23 +135,21 @@ namespace AcManager.Tools.Objects {
         private DelegateCommand _viewInExplorerCommand;
 
         public DelegateCommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(
-                () => { WindowsHelper.ViewDirectory(Location); }));
+                () => WindowsHelper.ViewDirectory(Location)));
 
-        private AsyncCommand _packCommand;
-
-        public AsyncCommand PackCommand => _packCommand ?? (_packCommand = new AsyncCommand(async () => {
+        public static async Task PackGenericPluginAsync(string id, string displayName, string version, string author, string location) {
             try {
-                var destination = GetPackedFilename(DisplayName, @".zip", Version);
+                var destination = GetPackedFilename(displayName, @".zip", version);
                 if (destination == null) return;
 
-                using (var waiting = new WaitingDialog($"Packing {DisplayName}…")) {
+                using (var waiting = new WaitingDialog($"Packing {displayName}…")) {
                     var cancellation = waiting.CancellationToken;
                     waiting.Report(AsyncProgressEntry.Indetermitate);
                     await Task.Run(() => {
                         using (var output = File.Create(destination)) {
                             var root = AcRootDirectory.Instance.RequireValue;
                             using (var writer = WriterFactory.Open(output, ArchiveType.Zip, CompressionType.Deflate)) {
-                                var files = FileUtils.GetFilesRecursive(Location)
+                                var files = FileUtils.GetFilesRecursive(location)
                                         .Where(x => !Regex.IsMatch(x, @"[\\/]\.|\.(?:bak|tmp|psd)$")).ToList();
                                 for (var i = 0; i < files.Count; i++) {
                                     var file = files[i];
@@ -162,10 +160,10 @@ namespace AcManager.Tools.Objects {
                                 if (cancellation.IsCancellationRequested) return;
                             }
                             output.AddZipDescription(PackedDescription.ToString(new[] {
-                                new PackedDescription(Id, DisplayName, new Dictionary<string, string> {
-                                    [@"Version"] = Version,
-                                    [@"Made by"] = Author,
-                                }, Path.GetDirectoryName(Location), true)
+                                new PackedDescription(id, displayName, new Dictionary<string, string> {
+                                    [@"Version"] = version,
+                                    [@"Made by"] = author,
+                                }, Path.GetDirectoryName(location), true)
                             }));
                         }
                     });
@@ -174,8 +172,12 @@ namespace AcManager.Tools.Objects {
                     WindowsHelper.ViewFile(destination);
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t pack server", e);
+                NonfatalError.Notify("Can’t pack plugin", e);
             }
-        }));
+        }
+
+        private AsyncCommand _packCommand;
+
+        public AsyncCommand PackCommand => _packCommand ?? (_packCommand = new AsyncCommand(() => PackGenericPluginAsync(Id, DisplayName, Version, Author, Location)));
     }
 }

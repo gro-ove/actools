@@ -253,7 +253,10 @@ namespace AcManager.Pages.Drive {
             public string ModeData, CarId, TrackId, WeatherId;
             public bool RealConditions;
             public double Temperature;
-            public int Time, TimeMultipler;
+            public int Time;
+            
+            [JsonProperty(@"TimeMultipler")]
+            public int TimeMultiplier;
 
             [JsonProperty(@"udt")]
             public bool UseSpecificDate;
@@ -338,7 +341,25 @@ namespace AcManager.Pages.Drive {
             }
         }
         
-        private static IEqualityComparer<object> _linksComparer = new LinksComparer();
+        private static readonly IEqualityComparer<object> _linksComparer = new LinksComparer();
+
+        public static ICommand CustomModeViewInExplorer { get; } = new DelegateCommand<string>(id => {
+            var mode = NewRaceModeData.Instance.Items.FirstOrDefault(x => x.Id == id);
+            if (mode != null) {
+                WindowsHelper.ViewDirectory(mode.Location);
+            } else {
+                NonfatalError.Notify($"Failed to find mode “{id ?? "?"}”");
+            }
+        });
+
+        public static ICommand CustomModePack { get; } = new AsyncCommand<string>(async id => {
+            var mode = NewRaceModeData.Instance.Items.FirstOrDefault(x => x.Id == id);
+            if (mode != null) {
+                await PythonAppConfigPluginInfo.PackGenericPluginAsync(mode.Id, mode.DisplayName, mode.Version, mode.Author, mode.Location);
+            } else {
+                NonfatalError.Notify($"Failed to find mode “{id ?? "?"}”");
+            }
+        });
 
         private void OnNewModesChanged(object sender, EventArgs e) {
             var updatedList = new List<object> {
@@ -356,7 +377,8 @@ namespace AcManager.Pages.Drive {
                     updatedList.Add(new Link {
                         DisplayName = item.DisplayName,
                         Source = new Uri(ModeCustomPath + "?Id=" + item.Id, UriKind.Relative),
-                        ToolTip = item.GetToolTip()
+                        ToolTip = item.GetToolTip(),
+                        Tag = item.Id
                     });
                 }
             }
@@ -648,8 +670,8 @@ namespace AcManager.Pages.Drive {
                 SelectedTrack = track?.MultiLayouts?.RandomElementOrDefault() ?? track;
             }));
 
-            public int TimeMultiplerMinimum => 0;
-            public int TimeMultiplerMaximum => 3600;
+            public int TimeMultiplierMinimum => 0;
+            public int TimeMultiplierMaximum => 3600;
 
             private int _timeMultiplier;
 
@@ -657,7 +679,7 @@ namespace AcManager.Pages.Drive {
                 get => _timeMultiplier;
                 set {
                     if (value == _timeMultiplier) return;
-                    _timeMultiplier = value.Clamp(TimeMultiplerMinimum, TimeMultiplerMaximum);
+                    _timeMultiplier = value.Clamp(TimeMultiplierMinimum, TimeMultiplierMaximum);
                     OnPropertyChanged();
                     SaveLater();
                 }
@@ -735,7 +757,7 @@ namespace AcManager.Pages.Drive {
                     AssistsPresetFilename = UserPresetsControl.GetCurrentFilename(AssistsViewModel.PresetableKey),
                     Temperature = Temperature,
                     Time = Time,
-                    TimeMultipler = TimeMultiplier,
+                    TimeMultiplier = TimeMultiplier,
                     WindSpeedMin = WindSpeedMin,
                     WindSpeedMax = WindSpeedMax,
                     WindDirection = WindDirection,
@@ -748,7 +770,7 @@ namespace AcManager.Pages.Drive {
                     UseSpecificDate = UseSpecificDate,
                     SpecificDateValue = SpecificDateValue
                 }, o => {
-                    TimeMultiplier = o.TimeMultipler;
+                    TimeMultiplier = o.TimeMultiplier;
 
                     RealConditions = _weatherId == null && o.RealConditions;
                     IdealConditions = _weatherId == null && o.IdealConditions;
@@ -1116,7 +1138,7 @@ namespace AcManager.Pages.Drive {
                         AmbientTemperature = temperature,
                         RoadTemperature = roadTemperature,
                         SunAngle = Game.ConditionProperties.GetSunAngle(time),
-                        TimeMultipler = TimeMultiplier,
+                        TimeMultiplier = TimeMultiplier,
                         CloudSpeed = 0.2,
                         WeatherName = weather?.Id,
                         WindDirectionDeg = RandomWindDirection ? MathUtils.Random(0, 360) : WindDirection,

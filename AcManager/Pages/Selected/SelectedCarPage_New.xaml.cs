@@ -457,7 +457,7 @@ namespace AcManager.Pages.Selected {
 
                 torque.UpdateBoundingBox();
                 power.UpdateBoundingBox();
-                return Tuple.Create(dlg.Multipler == 1d, torque.MaxY * dlg.Multipler, power.MaxY * dlg.Multipler);
+                return Tuple.Create(dlg.Multiplier == 1d, torque.MaxY * dlg.Multiplier, power.MaxY * dlg.Multiplier);
             }
 
             private DelegateCommand _recalculateTorqueCommand;
@@ -641,8 +641,8 @@ namespace AcManager.Pages.Selected {
                 dlg.ShowDialog();
                 if (!dlg.IsResultOk) return;
 
-                torque.TransformSelf(x => x.Y * dlg.Multipler);
-                power.TransformSelf(x => x.Y * dlg.Multipler);
+                torque.TransformSelf(x => x.Y * dlg.Multiplier);
+                power.TransformSelf(x => x.Y * dlg.Multiplier);
 
                 o.SpecsTorqueCurve = new GraphData(torque);
                 o.SpecsPowerCurve = new GraphData(power);
@@ -651,8 +651,8 @@ namespace AcManager.Pages.Selected {
                         "copyNewPowerAndTorque") == MessageBoxResult.Yes) {
                     // MaxY values were updated while creating new GraphData instances above
                     o.SpecsTorque = SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture))
-                            + (dlg.Multipler == 1d ? "*" : "");
-                    o.SpecsBhp = SpecsFormat(dlg.Multipler == 1d ? AppStrings.CarSpecs_PowerAtWheels_FormatTooltip : AppStrings.CarSpecs_Power_FormatTooltip,
+                            + (dlg.Multiplier == 1d ? "*" : "");
+                    o.SpecsBhp = SpecsFormat(dlg.Multiplier == 1d ? AppStrings.CarSpecs_PowerAtWheels_FormatTooltip : AppStrings.CarSpecs_Power_FormatTooltip,
                             power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
                 }
             }));

@@ -30,7 +30,7 @@ namespace AcManager.Tools.AcManagersNew {
     }
 
     /// <summary>
-    /// “Standart” version — files & watching.
+    /// “Standard” version — files & watching.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class AcManagerNew<T> : FileAcManager<T>, IDirectoryListener, IWatchingChangeApplier, IIgnorer where T : AcCommonObject {
@@ -55,26 +55,26 @@ namespace AcManager.Tools.AcManagersNew {
         protected override async Task MoveOverrideAsync(string oldId, string newId, string oldLocation, string newLocation,
                 IEnumerable<Tuple<string, string>> attachedOldNew, bool newEnabled) {
             using (IgnoreChanges()) {
-                await base.MoveOverrideAsync(oldId, newId, oldLocation, newLocation, attachedOldNew, newEnabled);
+                await base.MoveOverrideAsync(oldId, newId, oldLocation, newLocation, attachedOldNew, newEnabled).ConfigureAwait(false);
             }
         }
 
         protected override async Task CloneOverrideAsync(string oldId, string newId, string oldLocation, string newLocation,
                 IEnumerable<Tuple<string, string>> attachedOldNew, bool newEnabled) {
             using (IgnoreChanges()) {
-                await base.CloneOverrideAsync(oldId, newId, oldLocation, newLocation, attachedOldNew, newEnabled);
+                await base.CloneOverrideAsync(oldId, newId, oldLocation, newLocation, attachedOldNew, newEnabled).ConfigureAwait(false);
             }
         }
 
         protected override async Task DeleteOverrideAsync(string id, string location, IEnumerable<string> attached) {
             using (IgnoreChanges()) {
-                await base.DeleteOverrideAsync(id, location, attached);
+                await base.DeleteOverrideAsync(id, location, attached).ConfigureAwait(false);
             }
         }
 
-        protected override Task DeleteOverrideAsync(IEnumerable<Tuple<string, string, IEnumerable<string>>> list) {
+        protected override async Task DeleteOverrideAsync(IEnumerable<Tuple<string, string, IEnumerable<string>>> list) {
             using (IgnoreChanges()) {
-                return base.DeleteOverrideAsync(list);
+                await base.DeleteOverrideAsync(list).ConfigureAwait(false);
             }
         }
 

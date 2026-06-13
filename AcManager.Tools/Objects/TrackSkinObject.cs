@@ -45,7 +45,7 @@ namespace AcManager.Tools.Objects {
             var json = JsonObject ?? new JObject();
             SaveData(json);
 
-            using (CarsManager.Instance.IgnoreChanges()) {
+            using (TracksManager.Instance.IgnoreChanges()) {
                 File.WriteAllText(JsonFilename, json.ToString());
             }
 
@@ -75,7 +75,7 @@ namespace AcManager.Tools.Objects {
                 return true;
             }
 
-            return true;
+            return false;
         }
 
         [NotNull]

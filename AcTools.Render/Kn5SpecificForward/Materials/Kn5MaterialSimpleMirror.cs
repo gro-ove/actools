@@ -46,7 +46,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
 
         public void Dispose() { }
 
-        void IAcDynamicMaterial.SetEmissiveNext(Vector3 value, float multipler) { }
+        void IAcDynamicMaterial.SetEmissiveNext(Vector3 value, float multiplier) { }
 
         void IAcDynamicMaterial.SetRadialSpeedBlurNext(float amount) { }
     }

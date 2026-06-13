@@ -363,7 +363,7 @@ namespace AcManager.Pages.Lists {
             public static readonly BatchAction_PackSkins Instance = new BatchAction_PackSkins();
             public BatchAction_PackSkins() : base("Batch.PackCarSkins") {}
 
-            #region Properies
+            #region Properties
             private bool _cmForFlag = ValuesStorage.Get("_ba.packSkins.cmForFlag", true);
             public bool CmForFlag {
                 get => _cmForFlag;

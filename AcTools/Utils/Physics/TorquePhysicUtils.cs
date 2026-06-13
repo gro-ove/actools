@@ -12,24 +12,23 @@ namespace AcTools.Utils.Physics {
         }
 
         public static double ConsiderTurbo(IReadOnlyList<TurboDescription> turbo, double rpm, double torque) {
-            var multipler = 0d;
+            var multiplier = 0d;
             for (var i = 0; i < turbo.Count; i++) {
-                multipler += turbo[i].CalculateMultipler(rpm);
+                multiplier += turbo[i].CalculateMultiplier(rpm);
             }
-
-            return torque * (1.0 + multipler);
+            return torque * (1.0 + multiplier);
         }
 
-        private const double TorqueRpmToBhpMultipler = 1.0 / (9.5488 * 745.7);
+        private const double TorqueRpmToBhpMultiplier = 1.0 / (9.5488 * 745.7);
 
         [Pure]
         public static double TorqueToPower(double torque, double rpm) {
-            return rpm * torque * TorqueRpmToBhpMultipler;
+            return rpm * torque * TorqueRpmToBhpMultiplier;
         }
 
         [Pure]
         public static double PowerToTorque(double power, double rpm) {
-            return Equals(rpm, 0d) ? 0d : power / rpm / TorqueRpmToBhpMultipler;
+            return Equals(rpm, 0d) ? 0d : power / rpm / TorqueRpmToBhpMultiplier;
         }
 
         private static Lut Result(Lut v) {

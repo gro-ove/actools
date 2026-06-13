@@ -224,9 +224,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public void Dispose() { }
 
-        void IAcDynamicMaterial.SetEmissiveNext(Vector3 value, float multipler) {
+        void IAcDynamicMaterial.SetEmissiveNext(Vector3 value, float multiplier) {
             var material = _material;
-            material.Emissive = material.Emissive * (1f - multipler) + value * multipler;
+            material.Emissive = material.Emissive * (1f - multiplier) + value * multiplier;
             _effect.FxMaterial.Set(material);
         }
 

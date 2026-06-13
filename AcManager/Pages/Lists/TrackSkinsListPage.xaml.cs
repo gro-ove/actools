@@ -115,7 +115,7 @@ namespace AcManager.Pages.Lists {
             public static readonly BatchAction_PackSkins Instance = new BatchAction_PackSkins();
             public BatchAction_PackSkins() : base("Batch.PackTrackSkins") {}
 
-            #region Properies
+            #region Properties
             private bool _jsgmeCompatible = ValuesStorage.Get("_ba.packTrackSkins.jsgme", true);
             public bool JsgmeCompatible {
                 get => _jsgmeCompatible;

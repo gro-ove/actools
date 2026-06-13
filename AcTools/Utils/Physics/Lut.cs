@@ -293,45 +293,45 @@ namespace AcTools.Utils.Physics {
         [NotNull, Pure]
         public Lut ScaleTo(double maxY) {
             UpdateBoundingBox();
-            var multipler = Math.Abs(MaxY) < 0.001 ? 1.0 : maxY / MaxY;
-            return ScaleBy(multipler);
+            var multiplier = Math.Abs(MaxY) < 0.001 ? 1.0 : maxY / MaxY;
+            return ScaleBy(multiplier);
         }
 
         [NotNull, Pure]
-        public Lut ScaleBy(double multipler) {
-            return new Lut(Transform(x => x.Y * multipler));
+        public Lut ScaleBy(double multiplier) {
+            return new Lut(Transform(x => x.Y * multiplier));
         }
 
         public void ScaleToSelf(double maxY) {
             UpdateBoundingBox();
-            var multipler = Math.Abs(MaxY) < 0.001 ? 1.0 : maxY / MaxY;
-            ScaleBySelf(multipler);
+            var multiplier = Math.Abs(MaxY) < 0.001 ? 1.0 : maxY / MaxY;
+            ScaleBySelf(multiplier);
         }
 
-        public void ScaleBySelf(double multipler) {
-            TransformSelf(x => x.Y * multipler);
+        public void ScaleBySelf(double multiplier) {
+            TransformSelf(x => x.Y * multiplier);
         }
 
         [NotNull, Pure]
         public Lut ScaleHorizontallyTo(double maxY) {
             UpdateBoundingBox();
-            var multipler = Math.Abs(MaxX) < 0.001 ? 1.0 : maxY / MaxX;
-            return ScaleHorizontallyBy(multipler);
+            var multiplier = Math.Abs(MaxX) < 0.001 ? 1.0 : maxY / MaxX;
+            return ScaleHorizontallyBy(multiplier);
         }
 
         [NotNull, Pure]
-        public Lut ScaleHorizontallyBy(double multipler) {
-            return new Lut(TransformHorizontally(x => x.X * multipler));
+        public Lut ScaleHorizontallyBy(double multiplier) {
+            return new Lut(TransformHorizontally(x => x.X * multiplier));
         }
 
         public void ScaleHorizontallyToSelf(double maxY) {
             UpdateBoundingBox();
-            var multipler = Math.Abs(MaxX) < 0.001 ? 1.0 : maxY / MaxX;
-            ScaleHorizontallyBySelf(multipler);
+            var multiplier = Math.Abs(MaxX) < 0.001 ? 1.0 : maxY / MaxX;
+            ScaleHorizontallyBySelf(multiplier);
         }
 
-        public void ScaleHorizontallyBySelf(double multipler) {
-            TransformHorizontallySelf(x => x.X * multipler);
+        public void ScaleHorizontallyBySelf(double multiplier) {
+            TransformHorizontallySelf(x => x.X * multiplier);
         }
 
         [Pure]

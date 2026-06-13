@@ -795,7 +795,7 @@ namespace AcManager.PaintShop {
                 case TypeColor:
                     var pairs = GetTintedPairs(e, refSolver);
                     if (pairs == null) {
-                        throw new Exception("Values requred");
+                        throw new Exception("Values required");
                     }
 
                     result = new ColoredItem(pairs, GetColors(e, Colors.White)) {

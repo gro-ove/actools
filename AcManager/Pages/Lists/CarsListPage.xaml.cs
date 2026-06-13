@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -16,6 +17,7 @@ using AcManager.Pages.Drive;
 using AcManager.Pages.Selected;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
+using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Filters.Testers;
@@ -61,7 +63,31 @@ namespace AcManager.Pages.Lists {
 
         private class ViewModel : AcListPageViewModel<CarObject> {
             public ViewModel(IFilter<CarObject> listFilter)
-                    : base(CarsManager.Instance, listFilter) { }
+                    : base(CarsManager.Instance, listFilter) {
+                // GroupBy(nameof(CarObject.Brand), new BrandGroupDescription());
+            }
+
+            protected override IEnumerable<KeyValuePair<string, Type>> GetSortingTypes() {
+                return base.GetSortingTypes()
+                        .Append(new KeyValuePair<string, Type>("brand", typeof(SortingBrand)));
+            }
+
+            private class SortingBrand : AcObjectSorter<CarObject> {
+                public override int Compare(CarObject x, CarObject y) {
+                    return string.Compare(x.Brand ?? string.Empty, y.Brand ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+                }
+
+                public override bool IsAffectedBy(string propertyName) {
+                    return propertyName == nameof(CarObject.Brand);
+                }
+            }
+
+            private class BrandGroupDescription : GroupDescription {
+                public override object GroupNameFromItem(object item, int level, CultureInfo culture) {
+                    var category = ((item as AcItemWrapper)?.Value as CarObject)?.Brand;
+                    return string.IsNullOrEmpty(category) ? "?" : category;
+                }
+            }
 
             protected override string GetSubject() {
                 return AppStrings.List_Cars;
@@ -389,9 +415,9 @@ namespace AcManager.Pages.Lists {
                         torqueCurve?.ScaleToSelf(torque.Value);
                     }
                 } else {
-                    var multipler = 1d / (1d - TransmissionLoss);
-                    torqueCurve?.TransformSelf(x => x.Y * multipler);
-                    powerCurve?.TransformSelf(x => x.Y * multipler);
+                    var multiplier = 1d / (1d - TransmissionLoss);
+                    torqueCurve?.TransformSelf(x => x.Y * multiplier);
+                    powerCurve?.TransformSelf(x => x.Y * multiplier);
                 }
 
                 if (powerCurve != null) {
@@ -813,7 +839,7 @@ namespace AcManager.Pages.Lists {
 
             public BatchAction_PackCars() : base("Batch.PackCars") { }
 
-            #region Properies
+            #region Properties
             private bool _packData = ValuesStorage.Get("_ba.packCars.data", true);
 
             public bool PackData {

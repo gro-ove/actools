@@ -15,7 +15,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -489,7 +492,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return Path.Combine(RemoteCacheDirectory, fileName);
         }
 
-        private static async Task<Image> LoadRemoteBitmapAsync(Uri uri, int decodeWidth = -1, int decodeHeight = -1) {
+        public static async Task<Image> LoadRemoteBitmapAsync(Uri uri, int decodeWidth = -1, int decodeHeight = -1) {
             var httpRequest = (HttpWebRequest)WebRequest.Create(uri);
             httpRequest.Method = "GET";
 
@@ -736,9 +739,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
+        public static object WineDecodeLock;
+
         /// <summary>
         /// Safe (handles all exceptions inside).
         /// </summary>
+        [MethodImpl(MethodImplOptions.NoInlining), HandleProcessCorruptedStateExceptions, SecurityCritical]
         public static Image LoadBitmapSourceFromMemoryStream([NotNull] MemoryStream data, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0,
                 [Localizable(false)] string sourceDebug = null, Func<bool> cancelledCheck = null) {
             PrepareDecodeLimits(data, ref decodeWidth, ref decodeHeight, sourceDebug);
@@ -771,7 +777,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     bi.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
                     bi.CacheOption = BitmapCacheOption.OnLoad;
                     bi.StreamSource = stream;
-                    bi.EndInit();
+
+                    if (WineDecodeLock != null) {
+                        lock (WineDecodeLock) {
+                            bi.EndInit();
+                        }
+                    } else {
+                        bi.EndInit();
+                    }
+                    
                     bi.Freeze();
 
                     if (decodeWidth <= 0) {
@@ -1276,18 +1290,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     forceFill && !double.IsPositiveInfinity(constraint.Height) ? constraint.Height : Math.Min(_size.Height, constraint.Height));
         }
 
-        private double HorizontalContentAlignmentMultipler => HorizontalContentAlignment == HorizontalAlignment.Center ? 0.5d :
+        private double HorizontalContentAlignmentMultiplier => HorizontalContentAlignment == HorizontalAlignment.Center ? 0.5d :
                 HorizontalContentAlignment == HorizontalAlignment.Right ? 1d : 0d;
 
-        private double VerticalContentAlignmentMultipler => VerticalContentAlignment == VerticalAlignment.Center ? 0.5d :
+        private double VerticalContentAlignmentMultiplier => VerticalContentAlignment == VerticalAlignment.Center ? 0.5d :
                 VerticalContentAlignment == VerticalAlignment.Bottom ? 1d : 0d;
 
         protected override Size ArrangeOverride(Size arrangeSize) {
             if (_current.ImageSource == null && HideBroken) return new Size();
 
             _size = MeasureArrangeHelper(arrangeSize);
-            _offset = new Point((arrangeSize.Width - _size.Width) * HorizontalContentAlignmentMultipler,
-                    (arrangeSize.Height - _size.Height) * VerticalContentAlignmentMultipler);
+            _offset = new Point((arrangeSize.Width - _size.Width) * HorizontalContentAlignmentMultiplier,
+                    (arrangeSize.Height - _size.Height) * VerticalContentAlignmentMultiplier);
             return new Size(double.IsPositiveInfinity(arrangeSize.Width) ? _size.Width : arrangeSize.Width,
                     double.IsPositiveInfinity(arrangeSize.Height) ? _size.Height : arrangeSize.Height);
         }

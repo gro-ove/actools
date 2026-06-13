@@ -369,7 +369,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public double? GetWidthValue() {
+        public double? GetWeightValue() {
             if (!FlexibleParser.TryParseDouble(_specsWeight, out var v)) {
                 return null;
             }

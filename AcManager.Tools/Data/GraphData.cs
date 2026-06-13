@@ -22,9 +22,11 @@ namespace AcManager.Tools.Data {
 
         private IReadOnlyList<Point> GetNormalizedValuesArray() {
             var result = new Point[_points.Count];
+            var xMult = 1d / Math.Max(MaxX - MinX, double.Epsilon);
+            var yMult = 1d / Math.Max(MaxY - MinY, double.Epsilon);
             for (var i = 0; i < result.Length; i++) {
                 var x = _points[i];
-                result[i] = new Point((x.X - MinX) / (MaxX - MinX), (x.Y - MinY) / (MaxY - MinY));
+                result[i] = new Point((x.X - MinX) * xMult, (x.Y - MinY) * yMult);
             }
             return result;
         }

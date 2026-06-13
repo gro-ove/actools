@@ -26,7 +26,7 @@ namespace AcManager.Tools.ContentRepairUi {
         protected override ContentRepairSuggestion GetObsoletableAspect(CarObject car, DataWrapper data) {
             if ((car.SpecsWeight?.IndexOf("*", StringComparison.Ordinal) ?? 0) != -1) return null;
 
-            var uiWeight = car.GetWidthValue() ?? 0d;
+            var uiWeight = car.GetWeightValue() ?? 0d;
             if (uiWeight <= 1d) return null;
 
             var withDriver = data.GetIniFile(@"car.ini")["BASIC"].GetFloat("TOTALMASS", -1f);

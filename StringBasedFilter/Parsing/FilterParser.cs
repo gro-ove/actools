@@ -208,12 +208,12 @@ namespace StringBasedFilter.Parsing {
             _params = filterParams ?? FilterParams.Default;
         }
 
-        internal FilterTreeNode Parse(string filter, out string[] properies) {
+        internal FilterTreeNode Parse(string filter, out string[] properties) {
             _pos = 0;
             _filter = filter;
             _properties = new List<string>();
             var result = NextNode();
-            properies = _properties.ToArray();
+            properties = _properties.ToArray();
             return result;
         }
 

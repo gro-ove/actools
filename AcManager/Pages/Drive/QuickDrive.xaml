@@ -16,6 +16,11 @@
 
       <mui:BindingProxy x:Key="Model" Data="{Binding}" />
 
+      <ContextMenu x:Key="CustomModeContextMenu" d:DataContext="{d:DesignInstance mui:Link}">
+        <MenuItem Header="View in Explorer" Command="{x:Static dr:QuickDrive.CustomModeViewInExplorer}" CommandParameter="{Binding Tag}" />
+        <MenuItem Header="Pack" Command="{x:Static dr:QuickDrive.CustomModePack}" CommandParameter="{Binding Tag}" />
+      </ContextMenu>
+      
       <dr:QuickDriveModeLinksTemplateSelector x:Key="QuickDriveModeLinksTemplateSelector">
         <dr:QuickDriveModeLinksTemplateSelector.SeparatorDataTemplate>
           <DataTemplate>
@@ -29,7 +34,13 @@
         </dr:QuickDriveModeLinksTemplateSelector.HeaderDataTemplate>
         <dr:QuickDriveModeLinksTemplateSelector.LinkDataTemplate>
           <DataTemplate DataType="{x:Type mui:Link}">
-            <TextBlock Text="{Binding DisplayName}" FontWeight="Normal" ToolTip="{Binding ToolTip}" />
+            <TextBlock Name="PART_Text" Text="{Binding DisplayName}" FontWeight="Normal" ToolTip="{Binding ToolTip}"
+                ContextMenu="{StaticResource CustomModeContextMenu}" />
+            <DataTemplate.Triggers>
+              <DataTrigger Binding="{Binding Tag, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠null'}" Value="True">
+                <Setter TargetName="PART_Text" Property="ContextMenu" Value="{StaticResource CustomModeContextMenu}" />
+              </DataTrigger>
+            </DataTemplate.Triggers>
           </DataTemplate>
         </dr:QuickDriveModeLinksTemplateSelector.LinkDataTemplate>
       </dr:QuickDriveModeLinksTemplateSelector>
@@ -880,12 +891,6 @@
               mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.DoubleSlider}}" mui:FancyHintsService.HorizontalContentAlignment="Right"
               mui:FancyHintsService.AttachTo="{x:Type Thumb}" />
         </DockPanel>
-
-        <!--<StackPanel Grid.Row="1" Grid.Column="2">
-          <mui:ValueLabel Value="{Binding TimeMultipler}" Postfix="×" Content="{x:Static g:AppStrings.Drive_TimeMultiplerLabel}" />
-          <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximumLimited}" Value="{Binding TimeMultipler}"
-              Margin="0 0 0 4" TickFrequency="6" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
-        </StackPanel>-->
       </Grid>
     </Grid>
 

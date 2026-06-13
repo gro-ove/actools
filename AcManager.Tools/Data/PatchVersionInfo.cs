@@ -464,7 +464,7 @@ namespace AcManager.Tools.Data {
                     var split = progress?.Split(0.2);
                     split?.Item1.Report("Recycling current configs", 0.5);
 
-                    var configsDirectory = Path.Combine(location, "configs");
+                    var configsDirectory = Path.Combine(location, "config");
                     if (Directory.Exists(configsDirectory)) {
                         FileUtils.Recycle(Directory.GetFiles(configsDirectory, "*.ini"));
                     }

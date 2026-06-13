@@ -6,10 +6,10 @@ using OxyPlot.Series;
 
 namespace AcManager.Controls.Graphs {
     public class CatmulLineSeries : LineSeries {
-        private readonly double _smoothessMultipler;
+        private readonly double _smoothessMultiplier;
 
-        public CatmulLineSeries(double smoothessMultipler = 0.1) {
-            _smoothessMultipler = smoothessMultipler;
+        public CatmulLineSeries(double smoothessMultiplier = 0.1) {
+            _smoothessMultiplier = smoothessMultiplier;
 
             // TrackerFormatString = FormatString;
             Smooth = SettingsHolder.Content.SmoothCurves;
@@ -19,7 +19,7 @@ namespace AcManager.Controls.Graphs {
         protected override void RenderLineAndMarkers(IRenderContext rc, OxyRect clippingRect, IList<ScreenPoint> pointsToRender) {
             if (Smooth) {
                 pointsToRender = CatmullRomSplineHelper.CreateSpline(ScreenPointHelper.ResamplePoints(pointsToRender, MinimumSegmentLength), 0.5,
-                        0.25 / _smoothessMultipler);
+                        0.25 / _smoothessMultiplier);
             }
 
             if (StrokeThickness > 0.0 && ActualLineStyle != LineStyle.None) {

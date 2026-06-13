@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -64,10 +65,11 @@ namespace AcManager.Tools.Managers {
             return args.UnsavedDisplayNames;
         }
 
-        public event EventHandler SavingAll;
+        public List<Func<Task>> SavingTasks { get; } = new List<Func<Task>>();
 
-        public void SaveAll() {
-            SavingAll?.Invoke(this, EventArgs.Empty);
+        public Task SaveAllAsync() {
+            return SavingTasks.Select(x => x.Invoke()).WhenAll();
+            // SavingAll?.Invoke(this, EventArgs.Empty);
         }
 
         private void RescanManagers() {

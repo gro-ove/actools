@@ -50,9 +50,9 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             Effect.TechStandard.DrawAllPasses(contextHolder.DeviceContext, indices);
         }
 
-        void IAcDynamicMaterial.SetEmissiveNext(Vector3 value, float multipler) {
+        void IAcDynamicMaterial.SetEmissiveNext(Vector3 value, float multiplier) {
             var material = _material;
-            material.Emissive = material.Emissive * (1f - multipler) + value * multipler;
+            material.Emissive = material.Emissive * (1f - multiplier) + value * multiplier;
             Effect.FxMaterial.Set(material);
         }
 

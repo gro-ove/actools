@@ -55,8 +55,11 @@ namespace AcManager.Tools.Objects {
 
         private string _loadedData;
 
-        private async Task EnsureDataLoadedInner() {
-            throw new NotImplementedException();
+        private Task EnsureDataLoadedInner() {
+            // Dummy (the whole thing is not used anymore)
+            _loaded = true;
+            _loadedData = string.Empty;
+            return Task.Delay(0);
         }
 
         public override int CompareTo(AcPlaceholderNew o) {

@@ -61,7 +61,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (ReferenceEquals(_child, child) || _busy) return;
             try {
                 _busy = true;
-                RemoveVisualChild(_child);
+                if (_child != null) RemoveVisualChild(_child);
                 AddVisualChild(child);
                 _child = child;
             } finally {

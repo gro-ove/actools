@@ -105,7 +105,7 @@ namespace AcManager.Pages.Drive {
                         CloudSpeed = 1d,
                         RoadTemperature = 24,
                         SunAngle = Game.ConditionProperties.GetSunAngle(13 * 60 * 60),
-                        TimeMultipler = 1d,
+                        TimeMultiplier = 1d,
                         WeatherName = WeatherManager.Instance.GetDefault()?.Id,
                         WindDirectionDeg = 0d,
                         WindSpeedMin = 0d,

@@ -198,22 +198,22 @@ namespace AcManager.Controls.ViewModels {
 
         public RealismLevel AutoShifterRealismLevel => AutoShifter ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
 
-        private double _slipsteamMultipler = 1d;
+        private double _slipsteamMultiplier = 1d;
 
-        public double SlipsteamMultipler {
-            get => _slipsteamMultipler;
+        public double SlipsteamMultiplier {
+            get => _slipsteamMultiplier;
             set {
                 value = Math.Round(value.Clamp(0d, 10d), 1);
-                if (Equals(value, _slipsteamMultipler)) return;
-                _slipsteamMultipler = value;
+                if (Equals(value, _slipsteamMultiplier)) return;
+                _slipsteamMultiplier = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(SlipsteamMultiplerRealismLevel));
+                OnPropertyChanged(nameof(SlipsteamMultiplierRealismLevel));
                 SaveLater();
             }
         }
 
-        public RealismLevel SlipsteamMultiplerRealismLevel
-            => SlipsteamMultipler > 5 ? RealismLevel.NonRealistic : !Equals(SlipsteamMultipler, 1d) ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
+        public RealismLevel SlipsteamMultiplierRealismLevel
+            => SlipsteamMultiplier > 5 ? RealismLevel.NonRealistic : !Equals(SlipsteamMultiplier, 1d) ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
 
         private bool _autoClutch;
 
@@ -303,14 +303,14 @@ namespace AcManager.Controls.ViewModels {
         public RealismLevel DamageRealismLevel => Damage < 20d ? RealismLevel.NonRealistic
                 : Damage < 50d ? RealismLevel.NotQuiteRealistic : Damage < 100d ? RealismLevel.QuiteRealistic : RealismLevel.Realistic;
 
-        private double _tyreWearMultipler = 1d;
+        private double _tyreWearMultiplier = 1d;
 
         public double TyreWearMultiplier {
-            get => _serverAssists?.TyreWearRate / 100d ?? _tyreWearMultipler;
+            get => _serverAssists?.TyreWearRate / 100d ?? _tyreWearMultiplier;
             set {
                 value = Math.Round(value.Clamp(0d, 5d), 2);
-                if (Equals(value, _tyreWearMultipler)) return;
-                _tyreWearMultipler = value;
+                if (Equals(value, _tyreWearMultiplier)) return;
+                _tyreWearMultiplier = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(TyreWearMultiplierRealismLevel));
                 SaveLater();
@@ -426,13 +426,13 @@ namespace AcManager.Controls.ViewModels {
                 StabilityControl = _stabilityControl,
                 AutoBrake = _autoBrake,
                 AutoShifter = _autoShifter,
-                SlipSteam = _slipsteamMultipler,
+                SlipSteam = _slipsteamMultiplier,
                 AutoClutch = _autoClutch,
                 Abs = _abs,
                 TractionControl = _tractionControl,
                 VisualDamage = _visualDamage,
                 Damage = _damage,
-                TyreWear = _tyreWearMultipler,
+                TyreWear = _tyreWearMultiplier,
                 FuelConsumption = _fuelConsumption,
                 TyreBlankets = _tyreBlankets
             }, o => {
@@ -441,7 +441,7 @@ namespace AcManager.Controls.ViewModels {
                 StabilityControl = (int)o.StabilityControl;
                 AutoBrake = o.AutoBrake;
                 AutoShifter = o.AutoShifter;
-                SlipsteamMultipler = o.SlipSteam;
+                SlipsteamMultiplier = o.SlipSteam;
                 AutoClutch = o.AutoClutch;
                 Abs = o.Abs;
                 TractionControl = o.TractionControl;
@@ -456,7 +456,7 @@ namespace AcManager.Controls.ViewModels {
                 StabilityControl = 0;
                 AutoBrake = false;
                 AutoShifter = false;
-                SlipsteamMultipler = 1d;
+                SlipsteamMultiplier = 1d;
                 AutoClutch = false;
                 Abs = AssistState.Factory;
                 TractionControl = AssistState.Factory;
@@ -499,13 +499,13 @@ namespace AcManager.Controls.ViewModels {
                 StabilityControl = StabilityControl,
                 AutoBrake = AutoBrake,
                 AutoShifter = AutoShifter,
-                SlipSteamMultipler = SlipsteamMultipler,
+                SlipSteamMultiplier = SlipsteamMultiplier,
                 AutoClutch = AutoClutch,
                 Abs = Abs,
                 TractionControl = TractionControl,
                 VisualDamage = VisualDamage,
                 Damage = Damage,
-                TyreWearMultipler = TyreWearMultiplier,
+                TyreWearMultiplier = TyreWearMultiplier,
                 FuelConsumption = FuelConsumption,
                 TyreBlankets = TyreBlankets
             };

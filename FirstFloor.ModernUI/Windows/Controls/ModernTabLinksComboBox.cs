@@ -2,6 +2,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Media;
 
@@ -23,7 +24,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         
         public ModernTabLinksComboBox() {
             PreviewMouseUp += (sender, args) => {
-                if (_parent == null) return;
+                if (_parent == null || args.ChangedButton != MouseButton.Left) return;
                 var popup = this.FindVisualChild<Popup>();
                 if (popup?.IsOpen == true && (args.Source as DependencyObject)?.GetParent<Popup>() == popup){
                     popup.IsOpen = false;

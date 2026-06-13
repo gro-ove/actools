@@ -174,7 +174,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             return AddShadow(-direction);
         }
 
-        private void Draw(float multipler, int size, int padding, float fadeRadius, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
+        private void Draw(float multiplier, int size, int padding, float fadeRadius, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
             DeviceContext.ClearRenderTargetView(_summBuffer.TargetView, Color.Transparent);
             AcToolsLogging.Write("    Summary buffer cleared");
 
@@ -219,7 +219,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DeviceContext.OutputMerger.SetTargets(RenderTargetView);
             _effect.FxInputMap.SetResource(_summBuffer.View);
             _effect.FxCount.Set(iter / SkyBrightnessLevel);
-            _effect.FxMultipler.Set(multipler);
+            _effect.FxMultipler.Set(multiplier);
             _effect.FxFade.Set(fadeRadius != 0f ? 10f / fadeRadius : 100f);
             _effect.FxPadding.Set(padding / (size + padding * 2f));
             _effect.FxShadowSize.Set(new Vector2(_shadowSize.X, _shadowSize.Z));

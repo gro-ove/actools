@@ -10,7 +10,7 @@ namespace AcManager.Tools.Managers.Online {
             public static ulong Encode(string host, int port) {
                 if (port == 0) port = 1;
                 return IPAddress.TryParse(host, out var addr) && addr.AddressFamily != AddressFamily.InterNetworkV6
-                        ? ((ulong)(uint)addr.GetHashCode() << 16) | (ushort)port
+                        ? ((ulong)(uint)addr.GetHashCode() << 16 /* if runtime gets updated, make sure to double-check if it still returns the correct value */) | (ushort)port
                         : 0x8000_0000_0000_0000UL | Fnv1a64(Encoding.UTF8.GetBytes(host), port);
             }
 

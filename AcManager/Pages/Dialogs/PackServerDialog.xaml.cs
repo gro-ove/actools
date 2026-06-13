@@ -80,7 +80,7 @@ namespace AcManager.Pages.Dialogs {
             public ServerPresetPackMode[] Modes { get; } = EnumExtension.GetValues<ServerPresetPackMode>();
             #endregion
 
-            #region Properies
+            #region Properties
             private ServerPresetPackMode _mode;
 
             public ServerPresetPackMode Mode {

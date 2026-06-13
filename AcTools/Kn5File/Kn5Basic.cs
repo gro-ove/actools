@@ -137,6 +137,7 @@ namespace AcTools.Kn5File {
                 var child = node.Children[i];
                 if (child.Name == name) {
                     node.Children.Remove(child);
+                    --i;
                     result++;
                 } else if (child.NodeClass == Kn5NodeClass.Base) {
                     result += RemoveAllByName(child, name);

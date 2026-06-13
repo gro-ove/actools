@@ -43,7 +43,7 @@ namespace AcTools.Processes {
             file.Remove("SPECIAL_EVENT");
         }
 
-        private static void SetDefaultProperies(IniFile file) {
+        private static void SetDefaultProperties(IniFile file) {
             file["HEADER"].Set("VERSION", 2);
             file["LAP_INVALIDATOR"].Set("ALLOWED_TYRES_OUT", -1);
         }
@@ -352,7 +352,7 @@ namespace AcTools.Processes {
                     iniFile = new IniFile(iniFilename);
 
                     ClearUpIniFile(iniFile);
-                    SetDefaultProperies(iniFile);
+                    SetDefaultProperties(iniFile);
 
                     if (BasicProperties != null) {
                         BasicProperties?.Set(iniFile);

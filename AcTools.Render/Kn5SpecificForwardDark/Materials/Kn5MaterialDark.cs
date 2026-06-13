@@ -75,10 +75,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return true;
         }
 
-        void IAcDynamicMaterial.SetEmissiveNext(Vector3 value, float multipler) {
+        void IAcDynamicMaterial.SetEmissiveNext(Vector3 value, float multiplier) {
             var material = _material;
-            multipler = multipler.Pow((value.Length() / 21f).Clamp(1f, 7f));
-            material.Emissive = material.Emissive * (1f - multipler) + value * multipler;
+            multiplier = multiplier.Pow((value.Length() / 21f).Clamp(1f, 7f));
+            material.Emissive = material.Emissive * (1f - multiplier) + value * multiplier;
             Effect.FxMaterial.Set(material);
         }
 

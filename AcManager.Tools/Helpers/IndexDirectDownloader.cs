@@ -104,7 +104,7 @@ namespace AcManager.Tools.Helpers {
         public static ContentState IsTrackAvailable(string trackId) {
             // TODO: trackId uses / as separator, check the layout as well!
             // return AvailableTrackIds != null && Array.IndexOf(AvailableTrackIds, trackId.Replace(@"/", @"-")) != -1;
-            return AvailableCarIds?.GetValueOrDefault(trackId.Split('/')[0]) ?? ContentState.Unknown;
+            return AvailableTrackIds?.GetValueOrDefault(trackId.Split('/')[0]) ?? ContentState.Unknown;
         }
 
         private static async Task DownloadSomethingAsync(CupContentType type,

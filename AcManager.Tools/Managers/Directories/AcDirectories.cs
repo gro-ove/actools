@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Directories {
     /// <summary>
-    /// Standart version with usual file system watchers.
+    /// Standard version with usual file system watchers.
     /// </summary>
     public class AcDirectories : AcDirectoriesBase {
         public AcDirectories([NotNull] string enabledDirectory, string disabledDirectory) : base(enabledDirectory, disabledDirectory) {}
@@ -43,7 +43,7 @@ namespace AcManager.Tools.Managers.Directories {
     }
 
     /// <summary>
-    /// Standart version with usual file system watchers.
+    /// Standard version with usual file system watchers.
     /// </summary>
     public class MultiDirectories : MultiDirectoriesBase {
         public MultiDirectories([NotNull] string enabledDirectory, string disabledDirectory) : base(enabledDirectory, disabledDirectory) {}

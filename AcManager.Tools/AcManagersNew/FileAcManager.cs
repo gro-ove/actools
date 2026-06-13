@@ -22,13 +22,12 @@ namespace AcManager.Tools.AcManagersNew {
     public abstract class FileAcManager<T> : BaseAcManager<T>, IFileAcManager where T : AcCommonObject {
         protected FileAcManager() {
             Superintendent.Instance.Closing += Superintendent_Closing;
-            Superintendent.Instance.SavingAll += SuperintendentSavingAll;
-        }
-
-        private void SuperintendentSavingAll(object sender, EventArgs e) {
-            foreach (var item in InnerWrappersList.Select(x => x.Value).OfType<T>().Where(x => x.Changed)) {
-                item.SaveAsync();
-            }
+            Superintendent.Instance.SavingTasks.Add(async () => {
+                var toSave = InnerWrappersList.Select(x => x.Value).OfType<T>().Where(x => x.Changed).ToList();
+                foreach (var item in toSave) {
+                    await item.SaveAsync();
+                }
+            });
         }
 
         private void Superintendent_Closing(object sender, Superintendent.ClosingEventArgs e) {
@@ -109,7 +108,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         /// <summary>
         /// Delete several entries at once (recycling is a very slow operation, so it’s better to make it only once
-        /// for all entries requred to be removed).
+        /// for all entries required to be removed).
         /// </summary>
         /// <param name="list">Tuple is (ID, location, attached)</param>
         protected virtual async Task DeleteOverrideAsync(IEnumerable<Tuple<string, string, IEnumerable<string>>> list) {

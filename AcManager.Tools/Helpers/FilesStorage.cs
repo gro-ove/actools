@@ -147,15 +147,20 @@ namespace AcManager.Tools.Helpers {
         }
 
         public IEnumerable<ContentEntry> GetContentDirectoriesFiltered(string searchPattern, params string[] name) {
-            var nameJoined = Path.Combine(name);
-            var contentDir = EnsureDirectory(DataDirName, nameJoined);
-            var contentUserDir = EnsureDirectory(DataUserDirName, nameJoined);
+            try {
+                var nameJoined = Path.Combine(name);
+                var contentDir = EnsureDirectory(DataDirName, nameJoined);
+                var contentUserDir = EnsureDirectory(DataUserDirName, nameJoined);
 
-            var contentUserFiles = Directory.GetDirectories(contentUserDir, searchPattern).Select(x => new ContentEntry(x, true, true)).ToList();
-            var temp = contentUserFiles.Select(x => x.Name);
+                var contentUserFiles = Directory.GetDirectories(contentUserDir, searchPattern).Select(x => new ContentEntry(x, true, true)).ToList();
+                var temp = contentUserFiles.Select(x => x.Name);
 
-            return Directory.GetDirectories(contentDir, searchPattern).Select(x => new ContentEntry(x, false, true))
-                .Where(x => !temp.Contains(x.Name)).Concat(contentUserFiles).OrderBy(x => x.Name);
+                return Directory.GetDirectories(contentDir, searchPattern).Select(x => new ContentEntry(x, false, true))
+                        .Where(x => !temp.Contains(x.Name)).Concat(contentUserFiles).OrderBy(x => x.Name);
+            } catch (Exception e) {
+                Logging.Warning($"Failed to get directories: {e}");
+                return new ContentEntry[0];
+            }
         }
 
         public IEnumerable<ContentEntry> GetContentDirectories(params string[] name) {

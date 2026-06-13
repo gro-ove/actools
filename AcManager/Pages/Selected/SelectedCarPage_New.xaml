@@ -74,8 +74,7 @@
         <Button Content="{x:Static g:AppStrings.Selected_CarPage_ReplaceTyres}" Command="{Binding ReplaceTyresCommand}">
           <Button.ToolTip>Replace sets of tyres by some tyres from Kunos (Alt+T)</Button.ToolTip>
         </Button>
-        <Button Content="Generate LODs" Command="{Binding GenerateLodsCommand}"
-            Visibility="{Binding CanEditDetails, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Button Content="Generate LODs" Command="{Binding GenerateLodsCommand}">
           <Button.ToolTip>Improve performance by generating LODs</Button.ToolTip>
         </Button>
       </ToolBar>

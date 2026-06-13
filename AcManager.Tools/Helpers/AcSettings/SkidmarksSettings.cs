@@ -7,7 +7,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private double _height;
 
         public double Height {
-            get { return _height; }
+            get => _height;
             set {
                 value = value.Clamp(0, 0.1d).Round(0.0001);
                 if (Equals(value, _height)) return;
@@ -16,14 +16,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
-        private int _quantityMultipler;
+        private int _quantityMultiplier;
 
-        public int QuantityMultipler {
-            get { return _quantityMultipler; }
+        public int QuantityMultiplier {
+            get => _quantityMultiplier;
             set {
                 value = value.Clamp(0, 1000);
-                if (Equals(value, _quantityMultipler)) return;
-                _quantityMultipler = value;
+                if (Equals(value, _quantityMultiplier)) return;
+                _quantityMultiplier = value;
                 OnPropertyChanged();
             }
         }
@@ -31,13 +31,13 @@ namespace AcManager.Tools.Helpers.AcSettings {
         protected override void LoadFromIni() {
             var section = Ini["GRAPHICS"];
             Height = section.GetDouble("HEIGHT_FROM_GROUND", 0.02);
-            QuantityMultipler = section.GetDouble("QUANTITY_MULT", 1d).ToIntPercentage();
+            QuantityMultiplier = section.GetDouble("QUANTITY_MULT", 1d).ToIntPercentage();
         }
 
         protected override void SetToIni() {
             var section = Ini["GRAPHICS"];
             section.Set("HEIGHT_FROM_GROUND", Height);
-            section.Set("QUANTITY_MULT", QuantityMultipler.ToDoublePercentage());
+            section.Set("QUANTITY_MULT", QuantityMultiplier.ToDoublePercentage());
         }
     }
 }

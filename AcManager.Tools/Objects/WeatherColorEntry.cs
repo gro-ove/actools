@@ -10,16 +10,16 @@ namespace AcManager.Tools.Objects {
 
         public Color DefaultColor { get; }
 
-        public double DefaultMultipler { get; }
+        public double DefaultMultiplier { get; }
 
         public double Maximum { get; }
 
         public double Step { get; }
 
-        public WeatherColorEntry(string id, string sub, string displayName, Color defaultColor, double defaultMultipler, double maximum) {
+        public WeatherColorEntry(string id, string sub, string displayName, Color defaultColor, double defaultMultiplier, double maximum) {
             Id = id;
             Sub = sub;
-            DefaultMultipler = defaultMultipler;
+            DefaultMultiplier = defaultMultiplier;
             Maximum = maximum;
             Step = maximum / 10d;
             DefaultColor = defaultColor;
@@ -33,21 +33,21 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _color);
         }
 
-        private double _multipler;
+        private double _multiplier;
 
-        public double Multipler {
-            get { return _multipler; }
+        public double Multiplier {
+            get { return _multiplier; }
             set {
-                if (Equals(value, _multipler)) return;
-                _multipler = value;
+                if (Equals(value, _multiplier)) return;
+                _multiplier = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(MultiplerRounded));
+                OnPropertyChanged(nameof(MultiplierRounded));
             }
         }
 
-        public double MultiplerRounded {
-            get { return _multipler; }
-            set { Multipler = value.Round(0.01); }
+        public double MultiplierRounded {
+            get { return _multiplier; }
+            set { Multiplier = value.Round(0.01); }
         }
     }
 }

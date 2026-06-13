@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
@@ -521,6 +522,12 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnEntryPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (Application.Current?.Dispatcher.Thread != Thread.CurrentThread) {
+                ActionExtension.InvokeInMainThreadAsyncLater(() => {
+                    OnEntryPropertyChanged(sender, e);
+                });
+                return;
+            }
             Model.OnPropertyChanged(e);
 
             switch (e.PropertyName) {

@@ -56,7 +56,7 @@
               <Label Content="Disable shadows" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding SelectedObject.DateDependant}">
+            <CheckBox IsChecked="{Binding SelectedObject.DateDependent}">
               <Label Content="Date-dependant (for procedural weathers)" />
             </CheckBox>
 
@@ -155,9 +155,9 @@
             </DockPanel>
 
             <DockPanel ToolTip="{x:Static g:AppStrings.WeatherEdit_SpeedMultipler_Tooltip}">
-              <mui:ValueLabel Value="{Binding SelectedObject.CloudsSpeedMultipler}" mui:BetterTextBox.Mode="Number" Postfix="%"
+              <mui:ValueLabel Value="{Binding SelectedObject.CloudsSpeedMultiplier}" mui:BetterTextBox.Mode="Number" Postfix="%"
                   Content="{x:Static t:ToolsStrings.Common_Speed}" />
-              <Slider Minimum="0" Maximum="2" Value="{Binding SelectedObject.CloudsSpeedMultiplerRounded}" TickFrequency="0.2" TickPlacement="BottomRight" />
+              <Slider Minimum="0" Maximum="2" Value="{Binding SelectedObject.CloudsSpeedMultiplierRounded}" TickFrequency="0.2" TickPlacement="BottomRight" />
             </DockPanel>
           </StackPanel>
 
@@ -170,10 +170,10 @@
             </DockPanel>
 
             <DockPanel>
-              <mui:ValueLabel Value="{Binding SelectedObject.FogColorMultipler, Converter={StaticResource PercentageConverter}}" Postfix="%"
+              <mui:ValueLabel Value="{Binding SelectedObject.FogColorMultiplier, Converter={StaticResource PercentageConverter}}" Postfix="%"
                   mui:BetterTextBox.Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_Brightness}" />
               <Slider Minimum="0" Maximum="800" TickFrequency="80" TickPlacement="BottomRight"
-                  Value="{Binding SelectedObject.FogColorMultipler, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
+                  Value="{Binding SelectedObject.FogColorMultiplier, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
             </DockPanel>
 
             <DockPanel>
@@ -192,10 +192,10 @@
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.WeatherEdit_AdditionalHeader}" />
 
             <DockPanel ToolTip="{x:Static g:AppStrings.WeatherEdit_HdrOffMultipler_Tooltip}">
-              <mui:ValueLabel Value="{Binding SelectedObject.HdrOffMultipler, Converter={StaticResource PercentageConverter}}" Postfix="%"
+              <mui:ValueLabel Value="{Binding SelectedObject.HdrOffMultiplier, Converter={StaticResource PercentageConverter}}" Postfix="%"
                   mui:BetterTextBox.Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_HdrOffMultipler}" />
               <Slider Minimum="0" Maximum="200" TickFrequency="20" TickPlacement="BottomRight"
-                  Value="{Binding SelectedObject.HdrOffMultipler, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
+                  Value="{Binding SelectedObject.HdrOffMultiplier, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
             </DockPanel>
 
             <DockPanel>
@@ -223,8 +223,8 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Label}" />
                 <mui:ColorPicker Grid.Column="1" Color="{Binding Color}" ToolTip="Low" Margin="0 0 20 0" VerticalAlignment="Center" />
-                <mui:ValueLabel Grid.Column="2" Value="{Binding Multipler}" Postfix="×" Content="{x:Static g:AppStrings.WeatherEdit_Multipler}" />
-                <Slider Grid.Column="3" Minimum="0" Maximum="{Binding Maximum}" Value="{Binding MultiplerRounded}" TickFrequency="{Binding Step}"
+                <mui:ValueLabel Grid.Column="2" Value="{Binding Multiplier}" Postfix="×" Content="{x:Static g:AppStrings.WeatherEdit_Multipler}" />
+                <Slider Grid.Column="3" Minimum="0" Maximum="{Binding Maximum}" Value="{Binding MultiplierRounded}" TickFrequency="{Binding Step}"
                     TickPlacement="BottomRight" />
               </Grid>
             </DataTemplate>

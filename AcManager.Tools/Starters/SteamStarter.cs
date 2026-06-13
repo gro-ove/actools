@@ -156,7 +156,7 @@ namespace AcManager.Tools.Starters {
             LobbyDataCallback?.Unregister();
             ActionExtension.InvokeInMainThreadAsync(() => BoostCallbacks());
             LobbyDataCallback = Callback<LobbyDataUpdate_t>.Create(t => {
-                if (tcs != null) {
+                if (tcs != null && t.m_ulSteamIDLobby == lobbyId.m_SteamID) {
                     var inviteData = t.m_bSuccess != 0 ? TryAccessLobbyData(lobbyId) : null;
                     Logging.Debug($"Lobby invite argument: {lobbyId}, {inviteData}");
                     SteamMatchmaking.LeaveLobby(lobbyId);

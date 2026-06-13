@@ -82,7 +82,7 @@ namespace AcManager.Pages.Selected {
             if (sphereDirectory == null) return;
 
             try {
-                using (CarsManager.Instance.IgnoreChanges()) {
+                using (ShowroomsManager.Instance.IgnoreChanges()) {
                     if (!Directory.Exists(sphereDirectory)) {
                         Directory.CreateDirectory(sphereDirectory);
 

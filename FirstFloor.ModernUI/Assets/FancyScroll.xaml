@@ -34,8 +34,8 @@
   </Style>
 
   <system:Double x:Key="FancyScrollBar.Width">2</system:Double>
-  <system:Double x:Key="FancyScrollBar.ScaleMultipler">5</system:Double>
-  <system:Double x:Key="FancyScrollBar.HalfScaleMultipler">5</system:Double>
+  <system:Double x:Key="FancyScrollBar.ScaleMultiplier">5</system:Double>
+  <system:Double x:Key="FancyScrollBar.HalfScaleMultiplier">5</system:Double>
 
   <Style x:Key="FancyScrollBarVertical" TargetType="{x:Type ScrollBar}">
     <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />
@@ -86,7 +86,7 @@
                 <BeginStoryboard>
                   <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="PART_ThumbScale" Storyboard.TargetProperty="ScaleX"
-                        To="{StaticResource FancyScrollBar.ScaleMultipler}" BeginTime="0:0:0.04" Duration="0:0:0.08" />
+                        To="{StaticResource FancyScrollBar.ScaleMultiplier}" BeginTime="0:0:0.04" Duration="0:0:0.08" />
                   </Storyboard>
                 </BeginStoryboard>
               </Trigger.EnterActions>
@@ -102,7 +102,7 @@
             <DataTrigger Binding="{Binding PopupScrollBars, Source={x:Static pr:AppearanceManager.Instance}}" Value="False">
               <Setter TargetName="PART_Thumb" Property="RenderTransform">
                 <Setter.Value>
-                  <ScaleTransform x:Name="PART_ThumbScale" ScaleX="{StaticResource FancyScrollBar.HalfScaleMultipler}" ScaleY="1" />
+                  <ScaleTransform x:Name="PART_ThumbScale" ScaleX="{StaticResource FancyScrollBar.HalfScaleMultiplier}" ScaleY="1" />
                 </Setter.Value>
               </Setter>
             </DataTrigger>
@@ -169,7 +169,7 @@
                 <BeginStoryboard>
                   <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="PART_ThumbScale" Storyboard.TargetProperty="ScaleY"
-                        To="{StaticResource FancyScrollBar.ScaleMultipler}" BeginTime="0:0:0.12" Duration="0:0:0.08" />
+                        To="{StaticResource FancyScrollBar.ScaleMultiplier}" BeginTime="0:0:0.12" Duration="0:0:0.08" />
                   </Storyboard>
                 </BeginStoryboard>
               </Trigger.EnterActions>
@@ -185,7 +185,7 @@
             <DataTrigger Binding="{Binding PopupScrollBars, Source={x:Static pr:AppearanceManager.Instance}}" Value="False">
               <Setter TargetName="PART_Thumb" Property="RenderTransform">
                 <Setter.Value>
-                  <ScaleTransform x:Name="PART_ThumbScale" ScaleX="1" ScaleY="{StaticResource FancyScrollBar.HalfScaleMultipler}" />
+                  <ScaleTransform x:Name="PART_ThumbScale" ScaleX="1" ScaleY="{StaticResource FancyScrollBar.HalfScaleMultiplier}" />
                 </Setter.Value>
               </Setter>
             </DataTrigger>

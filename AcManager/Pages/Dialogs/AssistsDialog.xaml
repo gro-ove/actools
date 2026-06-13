@@ -84,8 +84,8 @@
     </CheckBox>
 
     <StackPanel Grid.Row="5" Grid.Column="1" Margin="{StaticResource EntryMargin}" ToolTip="{x:Static t:ToolsStrings.Assists_SlipstreamEffect_Tooltip}">
-      <mui:ValueLabel Content="{x:Static t:ToolsStrings.Assists_SlipstreamEffect}" Value="{Binding SlipsteamMultipler}" Postfix="×" />
-      <Slider Minimum="0" Maximum="10" Value="{Binding SlipsteamMultipler}" Margin="0 0 0 4" TickFrequency="1" TickPlacement="BottomRight"
+      <mui:ValueLabel Content="{x:Static t:ToolsStrings.Assists_SlipstreamEffect}" Value="{Binding SlipsteamMultiplier}" Postfix="×" />
+      <Slider Minimum="0" Maximum="10" Value="{Binding SlipsteamMultiplier}" Margin="0 0 0 4" TickFrequency="1" TickPlacement="BottomRight"
           IsSnapToTickEnabled="True" />
     </StackPanel>
   </Grid>

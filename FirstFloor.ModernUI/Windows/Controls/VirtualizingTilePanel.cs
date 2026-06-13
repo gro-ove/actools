@@ -250,23 +250,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var cacheLength = GetCacheLength(this);
                 var cacheUnit = GetCacheLengthUnit(this);
 
-                double multipler;
+                double multiplier;
                 switch (cacheUnit) {
                     case VirtualizationCacheLengthUnit.Pixel:
-                        multipler = Orientation == Orientation.Vertical ? 1d / _itemWidth : 1d / _itemHeight;
+                        multiplier = Orientation == Orientation.Vertical ? 1d / _itemWidth : 1d / _itemHeight;
                         break;
                     case VirtualizationCacheLengthUnit.Item:
-                        multipler = 1d;
+                        multiplier = 1d;
                         break;
                     case VirtualizationCacheLengthUnit.Page:
-                        multipler = layoutInfo.LastRealizedItemIndex - layoutInfo.FirstRealizedItemIndex + 1;
+                        multiplier = layoutInfo.LastRealizedItemIndex - layoutInfo.FirstRealizedItemIndex + 1;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
 
-                if (virtualItemIndex < layoutInfo.FirstRealizedItemIndex - cacheLength.CacheBeforeViewport * multipler
-                        || virtualItemIndex > layoutInfo.LastRealizedItemIndex + cacheLength.CacheAfterViewport * multipler) {
+                if (virtualItemIndex < layoutInfo.FirstRealizedItemIndex - cacheLength.CacheBeforeViewport * multiplier
+                        || virtualItemIndex > layoutInfo.LastRealizedItemIndex + cacheLength.CacheAfterViewport * multiplier) {
                     var generatorPosition = _itemsGenerator.GeneratorPositionFromIndex(virtualItemIndex);
                     if (generatorPosition.Index >= 0) {
                         _itemsGenerator.Recycle(generatorPosition, 1);

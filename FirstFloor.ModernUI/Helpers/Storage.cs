@@ -379,8 +379,13 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        private static StringBuilder _sbReuse;
+        private static byte[] _saveBufferReuse;
+
         public string GetData() {
-            var ret = new StringBuilder();
+            var ret = Interlocked.Exchange(ref _sbReuse, null);
+            if (ret == null) ret = new StringBuilder();
+            else ret.Clear();
             ret.Append("version: ");
             ret.Append(ActualVersion);
             lock (_storage) {
@@ -393,7 +398,9 @@ namespace FirstFloor.ModernUI.Helpers {
                     }
                 }
             }
-            return ret.ToString();
+            var retStr = ret.ToString();
+            _sbReuse = ret;
+            return retStr;
         }
 
         [CanBeNull]
@@ -402,49 +409,49 @@ namespace FirstFloor.ModernUI.Helpers {
                     : Path.Combine(TemporaryBackupsDirectory, Path.GetFileName(_filename));
         }
 
-        private static byte[] _saveBuffer;
-
         private void SaveData(string data) {
             try {
                 var filename = _filename;
                 if (filename == null) return;
 
-                var chars = data.ToCharArray();
-                var bytesLen = Encoding.UTF8.GetByteCount(chars);
-                var bytes = Interlocked.Exchange(ref _saveBuffer, null);
-                if (bytes == null || bytes.Length < bytesLen) {
-                    bytes = new byte[bytesLen];
-                }
-                Encoding.UTF8.GetBytes(chars, 0, chars.Length, bytes, 0);
-
                 string newFilename;
-                if (File.Exists(_filename)) {
-                    newFilename = _filename + ".tmp";
-                    try {
-                        File.Delete(newFilename);
-                    } catch (Exception) {
-                        // ignored
+                {
+                    var chars = data.ToCharArray();
+                    var bytesLen = Encoding.UTF8.GetByteCount(chars);
+                    var bytesO = Interlocked.Exchange(ref _saveBufferReuse, null);
+                    if (bytesO == null || bytesO.Length < bytesLen) {
+                        bytesO = new byte[bytesLen];
                     }
-                } else {
-                    newFilename = _filename;
-                }
-                if (_disableCompression) {
-                    File.WriteAllBytes(newFilename, bytes);
-                } else {
-                    using (var output = new FileStream(newFilename, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)) {
-                        if (_useDeflate) {
-                            output.WriteByte(DeflateFlag);
-                            using (var gzip = new DeflateStream(output, CompressionLevel.Fastest)) {
-                                gzip.Write(bytes, 0, bytes.Length);
-                            }
+                    Encoding.UTF8.GetBytes(chars, 0, chars.Length, bytesO, 0);
+
+                    if (File.Exists(_filename)) {
+                        newFilename = _filename + ".tmp";
+                        try {
+                            File.Delete(newFilename);
+                        } catch (Exception) {
+                            // ignored
+                        }
+                    } else {
+                        newFilename = _filename;
+                    }
+                    using (var output = new FileStream(newFilename, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, 8192)) {
+                        if (_disableCompression) {
+                            output.Write(bytesO, 0, bytesLen);
                         } else {
-                            output.WriteByte(LzfFlag);
-                            Lzf.Compress(bytes, bytes.Length, output);
+                            if (_useDeflate) {
+                                output.WriteByte(DeflateFlag);
+                                using (var gzip = new DeflateStream(output, CompressionLevel.Fastest)) {
+                                    gzip.Write(bytesO, 0, bytesLen);
+                                }
+                            } else {
+                                output.WriteByte(LzfFlag);
+                                Lzf.Compress(bytesO, bytesLen, output);
+                            }
                         }
                     }
-                }
 
-                _saveBuffer = bytes;
+                    _saveBufferReuse = bytesO;
+                }
 
                 if (newFilename != _filename) {
                     var backupFilename = GetBackupFilename();

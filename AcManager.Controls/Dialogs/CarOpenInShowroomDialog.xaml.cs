@@ -272,7 +272,7 @@ namespace AcManager.Controls.Dialogs {
                                 RoadTemperature = 32d,
                                 CloudSpeed = 1d,
                                 SunAngle = 0,
-                                TimeMultipler = 1d,
+                                TimeMultiplier = 1d,
                                 WeatherName = WeatherManager.Instance.GetDefault()?.Id,
                                 WindDirectionDeg = 0d,
                                 WindSpeedMin = 0d,

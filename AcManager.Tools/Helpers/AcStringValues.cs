@@ -34,7 +34,7 @@ namespace AcManager.Tools.Helpers {
             if (!result.Success) return null;
 
             var matched = result.Groups[1].Value;
-            if (string.IsNullOrEmpty(matched)) matched = result.Groups[2].Value;
+            if (string.IsNullOrEmpty(matched)) return null; // shouldn't really happen
             var value = int.Parse(matched, NumberStyles.Any, CultureInfo.InvariantCulture);
             return value < 1000 ? value < 18 ? 2000 + value : 1900 + value : value;
         }

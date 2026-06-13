@@ -142,7 +142,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             // check if navigation cancelled
             if (!cancelArgs.Cancel) return true;
 
-            Debug.WriteLine("Cancelled navigation from '{0}' to '{1}'", oldValue, newValue);
+            // Debug.WriteLine("Cancelled navigation from '{0}' to '{1}'", oldValue, newValue);
 
             if (Source != oldValue) {
                 // enqueue the operation to reset the source back to the old value
@@ -166,7 +166,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void NavigateSync(Uri oldValue, Uri newValue, NavigationType navigationType) {
-            Debug.WriteLine("Navigating from '{0}' to '{1}'", oldValue, newValue);
+            // Debug.WriteLine("Navigating from '{0}' to '{1}'", oldValue, newValue);
 
             // set IsLoadingContent state
             SetValue(IsLoadingContentPropertyKey, true);
@@ -208,7 +208,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                     if (ShouldKeepContentAlive(newContent)) {
                         // keep the new content in memory
-                        Debug.WriteLine("KEEP CONTENT ALIVE: " + newValue);
+                        // Debug.WriteLine("KEEP CONTENT ALIVE: " + newValue);
                         _contentCache[newValueNoFragment] = newContent;
                     }
 
@@ -231,6 +231,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         SetContent(newValue, navigationType, newContent, true);
                     }
 #endif
+                    return;
                 }
             }
 
@@ -257,7 +258,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void NavigateAsync(Uri oldValue, Uri newValue, NavigationType navigationType) {
-            Debug.WriteLine("Navigating from '{0}' to '{1}'", oldValue, newValue);
+            // Debug.WriteLine("Navigating from '{0}' to '{1}'", oldValue, newValue);
 
             // set IsLoadingContent state
             SetValue(IsLoadingContentPropertyKey, true);
@@ -312,14 +313,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     task.ContinueWith(t => {
                         try {
                             if (t.IsCanceled || localTokenSource.IsCancellationRequested) {
-                                Debug.WriteLine("Cancelled navigation to '{0}'", newValue);
+                                // Debug.WriteLine("Cancelled navigation to '{0}'", newValue);
                             } else if (t.IsFaulted) {
                                 SetNavigationFailedContent(newValue, navigationType, t.Exception);
                             } else {
                                 newContent = t.Result;
                                 if (ShouldKeepContentAlive(newContent)) {
                                     // keep the new content in memory
-                                    Debug.WriteLine("KEEP CONTENT ALIVE: " + newValue);
+                                    // Debug.WriteLine("KEEP CONTENT ALIVE: " + newValue);
                                     _contentCache[newValueNoFragment] = newContent;
                                 }
 

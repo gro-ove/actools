@@ -35,32 +35,32 @@ namespace AcManager.Tools.ContentRepairUi {
                 return Task.FromResult(false);
             }
 
-            var multipler = ActionExtension.InvokeInMainThread(() => {
+            var multiplier = ActionExtension.InvokeInMainThread(() => {
                 var dlg = new CarTransmissionLossSelector(car, torque.MaxY, power.MaxY);
                 dlg.ShowDialog();
-                return dlg.IsResultOk ? dlg.Multipler : (double?)null;
+                return dlg.IsResultOk ? dlg.Multiplier : (double?)null;
             });
 
-            if (!multipler.HasValue) return Task.FromResult(false);
+            if (!multiplier.HasValue) return Task.FromResult(false);
 
-            torque.TransformSelf(x => x.Y * multipler.Value);
-            power.TransformSelf(x => x.Y * multipler.Value);
+            torque.TransformSelf(x => x.Y * multiplier.Value);
+            power.TransformSelf(x => x.Y * multiplier.Value);
 
             if (car.SpecsTorqueCurve != null) {
                 var torqueUi = new Lut(car.SpecsTorqueCurve.Points);
-                torqueUi.TransformSelf(x => x.Y * multipler.Value);
+                torqueUi.TransformSelf(x => x.Y * multiplier.Value);
                 car.SpecsTorqueCurve = new GraphData(torqueUi);
             }
 
             if (car.SpecsPowerCurve != null) {
                 var powerUi = new Lut(car.SpecsPowerCurve.Points);
-                powerUi.TransformSelf(x => x.Y * multipler.Value);
+                powerUi.TransformSelf(x => x.Y * multiplier.Value);
                 car.SpecsPowerCurve = new GraphData(powerUi);
             }
 
             car.SpecsTorque = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip,
-                    torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + (multipler.Value == 1d ? "*" : "");
-            car.SpecsBhp = SelectedAcObjectViewModel.SpecsFormat(multipler.Value == 1d ? AppStrings.CarSpecs_PowerAtWheels_FormatTooltip
+                    torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + (multiplier.Value == 1d ? "*" : "");
+            car.SpecsBhp = SelectedAcObjectViewModel.SpecsFormat(multiplier.Value == 1d ? AppStrings.CarSpecs_PowerAtWheels_FormatTooltip
                     : AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
             return Task.FromResult(true);
         }

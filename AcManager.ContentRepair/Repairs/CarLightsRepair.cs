@@ -8,16 +8,16 @@ using JetBrains.Annotations;
 namespace AcManager.ContentRepair.Repairs {
     [UsedImplicitly]
     public class CarLightsRepair : CarSimpleRepairBase {
-        public void Multiply([NotNull] DataWrapper data, double multipler) {
+        public void Multiply([NotNull] DataWrapper data, double multiplier) {
             var lightsIni = data.GetIniFile("lights.ini");
             foreach (var section in lightsIni.GetSections("LIGHT")) {
                 var value = section.GetVector3("COLOR");
-                section.Set("COLOR", value.Select(x => x * multipler));
+                section.Set("COLOR", value.Select(x => x * multiplier));
             }
             foreach (var section in lightsIni.GetSections("BRAKE")) {
-                section.Set("COLOR", section.GetVector3("COLOR").Select(x => x * multipler));
+                section.Set("COLOR", section.GetVector3("COLOR").Select(x => x * multiplier));
                 if (section.ContainsKey(@"OFF_COLOR")) {
-                    section.Set("OFF_COLOR", section.GetVector3("OFF_COLOR").Select(x => x * multipler));
+                    section.Set("OFF_COLOR", section.GetVector3("OFF_COLOR").Select(x => x * multiplier));
                 }
             }
             lightsIni.Save();

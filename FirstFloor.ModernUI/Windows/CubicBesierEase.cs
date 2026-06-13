@@ -98,7 +98,7 @@ namespace FirstFloor.ModernUI.Windows {
             _sampleValues = sampleValues;
         }
 
-        #region Properies
+        #region Properties
         public static readonly DependencyProperty X1Property = DependencyProperty.Register(nameof(X1), typeof(double),
                 typeof(CubicBesierEase), new PropertyMetadata(0.4, (o, e) => {
                     var f = (CubicBesierEase)o;
