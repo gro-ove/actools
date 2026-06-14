@@ -55,6 +55,14 @@ namespace AcManager.Tools.ContentInstallation {
         
         public bool UseSteamAuth { get; set; }
 
+        /// <summary>
+        /// If set, installation will skip the manual confirmation step when the
+        /// detected content is limited to cars and/or tracks. Used by server-driven
+        /// installs (e.g. acmanager://install?autoconfirm=1) so the player doesn't
+        /// have to interact with CM after a server hand-off.
+        /// </summary>
+        public bool AutoConfirmServerInstall { get; set; }
+
         public async Task PostInstallation(IProgress<AsyncProgressEntry> progress, CancellationToken token) {
             if (!CupType.HasValue || IdsToUpdate == null) return;
 

@@ -80,6 +80,16 @@ namespace AcManager.Pages.Dialogs {
         public static bool OptionHideCancelButton = false;
         public static bool OptionSkipAllResults = false;
 
+        /// <summary>
+        /// One-shot suppression: when set to a future timestamp, the next call to
+        /// <see cref="OnResult"/> will skip showing the results dialog and the
+        /// flag is then cleared. Used by server-driven content handoffs (see
+        /// acmanager://install?rejoin=1) to avoid flashing a meaningless
+        /// "Practice / Try again / Replay" window after AC closes for the install.
+        /// Auto-expires so a stale flag never swallows a legit race result.
+        /// </summary>
+        public static DateTime SkipNextResultUntil = DateTime.MinValue;
+
         public const int DefinitelyNonPrizePlace = 99999;
         private static GoodShuffle<string> _progressStyles;
 
@@ -693,6 +703,24 @@ namespace AcManager.Pages.Dialogs {
         public void OnResult(Game.Result result, ReplayHelper replayHelper) {
             RevertSizeFix().Ignore();
 
+            // Consume the one-shot suppression flag up-front so it can't be bypassed by
+            // any of the early-return branches below (e.g. benchmark/FPS-replay results).
+            // Replay/results-viewer mode (_resultsViewMode) must NOT honour or consume
+            // the flag, otherwise opening a saved result right after a rejoin handoff
+            // would silently close the viewer.
+            var skipNextOneShot = false;
+            if (!_resultsViewMode) {
+                skipNextOneShot = SkipNextResultUntil > DateTime.UtcNow;
+                if (SkipNextResultUntil != DateTime.MinValue) {
+                    if (skipNextOneShot) {
+                        Logging.Debug($"GameDialog: SkipNextResultUntil consumed (flag was {SkipNextResultUntil:O})");
+                    } else {
+                        Logging.Debug($"GameDialog: SkipNextResultUntil expired (flag was {SkipNextResultUntil:O}), clearing");
+                    }
+                    SkipNextResultUntil = DateTime.MinValue;
+                }
+            }
+
             if (SettingsHolder.Drive.WatchForSharedMemory) {
                 AcSharedMemory.Instance.MonitorFramesPerSecond = false;
             }
@@ -718,9 +746,10 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            var skipResults = OptionSkipAllResults || (_properties?.ReplayProperties != null || _properties?.BenchmarkProperties != null
-                    ? _properties?.GetAdditional<WhatsGoingOn>() == null
-                    : !_resultsViewMode && _properties != null && SettingsHolder.Drive.SkipResults(result, _properties));
+            var skipResults = OptionSkipAllResults || skipNextOneShot
+                    || (_properties?.ReplayProperties != null || _properties?.BenchmarkProperties != null
+                            ? _properties?.GetAdditional<WhatsGoingOn>() == null
+                            : !_resultsViewMode && _properties != null && SettingsHolder.Drive.SkipResults(result, _properties));
             if (skipResults) {
                 if (IsLoaded) {
                     Close();

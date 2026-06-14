@@ -4584,6 +4584,249 @@ namespace AcManager {
                 return ResourceManager.GetString("DownloadList_NoActiveDownloads", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic rejoin enabled.
+        /// </summary>
+        public static string Arguments_AutoRejoinEnabled_Title {
+            get {
+                return ResourceManager.GetString("Arguments_AutoRejoinEnabled_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to You'll be reconnected automatically when installation finishes..
+        /// </summary>
+        public static string Arguments_AutoRejoinEnabled_Message {
+            get {
+                return ResourceManager.GetString("Arguments_AutoRejoinEnabled_Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to You'll be reconnected automatically when installation finishes..
+        /// </summary>
+        public static string Arguments_AutoRejoinEnabled_State {
+            get {
+                return ResourceManager.GetString("Arguments_AutoRejoinEnabled_State", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic rejoin skipped.
+        /// </summary>
+        public static string Arguments_AutoRejoinSkipped_Title {
+            get {
+                return ResourceManager.GetString("Arguments_AutoRejoinSkipped_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Missing server, car, or skin details. Content will still be installed..
+        /// </summary>
+        public static string Arguments_AutoRejoinSkipped_Message {
+            get {
+                return ResourceManager.GetString("Arguments_AutoRejoinSkipped_Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic rejoin was skipped because server, car, or skin details are missing..
+        /// </summary>
+        public static string Arguments_AutoRejoinSkipped_State {
+            get {
+                return ResourceManager.GetString("Arguments_AutoRejoinSkipped_State", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic rejoin cancelled.
+        /// </summary>
+        public static string Arguments_AutoRejoinCancelled_Title {
+            get {
+                return ResourceManager.GetString("Arguments_AutoRejoinCancelled_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to One or more downloads failed or were cancelled..
+        /// </summary>
+        public static string Arguments_AutoRejoinCancelled_Message {
+            get {
+                return ResourceManager.GetString("Arguments_AutoRejoinCancelled_Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic rejoin was cancelled because one or more downloads failed or were cancelled..
+        /// </summary>
+        public static string Arguments_AutoRejoinCancelled_State {
+            get {
+                return ResourceManager.GetString("Arguments_AutoRejoinCancelled_State", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Installation finished. Rejoining server….
+        /// </summary>
+        public static string Arguments_AutoRejoinRejoining_State {
+            get {
+                return ResourceManager.GetString("Arguments_AutoRejoinRejoining_State", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Installation finished. Rejoined the server..
+        /// </summary>
+        public static string Arguments_AutoRejoinRejoined_State {
+            get {
+                return ResourceManager.GetString("Arguments_AutoRejoinRejoined_State", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reconnected.
+        /// </summary>
+        public static string Arguments_AutoRejoinReconnected_Title {
+            get {
+                return ResourceManager.GetString("Arguments_AutoRejoinReconnected_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Content finished installing and CM rejoined the server..
+        /// </summary>
+        public static string Arguments_AutoRejoinReconnected_Message {
+            get {
+                return ResourceManager.GetString("Arguments_AutoRejoinReconnected_Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Installation finished, but automatic rejoin failed. Check the downloads panel for details..
+        /// </summary>
+        public static string Arguments_AutoRejoinFailed_State {
+            get {
+                return ResourceManager.GetString("Arguments_AutoRejoinFailed_State", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Server install.
+        /// </summary>
+        public static string ServerInstallProgress_HeaderTitle {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_HeaderTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Installing content.
+        /// </summary>
+        public static string ServerInstallProgress_HeaderTitleInstalling {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_HeaderTitleInstalling", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to You'll be reconnected automatically when this finishes..
+        /// </summary>
+        public static string ServerInstallProgress_HeaderMessageRejoin {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_HeaderMessageRejoin", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This will close once it's done..
+        /// </summary>
+        public static string ServerInstallProgress_HeaderMessageAutoClose {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_HeaderMessageAutoClose", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading….
+        /// </summary>
+        public static string ServerInstallProgress_HeaderMessageDownloading {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_HeaderMessageDownloading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for confirmation.
+        /// </summary>
+        public static string ServerInstallProgress_WaitingForConfirmation {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_WaitingForConfirmation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Downloads that are not cars or tracks are not auto-confirmed to ensure safety. If you want to install this content, click Confirm..
+        /// </summary>
+        public static string ServerInstallProgress_ManualConfirmationWarning {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_ManualConfirmationWarning", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm.
+        /// </summary>
+        public static string ServerInstallProgress_Confirm {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_Confirm", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Password required (resolve in downloads panel).
+        /// </summary>
+        public static string ServerInstallProgress_PasswordRequired {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_PasswordRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Installed..
+        /// </summary>
+        public static string ServerInstallProgress_Installed {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_Installed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to One or more downloads failed. Check the downloads panel for details..
+        /// </summary>
+        public static string ServerInstallProgress_FailureSummary {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_FailureSummary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Done..
+        /// </summary>
+        public static string ServerInstallProgress_Done {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_Done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Done — reconnecting….
+        /// </summary>
+        public static string ServerInstallProgress_DoneReconnecting {
+            get {
+                return ResourceManager.GetString("ServerInstallProgress_DoneReconnecting", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Nothing found.
