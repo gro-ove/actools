@@ -4899,6 +4899,87 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
         <value>No active downloads</value>
     </data>
+    <data name="Arguments_AutoRejoinEnabled_Title" xml:space="preserve">
+        <value>Automatic rejoin enabled</value>
+    </data>
+    <data name="Arguments_AutoRejoinEnabled_Message" xml:space="preserve">
+        <value>You'll be reconnected automatically when installation finishes.</value>
+    </data>
+    <data name="Arguments_AutoRejoinEnabled_State" xml:space="preserve">
+        <value>You'll be reconnected automatically when installation finishes.</value>
+    </data>
+    <data name="Arguments_AutoRejoinSkipped_Title" xml:space="preserve">
+        <value>Automatic rejoin skipped</value>
+    </data>
+    <data name="Arguments_AutoRejoinSkipped_Message" xml:space="preserve">
+        <value>Missing server, car, or skin details. Content will still be installed.</value>
+    </data>
+    <data name="Arguments_AutoRejoinSkipped_State" xml:space="preserve">
+        <value>Automatic rejoin was skipped because server, car, or skin details are missing.</value>
+    </data>
+    <data name="Arguments_AutoRejoinCancelled_Title" xml:space="preserve">
+        <value>Automatic rejoin cancelled</value>
+    </data>
+    <data name="Arguments_AutoRejoinCancelled_Message" xml:space="preserve">
+        <value>One or more downloads failed or were cancelled.</value>
+    </data>
+    <data name="Arguments_AutoRejoinCancelled_State" xml:space="preserve">
+        <value>Automatic rejoin was cancelled because one or more downloads failed or were cancelled.</value>
+    </data>
+    <data name="Arguments_AutoRejoinRejoining_State" xml:space="preserve">
+        <value>Installation finished. Rejoining server…</value>
+    </data>
+    <data name="Arguments_AutoRejoinRejoined_State" xml:space="preserve">
+        <value>Installation finished. Rejoined the server.</value>
+    </data>
+    <data name="Arguments_AutoRejoinReconnected_Title" xml:space="preserve">
+        <value>Reconnected</value>
+    </data>
+    <data name="Arguments_AutoRejoinReconnected_Message" xml:space="preserve">
+        <value>Content finished installing and CM rejoined the server.</value>
+    </data>
+    <data name="Arguments_AutoRejoinFailed_State" xml:space="preserve">
+        <value>Installation finished, but automatic rejoin failed. Check the downloads panel for details.</value>
+    </data>
+    <data name="ServerInstallProgress_HeaderTitle" xml:space="preserve">
+        <value>Server install</value>
+    </data>
+    <data name="ServerInstallProgress_HeaderTitleInstalling" xml:space="preserve">
+        <value>Installing content</value>
+    </data>
+    <data name="ServerInstallProgress_HeaderMessageRejoin" xml:space="preserve">
+        <value>You'll be reconnected automatically when this finishes.</value>
+    </data>
+    <data name="ServerInstallProgress_HeaderMessageAutoClose" xml:space="preserve">
+        <value>This will close once it's done.</value>
+    </data>
+    <data name="ServerInstallProgress_HeaderMessageDownloading" xml:space="preserve">
+        <value>Downloading…</value>
+    </data>
+    <data name="ServerInstallProgress_WaitingForConfirmation" xml:space="preserve">
+        <value>Waiting for confirmation</value>
+    </data>
+    <data name="ServerInstallProgress_ManualConfirmationWarning" xml:space="preserve">
+        <value>Downloads that are not cars or tracks are not auto-confirmed to ensure safety. If you want to install this content, click Confirm.</value>
+    </data>
+    <data name="ServerInstallProgress_Confirm" xml:space="preserve">
+        <value>Confirm</value>
+    </data>
+    <data name="ServerInstallProgress_PasswordRequired" xml:space="preserve">
+        <value>Password required (resolve in downloads panel)</value>
+    </data>
+    <data name="ServerInstallProgress_Installed" xml:space="preserve">
+        <value>Installed.</value>
+    </data>
+    <data name="ServerInstallProgress_FailureSummary" xml:space="preserve">
+        <value>One or more downloads failed. Check the downloads panel for details.</value>
+    </data>
+    <data name="ServerInstallProgress_Done" xml:space="preserve">
+        <value>Done.</value>
+    </data>
+    <data name="ServerInstallProgress_DoneReconnecting" xml:space="preserve">
+        <value>Done — reconnecting…</value>
+    </data>
     <data name="Arguments_SharedMessage_LocalSource" xml:space="preserve">
         <value>Name: [b]{0}[/b]</value>
         <comment>Shown when .cmpreset files are being opened</comment>

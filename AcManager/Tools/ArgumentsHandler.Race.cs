@@ -180,11 +180,12 @@ namespace AcManager.Tools {
             }
         }
 
-        public static async Task JoinInvitation([NotNull] string ip, int port, [CanBeNull] string password) {
+        private static async Task<Tuple<OnlineSourceWrapper, ServerEntry>> LoadInvitationServerAsync([NotNull] string ip, int httpPort,
+                [CanBeNull] string password) {
             OnlineManager.EnsureInitialized();
 
             var list = OnlineManager.Instance.List;
-            var source = new FakeSource(ip, port);
+            var source = new FakeSource(ip, httpPort);
             var wrapper = new OnlineSourceWrapper(list, source);
 
             ServerEntry server;
@@ -197,11 +198,21 @@ namespace AcManager.Tools {
                 if (server == null) {
                     throw new Exception(@"Unexpected");
                 }
+
+                await server.Update(ServerEntry.UpdateMode.Lite, fast: true);
             }
 
             if (password != null) {
                 server.Password = password;
             }
+
+            return Tuple.Create(wrapper, server);
+        }
+
+        public static async Task JoinInvitation([NotNull] string ip, int port, [CanBeNull] string password) {
+            var loaded = await LoadInvitationServerAsync(ip, port, password);
+            var wrapper = loaded.Item1;
+            var server = loaded.Item2;
 
             var content = new OnlineServer(server) {
                 Margin = new Thickness(0, 0, 0, -38),
@@ -414,6 +425,32 @@ namespace AcManager.Tools {
             });
 
             return ArgumentHandleResult.Successful;
+        }
+
+        public static async Task AutoJoinInvitation([NotNull] string ip, int httpPort, [NotNull] string carId, [NotNull] string skinId,
+                [CanBeNull] string password) {
+            var loaded = await LoadInvitationServerAsync(ip, httpPort, password);
+            var wrapper = loaded.Item1;
+            var server = loaded.Item2;
+
+            try {
+                var selectedCar = server.Cars?.GetByIdOrDefault(carId, StringComparison.OrdinalIgnoreCase);
+                if (selectedCar == null) {
+                    throw new InformativeException($"Car “{carId}” is missing");
+                }
+
+                var selectedSkin = selectedCar.CarObject?.GetSkinById(skinId);
+                if (selectedSkin == null) {
+                    throw new InformativeException($"Car skin “{skinId}” is missing");
+                }
+
+                server.SetSelectedCarEntry(selectedCar);
+                selectedCar.AvailableSkin = selectedSkin;
+
+                await server.JoinCommand.ExecuteAsync(ServerEntry.ForceJoin);
+            } finally {
+                await wrapper.ReloadAsync(true);
+            }
         }
 
         private static async Task<ArgumentHandleResult> ProcessRaceOnlineJoin(NameValueCollection p) {

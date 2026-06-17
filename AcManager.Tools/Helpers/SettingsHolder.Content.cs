@@ -318,6 +318,19 @@ namespace AcManager.Tools.Helpers {
 
             public string TemporaryFilesLocationValue => TemporaryFilesLocation == "" ? Path.GetTempPath() : TemporaryFilesLocation;
 
+            private bool? _serverDownloadsAutoConfirm;
+
+            public bool ServerDownloadsAutoConfirm {
+                get => _serverDownloadsAutoConfirm ??
+                        (_serverDownloadsAutoConfirm = ValuesStorage.Get("Settings.ContentSettings.ServerDownloadsAutoConfirm", true)).Value;
+                set {
+                    if (Equals(value, _serverDownloadsAutoConfirm)) return;
+                    _serverDownloadsAutoConfirm = value;
+                    ValuesStorage.Set("Settings.ContentSettings.ServerDownloadsAutoConfirm", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private string _fontIconCharacter;
 
             public string FontIconCharacter {

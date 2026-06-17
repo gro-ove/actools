@@ -94,6 +94,11 @@
               SelectedItem="{Binding Holder.MissingContentSearch}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
+        <CheckBox IsChecked="{Binding Holder.ServerDownloadsAutoConfirm}"
+            ToolTip="If disabled, server-driven installs will still open and download normally, but CM will wait for manual confirmation instead of auto-confirming car/track-only installs.">
+          <Label Content="Allow server-driven downloads to auto-confirm car and track installs" />
+        </CheckBox>
+
         <!-- Mega credentials -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Content_MegaNzCredentials}"
             ToolTip="{x:Static g:AppStrings.Settings_Content_MegaNzCredentials_Tooltip}" />

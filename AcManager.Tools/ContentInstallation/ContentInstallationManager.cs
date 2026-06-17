@@ -177,6 +177,27 @@ namespace AcManager.Tools.ContentInstallation {
             set => Apply(value, ref _hasLoadingItems);
         }
 
+        private bool _postInstallAutoJoinActive;
+
+        public bool PostInstallAutoJoinActive {
+            get => _postInstallAutoJoinActive;
+            private set => Apply(value, ref _postInstallAutoJoinActive);
+        }
+
+        private bool _postInstallAutoJoinFailed;
+
+        public bool PostInstallAutoJoinFailed {
+            get => _postInstallAutoJoinFailed;
+            private set => Apply(value, ref _postInstallAutoJoinFailed);
+        }
+
+        private string _postInstallAutoJoinMessage;
+
+        public string PostInstallAutoJoinMessage {
+            get => _postInstallAutoJoinMessage;
+            private set => Apply(value, ref _postInstallAutoJoinMessage);
+        }
+
         private int _unfinishedItemsCount;
 
         public int UnfinishedItemsCount {
@@ -190,6 +211,16 @@ namespace AcManager.Tools.ContentInstallation {
         }
 
         public bool HasUnfinishedItems => _unfinishedItemsCount > 0;
+
+        public void SetPostInstallAutoJoinState([CanBeNull] string message, bool failed = false) {
+            PostInstallAutoJoinMessage = message;
+            PostInstallAutoJoinFailed = failed;
+            PostInstallAutoJoinActive = !string.IsNullOrWhiteSpace(message);
+        }
+
+        public void ClearPostInstallAutoJoinState() {
+            SetPostInstallAutoJoinState(null);
+        }
 
         public void UpdateBusyStates() {
             var hasLoadingItems = false;
