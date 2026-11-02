@@ -9,11 +9,30 @@ using NAudio.CoreAudioApi;
 
 namespace AcManager.Tools.Helpers {
     public class AudioDevices : IDisposable, IMMNotificationClient {
+        // MMDevAPI doesn’t keep registered callbacks alive. If one gets collected before being unregistered (for example,
+        // when settings search creates audio settings page just to look through it and drops it without disposing), the
+        // next device notification calls into a dead COM wrapper and crashes the whole app. So, callback is registered
+        // only when somebody actually listens, and kept referenced here until it’s unregistered.
+        private static readonly HashSet<AudioDevices> Registered = new HashSet<AudioDevices>();
+
         private MMDeviceEnumerator _mm;
+        private EventHandler _endpointsChanged;
 
         public AudioDevices() {
             _mm = new MMDeviceEnumerator();
-            _mm.RegisterEndpointNotificationCallback(this);
+        }
+
+        private void SetRegistered(bool value) {
+            lock (Registered) {
+                if (_mm == null || Registered.Contains(this) == value) return;
+                if (value) {
+                    _mm.RegisterEndpointNotificationCallback(this);
+                    Registered.Add(this);
+                } else {
+                    _mm.UnregisterEndpointNotificationCallback(this);
+                    Registered.Remove(this);
+                }
+            }
         }
 
         [CanBeNull]
@@ -35,12 +54,21 @@ namespace AcManager.Tools.Helpers {
                               "%windir%\\system32\\mmres.dll,0", DeviceState.Active));
         }
 
-        public event EventHandler EndpointsChanged;
+        public event EventHandler EndpointsChanged {
+            add {
+                _endpointsChanged += value;
+                SetRegistered(true);
+            }
+            remove {
+                _endpointsChanged -= value;
+                if (_endpointsChanged == null) SetRegistered(false);
+            }
+        }
 
         private readonly Busy _reloadDevicesBusy = new Busy(true);
 
         private void ReloadDevices() {
-            _reloadDevicesBusy.Yield(() => EndpointsChanged?.Invoke(this, EventArgs.Empty));
+            _reloadDevicesBusy.Yield(() => _endpointsChanged?.Invoke(this, EventArgs.Empty));
         }
 
         void IMMNotificationClient.OnDeviceStateChanged(string deviceId, DeviceState newState) {
@@ -64,7 +92,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         public void Dispose() {
-            _mm?.UnregisterEndpointNotificationCallback(this);
+            SetRegistered(false);
             DisposeHelper.Dispose(ref _mm);
         }
     }
