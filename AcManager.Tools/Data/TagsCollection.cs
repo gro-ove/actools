@@ -24,7 +24,7 @@ namespace AcManager.Tools.Data {
         }
 
         public bool ContainsIgnoringCase(string tag) {
-            return this.Any(x => string.Equals(x, tag));
+            return this.Any(x => string.Equals(x, tag, StringComparison.OrdinalIgnoreCase));
         }
 
         [NotNull]
