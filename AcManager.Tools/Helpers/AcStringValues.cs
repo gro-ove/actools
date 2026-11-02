@@ -13,7 +13,7 @@ namespace AcManager.Tools.Helpers {
         private static Regex _idYearRegex;
 
         private static Regex IdYearRegex => _idYearRegex ??
-                                            (_idYearRegex = new Regex(@"(?<![a-zA-Z0-9])(?:19[2-9]|20[01])\d$", RegexOptions.Compiled));
+                                            (_idYearRegex = new Regex(@"(?<![a-zA-Z0-9])(?:19[2-9]|20\d)\d$", RegexOptions.Compiled));
 
         public static int? GetYearFromId([NotNull] string id) {
             var result = IdYearRegex.Match(id);
@@ -36,7 +36,8 @@ namespace AcManager.Tools.Helpers {
             var matched = result.Groups[1].Value;
             if (string.IsNullOrEmpty(matched)) return null; // shouldn't really happen
             var value = int.Parse(matched, NumberStyles.Any, CultureInfo.InvariantCulture);
-            return value < 1000 ? value < 18 ? 2000 + value : 1900 + value : value;
+            // Two-digit years up to next year are this century, the rest are the previous one
+            return value < 1000 ? value <= (DateTime.Now.Year + 1) % 100 ? 2000 + value : 1900 + value : value;
         }
 
         [NotNull]
