@@ -315,7 +315,7 @@ namespace AcManager.Pages.ServerPreset {
                     return $"car-{car.Id}-{car.Version}.zip";
                 case CarSkinObject skin:
                     return $"skin-{skin.CarId}-{skin.Id}.zip";
-                case TrackObject track:
+                case TrackObjectBase track:
                     return $"track-{track.Id}-{track.Version}.zip";
                 case WeatherObject weather:
                     return $"weather-{weather.Id}.zip";
