@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,13 +24,20 @@ namespace AcManager.LargeFilesSharing.Implementations {
 
         private static Task<OAuthCode> GetAuthenticationCode(string clientId, CancellationToken cancellation) {
             return OAuth.GetCode("Dropbox",
-                    $"https://www.dropbox.com/oauth2/authorize?response_type=code&client_id={Uri.EscapeDataString(clientId)}", null, cancellation: cancellation);
+                    $"https://www.dropbox.com/oauth2/authorize?response_type=code&token_access_type=offline&client_id={Uri.EscapeDataString(clientId)}",
+                    null, cancellation: cancellation);
         }
 
 #pragma warning disable 0649
         internal class AuthResponse {
             [JsonProperty(@"access_token")]
             public string AccessToken;
+
+            [JsonProperty(@"refresh_token")]
+            public string RefreshToken;
+
+            [JsonProperty(@"expires_in")]
+            public int ExpiresIn;
 
             [JsonProperty(@"account_id")]
             public string AccountId;
@@ -43,7 +51,9 @@ namespace AcManager.LargeFilesSharing.Implementations {
 #pragma warning restore 0649
 
         private AuthResponse _authToken;
+        private DateTime _authExpiration;
         private const string KeyAuthToken = "token";
+        private const string KeyAuthExpiration = "expiration";
         private const string KeyMuteUpload = "muteUpload";
 
         public override async Task ResetAsync(CancellationToken cancellation) {
@@ -53,22 +63,80 @@ namespace AcManager.LargeFilesSharing.Implementations {
 
             await base.ResetAsync(cancellation);
             _authToken = null;
+            _authExpiration = default;
             Storage.Remove(KeyAuthToken);
+            Storage.Remove(KeyAuthExpiration);
         }
 
-        public override Task PrepareAsync(CancellationToken cancellation) {
-            if (!IsReady) {
+        private void SetSession(AuthResponse token) {
+            _authToken = token;
+            _authExpiration = DateTime.Now + TimeSpan.FromSeconds(token.ExpiresIn) - TimeSpan.FromSeconds(20);
+            Storage.SetEncrypted(KeyAuthToken, JsonConvert.SerializeObject(token));
+            Storage.Set(KeyAuthExpiration, _authExpiration);
+            IsReady = true;
+        }
+
+        public override async Task PrepareAsync(CancellationToken cancellation) {
+            if (IsReady && DateTime.Now < _authExpiration) return;
+
+            // From here on, either session gets renewed, or it gets dropped completely so user could sign in again: keeping
+            // an expired access token around with IsReady set would turn every following request into 401 with no way out.
+            AuthResponse stored = null;
+            try {
                 var enc = Storage.GetEncrypted<string>(KeyAuthToken);
-                if (enc != null) {
-                    try {
-                        _authToken = JsonConvert.DeserializeObject<AuthResponse>(enc);
-                        IsReady = true;
-                    } catch (Exception e) {
-                        Logging.Warning(e);
-                    }
-                }
+                stored = enc == null ? null : JsonConvert.DeserializeObject<AuthResponse>(enc);
+            } catch (Exception e) {
+                Logging.Warning(e);
             }
-            return Task.Delay(0);
+
+            // Tokens saved before refresh tokens were requested can’t be renewed, so those need a new sign in once
+            if (stored?.RefreshToken == null) {
+                await ResetAsync(cancellation);
+                return;
+            }
+
+            _authToken = stored;
+            _authExpiration = Storage.Get(KeyAuthExpiration, default(DateTime));
+            if (DateTime.Now < _authExpiration) {
+                IsReady = true;
+                return;
+            }
+
+            var data = InternalUtils.GetDropboxCredentials();
+            AuthResponse refresh = null;
+            try {
+                refresh = await Request.Post<AuthResponse>(@"https://api.dropboxapi.com/oauth2/token", new NameValueCollection {
+                    { @"client_id", data.Item1.Substring(2) },
+                    { @"client_secret", data.Item2.Substring(2) },
+                    { @"refresh_token", _authToken.RefreshToken },
+                    { @"grant_type", @"refresh_token" }
+                }, null, cancellation: cancellation);
+            } catch (ApiException e) when (e.Status == HttpStatusCode.BadRequest || e.Status == HttpStatusCode.Unauthorized) {
+                // Refresh token is rejected (revoked or app access removed), only a new sign in would help. Anything else (connection
+                // issues, server errors) is thrown further with stored token intact, so the next attempt could succeed.
+                Logging.Warning(e);
+            }
+            cancellation.ThrowIfCancellationRequested();
+
+            if (refresh?.AccessToken == null) {
+                await ResetAsync(cancellation);
+                return;
+            }
+
+            // Dropbox doesn’t return a new refresh token, the original one stays valid until revoked
+            refresh.RefreshToken = refresh.RefreshToken ?? _authToken.RefreshToken;
+            SetSession(refresh);
+        }
+
+        private async Task<string> GetAccessTokenAsync(CancellationToken cancellation) {
+            await PrepareAsync(cancellation);
+            cancellation.ThrowIfCancellationRequested();
+
+            if (_authToken == null) {
+                throw new Exception(ToolsStrings.Uploader_AuthenticationTokenIsMissing);
+            }
+
+            return _authToken.AccessToken;
         }
 
         public override async Task SignInAsync(CancellationToken cancellation) {
@@ -95,9 +163,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
             }, null, cancellation: cancellation);
             if (cancellation.IsCancellationRequested) return;
 
-            _authToken = response ?? throw new Exception(ToolsStrings.Uploader_CannotFinishAuthorization);
-            Storage.SetEncrypted(KeyAuthToken, JsonConvert.SerializeObject(_authToken));
-            IsReady = true;
+            SetSession(response ?? throw new Exception(ToolsStrings.Uploader_CannotFinishAuthorization));
         }
 
         public override Task<DirectoryEntry[]> GetDirectoriesAsync(CancellationToken cancellation) {
@@ -203,12 +269,8 @@ namespace AcManager.LargeFilesSharing.Implementations {
 
         public override async Task<UploadResult> UploadAsync(string name, string originalName, string mimeType, string description, Stream data, UploadAs uploadAs,
                 IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            await PrepareAsync(cancellation);
-
-            if (_authToken == null) {
-                throw new Exception(ToolsStrings.Uploader_AuthenticationTokenIsMissing);
-            }
-
+            // Dropbox access tokens only live for 4 hours, so each request below takes a current one: a large upload could outlive it
+            await GetAccessTokenAsync(cancellation);
             var commitParams = new CommitParams { Path = "/" + name, Mute = MuteUpload };
             var total = data.Length;
             var bufferSize = Math.Min(total, 50 * 1024 * 1024);
@@ -219,7 +281,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
                 var bytes = await data.ReadAsBytesAsync();
                 cancellation.ThrowIfCancellationRequested();
                 result = await Request.Post<UploadFinishResult>(@"https://content.dropboxapi.com/2/files/upload", bytes,
-                        _authToken.AccessToken, progress, cancellation, new NameValueCollection {
+                        await GetAccessTokenAsync(cancellation), progress, cancellation, new NameValueCollection {
                             ["Dropbox-API-Arg"] = JsonConvert.SerializeObject(commitParams)
                         });
             } else {
@@ -240,7 +302,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
                 progress.Report("Starting upload session…", 0.00001d);
                 var initialPiece = await NextPiece();
                 var session = await Request.Post<SessionOpenedResult>(@"https://content.dropboxapi.com/2/files/upload_session/start",
-                        buffer.Slice(0, initialPiece), _authToken.AccessToken,
+                        buffer.Slice(0, initialPiece), await GetAccessTokenAsync(cancellation),
                         progress.Subrange((double)uploaded / total, (double)initialPiece / total, $"Uploading piece #1 out of {totalPieces} ({{0}})…"),
                         cancellation,
                         new NameValueCollection {
@@ -257,7 +319,8 @@ namespace AcManager.LargeFilesSharing.Implementations {
 
                     for (var index = 2; index < 10000 && !ended; index++) {
                         var piece = await NextPiece();
-                        await Request.Post(@"https://content.dropboxapi.com/2/files/upload_session/append_v2", buffer.Slice(0, piece), _authToken.AccessToken,
+                        await Request.Post(@"https://content.dropboxapi.com/2/files/upload_session/append_v2", buffer.Slice(0, piece),
+                                await GetAccessTokenAsync(cancellation),
                                 progress.Subrange((double)uploaded / total, (double)piece / total, $"Uploading piece #{index} out of {totalPieces} ({{0}})…"),
                                 cancellation,
                                 new NameValueCollection {
@@ -283,7 +346,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
 
                 progress.Report("Finishing upload session…", 0.999999d);
                 result = await Request.Post<UploadFinishResult>(@"https://content.dropboxapi.com/2/files/upload_session/finish",
-                        new byte[0], _authToken.AccessToken, null, cancellation, new NameValueCollection {
+                        new byte[0], await GetAccessTokenAsync(cancellation), null, cancellation, new NameValueCollection {
                             ["Dropbox-API-Arg"] = JsonConvert.SerializeObject(new UploadFinishParams {
                                 Cursor = new CursorParams { Offset = uploaded, SessionId = session.SessionId },
                                 Commit = commitParams
@@ -300,7 +363,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
                     new ShareParams {
                         Path = result.Path,
                         Settings = new ShareSettingsParams()
-                    }, _authToken.AccessToken, cancellation: cancellation))?.Url;
+                    }, await GetAccessTokenAsync(cancellation), cancellation: cancellation))?.Url;
             if (url == null) {
                 RaiseShareFailedException();
             }
