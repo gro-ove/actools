@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -11,6 +12,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -502,8 +504,36 @@ namespace AcManager.Tools.Objects {
         string IDraggable.DraggableFormat => DraggableFormat;
         #endregion
 
-        protected override AcCommonObjectPacker CreatePacker() {
-            throw new InformativeException("Can’t pack track", "At the moment, tracks packing is not implemented.");
+        #region Packing
+        private class TrackPacker : AcCommonObjectPacker<TrackObjectBase> {
+            protected override string GetBasePath(TrackObjectBase t) {
+                return $"content/tracks/{t.MainTrackObject.Id}";
+            }
+
+            protected override IEnumerable PackOverride(TrackObjectBase t) {
+                // Layouts share models and textures with the whole track, and location of a layout object is its UI folder,
+                // so a layout is packed as the entire track
+                if (t != t.MainTrackObject) {
+                    yield return Add(t.MainTrackObject);
+                } else {
+                    yield return Add("*");
+                }
+            }
+
+            protected override PackedDescription GetDescriptionOverride(TrackObjectBase t) {
+                var track = t.MainTrackObject;
+                return new PackedDescription(track.Id, track.DisplayNameWithoutCount,
+                        new Dictionary<string, string> {
+                            ["Version"] = track.Version,
+                            ["Made by"] = track.Author,
+                            ["Webpage"] = track.Url,
+                        }, TracksManager.Instance.Directories.GetMainDirectory(), true);
+            }
         }
+
+        protected override AcCommonObjectPacker CreatePacker() {
+            return new TrackPacker();
+        }
+        #endregion
     }
 }
